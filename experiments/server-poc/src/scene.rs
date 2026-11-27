@@ -16,8 +16,12 @@ pub const MAX_LAYERS: usize = 8;
 pub struct Endpoint(pub String);
 
 impl Endpoint {
-    pub fn input() -> Self { Self("$input".into()) }
-    pub fn node(id: impl Into<String>) -> Self { Self(id.into()) }
+    pub fn input() -> Self {
+        Self("$input".into())
+    }
+    pub fn node(id: impl Into<String>) -> Self {
+        Self(id.into())
+    }
     pub fn node_id(&self) -> Option<&str> {
         (self.0 != "$input").then_some(self.0.as_str())
     }
@@ -26,15 +30,30 @@ impl Endpoint {
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Blend {
-    Normal, Add, Subtract, Multiply, Screen, Overlay,
-    #[serde(rename = "soft-light")] SoftLight,
-    #[serde(rename = "hard-light")] HardLight,
-    Lighten, Darken, Difference, Color, Luminosity,
+    Normal,
+    Add,
+    Subtract,
+    Multiply,
+    Screen,
+    Overlay,
+    #[serde(rename = "soft-light")]
+    SoftLight,
+    #[serde(rename = "hard-light")]
+    HardLight,
+    Lighten,
+    Darken,
+    Difference,
+    Color,
+    Luminosity,
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
-pub enum CoverageCombine { Add, Subtract, Intersect }
+pub enum CoverageCombine {
+    Add,
+    Subtract,
+    Intersect,
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -97,7 +116,7 @@ pub enum Operation {
 }
 
 impl Operation {
-    fn is_coverage(&self) -> bool {
+    pub fn is_coverage(&self) -> bool {
         matches!(
             self,
             Self::LinearCoverage { .. }
@@ -108,7 +127,7 @@ impl Operation {
         )
     }
 
-    fn images(&self) -> Vec<&Endpoint> {
+    pub fn images(&self) -> Vec<&Endpoint> {
         match self {
             Self::Corrector { image, .. } | Self::Group { image, .. } => vec![image],
             Self::Parallel { base, layers, .. } | Self::Layer { base, layers, .. } => {
@@ -120,7 +139,7 @@ impl Operation {
         }
     }
 
-    fn coverages(&self) -> Vec<&str> {
+    pub fn coverages(&self) -> Vec<&str> {
         match self {
             Self::Corrector { mask, .. } => mask.iter().map(String::as_str).collect(),
             Self::CombineCoverage { base, other, .. } => vec![base.as_str(), other.as_str()],
@@ -150,6 +169,9 @@ pub struct Scope {
 pub struct Document {
     pub schema_version: u32,
     pub graph: Scope,
+    /// 038 delivery state is carried by the Swift document but is not needed to execute pixels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -167,10 +189,13 @@ pub struct SceneReceipt {
 
 pub fn parse(bytes: &[u8]) -> Result<(Document, SceneReceipt), String> {
     let started = std::time::Instant::now();
-    let document: Document = serde_json::from_slice(bytes)
-        .map_err(|error| format!("scene graph JSON: {error}"))?;
+    let document: Document =
+        serde_json::from_slice(bytes).map_err(|error| format!("scene graph JSON: {error}"))?;
     if document.schema_version != 1 {
-        return Err(format!("unsupported scene graph schema {}", document.schema_version));
+        return Err(format!(
+            "unsupported scene graph schema {}",
+            document.schema_version
+        ));
     }
     document.graph.validate()?;
     let nodes = count_nodes(&document.graph);
@@ -250,7 +275,9 @@ impl Scope {
             active: &mut HashSet<String>,
             resolved: &mut HashSet<String>,
         ) -> Result<(), String> {
-            let Some(id) = endpoint.node_id() else { return Ok(()) };
+            let Some(id) = endpoint.node_id() else {
+                return Ok(());
+            };
             let operation = by_id
                 .get(id)
                 .copied()
@@ -285,7 +312,12 @@ impl Scope {
 fn validate_operation(operation: &Operation) -> Result<(), String> {
     let unit = |value: f32| (0.0..=1.0).contains(&value);
     match operation {
-        Operation::Corrector { exposure_ev, curve, strength, .. } => {
+        Operation::Corrector {
+            exposure_ev,
+            curve,
+            strength,
+            ..
+        } => {
             if !(-12.0..=12.0).contains(exposure_ev) || !unit(*strength) {
                 return Err("corrector parameter outside range".into());
             }
@@ -330,7 +362,11 @@ fn validate_operation(operation: &Operation) -> Result<(), String> {
         }
         Operation::LinearCoverage { start, end } => {
             for point in [start, end] {
-                if !unit(point[0]) || !unit(point[1]) || !point[0].is_finite() || !point[1].is_finite() {
+                if !unit(point[0])
+                    || !unit(point[1])
+                    || !point[0].is_finite()
+                    || !point[1].is_finite()
+                {
                     return Err("coverage point outside [0,1]".into());
                 }
             }
@@ -338,7 +374,11 @@ fn validate_operation(operation: &Operation) -> Result<(), String> {
                 return Err("linear coverage has no extent".into());
             }
         }
-        Operation::RadialCoverage { center, radii, feather } => {
+        Operation::RadialCoverage {
+            center,
+            radii,
+            feather,
+        } => {
             if !unit(center[0])
                 || !unit(center[1])
                 || !(0.0001..=2.0).contains(&radii[0])
@@ -375,7 +415,10 @@ mod tests {
                 enabled: true,
             },
         };
-        Scope { nodes: vec![node], output: Endpoint::node("n1") }
+        Scope {
+            nodes: vec![node],
+            output: Endpoint::node("n1"),
+        }
     }
 
     #[test]
@@ -409,7 +452,10 @@ mod tests {
                 enabled: true,
             },
         };
-        let scope = Scope { nodes: vec![a, b], output: Endpoint::node("a") };
+        let scope = Scope {
+            nodes: vec![a, b],
+            output: Endpoint::node("a"),
+        };
         assert!(scope.validate().unwrap_err().contains("cycle"));
     }
 

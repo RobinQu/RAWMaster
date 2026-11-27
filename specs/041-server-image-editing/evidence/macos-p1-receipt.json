@@ -1,0 +1,96 @@
+{
+  "artifacts" : {
+    "avif" : "scene-macos.avif",
+    "hdr" : "display-hdr.f32",
+    "input" : "scene-input.f32",
+    "output" : "scene-output.f32",
+    "sdr" : "display-sdr.f32"
+  },
+  "avif" : {
+    "bytes" : 26538691,
+    "height" : 6336,
+    "milliseconds" : 1328.1130000000001,
+    "peakNits" : 1000,
+    "referenceWhiteNits" : 100,
+    "sha256" : "6505b2646bd926cfafa6b17c0528f9ae16332fa706454facae475499402b502f",
+    "signal" : {
+      "bitDepth" : 10,
+      "fullRange" : true,
+      "matrix" : 1,
+      "primaries" : 9,
+      "transfer" : 16
+    },
+    "width" : 9504
+  },
+  "cold" : {
+    "backend" : "rust",
+    "budgetBytes" : 6442450944,
+    "coverageCacheHits" : 0,
+    "cpuMilliseconds" : 131.034291,
+    "dispatches" : 200,
+    "fallbackReason" : null,
+    "nodeCacheHits" : 0,
+    "nodes" : 180,
+    "peakBytes" : 5296029696,
+    "tiles" : 20
+  },
+  "deliveryHDRMs" : 216.67883399999999,
+  "deliverySDRMs" : 237.124833,
+  "displayHDRSHA256" : "2d96759d34b9f98400abc337a7457fece66cd79b5ed78f7afcfd053e54b8f72a",
+  "displaySDRSHA256" : "3be3453c3872b81dbcab5b4e8393764e0e17b24cf9446c254956ff07427e504e",
+  "edited" : {
+    "backend" : "rust",
+    "budgetBytes" : 6442450944,
+    "coverageCacheHits" : 0,
+    "cpuMilliseconds" : 137.73120799999998,
+    "dispatches" : 200,
+    "fallbackReason" : null,
+    "nodeCacheHits" : 0,
+    "nodes" : 180,
+    "peakBytes" : 4002906112,
+    "tiles" : 20
+  },
+  "graphColdMs" : 628.87541699999997,
+  "graphEditedMs" : 138.03049999999999,
+  "graphNewSourceMs" : 141.13483299999999,
+  "graphV1SHA256" : "5d9f682f297f613c32886504f454262e0fbb8329235b70b1fc68458ca8e1781b",
+  "graphV2SHA256" : "76c68aa05bdd7f9862a29843a3cb721af4d61995776f83c39cad3c72891c034e",
+  "graphWarmMs" : 131.61979199999999,
+  "inputAP1SHA256" : "2921026f67280a5765e6834c812e2777e6c82363fbb0d2693c33d5fe1a9e5221",
+  "newSource" : {
+    "backend" : "rust",
+    "budgetBytes" : 6442450944,
+    "coverageCacheHits" : 0,
+    "cpuMilliseconds" : 140.855875,
+    "dispatches" : 200,
+    "fallbackReason" : null,
+    "nodeCacheHits" : 0,
+    "nodes" : 180,
+    "peakBytes" : 4002906112,
+    "tiles" : 20
+  },
+  "outputAP1SHA256" : "de8e671b1fe26b51c21919aad61ebcad7bf02269413b2124b27ce188491d8e64",
+  "resolution" : [
+    9504,
+    6336
+  ],
+  "schema" : "rawmaster-server-poc-macos-v1",
+  "source" : "/Users/robinqu/Downloads/rawmaster-poc-20261127/raw/DSC00413.ARW",
+  "sourceRevision" : 1,
+  "sourceSHA256" : "38e48a6e71bd741e1c0b9c5f28dc55347c5aa8d69da5a29dea90bc347c3e4140",
+  "sourceUnchanged" : true,
+  "surfaceBudgetBytes" : 6442450944,
+  "tileEdge" : 2048,
+  "warm" : {
+    "backend" : "rust",
+    "budgetBytes" : 6442450944,
+    "coverageCacheHits" : 0,
+    "cpuMilliseconds" : 131.3295,
+    "dispatches" : 200,
+    "fallbackReason" : null,
+    "nodeCacheHits" : 0,
+    "nodes" : 180,
+    "peakBytes" : 4002906112,
+    "tiles" : 20
+  }
+}

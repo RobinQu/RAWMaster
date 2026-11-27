@@ -1,0 +1,285 @@
+{
+  "colorParity": {
+    "aces2HDR": {
+      "configSHA256": "3a48b0421e51d4284ec07187f86b74387321550b65f5a2f237885bf269dbc99e",
+      "linuxAPIToMacReference": {
+        "channelSamples": 180652032,
+        "maxAbs": 7.62939453125e-06,
+        "maxRelative": 7.092952728271484e-06,
+        "meanAbs": 1.3152428834928287e-07,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "macAPIToReference": {
+        "channelSamples": 180652032,
+        "maxAbs": 7.62939453125e-06,
+        "maxRelative": 6.9447796704480425e-06,
+        "meanAbs": 1.338167407993751e-07,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "ocioVersion": "2.5.0",
+      "view": "ACES 2.0 - HDR 1000 nits (Rec.2020) / Rec.2100-PQ display prefix"
+    },
+    "aces2SDR": {
+      "linuxAPIToMacReference": {
+        "channelSamples": 180652032,
+        "maxAbs": 3.4570693969726562e-06,
+        "maxRelative": 3.4570693969726562e-06,
+        "meanAbs": 8.94358151981578e-08,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "macAPIToReference": {
+        "channelSamples": 180652032,
+        "maxAbs": 3.4570693969726562e-06,
+        "maxRelative": 3.4570693969726562e-06,
+        "meanAbs": 9.08954618239477e-08,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "view": "ACES 2.0 - SDR 100 nits (Rec.709) / sRGB display prefix"
+    }
+  },
+  "date": "2026-11-27",
+  "hardwareVulkan": {
+    "consequence": "No hardware Vulkan performance or 49GB-VRAM receipt is claimed. P1 functional/parity evidence uses llvmpipe and is not a production performance gate.",
+    "driver": "610.43.02",
+    "evidence": "specs/041-server-image-editing/evidence/p1-nvidia-vulkan-blocked.log",
+    "failure": "vk_icdGetInstanceProcAddr returns NULL for vkCreateInstance and vkGetInstanceProcAddr even on the host; Vulkan loader 1.4.341 and 1.3.275 both fail. This is not a wgpu/shader failure.",
+    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB total, 45208 MiB used by a 41-day sglang server, 3331 MiB free",
+    "icd": "/usr/share/vulkan/icd.d/nvidia_icd.json (libGLX_nvidia.so.0)",
+    "status": "blocked"
+  },
+  "linux": {
+    "adapter": {
+      "backend": "Vulkan",
+      "deviceType": "Cpu",
+      "driver": "llvmpipe",
+      "driverInfo": "Mesa 22.3.6 (LLVM 15.0.6)",
+      "name": "llvmpipe (LLVM 15.0.6, 256 bits)"
+    },
+    "backend": "wgpu 24 / Vulkan (Mesa llvmpipe software device)",
+    "budgetBytes": 17179869184,
+    "cacheBytes": 12884901888,
+    "cold": {
+      "comparison": {
+        "maxAbs": 9.536743e-07,
+        "maxChannelAbs": [
+          5.9604645e-07,
+          5.9604645e-07,
+          9.536743e-07,
+          0.0
+        ],
+        "maxRelative": 5.261338e-07,
+        "meanAbs": 6.932224175529706e-09,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0,
+        "samples": 240869376
+      },
+      "graphMs": 6158.097820999999,
+      "readbackMs": 3187.067853,
+      "receipt": {
+        "budgetBytes": 17179869184,
+        "coverageCacheHits": 0,
+        "cpuMs": 6158.097820999999,
+        "dispatches": 200,
+        "nodeCacheHits": 0,
+        "nodes": 180,
+        "peakBytes": 7711850500,
+        "tiles": 20
+      }
+    },
+    "edited": {
+      "comparison": null,
+      "graphMs": 1131.057615,
+      "readbackMs": 0.0,
+      "receipt": {
+        "budgetBytes": 17179869184,
+        "coverageCacheHits": 80,
+        "cpuMs": 1131.057615,
+        "dispatches": 20,
+        "nodeCacheHits": 80,
+        "nodes": 180,
+        "peakBytes": 8685092868,
+        "tiles": 20
+      }
+    },
+    "host": "OpenCode Linux host (192 logical CPUs)",
+    "newSource": {
+      "comparison": null,
+      "graphMs": 4141.902929000001,
+      "readbackMs": 0.0,
+      "receipt": {
+        "budgetBytes": 17179869184,
+        "coverageCacheHits": 80,
+        "cpuMs": 4141.902929000001,
+        "dispatches": 120,
+        "nodeCacheHits": 0,
+        "nodes": 180,
+        "peakBytes": 13492715524,
+        "tiles": 20
+      }
+    },
+    "outputSHA256": "32b0d96b51b8b5a498273cff6c660b79486b13bc1e2e47938e8a578746fab61c",
+    "tileEdge": 2048,
+    "warm": {
+      "comparison": null,
+      "graphMs": 620.87386,
+      "readbackMs": 0.0,
+      "receipt": {
+        "budgetBytes": 17179869184,
+        "coverageCacheHits": 80,
+        "cpuMs": 620.87386,
+        "dispatches": 0,
+        "nodeCacheHits": 80,
+        "nodes": 160,
+        "peakBytes": 7774928900,
+        "tiles": 20
+      }
+    }
+  },
+  "macosReference": {
+    "avif": {
+      "bytes": 26538691,
+      "height": 6336,
+      "milliseconds": 1328.113,
+      "peakNits": 1000,
+      "referenceWhiteNits": 100,
+      "sha256": "6505b2646bd926cfafa6b17c0528f9ae16332fa706454facae475499402b502f",
+      "signal": {
+        "bitDepth": 10,
+        "fullRange": true,
+        "matrix": 1,
+        "primaries": 9,
+        "transfer": 16
+      },
+      "width": 9504
+    },
+    "backend": "Rust scene executor / Metal",
+    "cacheNote": "The production Rust/Metal cache is 768 MiB for nodes; a 60MP frame has about 4.8 GiB of image intermediates, so the full-frame prefix is evicted and the Mac receipt reports zero node/coverage hits even on warm runs.",
+    "cold": {
+      "backend": "rust",
+      "budgetBytes": 6442450944,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 131.034291,
+      "dispatches": 200,
+      "fallbackReason": null,
+      "nodeCacheHits": 0,
+      "nodes": 180,
+      "peakBytes": 5296029696,
+      "tiles": 20
+    },
+    "deliveryHDRMs": 216.678834,
+    "deliverySDRMs": 237.124833,
+    "device": "Apple M4 Max (40-core GPU)",
+    "displayHDRSHA256": "2d96759d34b9f98400abc337a7457fece66cd79b5ed78f7afcfd053e54b8f72a",
+    "displaySDRSHA256": "3be3453c3872b81dbcab5b4e8393764e0e17b24cf9446c254956ff07427e504e",
+    "edited": {
+      "backend": "rust",
+      "budgetBytes": 6442450944,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 137.73120799999998,
+      "dispatches": 200,
+      "fallbackReason": null,
+      "nodeCacheHits": 0,
+      "nodes": 180,
+      "peakBytes": 4002906112,
+      "tiles": 20
+    },
+    "graphColdMs": 628.875417,
+    "graphEditedMs": 138.0305,
+    "graphNewSourceMs": 141.134833,
+    "graphWarmMs": 131.619792,
+    "host": "robins-macbook-pro-32",
+    "inputAP1SHA256": "2921026f67280a5765e6834c812e2777e6c82363fbb0d2693c33d5fe1a9e5221",
+    "newSource": {
+      "backend": "rust",
+      "budgetBytes": 6442450944,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 140.855875,
+      "dispatches": 200,
+      "fallbackReason": null,
+      "nodeCacheHits": 0,
+      "nodes": 180,
+      "peakBytes": 4002906112,
+      "tiles": 20
+    },
+    "os": "macOS 27.0.1",
+    "outputAP1SHA256": "de8e671b1fe26b51c21919aad61ebcad7bf02269413b2124b27ce188491d8e64",
+    "surfaceBudgetBytes": 6442450944,
+    "tileEdge": 2048,
+    "warm": {
+      "backend": "rust",
+      "budgetBytes": 6442450944,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 131.3295,
+      "dispatches": 200,
+      "fallbackReason": null,
+      "nodeCacheHits": 0,
+      "nodes": 180,
+      "peakBytes": 4002906112,
+      "tiles": 20
+    }
+  },
+  "parity": {
+    "comparisonSamples": 240869376,
+    "maxAbs": 9.536743e-07,
+    "maxChannelAbs": [
+      5.9604645e-07,
+      5.9604645e-07,
+      9.536743e-07,
+      0.0
+    ],
+    "maxRelative": 5.261338e-07,
+    "meanAbs": 6.932224175529706e-09,
+    "nonfinite": 0,
+    "note": "Every RGBA channel of the 9504x6336 AP1 master compared against the macOS Rust/Metal output; max absolute error is one f32 ulp at this magnitude.",
+    "over1e3": 0,
+    "over1e4": 0,
+    "over1e5": 0
+  },
+  "reproduce": [
+    "macOS: RAWMASTER_FLASHRAW_LIBRARY=... RAWMasterDiagnostics --scene-poc DSC00413.ARW scene-60mp-v1.json scene-60mp-v2.json mac-run 2048 6442450944",
+    "Linux: cargo build --release --features vulkan --bin scene-vulkan",
+    "Linux: scene-vulkan --input scene-input.f32 --graph scene-60mp-v1.json --graph-v2 scene-60mp-v2.json --reference scene-output.f32 --output scene-output-linux.f32 --report report.json --width 9504 --height 6336 --tile-edge 2048 --budget-bytes 17179869184 --cache-bytes 12884901888",
+    "Linux: python3 tools/aces2.py --input scene-output-linux.f32 --width 9504 --height 6336 --view hdr2020 --reference display-hdr.f32 --report aces-hdr.json"
+  ],
+  "schema": "rawmaster-041-p1-linux-vulkan-evidence-v1",
+  "source": {
+    "camera": "Sony ILCE-7RM5 (A7R V)",
+    "note": "Authorized local capture from flash-aio; not redistributed. Real 60MP RAW, not synthetic.",
+    "path": "/Users/robinqu/Downloads/rawmaster-poc-20261127/raw/DSC00413.ARW",
+    "resolution": [
+      9504,
+      6336
+    ],
+    "sha256": "38e48a6e71bd741e1c0b9c5f28dc55347c5aa8d69da5a29dea90bc347c3e4140"
+  },
+  "status": "PoC functional parity passed on a software Vulkan adapter; hardware Vulkan performance gate is blocked on this host",
+  "tilingAndCache": {
+    "coldDispatches": 200,
+    "coldPeakBytes": 7711850516,
+    "editedCoverageCacheHits": 80,
+    "editedDispatches": 20,
+    "editedNodeCacheHits": 80,
+    "newSourceCoverageCacheHits": 80,
+    "newSourceDispatches": 120,
+    "newSourceNodeCacheHits": 0,
+    "note": "Pass 1 cold; pass 2 warm; pass 3 changes only the group strength; pass 4 changes sourceRevision. The edited pass reuses every unchanged prefix node and analytic mask and dispatches only the changed group blend.",
+    "tiles": 20,
+    "warmCoverageCacheHits": 80,
+    "warmDispatches": 0,
+    "warmNodeCacheHits": 80
+  }
+}

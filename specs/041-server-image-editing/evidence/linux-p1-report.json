@@ -1,0 +1,95 @@
+{
+  "schema": "rawmaster-server-poc-linux-vulkan-v1",
+  "adapter": {
+    "name": "llvmpipe (LLVM 15.0.6, 256 bits)",
+    "backend": "Vulkan",
+    "deviceType": "Cpu",
+    "driver": "llvmpipe",
+    "driverInfo": "Mesa 22.3.6 (LLVM 15.0.6)"
+  },
+  "resolution": [
+    9504,
+    6336
+  ],
+  "tileEdge": 2048,
+  "budgetBytes": 17179869184,
+  "cacheBytes": 12884901888,
+  "sourceRevision": 1,
+  "cold": {
+    "graphMs": 6158.097820999999,
+    "readbackMs": 3187.067853,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 200,
+      "coverageCacheHits": 0,
+      "nodeCacheHits": 0,
+      "peakBytes": 7711850500,
+      "budgetBytes": 17179869184,
+      "cpuMs": 6158.097820999999
+    },
+    "comparison": {
+      "samples": 240869376,
+      "maxAbs": 9.536743e-7,
+      "maxRelative": 5.261338e-7,
+      "meanAbs": 6.932224175529706e-9,
+      "over1e5": 0,
+      "over1e4": 0,
+      "over1e3": 0,
+      "nonfinite": 0,
+      "maxChannelAbs": [
+        5.9604645e-7,
+        5.9604645e-7,
+        9.536743e-7,
+        0.0
+      ]
+    }
+  },
+  "warm": {
+    "graphMs": 620.87386,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 160,
+      "dispatches": 0,
+      "coverageCacheHits": 80,
+      "nodeCacheHits": 80,
+      "peakBytes": 7774928900,
+      "budgetBytes": 17179869184,
+      "cpuMs": 620.87386
+    },
+    "comparison": null
+  },
+  "edited": {
+    "graphMs": 1131.057615,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 20,
+      "coverageCacheHits": 80,
+      "nodeCacheHits": 80,
+      "peakBytes": 8685092868,
+      "budgetBytes": 17179869184,
+      "cpuMs": 1131.057615
+    },
+    "comparison": null
+  },
+  "newSource": {
+    "graphMs": 4141.902929000001,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 120,
+      "coverageCacheHits": 80,
+      "nodeCacheHits": 0,
+      "peakBytes": 13492715524,
+      "budgetBytes": 17179869184,
+      "cpuMs": 4141.902929000001
+    },
+    "comparison": null
+  },
+  "outputSha256": "32b0d96b51b8b5a498273cff6c660b79486b13bc1e2e47938e8a578746fab61c",
+  "outputPath": "/data/linux/scene-output-linux-final.f32"
+}

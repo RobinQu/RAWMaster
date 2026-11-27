@@ -1,0 +1,24 @@
+{
+  "applyMs": 21397.712387144566,
+  "comparison": {
+    "channelSamples": 180652032,
+    "maxAbs": 3.4570693969726562e-06,
+    "maxRelative": 3.4570693969726562e-06,
+    "meanAbs": 8.94358151981578e-08,
+    "nonfinite": 0,
+    "over1e3": 0,
+    "over1e4": 0,
+    "over1e5": 0
+  },
+  "config": "studio-config-v4.0.0_aces-v2.0_ocio-v2.5",
+  "configSHA256": "3a48b0421e51d4284ec07187f86b74387321550b65f5a2f237885bf269dbc99e",
+  "display": "sRGB - Display",
+  "height": 6336,
+  "ocioVersion": "2.5.0",
+  "output": "/data/ocio/from-linux-ap1-sdr.f32",
+  "outputSHA256": "8b083dab460d26f27e89a92cd67b2117367122c1891e7e586b4402ccb78a6e64",
+  "schema": "rawmaster-server-poc-aces2-linux-v1",
+  "transform": "ACES 2.0 - SDR 100 nits (Rec.709)",
+  "view": "sdr709",
+  "width": 9504
+}

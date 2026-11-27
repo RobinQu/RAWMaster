@@ -1,0 +1,33 @@
+# P1 NVIDIA Vulkan gate — blocked host evidence
+Fri Nov 27 06:40:54 AM UTC 2026
+
+## GPU
+name, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]
+NVIDIA RTX 6000 Ada Generation, 610.43.02, 49140 MiB, 45208 MiB, 3331 MiB
+
+pid, process_name, used_gpu_memory [MiB]
+1541318, /usr/bin/python3, 1666 MiB
+1544233, sglang::scheduler, 43526 MiB
+
+## ICD
+{
+    "file_format_version" : "1.0.1",
+    "ICD": {
+        "library_path": "libGLX_nvidia.so.0",
+        "api_version" : "1.4.341"
+    }
+}
+
+## vulkaninfo (new loader 1.4.341, NVIDIA ICD mounted)
+ERROR: [Loader Message] Code 0 : loader_scanned_icd_add: Could not get 'vkCreateInstance' via 'vk_icdGetInstanceProcAddr' for ICD libGLX_nvidia.so.0
+ERROR: [Loader Message] Code 0 : loader_icd_scan: Failed loading library associated with ICD JSON libGLX_nvidia.so.0. Ignoring this JSON
+ERROR: [Loader Message] Code 0 : vkCreateInstance: Found no drivers!
+Cannot create Vulkan instance.
+This problem is often caused by a faulty installation of the Vulkan driver or attempting to use a GPU that does not support Vulkan.
+ERROR at ./vulkaninfo/./vulkaninfo.h:458:vkCreateInstance failed with ERROR_INCOMPATIBLE_DRIVER
+
+## direct ICD entrypoint
+handle 0x55b9023542e0
+f 0x7fb2c4c96900
+vkCreateInstance (nil)
+vkGetInstanceProcAddr (nil)

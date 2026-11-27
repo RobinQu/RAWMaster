@@ -2,6 +2,8 @@
 
 2026-11-27 · 规划任务，均未开始。产品要求见[规格](spec.md)，队列见[queues.md](queues.md)，技术方案见[plan.md](plan.md)。
 
+> 2026-11-27 PoC 结果见 [validation.md](validation.md)：真实 60MP RAW 的 Linux／Vulkan 功能、像素、瓦片、缓存和 ACES 2／AVIF 组件证据已记录；但 NVIDIA Vulkan 硬件门阻塞，生产任务仍未完成。本页复选框不因 PoC 自动勾选，`image_scene_batch` 仍关闭。
+
 ## 0. 原则
 
 - **交互不进队列。** 滑杆、曲线、蒙版、撤销不走 Server；队列只服务后台任务。

@@ -1,0 +1,27 @@
+{
+  "applyMs": 21123.750932514668,
+  "comparison": {
+    "channelSamples": 180652032,
+    "maxAbs": 7.62939453125e-06,
+    "maxRelative": 7.092952728271484e-06,
+    "meanAbs": 1.3152428834928287e-07,
+    "nonfinite": 0,
+    "over1e3": 0,
+    "over1e4": 0,
+    "over1e5": 0
+  },
+  "config": "studio-config-v4.0.0_aces-v2.0_ocio-v2.5",
+  "configSHA256": "3a48b0421e51d4284ec07187f86b74387321550b65f5a2f237885bf269dbc99e",
+  "display": "Rec.2100-PQ - Display",
+  "height": 6336,
+  "ocioVersion": "2.5.0",
+  "output": "/data/ocio/from-linux-ap1-hdr.f32",
+  "outputSHA256": "3dca5ac3a4939dcf64fd42683ce8ea654cc77cb10f3bd780d51111a7489915c9",
+  "pq16": "/data/ocio/from-linux-ap1-pq16.rgb",
+  "pq16Ms": 2850.948914885521,
+  "pq16SHA256": "bacc4df79b8812ce50eb6b1b72f0d26c421edba393ca6d7b04ac2bd6f136609e",
+  "schema": "rawmaster-server-poc-aces2-linux-v1",
+  "transform": "ACES 2.0 - HDR 1000 nits (Rec.2020)",
+  "view": "hdr2020",
+  "width": 9504
+}

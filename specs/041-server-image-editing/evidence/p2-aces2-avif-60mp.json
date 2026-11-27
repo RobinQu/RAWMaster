@@ -1,0 +1,417 @@
+{
+  "aces2": {
+    "config": "studio-config-v4.0.0_aces-v2.0_ocio-v2.5",
+    "configSHA256": "3a48b0421e51d4284ec07187f86b74387321550b65f5a2f237885bf269dbc99e",
+    "hdr": {
+      "linuxAPIToMacDisplay": {
+        "channelSamples": 180652032,
+        "maxAbs": 7.62939453125e-06,
+        "maxRelative": 7.092952728271484e-06,
+        "meanAbs": 1.3152428834928287e-07,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "macAPIToMacDisplay": {
+        "channelSamples": 180652032,
+        "maxAbs": 7.62939453125e-06,
+        "maxRelative": 6.9447796704480425e-06,
+        "meanAbs": 1.338167407993751e-07,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "view": "ACES 2.0 - HDR 1000 nits (Rec.2020)"
+    },
+    "ocioVersion": "2.5.0",
+    "sdr": {
+      "linuxAPIToMacDisplay": {
+        "channelSamples": 180652032,
+        "maxAbs": 3.4570693969726562e-06,
+        "maxRelative": 3.4570693969726562e-06,
+        "meanAbs": 8.94358151981578e-08,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "macAPIToMacDisplay": {
+        "channelSamples": 180652032,
+        "maxAbs": 3.4570693969726562e-06,
+        "maxRelative": 3.4570693969726562e-06,
+        "meanAbs": 9.08954618239477e-08,
+        "nonfinite": 0,
+        "over1e3": 0,
+        "over1e4": 0,
+        "over1e5": 0
+      },
+      "view": "ACES 2.0 - SDR 100 nits (Rec.709)"
+    }
+  },
+  "bakeoff": {
+    "compatibility": {
+      "aom_420": "FFmpeg and avifdec both decode; full range; Main profile; CICP 9/16/1 in container and bitstream.",
+      "aom_444": "FFmpeg/avifdec decode; AV1 High profile; full range; CICP 9/16/1.",
+      "rav1e_420": "FFmpeg and avifdec both decode; full range; Main profile; CICP 9/16/1.",
+      "rav1e_444": "FFmpeg/avifdec decode; AV1 High profile; full range; CICP 9/16/1.",
+      "svt_420": "avifdec sees the container CICP, but FFmpeg reports limited range and no color tags in the AV1 sequence header. Not acceptable for HDR delivery without a signaling fix."
+    },
+    "failed": [
+      {
+        "encoder": "svt",
+        "reason": "SVT-AV1 1.7.0 rejects 9504-wide input below preset M8 (8K+ support is M8 or faster).",
+        "speed": 6,
+        "yuv": "420"
+      },
+      {
+        "encoder": "svt",
+        "reason": "SVT-AV1 1.7.0 reports 'Only support 420 now'.",
+        "speed": 8,
+        "yuv": "444"
+      }
+    ],
+    "input": "PQ16 RGB48LE, same AP1 master and OCIO prefix for every row",
+    "rows": [
+      {
+        "bytes": 26164226,
+        "container": {
+          "Alpha": "Absent",
+          "Bit Depth": "10",
+          "Chroma Sam. Pos": "0",
+          "Color Primaries": "9",
+          "Exif Metadata": "Absent",
+          "Format": "YUV420",
+          "Frame": "",
+          "ICC Profile": "Absent",
+          "Matrix Coeffs.": "1",
+          "Progressive": "Unavailable",
+          "Range": "Full",
+          "Resolution": "9504x6336",
+          "Transfer Char.": "16",
+          "Transformations": "None",
+          "XMP Metadata": "Absent"
+        },
+        "encoder": "aom",
+        "ffprobe": {
+          "codec_name": "av1",
+          "color_primaries": "bt2020",
+          "color_range": "pc",
+          "color_space": "bt709",
+          "color_transfer": "smpte2084",
+          "height": 6336,
+          "pix_fmt": "yuv420p10le",
+          "profile": "Main",
+          "width": 9504
+        },
+        "jobs": 32,
+        "metrics": {
+          "channelSamples": 180652032,
+          "maxAbs": 19992.0,
+          "meanAbs": 304.9158811952915,
+          "nonfinite": 0,
+          "overEight10BitCodes": 28770395,
+          "overTwo10BitCodes": 106371563,
+          "p99Abs": 2171.0,
+          "psnr": 41.7509267796361,
+          "psnrChannels": [
+            42.94143550207869,
+            50.0217960815418,
+            38.54768454511821
+          ]
+        },
+        "quality": 95,
+        "speed": 8,
+        "time": {
+          "maxRSSKB": 1336348,
+          "seconds": 4.38
+        },
+        "yuv": "420"
+      },
+      {
+        "bytes": 32029707,
+        "container": {
+          "Alpha": "Absent",
+          "Bit Depth": "10",
+          "Chroma Sam. Pos": "0",
+          "Color Primaries": "9",
+          "Exif Metadata": "Absent",
+          "Format": "YUV420",
+          "Frame": "",
+          "ICC Profile": "Absent",
+          "Matrix Coeffs.": "1",
+          "Progressive": "Unavailable",
+          "Range": "Full",
+          "Resolution": "9504x6336",
+          "Transfer Char.": "16",
+          "Transformations": "None",
+          "XMP Metadata": "Absent"
+        },
+        "encoder": "svt",
+        "ffprobe": {
+          "codec_name": "av1",
+          "color_primaries": null,
+          "color_range": "tv",
+          "color_space": null,
+          "color_transfer": null,
+          "height": 6336,
+          "pix_fmt": "yuv420p10le",
+          "profile": "Main",
+          "width": 9504
+        },
+        "jobs": 32,
+        "metrics": {
+          "channelSamples": 180652032,
+          "maxAbs": 19911.0,
+          "meanAbs": 282.60006858931985,
+          "nonfinite": 0,
+          "overEight10BitCodes": 26039915,
+          "overTwo10BitCodes": 96708974,
+          "p99Abs": 2150.0,
+          "psnr": 42.02386956580814,
+          "psnrChannels": [
+            43.347597658071955,
+            51.01923888447178,
+            38.72642982312343
+          ]
+        },
+        "quality": 95,
+        "speed": 8,
+        "time": {
+          "maxRSSKB": 19713056,
+          "seconds": 14.74
+        },
+        "yuv": "420"
+      },
+      {
+        "bytes": 29648964,
+        "container": {
+          "Alpha": "Absent",
+          "Bit Depth": "10",
+          "Chroma Sam. Pos": "0",
+          "Color Primaries": "9",
+          "Exif Metadata": "Absent",
+          "Format": "YUV420",
+          "Frame": "",
+          "ICC Profile": "Absent",
+          "Matrix Coeffs.": "1",
+          "Progressive": "Unavailable",
+          "Range": "Full",
+          "Resolution": "9504x6336",
+          "Transfer Char.": "16",
+          "Transformations": "None",
+          "XMP Metadata": "Absent"
+        },
+        "encoder": "rav1e",
+        "ffprobe": {
+          "codec_name": "av1",
+          "color_primaries": "bt2020",
+          "color_range": "pc",
+          "color_space": "bt709",
+          "color_transfer": "smpte2084",
+          "height": 6336,
+          "pix_fmt": "yuv420p10le",
+          "profile": "Main",
+          "width": 9504
+        },
+        "jobs": 32,
+        "metrics": {
+          "channelSamples": 180652032,
+          "maxAbs": 19746.0,
+          "meanAbs": 291.962066991862,
+          "nonfinite": 0,
+          "overEight10BitCodes": 27363512,
+          "overTwo10BitCodes": 100070318,
+          "p99Abs": 2164.0,
+          "psnr": 41.88872942567101,
+          "psnrChannels": [
+            43.267794248617776,
+            50.69462924452121,
+            38.583746013366934
+          ]
+        },
+        "quality": 95,
+        "speed": 8,
+        "time": {
+          "maxRSSKB": 2111708,
+          "seconds": 25.76
+        },
+        "yuv": "420"
+      },
+      {
+        "bytes": 42797003,
+        "container": {
+          "Alpha": "Absent",
+          "Bit Depth": "10",
+          "Color Primaries": "9",
+          "Exif Metadata": "Absent",
+          "Format": "YUV444",
+          "Frame": "",
+          "ICC Profile": "Absent",
+          "Matrix Coeffs.": "1",
+          "Progressive": "Unavailable",
+          "Range": "Full",
+          "Resolution": "9504x6336",
+          "Transfer Char.": "16",
+          "Transformations": "None",
+          "XMP Metadata": "Absent"
+        },
+        "encoder": "aom",
+        "ffprobe": {
+          "codec_name": "av1",
+          "color_primaries": "bt2020",
+          "color_range": "pc",
+          "color_space": "bt709",
+          "color_transfer": "smpte2084",
+          "height": 6336,
+          "pix_fmt": "yuv444p10le",
+          "profile": "High",
+          "width": 9504
+        },
+        "jobs": 32,
+        "metrics": {
+          "channelSamples": 180652032,
+          "maxAbs": 3094.0,
+          "meanAbs": 126.54255841417826,
+          "nonfinite": 0,
+          "overEight10BitCodes": 1295039,
+          "overTwo10BitCodes": 70780200,
+          "p99Abs": 483.0,
+          "psnr": 51.926768629250155,
+          "psnrChannels": [
+            51.452538677060545,
+            54.892555181985465,
+            50.52965079515766
+          ]
+        },
+        "quality": 95,
+        "speed": 8,
+        "time": {
+          "maxRSSKB": 2294460,
+          "seconds": 5.55
+        },
+        "yuv": "444"
+      },
+      {
+        "bytes": 46778269,
+        "container": {
+          "Alpha": "Absent",
+          "Bit Depth": "10",
+          "Color Primaries": "9",
+          "Exif Metadata": "Absent",
+          "Format": "YUV444",
+          "Frame": "",
+          "ICC Profile": "Absent",
+          "Matrix Coeffs.": "1",
+          "Progressive": "Unavailable",
+          "Range": "Full",
+          "Resolution": "9504x6336",
+          "Transfer Char.": "16",
+          "Transformations": "None",
+          "XMP Metadata": "Absent"
+        },
+        "encoder": "rav1e",
+        "ffprobe": {
+          "codec_name": "av1",
+          "color_primaries": "bt2020",
+          "color_range": "pc",
+          "color_space": "bt709",
+          "color_transfer": "smpte2084",
+          "height": 6336,
+          "pix_fmt": "yuv444p10le",
+          "profile": "High",
+          "width": 9504
+        },
+        "jobs": 32,
+        "metrics": {
+          "channelSamples": 180652032,
+          "maxAbs": 1774.0,
+          "meanAbs": 115.22539443121238,
+          "nonfinite": 0,
+          "overEight10BitCodes": 1112761,
+          "overTwo10BitCodes": 61355984,
+          "p99Abs": 470.0,
+          "psnr": 52.56223277861535,
+          "psnrChannels": [
+            53.28418741887962,
+            57.186458632908746,
+            49.98941808173322
+          ]
+        },
+        "quality": 95,
+        "speed": 8,
+        "time": {
+          "maxRSSKB": 3618804,
+          "seconds": 45.06
+        },
+        "yuv": "444"
+      }
+    ],
+    "settings": {
+      "bitDepth": 10,
+      "cicp": "9/16/1",
+      "jobs": 32,
+      "quality": 95,
+      "range": "full",
+      "speed": 8
+    }
+  },
+  "date": "2026-11-27",
+  "macBaseline": {
+    "bytes": 26538691,
+    "clli": "1000, 64",
+    "compatibility": {
+      "avifdec": "decodes 9504x6336, 10-bit, YUV420, full range, CICP 9/16/1",
+      "ffmpeg": "ffprobe reports 0x0 and libdav1d fails with 'Unknown OBU type 0 of size 7'; the container/bitstream is not broadly interoperable with FFmpeg 6.1/libdav1d",
+      "note": "This is a compatibility finding, not a color failure. The existing macOS evidence used avifdec/dav1d, not FFmpeg."
+    },
+    "decoded": {
+      "channelSamples": 180652032,
+      "maxAbs": 20294.0,
+      "meanAbs": 310.5200547038408,
+      "nonfinite": 0,
+      "overEight10BitCodes": 29265652,
+      "overTwo10BitCodes": 109340798,
+      "p99Abs": 2177.0,
+      "psnr": 41.69415754497496,
+      "psnrChannels": [
+        42.866262022976294,
+        49.85535907917104,
+        38.505555708288895
+      ]
+    },
+    "encoder": "macOS ImageIO AVIF",
+    "seconds": 1.328113,
+    "signal": {
+      "bitDepth": 10,
+      "fullRange": true,
+      "matrix": 1,
+      "primaries": 9,
+      "transfer": 16
+    }
+  },
+  "recommendation": {
+    "deliveryBaseline": "AOM via libavif avifenc, 10-bit 4:2:0, CICP 9/16/1, full range. Best size/speed/memory at 60MP and broadest Main-profile compatibility.",
+    "notAProductionGate": "This bake-off ran on llvmpipe/host CPU, not the NVIDIA Vulkan encoder or a production GPU node. Hardware throughput and memory admission remain open.",
+    "qualityOption": "AOM 10-bit 4:4:4 when the client/decoder matrix is known to support High profile; about 1.64x the bytes and +10.2 dB PSNR versus 4:2:0 at the tested quality.",
+    "reject": "Do not select SVT-AV1 at 8K+ until color signaling and 4:4:4 support are verified. Do not treat the macOS ImageIO AVIF container as universally compatible until the FFmpeg/libdav1d parse failure is fixed or the offending property is removed."
+  },
+  "reproduce": [
+    "python3 tools/aces2.py --input scene-output-linux.f32 --width 9504 --height 6336 --view hdr2020 --output display-hdr-linux.f32 --pq16 pq16.rgb --report aces-hdr.json",
+    "ffmpeg -f rawvideo -pix_fmt rgb48le -s 9504x6336 -i pq16.rgb -frames:v 1 pq16.png",
+    "sh tools/avif_bakeoff.sh pq16.png out 420q95s8 95 8 32 420",
+    "sh tools/avif_bakeoff.sh pq16.png out 444q95s8 95 8 32 444"
+  ],
+  "schema": "rawmaster-041-p2-aces2-avif-evidence-v1",
+  "source": {
+    "frame": "DSC00413.ARW -> AP1 scene master -> ACES 2 HDR display-linear -> PQ16",
+    "note": "AOM/rav1e/SVT all encoded the identical PQ16 RGB stream on Linux; Mac baseline encoded the same AP1 master through ImageIO.",
+    "pq16SHA256": "bacc4df79b8812ce50eb6b1b72f0d26c421edba393ca6d7b04ac2bd6f136609e",
+    "resolution": [
+      9504,
+      6336
+    ]
+  },
+  "status": "ACES 2 SDR/HDR color parity passed on a real 60MP frame; AVIF bake-off completed; hardware Vulkan encode not used"
+}

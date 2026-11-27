@@ -124,12 +124,17 @@ fn key(library_id: &str, job_id: &str) -> String {
 }
 
 impl Default for JobQueue {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl JobQueue {
     pub fn new() -> Self {
-        Self { jobs: HashMap::new(), sequence: 0 }
+        Self {
+            jobs: HashMap::new(),
+            sequence: 0,
+        }
     }
 
     pub fn submit(&mut self, request: JobRequest) -> (SubmitOutcome, Option<Job>) {
@@ -168,7 +173,12 @@ impl JobQueue {
         let key = self
             .jobs
             .iter()
-            .filter(|(_, job)| matches!(job.state, JobState::Submitted | JobState::Queued | JobState::Admitted))
+            .filter(|(_, job)| {
+                matches!(
+                    job.state,
+                    JobState::Submitted | JobState::Queued | JobState::Admitted
+                )
+            })
             .min_by_key(|(_, job)| {
                 (
                     job.request.lane.order(),
@@ -182,10 +192,19 @@ impl JobQueue {
         job.attempts += 1;
         job.token = Some(token.clone());
         job.error = None;
-        Some(Lease { key, token, job: job.clone() })
+        Some(Lease {
+            key,
+            token,
+            job: job.clone(),
+        })
     }
 
-    pub fn stage(&mut self, lease: &Lease, result: impl Into<String>, receipt: impl Into<String>) -> Result<Job, QueueError> {
+    pub fn stage(
+        &mut self,
+        lease: &Lease,
+        result: impl Into<String>,
+        receipt: impl Into<String>,
+    ) -> Result<Job, QueueError> {
         let job = self.jobs.get_mut(&lease.key).ok_or(QueueError::Missing)?;
         if job.state == JobState::Published {
             return Err(QueueError::AlreadyPublished);
@@ -224,7 +243,10 @@ impl JobQueue {
     }
 
     pub fn cancel(&mut self, library_id: &str, job_id: &str) -> Result<Job, QueueError> {
-        let job = self.jobs.get_mut(&key(library_id, job_id)).ok_or(QueueError::Missing)?;
+        let job = self
+            .jobs
+            .get_mut(&key(library_id, job_id))
+            .ok_or(QueueError::Missing)?;
         if job.state == JobState::Published {
             return Err(QueueError::AlreadyPublished);
         }
@@ -237,8 +259,14 @@ impl JobQueue {
     }
 
     pub fn retry(&mut self, library_id: &str, job_id: &str) -> Result<Job, QueueError> {
-        let job = self.jobs.get_mut(&key(library_id, job_id)).ok_or(QueueError::Missing)?;
-        if !matches!(job.state, JobState::Failed | JobState::Cancelled | JobState::Reconcile) {
+        let job = self
+            .jobs
+            .get_mut(&key(library_id, job_id))
+            .ok_or(QueueError::Missing)?;
+        if !matches!(
+            job.state,
+            JobState::Failed | JobState::Cancelled | JobState::Reconcile
+        ) {
             return Err(QueueError::WrongState);
         }
         job.state = JobState::Queued;
@@ -248,7 +276,10 @@ impl JobQueue {
     }
 
     pub fn reconcile(&mut self, library_id: &str, job_id: &str) -> Result<Job, QueueError> {
-        let job = self.jobs.get_mut(&key(library_id, job_id)).ok_or(QueueError::Missing)?;
+        let job = self
+            .jobs
+            .get_mut(&key(library_id, job_id))
+            .ok_or(QueueError::Missing)?;
         if job.state == JobState::Published {
             return Err(QueueError::AlreadyPublished);
         }
@@ -264,7 +295,15 @@ impl JobQueue {
     pub fn pending(&self) -> usize {
         self.jobs
             .values()
-            .filter(|job| !matches!(job.state, JobState::Published | JobState::Failed | JobState::Cancelled | JobState::Expired))
+            .filter(|job| {
+                !matches!(
+                    job.state,
+                    JobState::Published
+                        | JobState::Failed
+                        | JobState::Cancelled
+                        | JobState::Expired
+                )
+            })
             .count()
     }
 }
@@ -297,9 +336,18 @@ mod tests {
     #[test]
     fn idempotent_submission_and_conflict() {
         let mut queue = JobQueue::new();
-        assert_eq!(queue.submit(request("a", "h1", Lane::SceneFinal, 0)).0, SubmitOutcome::Created);
-        assert_eq!(queue.submit(request("a", "h1", Lane::SceneFinal, 0)).0, SubmitOutcome::Existing);
-        assert_eq!(queue.submit(request("a", "h2", Lane::SceneFinal, 0)).0, SubmitOutcome::Conflict);
+        assert_eq!(
+            queue.submit(request("a", "h1", Lane::SceneFinal, 0)).0,
+            SubmitOutcome::Created
+        );
+        assert_eq!(
+            queue.submit(request("a", "h1", Lane::SceneFinal, 0)).0,
+            SubmitOutcome::Existing
+        );
+        assert_eq!(
+            queue.submit(request("a", "h2", Lane::SceneFinal, 0)).0,
+            SubmitOutcome::Conflict
+        );
     }
 
     #[test]
@@ -319,12 +367,22 @@ mod tests {
         queue.stage(&lease, "out", "receipt").unwrap();
         queue.publish(&lease).unwrap();
         assert_eq!(queue.publish(&lease), Err(QueueError::AlreadyPublished));
-        assert_eq!(queue.stage(&lease, "out2", "r2"), Err(QueueError::AlreadyPublished));
+        assert_eq!(
+            queue.stage(&lease, "out2", "r2"),
+            Err(QueueError::AlreadyPublished)
+        );
 
         queue.submit(request("b", "h2", Lane::SceneFinal, 0));
         let lease = queue.claim("token-2").unwrap();
-        let stale = Lease { key: lease.key.clone(), token: "stale".into(), job: lease.job.clone() };
-        assert_eq!(queue.stage(&stale, "out2", "r2"), Err(QueueError::StaleToken));
+        let stale = Lease {
+            key: lease.key.clone(),
+            token: "stale".into(),
+            job: lease.job.clone(),
+        };
+        assert_eq!(
+            queue.stage(&stale, "out2", "r2"),
+            Err(QueueError::StaleToken)
+        );
     }
 
     #[test]
@@ -347,6 +405,9 @@ mod tests {
         let job = queue.get("lib-1", "batch-item").unwrap();
         assert_eq!(job.request.batch_id.as_deref(), Some("batch-1"));
         assert_eq!(job.request.target_head.as_deref(), Some("head-7"));
-        assert_eq!(job.request.compatibility_route.as_deref(), Some("scene-graph"));
+        assert_eq!(
+            job.request.compatibility_route.as_deref(),
+            Some("scene-graph")
+        );
     }
 }
