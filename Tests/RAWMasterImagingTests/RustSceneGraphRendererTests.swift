@@ -168,6 +168,163 @@ final class RustSceneGraphRendererTests: XCTestCase {
       message: "EDR preview")
   }
 
+  func testTiledExecutionMatchesUntiledAndReportsReceipt() throws {
+    let (device, _, raw, geometry, _) = try fixture(width: 256, height: 192)
+    let gradient = Node(name: "Ramp", operation: .linearCoverage(start: .zero, end: .init(1, 1)))
+    let radial = Node(name: "Ellipse", operation: .radialCoverage(center: .init(0.5, 0.5), radii: .init(0.4, 0.6), feather: 0.2))
+    let mask = Node(name: "Mask", operation: .combineCoverage(base: gradient.id, other: radial.id, mode: .intersect))
+    let light = Node(name: "Light", operation: .corrector(image: .input, mask: mask.id, exposureEV: 1.2,
+      curve: [.init(-4, -3.5), .init(0, 0), .init(3, 2)], strength: 0.8, enabled: true))
+    let dark = Node(name: "Dark", operation: .corrector(image: .input, mask: nil, exposureEV: -0.7, curve: [], strength: 1, enabled: true))
+    let mix = Node(name: "Mix", operation: .parallel(base: .input, layers: [
+      .init(.node(light.id), weight: 0.65), .init(.node(dark.id), weight: 0.35)
+    ], enabled: true))
+    let child = Node(name: "Group child", operation: .corrector(image: .input, mask: nil,
+      exposureEV: 0.35, curve: [], strength: 1, enabled: true))
+    let group = Node(name: "Group", operation: .group(image: .node(mix.id),
+      graph: .init(nodes: [child], output: .node(child.id)), strength: 0.8, enabled: true))
+    let graph = try workflow([gradient, radial, mask, light, dark, mix, group], final: group)
+    let rust = try rustRenderer(device)
+    let untiled = try rust.prepareFinal(raw, geometry: geometry, graph: graph, tileEdge: 0)
+    XCTAssertEqual(rust.lastReceipt?.tiles, 1)
+    XCTAssertEqual(rust.lastReceipt?.backend, .rust)
+    let expected = try read(untiled.image.texture)
+    let tiled = try rust.prepareFinal(raw, geometry: geometry, graph: graph, tileEdge: 64)
+    let receipt = try XCTUnwrap(rust.lastReceipt)
+    XCTAssertEqual(receipt.tiles, 12)
+    XCTAssertEqual(receipt.backend, .rust)
+    XCTAssertGreaterThan(receipt.dispatches, receipt.tiles)
+    try compare(try read(tiled.image.texture), expected, tolerance: 0, message: "tiled vs untiled")
+  }
+
+  func testSourceRevisionCacheReusesUnchangedPrefixAfterParameterEdit() throws {
+    let (device, _, raw, geometry, _) = try fixture(width: 96, height: 64)
+    let mask = Node(name: "Ramp", operation: .linearCoverage(start: .zero, end: .init(1, 0)))
+    let prefix = Node(name: "Prefix", operation: .corrector(image: .input, mask: mask.id,
+      exposureEV: 0.75, curve: [], strength: 1, enabled: true))
+    let suffix = Node(name: "Suffix", operation: .corrector(image: .node(prefix.id), mask: nil,
+      exposureEV: 0.25, curve: [], strength: 1, enabled: true))
+    let first = try workflow([mask, prefix, suffix], final: suffix)
+    var editedSuffix = suffix
+    editedSuffix = Node(id: suffix.id, name: suffix.name, operation: .corrector(image: .node(prefix.id),
+      mask: nil, exposureEV: 1.5, curve: [], strength: 0.5, enabled: true))
+    let second = try workflow([mask, prefix, editedSuffix], final: editedSuffix)
+    let rust = try rustRenderer(device)
+    _ = try rust.prepareFinal(raw, geometry: geometry, graph: first, sourceRevision: 41)
+    XCTAssertEqual(rust.lastReceipt?.nodeCacheHits, 0)
+    _ = try rust.prepareFinal(raw, geometry: geometry, graph: second, sourceRevision: 41)
+    XCTAssertGreaterThan(rust.lastReceipt?.nodeCacheHits ?? 0, 0, "unchanged prefix should be reused")
+    _ = try rust.prepareFinal(raw, geometry: geometry, graph: second, sourceRevision: 42)
+    XCTAssertEqual(rust.lastReceipt?.nodeCacheHits, 0, "a new source revision invalidates color prefixes")
+    XCTAssertGreaterThan(rust.lastReceipt?.coverageCacheHits ?? 0, 0, "analytic coverage survives source revisions")
+  }
+
+  func testCoverageCacheInvalidatesWhenMaskParametersChange() throws {
+    let (device, _, raw, geometry, _) = try fixture(width: 80, height: 48)
+    let mask = Node(name: "Ramp", operation: .linearCoverage(start: .zero, end: .init(1, 0)))
+    let grade = Node(name: "Grade", operation: .corrector(image: .input, mask: mask.id,
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    let first = try workflow([mask, grade], final: grade)
+    let changedMask = Node(id: mask.id, name: mask.name, operation: .linearCoverage(start: .zero, end: .init(0.2, 0)))
+    let second = try workflow([changedMask, grade], final: grade)
+    let rust = try rustRenderer(device)
+    _ = try rust.prepareFinal(raw, geometry: geometry, graph: first)
+    _ = try rust.prepareFinal(raw, geometry: geometry, graph: first)
+    XCTAssertGreaterThan(rust.lastReceipt?.coverageCacheHits ?? 0, 0)
+    let cached = try read(rust.prepareFinal(raw, geometry: geometry, graph: second).image.texture)
+    XCTAssertEqual(rust.lastReceipt?.coverageCacheHits, 0, "changed mask parameters must not reuse the old coverage")
+    let fresh = try read(try rustRenderer(device).prepareFinal(raw, geometry: geometry, graph: second).image.texture)
+    try compare(cached, fresh, tolerance: 0, message: "changed mask coverage")
+  }
+
+  func testAutoFallbackCarriesAReceiptAndReason() throws {
+    let (device, _, raw, geometry, _) = try fixture(width: 24, height: 16)
+    let brighter = Node(name: "Bright", operation: .corrector(image: .input, mask: nil,
+      exposureEV: 5, curve: [], strength: 1, enabled: true))
+    let mix = Node(name: "Zero", operation: .parallel(base: .input,
+      layers: [.init(.node(brighter.id), weight: 0)], enabled: true))
+    let graph = try workflow([brighter, mix], final: mix)
+    let renderer = try Renderer(device: device, surfaceBudget: raw.texture.allocatedSize)
+    XCTAssertTrue(try renderer.prepareFinal(raw, geometry: geometry, graph: graph).image.texture === raw.texture)
+    let receipt = try XCTUnwrap(renderer.lastReceipt)
+    XCTAssertEqual(receipt.backend, .swiftFallback)
+    XCTAssertNotNil(receipt.fallbackReason)
+  }
+
+  func testOptIn60MegapixelSceneBudgetAndReceipt() throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_60MP_PERFORMANCE"] else {
+      throw XCTSkip("Set RAWMASTER_SCENE_60MP_PERFORMANCE to a new JSON report path")
+    }
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let width = 9_600, height = 6_400
+    let geometry = Renderer.Geometry(width: width, height: height)
+    let raw = try makeGenerated(width: width, height: height, device: device)
+    let gradient = Node(name: "Ramp", operation: .linearCoverage(start: .init(0.1, 0), end: .init(0.9, 1)))
+    let radial = Node(name: "Ellipse", operation: .radialCoverage(center: .init(0.5, 0.5), radii: .init(0.4, 0.6), feather: 0.2))
+    let mask = Node(name: "Mask", operation: .combineCoverage(base: gradient.id, other: radial.id, mode: .intersect))
+    let light = Node(name: "Light", operation: .corrector(image: .input, mask: mask.id, exposureEV: 1.2,
+      curve: [.init(-4, -3.5), .init(0, 0), .init(3, 2)], strength: 0.8, enabled: true))
+    let dark = Node(name: "Dark", operation: .corrector(image: .input, mask: nil, exposureEV: -0.7, curve: [], strength: 1, enabled: true))
+    let mix = Node(name: "Mix", operation: .parallel(base: .input, layers: [
+      .init(.node(light.id), weight: 0.65), .init(.node(dark.id), weight: 0.35)
+    ], enabled: true))
+    let graph = try workflow([gradient, radial, mask, light, dark, mix], final: mix)
+    let budget = 6 * 1024 * 1024 * 1024
+    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
+    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
+    defer {
+      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) } else { unsetenv("RAWMASTER_SCENE_BACKEND") }
+    }
+    let renderer = try Renderer(device: device, surfaceBudget: budget)
+    func timed(_ body: () throws -> Void) rethrows -> Double {
+      let start = DispatchTime.now().uptimeNanoseconds
+      try body()
+      return Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
+    }
+    var master: Renderer.Master?
+    let cold = try timed { master = try renderer.prepareFinal(raw, geometry: geometry, graph: graph) }
+    let coldReceipt = try XCTUnwrap(renderer.lastReceipt)
+    XCTAssertEqual(coldReceipt.backend, .rust)
+    XCTAssertGreaterThan(coldReceipt.tiles, 1)
+    XCTAssertLessThanOrEqual(Int(coldReceipt.peakBytes), budget)
+    let warm = try timed { _ = try renderer.prepareFinal(raw, geometry: geometry, graph: graph) }
+    let warmReceipt = try XCTUnwrap(renderer.lastReceipt)
+    XCTAssertEqual(warmReceipt.backend, .rust)
+    XCTAssertGreaterThan(warmReceipt.tiles, 1)
+    XCTAssertLessThanOrEqual(Int(warmReceipt.peakBytes), budget)
+    let final = try XCTUnwrap(master)
+    XCTAssertEqual(final.image.texture.width, width)
+    XCTAssertEqual(final.image.texture.height, height)
+    let sdrMs = try timed {
+      try autoreleasepool {
+        let display = try renderer.renderDelivery(final, target: .sdr709)
+        XCTAssertEqual(display.texture.storageMode, .private)
+        let pixel = try sample(display.texture, x: width / 2, y: height / 2)
+        XCTAssertTrue(pixel.x.isFinite && pixel.y.isFinite && pixel.z.isFinite)
+      }
+    }
+    let hdrMs = try timed {
+      try autoreleasepool {
+        let display = try renderer.renderDelivery(final, target: .hdr2020)
+        XCTAssertEqual(display.texture.storageMode, .private)
+        let pixel = try sample(display.texture, x: width / 2, y: height / 2)
+        XCTAssertTrue(pixel.x.isFinite && pixel.y.isFinite && pixel.z.isFinite)
+      }
+    }
+    let report: [String: Any] = [
+      "device": device.name, "resolution": [width, height], "budgetBytes": budget,
+      "scope": "six-node AP1 graph on a generated 60MP source; includes ACES SDR/HDR delivery",
+      "graphColdMs": cold, "graphWarmMs": warm, "sdrDeliveryMs": sdrMs, "hdrDeliveryMs": hdrMs,
+      "tiles": coldReceipt.tiles, "dispatches": coldReceipt.dispatches,
+      "peakBytes": coldReceipt.peakBytes, "warmCoverageCacheHits": warmReceipt.coverageCacheHits,
+      "warmDispatches": warmReceipt.dispatches
+    ]
+    try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+      .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
+    XCTAssertLessThan(cold, 15_000)
+    XCTAssertLessThan(warm, 15_000)
+  }
+
   func testOptInRustBackendPerformance() throws {
     guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND_PERFORMANCE"] else {
       throw XCTSkip("Set RAWMASTER_SCENE_BACKEND_PERFORMANCE to a new JSON report path")
@@ -251,6 +408,51 @@ final class RustSceneGraphRendererTests: XCTestCase {
     }
     return .init(texture: texture, port: .working, origin: origin)
   }
+
+  private func makeGenerated(width: Int, height: Int, device: MTLDevice) throws -> Image {
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: width, height: height, mipmapped: false)
+    descriptor.storageMode = .private
+    descriptor.usage = [.shaderRead, .shaderWrite]
+    let texture = try XCTUnwrap(device.makeTexture(descriptor: descriptor))
+    let library = try device.makeLibrary(source: Self.fillShader, options: nil)
+    let pipeline = try device.makeComputePipelineState(function: XCTUnwrap(library.makeFunction(name: "rmTestFill")))
+    let queue = try XCTUnwrap(device.makeCommandQueue())
+    let command = try XCTUnwrap(queue.makeCommandBuffer())
+    let encoder = try XCTUnwrap(command.makeComputeCommandEncoder())
+    encoder.setComputePipelineState(pipeline)
+    encoder.setTexture(texture, index: 0)
+    let lanes = pipeline.threadExecutionWidth
+    encoder.dispatchThreads(.init(width: width, height: height, depth: 1),
+      threadsPerThreadgroup: .init(width: lanes,
+        height: min(8, pipeline.maxTotalThreadsPerThreadgroup / lanes), depth: 1))
+    encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
+    guard command.status == .completed else { throw Renderer.Failure.invalidPixel }
+    return .init(texture: texture, port: .working, origin: .zero)
+  }
+
+  private func sample(_ texture: MTLTexture, x: Int, y: Int) throws -> SIMD4<Float> {
+    let buffer = try XCTUnwrap(texture.device.makeBuffer(length: 16, options: .storageModeShared))
+    let queue = try XCTUnwrap(texture.device.makeCommandQueue())
+    let command = try XCTUnwrap(queue.makeCommandBuffer())
+    let encoder = try XCTUnwrap(command.makeBlitCommandEncoder())
+    encoder.copy(from: texture, sourceSlice: 0, sourceLevel: 0,
+      sourceOrigin: .init(x: x, y: y, z: 0), sourceSize: .init(width: 1, height: 1, depth: 1),
+      to: buffer, destinationOffset: 0, destinationBytesPerRow: 16, destinationBytesPerImage: 16)
+    encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
+    guard command.status == .completed else { throw Renderer.Failure.invalidPixel }
+    return buffer.contents().assumingMemoryBound(to: SIMD4<Float>.self).pointee
+  }
+
+  private static let fillShader = #"""
+  #include <metal_stdlib>
+  using namespace metal;
+  kernel void rmTestFill(texture2d<float, access::write> target [[texture(0)]],
+      uint2 xy [[thread_position_in_grid]]) {
+    float2 p = (float2(xy) + 0.5) / float2(target.get_width(), target.get_height());
+    target.write(float4(0.05 + 0.8 * p.x, 0.1 + 0.7 * p.y, 0.2 + 0.5 * p.x * p.y, 1), xy);
+  }
+  """#
 
   private func read(_ texture: MTLTexture) throws -> [SIMD4<Float>] {
     let size = texture.width * texture.height * 16

@@ -120,6 +120,13 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
     XCTAssertNotNil(swiftMaster.modelMasks[stage.id])
     let expected = try read(swiftMaster.image.texture)
     let actual = try read(rustMaster.image.texture)
+    let tiled = try rust.prepareFinal(image, geometry: geometry, graph: graph,
+      models: program, provider: provider, tileEdge: 64)
+    try zip(try read(tiled.image.texture), expected).forEach { found, reference in
+      XCTAssertEqual(found.x, reference.x, accuracy: 2e-5)
+      XCTAssertEqual(found.y, reference.y, accuracy: 2e-5)
+      XCTAssertEqual(found.z, reference.z, accuracy: 2e-5)
+    }
     for (found, reference) in zip(actual, expected) {
       XCTAssertEqual(found.x, reference.x, accuracy: 2e-5)
       XCTAssertEqual(found.y, reference.y, accuracy: 2e-5)
