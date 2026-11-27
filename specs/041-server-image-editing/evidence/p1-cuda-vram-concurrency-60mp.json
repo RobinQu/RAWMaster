@@ -1,0 +1,796 @@
+{
+  "date": "2026-11-27",
+  "fullStage": {
+    "tile1024": {
+      "cache0": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            10.601
+          ],
+          "jobs": 1,
+          "logicalMB": 4304.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4304.2,
+          "stage": "full",
+          "success": true,
+          "tile": 1024,
+          "usedMB": 4747.3,
+          "wallMs": 10.975
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            234.12,
+            238.042,
+            238.062,
+            238.008,
+            237.71,
+            236.711,
+            238.57,
+            238.109,
+            236.758,
+            238.092,
+            240.801
+          ],
+          "jobs": 11,
+          "logicalMB": 47346.5,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4304.2,
+          "stage": "full",
+          "success": true,
+          "tile": 1024,
+          "usedMB": 47869.3,
+          "wallMs": 241.953
+        },
+        {
+          "allocatedJobs": 11,
+          "cacheMB": 0,
+          "failedJob": 11,
+          "jobs": 12,
+          "logicalMB": 47346.5,
+          "stage": "full",
+          "success": false,
+          "tile": 1024
+        }
+      ],
+      "maxConcurrent": 11,
+      "oomAt": 12
+    },
+    "tile2048": {
+      "cache0": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            19.749
+          ],
+          "jobs": 1,
+          "logicalMB": 4640.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4640.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 5083.3,
+          "wallMs": 20.141
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            43.087,
+            42.99
+          ],
+          "jobs": 2,
+          "logicalMB": 9280.4,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4640.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 9731.3,
+          "wallMs": 43.434
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            88.301,
+            88.244,
+            88.117,
+            88.065
+          ],
+          "jobs": 4,
+          "logicalMB": 18560.9,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4640.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 19027.3,
+          "wallMs": 88.687
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            176.127,
+            176.288,
+            176.298,
+            176.014,
+            176.085,
+            175.87,
+            175.269,
+            175.093
+          ],
+          "jobs": 8,
+          "logicalMB": 37121.8,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4640.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 37619.3,
+          "wallMs": 176.819
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            220.11,
+            218.721,
+            219.928,
+            219.907,
+            220.02,
+            220.098,
+            219.333,
+            217.361,
+            219.815,
+            219.843
+          ],
+          "jobs": 10,
+          "logicalMB": 46402.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 4640.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 46917.3,
+          "wallMs": 221.031
+        },
+        {
+          "allocatedJobs": 10,
+          "cacheMB": 0,
+          "failedJob": 10,
+          "jobs": 11,
+          "logicalMB": 47321.1,
+          "stage": "full",
+          "success": false,
+          "tile": 2048
+        }
+      ],
+      "cache2048": [
+        {
+          "cacheMB": 2048,
+          "jobMs": [
+            19.79
+          ],
+          "jobs": 1,
+          "logicalMB": 6688.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 6688.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 7131.3,
+          "wallMs": 20.166
+        },
+        {
+          "cacheMB": 2048,
+          "jobMs": [
+            87.739,
+            87.796,
+            87.746,
+            87.69
+          ],
+          "jobs": 4,
+          "logicalMB": 26752.9,
+          "maxAbs": -1,
+          "perJobLogicalMB": 6688.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 27219.3,
+          "wallMs": 88.231
+        },
+        {
+          "cacheMB": 2048,
+          "jobMs": [
+            153.819,
+            153.491,
+            153.776,
+            153.478,
+            153.512,
+            153.046,
+            153.457
+          ],
+          "jobs": 7,
+          "logicalMB": 46817.6,
+          "maxAbs": -1,
+          "perJobLogicalMB": 6688.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 47307.3,
+          "wallMs": 154.298
+        },
+        {
+          "allocatedJobs": 7,
+          "cacheMB": 2048,
+          "failedJob": 7,
+          "jobs": 8,
+          "logicalMB": 47736.4,
+          "stage": "full",
+          "success": false,
+          "tile": 2048
+        }
+      ],
+      "cache4096": [
+        {
+          "cacheMB": 4096,
+          "jobMs": [
+            19.741
+          ],
+          "jobs": 1,
+          "logicalMB": 8736.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 8736.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 9179.3,
+          "wallMs": 20.097
+        },
+        {
+          "cacheMB": 4096,
+          "jobMs": [
+            109.764,
+            109.443,
+            109.687,
+            109.534,
+            109.506
+          ],
+          "jobs": 5,
+          "logicalMB": 43681.1,
+          "maxAbs": -1,
+          "perJobLogicalMB": 8736.2,
+          "stage": "full",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 44155.3,
+          "wallMs": 110.365
+        },
+        {
+          "allocatedJobs": 5,
+          "cacheMB": 4096,
+          "failedJob": 5,
+          "jobs": 6,
+          "logicalMB": 45966.8,
+          "stage": "full",
+          "success": false,
+          "tile": 2048
+        }
+      ],
+      "maxConcurrent": {
+        "cache0": 10,
+        "cache2048": 7,
+        "cache4096": 5
+      },
+      "oomAt": {
+        "cache0": 11,
+        "cache2048": 8,
+        "cache4096": 6
+      }
+    },
+    "tile4096": {
+      "cache0": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            21.86
+          ],
+          "jobs": 1,
+          "logicalMB": 5984.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 5984.2,
+          "stage": "full",
+          "success": true,
+          "tile": 4096,
+          "usedMB": 6427.3,
+          "wallMs": 22.241
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            177.535,
+            177.061,
+            171.093,
+            177.079,
+            176.982,
+            173.604,
+            174.059,
+            174.299
+          ],
+          "jobs": 8,
+          "logicalMB": 47873.8,
+          "maxAbs": -1,
+          "perJobLogicalMB": 5984.2,
+          "stage": "full",
+          "success": true,
+          "tile": 4096,
+          "usedMB": 48371.3,
+          "wallMs": 178.107
+        },
+        {
+          "allocatedJobs": 8,
+          "cacheMB": 0,
+          "failedJob": 8,
+          "jobs": 9,
+          "logicalMB": 47873.8,
+          "stage": "full",
+          "success": false,
+          "tile": 4096
+        }
+      ],
+      "maxConcurrent": 8,
+      "oomAt": 9
+    }
+  },
+  "gpu": {
+    "compute": "8.9",
+    "contextBaselineMiB": 435.3,
+    "cudaDriver": 13030,
+    "cudaRuntime": 12060,
+    "freeBeforeMiB": 48537,
+    "name": "NVIDIA RTX 6000 Ada Generation",
+    "totalMiB": 49140
+  },
+  "method": {
+    "cache": "--cache-mb reserves a per-job cache budget; it is not a measured working set.",
+    "fullStage": "sceneStage + RAW mosaic U16 + saturation R8 + HDR display + SDR display + PQ16 buffer. This is an allocation model of decode and delivery; it does not include a GPU AV1 encoder or model-prefix stages.",
+    "graph": "Same 9-node, 2048/1024/4096-tile graph as fixtures/scene-60mp-v1.json on the macOS AP1 input.",
+    "notVulkan": "These numbers measure the same surfaces on the GPU through CUDA. They are not a substitute for the Vulkan execution/performance gate.",
+    "parity": "CUDA port vs macOS Rust/Metal AP1 master: maxAbs 7.15255737e-7, maxRelative 4.07646e-7, meanAbs 2.74635e-9, zero channel samples over 1e-5, zero non-finite.",
+    "sceneStage": "input AP1 + output AP1 + tile input + 5 tile image surfaces + 4 tile coverage surfaces.",
+    "whyCUDA": "After stopping sglang the GPU had 48,537 MiB free, but the NVIDIA Vulkan ICD still returned VK_ERROR_INCOMPATIBLE_DRIVER (-3) for ICD interface versions 1..8. CUDA is the only working GPU API on this host."
+  },
+  "planning": {
+    "headroomNote": "Max used at 21 scene jobs was 48,485 MiB of 49,140 MiB; the 22nd allocation failed. Production admission must reserve driver/context and fragmentation headroom, so do not schedule at the exact measured maximum.",
+    "maxConcurrentFull2048": 10,
+    "maxConcurrentFull2048Cache2GiB": 7,
+    "maxConcurrentFull2048Cache4GiB": 5,
+    "maxConcurrentScene2048": 21,
+    "perJobBaselineMiB": 1949.7,
+    "perJobFull2048Cache2GiBMiB": 6688.2,
+    "perJobFull2048Cache4GiBMiB": 8736.2,
+    "perJobFull2048MiB": 4640.2,
+    "perJobScene2048MiB": 2285.7,
+    "recommendation": "Use tile 1024 for maximum scene concurrency (24), tile 2048 for a balance of memory and launch count (21), and avoid per-job multi-GiB caches when concurrency matters. A shared cache pool or a 0.5-1 GiB per-job cache is preferable to 2-4 GiB per job."
+  },
+  "rawFiles": [
+    "full-t1024-c0-j1.json",
+    "full-t1024-c0-j10.json",
+    "full-t1024-c0-j11.json",
+    "full-t1024-c0-j12.json",
+    "full-t2048-c0-j1.json",
+    "full-t2048-c0-j10.json",
+    "full-t2048-c0-j11.json",
+    "full-t2048-c0-j2.json",
+    "full-t2048-c0-j4.json",
+    "full-t2048-c0-j8.json",
+    "full-t2048-c2048-j1.json",
+    "full-t2048-c2048-j4.json",
+    "full-t2048-c2048-j6.json",
+    "full-t2048-c2048-j7.json",
+    "full-t2048-c2048-j8.json",
+    "full-t2048-c4096-j1.json",
+    "full-t2048-c4096-j4.json",
+    "full-t2048-c4096-j5.json",
+    "full-t2048-c4096-j6.json",
+    "full-t4096-c0-j1.json",
+    "full-t4096-c0-j8.json",
+    "full-t4096-c0-j9.json",
+    "scene-t1024-j1.json",
+    "scene-t1024-j24.json",
+    "scene-t1024-j25.json",
+    "scene-t1024-j26.json",
+    "scene-t2048-j1-reference.json",
+    "scene-t2048-j1.json",
+    "scene-t2048-j12.json",
+    "scene-t2048-j16.json",
+    "scene-t2048-j2.json",
+    "scene-t2048-j20.json",
+    "scene-t2048-j21.json",
+    "scene-t2048-j22.json",
+    "scene-t2048-j4.json",
+    "scene-t2048-j8.json",
+    "scene-t4096-j1.json",
+    "scene-t4096-j13.json",
+    "scene-t4096-j14.json"
+  ],
+  "rawFilesDirectory": "evidence/cuda-vram",
+  "sceneOnly": {
+    "tile1024": {
+      "maxConcurrent": 24,
+      "oomAt": 25,
+      "rows": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            10.49
+          ],
+          "jobs": 1,
+          "logicalMB": 1949.7,
+          "maxAbs": -1,
+          "perJobLogicalMB": 1949.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 1024,
+          "usedMB": 2387.3,
+          "wallMs": 10.921
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            374.811,
+            523.69,
+            531.135,
+            530.789,
+            372.721,
+            373.163,
+            530.857,
+            533.859,
+            532.659,
+            400.2,
+            407.342,
+            533.515,
+            372.503,
+            532.76,
+            402.374,
+            531.869,
+            397.021,
+            519.617,
+            533.077,
+            530.165,
+            533.366,
+            372.527,
+            371.799,
+            372.063
+          ],
+          "jobs": 24,
+          "logicalMB": 46792.5,
+          "maxAbs": -1,
+          "perJobLogicalMB": 1949.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 1024,
+          "usedMB": 47285.3,
+          "wallMs": 535.774
+        },
+        {
+          "allocatedJobs": 24,
+          "cacheMB": 0,
+          "failedJob": 24,
+          "jobs": 25,
+          "logicalMB": 47711.3,
+          "stage": "scene",
+          "success": false,
+          "tile": 1024
+        }
+      ]
+    },
+    "tile2048": {
+      "maxConcurrent": 21,
+      "oomAt": 22,
+      "rows": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            19.786
+          ],
+          "jobs": 1,
+          "logicalMB": 2285.7,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 2723.3,
+          "wallMs": 20.157
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            43.059,
+            43.078
+          ],
+          "jobs": 2,
+          "logicalMB": 4571.4,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 5011.3,
+          "wallMs": 43.507
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            87.592,
+            87.487,
+            87.441,
+            87.296
+          ],
+          "jobs": 4,
+          "logicalMB": 9142.8,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 9587.3,
+          "wallMs": 87.929
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            176.033,
+            176.027,
+            175.937,
+            175.82,
+            175.779,
+            175.231,
+            175.195,
+            175.204
+          ],
+          "jobs": 8,
+          "logicalMB": 18285.5,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 18739.3,
+          "wallMs": 176.657
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            264.369,
+            264.61,
+            261.167,
+            265.073,
+            264.968,
+            264.598,
+            264.858,
+            264.706,
+            264.685,
+            264.553,
+            261.218,
+            263.259
+          ],
+          "jobs": 12,
+          "logicalMB": 27428.2,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 27893.3,
+          "wallMs": 265.896
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            353.353,
+            351.828,
+            349.283,
+            351.173,
+            353.05,
+            352.707,
+            350.26,
+            352.651,
+            347.691,
+            347.918,
+            352.976,
+            352.8,
+            351.093,
+            351.751,
+            350.965,
+            351.022
+          ],
+          "jobs": 16,
+          "logicalMB": 36571.0,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 37045.3,
+          "wallMs": 354.342
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            438.038,
+            441.026,
+            440.177,
+            430.867,
+            431.604,
+            425.132,
+            425.1,
+            419.044,
+            441.66,
+            434.556,
+            439.91,
+            442.275,
+            425.609,
+            439.055,
+            433.779,
+            440.824,
+            424.151,
+            434.556,
+            429.669,
+            440.843
+          ],
+          "jobs": 20,
+          "logicalMB": 45713.8,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 46197.3,
+          "wallMs": 443.691
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            453.54,
+            460.997,
+            462.567,
+            459.957,
+            461.667,
+            463.409,
+            463.957,
+            455.423,
+            462.363,
+            463.795,
+            447.339,
+            463.08,
+            462.362,
+            462.329,
+            461.74,
+            462.334,
+            459.674,
+            463.047,
+            461.125,
+            462.413,
+            446.189
+          ],
+          "jobs": 21,
+          "logicalMB": 47999.4,
+          "maxAbs": -1,
+          "perJobLogicalMB": 2285.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 2048,
+          "usedMB": 48485.3,
+          "wallMs": 465.666
+        },
+        {
+          "allocatedJobs": 21,
+          "cacheMB": 0,
+          "failedJob": 21,
+          "jobs": 22,
+          "logicalMB": 47999.4,
+          "stage": "scene",
+          "success": false,
+          "tile": 2048
+        }
+      ]
+    },
+    "tile4096": {
+      "maxConcurrent": 13,
+      "oomAt": 14,
+      "rows": [
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            21.717
+          ],
+          "jobs": 1,
+          "logicalMB": 3629.7,
+          "maxAbs": -1,
+          "perJobLogicalMB": 3629.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 4096,
+          "usedMB": 4067.3,
+          "wallMs": 22.06
+        },
+        {
+          "cacheMB": 0,
+          "jobMs": [
+            188.489,
+            285.362,
+            281.583,
+            286.205,
+            274.464,
+            282.905,
+            254.574,
+            287.528,
+            285.854,
+            270.849,
+            255.544,
+            223.068,
+            281.6
+          ],
+          "jobs": 13,
+          "logicalMB": 47185.9,
+          "maxAbs": -1,
+          "perJobLogicalMB": 3629.7,
+          "stage": "scene",
+          "success": true,
+          "tile": 4096,
+          "usedMB": 47653.3,
+          "wallMs": 288.752
+        },
+        {
+          "allocatedJobs": 13,
+          "cacheMB": 0,
+          "failedJob": 13,
+          "jobs": 14,
+          "logicalMB": 47185.9,
+          "stage": "scene",
+          "success": false,
+          "tile": 4096
+        }
+      ]
+    }
+  },
+  "schema": "rawmaster-041-cuda-vram-concurrency-60mp-v1",
+  "status": "CUDA fallback memory/concurrency measurement; NVIDIA Vulkan remains blocked by VK_ERROR_INCOMPATIBLE_DRIVER",
+  "tileSweep": [
+    {
+      "fullMaxConcurrent": 11,
+      "fullPerJobMiB": 4304.2,
+      "fullUsedAtMaxMiB": 47869.3,
+      "fullWallMsAtMax": 241.953,
+      "sceneMaxConcurrent": 24,
+      "scenePerJobMiB": 1949.7,
+      "sceneUsedAtMaxMiB": 47285.3,
+      "sceneWallMsAtMax": 535.774,
+      "tile": 1024
+    },
+    {
+      "fullMaxConcurrent": 10,
+      "fullPerJobMiB": 4640.2,
+      "fullUsedAtMaxMiB": 46917.3,
+      "fullWallMsAtMax": 221.031,
+      "sceneMaxConcurrent": 21,
+      "scenePerJobMiB": 2285.7,
+      "sceneUsedAtMaxMiB": 48485.3,
+      "sceneWallMsAtMax": 465.666,
+      "tile": 2048
+    },
+    {
+      "fullMaxConcurrent": 8,
+      "fullPerJobMiB": 5984.2,
+      "fullUsedAtMaxMiB": 48371.3,
+      "fullWallMsAtMax": 178.107,
+      "sceneMaxConcurrent": 13,
+      "scenePerJobMiB": 3629.7,
+      "sceneUsedAtMaxMiB": 47653.3,
+      "sceneWallMsAtMax": 288.752,
+      "tile": 4096
+    }
+  ]
+}

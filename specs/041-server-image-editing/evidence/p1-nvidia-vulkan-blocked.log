@@ -31,3 +31,31 @@ handle 0x55b9023542e0
 f 0x7fb2c4c96900
 vkCreateInstance (nil)
 vkGetInstanceProcAddr (nil)
+
+## 2026-11-27 post-release retry (sglang stopped, 48,537 MiB free)
+Fri Nov 27 07:09:59 AM UTC 2026
+
+memory.total [MiB], memory.used [MiB], memory.free [MiB]
+49140 MiB, 2 MiB, 48537 MiB
+pid, process_name, used_gpu_memory [MiB]
+
+vulkaninfo:
+ERROR: [Loader Message] Code 0 : loader_scanned_icd_add: Could not get 'vkCreateInstance' via 'vk_icdGetInstanceProcAddr' for ICD libGLX_nvidia.so.0
+ERROR: [Loader Message] Code 0 : loader_icd_scan: Failed loading library associated with ICD JSON libGLX_nvidia.so.0. Ignoring this JSON
+ERROR: [Loader Message] Code 0 : vkCreateInstance: Found no drivers!
+Cannot create Vulkan instance.
+This problem is often caused by a faulty installation of the Vulkan driver or attempting to use a GPU that does not support Vulkan.
+ERROR at ./vulkaninfo/./vulkaninfo.h:458:vkCreateInstance failed with ERROR_INCOMPATIBLE_DRIVER
+
+ICD interface negotiation (tools/vk_icd_probe.c):
+negotiate=0x7f9ae563f9c0 getInstanceProcAddr=0x7f9ae563f900
+request 1 -> result -3 version 1
+request 2 -> result -3 version 2
+request 3 -> result -3 version 3
+request 4 -> result -3 version 4
+request 5 -> result -3 version 5
+request 6 -> result -3 version 6
+request 7 -> result -3 version 7
+request 8 -> result -3 version 8
+vkCreateInstance=(nil)
+vkGetInstanceProcAddr=(nil)

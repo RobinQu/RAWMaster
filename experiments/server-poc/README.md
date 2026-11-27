@@ -42,12 +42,13 @@ receipts.
 - Tiling, analytic-coverage caching, node prefix caching and receipts can be exercised on the same graph.
 - Linux OpenColorIO ACES 2 SDR/HDR matches the macOS Metal delivery prefix on the same 60MP master.
 - libavif/AOM, SVT-AV1 and rav1e can be compared on the same PQ16 frame with container and bitstream receipts.
+- The CUDA fallback shows the 60MP scene graph fits 21 concurrent jobs at 2.29 GiB/job, and the full decode+scene+display model fits 10 jobs at 4.64 GiB/job on a 49,140 MiB RTX 6000 Ada.
 
 See [validation.md](../../specs/041-server-image-editing/validation.md) for the P0–P2 evidence and gate status.
 
 ## What this does not prove
 
-- NVIDIA hardware Vulkan performance: the RTX 6000 Ada ICD on this host returns no Vulkan instance functions; the P1 run used Mesa llvmpipe.
+- NVIDIA hardware Vulkan performance: the RTX 6000 Ada ICD returns `VK_ERROR_INCOMPATIBLE_DRIVER` even with the GPU idle; the P1 run used Mesa llvmpipe. CUDA was used only for VRAM/concurrency measurement.
 - Linux RAW decode parity (the 60MP AP1 input was decoded on macOS and transferred).
 - Production scene executor, S3/PostgreSQL/gRPC, authentication, queue crash recovery or fairness.
 - `SceneWorkflowBatch` integration, `sceneProxy`, model prefix on Linux, or Flux.
@@ -60,8 +61,10 @@ See [validation.md](../../specs/041-server-image-editing/validation.md) for the 
 - `src/scene_vulkan.wgsl` — WGSL color/coverage kernels.
 - `src/bin/scene_vulkan.rs` — tiled wgpu/Vulkan executor and comparison harness.
 - `macos/` — PoC-only Swift diagnostic source used in the isolated macOS worktree; not wired into production.
+- `cuda/` — CUDA fallback that measures the same 60MP tiled graph's VRAM and concurrency; not the production Vulkan backend.
 - `tools/aces2.py` — fixed OCIO ACES 2 prefix, PQ16 export, macOS reference comparison.
 - `tools/avif_bakeoff.sh`, `tools/avif_metrics.py` — libavif encoder matrix and quality receipts.
+- `tools/vk_icd_probe.c` — direct ICD negotiation probe used to document the NVIDIA Vulkan block.
 - `fixtures/scene-60mp-v1.json`, `fixtures/scene-60mp-v2.json` — 9-node graph used for P1/P2.
 
 ## Next

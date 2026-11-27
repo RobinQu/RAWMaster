@@ -100,3 +100,26 @@ quality option; SVT-AV1 needs a color-signaling/4:4:4 fix before 8K HDR delivery
 macOS ImageIO output needs independent container compatibility evidence.
 
 Full receipts and gate status: [041 validation](../../specs/041-server-image-editing/validation.md).
+
+## P1b · NVIDIA VRAM / concurrency (CUDA fallback)
+
+After the resident sglang server was stopped, the RTX 6000 Ada had 48,537 MiB free, but the
+NVIDIA Vulkan ICD still returned `VK_ERROR_INCOMPATIBLE_DRIVER` (-3) for ICD interface
+versions 1–8. CUDA was therefore used to measure the same 9-node, tiled 60MP graph; it matches
+the macOS AP1 master to max abs 7.15e-7. This is a VRAM measurement, not the Vulkan gate.
+
+| Scenario | Per job | Max concurrent | Used at max |
+| --- | ---: | ---: | ---: |
+| Scene, tile 1024 | 1.95 GiB | 24 | 46.2 GiB |
+| Scene, tile 2048 | 2.29 GiB | 21 | 47.3 GiB |
+| Scene, tile 4096 | 3.63 GiB | 13 | 46.5 GiB |
+| Full decode+scene+display, tile 1024 | 4.30 GiB | 11 | 46.7 GiB |
+| Full, tile 2048 | 4.64 GiB | 10 | 45.8 GiB |
+| Full, tile 2048, 2 GiB cache/job | 6.69 GiB | 7 | 46.2 GiB |
+| Full, tile 2048, 4 GiB cache/job | 8.74 GiB | 5 | 43.1 GiB |
+
+At 21 scene jobs the GPU used 48,485 MiB of 49,140 MiB; the 22nd allocation failed. Aggregate
+scene throughput saturated around 45 jobs/s while per-job latency rose from 20 ms to 462 ms.
+Production admission should reserve headroom (scene 18–20, full 8–9) and avoid 2–4 GiB
+per-job caches. Full stage includes decode surfaces, HDR/SDR and PQ, but not a GPU AV1 encoder
+or model-prefix stages. Raw receipts: `specs/041-server-image-editing/evidence/cuda-vram/`.

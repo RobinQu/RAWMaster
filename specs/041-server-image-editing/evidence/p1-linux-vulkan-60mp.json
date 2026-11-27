@@ -51,11 +51,12 @@
   },
   "date": "2026-11-27",
   "hardwareVulkan": {
-    "consequence": "No hardware Vulkan performance or 49GB-VRAM receipt is claimed. P1 functional/parity evidence uses llvmpipe and is not a production performance gate.",
+    "consequence": "No hardware Vulkan performance or 49GB-VRAM receipt is claimed. P1 functional/parity evidence uses llvmpipe. CUDA was used only to measure the same graph's VRAM/concurrency and does not close the Vulkan gate.",
+    "cudaFallback": "specs/041-server-image-editing/evidence/p1-cuda-vram-concurrency-60mp.json",
     "driver": "610.43.02",
     "evidence": "specs/041-server-image-editing/evidence/p1-nvidia-vulkan-blocked.log",
-    "failure": "vk_icdGetInstanceProcAddr returns NULL for vkCreateInstance and vkGetInstanceProcAddr even on the host; Vulkan loader 1.4.341 and 1.3.275 both fail. This is not a wgpu/shader failure.",
-    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB total, 45208 MiB used by a 41-day sglang server, 3331 MiB free",
+    "failure": "vk_icdNegotiateLoaderICDInterfaceVersion returns VK_ERROR_INCOMPATIBLE_DRIVER (-3) for requested interface versions 1..8; vkCreateInstance and vkGetInstanceProcAddr remain NULL. Vulkan loaders 1.4.341 and 1.3.275 both fail. This is not a memory or wgpu failure.",
+    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB total; after stopping the sglang server: 2 MiB used, 48537 MiB free",
     "icd": "/usr/share/vulkan/icd.d/nvidia_icd.json (libGLX_nvidia.so.0)",
     "status": "blocked"
   },
