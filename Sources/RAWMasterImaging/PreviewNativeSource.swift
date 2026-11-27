@@ -840,7 +840,7 @@ final class PreviewNativeSource: @unchecked Sendable {
             checkCancellation:checkSpatialScan ?? checkDehazeTexture ?? checkCache ?? checkHalf ?? checkSpatialTiles,
             previewHalfFIT:checkedHalf,nativeFiniteCheck:verifiedFiniteRequest,localSourceValidation:bindingCheck,
             nativeSharpenMean:nativeSharpenMean,nativeNoiseDomain:noiseDomain,
-            advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),advancedDetailCacheIdentity:sourceKey,
+            advancedDetailWindow:self.detailWindow(maxPixel:maxPixel,window:window),advancedDetailCacheIdentity:sourceKey,
             advancedDetailDetailRequest:maxPixel == 0)
       }
       try checkPresentation?()
@@ -862,7 +862,7 @@ final class PreviewNativeSource: @unchecked Sendable {
             .memoryTarget:DevelopmentResidentDehazeGuide.sharedTextureDisplayMemoryTargetMiB])
           defer { display.clearCaches() }
           return try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
-            window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
+            window:self.detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
         }
         try Task.checkCancellation()
         try checkDehazeTexture()
@@ -881,7 +881,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           ownedBitmapAuthority = nil
         }
         result = try V3PreviewMaterializer.materialize(graph,context:renderContext,maxPixel:maxPixel,
-          window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,
+          window:self.detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,
           grainFinalTransport:grainFinalTransport,checkedLinearHalf:half,ownedBitmapAuthority:ownedBitmapAuthority)
       }
       try checkPresentation?()
@@ -908,7 +908,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           v3DecoderDefaultsFingerprint = try? DevelopmentRendererV3.decoderDefaultsFingerprint(fresh)
         }
         if let defaults = v3DecoderDefaultsFingerprint, let cached = try PreviewRawBaseRenderer.renderV3(capture:capture,sourceKey:sourceKey,recipe:recipe,maxPixel:maxPixel,
-          window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,pool:rawBasePool,memoryHint:contextMemoryLimitMiB,captureStamp:captureStamp,decoderIdentity:decoder,
+          window:self.detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,pool:rawBasePool,memoryHint:contextMemoryLimitMiB,captureStamp:captureStamp,decoderIdentity:decoder,
           decoderDefaultsFingerprint:defaults,noiseDefaults:.init(luminance:noiseReductionFacts.raw!.defaultLuminanceNoise,
             color:noiseReductionFacts.raw!.defaultColorNoise,detail:noiseReductionFacts.raw!.defaultDetail,
             luminanceSupported:noiseReductionFacts.raw!.luminanceNoiseSupported,colorSupported:noiseReductionFacts.raw!.colorNoiseSupported,
@@ -926,26 +926,26 @@ final class PreviewNativeSource: @unchecked Sendable {
           try DevelopmentRenderStack.run {
             try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:validation,thumbnailNativeSink:thumbnailNativeSink,
                                              localSourceValidation:bindingCheck,
-                                             advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),
+                                             advancedDetailWindow:self.detailWindow(maxPixel:maxPixel,window:window),
                                              advancedDetailCacheIdentity:sourceKey,
                                              advancedDetailDetailRequest:maxPixel == 0)
           }
         }
         let result = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { display in
           try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
-            window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
+            window:self.detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
         }
         try validateCaptureAuthority(); return result
       }
       let graph = try DevelopmentRenderStack.run {
         try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:self.context,thumbnailNativeSink:thumbnailNativeSink,
                                           localSourceValidation:bindingCheck,
-                                          advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),
+                                          advancedDetailWindow:self.detailWindow(maxPixel:maxPixel,window:window),
                                           advancedDetailCacheIdentity:sourceKey,
                                           advancedDetailDetailRequest:maxPixel == 0)
       }
       let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,
-        window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
+        window:self.detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
       try validateCaptureAuthority(); return result
     } catch {
       if let flashRawCacheSourceKey { FlashRawCanonicalTexturePool.shared.retire(sourceKey:flashRawCacheSourceKey) }
