@@ -54,7 +54,7 @@
 | 改 sourceRevision | 141.1 ms | 4141.9 ms |
 | 冷峰值 | 5.30 GB（6 GiB budget） | 7.71 GB（16 GiB budget） |
 
-逐通道像素比较 240,869,376 个样本：**max abs 9.54e-7，max relative 5.26e-7，mean abs 6.93e-9，>1e-5 为 0，非有限为 0**。最大误差约为该量级一个 f32 ulp。结论：Linux WGSL 端口与 macOS Rust／Metal 在同一份真实 60MP AP1 输入上通过像素门。
+逐通道像素比较 240,869,376 个样本：**max abs 9.54e-7，max relative 5.26e-7，mean abs 6.93e-9，>1e-5 为 0，非有限为 0**。最大绝对误差 9.54e-7，符合不同 f32 数学库的舍入差异，远低于 1e-5 门。结论：Linux WGSL 端口与 macOS Rust／Metal 在同一份真实 60MP AP1 输入上通过像素门。
 
 Linux 12 GiB 缓存的四轮回执：
 

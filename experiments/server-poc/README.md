@@ -38,7 +38,7 @@ receipts.
 - The contract is small enough to freeze independently of the UI and the Metal executor.
 - Queue semantics can be tested before PostgreSQL/gRPC exist.
 - Scene batch identity (`batch_id`, `target_head`, scene/output/model hashes, compatibility route, target/format) can survive submission, claim, publish and retry.
-- On a real 60MP RAW, the WGSL port matches the macOS Rust/Metal AP1 master within one f32 ulp.
+- On a real 60MP RAW, the WGSL port matches the macOS Rust/Metal AP1 master within 1e-6 (max absolute error 9.54e-7).
 - Tiling, analytic-coverage caching, node prefix caching and receipts can be exercised on the same graph.
 - Linux OpenColorIO ACES 2 SDR/HDR matches the macOS Metal delivery prefix on the same 60MP master.
 - libavif/AOM, SVT-AV1 and rav1e can be compared on the same PQ16 frame with container and bitstream receipts.

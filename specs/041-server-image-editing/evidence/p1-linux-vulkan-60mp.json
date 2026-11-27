@@ -244,7 +244,7 @@
     "maxRelative": 5.261338e-07,
     "meanAbs": 6.932224175529706e-09,
     "nonfinite": 0,
-    "note": "Every RGBA channel of the 9504x6336 AP1 master compared against the macOS Rust/Metal output; max absolute error is one f32 ulp at this magnitude.",
+    "note": "Every RGBA channel of the 9504x6336 AP1 master compared against the macOS Rust/Metal output; max absolute error is 9.54e-7, consistent with f32 rounding differences between Metal and Vulkan math; it is not a graph or color difference.",
     "over1e3": 0,
     "over1e4": 0,
     "over1e5": 0
