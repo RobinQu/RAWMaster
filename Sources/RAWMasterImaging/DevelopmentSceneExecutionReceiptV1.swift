@@ -22,4 +22,13 @@ package struct DevelopmentSceneExecutionReceiptV1: Codable, Equatable, Sendable 
   package let budgetBytes: Int
   package let cpuMilliseconds: Double
   package let fallbackReason: String?
+  package var photographicEngine: String?
+  package var dagBackend: Backend?
+
+  func includingPhotographic(_ applied: Bool) -> Self {
+    guard applied else { return self }
+    return Self(backend: backend == .passthrough ? .swift : .mixed, tiles: tiles, nodes: nodes, dispatches: dispatches,
+      coverageCacheHits: coverageCacheHits, nodeCacheHits: nodeCacheHits, peakBytes: peakBytes, budgetBytes: budgetBytes,
+      cpuMilliseconds: cpuMilliseconds, fallbackReason: fallbackReason, photographicEngine: "scene-photographic-v1-f32-metal", dagBackend: backend)
+  }
 }

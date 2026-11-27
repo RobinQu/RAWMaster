@@ -74,7 +74,7 @@ def main():
             run('原片建立独立 SDR 和 HDR 命名快照',"""
               await wait(()=>el('.photo-card')?.checkVisibility(),'initial grid');
               choose('b1');await edit();set('[data-adjustment=ev]','0.55');saveSnap('原片彩色');
-              act('scene-mode','hdr');set('[name=sceneGraphExposure]','1.25');act('scene-review-exposure');saveSnap('原片高光');
+              act('scene-mode','hdr');set('[data-adjustment=ev]','1.25');saveSnap('原片高光');
               assert(snapshots().join()==='原片高光','HDR snapshot scope');
               act('scene-mode','sdr');assert(snapshots().join()==='原片彩色','SDR snapshot scope');await library();
             """)

@@ -62,7 +62,8 @@ package actor DevelopmentScenePreviewV1 {
   }
   private struct Input {
     let sampling: Sampling
-    let raw: DevelopmentSceneRAWV1.Result
+    let image: DevelopmentSceneMetalV1.Image
+    let sensor: MTLTexture?
     let geometry: DevelopmentSceneGraphRendererV1.Geometry
     let region: CGRect?
     let masks: [UUID: MTLTexture]
@@ -80,6 +81,8 @@ package actor DevelopmentScenePreviewV1 {
     let route: DevelopmentSceneOutputStateV1.Version.Route
     let trim: DevelopmentSceneOutputStateV1.SDRTrim?
     let hdrLimitEV: Double?
+    let bands: SIMD4<Float>?
+    let visualizeHDR: Bool
     let frame: DevelopmentScenePreviewFrameV1
   }
   // Keep final and node display suffixes resident, but never pin multiple graph masters.
@@ -90,6 +93,7 @@ package actor DevelopmentScenePreviewV1 {
   private var input: Input?
   private var scopeGrid: Input?
   private var modelPrefix: DevelopmentSceneModelPreviewV1?
+  private var photographic: DevelopmentScenePhotographicV1?
   private var selection: Selection?
   private var suffixes: [Suffix] = [] // LRU; bounded by count and actual Metal allocation
   private var counts = Counts()
@@ -104,21 +108,24 @@ package actor DevelopmentScenePreviewV1 {
 
   package nonisolated func render(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1,
       view: DevelopmentSceneGraphV1.View, target: DevelopmentSceneOutputStateV1.Target,
-      sampling: Sampling, models: DevelopmentSceneModelProgramV1? = nil) async throws -> DevelopmentScenePreviewFrameV1 {
+      sampling: Sampling, models: DevelopmentSceneModelProgramV1? = nil,
+      visualizeHDR: Bool = false) async throws -> DevelopmentScenePreviewFrameV1 {
     try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, io: 1)) {
       try await self.perform(source: source, graph: graph, view: view, target: target,
-        sampling: sampling, models: models ?? graph.models)
+        sampling: sampling, models: models ?? graph.models, visualizeHDR: visualizeHDR)
     }
   }
 
   private func perform(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
                        target: DevelopmentSceneOutputStateV1.Target, sampling: Sampling,
-                       models: DevelopmentSceneModelProgramV1? = nil) throws -> DevelopmentScenePreviewFrameV1 {
+                       models: DevelopmentSceneModelProgramV1? = nil, visualizeHDR: Bool) throws -> DevelopmentScenePreviewFrameV1 {
     return try autoreleasepool {
+      try graph.validatePhotographicCoverage(view: view, using: models)
       let (ctx, upstream) = try open(source)
       let stamp = upstream.stamp, raw = upstream.raw
       defer { discardIfChanged(source, stamp: stamp) }
       try configureModels(models, mosaic: raw, context: ctx)
+      try configurePhotographic(graph.photographic, upstream: upstream, context: ctx)
       if input?.sampling != sampling {
         input = nil; clearSelection()
         input = try sampled(raw, at: sampling, context: ctx, otherSampleBytes: scopeGrid?.modelSampleBytes ?? 0)
@@ -126,9 +133,13 @@ package actor DevelopmentScenePreviewV1 {
       guard let input else { throw Failure.invalidViewport }
       if selection?.scope != graph.graph || selection?.models != models { clearSelection() }
       let revision = Self.sourceRevision(stamp: stamp, sampling: sampling)
-      let trim = target == .sdr709 ? graph.output.sdrTrim : nil
-      let hdrLimit = target == .hdr2020 ? graph.output.hdrHighlightLimitEV : nil
-      if let hit = suffixes.firstIndex(where: { $0.frame.target == target && $0.view == view && $0.route == graph.output.route && $0.trim == trim && $0.hdrLimitEV == hdrLimit }) {
+      let renderTarget: DevelopmentSceneOutputStateV1.Target = visualizeHDR ? .hdr2020 : target
+      let displayTarget: DevelopmentSceneOutputStateV1.Target = visualizeHDR ? .sdr709 : target
+      let trim = renderTarget == .sdr709 ? graph.output.sdrTrim : nil
+      let hdrLimit = renderTarget == .hdr2020 ? graph.output.hdrHighlightLimitEV : nil
+      let bands = renderTarget == .hdr2020 ? graph.output.hdrBandExposureEV : nil
+      if let hit = suffixes.firstIndex(where: { $0.frame.target == displayTarget && $0.visualizeHDR == visualizeHDR &&
+        $0.view == view && $0.route == graph.output.route && $0.trim == trim && $0.hdrLimitEV == hdrLimit && $0.bands == bands }) {
         try ensureCurrent(source, stamp: stamp)
         let prior = suffixes.remove(at: hit)
         suffixes.append(prior)
@@ -136,19 +147,21 @@ package actor DevelopmentScenePreviewV1 {
       }
       if selection?.view != view {
         selection = nil
-        let result = try ctx.graph.preparePreviewInput(input.raw.image, geometry: input.geometry, graph: graph,
-          view: view, masks: input.masks, sourceRevision: modelPrefix == nil ? revision : 0)
-        selection = Selection(scope: graph.graph, view: view, scene: result, models: models, execution: ctx.graph.lastReceipt)
+        let result = try ctx.graph.preparePreviewInput(input.image, geometry: input.geometry, graph: graph,
+          view: view, masks: input.masks, sourceRevision: modelPrefix == nil && photographic == nil ? revision : 0)
+        selection = Selection(scope: graph.graph, view: view, scene: result, models: models,
+                              execution: ctx.graph.lastReceipt?.includingPhotographic(photographic != nil))
         counts.graph += 1
       }
       guard let selection else { throw Failure.invalidViewport }
-      suffixes.removeAll { $0.view == view && $0.frame.target == target }
-      let display = try ctx.graph.renderPreview(selection.scene, output: graph.output, target: target)
+      suffixes.removeAll { $0.view == view && $0.frame.target == displayTarget && $0.visualizeHDR == visualizeHDR }
+      let display = try ctx.graph.renderPreview(selection.scene, output: graph.output, target: renderTarget, visualizeHDR: visualizeHDR)
       try ensureCurrent(source, stamp: stamp)
-      let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: display.texture, target: target,
-        nativeSize: CGSize(width: modelPrefix?.native.width ?? Int(raw.sensor.size.x), height: modelPrefix?.native.height ?? Int(raw.sensor.size.y)),
+      let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: display.texture, target: display.target,
+        nativeSize: CGSize(width: photographic?.width ?? modelPrefix?.native.width ?? Int(raw.sensor.size.x), height: photographic?.height ?? modelPrefix?.native.height ?? Int(raw.sensor.size.y)),
         window: input.region, execution: selection.execution)
-      cache(.init(view: view, route: graph.output.route, trim: trim, hdrLimitEV: hdrLimit, frame: frame))
+      cache(.init(view: view, route: graph.output.route, trim: trim, hdrLimitEV: hdrLimit, bands: bands,
+                  visualizeHDR: visualizeHDR, frame: frame))
       counts.display += 1
       return frame
     }
@@ -180,17 +193,19 @@ package actor DevelopmentScenePreviewV1 {
   private func performAnalysis(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
                                models: DevelopmentSceneModelProgramV1?) throws -> DevelopmentSceneScopesV1 {
     return try autoreleasepool {
+      try graph.validatePhotographicCoverage(view: view, using: models)
       let (ctx, upstream) = try open(source)
       defer { discardIfChanged(source, stamp: upstream.stamp) }
       try configureModels(models, mosaic: upstream.raw, context: ctx)
+      try configurePhotographic(graph.photographic, upstream: upstream, context: ctx)
       // A fixed full-photo grid: neither panning nor output/monitor selection changes the statistics' source region.
       let grid = try scopeGrid ?? sampled(upstream.raw, at: .fit(maximumEdge: 192), context: ctx,
-        otherSampleBytes: input?.modelSampleBytes ?? 0)
+        otherSampleBytes: input?.modelSampleBytes ?? 0, sensorEvidence: true)
       scopeGrid = grid
-      let revision = modelPrefix == nil ? Self.sourceRevision(stamp: upstream.stamp, sampling: grid.sampling) : 0
-      let preview = try ctx.graph.preparePreviewInput(grid.raw.image, geometry: grid.geometry, graph: graph, view: view,
+      let revision = modelPrefix == nil && photographic == nil ? Self.sourceRevision(stamp: upstream.stamp, sampling: grid.sampling) : 0
+      let preview = try ctx.graph.preparePreviewInput(grid.image, geometry: grid.geometry, graph: graph, view: view,
         masks: grid.masks, sourceRevision: revision)
-      let execution = ctx.graph.lastReceipt
+      let execution = ctx.graph.lastReceipt?.includingPhotographic(photographic != nil)
       let target = try ctx.graph.renderPreview(preview, output: graph.output, target: .hdr2020)
       let sdr = try ctx.graph.renderPreview(preview, output: graph.output, target: .sdr709)
       let preGamut: MTLTexture?
@@ -202,7 +217,7 @@ package actor DevelopmentScenePreviewV1 {
       let analyzer = try scopeAnalyzer ?? SceneScopesAnalyzerV1(device: ctx.device)
       scopeAnalyzer = analyzer
       let report = try analyzer.analyze(scene: preview.image.texture, target: target.texture, derivative: sdr.texture,
-        preGamut: preGamut, sourceSensor: grid.raw.sensorSaturation, monitor: nil, execution: execution)
+        preGamut: preGamut, sourceSensor: grid.sensor, monitor: nil, execution: execution)
       try ensureCurrent(source, stamp: upstream.stamp)
       return report
     }
@@ -256,12 +271,12 @@ package actor DevelopmentScenePreviewV1 {
     suffixes.append(suffix)
   }
   private func clearSelection() { selection = nil; suffixes.removeAll() }
-  private func clearSource() { clearSelection(); input = nil; scopeGrid = nil; modelPrefix = nil; upstream = nil }
+  private func clearSource() { clearSelection(); input = nil; scopeGrid = nil; photographic = nil; modelPrefix = nil; upstream = nil }
 
   private func configureModels(_ models: DevelopmentSceneModelProgramV1?, mosaic: DevelopmentSceneRAWV1.Mosaic, context: Context) throws {
     let program = models?.stages.isEmpty == false ? models : nil
     guard modelPrefix?.program != program else { return }
-    clearSelection(); input = nil; scopeGrid = nil; modelPrefix = nil
+    clearSelection(); input = nil; scopeGrid = nil; photographic = nil; modelPrefix = nil
     guard let program else { return }
     do {
       modelPrefix = try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: context.decoder,
@@ -270,8 +285,19 @@ package actor DevelopmentScenePreviewV1 {
     catch DevelopmentSceneModelPipelineV1.Failure.surfaceBudget { throw Failure.fullResolutionModelBudget }
   }
 
-  private func sampled(_ raw: DevelopmentSceneRAWV1.Mosaic, at sampling: Sampling, context ctx: Context, otherSampleBytes: Int) throws -> Input {
-    let width = modelPrefix?.native.width ?? Int(raw.sensor.size.x), height = modelPrefix?.native.height ?? Int(raw.sensor.size.y)
+  private func configurePhotographic(_ parameters: DevelopmentAdjustmentsV3?, upstream: Upstream, context: Context) throws {
+    guard photographic?.parameters != parameters else { return }
+    clearSelection(); input = nil; scopeGrid = nil; photographic = nil
+    if let parameters {
+      photographic = try DevelopmentScenePhotographicV1(parameters, capture: upstream.source.sourceLocation,
+        mosaic: upstream.raw, decoder: context.decoder, modeled: modelPrefix?.native.image)
+    }
+  }
+
+  private func sampled(_ raw: DevelopmentSceneRAWV1.Mosaic, at sampling: Sampling, context ctx: Context, otherSampleBytes: Int,
+                       sensorEvidence: Bool = false) throws -> Input {
+    let width = photographic?.width ?? modelPrefix?.native.width ?? Int(raw.sensor.size.x)
+    let height = photographic?.height ?? modelPrefix?.native.height ?? Int(raw.sensor.size.y)
     let region: CGRect?, request: DevelopmentSceneRAWV1.Sampling, geometry: DevelopmentSceneGraphRendererV1.Geometry
     switch sampling {
     case .fit(let maxEdge):
@@ -294,12 +320,27 @@ package actor DevelopmentScenePreviewV1 {
                                          width: Double(w) / Double(width), height: Double(h) / Double(height))
     }
     do {
+      let capacity = 440 * 1024 * 1024
+      if let photographic {
+        let remaining = capacity - raw.texture.allocatedSize - (modelPrefix?.residentBytes ?? 0)
+          - DevelopmentScenePhotographicV1.intermediateBytes - otherSampleBytes
+        let image = try photographic.render(request, maximumBytes: remaining)
+        var sensor: MTLTexture?, masks: [UUID: MTLTexture] = [:], sampledBytes = 0
+        if let modelPrefix, photographic.alignsWithSensor && (!modelPrefix.native.masks.isEmpty || sensorEvidence) {
+          let sampled = try modelPrefix.sample(request, otherSampleBytes: otherSampleBytes + image.texture.allocatedSize)
+          sensor = sampled.0.sensorSaturation; masks = sampled.1; sampledBytes = sampled.2
+        } else if sensorEvidence, photographic.alignsWithSensor {
+          sensor = try ctx.decoder.develop(raw, sampling: request, maximumBytes: capacity - image.texture.allocatedSize).sensorSaturation
+        }
+        return Input(sampling: sampling, image: image, sensor: sensor, geometry: geometry, region: region,
+                     masks: masks, modelSampleBytes: image.texture.allocatedSize + sampledBytes)
+      }
       if let modelPrefix {
         let (result, masks, bytes) = try modelPrefix.sample(request, otherSampleBytes: otherSampleBytes)
-        return Input(sampling: sampling, raw: result, geometry: geometry, region: region, masks: masks, modelSampleBytes: bytes)
+        return Input(sampling: sampling, image: result.image, sensor: result.sensorSaturation, geometry: geometry, region: region, masks: masks, modelSampleBytes: bytes)
       }
       let result = try ctx.decoder.develop(raw, sampling: request, maximumBytes: 440 * 1024 * 1024)
-      return Input(sampling: sampling, raw: result, geometry: geometry, region: region, masks: [:], modelSampleBytes: 0)
+      return Input(sampling: sampling, image: result.image, sensor: result.sensorSaturation, geometry: geometry, region: region, masks: [:], modelSampleBytes: 0)
     } catch DevelopmentSceneRAWV1.Failure.surfaceBudget {
       throw Failure.resourceBudget
     } catch DevelopmentSceneModelPipelineV1.Failure.surfaceBudget { throw Failure.fullResolutionModelBudget }

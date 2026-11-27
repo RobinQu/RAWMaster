@@ -9,7 +9,7 @@ import RAWMasterCore
     static let isEnabled = ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH"] != "0"
     private static let minimum = CGSize(width: 520, height: 240)
     private static let defaultSize = CGSize(width: 640, height: 392)
-    private static let collapsedHeight: CGFloat = 44
+    private static let collapsedHeight = AppDesign.Metric.rowHeight + AppDesign.Spacing.row
 
     @Published private(set) var openWorkID: String?
     private(set) var panel: NSPanel?
@@ -25,11 +25,15 @@ import RAWMasterCore
     private var escapeAction: (() -> Bool)?
     private var onClose: (() -> Void)?
     private var frames: [String: NSRect] = [:]
+    private var compatibilityZoom: [String: CompatibilityGraphZoom] = [:]
+    private var pendingScreenFit: Task<Void, Never>?
 
     func show(_ graph: DevelopmentCompatibilityGraphV1, photoName: String, returnFocus: @escaping () -> Void) {
         guard let id = graph.nodes.first?.workID else { return }
+        let zoom = compatibilityZoom[id] ?? CompatibilityGraphZoom()
+        compatibilityZoom[id] = zoom
         show(workID: id, title: "只读兼容图", returnFocus: returnFocus) {
-            AnyView(CompatibilityPanelContent(nodes: graph.nodes.map(\.stage), photoName: photoName))
+            AnyView(CompatibilityPanelContent(nodes: graph.nodes.map(\.stage), photoName: photoName, zoom: zoom))
         }
     }
 
@@ -45,15 +49,17 @@ import RAWMasterCore
         lastFolded = nil
         extraMinimumHeight = 0
         folded = false
-        let window = CompatibilityPanelWindow(contentRect: .zero, styleMask: [.borderless, .resizable],
+        let window = CompatibilityPanelWindow(contentRect: .zero, styleMask: [.titled, .utilityWindow, .closable, .resizable],
             backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         window.title = title
         window.setAccessibilityLabel(title)
-        window.appearance = owner.effectiveAppearance
+        window.appearance = owner.appearance
         window.isOpaque = false
         window.backgroundColor = .clear
+        window.isMovable = true
         window.isMovableByWindowBackground = false
+        window.titlebarSeparatorStyle = .none
         window.hasShadow = true
         window.isFloatingPanel = true
         window.hidesOnDeactivate = true
@@ -61,6 +67,13 @@ import RAWMasterCore
         window.cancel = { [weak self] in
             if self?.escapeAction?() != true { self?.close() }
         }
+        let menu = GraphWindowMenu(apply: { [weak self] kind, x, y in self?.adjustWindow(kind, x: x, y: y) },
+            fold: { [weak self] in self?.toggleFold() }, reset: { [weak self] in self?.resetPosition() })
+        let accessory = NSTitlebarAccessoryViewController()
+        accessory.layoutAttribute = .trailing
+        accessory.view = menu
+        window.addTitlebarAccessoryViewController(accessory)
+        window.graphMenu = menu
         window.delegate = self
         panel = window
         let frame = frames[id] ?? defaultFrame(in: owner.frame)
@@ -71,6 +84,7 @@ import RAWMasterCore
             NSScreen.screens.first { $0.frame.contains(NSPoint(x: saved.midX, y: saved.midY)) }
         }
         fit(frame, screen: savedScreen ?? owner.screen)
+        window.standardWindowButton(.zoomButton)?.isEnabled = false
         window.makeKeyAndOrderFront(nil)
     }
 
@@ -106,12 +120,15 @@ import RAWMasterCore
 
     func resetPosition() {
         guard let owner else { return }
+        folded = false
         expandedSize = Self.defaultSize
         fit(defaultFrame(in: owner.frame), screen: owner.screen)
     }
 
     func windowWillClose(_ notification: Notification) {
         guard let panel, (notification.object as? NSPanel) === panel else { return }
+        pendingScreenFit?.cancel()
+        pendingScreenFit = nil
         if let id = openWorkID {
             frames[id] = NSRect(x: panel.frame.minX, y: panel.frame.maxY - expandedSize.height,
                                 width: expandedSize.width, height: expandedSize.height)
@@ -131,12 +148,26 @@ import RAWMasterCore
         owner = nil
     }
 
-    func windowDidMove(_ notification: Notification) { keepOnScreen() }
-    func windowDidChangeScreen(_ notification: Notification) { keepOnScreen() }
+    func windowDidMove(_ notification: Notification) { fitAfterMove() }
+    func windowDidChangeScreen(_ notification: Notification) { fitAfterMove() }
     func windowDidResize(_ notification: Notification) {
         guard let panel, !fitting else { return }
         if !folded { expandedSize = panel.frame.size }
-        keepOnScreen()
+        if !panel.inLiveResize { keepOnScreen() }
+    }
+    func windowDidEndLiveResize(_ notification: Notification) { keepOnScreen() }
+
+    /// AppKit can still report the original screen while the user is dragging across displays.
+    private func fitAfterMove() {
+        guard let panel, !fitting else { return }
+        pendingScreenFit?.cancel()
+        pendingScreenFit = Task { [weak self, weak panel] in
+            do {
+                repeat { try await Task.sleep(for: .milliseconds(100)) } while NSEvent.pressedMouseButtons & 1 != 0
+            } catch { return }
+            guard let self, let panel, self.panel === panel else { return }
+            self.keepOnScreen()
+        }
     }
 
     private func keepOnScreen() {
@@ -166,10 +197,8 @@ import RAWMasterCore
             y: min(max(requested.maxY - size.height, visible.minY), visible.maxY - size.height), width: size.width, height: size.height)
         if lastFolded != folded {
             lastFolded = folded
-            let content = AnyView(GraphCanvasWindow(folded: folded,
-                apply: { [weak self] requested in self?.applyHandleFrame(requested) },
-                toggleFold: { [weak self] in self?.toggleFold() }, reset: { [weak self] in self?.resetPosition() },
-                close: { [weak self] in self?.close() }, content: makeContent))
+            (panel as? CompatibilityPanelWindow)?.graphMenu?.setFolded(folded)
+            let content = AnyView(GraphCanvasWindow(folded: folded, content: makeContent))
             if let host = panel.contentView as? NSHostingView<AnyView> { host.rootView = content }
             else {
                 let host = NSHostingView(rootView: content)
@@ -181,25 +210,40 @@ import RAWMasterCore
         if frame != panel.frame { panel.setFrame(frame, display: panel.isVisible) }
     }
 
-    private func applyHandleFrame(_ requested: NSRect) {
+    private func adjustWindow(_ kind: GraphWindowMenu.Adjustment, x: CGFloat, y: CGFloat) {
+        guard let panel else { return }
+        let expanded = NSRect(x: panel.frame.minX, y: panel.frame.maxY - expandedSize.height,
+                              width: expandedSize.width, height: expandedSize.height)
+        let requested: NSRect
+        switch kind {
+        case .move: requested = expanded.offsetBy(dx: x, dy: y)
+        case .resize:
+            let height = max(Self.minimum.height, expanded.height - y)
+            requested = NSRect(x: expanded.minX, y: expanded.maxY - height,
+                               width: max(Self.minimum.width, expanded.width + x), height: height)
+            if folded { expandedSize = requested.size }
+        }
         let screen = NSScreen.screens.first { $0.frame.contains(NSPoint(x: requested.midX, y: requested.midY)) }
-        fit(requested, screen: screen ?? panel?.screen)
+        fit(requested, screen: screen ?? panel.screen)
     }
 }
 
 private final class CompatibilityPanelWindow: NSPanel {
     var cancel: (() -> Void)?
+    weak var graphMenu: GraphWindowMenu?
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
     override func cancelOperation(_ sender: Any?) { cancel?() }
-    override func performClose(_ sender: Any?) { close() }
 
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        if graphMenu?.handleAdjustmentKey(event) == true { return true }
         if event.keyCode == 53, attachedSheet == nil { cancelOperation(nil); return true }
         return super.performKeyEquivalent(with: event)
     }
 
     override func sendEvent(_ event: NSEvent) {
+        if graphMenu?.handleAdjustmentKey(event) == true { return }
+        if event.type == .leftMouseDown { graphMenu?.endAdjustment() }
         if event.type == .keyDown, event.keyCode == 53, attachedSheet == nil {
             cancelOperation(nil)
         } else {
@@ -208,17 +252,49 @@ private final class CompatibilityPanelWindow: NSPanel {
     }
 }
 
+@MainActor private final class CompatibilityGraphZoom: ObservableObject {
+    @Published var scale: CGFloat = 1
+    func step(_ multiplier: CGFloat) { scale = min(2, max(0.5, scale * multiplier)) }
+}
+
 private struct CompatibilityPanelContent: View {
     let nodes: [DevelopmentCompatibilityGraphV1.Stage]
     let photoName: String
+    @ObservedObject var zoom: CompatibilityGraphZoom
+    @FocusState private var canvasFocused: Bool
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) { cards(vertical: false) }
-            VStack(spacing: 4) { cards(vertical: true) }
+        GeometryReader { geometry in
+            ScrollView([.horizontal, .vertical]) {
+                Group {
+                    if geometry.size.width >= 480 {
+                        HStack(spacing: 8 * zoom.scale) { cards(vertical: false) }
+                    } else {
+                        VStack(spacing: AppDesign.Spacing.row * zoom.scale) { cards(vertical: true) }
+                    }
+                }
+                .padding(AppDesign.Spacing.group)
+                .frame(minWidth: geometry.size.width, minHeight: geometry.size.height)
+            }
+            .focusable().focused($canvasFocused)
+            .onKeyPress("0") { zoom.scale = 1; return .handled }
+            .onKeyPress("-") { zoom.step(1 / 1.2); return .handled }
+            .onKeyPress("+") { zoom.step(1.2); return .handled }
+            .onKeyPress("=") { zoom.step(1.2); return .handled }
+            .onAppear { canvasFocused = true }
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottomLeading) {
+            HStack(spacing: AppDesign.Spacing.row) {
+                Button("−") { zoom.step(1 / 1.2) }.disabled(zoom.scale <= 0.5)
+                    .accessibilityLabel("缩小兼容图").accessibilityIdentifier("scene.graph.compatibility.zoom.out")
+                Button("\(Int((zoom.scale * 100).rounded()))%") { zoom.scale = 1 }
+                    .accessibilityLabel("复位兼容图缩放").accessibilityValue("\(Int((zoom.scale * 100).rounded()))%")
+                    .accessibilityIdentifier("scene.graph.compatibility.zoom.reset")
+                Button("+") { zoom.step(1.2) }.disabled(zoom.scale >= 2)
+                    .accessibilityLabel("放大兼容图").accessibilityIdentifier("scene.graph.compatibility.zoom.in")
+            }
+            .buttonStyle(AppFlatButtonStyle()).padding(AppDesign.Spacing.inline)
+        }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("照片来源到最终输出")
         .accessibilityHint(photoName + " · 只读兼容图")
@@ -228,15 +304,16 @@ private struct CompatibilityPanelContent: View {
         ForEach(nodes, id: \.self) { stage in
             if stage != nodes.first {
                 Image(systemName: vertical ? "arrow.down" : "arrow.right")
+                    .font(.system(size: AppDesign.Typography.rowTitlePointSize * zoom.scale))
                     .foregroundStyle(.secondary).accessibilityHidden(true)
             }
-            VStack(alignment: .leading, spacing: 5) {
-                Text(stage.title).font(.system(size: 12, weight: .semibold))
-                Text(stage.subtitle).font(.caption).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 5 * zoom.scale) {
+                Text(stage.title).font(.system(size: AppDesign.Typography.rowTitlePointSize * zoom.scale, weight: .semibold))
+                Text(stage.subtitle).font(.system(size: AppDesign.Typography.controlPointSize * zoom.scale)).foregroundStyle(.secondary)
             }
-            .frame(width: 116, alignment: .leading).padding(8)
-            .background(.background, in: .rect(cornerRadius: 8))
-            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(.quaternary))
+            .frame(width: 116 * zoom.scale, alignment: .leading).padding(8 * zoom.scale)
+            .background(AppDesign.fill(.rest), in: .rect(cornerRadius: AppDesign.Radius.container))
+            .overlay(RoundedRectangle(cornerRadius: AppDesign.Radius.container).strokeBorder(AppDesign.Ink.separator))
             .accessibilityElement(children: .combine)
         }
     }
@@ -251,28 +328,36 @@ private extension DevelopmentCompatibilityGraphV1.Stage {
     }
 }
 
-struct EditingCompatibilityGraphToolbar: View {
-    @ObservedObject var editing: EditingController
+struct GraphPhotoTools: DynamicProperty {
+    let editing: EditingController
     @ObservedObject private var mask: EditingMaskInputSession
     @ObservedObject private var local: EditingLocalInputSession
+    init(_ editing: EditingController) {
+        self.editing = editing
+        mask = editing.developmentMaskInput
+        local = editing.developmentLocalInput
+    }
+    var isActive: Bool {
+        editing.cropEditing || editing.quickPromptPresented || editing.developmentPicker != nil || mask.isActive || local.tool != nil
+    }
+}
+
+struct EditingCompatibilityGraphToolbar: View {
+    @ObservedObject var editing: EditingController
+    private var photoTools: GraphPhotoTools
     @StateObject private var presenter = EditingCompatibilityGraphPanel()
     @FocusState private var graphFocused: Bool
     @AccessibilityFocusState private var graphAccessibilityFocused: Bool
 
     init(editing: EditingController) {
         self.editing = editing
-        mask = editing.developmentMaskInput
-        local = editing.developmentLocalInput
-    }
-
-    private var canvasToolActive: Bool {
-        editing.cropEditing || editing.quickPromptPresented || editing.developmentPicker != nil || mask.isActive || local.tool != nil
+        photoTools = GraphPhotoTools(editing)
     }
 
     private var reason: String? {
         guard editing.work?.presentationID == editing.asset?.id, !editing.loading else { return "正在读取照片" }
         guard editing.sourceReady, !editing.sourceNeedsRevalidation else { return "原片不可用，请先接回或验证原片" }
-        guard !canvasToolActive else {
+        guard !photoTools.isActive else {
             return "请先完成或取消画布工具"
         }
         return nil
@@ -291,7 +376,7 @@ struct EditingCompatibilityGraphToolbar: View {
                 Spacer()
                 AppIconButton(systemName: "line.diagonal", label: "忽略该节点：兼容显影节点不能忽略", isEnabled: false) {}
                 AppIconButton(systemName: "square.3.layers.3d", label: "Graph 窗口",
-                              isSelected: presenter.openWorkID != nil && !canvasToolActive, isEnabled: availableWorkID != nil && !canvasToolActive) { toggle() }
+                              isSelected: presenter.openWorkID != nil && !photoTools.isActive, isEnabled: availableWorkID != nil && !photoTools.isActive) { toggle() }
                     .focused($graphFocused)
                     .accessibilityFocused($graphAccessibilityFocused)
                     .accessibilityIdentifier("editing.compatibilityGraph")
@@ -302,7 +387,7 @@ struct EditingCompatibilityGraphToolbar: View {
         .padding(.horizontal, 12).padding(.vertical, 9)
         .background(CompatibilityGraphAnchor { presenter.anchor = $0 })
         .onChange(of: availableWorkID) { _, id in presenter.fitToContext(id) }
-        .onChange(of: canvasToolActive) { _, active in presenter.setCanvasToolActive(active) }
+        .onChange(of: photoTools.isActive) { _, active in presenter.setCanvasToolActive(active) }
         .onDisappear { presenter.close(restoreFocus: false) }
     }
 

@@ -24,6 +24,9 @@ struct EditingSceneCanvas: NSViewRepresentable {
     let onPresentationError: () -> Void
     var onPick: ((CGPoint) -> Void)? = nil
     var onCancelPick: (() -> Bool)? = nil
+    var onPhotographicPointer: ((ImageCanvasPointerEvent) -> Bool)? = nil
+    var onPhotographicViewport: ((ImageCanvasViewportSnapshot) -> Void)? = nil
+    var onPhotographicDoubleClick: (() -> Void)? = nil
 
     func makeNSView(context: Context) -> SceneMetalView { SceneMetalView() }
     func updateNSView(_ view: SceneMetalView, context: Context) {
@@ -33,6 +36,9 @@ struct EditingSceneCanvas: NSViewRepresentable {
         view.failed = onPresentationError
         view.pickedPoint = onPick
         view.cancelPick = onCancelPick
+        view.photographicPointer = onPhotographicPointer
+        view.changedPhotographicViewport = onPhotographicViewport
+        view.photographicDoubleClick = onPhotographicDoubleClick
         view.submit(frame, target: target, requestHDR: requestHDR, transform: transform, insets: fitInsets)
     }
 }
@@ -52,6 +58,17 @@ struct EditingSceneCanvas: NSViewRepresentable {
     var changedTransform: ((ImageTransform) -> Void)?
     var changedDisplay: ((SceneDisplayEnvironment?) -> Void)?
     var pickedPoint: ((CGPoint) -> Void)?
+    var photographicPointer: ((ImageCanvasPointerEvent) -> Bool)?
+    var changedPhotographicViewport: ((ImageCanvasViewportSnapshot) -> Void)?
+    var photographicDoubleClick: (() -> Void)?
+    private var lastToolViewport: ImageCanvasViewportSnapshot?
+    private struct Pointer {
+        let id: UUID, frameID: UUID
+        let consume: (ImageCanvasPointerEvent) -> Bool
+        let viewport: ImageCanvasViewportSnapshot
+        var last: CGPoint
+    }
+    private var pointer: Pointer?
     var cancelPick: (() -> Bool)?
     var changedSampling: ((DevelopmentScenePreviewV1.Sampling) -> Void)?
     var failed: (() -> Void)?
@@ -85,6 +102,7 @@ struct EditingSceneCanvas: NSViewRepresentable {
 
     func submit(_ frame: DevelopmentScenePreviewFrameV1?, target: DevelopmentSceneOutputStateV1.Target,
                 requestHDR: Bool, transform: ImageTransform, insets: NSEdgeInsets) {
+        if pointer != nil, frame == nil || self.sceneFrame?.nativeSize != frame?.nativeSize || self.transform != transform || photographicPointer == nil { cancelPointer() }
         self.sceneFrame = frame; self.transform = transform; self.insets = insets
         self.requestHDR = requestHDR
         if self.target != target {
@@ -173,6 +191,11 @@ struct EditingSceneCanvas: NSViewRepresentable {
         let enableEDR = requestHDR && display.potentialHeadroom > 1
         guard frame.target != .hdr2020 || enableEDR else { return }
         let rect = imageRect(nativeSize: frame.nativeSize)
+        if let changedPhotographicViewport {
+            let viewport = ImageCanvasViewportSnapshot(frameID: frame.id, viewportSize: bounds.size, imagePixelSize: frame.nativeSize,
+                imageRect: rect, backingScale: backing, transform: transform)
+            if viewport != lastToolViewport { lastToolViewport = viewport; changedPhotographicViewport(viewport) }
+        } else { lastToolViewport = nil }
         if transform.physicalMagnification != nil || transform.scale > 1,
            let visible = ImageViewportGeometry.visibleWindow(destination: rect, bounds: bounds),
            frame.nativeSize.width * frame.nativeSize.height * visible.width * visible.height <= 3_000_000 {
@@ -263,13 +286,45 @@ struct EditingSceneCanvas: NSViewRepresentable {
     }
 
     override func mouseDown(with event: NSEvent) {
-        guard let pickedPoint, let frame = sceneFrame else { super.mouseDown(with:event); return }
+        if event.clickCount == 2, let photographicDoubleClick { photographicDoubleClick(); return }
+        if let consume = photographicPointer, let frame = sceneFrame, frame.id == presentedFrameID {
+            let point = convert(event.locationInWindow, from: nil), rect = imageRect(nativeSize: frame.nativeSize)
+            let viewport = ImageCanvasViewportSnapshot(frameID: frame.id, viewportSize: bounds.size, imagePixelSize: frame.nativeSize,
+                imageRect: rect, backingScale: backing, transform: transform)
+            let next = Pointer(id: UUID(), frameID: frame.id, consume: consume, viewport: viewport, last: point)
+            if rect.contains(point), consume(pointerEvent(.began, event: event, owner: next, point: point)) {
+                pointer = next; return
+            }
+        }
+        guard let pickedPoint, let frame = sceneFrame, frame.id == presentedFrameID else { super.mouseDown(with:event); return }
         let hit = convert(event.locationInWindow, from:nil)
         let rect = imageRect(nativeSize: frame.nativeSize)
         guard rect.contains(hit), rect.width > 0, rect.height > 0 else { return }
         pickedPoint(.init(x:(hit.x-rect.minX)/rect.width, y:(hit.y-rect.minY)/rect.height))
     }
+    private func pointerEvent(_ phase: ImageCanvasPointerPhase, event: NSEvent?, owner: Pointer, point: CGPoint) -> ImageCanvasPointerEvent {
+        let tablet = event?.subtype == .tabletPoint
+        return .init(phase: phase, gestureID: owner.id, beganFrameID: owner.frameID, viewport: owner.viewport,
+            locationInView: point, pressure: tablet ? Double(event?.pressure ?? 0) : 1, supportsPressure: tablet,
+            modifiersRawValue: UInt64(event?.modifierFlags.rawValue ?? 0), eventTimestamp: event?.timestamp ?? ProcessInfo.processInfo.systemUptime)
+    }
+    private func cancelPointer() {
+        guard let current = pointer else { return }
+        pointer = nil
+        _ = current.consume(pointerEvent(.cancelled, event: nil, owner: current, point: current.last))
+    }
+    override func mouseDragged(with event: NSEvent) {
+        guard var current = pointer else { super.mouseDragged(with: event); return }
+        current.last = convert(event.locationInWindow, from: nil); pointer = current
+        _ = current.consume(pointerEvent(.changed, event: event, owner: current, point: current.last))
+    }
+    override func mouseUp(with event: NSEvent) {
+        guard let current = pointer else { super.mouseUp(with: event); return }
+        pointer = nil
+        _ = current.consume(pointerEvent(.ended, event: event, owner: current, point: convert(event.locationInWindow, from: nil)))
+    }
     override func cancelOperation(_ sender: Any?) {
+        if pointer != nil { cancelPointer(); return }
         if cancelPick?() == true { return }
         super.cancelOperation(sender)
     }

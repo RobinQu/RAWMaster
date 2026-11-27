@@ -65,6 +65,7 @@ final class DevelopmentSceneRAWV1 {
   private let queue: MTLCommandQueue
   private let pipeline: MTLComputePipelineState
   private let fitPipeline: MTLComputePipelineState
+  private let photographicTile: MTLComputePipelineState
 
   init(device: MTLDevice) throws {
     guard let queue = device.makeCommandQueue() else { throw Color.Failure.metalUnavailable }
@@ -72,9 +73,11 @@ final class DevelopmentSceneRAWV1 {
     options.mathMode = .safe
     let library = try device.makeLibrary(source: Self.kernel, options: options)
     guard let function = library.makeFunction(name: "rmSceneBayerV1"),
-          let fit = library.makeFunction(name: "rmSceneBayerFitV1") else { throw Color.Failure.metalUnavailable }
+          let fit = library.makeFunction(name: "rmSceneBayerFitV1"),
+          let photo = library.makeFunction(name: "rmSceneBayerPhotoV1") else { throw Color.Failure.metalUnavailable }
     self.pipeline = try device.makeComputePipelineState(function: function)
     self.fitPipeline = try device.makeComputePipelineState(function: fit)
+    self.photographicTile = try device.makeComputePipelineState(function: photo)
     self.device=device; self.queue=queue
   }
 
@@ -184,6 +187,31 @@ final class DevelopmentSceneRAWV1 {
     return Result(image:.init(texture:rgb,port:.working,origin:.init(x,y)),sensorSaturation:saturation)
   }
 
+  /// Core Image asks for native rectangles in bottom-left coordinates. Texture row zero is the top row.
+  func encodePhotographicTile(_ raw: Mosaic, region: CGRect, output: MTLTexture, command: MTLCommandBuffer) throws {
+    let sensor = raw.sensor, dimensions = sensor.size
+    let x = Int(region.minX), top = Int(dimensions.y) - Int(region.maxY)
+    let width = Int(region.width), height = Int(region.height)
+    guard command.device === device, output.device === device, output.pixelFormat == .rgba32Float,
+          width > 0, height > 0, Int32(exactly: x) != nil, Int32(exactly: top) != nil,
+          width <= output.width, height <= output.height, let encoder = command.makeComputeCommandEncoder() else {
+      throw Color.Failure.invalidRegion
+    }
+    let coefficients = try Color.makeTransform(from: .working, to: .linearRec709).rows
+    let camera = sensor.calibration.rows
+    func converted(_ row: SIMD4<Float>) -> SIMD4<Float> { row.x * camera.0 + row.y * camera.1 + row.z * camera.2 }
+    var p = Parameters(active: sensor.active, crop: sensor.crop, colors: sensor.colors,
+      output: .init(UInt32(truncatingIfNeeded: x), UInt32(truncatingIfNeeded: top), UInt32(sensor.orientation), 0), black: sensor.black, white: sensor.white,
+      red: converted(coefficients.0), green: converted(coefficients.1), blue: converted(coefficients.2))
+    encoder.setComputePipelineState(photographicTile)
+    encoder.setTexture(raw.texture, index: 0); encoder.setTexture(output, index: 1)
+    encoder.setBytes(&p, length: MemoryLayout<Parameters>.stride, index: 0)
+    let lanes = photographicTile.threadExecutionWidth
+    encoder.dispatchThreads(.init(width: width, height: height, depth: 1), threadsPerThreadgroup:
+      .init(width: lanes, height: min(8, photographicTile.maxTotalThreadsPerThreadgroup / lanes), depth: 1))
+    encoder.endEncoding()
+  }
+
   private static let kernel = #"""
 #include <metal_stdlib>
 using namespace metal;
@@ -218,6 +246,14 @@ BayerPixel bayer_pixel(texture2d<uint, access::read> raw, constant Params& p, ui
     float3 camera = sum / float3(count);
     float3 ap1 = float3(dot(p.red.xyz,camera),dot(p.green.xyz,camera),dot(p.blue.xyz,camera));
     return {ap1,saturated};
+}
+kernel void rmSceneBayerPhotoV1(texture2d<uint, access::read> raw [[texture(0)]],
+                                texture2d<float, access::write> rgb [[texture(1)]],
+                                constant Params& p [[buffer(0)]], uint2 xy [[thread_position_in_grid]]) {
+    int2 at = int2(xy) + as_type<int2>(p.output.xy);
+    int2 size = int2(p.output.z < 5 ? p.crop.zw : p.crop.wz);
+    if (any(at < 0) || any(at >= size)) { rgb.write(float4(0),xy); return; }
+    rgb.write(float4(bayer_pixel(raw,p,uint2(at)).ap1,1),xy);
 }
 kernel void rmSceneBayerV1(texture2d<uint, access::read> raw [[texture(0)]],
                             texture2d<float, access::write> rgb [[texture(1)]],

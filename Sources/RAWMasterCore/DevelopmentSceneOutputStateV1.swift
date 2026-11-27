@@ -2,7 +2,13 @@ import Foundation
 
 public enum DevelopmentSceneOutputStateV1 {
   public enum Failure: Error, Equatable {
-    case invalidHDRLimit, invalidSDRTrim, invalidViewingConditions, invalidDeliveryIdentity, invalidDeliveryTargets
+    case invalidHDRLimit, invalidHDRBand, invalidSDRTrim, invalidViewingConditions, invalidDeliveryIdentity, invalidDeliveryTargets
+  }
+
+  /// Target-linear luminance bands in stops above the 100-nit reference white.
+  public enum HDRBand: Int, CaseIterable, Sendable {
+    case first, second, third, fourth
+    public static let adjustmentRange = -0.5...0.5
   }
 
   public enum Target: String, CaseIterable, Codable, Hashable, Sendable {
@@ -49,6 +55,7 @@ public enum DevelopmentSceneOutputStateV1 {
     public let sdrTrim: SDRTrim
     /// Display-linear highlight ceiling above 100-nit white. Omitted in existing recipes.
     public private(set) var hdrHighlightLimitEV: Double?
+    public private(set) var hdrBandExposureEV: SIMD4<Float>?
     public static let maximumHDRLimitEV = log2(Double(Target.hdr2020.peakNits / Target.hdr2020.referenceWhiteNits))
 
     public init(route: Route = .aces2V1, sdrTrim: SDRTrim) {
@@ -67,17 +74,37 @@ public enum DevelopmentSceneOutputStateV1 {
     public func replacingSDRTrim(_ trim: SDRTrim) -> Self {
       var result = Self(route: route, sdrTrim: trim)
       result.hdrHighlightLimitEV = hdrHighlightLimitEV
+      result.hdrBandExposureEV = hdrBandExposureEV
       return result
     }
 
-    private enum CodingKeys: String, CodingKey { case route, sdrTrim, hdrHighlightLimitEV }
+    public func exposure(in band: HDRBand) -> Double {
+      Double(hdrBandExposureEV?[band.rawValue] ?? 0)
+    }
+
+    public func replacingHDRBand(_ band: HDRBand, exposureEV: Double) throws -> Self {
+      guard HDRBand.adjustmentRange.contains(exposureEV) else { throw Failure.invalidHDRBand }
+      var result = self
+      var stops = hdrBandExposureEV ?? .zero
+      stops[band.rawValue] = Float(exposureEV)
+      result.hdrBandExposureEV = stops == .zero ? nil : stops
+      return result
+    }
+
+    private enum CodingKeys: String, CodingKey { case route, sdrTrim, hdrHighlightLimitEV, hdrBandExposureEV }
 
     public init(from decoder: Decoder) throws {
       let fields = try decoder.container(keyedBy: CodingKeys.self)
-      let required = ["route", "sdrTrim"]
-      try RecipeCoding.requireKeys(decoder, fields.contains(.hdrHighlightLimitEV) ? required + ["hdrHighlightLimitEV"] : required)
+      let optional: [CodingKeys] = [.hdrHighlightLimitEV, .hdrBandExposureEV]
+      try RecipeCoding.requireKeys(decoder, ["route", "sdrTrim"] + optional.filter(fields.contains).map(\.rawValue))
       let output = Self(route: try fields.decode(Route.self, forKey: .route), sdrTrim: try fields.decode(SDRTrim.self, forKey: .sdrTrim))
-      self = try output.replacingHDRLimit(fields.decodeIfPresent(Double.self, forKey: .hdrHighlightLimitEV))
+      var value = try output.replacingHDRLimit(fields.decodeIfPresent(Double.self, forKey: .hdrHighlightLimitEV))
+      if let stops = try fields.decodeIfPresent(SIMD4<Float>.self, forKey: .hdrBandExposureEV) {
+        for band in HDRBand.allCases {
+          value = try value.replacingHDRBand(band, exposureEV: Double(stops[band.rawValue]))
+        }
+      }
+      self = value
     }
   }
 

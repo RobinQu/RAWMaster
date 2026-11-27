@@ -8,6 +8,7 @@ struct PhotosMaskEditingCanvas: View {
     let owner: EditingMaskInputSession.CanvasOwner
     private var context: EditingInteractionContext { owner.context }
     @Binding var transform: ImageTransform
+    var overlayOnly = false
     @State private var overlay: CGImage?
     @State private var overlayGeometry: DevelopmentGeometryMappingV3?
     private struct OverlayKey: Equatable {
@@ -20,6 +21,7 @@ struct PhotosMaskEditingCanvas: View {
         let overlayKey = OverlayKey(revision:input.overlayRevision,mapping:frame?.mapping,visible:input.candidate != nil && input.showsOverlay)
         ZStack {
             let bitmap = editing.previews.primary.frame, fit = editing.previews.primary.fitFallback
+            if !overlayOnly {
             ZoomableImageView(image:nil,actualPixels:editing.actualPixels,
                 transform:.init(get:{transform},set:{if input.canvasOwner == owner { transform = $0 }}),
                 backgroundColor:editing.darkroomBackground.nsColor,
@@ -48,6 +50,7 @@ struct PhotosMaskEditingCanvas: View {
                     guard input.canvasOwner == owner else { return }
                     editing.updateCanvasSampling(snapshot,role:.primary,zooming:active)
                 }
+            }
             if let frame, let viewport = input.viewport, viewport.frameID == frame.frameID {
                 Canvas { graphics,size in
                     guard viewport.viewportSize == size else { return }

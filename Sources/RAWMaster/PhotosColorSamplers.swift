@@ -62,12 +62,21 @@ struct PhotosColorSamplerRows: View {
     @ObservedObject var samplers: PhotosColorSamplers
     let frame: EditingPreviewBitmap?
     let mapping: DevelopmentGeometryMappingV3?
+    var showsScene = false
+    var sceneFrame: DevelopmentScenePreviewFrameV1?
+    var visualizingHDR = false
     let onPick: (Int?) -> Void
     @State private var colors: [DevelopmentDisplayPixel?] = []
+    @State private var linearColors: [DevelopmentDisplayPixel.LinearSample?] = []
+    @State private var sampledInput: Input?
     private struct Input: Equatable {
         let frameID: UUID?
         let points: [DevelopmentSourcePoint]
         let mapping: DevelopmentGeometryMappingV3?
+        let showsScene: Bool
+    }
+    private var input: Input {
+        .init(frameID: showsScene ? sceneFrame?.id : frame?.id, points: samplers.points, mapping: mapping, showsScene: showsScene)
     }
 
     var body: some View {
@@ -82,20 +91,53 @@ struct PhotosColorSamplerRows: View {
                 }
             }
         }.font(.caption2).frame(maxWidth: .infinity, alignment: .leading)
-            .task(id: Input(frameID: frame?.id, points: samplers.points, mapping: mapping)) {
-                colors = samplers.colors(frame: frame, mapping: mapping)
+            .task(id: input) {
+                let request = input
+                if showsScene, let sceneFrame, let mapping {
+                    let points = request.points.map { try? mapping.outputPoint(fromSource: $0) }
+                    let result = await Task.detached(priority: .userInitiated) {
+                        DevelopmentDisplayPixel.linearSamples(sceneFrame, at: points)
+                    }.value
+                    guard !Task.isCancelled else { return }
+                    linearColors = result
+                } else {
+                    linearColors = []
+                    colors = samplers.colors(frame: frame, mapping: mapping)
+                }
+                sampledInput = request
             }
     }
     private func samplerRow(_ index: Int) -> some View {
-        let sample = colors.indices.contains(index) ? colors[index] : nil
+        let current = sampledInput == input
+        let sample = current && colors.indices.contains(index) ? colors[index] : nil
+        let scene = current && linearColors.indices.contains(index) ? linearColors[index] : nil
+        let swatchColor: Color?
+        let readout: String?
+        if showsScene, let scene {
+            let rgb = scene.rgb
+            let scale = max(1, rgb.max())
+            let components = [CGFloat(rgb.x / scale), CGFloat(rgb.y / scale), CGFloat(rgb.z / scale), 1]
+            swatchColor = scene.colorSpace.flatMap { CGColor(colorSpace: $0, components: components) }.map { Color(cgColor: $0) }
+            let space = scene.target == .hdr2020 ? "Rec.2020" : "Rec.709"
+            readout = String(format: "R %.2f  G %.2f  B %.2f · %.0f nits · %@", rgb.x, rgb.y, rgb.z, scene.luminanceNits, space)
+        } else if !showsScene, let sample {
+            let rgb = sample.rgb
+            swatchColor = Color(.sRGB, red: Double(min(1, max(0, rgb.x))), green: Double(min(1, max(0, rgb.y))), blue: Double(min(1, max(0, rgb.z))))
+            readout = String(format: "R %.0f   G %.0f   B %.0f", rgb.x * 255, rgb.y * 255, rgb.z * 255)
+        } else {
+            swatchColor = nil; readout = nil
+        }
         return HStack(spacing: 8) {
-            swatch(sample).accessibilityHidden(true)
+            swatch(swatchColor).accessibilityHidden(true)
             Text("\(index + 1)").fontWeight(.semibold)
-            if let sample {
-                let rgb = sample.rgb * 255
-                Text(String(format: "R %.0f   G %.0f   B %.0f", rgb.x, rgb.y, rgb.z))
+            if let readout {
+                Text(readout)
                     .monospacedDigit().fixedSize(horizontal: false, vertical: true)
-            } else { Text("当前画面外").foregroundStyle(.secondary) }
+            } else if visualizingHDR {
+                Text("退出亮度诊断后可读数").foregroundStyle(.secondary)
+            } else {
+                Text(!current || showsScene && sceneFrame == nil ? "等待读数" : "当前画面外").foregroundStyle(.secondary)
+            }
             Spacer(minLength: 0)
             Menu {
                 Button { onPick(index) } label: { Label("重新取样", systemImage: "eyedropper") }
@@ -110,13 +152,10 @@ struct PhotosColorSamplerRows: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("photos.scopes.sampler.row.\(index + 1)")
     }
-    private func swatch(_ sample: DevelopmentDisplayPixel?) -> some View {
+    private func swatch(_ color: Color?) -> some View {
         let shape = RoundedRectangle(cornerRadius: 4)
-        return shape.fill(sample.map {
-            Color(.sRGB, red: Double(min(1, max(0, $0.rgb.x))),
-                  green: Double(min(1, max(0, $0.rgb.y))), blue: Double(min(1, max(0, $0.rgb.z))))
-        } ?? .clear)
-        .overlay(shape.strokeBorder(.primary.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: sample == nil ? [3, 2] : [])))
+        return shape.fill(color ?? .clear)
+        .overlay(shape.strokeBorder(.primary.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: color == nil ? [3, 2] : [])))
         .frame(width: 18, height: 18)
     }
 }

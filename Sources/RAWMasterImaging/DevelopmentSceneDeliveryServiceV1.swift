@@ -130,8 +130,8 @@ package enum DevelopmentSceneDeliveryServiceV1 {
       let renderer = DevelopmentSceneWorkflowRendererV1(device: device)
       return .serial(renderer, try renderer.prepareFinal(raw, workflow: workflow))
     case .graph(let graph):
-      if DevelopmentSceneTiledDeliveryV1.requiresTiling(mosaic) {
-        return .tiled(try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, models: graph.models))
+      if graph.photographic != nil || DevelopmentSceneTiledDeliveryV1.requiresTiling(mosaic) {
+        return .tiled(try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, models: graph.models, capture: capturedARW))
       }
       let raw = try decoder.develop(mosaic, sampling: .native(nil)).image
       let renderer = try DevelopmentSceneGraphRendererV1(device: device)

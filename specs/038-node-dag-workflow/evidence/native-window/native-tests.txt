@@ -1,0 +1,34 @@
+Test Suite 'Selected tests' started at 2026-11-27 22:14:03.349.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-27 22:14:03.349.
+Test Suite 'EditingCompatibilityGraphTests' started at 2026-11-27 22:14:03.349.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' passed (5.299 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' passed (0.296 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testShippingComponentsExposeHDRModeAndBothGraphEntryPoints]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testShippingComponentsExposeHDRModeAndBothGraphEntryPoints]' passed (0.116 seconds).
+Test Suite 'EditingCompatibilityGraphTests' passed at 2026-11-27 22:14:09.061.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 5.711 (5.711) seconds
+Test Suite 'EditingSceneGraphWindowTests' started at 2026-11-27 22:14:09.061.
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' started.
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (1.201 seconds).
+Test Suite 'EditingSceneGraphWindowTests' passed at 2026-11-27 22:14:10.262.
+	 Executed 1 test, with 0 failures (0 unexpected) in 1.201 (1.201) seconds
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 22:14:10.262.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 6.912 (6.913) seconds
+Test Suite 'Selected tests' passed at 2026-11-27 22:14:10.262.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 6.912 (6.913) seconds
+
+Test Suite 'Selected tests' started at 2026-11-27 22:16:35.996.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-27 22:16:35.997.
+Test Suite 'NavigationMaterialPolicyTests' started at 2026-11-27 22:16:35.997.
+Test Case '-[RAWMasterUITests.NavigationMaterialPolicyTests testDefaultMaterialFollowsPlatformCapability]' started.
+Test Case '-[RAWMasterUITests.NavigationMaterialPolicyTests testDefaultMaterialFollowsPlatformCapability]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.NavigationMaterialPolicyTests testEachAccessibilityPreferenceOverridesBothPlatformMaterials]' started.
+Test Case '-[RAWMasterUITests.NavigationMaterialPolicyTests testEachAccessibilityPreferenceOverridesBothPlatformMaterials]' passed (0.000 seconds).
+Test Suite 'NavigationMaterialPolicyTests' passed at 2026-11-27 22:16:35.997.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 22:16:35.997.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' passed at 2026-11-27 22:16:35.997.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds

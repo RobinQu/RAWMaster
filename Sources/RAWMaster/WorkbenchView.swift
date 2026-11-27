@@ -187,7 +187,9 @@ struct WorkbenchView: View {
             }
         }
         .onExitCommand {
-            if model.canActivateProjectSearch {
+            if model.isNativeEditing, !model.exportWorkspacePresented {
+                _ = model.editing?.cancelSceneInspection()
+            } else if model.canActivateProjectSearch {
                 if model.showSearchFilters { model.hideSearchFilters() } else { model.hideSearchField() }
             }
         }

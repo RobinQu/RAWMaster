@@ -57,7 +57,6 @@
 .dag-picker-base { border-bottom: 1px solid var(--line); }
 .dag-picker-list > p { padding: 4px 6px; margin: 0; }
 #dag-context button { white-space: normal; }
-.edit-center:has(.dag-photo-status) .scene-hud { top: 41px; }
 .dag-draft-actions { display: flex; gap: 5px; padding: 7px; background: var(--active); }
 .dag-marquee { position: absolute; border: 1px solid var(--accent); background: color-mix(in srgb,var(--accent) 15%,transparent); pointer-events: none; }
 .dag-param { display: grid; grid-template-columns: minmax(70px,1fr) 55px; gap: 4px 8px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 12px; }

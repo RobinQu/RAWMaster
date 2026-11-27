@@ -8,9 +8,11 @@ struct PhotosLocalEditingCanvas: View {
     @ObservedObject var input: EditingLocalInputSession
     let context: EditingInteractionContext
     @Binding var transform: ImageTransform
+    var overlayOnly = false
     var body: some View {
         ZStack {
             let frame = editing.previews.primary.frame, fit = editing.previews.primary.fitFallback
+            if !overlayOnly {
             ZoomableImageView(image: nil, actualPixels: editing.actualPixels,
                 transform: .init(get: { transform }, set: { value in if editing.developmentContext == context { transform = value } }),
                 backgroundColor: AppPalette.canvasNSColor,
@@ -40,6 +42,7 @@ struct PhotosLocalEditingCanvas: View {
                     guard editing.developmentContext == context else { return }
                     editing.updateCanvasSampling(snapshot, role: .primary, zooming: active)
                 }
+            }
             if let frame = editing.developmentLocalFrame(context: context), let viewport = input.viewport, viewport.frameID == frame.frameID {
                 localOverlay(frame, imageRect: viewport.imageRect).allowsHitTesting(false).accessibilityHidden(true)
             }
@@ -90,6 +93,21 @@ struct PhotosLocalEditingCanvas: View {
                 drawing.stroke(path, with: .color(.black), lineWidth: 3)
                 drawing.stroke(path, with: .color(.yellow), lineWidth: 1)
             }
+        }
+    }
+}
+
+/// Pointer events arrive from the EDR surface. Both appearances draw the same vector overlays.
+struct EditingScenePhotographicOverlays: View {
+    @ObservedObject var editing: EditingController
+    @Binding var transform: ImageTransform
+    var body: some View {
+        if editing.developmentLocalInput.tool != nil, let context = editing.developmentContext {
+            PhotosLocalEditingCanvas(editing: editing, input: editing.developmentLocalInput, context: context,
+                transform: $transform, overlayOnly: true).allowsHitTesting(false)
+        } else if let owner = editing.developmentMaskInput.canvasOwner {
+            PhotosMaskEditingCanvas(editing: editing, input: editing.developmentMaskInput, owner: owner,
+                transform: $transform, overlayOnly: true).allowsHitTesting(false)
         }
     }
 }

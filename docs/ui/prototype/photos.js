@@ -139,8 +139,8 @@ const RMPhotos = (() => {
   }
   function filter(input) {
     const p = cleanLook(input);
-    const color = p.mono ? 'grayscale(1)' : `saturate(${1 + p.sat * 0.01}) sepia(${Math.max(0, p.warmth) * 0.004}) hue-rotate(${Math.min(0, p.warmth) * 0.13}deg)`;
-    return `brightness(${Math.pow(2, p.ev * 0.55)}) contrast(${1 + p.contrast * 0.006}) ${color}`;
+    const color = `saturate(${1 + p.sat * .01}) sepia(${Math.max(0,p.warmth)*.004}) hue-rotate(${Math.min(0,p.warmth)*.13}deg)`;
+    return `brightness(${Math.pow(2,p.ev*.55)}) contrast(${1+p.contrast*.006}) ${color}${p.mono?' grayscale(1)':''}`;
   }
   const filmStocks = {
     daylight: { name: 'Portra 400 / Portra Endura', contrast: -16, sat: -19, warmth: 56 },

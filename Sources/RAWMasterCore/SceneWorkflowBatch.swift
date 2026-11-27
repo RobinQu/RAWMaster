@@ -27,7 +27,8 @@ package struct SceneWorkflowTemplate: Codable, Equatable, Identifiable, Sendable
         let donor = try DevelopmentSceneGraphV1(graph: scope, output: output)
         if kind == .whole {
             guard path.isEmpty, edge == nil else { throw DevelopmentSceneGraphV1.Failure.ambiguousBoundary }
-            return try donor.remapped()
+            let replacement = try donor.remapped()
+            return try target?.replacingGraph(replacement.graph) ?? replacement
         }
         let base = try target ?? DevelopmentSceneGraphV1(graph: .init(nodes: [], output: .input), output: output)
         guard let location = base.scope(at: path) else { throw DevelopmentSceneGraphV1.Failure.ambiguousBoundary }

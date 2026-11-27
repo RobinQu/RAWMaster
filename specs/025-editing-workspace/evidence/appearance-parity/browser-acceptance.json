@@ -1,0 +1,190 @@
+{
+  "completed_at": "2026-11-27T22:23:20+08:00",
+  "base_commit": "7e91aa4783ac18adaae8a5b8f14a2c109f79059e",
+  "browser": "Google Chrome 158.0.8127.37",
+  "driver": "agent-browser 0.26.0",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "appearance": "light"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "appearance": "dark"
+    }
+  ],
+  "scope": "摄影工作台浏览器交互。照片为仓库 JPEG 代理，HDR 超白区和伪色为模拟。套件之间重复运行的场景分别计数。",
+  "scenario_executions": 126,
+  "suites": [
+    {
+      "suite": "appearance-parity",
+      "command": "python3 scripts/check-ui-prototype.py --appearance-parity-only",
+      "exit_code": 0,
+      "scenario_executions": 11,
+      "seconds": 15.5,
+      "passed": true,
+      "scenarios": [
+        "三种外观共享摄影控件，保留当前呈现",
+        "可重开的光照、自然饱和度、曲线与质感",
+        "鼠标仅提交所拖的超白档，峰值和其他档位独立",
+        "伪色退出、派生、1:1 与 FIT 各自独立",
+        "黑白切彩色并返回 HDR，当前图只调整所选节点",
+        "标题栏移动图窗，空白平移与关闭返回独立",
+        "画布平移后保留照片、窗口与配方",
+        "错误消退，后台可查，重试成功只显示新通知",
+        "窄窗深色的兼容图和返回焦点",
+        "只读图窗的菜单收起、展开与 Esc",
+        "双击本地 HTML 也可按照片亮度查看分档"
+      ]
+    },
+    {
+      "suite": "editor-rails",
+      "command": "python3 scripts/check-ui-prototype.py --editor-rails-only",
+      "exit_code": 0,
+      "scenario_executions": 6,
+      "seconds": 6.9,
+      "passed": true
+    },
+    {
+      "suite": "hdr",
+      "command": "python3 scripts/check-ui-prototype.py --hdr-only",
+      "exit_code": 0,
+      "scenario_executions": 4,
+      "seconds": 5.6,
+      "passed": true
+    },
+    {
+      "suite": "scene-native",
+      "command": "python3 scripts/check-ui-prototype.py --scene-native-only",
+      "exit_code": 0,
+      "scenario_executions": 4,
+      "seconds": 3.1,
+      "passed": true
+    },
+    {
+      "suite": "scene-scopes",
+      "command": "python3 scripts/check-ui-prototype.py --scene-scopes-only",
+      "exit_code": 0,
+      "scenario_executions": 2,
+      "seconds": 2.0,
+      "passed": true
+    },
+    {
+      "suite": "native-graph",
+      "command": "python3 scripts/check-ui-prototype.py --native-graph-only",
+      "exit_code": 0,
+      "scenario_executions": 4,
+      "seconds": 2.6,
+      "passed": true
+    },
+    {
+      "suite": "appearance-activity",
+      "command": "python3 scripts/check-ui-prototype.py --appearance-activity-only",
+      "exit_code": 0,
+      "scenario_executions": 8,
+      "seconds": 15.6,
+      "passed": true
+    },
+    {
+      "suite": "compatibility",
+      "command": "python3 scripts/check-ui-prototype.py --compatibility-only",
+      "exit_code": 0,
+      "scenario_executions": 5,
+      "seconds": 4.0,
+      "passed": true
+    },
+    {
+      "suite": "workflow-batch",
+      "command": "python3 scripts/check-ui-prototype.py --workflow-batch-only",
+      "exit_code": 0,
+      "scenario_executions": 2,
+      "seconds": 4.0,
+      "passed": true
+    },
+    {
+      "suite": "pq-queue",
+      "command": "python3 scripts/check-ui-prototype.py --pq-queue-only",
+      "exit_code": 0,
+      "scenario_executions": 3,
+      "seconds": 2.0,
+      "passed": true
+    },
+    {
+      "suite": "grid-export",
+      "command": "python3 scripts/check-ui-prototype.py --grid-export-only",
+      "exit_code": 0,
+      "scenario_executions": 4,
+      "seconds": 9.2,
+      "passed": true
+    },
+    {
+      "suite": "virtual-copies",
+      "command": "python3 scripts/check-virtual-copies-prototype.py",
+      "exit_code": 0,
+      "scenario_executions": 13,
+      "seconds": 5.6,
+      "passed": true
+    },
+    {
+      "suite": "full",
+      "command": "python3 scripts/check-ui-prototype.py",
+      "exit_code": 0,
+      "scenario_executions": 60,
+      "seconds": 62.2,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "screenshots": [
+    {
+      "file": "01-hdr-appearance.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "8b7a5aac69a641f7ff046995616f54a57d0892157a75fd86df0979d72a9d3a6c"
+    },
+    {
+      "file": "02-shared-tools.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "00fd4495c0141c4a6cbd03d11b824f41bd87ec189f7a3c7a46abb249aeeab634"
+    },
+    {
+      "file": "03-visualize-hdr.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "d77e6dd53ea22f2138d76648e3f97bbab21025fab2ce47d0d552ac4708328953"
+    },
+    {
+      "file": "04-bw-mixer.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "1215aa0a63eb0b19335f64cc0c464ba91eac0ca67048ec46eaf08656ca7d46c9"
+    },
+    {
+      "file": "05-scene-graph.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "e0cf7ae19d23e615aa7f0c8101438740a77d8c0d3a5dc20c6f62904ab5354696"
+    },
+    {
+      "file": "06-error-toast.webp",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "fb26f99218f04c6cf38b423188cf470dce9625833700e2df372449df2c11e155"
+    },
+    {
+      "file": "07-compatibility-narrow.webp",
+      "width": 390,
+      "height": 844,
+      "sha256": "bad91ef92b0e0c5037e180d3d47bc5625514a2b30ab3c58cba3a24203f312387"
+    },
+    {
+      "file": "08-appearance-narrow.webp",
+      "width": 390,
+      "height": 844,
+      "sha256": "07f97fec2e5d66986d64261184fa732a35de2d18d14c8ca9f0871924fd3fcbc0"
+    }
+  ]
+}

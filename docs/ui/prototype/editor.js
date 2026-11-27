@@ -69,6 +69,7 @@ const editTools = {
   masks: ['蒙版', []],
   repair: ['修复', []],
 };
+const bwBands = [['bwRed','红',0],['bwOrange','橙',32],['bwYellow','黄',60],['bwGreen','绿',120],['bwCyan','青',180],['bwBlue','蓝',240],['bwPurple','紫',278],['bwMagenta','洋红',315]];
 const panelIcons = {
   basic: 'sliders',
   tones: 'curve',
@@ -89,6 +90,23 @@ const toneBands = [
   ['high', '高光', -100, 100, 1],
   ['white', '白色色阶', -100, 100, 1],
 ];
+function photoParameters(r = currentEdit().recipe) {
+  if (!r.dag) return r;
+  // Older graphs keep their existing grade on the nodes. A new photographic stage starts neutral.
+  return r.dag.photographic ?? {...Studio.freshRecipe(),sceneOutput:r.sceneOutput,colorMode:r.colorMode};
+}
+function setPhotoParameters(label, fields) {
+  const r=currentEdit().recipe;
+  if (!r.dag) {Studio.patchRecipe(Studio.data.work,label,fields);return;}
+  if (S.dagConnectionDraft) return;
+  const root=structuredClone(r.dag);
+  root.photographic={...photoParameters(r),...fields};
+  delete root.photographic.dag;
+  Studio.setRecipe(Studio.data.work,label,dagProject(root));
+}
+function photoControls() {
+  return !dagEnabled() || SceneEditor.hdr();
+}
 function toneCurve(r) {
   const low = 67 - (r.curveLow || 0) * 0.21,
     high = 25 - (r.curveHigh || 0) * 0.21;
@@ -100,6 +118,7 @@ function adjustments(key, fields) {
     if (!Object.keys(fields).every(field => allowed.includes(field))) return notify('请先完成或取消画布工具，不能同时采用其他调整');
     return canvasToolPatch(key, fields);
   }
+  if (dagEnabled() && photoControls()) {setPhotoParameters(key,fields); render(); return;}
   if (dagEnabled()) return dagPatch(key, fields);
   Studio.patchRecipe(Studio.data.work, key, fields);
   render();
@@ -230,7 +249,7 @@ function activeLayer(r) {
 const adjustmentSections = {
   basic: [
     ['whiteBalance', '白平衡', ['warmth', 'tint']],
-    ['light', '光效', ['ev', 'contrast', 'high', 'shadow', 'white', 'black']],
+    ['light', '光照', ['ev', 'contrast', 'high', 'shadow', 'white', 'black']],
     ['color', '颜色', ['sat', 'vibrance']],
     ['definition', '清晰度', ['definition']],
   ],
@@ -305,6 +324,9 @@ function toolFields(r) {
         )
         .join(''), true, r
     );
+  if (!adjustmentSections[S.tool]) {
+    return dagFields(S.tool,r).map(([key,label,lo,hi,step])=>rangeRow(key,label,lo,hi,step,r[key] ?? dagDefaults[key] ?? 0)).join('');
+  }
   const controls = editTools[S.tool][1];
   const available = Studio.asset(Studio.data.work).online;
   const detail = r.detailOptions ?? {};
@@ -315,14 +337,16 @@ function toolFields(r) {
       <p class="control-hint">Bayer · AHD · 保持原始分辨率</p></div>
     <div class="inspector-text-group">${check('超分辨率 2×', 'detailOption', detail.superResolution, {key:'superResolution', disabled:!available})}
       <p class="control-hint">示例演示启停与撤销；真实处理能力以原生源与模型状态为准。</p></div></section>` : '';
-  return detailOptions + adjustmentSections[S.tool].map(([id, title, fields], i) => {
+  const bw = S.tool==='color' && (r.colorMode==='bw' || r.mono) ? '<section class="bw-mixer"><h3>黑白混合</h3>' +
+    bwBands.map(([key,label])=>rangeRow(key,label,-100,100,1,r[key]??0)).join('')+'</section>' : '';
+  return bw + detailOptions + adjustmentSections[S.tool].map(([id, title, fields], i) => {
     const content = id === 'whiteBalance' ? whiteBalancePanel(r) : id === 'lut'
       ? select('查找表', 'lut', ['无', '柔和胶片', '冷调'], r.lut || '无')
       : (id === 'curves' ? toneCurve(r) : '') + fields.map((key) => {
         const [k, n, lo = -100, hi = 100, step = 1] = controls.find(([k]) => k === key);
         return rangeRow(k, n, lo, hi, step, r[k] ?? 0);
       }).join('');
-    return adjustmentSection(id, title, content, i === 0, r);
+    return adjustmentSection(id, title, content + (id === 'light' ? SceneEditor.visualizeControl() : ''), i === 0, r);
   }).join('') + (S.tool === 'detail' ? btn('增强细节…', 'enhance') : '');
 }
 const wbModes = [['temperature', '色温与色调'], ['gray', '中性灰'], ['skin', '肤色']];
@@ -357,7 +381,7 @@ function flatTabs(title, action, options, current, icons = {}) {
 document.addEventListener('keydown', (event) => {
   if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.defaultPrevented) return;
   const button = event.target.closest('.flat-tabs button');
-  if (!button) return;
+  if (!button || button.closest('.scene-modes')) return;
   event.preventDefault();
   const tabs = [...button.parentElement.querySelectorAll('button:not(:disabled)')];
   tabs[tabs.indexOf(button) + (event.key === 'ArrowLeft' ? -1 : 1)]?.click();
@@ -417,7 +441,7 @@ function scopesPanel(docked) {
   const plots = [['histogram', '直方图'], ['vector', '矢量示波器']];
   const vector = `<svg class="vector-plot" viewBox="0 0 120 48" role="img" aria-label="矢量分布示意"><g fill="none" stroke="#52616a"><circle cx="60" cy="24" r="16"/><circle cx="60" cy="24" r="8"/><path d="M44 24h32m-16-16v32"/></g><path fill="#aab8bd" opacity=".6" d="M52 28l7-11 9 3 4 5-10 6z"/><path stroke="#ffbb80" stroke-dasharray="2 2" d="M60 24l11-12"/></svg>`;
   return `<section class="editing-scopes${docked ? ' docked' : ''}"><div class="row">${flatTabs('示波器', 'scope-plot', plots, mode)}${docked ? btn('在独立窗口显示示波器', 'scopes', '', {icon:'pulse', only: true, cls:'icon-btn'}) : ''}</div>
-    ${mode === 'vector' ? vector : SceneEditor.hdr() ? SceneEditor.rgbPlot() : `<div${docked ? ' class="tone-control" title="左右拖动色调区域调整亮度"' : ''}>${histogram(Studio.data.work)}</div>`}
+    ${mode === 'vector' ? vector : PhotographicScopes.chart(docked)}
     ${colorSamplerPanel()}</section>`;
 }
 const maskTools = [['主体', '背景', '前景实例', '画笔'], ['线性渐变', '径向渐变', '亮度范围']];
@@ -516,7 +540,7 @@ function inspectorRail() {
   return `<div class="inspector-rail" role="toolbar" aria-label="调整面板" aria-orientation="vertical">${Object.entries(
     panelIcons,
   )
-    .filter(([key]) => dagCapabilities().includes(key) || key === 'smart' && !dagEnabled())
+    .filter(([key]) => (photoControls() ? [...dagPanels,'optics'] : dagCapabilities()).includes(key) || key === 'smart' && !dagEnabled())
     .map(([key, symbol]) =>
       `<button type="button" class="rail-tool" data-act="edit-tool" data-val="${key}"
         aria-label="${h(editTools[key][0])}"${S.canvasTool ? ' disabled' : ''} aria-controls="adjustment-panel" aria-pressed="${active === key}">${icon(symbol)}</button>`,
@@ -592,34 +616,33 @@ narrowEditor.addEventListener('change', () => {
   if (S.page === 'edit') render();
 });
 function editorView() {
+  SceneEditor.reportRuntime();
   if (S.canvasRouteTool) { const tool = S.canvasRouteTool; S.canvasRouteTool = null; queueMicrotask(() => { if (S.page === 'edit' && !S.canvasTool) canvasToolOpen(tool); }); }
   const id = Studio.data.work,
     e = currentEdit(),
     versions = S.tool === 'versions';
   const r = canvasToolPreview(versions ? versionRecipe(S.versionView || e.adopted) : e.recipe);
-  if (dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
-  const sceneReview = SceneEditor.nativeReview && SceneEditor.hdr() && S.tool === 'basic' && !dagEnabled() && !S.canvasTool;
-  const inspector = sceneReview ? SceneEditor.reviewInspector() : S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && dagEnabled() && !['smart', 'agent'].includes(S.tool)
+  if (!photoControls() && dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
+  const inspector = S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && !photoControls() && dagEnabled() && !['smart', 'agent'].includes(S.tool)
     ? dagInspector()
     : S.tool === 'agent'
       ? agentInspector()
       : S.tool === 'smart'
         ? smartInspector()
-        : developInspector(r);
+        : developInspector(photoControls() ? photoParameters(r) : r);
   const left = presetList();
-  const sceneTool = SceneEditor.toolNote();
   const canvas = `<div class="edit-center">${dagPhotoCanvas(r, id)}${editorNotices(id)}</div>`;
   const basic = S.tool === 'basic' && !S.canvasTool;
   const sceneControls = basic ? scopesPanel(true) + SceneEditor.modeBar() + (SceneEditor.hdr() ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${SceneEditor.scope(true)}</details>` : '') : '';
-  const right = `<div class="edit-right">${versions ? '' : compatibilityGraphMode ? compatibilityGraphToolbar() : dagToolbar()}
+  const right = `<div class="edit-right">${versions ? '' : usesCompatibilityGraph() ? compatibilityGraphToolbar() : dagToolbar()}
     <aside class="edit-inspector" aria-label="调整工具">${inspectorRail()}
     <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">` +
-    sceneControls + (sceneTool ? `<p class="control-hint">${h(sceneTool)}</p><fieldset class="scene-tool-controls" disabled>${inspector}</fieldset>` : inspector) +
+    sceneControls + (S.dagConnectionDraft && photoControls() ? '<fieldset class="photo-tools-readonly" disabled>'+inspector+'</fieldset>' : inspector) + (dagEnabled() && photoControls() && S.tool==='basic' ? '<section class="photo-node-scope" aria-label="当前节点参数">'+dagInspector()+'</section>' : '') +
     '</div></aside></div>';
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
       <strong>${h(Studio.displayName(id))}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
 </header>
-    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${compatibilityGraphMode ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
+    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${usesCompatibilityGraph() ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
 function editPanel(path, focus) {
   S.editFocus = focus;
@@ -703,7 +726,7 @@ actions['external-result'] = () => {
   notify('已关联为独立候选');
 };
 function adjusted(el) {
-  const r = structuredClone(currentEdit().recipe),
+  const r = structuredClone(photoControls() ? photoParameters() : currentEdit().recipe),
     k = el.dataset.key;
   if (['opacity', 'feather', 'localEV', 'localHighlight', 'localShadow', 'localSat', 'localTexture', 'localSharp', 'rangeLower', 'rangeUpper'].includes(k)) {
     const m = activeLayer(r);
@@ -727,7 +750,8 @@ inputs.adjust = (el) => {
 };
 changes.adjust = (el) => {
   if (S.canvasTool) return canvasToolPatch(el.dataset.label, adjusted(el));
-  Studio.setRecipe(Studio.data.work, el.dataset.label, adjusted(el));
+  if(dagEnabled() && photoControls()) setPhotoParameters(el.dataset.label,adjusted(el));
+  else Studio.setRecipe(Studio.data.work, el.dataset.label, adjusted(el));
   render();
 };
 let numericPointer = null, deferredNumericRender = null;
@@ -752,6 +776,7 @@ changes.adjustNumber = (el) => {
   const row = el.closest('.range'), slider = row.querySelector('[name=adjust]'), value = el.valueAsNumber;
   const recipe = adjusted({ dataset: slider.dataset, value });
   if (S.canvasTool) canvasToolPatch(slider.dataset.label, recipe, false);
+  else if(dagEnabled() && photoControls()) setPhotoParameters(slider.dataset.label,recipe);
   else Studio.setRecipe(Studio.data.work, slider.dataset.label, recipe);
   el.defaultValue = el.value;
   el.removeAttribute('aria-invalid');
@@ -819,39 +844,6 @@ document.addEventListener('dblclick', (event) => {
   if (Number(number.defaultValue) === Number(slider.dataset.default)) return;
   slider.value = slider.dataset.default;
   changes.adjust(slider);
-});
-document.addEventListener('pointerdown', (event) => {
-  const chart = event.target.closest('.tone-control svg');
-  if (!chart || event.button !== 0) return;
-  const box = chart.getBoundingClientRect(),
-    start = event.clientX,
-    id = Studio.data.work;
-  const [key, label, min, max, step] =
-    toneBands[Math.min(4, Math.max(0, Math.floor((5 * (start - box.left)) / box.width)))];
-  const initial = currentEdit().recipe,
-    caption = chart.closest('figure').querySelector('small');
-  let amount = initial[key] || 0;
-  chart.setPointerCapture(event.pointerId);
-  function move(e) {
-    const delta = ((e.clientX - start) * (max - min)) / box.width;
-    amount = Number(
-      Math.max(min, Math.min(max, Math.round(((initial[key] || 0) + delta) / step) * step)).toFixed(2),
-    );
-    caption.textContent = label + ' ' + amount;
-    const img = $('.developed');
-    if (img) img.style.filter = RMPhotos.filter(RMPhotos.displayLook({ ...initial, [key]: amount }));
-  }
-  function finish(e) {
-    chart.removeEventListener('pointermove', move);
-    chart.removeEventListener('pointerup', finish);
-    chart.removeEventListener('pointercancel', finish);
-    if (e.type === 'pointerup' && chart.isConnected && Studio.data.work === id)
-      Studio.patchRecipe(id, '直方图 · ' + label, { [key]: amount });
-    render();
-  }
-  chart.addEventListener('pointermove', move);
-  chart.addEventListener('pointerup', finish);
-  chart.addEventListener('pointercancel', finish);
 });
 changes.crop = (el) => adjustments('裁切比例', { crop: el.value });
 changes.lut = (el) => adjustments('分级 LUT', { lut: el.value });

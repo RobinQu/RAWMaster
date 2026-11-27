@@ -154,7 +154,18 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
       name: "DSC05995", width: 9504, height: 6336)
   }
 
-  private func verifyFrozenGraph(path: String, hash: String, name: String, width: Int, height: Int) async throws {
+  func testOptInPhotographic60MPFrozenGraphPublishesPQTogetherWithTheEditedSDRDerivative() async throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_60MP_ARW"] else {
+      throw XCTSkip("Supply the authorized 60 MP DSC05995 ARW")
+    }
+    var adjustments = DevelopmentAdjustmentsV3()
+    adjustments.light = .init(enabled: true, exposure: 0.25)
+    adjustments.color = .init(enabled: true, saturation: 0.32, vibrance: -0.15)
+    try await verifyFrozenGraph(path: path, hash: "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+      name: "DSC05995-photographic", width: 9504, height: 6336, photographic: adjustments)
+  }
+
+  private func verifyFrozenGraph(path: String, hash: String, name: String, width: Int, height: Int, photographic: DevelopmentAdjustmentsV3? = nil) async throws {
     typealias Graph = DevelopmentSceneGraphV1
     let root = try tempDirectory(), database = root.appendingPathComponent("library.sqlite")
     let sourceURL = URL(fileURLWithPath: path)
@@ -180,7 +191,7 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
     let mix = Graph.Node(name: "Layer", operation: .layer(base: .input,
       layers: [.init(.node(bright.id), weight: 0.5)], enabled: true))
     let output = DevelopmentSceneOutputStateV1.Version(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
-    let graph = try Graph(graph: .init(nodes: [bright, mix, mask], output: .node(mix.id)), output: output)
+    let graph = try Graph(graph: .init(nodes: [bright, mix, mask], output: .node(mix.id)), output: output, photographic: photographic)
     let candidate = try store.appendEditingVersion(.init(workID: work.id, parentVersionID: base.id, kind: .development,
       source: source, recipe: .init(sceneGraph: graph)))
     let initial = try store.freezeSceneDelivery(versionID: candidate.id, format: .avif10)
@@ -208,7 +219,8 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
     let receipts = try [hdr, sdr].map { receipt in
       XCTAssertEqual(receipt.artifact.pixelWidth, width); XCTAssertEqual(receipt.artifact.pixelHeight, height)
       let execution = try XCTUnwrap(receipt.execution)
-      XCTAssertEqual(execution.backend, .rust); XCTAssertNil(execution.fallbackReason)
+      XCTAssertEqual(execution.backend, photographic == nil ? .rust : .mixed); XCTAssertNil(execution.fallbackReason)
+      if photographic != nil { XCTAssertEqual(execution.dagBackend, .rust); XCTAssertNotNil(execution.photographicEngine) }
       XCTAssertGreaterThan(execution.dispatches, 0)
       XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
       if width == 9504 { XCTAssertGreaterThan(execution.tiles, 1) }

@@ -106,7 +106,7 @@ enum DevelopmentLocalAnalysisV3 {
     }
     var preflight = p.recipe.adjustmentsV3!.localEdits;preflight.operations.append(pending)
     try preflight.validate(expectedSource:sourceBinding);_ = try DevelopmentLocalWorkEstimatorV1.estimate(preflight)
-    let graph = try DevelopmentRendererV3.develop(capture,recipe:p.recipe,applyGeometry:false,context:context,localDecoderContractFingerprint:decoderContractFingerprint,preparingLocal:true,checkCancellation:{ try cancellation?.check() })
+    let graph = try request.measurementGraph(capture,recipe:p.recipe,context:context,localDecoder:decoderContractFingerprint,preparingLocal:true,checkCancellation:{ try cancellation?.check() })
     try DevelopmentLocalEngineV3.validatePixels(graph.image,context:context,checkCancellation:{ try cancellation?.check() })
     try cancellation?.check()
     let binding = DevelopmentAnalysisBinding(sourceContentID:sourceBinding.sourceContentID,sourceGeneration:request.preview.sourceGeneration,
@@ -167,8 +167,8 @@ enum DevelopmentLocalAnalysisV3 {
                                             sourceBinding:DevelopmentLocalEditSourceBinding,decoderContractFingerprint:String,
                                             context:CIContext,cancellation:DevelopmentAnalysisCancellation?)throws->(DevelopmentResolvedLocalBatch,DevelopmentLocalPixelAttestation) {
     _ = try DevelopmentLocalWorkEstimatorV1.estimate(p.recipe.adjustmentsV3!.localEdits)
-    let graph=try DevelopmentRendererV3.develop(capture,recipe:p.recipe,applyGeometry:false,context:context,
-      localDecoderContractFingerprint:decoderContractFingerprint,preparingLocal:true,checkCancellation:{ try cancellation?.check() })
+    let graph=try request.measurementGraph(capture,recipe:p.recipe,context:context,
+      localDecoder:decoderContractFingerprint,preparingLocal:true,checkCancellation:{ try cancellation?.check() })
     try DevelopmentLocalEngineV3.validatePixels(graph.image,context:context,checkCancellation:{ try cancellation?.check() })
     let binding=DevelopmentAnalysisBinding(sourceContentID:sourceBinding.sourceContentID,sourceGeneration:request.preview.sourceGeneration,
       expectedRecipeFingerprint:request.expectedRecipeFingerprint,stage:.workingImageBeforeGeometry)

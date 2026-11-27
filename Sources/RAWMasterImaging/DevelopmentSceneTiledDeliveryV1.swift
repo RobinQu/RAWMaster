@@ -13,15 +13,26 @@ final class DevelopmentSceneTiledDeliveryV1 {
   private let graph: DevelopmentSceneGraphV1
   private let queue: MTLCommandQueue
   private let budget: Int
+  private let photographic: DevelopmentScenePhotographicV1?
+  private let modelPrefix: DevelopmentSceneModelPreviewV1?
   private let maximumTileEdge: Int
 
   init(decoder: DevelopmentSceneRAWV1, mosaic: DevelopmentSceneRAWV1.Mosaic, graph: DevelopmentSceneGraphV1,
-       models: DevelopmentSceneModelProgramV1? = nil, surfaceBudget: Int = DevelopmentSceneGraphRendererV1.defaultSurfaceBudget,
+       models: DevelopmentSceneModelProgramV1? = nil, capture: URL? = nil, surfaceBudget: Int = DevelopmentSceneGraphRendererV1.defaultSurfaceBudget,
        maximumTileEdge: Int = 1536) throws {
-    // All currently admitted model prefixes require a full image, including segmentation.
-    guard (models ?? graph.models)?.stages.isEmpty != false else { throw DevelopmentSceneModelPipelineV1.Failure.surfaceBudget }
+    try graph.validatePhotographicCoverage(using: models)
     guard surfaceBudget > 0, (1...4096).contains(maximumTileEdge) else { throw Renderer.Failure.surfaceBudget }
     guard let queue = mosaic.texture.device.makeCommandQueue() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
+    if let program = models ?? graph.models, !program.stages.isEmpty {
+      guard graph.photographic != nil else { throw DevelopmentSceneModelPipelineV1.Failure.surfaceBudget }
+      modelPrefix = try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: decoder,
+        provider: DevelopmentSceneProductionModelProvider(device: mosaic.texture.device), budget: surfaceBudget)
+    } else { modelPrefix = nil }
+    if let parameters = graph.photographic {
+      guard let capture else { throw DevelopmentSceneColorV1.Failure.invalidTexture }
+      photographic = try DevelopmentScenePhotographicV1(parameters, capture: capture, mosaic: mosaic, decoder: decoder,
+        modeled: modelPrefix?.native.image)
+    } else { photographic = nil }
     self.decoder = decoder; self.mosaic = mosaic; self.graph = graph; self.queue = queue
     self.budget = surfaceBudget; self.maximumTileEdge = maximumTileEdge
   }
@@ -35,12 +46,14 @@ final class DevelopmentSceneTiledDeliveryV1 {
   func render(_ target: DevelopmentSceneOutputStateV1.Target) throws
     -> (display: DevelopmentSceneOutputV1.DisplayImage, execution: DevelopmentSceneExecutionReceiptV1?) {
     try Task.checkCancellation()
-    let device = mosaic.texture.device, width = Int(mosaic.sensor.size.x), height = Int(mosaic.sensor.size.y)
+    let device = mosaic.texture.device, width = photographic?.width ?? Int(mosaic.sensor.size.x), height = photographic?.height ?? Int(mosaic.sensor.size.y)
+    let fixedBytes = mosaic.texture.allocatedSize + (modelPrefix?.residentBytes ?? 0)
+      + (photographic == nil ? 0 : DevelopmentScenePhotographicV1.intermediateBytes)
     let geometry = Renderer.Geometry(width: width, height: height)
     let output = Self.descriptor(.rgba32Float, width, height)
-    let required = device.heapTextureSizeAndAlign(descriptor: output).size + mosaic.texture.allocatedSize
+    let required = device.heapTextureSizeAndAlign(descriptor: output).size + fixedBytes
     guard required < budget, let destination = device.makeTexture(descriptor: output) else { throw Renderer.Failure.surfaceBudget }
-    let resident = destination.allocatedSize + mosaic.texture.allocatedSize
+    let resident = destination.allocatedSize + fixedBytes
     let hasTrim = target == .sdr709 && graph.output.sdrTrim.exposureEV != 0
     let edge = min(maximumTileEdge, max(width, height))
     let outputRenderer = try Renderer(device: device, backend: .swift)
@@ -51,11 +64,19 @@ final class DevelopmentSceneTiledDeliveryV1 {
         try autoreleasepool {
           try Task.checkCancellation()
           let rect = MTLRegionMake2D(x, y, min(edge, width - x), min(edge, height - y))
-          let raw = try decoder.develop(mosaic, sampling: .native(rect), maximumBytes: budget - destination.allocatedSize)
+          let source: DevelopmentSceneMetalV1.Image
+          let sensorBytes: Int
+          if let photographic {
+            source = try photographic.render(.native(rect), maximumBytes: budget - resident)
+            sensorBytes = 0
+          } else {
+            let raw = try decoder.develop(mosaic, sampling: .native(rect), maximumBytes: budget - destination.allocatedSize)
+            source = raw.image; sensorBytes = raw.sensorSaturation.allocatedSize
+          }
           let tileWidth = rect.size.width, tileHeight = rect.size.height
           let colorBytes = device.heapTextureSizeAndAlign(descriptor: Self.descriptor(.rgba32Float, tileWidth, tileHeight)).size
           let maskBytes = device.heapTextureSizeAndAlign(descriptor: Self.descriptor(.r32Float, tileWidth, tileHeight)).size
-          let outputReserve = raw.sensorSaturation.allocatedSize + colorBytes * (hasTrim ? 2 : 1)
+          let outputReserve = sensorBytes + colorBytes * (hasTrim ? 2 : 1)
           // Rust counts logical texel bytes. Charge the largest actual/logical ratio of the
           // two possible surface formats, including short edge tiles. Each pass is one tile.
           let padding = max(1, Double(max(colorBytes, 4 * maskBytes)) / Double(16 * tileWidth * tileHeight))
@@ -65,7 +86,8 @@ final class DevelopmentSceneTiledDeliveryV1 {
           // One-shot delivery never revisits a tile. Drop its analytic and node caches before
           // the next region, while retaining the pinned ACES output transform across regions.
           let renderer = try Renderer(device: device, surfaceBudget: graphBudget)
-          let master = try renderer.prepareFinal(raw.image, geometry: geometry, graph: graph, tileEdge: edge)
+          let master = try renderer.prepareFinalInput(source, geometry: geometry, graph: graph, masks: photographic?.alignsWithSensor == false ? [:] : modelPrefix?.native.masks ?? [:],
+            modelScale: modelPrefix?.native.scale ?? 1, tileEdge: edge)
           guard let current = renderer.lastReceipt else { throw Renderer.Failure.invalidImage }
           let tile = try outputRenderer.renderDelivery(master, target: target)
           guard tile.origin == SIMD2(x, y), tile.texture.width == rect.size.width, tile.texture.height == rect.size.height,
@@ -86,7 +108,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
       }
     }
     guard let display, let total else { throw Renderer.Failure.invalidImage }
-    return (display, total)
+    return (display, total.includingPhotographic(photographic != nil))
   }
 
   private static func descriptor(_ format: MTLPixelFormat, _ width: Int, _ height: Int) -> MTLTextureDescriptor {

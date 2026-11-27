@@ -11,7 +11,7 @@ import RAWMasterImaging
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             guard lhs.source == rhs.source, lhs.view == rhs.view, lhs.graph.models == rhs.graph.models,
-                  lhs.graph.output == rhs.graph.output else { return false }
+                  lhs.graph.output == rhs.graph.output, lhs.graph.photographic == rhs.graph.photographic else { return false }
             func samePixels(_ a: DevelopmentSceneGraphV1.Scope, _ b: DevelopmentSceneGraphV1.Scope) -> Bool {
                 guard a.output == b.output, a.nodes.count == b.nodes.count else { return false }
                 let byID = Dictionary(uniqueKeysWithValues: b.nodes.map { ($0.id, $0.operation) })
@@ -52,7 +52,7 @@ import RAWMasterImaging
         guard open else { return }
         let next = Request(source: source, graph: graph, view: view)
         guard next != request else { return }
-        resetAnalysis()
+        resetAnalysis(keepSamples: request?.source == source)
         request = next; busy = true
         let id = generation
         worker = Task { [weak self] in
@@ -67,6 +67,7 @@ import RAWMasterImaging
             } catch {
                 guard !Task.isCancelled, let self, self.generation == id else { return }
                 self.busy = false; self.worker = nil
+                self.native = nil; self.report = nil
                 self.failure = error.localizedDescription
                 self.onFailure?(error.localizedDescription)
             }
@@ -76,9 +77,10 @@ import RAWMasterImaging
     func leavePhoto() {
         resetAnalysis(); open = false; overlays = []; picking = false; point = nil
     }
-    func resetAnalysis() {
+    func resetAnalysis(keepSamples: Bool = false) {
         worker?.cancel(); worker = nil; generation = UUID(); request = nil
-        native = nil; report = nil; busy = false; failure = nil
+        if !keepSamples { native = nil; report = nil }
+        busy = false; failure = nil
     }
     func stopAndJoin() async {
         let pending = worker; resetAnalysis(); await pending?.value
@@ -188,57 +190,6 @@ struct EditingSceneScopesInspector: View {
     }
 }
 
-struct EditingSceneHistogram: View {
-    typealias Distribution = DevelopmentSceneScopesV1.DisplayDistribution
-    let plot: Distribution?
-    let stage: DevelopmentSceneScopesV1.Stage
-    let headroom: Float
-    let limitEV: Double?
-    let failure: String?
-    let retry: () -> Void
-
-    var body: some View {
-        VStack(spacing: 4) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 6).fill(Color(white: 0.055))
-                if let plot {
-                    Canvas { graphics, size in
-                        let white = size.width * CGFloat(Distribution.sdrBins) / CGFloat(Distribution.binCount)
-                        let evWidth = size.width * CGFloat(Distribution.binsPerEV) / CGFloat(Distribution.binCount)
-                        func marker(_ x: CGFloat, color: Color, dash: [CGFloat]) {
-                            var path = Path(); path.move(to: .init(x: x, y: 0)); path.addLine(to: .init(x: x, y: size.height))
-                            graphics.stroke(path, with: .color(color), style: .init(lineWidth: 1, dash: dash))
-                        }
-                        PhotosHistogramDrawing.fill([(plot.red, .red), (plot.green, .green), (plot.blue, .blue)], in: graphics, size: size)
-                        marker(white, color: .white, dash: [])
-                        for tick in 1...3 { marker(white + CGFloat(tick) * evWidth, color: .gray, dash: [2, 3]) }
-                        if stage == .target {
-                            marker(white + CGFloat(min(4, max(0, log2(headroom)))) * evWidth, color: AppPalette.warning, dash: [4, 3])
-                            if let limitEV { marker(white + CGFloat(limitEV) * evWidth, color: AppPalette.accent, dash: []) }
-                        }
-                    }
-                } else if let failure {
-                    Button("重试直方图", action: retry).controlSize(.small).help(failure)
-                } else { ProgressView("读取直方图…").controlSize(.mini) }
-            }.frame(height: PhotosColorScopes.plotHeight)
-                .accessibilityIdentifier("photos.scopes.histogram.plot")
-            GeometryReader { geometry in
-                let width = geometry.size.width
-                let white = width * CGFloat(Distribution.sdrBins) / CGFloat(Distribution.binCount)
-                let evWidth = width * CGFloat(Distribution.binsPerEV) / CGFloat(Distribution.binCount)
-                ZStack(alignment: .leading) {
-                    Text(stage == .target ? "HDR 目标 · RGB" : "SDR 派生 · RGB")
-                    Text("100 nits").position(x: white, y: 6)
-                    ForEach(1...3, id: \.self) { tick in
-                        Text("+\(tick)").position(x: white + CGFloat(tick) * evWidth, y: 6)
-                    }
-                }
-            }.frame(height: 12).font(.system(size: 9)).foregroundStyle(.secondary)
-        }.accessibilityElement(children: .contain)
-        .accessibilityLabel("扩展 RGB 直方图，SDR 白点 100 nits，每档 1 EV")
-    }
-}
-
 struct EditingSceneScopesCanvas: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var scopes: EditingSceneScopesState
@@ -247,7 +198,17 @@ struct EditingSceneScopesCanvas: View {
 
     var body: some View {
         sceneCanvas
+            .overlay { EditingScenePhotographicOverlays(editing: editing, transform: $transform) }
             .overlay { reportOverlay }
+            .overlay {
+                if let frame = editing.sceneFrame, let mapping = editing.presentedSamplerMapping {
+                    GeometryReader { geometry in
+                        let rect = ImageViewportGeometry.imageRect(pixelSize: frame.nativeSize, viewport: geometry.size,
+                            transform: transform, backingScale: backingScale, fitInsets: EditingLayout.fitInsets)
+                        PhotosColorSamplerMarkers(samplers: editing.colorSamplers, mapping: mapping, rect: rect)
+                    }.allowsHitTesting(false)
+                }
+            }
             .overlay(alignment: .bottom) { pickHint }
     }
 
@@ -255,23 +216,30 @@ struct EditingSceneScopesCanvas: View {
         EditingSceneCanvas(
             frame: editing.sceneFrame,
             target: editing.sceneTarget,
-            requestHDR: editing.sceneRequestedHDR,
+            requestHDR: editing.sceneRequestedHDR && !editing.sceneVisualizeHDR,
             fitInsets: EditingLayout.fitInsets,
             transform: $transform,
             onDisplay: editing.setSceneDisplay,
             onSampling: editing.setSceneSampling,
             onPresentationError: editing.scenePresentationFailed,
             onPick: pickHandler,
-            onCancelPick: cancelPickHandler
+            onCancelPick: cancelPickHandler,
+            onPhotographicPointer: editing.scenePhotographicPointer,
+            onPhotographicViewport: editing.scenePhotographicViewportChanged,
+            onPhotographicDoubleClick: pickHandler == nil && editing.scenePhotographicPointer == nil ? {
+                editing.setActualPixels(!editing.actualPixels, nativeEvent: true)
+            } : nil
         )
     }
 
     private var pickHandler: ((CGPoint) -> Void)? {
+        if let pick = editing.scenePhotographicPickHandler { return pick }
         guard scopes.picking else { return nil }
         return { point in scopes.lock(point) }
     }
 
     private var cancelPickHandler: (() -> Bool)? {
+        if let cancel = editing.scenePhotographicCancelPick { return cancel }
         guard scopes.picking else { return nil }
         return { scopes.escape() }
     }
@@ -279,7 +247,7 @@ struct EditingSceneScopesCanvas: View {
     @ViewBuilder private var reportOverlay: some View {
         if let frame = editing.sceneFrame,
            frame.target == editing.sceneTarget,
-           let report = scopes.report,
+           let report = scopes.report, !scopes.busy, !editing.sceneVisualizeHDR,
            !scopes.overlays.isEmpty || scopes.point != nil {
             GeometryReader { geometry in
                 let rect = ImageViewportGeometry.imageRect(

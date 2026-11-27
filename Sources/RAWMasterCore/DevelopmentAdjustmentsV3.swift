@@ -197,6 +197,9 @@ public struct DevelopmentBlackAndWhiteMixerV3: Codable, Equatable, Sendable {
 }
 
 public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
+  /// User-selected photographic B&W applies the mixer after chromatic tools and masks. Older recipes keep their original ordering.
+  public enum Placement: String, Codable, Sendable { case afterPhotographicColorV1 }
+  public var placement: Placement?
   public var enabled: Bool
   public var intensity: Double
   public var neutrals: Double
@@ -220,10 +223,10 @@ public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
     try mixer?.validate()
     guard grainSamplingVersion == nil || grain != 0 else { throw EditingError.invalidRecipe }
   }
-  private enum CodingKeys: String, CodingKey { case enabled, intensity, neutrals, tone, grain, grainSamplingVersion, mixer }
+  private enum CodingKeys: String, CodingKey { case enabled, intensity, neutrals, tone, grain, grainSamplingVersion, mixer, placement }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
-    try RecipeCoding.requireKeys(decoder,["enabled","intensity","neutrals","tone","grain"] + (c.contains(.grainSamplingVersion) ? ["grainSamplingVersion"]:[]) + (c.contains(.mixer) ? ["mixer"]:[]))
+    try RecipeCoding.requireKeys(decoder,["enabled","intensity","neutrals","tone","grain"] + (c.contains(.grainSamplingVersion) ? ["grainSamplingVersion"]:[]) + (c.contains(.mixer) ? ["mixer"]:[]) + (c.contains(.placement) ? ["placement"]:[]))
     enabled = try c.decode(Bool.self,forKey:.enabled)
     intensity = try c.decode(Double.self,forKey:.intensity)
     neutrals = try c.decode(Double.self,forKey:.neutrals)
@@ -231,6 +234,7 @@ public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
     grain = try c.decode(Double.self,forKey:.grain)
     grainSamplingVersion = c.contains(.grainSamplingVersion) ? try c.decode(DevelopmentGrainSamplingVersion.self,forKey:.grainSamplingVersion):nil
     mixer = try c.decodeIfPresent(DevelopmentBlackAndWhiteMixerV3.self,forKey:.mixer)
+    placement = try c.decodeIfPresent(Placement.self, forKey: .placement)
     try validate()
   }
   public func encode(to encoder: Encoder) throws {
@@ -242,6 +246,7 @@ public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
     try c.encode(grain,forKey:.grain)
     try c.encodeIfPresent(grainSamplingVersion,forKey:.grainSamplingVersion)
     try c.encodeIfPresent(mixer,forKey:.mixer)
+    try c.encodeIfPresent(placement,forKey:.placement)
   }
 }
 

@@ -1,0 +1,51 @@
+{
+  "artifactBytes" : [
+    13285431,
+    9593726
+  ],
+  "artifactSHA256" : [
+    "f6df8d5c13631fa32c9fa9972da940b0d163d27bf2b0e72a4ea8a11e8cc77780",
+    "7e7481e385266af87b47ec87f02b5f74c2f5c5cad54727c6ccf30fc750649e30"
+  ],
+  "elapsedMs" : 1750.9832080000001,
+  "execution" : [
+    {
+      "backend" : "mixed",
+      "budgetBytes" : 1610612736,
+      "coverageCacheHits" : 0,
+      "cpuMilliseconds" : 57.131371000000023,
+      "dagBackend" : "rust",
+      "dispatches" : 105,
+      "nodeCacheHits" : 0,
+      "nodes" : 105,
+      "peakBytes" : 1458929664,
+      "photographicEngine" : "scene-photographic-v1-f32-metal",
+      "tiles" : 35
+    },
+    {
+      "backend" : "mixed",
+      "budgetBytes" : 1610612736,
+      "coverageCacheHits" : 0,
+      "cpuMilliseconds" : 64.999958000000021,
+      "dagBackend" : "rust",
+      "dispatches" : 105,
+      "nodeCacheHits" : 0,
+      "nodes" : 105,
+      "peakBytes" : 1458929664,
+      "photographicEngine" : "scene-photographic-v1-f32-metal",
+      "tiles" : 35
+    }
+  ],
+  "sha256" : "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "size" : [
+    9504,
+    6336
+  ],
+  "targets" : [
+    "hdr2020",
+    "sdr709"
+  ],
+  "versionID" : "10B8E5E3-6281-41FC-8AD0-923034BA1896",
+  "workflowNodes" : 3,
+  "workflowSHA256" : "db98af5f6d2ea516e353e291903a9a12002c61faf2a319d728d9173801d9058e"
+}

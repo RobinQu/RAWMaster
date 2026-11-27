@@ -4,10 +4,16 @@ import RAWMasterCore
 
 struct EditingSceneGraphToolbar: View {
     @ObservedObject var editing: EditingController
+    private var photoTools: GraphPhotoTools
     @StateObject private var presenter = EditingCompatibilityGraphPanel()
     @StateObject private var framing = SceneGraphFraming()
     @FocusState private var graphFocused: Bool
     @AccessibilityFocusState private var graphAccessibilityFocused: Bool
+
+    init(editing: EditingController) {
+        self.editing = editing
+        photoTools = GraphPhotoTools(editing)
+    }
 
     var body: some View {
         let state = editing.sceneGraphState
@@ -17,7 +23,8 @@ struct EditingSceneGraphToolbar: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("当前节点").font(.caption2).foregroundStyle(.secondary)
             HStack(spacing: 6) {
-                Menu {
+                GraphActionMenu(title: state.selection.count > 1 ? "已选 \(state.selection.count) 个节点" : active?.name ?? "请选择节点",
+                                stretches: true) {
                     ForEach(nodes) { node in
                         Button(node.name) { if let ticket { editing.selectSceneNodes([node.id], ticket: ticket) } }
                     }
@@ -26,9 +33,6 @@ struct EditingSceneGraphToolbar: View {
                     Button("自动整理") { framing.reset() }
                         .disabled(!state.open)
                     Menu("更多节点操作") { nodeCommands(editing, ticket: ticket) }
-                } label: {
-                    Text(state.selection.count > 1 ? "已选 \(state.selection.count) 个节点" : active?.name ?? "请选择节点")
-                        .lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .disabled(ticket == nil)
                 .accessibilityIdentifier("editing.scene.graph.picker")
@@ -42,7 +46,7 @@ struct EditingSceneGraphToolbar: View {
                     }
                 }.accessibilityIdentifier("editing.scene.graph.ignore")
                 AppIconButton(systemName: "square.3.layers.3d", label: "Graph 窗口", isSelected: state.open,
-                              isEnabled: state.open || ticket != nil, action: toggle)
+                              isEnabled: !photoTools.isActive && (state.open || ticket != nil), action: toggle)
                     .focused($graphFocused).accessibilityFocused($graphAccessibilityFocused)
                     .accessibilityIdentifier("editing.scene.graph.toggle")
             }
@@ -57,6 +61,7 @@ struct EditingSceneGraphToolbar: View {
         .onChange(of: editing.work?.id) { _, id in presenter.fitToContext(id) }
         .onChange(of: editing.sceneGraphState.open) { _, open in if !open { presenter.close(restoreFocus: false) } }
         .onChange(of: editing.sceneGraphState.connection != nil) { _, draft in presenter.setExtraMinimumHeight(draft ? 44 : 0) }
+        .onChange(of: photoTools.isActive) { _, active in presenter.setCanvasToolActive(active) }
         .onDisappear { presenter.close(restoreFocus: false) }
     }
 
@@ -101,14 +106,12 @@ private struct EditingSceneGraphWindow: View {
             SceneGraphViewport(editing: editing, framing: framing, scope: scope)
                 .overlay(alignment: .topLeading) {
                     graphCommands
-                        .padding(5).background(.regularMaterial, in: .rect(cornerRadius: AppDesign.Radius.container))
-                        .padding(.trailing, 74).padding(6)
+                        .padding(AppDesign.Spacing.inline)
                 }
                 .overlay(alignment: .bottomLeading) {
                     if let draft = editing.sceneGraphState.connection {
                         connectionControls(draft, scope: scope)
-                            .padding(6).background(.regularMaterial, in: .rect(cornerRadius: AppDesign.Radius.container))
-                            .padding(.trailing, 40).padding(6)
+                            .padding(AppDesign.Spacing.inline)
                     }
                 }
         }
@@ -116,39 +119,42 @@ private struct EditingSceneGraphWindow: View {
 
     private var graphCommands: some View {
         let path = editing.sceneGraphState.path, ticket = editing.sceneGraphTicket
-        return HStack(spacing: 7) {
+        return HStack(spacing: AppDesign.Spacing.row) {
             if !path.isEmpty {
                 Button("上一级") { if let ticket { editing.moveSceneGraphPath(Array(path.dropLast()), ticket: ticket) } }
                     .accessibilityIdentifier("scene.graph.group.back")
             }
             if !path.isEmpty { Text("第 \(path.count) 层").lineLimit(1).font(.caption) }
-            Menu("添加") { addCommands(editing, ticket: ticket) }.disabled(ticket == nil)
-            Menu("更多") {
+            GraphActionMenu(title: "添加") { addCommands(editing, ticket: ticket) }.disabled(ticket == nil)
+            GraphActionMenu(title: "更多") {
                 nodeCommands(editing, ticket: ticket)
                 Divider()
                 Button("工作流模板…") { templateTicket = ticket; templatesOpen = true }
             }.disabled(ticket == nil)
             Button("100%") { framing.update(path, .init(mode: .readable)) }
             Button("适合全图") { framing.update(path, .init(mode: .fit)) }.accessibilityIdentifier("scene.graph.fit")
-        }.controlSize(.small).fixedSize(horizontal: true, vertical: false)
+        }.buttonStyle(AppFlatButtonStyle()).fixedSize(horizontal: true, vertical: false)
          .popover(isPresented: $templatesOpen) {
              if let templateTicket { SceneWorkflowTemplatePopover(editing: editing, ticket: templateTicket) }
          }
     }
     private func connectionControls(_ draft: EditingSceneGraphState.Connection, scope: Graph.Scope) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
+        let eligible = scope.nodes.filter { !$0.operation.isCoverage }
+        return VStack(alignment: .leading, spacing: AppDesign.Spacing.row) {
             Text(draft.reason ?? "连接草稿 · 主图仍显示已提交结果")
                 .font(.caption2).foregroundStyle(draft.reason == nil ? Color.secondary : AppPalette.warning)
             HStack {
-                Picker("新来源", selection: Binding(get: { draft.replacement }, set: { editing.proposeSceneConnection($0) })) {
-                    Text("输入").tag(Graph.Endpoint.input)
-                    ForEach(scope.nodes.filter { !$0.operation.isCoverage }) { node in Text(node.name).tag(Graph.Endpoint.node(node.id)) }
-                }.accessibilityIdentifier("scene.graph.connection.source")
+                AppMenu(title: "新来源", selection: Binding(get: { draft.replacement }, set: { editing.proposeSceneConnection($0) }),
+                        options: [.input] + eligible.map { .node($0.id) }) { endpoint in
+                    if case let .node(id) = endpoint, let node = eligible.first(where: { $0.id == id }) { return node.name }
+                    return "输入"
+                }
+                .frame(maxWidth: 160).accessibilityIdentifier("scene.graph.connection.source")
                 Button("取消草稿") { editing.cancelSceneConnection() }
                     .accessibilityIdentifier("scene.graph.connection.cancel")
                 Button("应用连接") { editing.applySceneConnection() }.disabled(draft.candidate == nil)
                     .accessibilityIdentifier("scene.graph.connection.apply")
-            }.controlSize(.small)
+            }.buttonStyle(AppFlatButtonStyle())
         }
     }
 }
@@ -210,7 +216,7 @@ private struct SceneGraphViewport: View {
             let transform = layout.transform(view, in: geometry.size, selected: editing.sceneGraphState.single, drag: drag)
             let ticket = editing.sceneGraphTicket
             ZStack(alignment: .topLeading) {
-                Rectangle().fill(.quaternary.opacity(0.23))
+                Color.clear.contentShape(Rectangle())
                     .gesture(DragGesture().updating($drag) { value, state, _ in state = value.translation }
                         .onEnded { v in
                             let base = layout.transform(view, in: geometry.size, selected: editing.sceneGraphState.single)
@@ -292,8 +298,9 @@ private struct SceneGraphViewport: View {
             Text(name).font(.system(size: 12, weight: .semibold)).lineLimit(1)
             Text(kind).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
         }.padding(7).frame(width: 118, height: 56, alignment: .leading)
-            .background(.background, in: .rect(cornerRadius: 8))
-            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(selected ? AppPalette.accent : Color.secondary.opacity(0.5), lineWidth: selected ? 2 : 1))
+            .background(selected ? AppDesign.Ink.selectionFill : AppDesign.fill(.rest), in: .rect(cornerRadius: AppDesign.Radius.container))
+            .overlay(RoundedRectangle(cornerRadius: AppDesign.Radius.container)
+                .strokeBorder(selected ? AppPalette.accent : AppDesign.Ink.separator, lineWidth: selected ? 2 : 1))
     }
     private func terminal(_ title: String, point: CGPoint, scale: CGFloat) -> some View {
         card(title, kind: "固定阶段", selected: false).scaleEffect(scale).position(point)

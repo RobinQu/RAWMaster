@@ -64,26 +64,27 @@ struct EditingNoticeOverlay: View {
         private var row: some View {
             let error = notice.kind == .error
             let label = error ? "错误" : "信息"
-            return HStack(alignment: .firstTextBaseline, spacing: 8) {
+            return HStack(alignment: .center, spacing: 7) {
                 Image(systemName: error ? "exclamationmark.triangle.fill" : "info.circle.fill")
-                    .foregroundStyle(error ? Color(red: 1, green: 0.75, blue: 0.56) : Color(red: 0.73, green: 0.85, blue: 0.87))
+                    .foregroundStyle(error ? AppPalette.warning : AppPalette.accent)
                     .accessibilityHidden(true)
-                Text(notice.text).frame(maxWidth: .infinity, alignment: .leading)
+                Text(notice.text).fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel(label + "，" + notice.text)
                 retry(for: notice)
                 Button(action: dismiss) {
-                    Image(systemName: "xmark").frame(minWidth: 22, minHeight: 22).contentShape(Rectangle())
+                    Image(systemName: "xmark").font(.caption2.weight(.semibold)).foregroundStyle(.secondary)
+                        .frame(width: 22, height: 22).contentShape(Rectangle())
                         .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
                 }
                 .buttonStyle(.plain).focused($closeFocused)
                 .accessibilityLabel("关闭" + label + "通知")
                 .accessibilityIdentifier("editing.notice.dismiss." + notice.id.uuidString)
             }
-            .font(.callout).foregroundStyle(.white)
-            .padding(.horizontal, 10).padding(.vertical, 5)
-            .background(error ? Color(red: 0.251, green: 0.180, blue: 0.153) : Color(red: 0.157, green: 0.196, blue: 0.212),
-                        in: RoundedRectangle(cornerRadius: 8))
-            .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(.white.opacity(0.19)).allowsHitTesting(false) }
+            .font(.callout).foregroundStyle(.primary)
+            .padding(.leading, 12).padding(.trailing, 5).padding(.vertical, 3)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+            .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(.primary.opacity(0.15)).allowsHitTesting(false) }
+            .shadow(color: .black.opacity(0.16), radius: 3, y: 1)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier(error ? "editing.notice.error" : "editing.notice.information")
         }

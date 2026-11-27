@@ -123,6 +123,23 @@ package struct DevelopmentSceneGraphV1: Codable, Equatable, Sendable {
   package let graph: Scope
   package let output: DevelopmentSceneOutputStateV1.Version
   package let models: DevelopmentSceneModelProgramV1?
+  // A recipe already carries its legacy V3 payload. Keeping the scene payload indirect
+  // avoids reserving a second full set of adjustments on every decode and render stack.
+  private final class PhotographicStorage: Encodable, Equatable, Sendable {
+    let value: DevelopmentAdjustmentsV3
+    init(_ value: DevelopmentAdjustmentsV3) { self.value = value }
+    func encode(to encoder: Encoder) throws { try value.encode(to: encoder) }
+    static func == (lhs: PhotographicStorage, rhs: PhotographicStorage) -> Bool {
+      lhs === rhs || lhs.value == rhs.value
+    }
+  }
+  private let photographicStorage: PhotographicStorage?
+  private enum CodingKeys: String, CodingKey {
+    case schemaVersion, graph, output, models
+    case photographicStorage = "photographic"
+  }
+  /// Full-image photographic edits on this scene. Node-local corrections remain in `graph`.
+  package var photographic: DevelopmentAdjustmentsV3? { photographicStorage?.value }
 
   /// Seed the scene-linear grade with the photographic EV and model stages implemented by both engines.
   /// The complete compatibility recipe remains attached to the live draft for its next SDR/B&W edit.
@@ -141,32 +158,55 @@ package struct DevelopmentSceneGraphV1: Codable, Equatable, Sendable {
       nodes.append(second); output = second.id
     }
     let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
+    var photo = legacy
+    photo.legacyBasis?.exposureEV = 0
+    if photo.legacyBasis?.isPixelNeutral == true { photo.legacyBasis = nil }
+    photo.light.exposure = 0
+    photo.blackAndWhite.enabled = false
+    photo.rawDecoder = nil; photo.rawDetails = nil; photo.aiDenoise = nil; photo.superResolution = nil
+    if photo.geometry == DevelopmentGeometryV3(version: photo.geometry.version) { photo.geometry = .init() }
     return try Self(graph: .init(nodes: nodes, output: .node(output)), output: .init(sdrTrim: trim),
-                    models: DevelopmentSceneModelProgramV1.derived(from: legacy))
+                    models: DevelopmentSceneModelProgramV1.derived(from: legacy), photographic: photo)
   }
 
-  package init(graph: Scope, output: DevelopmentSceneOutputStateV1.Version, models: DevelopmentSceneModelProgramV1? = nil) throws {
+  package init(graph: Scope, output: DevelopmentSceneOutputStateV1.Version, models: DevelopmentSceneModelProgramV1? = nil,
+               photographic: DevelopmentAdjustmentsV3? = nil) throws {
     var all: Set<UUID> = []
     try Self.validate(graph, depth: 1, all: &all)
     try models?.validate()
+    try photographic?.validate()
+    guard photographic?.rawDecoder == nil, photographic?.rawDetails == nil, photographic?.aiDenoise == nil,
+          photographic?.superResolution == nil else { throw Failure.invalidParameter }
+    photographicStorage = photographic.flatMap { $0 == DevelopmentAdjustmentsV3() ? nil : PhotographicStorage($0) }
     self.models = models?.stages.isEmpty == false ? models : nil
-    schemaVersion = self.models == nil ? 1 : 2
+    schemaVersion = photographicStorage != nil ? 3 : self.models == nil ? 1 : 2
     self.graph = graph; self.output = output
   }
 
   package init(from decoder: Decoder) throws {
     let keys = try decoder.container(keyedBy: RecipeCodingKey.self)
     let version = try keys.decode(Int.self, forKey: .init("schemaVersion"))
-    guard version == 1 || version == 2 else { throw Failure.unsupportedSchema }
-    let fields = ["schemaVersion", "graph", "output"]
-    let data = try GraphFields(decoder, version == 2 ? fields + ["models"] : fields)
-    let models: DevelopmentSceneModelProgramV1? = version == 2 ? try data.value("models") : nil
-    if version == 2, models?.stages.isEmpty != false { throw Failure.invalidParameter }
-    try self.init(graph: data.value("graph"), output: data.value("output"), models: models)
+    guard (1...3).contains(version) else { throw Failure.unsupportedSchema }
+    let hasModels = version == 2 || (version == 3 && keys.contains(.init("models")))
+    var fields = ["schemaVersion", "graph", "output"]
+    if hasModels { fields.append("models") }
+    if version == 3 { fields.append("photographic") }
+    let data = try GraphFields(decoder, fields)
+    let models: DevelopmentSceneModelProgramV1? = hasModels ? try data.value("models") : nil
+    if hasModels, models?.stages.isEmpty != false { throw Failure.invalidParameter }
+    try self.init(graph: data.value("graph"), output: data.value("output"), models: models,
+                  photographic: version == 3 ? data.value("photographic") : nil)
+    guard schemaVersion == version else { throw Failure.invalidParameter }
   }
 
   /// Replace the whole validated value so failed mutations leave the committed graph untouched.
-  package func replacingGraph(_ graph: Scope) throws -> Self { try Self(graph: graph, output: output, models: models) }
+  package func replacingGraph(_ graph: Scope) throws -> Self { try Self(graph: graph, output: output, models: models, photographic: photographic) }
+  package func replacingOutput(_ output: DevelopmentSceneOutputStateV1.Version) throws -> Self {
+    try Self(graph: graph, output: output, models: models, photographic: photographic)
+  }
+  package func replacingPhotographic(_ parameters: DevelopmentAdjustmentsV3) throws -> Self {
+    try Self(graph: graph, output: output, models: models, photographic: parameters)
+  }
 
   /// Outside clones the coverage dependencies, then inverts the copy. The new corrector is neutral.
   package func addingOutside(of corrector: UUID, before successor: UUID? = nil,
@@ -397,5 +437,67 @@ private extension DevelopmentSceneGraphV1.Endpoint {
   func remapped(_ ids: [UUID: UUID]) -> Self {
     if case .node(let id) = self { return .node(ids[id]!) }
     return .input
+  }
+}
+
+
+extension DevelopmentSceneGraphV1.Operation {
+  /// Inputs that can affect this operation's output, shared by execution and admission.
+  package var usedInputs: [DevelopmentSceneGraphV1.Endpoint] {
+    switch self {
+    case let .corrector(image, mask, ev, curve, strength, enabled):
+      let usesMask = enabled && strength > 0 && (ev != 0 || curve.contains { $0.x != $0.y })
+      return [image] + (usesMask ? mask.map { [.node($0)] } ?? [] : [])
+    case let .parallel(base, layers, enabled), let .layer(base, layers, enabled):
+      return [base] + (enabled ? layers.filter { $0.weight > 0 }.map(\.image) : [])
+    case let .group(image, _, _, _): return [image]
+    case let .combineCoverage(base, other, _): return [.node(base), .node(other)]
+    case let .adjustCoverage(mask, _, _): return [.node(mask)]
+    case .linearCoverage, .radialCoverage, .externalCoverage: return []
+    }
+  }
+}
+
+extension DevelopmentAdjustmentsV3 {
+  package var preservesSceneCoverageCoordinates: Bool {
+    guard geometry == .init(version: geometry.version) else { return false }
+    guard let optics else { return true }
+    let profileWarp = optics.lensProfileEnabled == true ? (optics.lensProfile?.distortion ?? 0) * (optics.profileDistortionAmount ?? 1) : 0
+    return (optics.distortion ?? 0) == 0 && profileWarp == 0
+  }
+}
+
+extension DevelopmentSceneGraphV1 {
+  package struct PhotographicCoverageMisalignment: LocalizedError {
+    package init() {}
+    package var errorDescription: String? { "当前调色使用模型蒙版。请先断开它，再裁切、旋转或校正镜头畸变。" }
+  }
+
+  /// Geometry validation concerns a particular rendered endpoint. Old incompatible archives
+  /// remain decodable, and hidden branches do not block an unrelated photograph-wide edit.
+  package func validatePhotographicCoverage(view: View = .init(), using program: DevelopmentSceneModelProgramV1? = nil) throws {
+    guard photographic?.preservesSceneCoverageCoordinates == false else { return }
+    let coverage = Set((program ?? models)?.stages.filter { $0.kind == .segmentation }.map(\.id) ?? [])
+    guard !coverage.isEmpty else { return }
+    func usesCoverage(_ scope: Scope, output: Endpoint) -> Bool {
+      let nodes = Dictionary(uniqueKeysWithValues: scope.nodes.map { ($0.id, $0.operation) })
+      var visited: Set<UUID> = []
+      func visit(_ endpoint: Endpoint) -> Bool {
+        guard case let .node(id) = endpoint, visited.insert(id).inserted, let op = nodes[id] else { return false }
+        if case let .externalCoverage(id) = op { return coverage.contains(id) }
+        if case let .group(_, child, strength, enabled) = op, enabled && strength > 0 && usesCoverage(child, output: child.output) { return true }
+        return op.usedInputs.contains(where: visit)
+      }
+      return visit(output)
+    }
+    var scope = graph
+    for id in view.groupPath {
+      guard case let .group(input, child, _, _)? = scope.nodes.first(where: { $0.id == id })?.operation else { throw Failure.unknownGroup(id) }
+      if usesCoverage(scope, output: input) { throw PhotographicCoverageMisalignment() }
+      scope = child
+    }
+    let endpoint: Endpoint
+    switch view.target { case .final: endpoint = scope.output; case let .node(id): endpoint = .node(id); case .bypass: endpoint = .input }
+    if usesCoverage(scope, output: endpoint) { throw PhotographicCoverageMisalignment() }
   }
 }

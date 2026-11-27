@@ -34,7 +34,7 @@ function dock() {
     ${command('缩小 · −', 'edit-zoom', 'out', 'zoomOut', { disabled: S.editZoom <= 1 })}
     ${command('放大 · +', 'edit-zoom', 'in', 'zoomIn', { disabled: S.editZoom >= 64 })}
     ${command('FIT', 'edit-zoom', 'fit', null, { title: '适合可用画面 · 0 / ⌘0', cls: 'dock-fit' })}
-    ${command('1:1 · Z', 'edit-zoom', 'pixels', null, { title: '按原生像素查看 · Z', cls: 'dock-fit' })}
+    ${command('1:1', 'edit-zoom', 'pixels', null, { title: '按原生像素查看 · Z', cls: 'dock-fit' })}
     <span data-canvas-tool="crop">${command('Crop · 裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' })}</span><span data-canvas-tool="mask">${command('Mask · 蒙版', 'edit-tool', 'masks', 'mask', { disabled: S.tool === 'versions' })}</span><span data-canvas-tool="remove">${command('Remove · 修饰', 'edit-tool', 'repair', 'repair', { disabled: S.tool === 'versions' })}</span>
     <span class="dock-divider"></span>
     ${command('对比模式 · V', 'canvas-menu', 'compare', 'compare', { pressed: S.compare, expanded: S.canvasMenu === 'compare', disabled: S.cropOpen })}
@@ -45,12 +45,12 @@ function resolutionText(scale = S.editZoom, active = false) {
   if (S.pixelView) return '100% · 原生像素（示意）';
   if (scale === 1) return '适合窗口 · 视口预览（示意）';
   const image = $('.edit-image');
-  const physical = image ? image.offsetWidth * devicePixelRatio / 9504 : null;
+  const physical = image ? image.offsetWidth * devicePixelRatio / Studio.photo(Studio.data.work).w : null;
   return `${physical === null ? '' : Math.round(physical * 100) + '% · '}${active && Studio.data.prefs.performance === '极速' ? '缩放中 · 临时预览' : '按倍率取样'}（示意）`;
 }
 function resolutionChip() {
   requestAnimationFrame(() => updateZoomStatus());
-  return '<small class="pane-label canvas-resolution" aria-live="polite"></small>';
+  return '<small class="visually-hidden canvas-resolution" aria-live="polite"></small>';
 }
 function updateZoomStatus(active = false) {
   const status = $('.canvas-resolution');
@@ -175,7 +175,7 @@ function canvasContent(r, id) {
       pane(overlay, '', S.inverted ? '当前' : refName) + pane(base, '', S.inverted ? refName : '当前');
   else contents = pane(base, overlay, comparisonModes[mode] + ' · ' + refName);
   return `<section class="canvas-panel${prompt ? ' has-quick-prompt' : ''}" data-photo="${h(id)}" aria-label="暗房画布">
-    ${SceneEditor.hud()}<div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
+    <div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
     <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen && !S.canvasTool ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
 }
 actions['canvas-nav'] = (direction) => {
@@ -193,8 +193,8 @@ actions['edit-photo'] = (id) => {
 actions['edit-zoom'] = (direction) => {
   const view = $('.edit-image');
   let scale = direction === 'fit' ? 1 : S.editZoom * (direction === 'in' ? 1.25 : 0.8);
-  const pixels = direction === 'pixels' && !S.pixelView && view;
-  if (direction === 'pixels') scale = pixels ? S.editZoom * 9504 / (view.offsetWidth * devicePixelRatio) : 1;
+  const pixels = direction === 'pixels' && view;
+  if (direction === 'pixels') scale = pixels ? S.editZoom * Studio.photo(Studio.data.work).w / (view.offsetWidth * devicePixelRatio) : 1;
   S.editZoom = Math.max(1, Math.min(64, scale));
   S.pixelView = Boolean(pixels);
   render();

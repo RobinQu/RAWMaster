@@ -9,6 +9,7 @@ final class DevelopmentSceneModelPreviewV1 {
   let program: DevelopmentSceneModelProgramV1
   let native: DevelopmentSceneModelPipelineV1.Result
   private let flags: MTLTexture
+  var residentBytes: Int { flags.allocatedSize + native.image.allocatedSize + native.masks.values.reduce(0) { $0 + $1.allocatedSize } }
   private let availableSampleBytes: Int
   private let queue: MTLCommandQueue
   private let fit: MTLComputePipelineState

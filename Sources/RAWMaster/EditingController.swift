@@ -113,6 +113,9 @@ import RAWMasterLibrary
     @Published private(set) var scenePreviewBusy = false
     @Published private(set) var sceneStarting = false
     @Published private(set) var sceneRequestedHDR = true
+    @Published private(set) var sceneVisualizeHDR = false
+    private var sceneBandDraft: (ticket: SceneTicket, graph: DevelopmentSceneGraphV1)?
+    private(set) var sceneBandInteractionID = UUID()
     @Published private(set) var sceneHeadroom: CGFloat = 1
     private let scenePreview = DevelopmentScenePreviewV1()
     let sceneScopes = EditingSceneScopesState()
@@ -128,6 +131,13 @@ import RAWMasterLibrary
         let restored: DevelopmentAppearanceAlternate?
     }
     private typealias AppearanceChange = (before: AppearanceState, after: AppearanceState)
+    private var photographicGestureOrigin: AppearanceState?
+    private struct ScenePickerDrag {
+        let gesture: UUID, frame: EditingDevelopmentPickerFrame
+        let origin: DevelopmentSourcePoint
+        var stroke: [DevelopmentStrokePoint]
+    }
+    private var scenePickerDrag: ScenePickerDrag?
     private var sceneHistory: [AppearanceChange] = []
     private var sceneRedo: [AppearanceChange] = []
     private var suspendedAppearanceHistories: [(workID: String, parent: String, undo: [AppearanceChange], redo: [AppearanceChange])] = []
@@ -156,10 +166,10 @@ import RAWMasterLibrary
     @Published private(set) var developmentHistogram: DevelopmentDisplayHistogramV1?
     @Published private(set) var developmentScopeMaskID: UUID?
     var visibleScopeMaskID: UUID? {
-        recipe.adjustmentsV3?.masks.first { $0.id == developmentScopeMaskID }?.id
+        photographicUIRecipe.adjustmentsV3?.masks.first { $0.id == developmentScopeMaskID }?.id
     }
     func selectDevelopmentScopeMask(_ id: UUID?) {
-        guard id != developmentScopeMaskID, id == nil || recipe.adjustmentsV3?.masks.contains(where: { $0.id == id }) == true else { return }
+        guard id != developmentScopeMaskID, id == nil || photographicUIRecipe.adjustmentsV3?.masks.contains(where: { $0.id == id }) == true else { return }
         developmentMaskInput.cancel()
         developmentScopeMaskID = id
         measuredHistogram = nil
@@ -171,9 +181,27 @@ import RAWMasterLibrary
     let colorReadout = PhotosColorReadout()
     @Published var scopesDetached = false
     private(set) lazy var colorSamplers = PhotosColorSamplers(defaults: defaults)
+    var sceneSamplerFrame: DevelopmentScenePreviewFrameV1? {
+        guard visibleSceneGraph != nil, !scenePreviewBusy, !sceneVisualizeHDR, !cropEditing,
+              sceneGraphState.viewing == .init(), let frame = sceneFrame, frame.target == sceneTarget else { return nil }
+        return frame
+    }
+
+    private func sceneSamplerMapping(for frame: DevelopmentScenePreviewFrameV1) -> DevelopmentGeometryMappingV3? {
+        guard let graph = visibleSceneGraph, let source = developmentSession.source else { return nil }
+        let scale = graph.models?.scale ?? 1
+        let size = DevelopmentPixelSize(width: source.sourceSize.width * scale, height: source.sourceSize.height * scale)
+        guard let mapping = try? developmentGeometry.mapping(sourceSize: size),
+              frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height) else { return nil }
+        return mapping
+    }
+
     var presentedSamplerMapping: DevelopmentGeometryMappingV3? {
-        guard !colorSamplers.points.isEmpty, let frame = previews.primary.frame, let source = developmentSession.source,
-              frame.generation == developmentContext?.sourceGeneration,
+        guard !colorSamplers.points.isEmpty, let source = developmentSession.source else { return nil }
+        if visibleSceneGraph != nil {
+            return sceneSamplerFrame.flatMap(sceneSamplerMapping)
+        }
+        guard let frame = previews.primary.frame, frame.generation == developmentContext?.sourceGeneration,
               let presented = previews.primary.frameRecipe,
               let recipe = try? presented.promotingToV3(), let geometry = recipe.adjustmentsV3?.geometry else { return nil }
         return try? geometry.mapping(sourceSize: source.sourceSize)
@@ -197,7 +225,13 @@ import RAWMasterLibrary
     /// Presentation-only snapshot: suspended contexts remain unable to write or start analysis.
     private var suspendedDevelopmentContext: EditingInteractionContext?
     private var developmentSessionObservation: AnyCancellable?
-    private var developmentBranchID = EditingDraftBranchID()
+    private var photographicBranchID = EditingDraftBranchID()
+    private var developmentBranchID = EditingDraftBranchID() {
+        didSet { if oldValue != developmentBranchID { photographicBranchID = .init() } }
+    }
+    private var activePhotographicBranchID: EditingDraftBranchID {
+        recipe.sceneGraph == nil ? developmentBranchID : photographicBranchID
+    }
     private var rememberedDevelopmentBranches: [String: EditingDraftBranchID] = [:]
     private var developmentBranchOrder: [String] = []
     private var writingDevelopmentSession = false
@@ -1116,7 +1150,13 @@ import RAWMasterLibrary
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
         if let graph = visibleSceneGraph {
-            previews.primary.clearIfNeeded(); previews.comparison.clearIfNeeded()
+            if stage == .development, sourceReady, let work, let intent = try? EditingPreviewIntent(
+                source: .raw(work.source), recipe: photographicUIRecipe, quality: .settled,
+                presentationID: "scene.source." + work.id, sourceFactsOnly: true) {
+                previews.primary.submit(intent, input: input ?? .capture(control: "scene.source", phase: "metadata"))
+                prepareDevelopmentSessionIfNeeded()
+            } else { previews.primary.clearIfNeeded() }
+            previews.comparison.clearIfNeeded()
             requestScenePreview(graph)
             return
         }
@@ -1487,8 +1527,8 @@ import RAWMasterLibrary
     /// Keep the exact current recipe or selected saved version for both preview and delivery.
     /// Focus may still be loading. Both consumers await the same selection without opening a sheet.
     func beginWorkbenchExport(asset: AssetRecord, admissionFingerprint: String) -> Bool {
-        if asset.id == self.asset?.id, sceneGraphState.connection != nil {
-            postNotice("先应用或取消 Graph 连接草稿。"); return false
+        if asset.id == self.asset?.id, let reason = scenePendingEditReason {
+            postNotice(reason); return false
         }
         closeWorkbenchExport()
         pendingExportAssetID = nil
@@ -1540,7 +1580,7 @@ import RAWMasterLibrary
 
     private func selectVersionForExport() -> Bool {
         guard !shuttingDown, let originalWork = work?.id else { return false }
-        if sceneGraphState.connection != nil { postNotice("先应用或取消 Graph 连接草稿。"); return false }
+        if let reason = scenePendingEditReason { postNotice(reason); return false }
         if sceneStarting { postNotice("正在应用色彩外观，请稍后导出。"); return false }
         let originalFocus = focusGeneration, originalBranch = developmentBranchID
         finishDevelopmentNumberInput()
@@ -2438,9 +2478,13 @@ import RAWMasterLibrary
         if finishPreviews { await finishPreviewShutdown() }
     }
     // MARK: Development interaction (one Controller recipe authority)
+    var photographicUIRecipe: DevelopmentRecipe {
+        guard let graph = recipe.sceneGraph else { return recipe }
+        return .init(adjustmentsV3: graph.photographic ?? .init())
+    }
     var developmentSession: EditingDevelopmentSession {
         if let developmentSessionStorage { return developmentSessionStorage }
-        let session = EditingDevelopmentSession(readRecipe: { [weak self] in self?.recipe ?? .init() },
+        let session = EditingDevelopmentSession(readRecipe: { [weak self] in self?.photographicUIRecipe ?? .init() },
             commitRecipe: { [weak self] candidate, event in
                 guard let self, !self.shuttingDown, self.sourceReady, self.stage == .development,
                       self.developmentContext?.sourceGeneration == self.previews.primary.currentSourceGeneration else {
@@ -2448,13 +2492,28 @@ import RAWMasterLibrary
                 }
                 self.writingDevelopmentSession = true
                 defer { self.writingDevelopmentSession = false }
+                if let graph = self.recipe.sceneGraph {
+                    guard self.sceneGraphTicket != nil, let parameters = candidate.adjustmentsV3 else {
+                        throw EditingDevelopmentSessionError.commitRejected
+                    }
+                    let replacement = try graph.replacingPhotographic(parameters)
+                    try self.validateScenePhotographicEdit(replacement)
+                    let updated = DevelopmentRecipe(sceneGraph: replacement)
+                    if self.photographicGestureOrigin != nil { self.installSceneRecipe(updated) }
+                    else { self.applySceneCommit(updated) }
+                    return
+                }
                 self.setRecipe(control: "photos." + event.control.name, input: event.nativeInput) { $0 = candidate }
             })
         session.snapshotCatalog = { [weak self] context, edit in
             guard let self, let work = self.work, work.id == context.workID,
                   work.source.admissionFingerprint == context.admissionFingerprint,
-                  self.developmentBranchID == context.draftBranchID,
+                  self.activePhotographicBranchID == context.draftBranchID,
                   let parent = self.draftParentID else { throw EditingDevelopmentSessionError.staleInteraction }
+            if self.recipe.sceneGraph != nil {
+                guard edit == nil else { throw EditingDevelopmentSessionError.staleInteraction }
+                return [] // HDR named snapshots retain the entire graph through sceneSnapshotScope.
+            }
             let scope = DevelopmentSnapshotScope(workID: work.id, parentVersionID: parent, appearance: .compatibility)
             if let edit { return try self.store.updateDevelopmentSnapshots(in: scope, edit) }
             return try self.store.developmentSnapshots(in: scope)
@@ -2472,6 +2531,13 @@ import RAWMasterLibrary
         }
         session.gestureActivityChanged = { [weak self] control, active in
             guard let self, !self.revokingDevelopmentInteraction, !self.shuttingDown else { return }
+            if self.recipe.sceneGraph != nil {
+                if active { self.photographicGestureOrigin = self.appearanceState }
+                else if let before = self.photographicGestureOrigin {
+                    self.photographicGestureOrigin = nil
+                    self.recordSceneChange(from: before)
+                }
+            }
             self.developmentDehazeInput.gestureChanged(control, active: active)
             self.previewInteractionChanged(control.name == "crop" ? "crop" : "photos." + control.name, active: active)
         }
@@ -2593,7 +2659,7 @@ import RAWMasterLibrary
         let actual = try validateDevelopmentDehazeInput(context: context)
         let selected = algorithm ?? Self.dehazePreparationAlgorithm(
             parameters: developmentSession.parameters.advancedDetail,wantedAmount:wantedAmount)
-        return try recipe.prospectiveDehazeInputV1(context: actual, algorithm: selected)
+        return try photographicUIRecipe.prospectiveDehazeInputV1(context: actual, algorithm: selected)
     }
     func applyDevelopmentDehazeAmount(_ amount: Double, context: EditingInteractionContext, gesture: EditingGestureToken) throws {
         try developmentSession.validateInteraction(context, gesture: gesture)
@@ -2662,7 +2728,7 @@ import RAWMasterLibrary
         try developmentSession.apply(.reset(.dehaze), event: .init(context: context, control: .init(group: .dehaze, name: "复位去朦胧")))
     }
     var developmentWhiteBalanceBaseline: DevelopmentResolvedWhiteBalanceV3? {
-        let value = recipe.adjustmentsV3?.whiteBalance.resolvedState ?? developmentSourceFacts?.initialWhiteBalanceState
+        let value = photographicUIRecipe.adjustmentsV3?.whiteBalance.resolvedState ?? developmentSourceFacts?.initialWhiteBalanceState
         guard let value, value.source == developmentSessionStorage?.source,
               value.sourceCapability == developmentSessionStorage?.noiseReductionCapability else { return nil }
         return value
@@ -2710,6 +2776,7 @@ import RAWMasterLibrary
         suspendedDevelopmentContext = nil
         settledPreviewTask?.cancel(); settledPreviewTask = nil
         developmentNumberInputOwner.cancelCurrentEdit()
+        photographicGestureOrigin = nil; scenePickerDrag = nil
         revokingDevelopmentInteraction = true
         defer { revokingDevelopmentInteraction = false }
         if let session = developmentSessionStorage, let context = session.context { try? session.invalidate(context: context, reason: reason) }
@@ -2738,14 +2805,14 @@ import RAWMasterLibrary
         if !preserveThumbnails { developmentSourceFacts = nil }
     }
     func prepareDevelopmentSessionIfNeeded() {
-        guard recipe.sceneGraph == nil, developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, let current = work,
+        guard developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, let current = work,
               developmentSessionStorage?.context == nil, developmentMetadataRequestID == nil else { return }
         guard previews.primary.canInspectDevelopmentSource else { return }
         if let facts = developmentSourceFacts, facts.sourceGeneration == previews.primary.currentSourceGeneration,
            facts.sourceBinding.sourceContentID == current.source.contentSHA256 {
             do {
                 _ = try developmentSession.activate(workID: current.id, admissionFingerprint: current.source.admissionFingerprint,
-                    source: facts.sourceBinding, sourceGeneration: facts.sourceGeneration, branchID: developmentBranchID,
+                    source: facts.sourceBinding, sourceGeneration: facts.sourceGeneration, branchID: activePhotographicBranchID,
                     noiseReduction: facts.noiseReduction.sourceCapability)
                 if let parent = draftParentID, let receipts = storedPresetAdoptions(for: recipe, work: current, parent: parent) {
                     developmentSession.restorePresetAdoptions(receipts, for: recipe)
@@ -2756,7 +2823,7 @@ import RAWMasterLibrary
                 return
             } catch { developmentSourceFacts = nil }
         }
-        let requestID = UUID(), focus = focusGeneration, branch = developmentBranchID
+        let requestID = UUID(), focus = focusGeneration, branch = activePhotographicBranchID
         developmentMetadataRequestID = requestID
         developmentMetadataOperationID = startOperation { [self] in
             defer {
@@ -2766,7 +2833,7 @@ import RAWMasterLibrary
                 let facts = try await previews.primary.developmentSourceContext()
                 try Task.checkCancellation()
                 guard developmentInterfaceActive, isPresented, !shuttingDown, sourceReady, stage == .development, work?.id == current.id,
-                      focusGeneration == focus, developmentBranchID == branch,
+                      focusGeneration == focus, activePhotographicBranchID == branch,
                       developmentMetadataRequestID == requestID, facts.binding.sourceContentID == current.source.contentSHA256 else { return }
                 _ = try developmentSession.activate(workID: current.id, admissionFingerprint: current.source.admissionFingerprint,
                     source: facts.binding, sourceGeneration: facts.lease.generation, branchID: branch,
@@ -2779,7 +2846,7 @@ import RAWMasterLibrary
                 developmentSourceFacts = facts.facts
                 rememberDevelopmentBranch(); requestPreview(); requestDevelopmentHistogramIfNeeded()
             } catch {
-                guard !Task.isCancelled, focusGeneration == focus, developmentBranchID == branch else { return }
+                guard !Task.isCancelled, focusGeneration == focus, activePhotographicBranchID == branch else { return }
                 if let previewError = error as? DevelopmentPreviewError, case .sourceInvalidated = previewError {
                     previewSourceInvalidated(); return
                 }
@@ -3233,7 +3300,7 @@ import RAWMasterLibrary
         }
         do {
             try developmentSession.validateInteraction(context)
-            let projection = try recipe.prospectiveLocalInputV1(source: source, sourceGeneration: facts.sourceGeneration,
+            let projection = try photographicUIRecipe.prospectiveLocalInputV1(source: source, sourceGeneration: facts.sourceGeneration,
                 decoderContractFingerprint: decoder, targetTool: .redEye)
             cancelDevelopmentLocalInput(clearTool: true); developmentPicker = nil
             requestDevelopmentAnalysis(.redEyeAutomatic, title: "自动修正红眼", context: context,
@@ -3269,7 +3336,16 @@ import RAWMasterLibrary
         guard developmentInterfaceActive, isPresented, sourceReady, !shuttingDown, !developmentSavePreviewSuspended, stage == .development,
               developmentContext == context, developmentSession.page == .adjust,
               !developmentShowingOriginal, !comparing, !cropEditing, developmentPicker == nil,
-              let source = developmentSession.source, let frame = previews.primary.frame,
+              let source = developmentSession.source else { return nil }
+        if recipe.sceneGraph != nil {
+            guard let frame = sceneFrame, !scenePreviewBusy, sceneGraphState.viewing == .init(),
+                  let mapping = try? developmentGeometry.mapping(sourceSize: source.sourceSize),
+                  frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height),
+                  let fingerprint = try? EditingFingerprint.of(photographicUIRecipe) else { return nil }
+            return .init(context: context, frameID: frame.id, sourceGeneration: context.sourceGeneration,
+                recipeFingerprint: fingerprint, mapping: mapping, source: source)
+        }
+        guard let frame = previews.primary.frame,
               frame.generation == context.sourceGeneration, frame.revision == previews.primary.currentRevision,
               previews.primary.currentFrameWasDrawn,
               frame.quality != .interactive, previews.primary.frameRecipe == recipe,
@@ -3295,7 +3371,7 @@ import RAWMasterLibrary
                 strength: stroke.strength * point.pressure)
         }
         do {
-            let projection = try recipe.prospectiveLocalInputV1(source: frame.source, sourceGeneration: frame.sourceGeneration,
+            let projection = try photographicUIRecipe.prospectiveLocalInputV1(source: frame.source, sourceGeneration: frame.sourceGeneration,
                 decoderContractFingerprint: decoder, targetTool: tool)
             requestDevelopmentAnalysis(operation, title: tool == .retouch ? "修饰" : "修正红眼", context: frame.context,
                 nativeEvent: true, localInputV1: projection.input, localGestureID: gestureID)
@@ -3486,6 +3562,7 @@ import RAWMasterLibrary
     }
     func cancelDevelopmentPicker(context: EditingInteractionContext) {
         guard developmentContext == context, developmentPicker?.context == context else { return }
+        scenePickerDrag = nil
         let gesture=developmentTargetedColor?.gesture ?? developmentTargetedCurve?.gesture ?? developmentCurrentAnalysis?.targeted?.gesture ?? developmentCurrentAnalysis?.curveTargeted?.gesture ?? developmentPendingAnalysis?.targeted?.gesture ?? developmentPendingAnalysis?.curveTargeted?.gesture
         if let gesture { try? developmentSession.endGesture(gesture,.cancel) }
         developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentTargetedCurve=nil;developmentTargetedCurveReady=false;developmentPicker = nil
@@ -3496,8 +3573,109 @@ import RAWMasterLibrary
         try? developmentSession.cancelAnalysis(context: context)
         developmentPendingAnalysis = nil; developmentUserTask?.cancel()
     }
+    var scenePhotographicPointer: ((ImageCanvasPointerEvent) -> Bool)? {
+        guard recipe.sceneGraph != nil, let context = developmentContext, !sceneScopes.picking else { return nil }
+        if let picker = developmentPicker {
+            guard picker.kind.isTargetedColor || picker.kind.isTargetedCurve || picker.kind == .lensBlurArea ||
+                    picker.kind == .lensBlurRefineBlur || picker.kind == .lensBlurRefineFocus else { return nil }
+            return { [weak self] in self?.takeScenePickerPointer($0, picker: picker) ?? false }
+        }
+        if let owner = developmentMaskInput.canvasOwner {
+            return { [weak self] event in
+                guard let self, self.developmentMaskInput.canvasOwner == owner else { return false }
+                self.developmentMaskInput.updateViewport(event.viewport, context: context)
+                return self.developmentMaskInput.pointer(event, context: context)
+            }
+        }
+        if developmentLocalInput.tool != nil {
+            return { [weak self] event in
+                guard let self, self.developmentContext == context else { return false }
+                self.developmentLocalInput.updateViewport(event.viewport, context: context)
+                return self.developmentLocalInput.pointer(event, context: context)
+            }
+        }
+        return nil
+    }
+    private func takeScenePickerPointer(_ event: ImageCanvasPointerEvent, picker: EditingDevelopmentPicker) -> Bool {
+        guard developmentPicker?.id == picker.id, developmentContext == picker.context else { return false }
+        if event.phase == .cancelled {
+            scenePickerDrag = nil; cancelDevelopmentPicker(context: picker.context); return true
+        }
+        let rect = event.viewport.imageRect
+        guard rect.width > 0, rect.height > 0 else { return false }
+        let point = DevelopmentSourcePoint(x: (event.locationInView.x - rect.minX) / rect.width,
+            y: (event.locationInView.y - rect.minY) / rect.height)
+        let refine = picker.kind == .lensBlurRefineBlur || picker.kind == .lensBlurRefineFocus
+        if event.phase == .began {
+            guard (try? point.validate()) != nil, let frame = developmentPickerFrame(for: picker),
+                  frame.frameID == event.beganFrameID else { return false }
+            scenePickerDrag = .init(gesture: event.gestureID, frame: frame, origin: point, stroke: [.init(position: point)])
+            if picker.kind == .parametricCurveTargeted { pickDevelopmentSource(point, frame: frame) }
+            return true
+        }
+        guard var drag = scenePickerDrag, drag.gesture == event.gestureID else { return false }
+        let ended = event.phase == .ended
+        defer { if ended { scenePickerDrag = nil } }
+        let d = SIMD2(min(1,max(-1,point.x - drag.origin.x)),min(1,max(-1,drag.origin.y - point.y)))
+        if picker.kind.isTargetedCurve, developmentTargetedCurveReady {
+            dragDevelopmentTargetedCurve(d, ended: ended)
+        } else if picker.kind.isTargetedColor, developmentTargetedColorReady {
+            dragDevelopmentTargetedColor(min(1,max(-1,d.y * 2)), ended: ended)
+        } else if refine {
+            guard (try? point.validate()) != nil, drag.stroke.count < DevelopmentLocalEditLimits.maximumPointsPerStroke else {
+                scenePickerDrag = nil; return true
+            }
+            if drag.stroke.last?.position != point { drag.stroke.append(.init(position: point)) }
+            scenePickerDrag = drag
+            if ended { pickDevelopmentLensBlurRefinement(drag.stroke, frame: drag.frame) }
+        } else if ended, (try? point.validate()) != nil {
+            if picker.kind == .lensBlurArea { pickDevelopmentArea(drag.origin, end: point, frame: drag.frame) }
+            else if picker.kind != .parametricCurveTargeted { pickDevelopmentSource(point, frame: drag.frame) }
+        }
+        return true
+    }
+    func scenePickedPixel(at point: DevelopmentSourcePoint) -> DevelopmentDisplayPixel? {
+        guard recipe.sceneGraph != nil, let frame = sceneSamplerFrame else { return nil }
+        return DevelopmentDisplayPixel.sample(frame, at: point)
+    }
+    private func pickerPixel(at point: DevelopmentSourcePoint) -> DevelopmentDisplayPixel? {
+        if recipe.sceneGraph != nil { return scenePickedPixel(at: point) }
+        return previews.primary.frame.flatMap { DevelopmentDisplayPixel.sample($0.image, at: point) }
+    }
+    private func pickerPublicationEpoch(frameID: UUID) -> UInt64? {
+        if recipe.sceneGraph != nil {
+            return sceneFrame?.id == frameID && !scenePreviewBusy && !sceneVisualizeHDR ? liveRecipeGeneration : nil
+        }
+        return previews.primary.currentDevelopmentPickerPublicationEpoch(frameID: frameID)
+    }
+    func scenePhotographicViewportChanged(_ viewport: ImageCanvasViewportSnapshot) {
+        guard let context = developmentContext else { return }
+        if let owner = developmentMaskInput.canvasOwner { developmentMaskInput.canvasViewportChanged(viewport, owner: owner) }
+        if developmentLocalInput.tool != nil { developmentLocalInput.updateViewport(viewport, context: context) }
+    }
+    var scenePhotographicPickHandler: ((CGPoint) -> Void)? {
+        guard recipe.sceneGraph != nil, let picker = developmentPicker, let frame = developmentPickerFrame(for: picker) else { return nil }
+        return { [weak self] point in
+            self?.pickDevelopmentSource(.init(x: point.x, y: point.y), frame: frame)
+        }
+    }
+    var scenePhotographicCancelPick: (() -> Bool)? {
+        guard recipe.sceneGraph != nil, let picker = developmentPicker else { return nil }
+        return { [weak self] in self?.cancelDevelopmentPicker(context: picker.context); return true }
+    }
     func developmentPickerFrame(for picker: EditingDevelopmentPicker) -> EditingDevelopmentPickerFrame? {
         let targetedActive=developmentTargetedColor?.picker.id == picker.id || developmentTargetedCurve?.picker.id == picker.id
+        if recipe.sceneGraph != nil {
+            guard developmentInterfaceActive, isPresented, !shuttingDown, sourceReady, stage == .development,
+                  developmentContext == picker.context, let preview = sceneSamplerFrame,
+                  (targetedActive || picker.recipeFingerprint == (try? EditingFingerprint.of(recipe))),
+                  let mapping = sceneSamplerMapping(for: preview) else { return nil }
+            if preview.window != nil {
+                guard case .colorSampler = picker.kind else { return nil }
+            }
+            return .init(picker: picker, frameID: preview.id, sourceGeneration: picker.context.sourceGeneration, mapping: mapping,
+                outputPixelSize: .init(width: preview.texture.width, height: preview.texture.height))
+        }
         guard developmentInterfaceActive, isPresented, !shuttingDown, stage == .development, sourceReady,
               !developmentShowingOriginal, !comparing, !cropEditing, developmentContext == picker.context,
               developmentSession.page == .adjust, developmentSourceFacts?.sourceBinding == developmentSession.source,
@@ -3521,14 +3699,13 @@ import RAWMasterLibrary
             // Core rejects transparent/outside-source areas. Never clamp a miss to an edge sample.
             let sourcePoint = try frame.mapping.sourcePoint(fromOutput: outputPoint)
             if case .colorSampler(let index) = frame.picker.kind {
-                guard let image = previews.primary.frame?.image, DevelopmentDisplayPixel.sample(image, at: outputPoint) != nil,
+                guard pickerPixel(at: outputPoint) != nil,
                       colorSamplers.place(sourcePoint, replacing: index) else { return }
                 developmentPicker = nil
                 return
             }
             if frame.picker.kind == .parametricCurveTargeted {
-                guard developmentTargetedCurve == nil, let image = previews.primary.frame?.image,
-                      let pixel = DevelopmentDisplayPixel.sample(image, at: outputPoint) else { return }
+                guard developmentTargetedCurve == nil, let pixel = pickerPixel(at: outputPoint) else { return }
                 let initial = developmentSession.parameters.curves
                 let region = try DevelopmentTargetedCurveAdjustmentV3.region(tone: pixel.tone, curve: initial.parametric ?? .init())
                 let gesture = try developmentSession.beginGesture(.init(group: .curves, name: "参数曲线定向调整"), context: frame.picker.context)
@@ -3575,7 +3752,7 @@ import RAWMasterLibrary
             }
             let naturalFence: NaturalCurvePickerFence?
             if case .curve = frame.picker.kind,developmentSession.parameters.curves.algorithm == .naturalCubicGamma512LumaV1 {
-                guard let epoch=previews.primary.currentDevelopmentPickerPublicationEpoch(frameID:frame.frameID),supportsDevelopmentCurvePicker else { return }
+                guard let epoch=pickerPublicationEpoch(frameID:frame.frameID),supportsDevelopmentCurvePicker else { return }
                 naturalFence = .init(frame:frame,presentationID:developmentPreviewPresentationID,publicationEpoch:epoch)
             } else { naturalFence=nil }
             developmentPicker = nil
@@ -3793,11 +3970,12 @@ import RAWMasterLibrary
                             facts?.sourceGeneration == pending.ticket.context.sourceGeneration
                         let sampling = Self.summarySampling(operation: pending.operation, sourceIsRAW: raw,
                             bundleIdentifier: Bundle.main.bundleIdentifier, environment: ProcessInfo.processInfo.environment)
-                        let request = try previews.primary.developmentAnalysisRequest(operationID: pending.ticket.operationID,
+                        var request = try previews.primary.developmentAnalysisRequest(operationID: pending.ticket.operationID,
                             recipe: pending.ticket.analysisRecipe, expectedFingerprint: pending.ticket.expectedRecipeFingerprint,
                             presentedFingerprint: pending.ticket.draftRecipeFingerprint, stage: pending.ticket.stage, operation: pending.operation,
                             input: pending.ticket.nativeInput, localInputV1: pending.localInputV1, dehazeInputV1: pending.dehazeInputV1,
-                            cropAutoInputV1: pending.geometryTicket?.input, sampling: sampling)
+                            cropAutoInputV1: pending.geometryTicket?.input, sampling: recipe.sceneGraph == nil ? sampling : .legacy)
+                        request.photographicScene = recipe.sceneGraph
                         analysisRequestToJoin = request
                         failureStage = .awaitService
                         let child = Task { try await previews.primary.analyzeDevelopment(request) }
@@ -3876,7 +4054,7 @@ import RAWMasterLibrary
                             if DevelopmentNaturalCurvePickerV1.isNatural(request) {
                                 guard let fence=pending.naturalPickerFence,
                                       developmentPreviewPresentationID == fence.presentationID,
-                                      previews.primary.currentDevelopmentPickerPublicationEpoch(frameID:fence.frame.frameID) == fence.publicationEpoch,
+                                      pickerPublicationEpoch(frameID:fence.frame.frameID) == fence.publicationEpoch,
                                       developmentPickerFrame(for:fence.frame.picker)?.frameID == fence.frame.frameID,
                                       DevelopmentNaturalCurvePickerV1.acceptsCommand(command,request:request),
                                       previews.primary.isCurrentDevelopmentAnalysisRequest(request),
@@ -4029,13 +4207,15 @@ import RAWMasterLibrary
         catch { try? session.suspend(context: context, disposition: .cancel) }
     }
     var developmentLegacyBasis: DevelopmentLegacyBasis {
-        recipe.adjustmentsV3?.legacyBasis ?? .init(version: recipe.schemaVersion == 2 ? .v2 : .v1,
+        let recipe = photographicUIRecipe
+        return recipe.adjustmentsV3?.legacyBasis ?? .init(version: recipe.schemaVersion == 2 ? .v2 : .v1,
             exposureEV: recipe.schemaVersion == 3 ? 0 : recipe.exposureEV,
             whiteBalance: recipe.schemaVersion == 3 ? .asShot : recipe.whiteBalance,
             color: recipe.schemaVersion == 2 ? recipe.color : nil)
     }
     var developmentGeometry: DevelopmentGeometryV3 {
-        recipe.adjustmentsV3?.geometry ?? .init(version: recipe.schemaVersion == 2 ? .legacyV2 : .legacyV1,
+        let recipe = photographicUIRecipe
+        return recipe.adjustmentsV3?.geometry ?? .init(version: recipe.schemaVersion == 2 ? .legacyV2 : .legacyV1,
             straightenDegrees: recipe.straightenDegrees, crop: recipe.crop)
     }
     func updateDevelopmentLegacy(context: EditingInteractionContext, control: String,
@@ -4049,7 +4229,7 @@ import RAWMasterLibrary
         if before.color == nil, basis.color == DevelopmentColorAdjustments() { basis.color = nil }
         basis.version = basis.color == nil ? .v1 : .v2
         try basis.validate(); guard basis != before else { return }
-        if recipe.schemaVersion == 3 {
+        if photographicUIRecipe.schemaVersion == 3 {
             try developmentSession.apply(.setLegacyBasis(basis), event: .init(context: context, control: .init(group: nil, name: control),
                 nativeInput: .capture(control: control, phase: gesture == nil ? "discrete" : "change", nativeEvent: nativeEvent, gestureID: gesture?.id)), gesture: gesture)
         } else {
@@ -4237,8 +4417,15 @@ import RAWMasterLibrary
     func turnDevelopmentCropOverlay() { cropOverlayTurn = (cropOverlayTurn + 1) % 4 }
     func developmentCropFrame(context: EditingInteractionContext) -> EditingDevelopmentCropFrame? {
         guard developmentInterfaceActive, isPresented, sourceReady, !shuttingDown, stage == .development, cropEditing,
-              !developmentShowingOriginal, !comparing, developmentContext == context, developmentSession.page == .crop,
-              let frame = previews.primary.frame, frame.generation == context.sourceGeneration,
+              !developmentShowingOriginal, !comparing, developmentContext == context, developmentSession.page == .crop else { return nil }
+        if let graph = visibleSceneGraph, let source = developmentSession.source, let frame = sceneFrame, !scenePreviewBusy {
+            let geometry = graph.photographic?.geometry ?? .init()
+            guard let plane = try? geometry.mapping(sourceSize: source.sourceSize).cropPlane,
+                  frame.nativeSize == CGSize(width: plane.identityRasterSize.width, height: plane.identityRasterSize.height) else { return nil }
+            return .init(context: context, frameID: frame.id, sourceGeneration: context.sourceGeneration, geometry: geometry,
+                plane: plane, outputPixelSize: .init(width: frame.texture.width, height: frame.texture.height))
+        }
+        guard let frame = previews.primary.frame, frame.generation == context.sourceGeneration,
               frame.revision == previews.primary.currentRevision, frame.quality != .interactive,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let source = developmentSession.source else { return nil }
@@ -4256,7 +4443,7 @@ import RAWMasterLibrary
         let leavingCrop = page != .crop && cropEditing
         if enteringCrop {
             developmentCropReturnPage = developmentSession.page == .crop ? .adjust : developmentSession.page
-            developmentCropEntryRecipe = recipe
+            developmentCropEntryRecipe = photographicUIRecipe
             developmentCropEntryConstraint = developmentSession.cropConstraint
             if comparing { stopComparing(requestPreview: false) }
         }
@@ -4299,7 +4486,7 @@ import RAWMasterLibrary
         if responder is NSTextView || responder is NSTextField { return false }
         let flags = event.modifierFlags
         let key = event.charactersIgnoringModifiers?.lowercased()
-        if event.keyCode == 53, visibleSceneGraph != nil, sceneScopes.escape() { return true }
+        if event.keyCode == 53, cancelSceneInspection() { return true }
         if quickPromptPresented {
             if event.keyCode == 53 {
                 if quickPromptSelecting { quickPromptSelecting = false }
@@ -4472,15 +4659,27 @@ extension EditingController {
 
     /// Includes original and already-committed version views, but never uses stale focus/draft on either.
     var visibleSceneGraph: DevelopmentSceneGraphV1? {
-        if stage == .development && sourceReady { return recipe.sceneGraph }
+        if stage == .development && sourceReady {
+            if let draft = sceneBandDraft, draft.ticket == sceneTicket { return draft.graph }
+            if cropEditing, let graph = recipe.sceneGraph, var p = graph.photographic, p.geometry.crop != .init() {
+                p.geometry.crop = .init()
+                return try? graph.replacingPhotographic(p)
+            }
+            return recipe.sceneGraph
+        }
         return selectedVersion?.recipe.sceneGraph
     }
     var sceneTarget: DevelopmentSceneOutputStateV1.Target {
-        sceneRequestedHDR && sceneHeadroom > 1 ? .hdr2020 : .sdr709
+        sceneRequestedHDR && !sceneVisualizeHDR && sceneHeadroom > 1 ? .hdr2020 : .sdr709
+    }
+    private var scenePendingEditReason: String? {
+        if let draft = sceneBandDraft, draft.ticket == sceneTicket { return "请先完成直方图的亮度调整。" }
+        if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
+        return nil
     }
     var sceneModeBlockReason: String? {
         if !sourceReady || sourceNeedsRevalidation { return "原片离线或待验证；接回后可切换模式。" }
-        if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
+        if let reason = scenePendingEditReason { return reason }
         if cropEditing || developmentMaskInput.isActive || developmentLocalInput.tool != nil || quickPromptPresented ||
             developmentPicker != nil || developmentAnalysisBusy || saving || previewInteracting || comparing {
             return "请先完成或取消当前工具，再切换色彩模式。"
@@ -4514,7 +4713,7 @@ extension EditingController {
     func applySceneModelStages(_ stages: [DevelopmentSceneModelStageV1], ticket: SceneGraphTicket) {
         guard ticket == sceneGraphTicket, !sceneStarting, let graph = recipe.sceneGraph, let source = work?.source else { return }
         do {
-            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: graph.output, models: .init(stages: stages))
+            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: graph.output, models: .init(stages: stages), photographic: graph.photographic)
             guard next != graph else { return }
             validateSceneAppearance(next, source: source, ticket: ticket.draft, entering: false)
         } catch { message = error.localizedDescription }
@@ -4569,14 +4768,18 @@ extension EditingController {
             if (result.adjustmentsV3?.blackAndWhite.enabled ?? false) != monochrome {
                 result = try base.promotingToV3()
                 result.adjustmentsV3?.blackAndWhite.enabled = monochrome
+                result.adjustmentsV3?.blackAndWhite.placement = monochrome ? .afterPhotographicColorV1 : nil
             }
             try result.validate()
-            if recipe.sceneGraph != nil {
+            guard result != recipe else { return }
+            if recipe.sceneGraph == nil, developmentContext != nil {
+                setRecipe(control: "色彩外观") { $0 = result }
+            } else {
                 applySceneCommit(result)
+            }
+            if recipe == result {
                 postNotice(monochrome ? "已切换到黑白编辑模式。" : "已切换到彩色编辑模式。")
             }
-            else if developmentContext != nil { setRecipe(control: "色彩外观") { $0 = result } }
-            else { applySceneCommit(result) }
         } catch { message = error.localizedDescription }
     }
 
@@ -4595,7 +4798,7 @@ extension EditingController {
         guard ticket == sceneTicket, sceneGraphTicket != nil, let graph = recipe.sceneGraph else { return }
         do {
             let output = try graph.output.replacingHDRLimit(value)
-            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: output, models: graph.models)
+            let next = try graph.replacingOutput(output)
             applySceneCommit(.init(sceneGraph: next))
         } catch { message = "HDR 高光限制超出目标范围。" }
     }
@@ -4606,22 +4809,45 @@ extension EditingController {
             let current = graph.output.sdrTrim
             let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: value,
                 mapping: current.mapping, highlightCompression: current.highlightCompression, film: current.film)
-            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: graph.output.replacingSDRTrim(trim), models: graph.models)
+            let next = try graph.replacingOutput(graph.output.replacingSDRTrim(trim))
             let oldTarget = sceneTarget
+            let wasVisualizing = sceneVisualizeHDR
+            sceneVisualizeHDR = false
             sceneRequestedHDR = false
             if next != graph { applySceneCommit(.init(sceneGraph: next)) }
-            else if oldTarget != sceneTarget { requestPreview() }
+            else if oldTarget != sceneTarget || wasVisualizing { requestPreview() }
         } catch { message = "派生曝光数值无效；没有提交调整。" }
     }
 
-    private func applySceneCommit(_ next: DevelopmentRecipe) {
-        guard next != recipe else { return }
+    private func validateScenePhotographicEdit(_ graph: DevelopmentSceneGraphV1) throws {
+        do {
+            try graph.validatePhotographicCoverage()
+            let viewing = sceneGraphState.viewing
+            if viewing != .init(), graph.scope(at: viewing.groupPath) != nil {
+                try graph.validatePhotographicCoverage(view: viewing)
+            }
+        } catch {
+            postNotice(error.localizedDescription, kind: .error)
+            throw error
+        }
+    }
+    @discardableResult private func applySceneCommit(_ next: DevelopmentRecipe) -> Bool {
+        guard next != recipe else { return false }
+        if let graph = next.sceneGraph {
+            do { try validateScenePhotographicEdit(graph) } catch { return false }
+        }
         let before = appearanceState
         installSceneRecipe(next)
+        recordSceneChange(from: before)
+        return true
+    }
+    private func recordSceneChange(from before: AppearanceState) {
+        guard before.recipe != recipe else { return }
         sceneHistory.append((before, appearanceState)); sceneRedo.removeAll()
         if sceneHistory.count > 64 { sceneHistory.removeFirst() }
     }
     private func installSceneRecipe(_ next: DevelopmentRecipe, restoring snapshot: AppearanceState? = nil) {
+        sceneBandDraft = nil
         // Do not run a scene recipe through the legacy control projection.
         if (recipe.sceneGraph == nil) != (next.sceneGraph == nil) {
             let outgoing = recipe
@@ -4646,7 +4872,7 @@ extension EditingController {
     var sceneCanUndo: Bool { sceneHistory.last?.after.recipe == recipe }
     var sceneCanRedo: Bool { sceneRedo.last?.before.recipe == recipe }
     @discardableResult func stepSceneHistory(redo: Bool) -> Bool {
-        guard sceneTicket != nil, !saving, sceneGraphState.connection == nil else { return false }
+        guard sceneTicket != nil, !saving, scenePendingEditReason == nil else { return false }
         if redo, sceneCanRedo, let step = sceneRedo.popLast() {
             sceneHistory.append(step); installSceneRecipe(step.after.recipe, restoring: step.after); return true
         }
@@ -4657,9 +4883,45 @@ extension EditingController {
     }
 
     func setSceneViewingHDR(_ enabled: Bool) {
-        guard visibleSceneGraph != nil, sceneRequestedHDR != enabled else { return }
-        let old = sceneTarget; sceneRequestedHDR = enabled
-        if old != sceneTarget { requestPreview() }
+        guard visibleSceneGraph != nil, sceneRequestedHDR != enabled || sceneVisualizeHDR else { return }
+        let old = sceneTarget, wasVisualizing = sceneVisualizeHDR
+        sceneVisualizeHDR = false
+        sceneRequestedHDR = enabled
+        if old != sceneTarget || wasVisualizing { sceneFrame = nil; requestPreview() }
+    }
+    func setSceneVisualizeHDR(_ enabled: Bool) {
+        guard visibleSceneGraph != nil, sceneVisualizeHDR != enabled else { return }
+        sceneVisualizeHDR = enabled
+        sceneFrame = nil
+        requestPreview()
+    }
+    func cancelSceneInspection() -> Bool {
+        if let draft = sceneBandDraft { cancelSceneBandPreview(draft.ticket); return true }
+        if sceneVisualizeHDR { setSceneVisualizeHDR(false); return true }
+        return visibleSceneGraph != nil && sceneScopes.escape()
+    }
+    func setSceneBandExposure(_ value: Double, band: DevelopmentSceneOutputStateV1.HDRBand, ticket: SceneTicket) {
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let graph = recipe.sceneGraph else {
+            cancelSceneBandPreview(ticket); return
+        }
+        do {
+            let output = try graph.output.replacingHDRBand(band, exposureEV: value)
+            if output != graph.output { applySceneCommit(.init(sceneGraph: try graph.replacingOutput(output))) }
+            else { cancelSceneBandPreview(ticket) }
+        } catch { postNotice("此档的亮度调整范围为 −0.5 至 +0.5 EV。", kind: .error) }
+    }
+    func previewSceneBandExposure(_ value: Double, band: DevelopmentSceneOutputStateV1.HDRBand, ticket: SceneTicket) {
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let graph = recipe.sceneGraph,
+              let output = try? graph.output.replacingHDRBand(band, exposureEV: value),
+              let preview = try? graph.replacingOutput(output), preview != visibleSceneGraph else { return }
+        sceneBandDraft = (ticket, preview)
+        requestPreview()
+    }
+    func cancelSceneBandPreview(_ ticket: SceneTicket) {
+        guard sceneBandDraft?.ticket == ticket else { return }
+        sceneBandInteractionID = UUID()
+        sceneBandDraft = nil
+        if ticket == sceneTicket { requestPreview() }
     }
     func setSceneDisplay(_ display: SceneDisplayEnvironment?) {
         guard visibleSceneGraph != nil else { return }
@@ -4692,12 +4954,13 @@ extension EditingController {
         sceneFrame = nil
     }
     private func resetSceneViewing() {
+        sceneBandDraft = nil
         cancelSceneStart()
         sceneTask?.cancel(); sceneTask = nil; sceneRequestID = UUID()
         sceneFrame = nil; scenePreviewError = nil; scenePreviewBusy = false
         sceneGraphState = .init()
         sceneScopes.leavePhoto()
-        sceneRequestedHDR = true; sceneSampling = .fit(maximumEdge: 1440); sceneHeadroom = 1
+        sceneRequestedHDR = true; sceneVisualizeHDR = false; sceneSampling = .fit(maximumEdge: 1440); sceneHeadroom = 1
     }
     private func requestScenePreview(_ graph: DevelopmentSceneGraphV1) {
         guard isPresented, !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
@@ -4709,11 +4972,12 @@ extension EditingController {
         let id = UUID(), focus = focusGeneration, version = selectedVersionID
         sceneRequestID = id; scenePreviewError = nil; scenePreviewBusy = true
         let source = work.source, sampling = sceneSampling, target = sceneTarget, service = scenePreview
+        let visualize = sceneVisualizeHDR
         let viewing = stage == .development ? sceneGraphState.viewing : .init()
         sceneTask = Task { [weak self] in
             do {
                 let frame = try await service.render(source: source, graph: graph, view: viewing,
-                  target: target, sampling: sampling, models: graph.models)
+                  target: target, sampling: sampling, models: graph.models, visualizeHDR: visualize)
                 guard let self, !Task.isCancelled, self.sceneRequestID == id, self.focusGeneration == focus,
                       self.selectedVersionID == version, self.sceneTarget == target, self.visibleSceneGraph == graph else { return }
                 self.sceneFrame = frame; self.scenePreviewBusy = false; self.sceneTask = nil
@@ -4738,7 +5002,7 @@ extension EditingController {
     }
     var sceneGraphScope: SceneGraph.Scope? { recipe.sceneGraph?.scope(at: sceneGraphState.path) }
     var sceneSaveBlockReason: String? {
-        if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
+        if let reason = scenePendingEditReason { return reason }
         if recipe.sceneGraph != nil, sceneFrame == nil || scenePreviewError != nil || scenePreviewBusy {
             return "请先完成有效的 HDR 预览再保存。"
         }
@@ -4842,7 +5106,7 @@ extension EditingController {
         do {
             let next = try change(current, sceneGraphState.path)
             guard current != next else { return false }
-            applySceneCommit(.init(sceneGraph: next)); return true
+            return applySceneCommit(.init(sceneGraph: next))
         } catch { message = sceneGraphReason(error); return false }
     }
     func loadSceneWorkflowTemplates() async throws -> [SceneWorkflowTemplate] {
@@ -4883,6 +5147,8 @@ extension EditingController {
     func applySceneConnection() {
         guard let draft = sceneGraphState.connection, let next = draft.candidate, draft.original == sceneTicket,
               sourceReady, !sourceNeedsRevalidation, !saving else { return }
+        do { try validateScenePhotographicEdit(next) }
+        catch { return }
         cancelSceneConnection()
         applySceneCommit(.init(sceneGraph: next))
     }
@@ -4992,6 +5258,7 @@ extension EditingController {
 
     func createSceneSnapshot(ticket: SceneTicket) {
         guard ticket == sceneTicket, sceneGraphTicket != nil, let scope = sceneSnapshotScope else { return }
+        if let reason = scenePendingEditReason { postNotice(reason); return }
         do {
             currentSceneSnapshots = try store.updateDevelopmentSnapshots(in: scope,
                 .create(id: UUID(), name: nil, createdAt: .now, recipe: recipe, adoptions: nil))
@@ -5008,6 +5275,7 @@ extension EditingController {
     func restoreSceneSnapshot(_ id: UUID, ticket: SceneTicket) {
         guard ticket == sceneTicket, sceneGraphTicket != nil,
               let snapshot = sceneSnapshots.first(where: { $0.id == id }) else { return }
+        if let reason = scenePendingEditReason { postNotice(reason); return }
         applySceneCommit(snapshot.recipe)
     }
 }

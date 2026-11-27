@@ -82,11 +82,17 @@ final class DevelopmentSceneGraphRendererV1 {
                     sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> Master {
     lastReceipt = nil
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
-    let surface = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: .init(),
-      externalCoverages: prepared.masks, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision,
-      tileEdge: tileEdge)
+    return try prepareFinalInput(prepared.image, geometry: prepared.geometry, graph: graph, masks: prepared.masks,
+      modelScale: prepared.scale, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision, tileEdge: tileEdge)
+  }
+
+  func prepareFinalInput(_ image: Image, geometry: Geometry, graph: Graph, masks: [UUID: MTLTexture],
+                         modelScale: Int = 1, sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> Master {
+    lastReceipt = nil
+    let surface = try execute(image, geometry: geometry, graph: graph, view: .init(),
+      externalCoverages: masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
     guard surface.domain == .image else { throw Failure.invalidImage }
-    return .init(surface: surface, output: graph.output, modelMasks: prepared.masks, modelScale: prepared.scale)
+    return .init(surface: surface, output: graph.output, modelMasks: masks, modelScale: modelScale)
   }
 
   private func prepareModels(_ image: Image, geometry: Geometry, models: DevelopmentSceneModelProgramV1?,
@@ -146,14 +152,14 @@ final class DevelopmentSceneGraphRendererV1 {
   }
 
   func renderPreview(_ scene: PreviewScene, output: DevelopmentSceneOutputStateV1.Version,
-                     target: Target) throws -> DevelopmentSceneOutputV1.DisplayImage {
-    try render(scene.image, output: output, target: target)
+                     target: Target, visualizeHDR: Bool = false) throws -> DevelopmentSceneOutputV1.DisplayImage {
+    try render(scene.image, output: output, target: target, visualizeHDR: visualizeHDR)
   }
 
   private var outputStages: [Target: DevelopmentSceneOutputV1] = [:]
   private var exposureStage: DevelopmentSceneMetalV1?
   private func render(_ image: Image, output: DevelopmentSceneOutputStateV1.Version,
-                      target: Target) throws -> DevelopmentSceneOutputV1.DisplayImage {
+                      target: Target, visualizeHDR: Bool = false) throws -> DevelopmentSceneOutputV1.DisplayImage {
     let branch: Image
     let trim = output.sdrTrim
     if target == .sdr709 {
@@ -167,7 +173,8 @@ final class DevelopmentSceneGraphRendererV1 {
     } else { branch = image }
     let stage = try outputStages[target] ?? DevelopmentSceneOutputV1(device: device, target: target)
     outputStages[target] = stage
-    return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV)
+    return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV,
+                            bandExposure: output.hdrBandExposureEV, visualizeHDR: visualizeHDR)
   }
 
   private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
@@ -275,7 +282,7 @@ final class DevelopmentSceneGraphRendererV1 {
     var uses: [UUID: Int] = [last: 1], dependencies: [UUID: [Graph.Endpoint]] = [:], steps: [UUID] = []
     func visit(_ id: UUID) {
       guard dependencies[id] == nil, let operation = operations[id] else { return }
-      let inputs = Self.usedInputs(operation)
+      let inputs = operation.usedInputs
       dependencies[id] = inputs
       for endpoint in inputs {
         if case let .node(parent) = endpoint { uses[parent, default: 0] += 1; visit(parent) }
@@ -369,18 +376,7 @@ final class DevelopmentSceneGraphRendererV1 {
 
   private static func neutral(_ ev: Float, _ points: [SIMD2<Float>]) -> Bool { ev == 0 && points.allSatisfy { $0.x == $0.y } }
 
-  private static func usedInputs(_ op: Graph.Operation) -> [Graph.Endpoint] {
-    switch op {
-    case let .corrector(image, mask, ev, curve, strength, enabled):
-      return [image] + (enabled && strength > 0 && !neutral(ev, curve) ? mask.map { [.node($0)] } ?? [] : [])
-    case let .parallel(base, layers, enabled), let .layer(base, layers, enabled):
-      return [base] + (enabled ? layers.filter { $0.weight > 0 }.map(\.image) : [])
-    case let .group(image, _, _, _): return [image]
-    case let .combineCoverage(base, other, _): return [.node(base), .node(other)]
-    case let .adjustCoverage(mask, _, _): return [.node(mask)]
-    case .linearCoverage, .radialCoverage, .externalCoverage: return []
-    }
-  }
+
 
   private static func mode(_ blend: Graph.Blend) -> UInt32 {
     switch blend {

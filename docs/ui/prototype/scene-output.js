@@ -12,7 +12,8 @@ const RMSceneOutput = (() => {
     const n = (v, max) => typeof v === 'number' && Number.isFinite(v) && Math.abs(v) <= max ? v : 0;
     const limit = value.limitEV;
     return { intent: 'hdr', reference: 'scene', route: 'aces2', white: 100, peak: 1000,
-      limitEV: typeof limit === 'number' && Number.isFinite(limit) && limit >= 0 && limit <= 3.3 ? limit : 3.3,
+      limitEV: typeof limit === 'number' && Number.isFinite(limit) && limit >= 0 && limit <= 3.32 ? limit : 3.32,
+      bandEV: Array.from({length:4}, (_, index) => n(value.bandEV?.[index], 0.5)),
       trim: { exposure: n(value.trim?.exposure, 3), mapping: value.trim?.mapping === 'soft' ? 'soft' : 'balanced',
         compression: Math.max(0, n(value.trim?.compression, 100)) },
       film: Object.hasOwn(RMPhotos.filmStocks, value.film ?? '') ? value.film : '' };

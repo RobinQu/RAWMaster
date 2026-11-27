@@ -8,6 +8,10 @@ const h = (value) =>
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
   );
 const glyphs = {
+  palette: 'M12 3C6 3 2.5 7.2 2.5 12c0 5.1 4.1 8.8 8.5 8.8 2.3 0 2.6-1.5 2-3-.5-1.4.4-2.7 2.2-2.7h1.4a4.8 4.8 0 0 0 4.9-4.8C21.5 6.5 17.7 3 12 3z M7 9h.2m4-2h.2m4.3 1h.2m2.6 3h.2',
+  sdrColor: 'M8.5 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z M15.5 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z M12 21a5 5 0 1 0 0-10 5 5 0 0 0 0 10z',
+  hdrSun: 'M12 6.8a5.2 5.2 0 1 0 0 10.4 5.2 5.2 0 0 0 0-10.4z M12 1v2m0 18v2M1 12h2m18 0h2M4 4l1.5 1.5M18.5 18.5L20 20M20 4l-1.5 1.5M5.5 18.5 4 20',
+
   info: 'M12 22a10 10 0 1 0 0-20 10 10 0 1 0 0 20M12 11v6m0-10v.4',
   warning: 'M12 3 1.6 20h20.8L12 3zM12 9v5m0 3v.5',
   move: 'M12 2v20M2 12h20M9 5l3-3 3 3m-6 14 3 3 3-3M5 9l-3 3 3 3m14-6 3 3-3 3',
@@ -278,7 +282,7 @@ function route() {
   if (S.page === 'edit') {
     S.tool = S.sub === 'dag' ? 'basic' : Object.hasOwn(editTools, S.sub) || S.sub === 'agent' ? S.sub : 'basic';
     if (S.sub === 'versions') queueMicrotask(() => { actions['open-versions'](S.pendingResult); S.pendingResult=null; });
-    if (S.sub === 'dag' && !compatibilityGraphMode) { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
+    if (S.sub === 'dag' && !compatibilityGraphReview) { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
     if (['masks','repair'].includes(S.tool)) { S.canvasRouteTool = S.tool === 'masks' ? 'mask' : 'remove'; S.tool = 'basic'; }
     S.editReturn = 'edit/' + (S.sub || 'development');
     S.canvasMenu = '';

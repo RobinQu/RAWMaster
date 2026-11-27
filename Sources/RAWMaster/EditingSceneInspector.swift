@@ -5,10 +5,9 @@ struct EditingSceneModeStrip: View {
     enum Mode: String, CaseIterable {
         case sdr = "SDR", hdr = "HDR", bw = "B&W"
         var label: String { switch self { case .sdr: return "SDR 彩色"; case .hdr: return "HDR"; case .bw: return "B&W 黑白" } }
-        var symbol: String { switch self { case .sdr: return "circle.lefthalf.filled"; case .hdr: return "waveform.path"; case .bw: return "circle.righthalf.filled" } }
+        var symbol: String { switch self { case .sdr: return "circle.hexagongrid"; case .hdr: return "sun.max.fill"; case .bw: return "circle.lefthalf.filled" } }
     }
     @ObservedObject var editing: EditingController
-    @State private var outputOpen = false
     @State private var trimOpen = false
     @FocusState private var focus: Mode?
     private var current: Mode {
@@ -23,12 +22,7 @@ struct EditingSceneModeStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
-            HStack {
-                Label("色彩外观", systemImage: "circle.lefthalf.filled").font(.subheadline.weight(.semibold))
-                Spacer()
-                AppIconButton(systemName: "slider.horizontal.3", label: "色彩与输出") { outputOpen = true }
-                    .accessibilityIdentifier("editing.scene.output")
-            }
+            Label("色彩外观", systemImage: "paintpalette").font(.subheadline.weight(.semibold))
             HStack(spacing: 3) {
                 ForEach(Mode.allCases, id: \.self) { mode in
                     Button { choose(mode) } label: {
@@ -60,40 +54,49 @@ struct EditingSceneModeStrip: View {
             }
             if let graph = editing.recipe.sceneGraph {
                 let maximum = DevelopmentSceneOutputStateV1.Version.maximumHDRLimitEV
-                Text("SDR 白点 100 nits · HDR 目标 1000 nits").font(.caption).foregroundStyle(.secondary)
                 if let ticket = editing.sceneTicket {
                     SceneSliderCommand(title: "HDR 高光限制（EV）", value: graph.output.hdrHighlightLimitEV ?? maximum,
                         range: 0...maximum, identifier: "editing.scene.highlightLimit", context: AnyHashable(ticket)) {
                         editing.setSceneHighlightLimit($0, ticket: ticket)
                     }
-                    Button {
-                        editing.setSceneViewingHDR(!editing.sceneRequestedHDR)
-                    } label: { Label("预览 SDR 派生", systemImage: editing.sceneRequestedHDR ? "eye" : "eye.fill") }
-                    .buttonStyle(PhotosFlatButtonStyle()).accessibilityAddTraits(editing.sceneRequestedHDR ? [] : .isSelected)
-                    .accessibilityIdentifier("editing.scene.derivative")
+                }
+                PhotosFlatTabs(title: "派生预览", selection: Binding(get: { editing.sceneRequestedHDR }, set: editing.setSceneViewingHDR),
+                    options: [false, true], label: { $0 ? "预览 HDR 派生" : "预览 SDR 派生" })
+                if let ticket = editing.sceneTicket {
                     DisclosureGroup("SDR 派生设置", isExpanded: $trimOpen) {
                         SceneSliderCommand(title: "派生曝光（EV）", value: graph.output.sdrTrim.exposureEV, range: -3...3,
                             identifier: "editing.scene.trim", context: AnyHashable(ticket)) { editing.setSceneTrimExposure($0, ticket: ticket) }
-                        Button("复位派生曝光") { editing.setSceneTrimExposure(0, ticket: ticket) }.buttonStyle(.borderless)
+                        Button("复位派生曝光") { editing.setSceneTrimExposure(0, ticket: ticket) }.buttonStyle(PhotosFlatButtonStyle())
+                    }.font(.caption)
+                }
+                if let monitor = editing.sceneGraphMonitorText {
+                    HStack {
+                        Text(monitor).accessibilityIdentifier("editing.scene.graph.monitor")
+                        Button("返回最终结果") { editing.stopSceneGraphMonitor() }.buttonStyle(PhotosFlatButtonStyle())
                     }.font(.caption)
                 }
             }
+            outputDetails
         }
         .padding(.horizontal, 12).padding(.vertical, 6)
         .accessibilityElement(children: .contain).accessibilityLabel("色彩外观")
-        .popover(isPresented: $outputOpen, arrowEdge: .bottom) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("色彩与输出").font(.headline)
-                Text(editing.asset?.editingDisplayName ?? "当前照片")
-                if current == .hdr {
-                    Text("场景线性 AP1 · ACES 2")
-                    Text("HDR 目标：Rec.2020 PQ，1000 nits")
-                    Text("SDR 派生：sRGB，100 nits")
-                    Text("屏幕余量 \(editing.sceneHeadroom, specifier: "%.2f")×").foregroundStyle(.secondary)
-                } else { Text(current == .bw ? "黑白混色 · sRGB" : "兼容彩色显影 · sRGB") }
-                Button("关闭") { outputOpen = false }.keyboardShortcut(.cancelAction)
-            }.font(.caption).padding(14).frame(width: 245, alignment: .leading)
-        }
+    }
+
+    private var outputDetails: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            if let asset = editing.asset { Text(asset.editingDisplayName).lineLimit(1).truncationMode(.middle) }
+            if current == .hdr {
+                Text("场景线性 AP1 · ACES 2")
+                Text("HDR · Rec.2020 PQ · 1000 nits")
+                Text("SDR · sRGB · 100 nits")
+                Text(editing.sceneVisualizeHDR ? "正在显示 HDR 亮度分档" :
+                    editing.sceneRequestedHDR && editing.sceneHeadroom <= 1 ? "当前屏幕以 SDR 派生显示" :
+                    String(format: "屏幕余量 %.2f×", editing.sceneHeadroom))
+            } else {
+                Text(current == .bw ? "黑白混色 · sRGB" : "彩色显影 · sRGB")
+            }
+        }.font(.caption2).foregroundStyle(.secondary)
+            .accessibilityElement(children: .combine).accessibilityIdentifier("editing.scene.outputDetails")
     }
 
     private func moveFocus(_ step: Int, from mode: Mode) -> KeyPress.Result {
@@ -137,47 +140,21 @@ private struct SceneSliderCommand: View {
 struct EditingSceneInspector: View {
     @ObservedObject var editing: EditingController
     let graph: DevelopmentSceneGraphV1
-    var destination: PhotosAdjustmentDestination = .basic
-
-    @State private var expandedSections: Set<String> = ["light", "curves", "scene.models", "scene.coverage"]
+    var showsNode = false
+    @State private var expandedSections: Set<String> = ["scene.models"]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if let ticket = editing.sceneGraphTicket {
-                switch destination {
-                case .basic:
-                    EditingSceneScopesInspector(editing: editing, state: editing.sceneScopes)
-                        .padding(.horizontal, 12).padding(.vertical, 6)
-                    Divider()
-                    retainedGroups([.whiteBalance])
-                    section(.light) { inspector(ticket) }
-                    retainedGroups([.color, .definition])
-                case .tones:
-                    section(.curves) { curveControls(ticket) }
-                    retainedGroups([.levels])
-                case .detail:
-                    panel(key: "scene.models", title: "照片模型", symbol: destination.symbol) { modelControls(ticket) }
-                    retainedGroups([.noiseReduction, .sharpen])
-                case .masks:
-                    panel(key: "scene.coverage", title: "蒙版", symbol: destination.symbol) {
-                        Text("在 Graph 中连接线性、径向或模型覆盖，可对选中区域调色。")
-                    }
-                case .grading:
-                    panel(key: "scene.grading", title: "色彩分级", symbol: destination.symbol) {
-                        Text("兼容显影的分级轮与 LUT 在 SDR 空间运行。切回 SDR 或黑白可继续调整。")
-                    }
-                default: retainedGroups(destination.groups)
+        if let ticket = editing.sceneGraphTicket {
+            if showsNode, editing.sceneGraphNode != nil {
+                panel(key: "scene.node", title: "当前节点参数", symbol: "point.3.connected.trianglepath.dotted") {
+                    inspector(ticket)
+                    if case .corrector = editing.sceneGraphNode?.operation { curveControls(ticket) }
                 }
-            } else {
-                Text(editing.sceneGraphState.connection != nil ? "请先在 Graph 中应用或取消连接草稿。" : "原片不可用或正在保存，暂时无法调整。")
-                    .padding(12)
+            } else if !showsNode {
+                panel(key: "scene.models", title: "照片模型", symbol: "cpu") { modelControls(ticket) }
+                    .accessibilityIdentifier("editing.scene.inspector")
             }
-        }.font(.caption).frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .contain).accessibilityIdentifier("editing.scene.inspector")
-    }
-
-    private func section<Content: View>(_ group: DevelopmentAdjustmentID, @ViewBuilder content: @escaping () -> Content) -> some View {
-        panel(key: group.rawValue, title: group.photosTitle, symbol: group.photosSymbol, content: content)
+        }
     }
 
     private func panel<Content: View>(key: String, title: String, symbol: String, @ViewBuilder content: @escaping () -> Content) -> some View {
@@ -187,32 +164,6 @@ struct EditingSceneInspector: View {
                     if expandedSections.remove(key) == nil { expandedSections.insert(key) }
                 }, onEnable: nil, onReset: nil, content: content)
             Divider().opacity(0.65)
-        }
-    }
-
-    private func retainedGroups(_ groups: [DevelopmentAdjustmentID]) -> some View {
-        let legacy = editing.compatibilityAppearance?.adjustmentsV3
-        return ForEach(groups, id: \.self) { group in
-            section(group) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(compatibilityReason(group))
-                    if let legacy, PhotosAdjustmentCommands.isModified(group, in: legacy) {
-                        Label("已保留此前的 SDR 调整", systemImage: "checkmark").foregroundStyle(.secondary)
-                    }
-                }.font(.caption)
-            }
-        }
-    }
-
-    private func compatibilityReason(_ group: DevelopmentAdjustmentID) -> String {
-        switch group {
-        case .whiteBalance: return "HDR 使用 ARW 的拍摄白平衡与相机标定。色温、色调和白平衡取样在 SDR 或黑白显影中可调。"
-        case .levels, .selectiveColor, .color, .blackAndWhite: return "此项按兼容显影的显示色域计算。切回 SDR 或黑白可编辑之前的设置。"
-        case .optics, .vignette: return "此项依赖兼容显影的镜头和几何校正。切回 SDR 或黑白可继续调整。"
-        case .retouch, .redEye: return "修复坐标和取样依赖兼容显影图像。切回 SDR 或黑白可继续原有的局部调整。"
-        case .noiseReduction, .sharpen, .definition, .texture, .clarity, .dehaze:
-            return "此算子使用兼容显影的细节或邻域采样。切回 SDR 或黑白可继续调整。"
-        default: return "此项可在 SDR 或黑白显影中调整。"
         }
     }
 
@@ -276,7 +227,7 @@ struct EditingSceneInspector: View {
             }))
             switch node.operation {
             case let .corrector(image, mask, ev, curve, strength, enabled):
-                SceneSliderCommand(title: "曝光（EV）", value: Double(ev), range: -12...12,
+                SceneSliderCommand(title: "节点曝光（EV）", value: Double(ev), range: -12...12,
                     identifier: "editing.scene.exposure", context: AnyHashable(ticket)) { value in
                         update(node, ticket, .corrector(image: image, mask: mask, exposureEV: Float(value), curve: curve, strength: strength, enabled: enabled))
                     }

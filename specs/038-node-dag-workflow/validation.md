@@ -2,7 +2,29 @@
 
 下文保留各次签名包的原始操作和测量。确认工作表、「保存候选」和「作品版本」是当时的入口。本轮在「色彩外观」直接切换，从编辑冻结 032 输入，旧结果可在快照更多中找回。[本轮规格与走查](../025-editing-workspace/appearance-activity.md)
 
-2026-11-27 的工作台走查覆盖可编辑 Graph、只读兼容图、窄窗与 900 × 360 矮窗。两类图窗都从编辑右上角进入，画布铺满浮窗。旧版固定高度和短窗自动折叠仅适用于下方 v3 历史截图。[现行窗口行为与证据](../025-editing-workspace/editor-rails.md)
+[现行系统图窗及物理拖动验证](#系统图窗与真实拖动)覆盖可编辑图和只读兼容图。下文保留无标题图窗和较早的矮窗方案，供比对当时的交互。[上一轮工作台走查](../025-editing-workspace/editor-rails.md)
+
+## 系统图窗与真实拖动
+
+2026-11-27，在 macOS 27.0.1 的独立资料库中打开雪景 RAW 的 HDR 草稿和河湾 JPEG 的兼容草稿。两者均从主窗右上「当前节点 → Graph」进入。此次使用单独标识、临时签名的 Debug 应用。文件与可执行文件的 SHA-256、系统版本、屏幕编号、全局窗位、节点局部坐标和 AX 控件记录均在[物理输入回执](evidence/native-window/physical-drag.json)。
+
+| 动作 | 工作流 Graph | 只读兼容图 |
+| --- | --- | --- |
+| 拖系统标题 | 图窗左移 66、上移 44 点，节点相对窗体的位置保持不变 | 同方向、同距离，三个阶段保持原位 |
+| 拖空白画布 | 节点右移 43、上移 27 点，图窗与主窗位置保持 | 初始比例下三个阶段与窗体均保持原位 |
+| 拖系统右边缘 | 宽度从 640 调到 608 点，高度维持 392 点 | 同样缩至 608 × 392 点 |
+| 按系统红色关闭，再从原入口打开 | 焦点回到 HDR Graph 按钮，重开的坐标及宽高与关闭前一致 | 焦点回到兼容图按钮，同样恢复关闭前几何 |
+
+原生标题高 19 点。「图窗操作」位于系统标题右端，左上红色按钮公开系统 `AXCloseButton`。添加、更多、100% 和适合全图的可访问命中高度均为 26 点。兼容图的 −、百分比和 + 三个控件同高。[HDR 工具窗](evidence/native-window/hdr-graph.webp) · [随雪景显示的工作流图](evidence/native-window/hdr-workbench.webp) · [兼容工具窗](evidence/native-window/legacy-graph.webp) · [河湾照片与图窗](evidence/native-window/legacy-workbench.webp)
+
+取证程序从独立进程读取 `AXPosition`、`AXSize`、系统关闭按钮和节点坐标。它用 `CGEvent` 的真实按下、拖动与松开事件操作系统标题、空白画布与边缘，随后用 AX 按钮关闭及重开。在可见的独立 QA 资料库中通过资料库选片进入编辑，使用以下命令复测。兼容图将标题参数改为「只读兼容图」。[取证程序](../../scripts/check-graph-window.swift) · [可操作原型及对照说明](../025-editing-workspace/appearance-parity.md)
+
+```sh
+xcrun swiftc scripts/check-graph-window.swift -o /tmp/check-graph-window
+/tmp/check-graph-window "$QA_APP_PID" '工作流 Graph' "$QA_OUTPUT"
+```
+
+四项原生回归覆盖键盘方向键移动和调整大小、30 点折叠及复位、照片工具暂隐及还原、兼容图 120% 重开和 100% 复位。实拍场景回归另验证节点选中、连接草案取消、组内监看、最终根冻结和分层 Escape。四项通过，实际提供雪景 RAW。图窗沿用暗房的深色外观，两个公共材质策略测试分别验证可用系统材质和辅助功能优先级，减少透明度或提高对比度时使用不透明面。[测试记录](evidence/native-window/native-tests.txt) · [兼容图原生测试](../../Tests/RAWMasterUITests/EditingCompatibilityGraphTests.swift) · [HDR 图与冻结回归](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift)
 
 记录从早期原型、组件推进到 `main@b238c0ab` 的原生默认入口。兼容视图、可编辑场景图、模板和批量候选已有下列分阶段证据。完整工具、可访问性和异源出片仍待签收。[本次 main 实拍复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
@@ -88,6 +110,8 @@ python3 scripts/check-ui-prototype.py --native-graph-only
 ## 原生模板与可恢复批量
 
 [批量交互评审](../../docs/ui/prototype/index.html?batchNativeReview=1) → 资料库多选 → 底栏「更多 → 批量工作流」。先在浏览器复验不落盘的确认、取消，以及“候选不采用”；390px 深色走查逐张离线、取消余项、重试及后续修订不可撤销。样片只模拟工作流，不测 RAW 校准、SQLite 提交或输出像素。
+
+2026-11-27 复测「应用整图模板」。目标先设置饱和度、裁切、降噪、超分辨率和两个派生输出。单张应用与按当前底稿生成的批量候选均保留这些设置，节点取得新的身份。用 24 MP 雪景 RAW 建立独立资料库，重开 SQLite 后，候选仍保留饱和度 0.41、裁切矩形 (0.12, 0.18, 0.70, 0.68)、两项模型、SDR 曝光 −0.5 EV、HDR 限制 1.75 EV 和第二档 +0.25 EV。目标的原草稿和已采用版本均与应用前相同。[原生单张与批量回归](../../Tests/RAWMasterUITests/SceneWorkflowBatchTests.swift)
 
 原生相同入口随 Release 默认显示；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 仅用于诊断时隐藏。图窗「更多 → 工作流模板」保存整图或当前组选段，丢弃源身份及输出设置；应用在所选边/组内重映射身份。资料库批量沿用现有编辑目录，确认时冻结每个目标原片、草稿修订、底稿和候选配方；SQLite 原子提交各项版本及回执，不自动采用。即使已取消或重启也可核对原状态，重试前验证原片 SHA 及校准，撤销前验证目标修订与版本依赖。结果的「导出成功候选」选择明确版本 ID，不读当前临时监看或选片中的另一配方。阶段曝光同步只改一个正确器的曝光，完整色域字段与源绑定素材仍按规格逐项开放。
 

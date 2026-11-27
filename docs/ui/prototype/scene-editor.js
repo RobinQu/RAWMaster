@@ -9,7 +9,7 @@ const SceneEditor = (() => {
   const runtimeMessage = 'HDR 原片解码运行库不可用。请检查 RAWMaster 安装后重试。';
   const diagnostics = {
     sensor: ['传感器饱和', '斜线 · 源通道饱和'], target: ['超输出目标', '网格 · 峰值或色域超出'],
-    screen: ['超屏幕余量', '点阵 · 当前屏幕看不全'], bands: ['HDR 分档', '横线 · 每格 1 EV'],
+    screen: ['超屏幕余量', '点阵 · 当前屏幕看不全'], bands: ['可视化 HDR', '目标亮度 · 每档 1 EV'],
   };
   const scopes = {
     output: ['目标输出', '参考白 100 nits │ +1 EV │ +2 EV │ +3 EV', 'Y 200 nits · +1 EV（目标输出）'],
@@ -37,23 +37,42 @@ const SceneEditor = (() => {
   const blocked = () => versions() ? '已保存版本只读，返回编辑后可切换模式。'
     : S.canvasTool || S.dagConnectionDraft || quickPromptVisible() ? '请先完成或取消当前工具草案。'
     : !Studio.asset(id()).online ? '原片离线；接回原片后可切换模式。' : '';
+  const bands = [
+    ['0–1 EV','#3878cc'], ['1–2 EV','#52ae77'], ['2–3 EV','#dfaa42'], ['3+ EV','#d85d56']
+  ];
+  function appearanceInfo() {
+    const c = config(), v = view();
+    if (!c) return `<div class="appearance-info" aria-label="色彩与输出"><span>${h(Studio.asset(id()).name)}</span><span>${mode()==='bw' ? '黑白混合' : '彩色显影'} · sRGB</span></div>`;
+    const screen = v.screen === 'unknown' ? '未知' : v.screen === 'hdr' ? '4×（+2 EV）' : '1×（SDR）';
+    const display = v.preview === 'sdr' ? 'SDR 派生预览' : v.screen === 'hdr' ? 'HDR 目标预览' : 'SDR 派生回退';
+    return `<div class="appearance-info" aria-label="色彩与输出"><span>${h(Studio.asset(id()).name)}</span><span>场景线性 AP1 · ACES 2</span>
+      <span>HDR · Rec.2020 PQ · 1000 nits</span><span>SDR · sRGB · 100 nits</span>
+      <span>${display} · 屏幕余量 ${screen}</span>${reason() ? `<span>${h(reason())}</span>` : ''}</div>`;
+  }
   function modeBar() {
-    const current = mode();
-    const details = {sdr:['SDR 彩色','aperture'],hdr:['HDR','pulse'],bw:['B&W 黑白','invert']};
-    const c = config(), why = blocked() || reason();
-    const attached = c ? `<p class="appearance-range">SDR 白点 100 nits · HDR 目标峰值 1000 nits</p>
-      <div class="scene-limit"><label for="scene-limit">HDR 高光限制</label><output for="scene-limit">+${c.limitEV.toFixed(1)} EV</output>
-      <input id="scene-limit" name="sceneLimit" type="range" min="0" max="3.3" step="0.1" value="${c.limitEV}" ${why ? 'disabled':''}></div>
-      ${btn('预览 SDR 派生','scene-view',view().preview==='sdr'?'target':'sdr',{pressed:view().preview==='sdr',icon:'eye'})}${rendition()}` : '';
-    return `<section class="scene-mode-bar" aria-labelledby="appearance-title"><div class="appearance-heading">${icon('invert',15)}<h3 id="appearance-title">色彩外观</h3>
-      ${btn('色彩与输出','scene-open','',{icon:'sliders',only:true,cls:'icon-btn scene-entry'})}</div><div class="scene-modes" role="group" aria-label="色彩外观">
-        ${Object.entries(details).map(([key,[label,symbol]]) => btn(modes[key],'scene-mode',key,{title:label,icon:symbol,pressed:current === key})).join('')}</div>${attached}${c && view().failed ? btn('重试 HDR 预览','scene-review-retry'):''}</section>`;
+    const current = mode(), c = config(), v = view();
+    const details = {sdr:['SDR 彩色','sdrColor'],hdr:['HDR','hdrSun'],bw:['B&W 黑白','invert']};
+    const why = blocked() || reason();
+    const pair = flatTabs('派生预览','scene-view',[['sdr','预览 SDR 派生'],['target','预览 HDR 派生']],v.preview);
+    const attached = c ? `<div class="scene-limit"><label for="scene-limit">HDR 高光限制</label><output for="scene-limit">+${c.limitEV.toFixed(2)} EV</output>
+      <input id="scene-limit" aria-label="HDR 高光限制" name="sceneLimit" type="range" min="0" max="3.32" step="0.01" value="${c.limitEV}" ${why ? 'disabled':''}></div>
+      <div class="scene-previews">${pair}</div>${rendition()}${appearanceInfo()}` : appearanceInfo();
+    return `<section class="scene-mode-bar" aria-labelledby="appearance-title"><div class="appearance-heading">${icon('palette',16)}<h3 id="appearance-title">色彩外观</h3></div>
+      <div class="scene-modes flat-tabs" role="group" aria-label="色彩外观">${Object.entries(details).map(([key,[label,symbol]]) =>
+        btn(label,'scene-mode',key,{icon:symbol,pressed:current === key})).join('')}</div>${attached}
+      ${c && v.failed ? btn('重试 HDR 预览','scene-review-retry'):''}</section>`;
+  }
+  function visualizeControl() {
+    if (!hdr()) return '';
+    const on = view().overlays.has('bands');
+    return `<div class="visualize-hdr"><label><input type="checkbox" name="visualizeHDR"${on ? ' checked' : ''}${reason() ? ' disabled' : ''}>可视化 HDR</label>
+      ${on ? '<div class="hdr-bands-key" aria-label="目标亮度分档">' + [['≤100 nits','#989898'],...bands].map(([label,color])=>'<span><i style="background:'+color+'"></i>'+label+'</span>').join('') + '</div>' : ''}</div>`;
   }
   const warn = text => notifyEditor(text, 'error');
   function chart(cfg, v) {
     const screen = v.screen === 'hdr' ? 2 : 0, screenX = 104 + screen * 30;
     const limitX = 104 + cfg.limitEV * 30;
-    const label = `扩展直方图（模拟）：SDR 与 HDR，以 100 nits 为界，每格 1 EV；屏幕可显示 +${screen} EV，编辑限制 +${cfg.limitEV.toFixed(1)} EV`;
+    const label = `扩展直方图（模拟）：SDR 与 HDR，以 100 nits 为界，每格 1 EV；${v.screen === 'unknown' ? '屏幕余量未知' : '屏幕可显示 +'+screen+' EV'}，编辑限制 +${cfg.limitEV.toFixed(1)} EV`;
     return `<svg class="scene-chart" viewBox="0 0 208 67" role="img" aria-label="${h(label)}">
       <path class="scene-chart-grid" d="M134 7v40 M164 7v40 M194 7v40"/>
       <path class="scene-chart-hist" d="M4 46 12 42 20 32 27 37 35 19 43 14 52 31 61 27 71 34 81 21 90 15 100 23 110 21 119 31 129 24 139 32 148 35 157 30 168 40 179 42 187 45 201 46Z"/>
@@ -66,17 +85,19 @@ const SceneEditor = (() => {
     const c = config(), v = view(), derivative = v.preview === 'sdr';
     const white = 144, evWidth = 28;
     const limit = white + c.limitEV * evWidth, screen = white + (v.screen === 'hdr' ? 2 : 0) * evWidth;
-    // Shape-only samples for the interactive mock. Native uses measured RGB in all 256 bins.
-    const levels = [
-      [4,12,20,32,49,38,54,41,33,48,51,35,29,27,25,20,28,16,24,18,13,16,11,9,8,6,5,4,3,0,0,0],
-      [3,10,26,43,53,44,38,51,45,62,52,38,34,22,28,24,18,24,20,12,11,10,7,6,4,3,2,1,0,0,0,0],
-      [4,17,31,36,45,34,40,32,37,52,64,47,37,32,27,21,28,19,17,11,9,7,6,4,3,3,1,0,0,0,0,0]
-    ];
+    const levels = RMHistogram[Studio.fixtureID(id())] || [];
     function area(values, color) {
-      const maximumX = derivative ? white : Math.min(255, limit);
-      const points = values.slice(0, Math.ceil(maximumX / 8) + 1)
-        .map((count, index) => Math.min(maximumX, index * 8) + ',' + (96 - count * 1.3)).join(' L');
-      return '<path d="M0 96 L' + points + ' L' + maximumX + ' 96Z" fill="' + color + '" fill-opacity=".68"/>';
+      const stops = c.bandEV, exposure = Number(shown().ev) || 0;
+      const points=values.map((count,index)=>{
+        const input = 255*index/(values.length-1);
+        const ev=(input-152)/27+exposure;
+        const band=Math.min(3,Math.floor(ev));
+        const target=ev>0 ? Math.min(c.limitEV,ev+stops[band]) : ev;
+        const x=derivative ? white*index/(values.length-1) : target>0 ? white+evWidth*target : Math.max(0,white*(1+target*27/152));
+        return x.toFixed(2)+','+(96-count*1.9).toFixed(2);
+      });
+      const end=derivative ? white : limit;
+      return '<path d="M0 96 L'+points.join(' L')+' L'+end+' 96Z" fill="'+color+'" fill-opacity=".68"/>';
     }
     const name = derivative ? 'SDR 派生' : 'HDR 目标';
     return '<figure class="histogram scene-rgb"><svg viewBox="0 0 256 96" preserveAspectRatio="none" role="img" aria-label="' +
@@ -99,17 +120,15 @@ const SceneEditor = (() => {
   function controls() {
     const why = reason();
     const missing = scopesReview && view().screen === 'unknown';
-    return `<div class="row scene-diagnostics">${Object.entries(diagnostics).map(([k,[t]]) => btn(t,'scene-overlay',k,{pressed:view().overlays.has(k),disabled:!!why || k === 'screen' && missing})).join('')}</div>${missing ? '<p class="small">当前屏幕色彩空间不可线性化 · 超屏幕余量不可用，不是零。</p>' : ''}${why ? `<p class="small">诊断不可用：${h(why)}</p>` : ''}`;
+    return `<div class="row scene-diagnostics">${Object.entries(diagnostics).filter(([k])=>k !== 'bands').map(([k,[t]]) => btn(t,'scene-overlay',k,{pressed:view().overlays.has(k),disabled:!!why || k === 'screen' && missing})).join('')}</div>${missing ? '<p class="small">当前屏幕色彩空间不可线性化 · 超屏幕余量不可用，不是零。</p>' : ''}${why ? `<p class="small">诊断不可用：${h(why)}</p>` : ''}`;
   }
-  function hud() {
-    if (!hdr()) return '';
+  function reportRuntime() {
+    if (!hdr()) return;
     const v = view();
     if (nativeReview && missingRuntime && !reason() && !v.runtimeNotified) {
       const photo = id(); v.runtimeNotified = true;
       queueMicrotask(() => notifyEditor(runtimeMessage, 'error', photo));
     }
-    return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(appearance())} · 模拟${v.preview === 'target' && v.screen === 'sdr' ? ' · 屏幕无 HDR 余量' : ''}</span>
-      ${reason() ? '' : [...v.overlays].map(k => `<span class="scene-legend ${k}">${h(diagnostics[k][1])}</span>`).join('')}</div>`;
   }
   document.addEventListener('toggle', event => {
     if (event.target.matches('.scope-native-review') && event.target.isConnected) view().scopeOpen = event.target.open;
@@ -119,10 +138,10 @@ const SceneEditor = (() => {
     return `<section class="editing-scopes scene-scopes${docked ? ' docked' : ''}" aria-label="HDR 示波器（模拟）">
       <div class="row">${Object.entries(scopes).map(([k,[t]]) => btn(t,'scene-scope',k,{pressed:v.scope === k})).join('')}${docked ? btn('在独立窗口显示示波器','scopes','',{icon:'pulse',only:true,cls:'icon-btn'}) : ''}</div>
       ${v.scope === 'output' ? chart(config(), v) : `<div class="scene-axis" role="img" aria-label="${h(label + '：' + axes)}"><span>${h(axes)}</span></div>`}
-      <small class="scene-display-key">模拟屏幕余量：${v.screen === 'sdr' ? '0' : '+2'} EV · 实线可显示／虚线超余量</small>
+      <small class="scene-display-key">模拟屏幕余量：${v.screen === 'unknown' ? '未知' : v.screen === 'sdr' ? '0 EV' : '+2 EV'} · 实线可显示／虚线超余量</small>
       <div class="row">${btn(v.sample ? '解除样点' : '锁定中心样点','scene-sample','',{pressed:v.sample,disabled:!!why})}${scopesReview ? btn('在主图取样','scene-pick','',{pressed:!!v.picking,disabled:!!why}) : ''}</div>
       <p role="status" class="small">${why ? '源数据不可用，尚无采样值。' : (v.sample ? `锁定样点（${Math.round((v.point?.x ?? .5)*100)}%，${Math.round((v.point?.y ?? .5)*100)}%）：` : '中心预读：') + h(reading)} 未提供 HDR Lab 或 HDR 矢量图。</p>
-      ${controls()}</section>`;
+      ${controls()}${reviewDisplay()}</section>`;
   }
   function trimFields(c, disabled) {
     const trim = c.trim;
@@ -136,26 +155,23 @@ const SceneEditor = (() => {
   function rendition() {
     const s = view();
     return `<details class="scene-rendition" ${s.rendition ? 'open' : ''}><summary>SDR 派生设置</summary><div class="scene-trim-fields">
-      <div class="row">${btn('预览 SDR 派生','scene-view','sdr',{pressed:s.preview === 'sdr'})}${btn('按 HDR 目标查看','scene-view','target',{pressed:s.preview === 'target'})}</div>
       ${trimFields(config(), blocked() || reason() ? 'disabled' : '')}</div></details>`;
   }
   document.addEventListener('toggle', event => {
     if (event.target.matches('.scene-rendition') && event.target.isConnected) view().rendition = event.target.open;
   }, true);
   let entrySelector;
-  function open() {
-    entrySelector = '.scene-entry';
-    const c = config(), why = reason(), readOnly = !!(blocked() || why);
-    const disabled = readOnly ? 'disabled' : '';
-    dialog('色彩与输出', `<div class="scene-sheet"><p>原型模拟 · ${h(Studio.displayName(id()))} · ${versions() ? '版本查看' : '当前编辑草稿'}。</p>
-      <p>色彩模式：<strong>${h(modes[mode()])}</strong> · ${c ? why ? '当前不可重算 HDR' : '场景参考（样本）' : 'SDR 彩色与黑白共用 SDR 输出'}</p>
-      ${why ? `<p class="warn">${h(why)}</p>` : ''}
-      ${c ? `<p>标准 ACES 2 · ${h(RMSceneOutput.targets.hdr.signal)}。其他成像路线和目标未放行；屏幕 ICC 不改变成片目标。</p>
-        <fieldset class="scene-trim-fields"><legend>SDR 派生</legend>${trimFields(c, disabled)}</fieldset>
-        <fieldset><legend>评审用屏幕状态</legend><div class="row">${btn('模拟 SDR 屏','scene-screen','sdr',{pressed:view().screen === 'sdr'})}${btn('模拟 HDR 屏','scene-screen','hdr',{pressed:view().screen === 'hdr'})}${scopesReview ? btn('模拟屏幕色彩空间未知','scene-screen','unknown',{pressed:view().screen === 'unknown'}) : ''}</div></fieldset>
-        <fieldset class="scene-sheet-diagnostics"><legend>查看叠加</legend>${controls()}</fieldset>${nativeReview ? btn('模拟 HDR 预览失败','scene-review-fail') : ''}` : ''}</div>`,
-      btn('关闭','close'));
+  function reviewDisplay() {
+    const v=view();
+    return `<details class="scene-lab"${v.lab ? ' open' : ''}><summary>模拟显示与故障</summary>
+      <div class="row">${btn('模拟 SDR 屏','scene-screen','sdr',{pressed:v.screen==='sdr'})}
+      ${btn('模拟 HDR 屏','scene-screen','hdr',{pressed:v.screen==='hdr'})}
+      ${scopesReview ? btn('模拟未知屏幕','scene-screen','unknown',{pressed:v.screen==='unknown'}) : ''}</div>
+      ${nativeReview ? btn('模拟 HDR 预览失败','scene-review-fail') : ''}</details>`;
   }
+  document.addEventListener('toggle',event=>{
+    if (event.target.matches('.scene-lab') && event.target.isConnected) view().lab=event.target.open;
+  },true);
   function commit(label, sceneOutput, base = edit().recipe) {
     const next = { ...base };
     if (sceneOutput) next.sceneOutput = sceneOutput;
@@ -172,9 +188,8 @@ const SceneEditor = (() => {
     Studio.setRecipe(id(), label, next);
     if (sheet.open) closeSheet();
     render();
-    ($(entrySelector || '.scene-entry') || $('.scene-entry'))?.focus({preventScroll:true});
+    ($(entrySelector || '.scene-modes [aria-pressed=true]') || $('.scene-modes [aria-pressed=true]'))?.focus({preventScroll:true});
   }
-  actions['scene-open'] = open;
   function focusMode(key) {
     entrySelector = `[data-act="scene-mode"][data-val="${key}"]`;
     $(entrySelector)?.focus({preventScroll:true});
@@ -210,18 +225,7 @@ const SceneEditor = (() => {
     view().failed = false; resolveEditorRetry('scene-review-retry'); render(); notifyEditor('已重新生成 HDR 预览。');
     $('.scene-modes [aria-pressed=true]')?.focus({preventScroll:true});
   };
-  actions['scene-review-exposure'] = () => {
-    const field = $('[name=sceneGraphExposure]');
-    if (!hdr() || blocked() || reason() || !field.reportValidity()) return;
-    entrySelector = '[data-act=scene-review-exposure]';
-    commit('调整节点曝光', config(), {...edit().recipe, ev:field.valueAsNumber});
-  };
-  function reviewInspector() {
-    return `<p class="small">当前照片 · 基础调色 · 场景线性 AP1</p>
-      <label>节点曝光（EV） <input name="sceneGraphExposure" type="number" min="-12" max="12" step="0.25" required value="${edit().recipe.ev || 0}"></label> ${btn('应用曝光','scene-review-exposure')}
-      `;
-  }
-  inputs.sceneLimit = el => { el.closest('.scene-limit').querySelector('output').value = `+${el.valueAsNumber.toFixed(1)} EV`; };
+  inputs.sceneLimit = el => { el.closest('.scene-limit').querySelector('output').value = `+${el.valueAsNumber.toFixed(2)} EV`; };
   changes.sceneLimit = el => {
     const c = config();
     if (!c || blocked() || reason() || !el.validity.valid) return;
@@ -247,13 +251,14 @@ const SceneEditor = (() => {
   };
   function updateView(action, value, button) {
     const inSheet = button?.closest('dialog');
-    const inRendition = button?.closest('.scene-rendition');
-    if (inRendition && action === 'scene-view') {
-      view().rendition = true;
-      const bar = $('.scene-hud'), badge = $('.scene-badge');
-      if (bar) bar.outerHTML = hud();
+    const inRendition = $('.scene-rendition');
+    if (inRendition && action === 'scene-view' && !view().overlays.has('bands')) {
+      view().rendition = inRendition.open;
+      const badge = $('.scene-badge'), info = $('.appearance-info'), plot = $('.scene-rgb');
       if (badge) badge.textContent = badgeText();
-      inRendition.querySelectorAll('[data-act=scene-view]').forEach(el => el.setAttribute('aria-pressed', String(el.dataset.val === value)));
+      if (info) info.outerHTML = appearanceInfo();
+      if (plot) plot.outerHTML = rgbPlot();
+      document.querySelectorAll('.scene-previews [data-act=scene-view]').forEach(el => el.setAttribute('aria-pressed',String(el.dataset.val===value)));
       refreshCanvasLook();
       return;
     }
@@ -267,8 +272,6 @@ const SceneEditor = (() => {
     else {
       const badge = $('.scene-badge');
       if (badge) badge.textContent = badgeText();
-      const bar = $('.scene-hud');
-      if (bar) bar.outerHTML = hud();
       if (docked) docked.outerHTML = scope(true);
       const floating = sheet.querySelector('.scene-scopes');
       if (floating) floating.outerHTML = scope(false);
@@ -287,11 +290,21 @@ const SceneEditor = (() => {
       const r = el.classList.contains('reference-image') ? versionRecipe(S.reference || 'original') : dagEnabled() && !versions() ? dagViewRecipe(shown()) : shown();
       el.style.filter = RMPhotos.filter(RMPhotos.displayLook(preview(r)));
     });
+    PhotographicScopes.drawImagePreview();
     const monitor = $('.dag-monitor img');
     if (monitor) monitor.style.filter = dagPhotoFilter();
   }
   actions['scene-screen'] = (s, _, el) => { view().screen = s; if (s === 'unknown') view().overlays.delete('screen'); updateView('scene-screen',s,el); };
-  actions['scene-view'] = (s, _, el) => { view().preview = s; updateView('scene-view',s,el); };
+  actions['scene-view'] = (s, _, el) => {
+    const v=view(), wasVisualized=v.overlays.delete('bands'); v.preview=s;
+    if (wasVisualized) { render(); $('.scene-previews [data-val="'+s+'"]')?.focus({preventScroll:true}); }
+    else updateView('scene-view',s,el);
+  };
+  changes.visualizeHDR = el => {
+    const v=view();
+    if (el.checked) v.overlays.add('bands'); else v.overlays.delete('bands');
+    render(); $('[name=visualizeHDR]')?.focus({preventScroll:true});
+  };
   actions['scene-scope'] = (s, _, el) => { view().scope = s; updateView('scene-scope',s,el); };
   actions['scene-overlay'] = (k, _, el) => {
     if (!hdr() || reason() || !Object.hasOwn(diagnostics,k)) return;
@@ -315,7 +328,7 @@ const SceneEditor = (() => {
       e.target.closest('#dag-node-picker, .dag-floating') || !hdr() || !view().overlays.size) return;
     const last = [...view().overlays].at(-1);
     view().overlays.clear(); render();
-    ($(`[data-act="scene-overlay"][data-val="${last}"]`) || $('.scene-entry'))?.focus({preventScroll:true});
+    ($(`[data-act="scene-overlay"][data-val="${last}"]`) || $('[name=visualizeHDR]') || $('.scene-modes [aria-pressed=true]'))?.focus({preventScroll:true});
     e.preventDefault(); e.stopImmediatePropagation();
   }, true);
   function film(key) {
@@ -334,11 +347,6 @@ const SceneEditor = (() => {
     c.film = key; view().preview = 'sdr'; commit(key ? '在 SDR 派生中采用胶片' : '移除派生胶片', c);
   };
   const preview = r => !hdr() || fallback() ? RMSceneOutput.sdrPreview(r, config(r)) : r;
-  const overlayMarkup = () => !hdr() || reason() ? '' : `<div class="scene-marks" aria-hidden="true">${[...view().overlays].map(k => `<i class="${k}"></i>`).join('')}</div>`;
-  function toolNote() {
-    if (!hdr() || versions() || S.canvasTool || S.tool === 'basic') return '';
-    return ['smart','agent','detail','effects','grading','hdr','mixer','slice','warp','lens'].includes(S.tool)
-      ? '此工具尚未验证 HDR 母版运算；当前版本不可应用，也不会改用 SDR 代理。' : '';
-  }
-  return { modeBar, badge, hud, scope, rgbPlot, film, preview, config, hdr, overlayMarkup, toolNote, rendition, nativeReview, reviewInspector, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
+  const overlayMarkup = () => !hdr() ? (mode()==='bw' ? '<canvas class="bw-range-preview" hidden aria-hidden="true"></canvas>' : '') : reason() ? '' : `<div class="scene-marks" aria-hidden="true">${[...view().overlays].filter(k=>k!=='bands').map(k=>`<i class="${k}"></i>`).join('')}<canvas class="hdr-range-preview" data-visualize="${view().overlays.has('bands')}" hidden></canvas></div>`;
+  return { modeBar, badge, reportRuntime, unavailable: () => blocked() || reason(), scope, rgbPlot, film, preview, config, hdr, overlayMarkup, rendition, nativeReview, visualizeControl, bands, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
 })();

@@ -6,6 +6,33 @@ final class DevelopmentSceneGraphV1Tests: XCTestCase {
   typealias Graph = DevelopmentSceneGraphV1
   typealias Node = Graph.Node
 
+  func testOnlyUsedModelCoverageRejectsChangesToItsCoordinatesAndOldArchivesRemainReadable() throws {
+    let stage = DevelopmentSceneModelStageV1.segmentation(.subject)
+    let models = try DevelopmentSceneModelProgramV1(stages: [stage])
+    let mask = Node(name: "subject", operation: .externalCoverage(id: stage.id))
+    let grade = Node(name: "exposure", operation: .corrector(image: .input, mask: mask.id,
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    let scope = Graph.Scope(nodes: [mask, grade], output: .node(grade.id))
+    let original = try Graph(graph: scope, output: output(), models: models)
+    var crop = DevelopmentAdjustmentsV3()
+    crop.geometry.crop = .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8)
+    let incompatible = try original.replacingPhotographic(crop)
+    let reopened = try JSONDecoder().decode(Graph.self, from: JSONEncoder().encode(incompatible))
+    XCTAssertEqual(reopened, incompatible)
+    XCTAssertThrowsError(try reopened.validatePhotographicCoverage()) { XCTAssertTrue($0 is Graph.PhotographicCoverageMisalignment) }
+    XCTAssertNoThrow(try reopened.validatePhotographicCoverage(view: .init(target: .bypass)))
+    var optical = DevelopmentAdjustmentsV3()
+    optical.optics = .init(removeChromaticAberration: true, lensVignettingAmount: 0.5)
+    XCTAssertNoThrow(try original.replacingPhotographic(optical).validatePhotographicCoverage())
+    optical.optics?.distortion = 0.25
+    XCTAssertThrowsError(try original.replacingPhotographic(optical).validatePhotographicCoverage())
+    let layer = Node(name: "bypass", operation: .layer(base: .input, layers: [.init(.node(grade.id), weight: 0)], enabled: true))
+    let bypassed = try Graph(graph: .init(nodes: [mask, grade, layer], output: .node(layer.id)), output: output(), models: models, photographic: crop)
+    XCTAssertNoThrow(try bypassed.validatePhotographicCoverage())
+    XCTAssertThrowsError(try bypassed.validatePhotographicCoverage(view: .init(target: .node(grade.id))))
+    XCTAssertNoThrow(try Graph(graph: .init(nodes: [], output: .input), output: output(), models: models, photographic: crop).validatePhotographicCoverage())
+  }
+
   func testFrozenModelStagesSurviveGraphEditsTemplatesAndRecipeReopen() throws {
     let stage = DevelopmentSceneModelStageV1.denoise(amount: 41)
     let models = try DevelopmentSceneModelProgramV1(stages: [stage, .segmentation(.subject)])

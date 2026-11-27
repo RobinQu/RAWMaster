@@ -65,6 +65,58 @@ final class DevelopmentSceneOutputV1Tests: XCTestCase {
     }
   }
 
+  func testHDRHistogramBandsAndVisualizationUseTargetLuminanceBeforeEncoding() throws {
+    typealias Band = DevelopmentSceneOutputStateV1.HDRBand
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let target = try Output(device: device, target: .hdr2020)
+    let derivative = try Output(device: device, target: .sdr709)
+    let ramp: [SIMD4<Float>] = (0..<161).map { i in
+      let light = exp2(Float(i) / 10 - 8)
+      return SIMD4(light, light, light, 1)
+    }
+    let scene = DevelopmentSceneMetalV1.Image(texture: try upload(ramp, device: device), port: .working)
+    let baseline = try read(target.render(scene).texture)
+    let view = try target.render(scene, visualizeHDR: true)
+    XCTAssertEqual(view.target, .sdr709)
+    let diagnostic = try read(view.texture)
+    for band in Band.allCases {
+      var stops = SIMD4<Float>.zero
+      stops[band.rawValue] = 0.35
+      let adjusted = try read(target.render(scene, bandExposure: stops).texture)
+      var changed = false
+      for i in baseline.indices {
+        let pixel = baseline[i]
+        let y = pixel.x * 0.2627 + pixel.y * 0.678 + pixel.z * 0.0593
+        let ev = log2(max(y, 1))
+        let index = min(3, Int(ev))
+        if y > 1 {
+          XCTAssertEqual(diagnostic[i], Band.visualizationColors[index])
+        } else {
+          for c in 0..<3 { XCTAssertEqual(diagnostic[i][c], y, accuracy: 1e-5) }
+        }
+        if y <= 1 || band.rawValue != index {
+          for c in 0..<3 { XCTAssertEqual(adjusted[i][c], pixel[c], accuracy: 1e-5) }
+        } else if adjusted[i].x > pixel.x + 0.001 { changed = true }
+      }
+      XCTAssertTrue(changed, "No pixels moved within HDR band \(band.rawValue)")
+    }
+    XCTAssertEqual(try read(derivative.render(scene, bandExposure: .init(repeating: 0.5)).texture),
+                   try read(derivative.render(scene).texture))
+    XCTAssertThrowsError(try derivative.render(scene, visualizeHDR: true))
+  }
+
+  func testHDRHistogramBandsRoundTripWithLimitAndSDRTrim() throws {
+    typealias Output = DevelopmentSceneOutputStateV1.Version
+    let original = Output(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
+    let value = try original.replacingHDRBand(.third, exposureEV: 0.35).replacingHDRLimit(2.75)
+      .replacingSDRTrim(.init(exposureEV: -0.5, mapping: .balanced, highlightCompression: 0))
+    XCTAssertEqual(try JSONDecoder().decode(Output.self, from: JSONEncoder().encode(value)), value)
+    XCTAssertEqual(value.exposure(in: .third), 0.35, accuracy: 1e-6)
+    XCTAssertEqual(value.exposure(in: .second), 0)
+    XCTAssertNil(try value.replacingHDRBand(.third, exposureEV: 0).hdrBandExposureEV)
+    XCTAssertThrowsError(try value.replacingHDRBand(.first, exposureEV: .infinity))
+  }
+
   func testEncodingAnchorsAndInvalidBoundaries() throws {
     XCTAssertEqual(try Output.Target.sdr709.encodeChannel(0),0)
     XCTAssertEqual(try Output.Target.sdr709.encodeChannel(0.18),0.46135613,accuracy:1e-7)

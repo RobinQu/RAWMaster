@@ -2,6 +2,8 @@
 
 本轮从本地 `1e5a1ceb` 继续验收。60 MP 的 FIT、原寸取景和全图示波器均沿用产品内存上限。示波器携带本次图求值回执。032 将实际后端、瓦片和派发次数、峰值及预算与暂存文件票据写入同一目录事务，已交付后重开仍可核对。模型阶段随场景图 v2 冻结，要求整图输入的模型单独检查全分辨率预算。[实拍测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [冻结交付回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json)
 
+同一 60 MP 原片用图文档 v3 保存整幅摄影调整，实测两个交付目标各分 35 块完成。摄影段为 Swift 调度的 Core Image／Metal，后续 DAG 为 Rust／Metal。完整任务回报 `mixed`，票据另存摄影引擎、DAG 执行者和预算。后续迁移从有实拍基准的白平衡、光照、颜色入手，逐项对齐旧配方、原寸边界与 FIT 像素，再检查两后端的有效派发和开销。[冻结成片及实测预算](../037-color-film-hdr/evidence/2026-11-27-photographic-60mp.json) · [联合迁移方案](../035-portable-processing-cores/roadmap.md)
+
 下文保留 2026-11-27 的历史分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
 
 ## 零权重分支与长链预算

@@ -28,6 +28,14 @@ extension DevelopmentSceneOutputStateV1.Target {
     }
 }
 
+extension DevelopmentSceneOutputStateV1.HDRBand {
+  /// Display-referred colors in linear sRGB, shared by the inspector legend and the Metal diagnostic.
+  package static let visualizationColors: [SIMD4<Float>] = [
+    .init(0.03, 0.32, 1, 1), .init(0.04, 0.72, 0.19, 1),
+    .init(1, 0.48, 0.015, 1), .init(1, 0.035, 0.06, 1)
+  ]
+}
+
 final class DevelopmentSceneOutputV1 {
   typealias Target = DevelopmentSceneOutputStateV1.Target
 
@@ -109,14 +117,18 @@ final class DevelopmentSceneOutputV1 {
     self.device=device; self.queue=queue; self.target=target; self.sampler=sampler; self.boundary=boundary
   }
 
-  func render(_ image: DevelopmentSceneMetalV1.Image, hdrLimitEV: Double? = nil) throws -> DisplayImage {
+  func render(_ image: DevelopmentSceneMetalV1.Image, hdrLimitEV: Double? = nil,
+              bandExposure: SIMD4<Float>? = nil, visualizeHDR: Bool = false) throws -> DisplayImage {
     guard boundary == .display else { throw Failure.invalidInput }
-    var peak: Float = 0
+    guard !visualizeHDR || target == .hdr2020 else { throw Failure.invalidInput }
+    let bands = target == .hdr2020 ? bandExposure ?? .zero : .zero
+    var peak: Float = bands == .zero ? 0 : target.peakNits / target.referenceWhiteNits
     if target == .hdr2020, let hdrLimitEV {
       guard (0...DevelopmentSceneOutputStateV1.Version.maximumHDRLimitEV).contains(hdrLimitEV) else { throw Failure.invalidInput }
       peak = Float(exp2(hdrLimitEV))
     }
-    return DisplayImage(texture: try evaluate(image, peak: peak), target: target, origin: image.origin)
+    return DisplayImage(texture: try evaluate(image, peak: peak, bands: bands, visualizeHDR: visualizeHDR),
+                        target: visualizeHDR ? .sdr709 : target, origin: image.origin)
   }
 
   struct TargetEvidence { let texture: MTLTexture }
@@ -125,7 +137,8 @@ final class DevelopmentSceneOutputV1 {
     return .init(texture: try evaluate(image))
   }
 
-  private func evaluate(_ image: DevelopmentSceneMetalV1.Image, peak: Float = 0) throws -> MTLTexture {
+  private func evaluate(_ image: DevelopmentSceneMetalV1.Image, peak: Float = 0,
+                        bands: SIMD4<Float> = .zero, visualizeHDR: Bool = false) throws -> MTLTexture {
     try Task.checkCancellation()
     let source=image.texture
     guard image.port == .working, source.device === device, source.textureType == .type2D,
@@ -142,6 +155,12 @@ final class DevelopmentSceneOutputV1 {
     encoder.setSamplerState(sampler,index:0); encoder.setBuffer(flag,offset:0,index:0)
     var limit = peak
     encoder.setBytes(&limit, length: MemoryLayout<Float>.stride, index: 1)
+    var stops = bands, diagnostic: UInt32 = visualizeHDR ? 1 : 0
+    encoder.setBytes(&stops, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
+    encoder.setBytes(&diagnostic, length: MemoryLayout<UInt32>.stride, index: 3)
+    DevelopmentSceneOutputStateV1.HDRBand.visualizationColors.withUnsafeBufferPointer {
+      encoder.setBytes($0.baseAddress!, length: $0.count * MemoryLayout<SIMD4<Float>>.stride, index: 4)
+    }
     let lanes=pipeline.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:source.width,height:source.height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
@@ -158,7 +177,9 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
                           texture2d<float,access::write> display [[texture(1)]],
                           texture1d<float> reach [[texture(2)]], texture1d<float> cusp [[texture(3)]],
                           sampler lookup [[sampler(0)]], device atomic_uint& invalid [[buffer(0)]],
-                          constant float& limit [[buffer(1)]], uint2 xy [[thread_position_in_grid]]) {
+                          constant float& limit [[buffer(1)]], constant float4& bands [[buffer(2)]],
+                          constant uint& visualize [[buffer(3)]], constant float4* palette [[buffer(4)]],
+                          uint2 xy [[thread_position_in_grid]]) {
   float4 p=scene.read(xy);
   if (!all(isfinite(p)) || p.a < 0 || p.a > 1) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
   if (p.a == 0) { display.write(float4(0),xy); return; }
@@ -166,9 +187,24 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
   if (!all(isfinite(rgb))) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
   float3 shown=OCIOMain(reach,lookup,cusp,lookup,float4(rgb,1)).rgb;
   if (!all(isfinite(shown))) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
+  const float3 rec2020Y = float3(0.2627f, 0.6780f, 0.0593f);
+  if (any(bands != 0.0f)) {
+    float luma = dot(shown, rec2020Y);
+    if (luma > 1.0f) {
+      float ev = log2(luma);
+      int band = min(int(ev), 3);
+      // Fixed endpoints keep other stops and SDR white intact. A half-stop maximum keeps this mapping monotone.
+      float weight = max(0.0f, 1.0f - 2.0f * abs(ev - (float(band) + 0.5f)));
+      shown *= exp2(weight * bands[band]);
+    }
+  }
   // Preserve Rec.2020 chromaticity and leave every component below the ceiling untouched.
   float maximum = max(shown.r, max(shown.g, shown.b));
   if (limit > 0 && maximum > limit) { shown *= limit / maximum; }
+  if (visualize != 0) {
+    float luma = max(0.0f, dot(shown, rec2020Y));
+    shown = luma <= 1.0f ? float3(luma) : palette[min(3, int(log2(luma)))].rgb;
+  }
   display.write(float4(shown*p.a,p.a),xy);
 }
 """#

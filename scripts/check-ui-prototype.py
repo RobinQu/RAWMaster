@@ -31,8 +31,9 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def main():
     parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--appearance-parity-only", action="store_true", help="Verify photographic controls, HDR histogram bands, range visualization, timed notices and utility Graph windows.")
     parser.add_argument("--appearance-activity-only", action="store_true", help="Review direct color appearance, scopes, background activity and saved results.")
-    parser.add_argument("--editor-rails-only", action="store_true", help="Exercise the glass rails, filter tree, canvas notices and titleless Graph.")
+    parser.add_argument("--editor-rails-only", action="store_true", help="Exercise the glass rails, filter tree, canvas notices and floating Graph.")
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
     parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
     parser.add_argument("--compatibility-only", action="store_true", help="Run the Spec 038 read-only compatibility graph walkthrough.")
@@ -70,7 +71,11 @@ def main():
       const modal=()=>el('#sheet');
       const openResults=()=>{if(!el('.results-menu').open)tap('.results-menu summary');act('open-versions',null,el('.results-menu'));};
       const showDiagnostics=()=>{if(!el('.scope-native-review').open)tap('.scope-native-review summary');};
-      const hdrView=value=>{const btn=el('.scene-mode-bar > [data-act=scene-view]');if(btn.dataset.val===value)btn.click();};
+      const hdrView=value=>act('scene-view',value,el('.scene-previews'));
+      const showLab=()=>{showDiagnostics();if(!el('.scene-lab').open)tap('.scene-lab summary');};
+      const showTrim=()=>{if(!el('.scene-rendition').open)tap('.scene-rendition summary');};
+      const showLight=()=>{const t=el('[data-act=adjustment-disclosure][data-val=light]');if(t?.ariaExpanded==='false')t.click();};
+      const graphKey=(name,k)=>{const m=el('.graph-window-menu');if(!m.open)tap('summary',m);act('graph-window-command',name,m);key(document.activeElement,k);};
       const pickNode=id=>{
         if(['source','geometry','output'].includes(id)) return tap('[data-dag-node="'+id+'"]');
         act('dag-picker');act('dag-picker-select',id,el('#dag-node-picker'));
@@ -110,6 +115,152 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.appearance_parity_only:
+                folder = Path(os.environ["RAWMASTER_PARITY_EVIDENCE"]) if os.environ.get("RAWMASTER_PARITY_EVIDENCE") else None
+                if folder:
+                    folder.mkdir(parents=True, exist_ok=True)
+                def capture(name):
+                    if folder:
+                        browser("screenshot", str(folder / (name + ".png")))
+                def drag(selector, dx, dy, x_fraction=.5, y_fraction=.5):
+                    rect = json.loads(browser("eval", "(()=>{const b=document.querySelector("+json.dumps(selector)+");b.scrollIntoView({block:'nearest'});const r=b.getBoundingClientRect();return [Math.round(r.left+r.width*"+str(x_fraction)+"),Math.round(r.top+r.height*"+str(y_fraction)+")];})()"))
+                    x, y = rect
+                    browser("mouse", "move", str(x), str(y))
+                    browser("mouse", "down", "left")
+                    browser("mouse", "move", str(x + dx), str(y + dy))
+                    browser("mouse", "up", "left")
+                browser(*options,"open",host + ENTRY + "?sceneNativeReview=1&scopesNativeReview=1&graphNativeReview=1")
+                browser("set","viewport","1440","1000")
+                scenario("三种外观共享摄影控件，保留当前呈现", """
+                  await page('.photo-card');await hash('settings/general');await page('[name=theme]');set('[name=theme]','light');
+                  await hash('library/project/river');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
+                  const count=()=>all('.hist-band').length;
+                  assert(count()===5&&!el('.scene-hud'));act('scene-mode','hdr');
+                  assert(count()===9&&!el('.scene-hud')&&!el('.scene-entry')&&!modal().open);
+                  assert(all('.scene-previews button').map(b=>b.textContent).join('|')==='预览 SDR 派生|预览 HDR 派生'&&!el('.scene-previews svg'));
+                  assert(el('.appearance-info').textContent.includes('Rec.2020 PQ')&&el('.appearance-info').textContent.includes('SDR 派生回退'));
+                  const l=el('.scene-limit'),p=el('.scene-previews .flat-tabs');assert(Math.abs(l.clientWidth-p.clientWidth)<=2,'full width');
+                  window.noticeHost=el('.editor-notices');set('[data-adjustment=wbTemperature]','6250');showLight();
+                  set('[data-adjustment=shadow]','15');set('[data-adjustment=ev]','0.25');
+                  assert(currentEdit().recipe.ev===.25&&currentEdit().recipe.wbTemperature===6250&&currentEdit().recipe.shadow===15&&el('.editor-notices')===window.noticeHost,'same photo notice host');
+                  if(el('.editor-toast')) act('editor-notice-dismiss',null,el('.editor-toast'));
+                """)
+                capture("01-hdr-appearance")
+                scenario("可重开的光照、自然饱和度、曲线与质感", """
+                  const edit=currentEdit();
+                  const fields=[['basic','color','vibrance',19],['tones','curves','curveHigh',12],['detail','detail','texture',26],['effects','dehaze','dehaze',15],['grading','grading','balance',8],['color','mix','luminance',16]];
+                  for (const [tool,group,k,v] of fields) {
+                    act('edit-tool',tool);await page('.manual-inspector');
+                    const t=el('[data-act=adjustment-disclosure][data-val='+group+']');if(t.ariaExpanded==='false')t.click();
+                    const f=el('[data-adjustment='+k+']');assert(f?.checkVisibility()&&!f.disabled,'editable '+k);set('[data-adjustment='+k+']',v);assert(edit.recipe[k]===v,k);
+                  }
+                  act('edit-tool','basic');await page('.scene-modes');showLight();
+                  el('[data-adjustment=black]').scrollIntoView({block:'nearest'});
+                  sessionStorage.setItem('parity.history',String(edit.past.length));
+                """)
+                capture("02-shared-tools")
+                drag(".hist-band[data-band=hdr1]",44,0)
+                scenario("鼠标仅提交所拖的超白档，峰值和其他档位独立", """
+                  const cfg=SceneEditor.config(),e=currentEdit();
+                  assert(cfg.bandEV[1]>0&&cfg.bandEV[1]<=.5&&cfg.bandEV.filter(x=>x!==0).length===1,'one local stop');
+                  assert(e.past.length===+sessionStorage.getItem('parity.history')+1&&cfg.limitEV===3.32);
+                  key(el('.hist-band[data-band=hdr3]'),'ArrowLeft');assert(SceneEditor.config().bandEV[3]===-.05);
+                  key(el('.hist-band[data-band=hdr0]'),'ArrowRight',{shiftKey:true});assert(SceneEditor.config().bandEV[0]===.25);
+                  key(el('.hist-band[data-band=hdr2]'),'ArrowRight');assert(SceneEditor.config().bandEV[2]===.05);
+                  key(el('.hist-band[data-band=hdr2]'),'Home');assert(SceneEditor.config().bandEV[2]===0);
+                  const prior=SceneEditor.config().bandEV.slice(); key(el('.hist-band[data-band=ev]'),'ArrowRight');
+                  assert(e.recipe.ev===.3&&JSON.stringify(prior)===JSON.stringify(SceneEditor.config().bandEV),'SDR exposure separate from the HDR zones');
+                  act('edit-step','undo');assert(e.recipe.ev===.25&&SceneEditor.config().bandEV[0]===.25);
+                  set('[name=sceneLimit]','3.15');assert(SceneEditor.config().limitEV===3.15&&SceneEditor.config().bandEV[0]===.25);
+                  act('edit-step','undo');showLight();hdrView('sdr');
+                  sessionStorage.setItem('parity.clean',JSON.stringify(e.recipe));
+                  set('[name=visualizeHDR]',true);
+                  const canvas=el('.hdr-range-preview');await wait(()=>canvas.width>300&&!canvas.hidden);
+                  const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data, unique=new Set();
+                  for(let i=0;i<pixels.length;i+=4){if(pixels[i]!==pixels[i+1])unique.add([pixels[i],pixels[i+1],pixels[i+2]].join());}
+                  assert(unique.size>=3&&all('.hdr-bands-key span').length===5,'color bands read from the fixture');
+                  el('.visualize-hdr').scrollIntoView({block:'nearest'});assert(JSON.stringify(e.recipe)===sessionStorage.getItem('parity.clean'));
+                """)
+                capture("03-visualize-hdr")
+                scenario("伪色退出、派生、1:1 与 FIT 各自独立", """
+                  const frozen=sessionStorage.getItem('parity.clean'),e=currentEdit();key(el('[name=visualizeHDR]'),'Escape');
+                  assert(!el('[name=visualizeHDR]').checked&&el('.scene-previews [data-val=sdr]').ariaPressed==='true');
+                  for(const value of ['sdr','target']) {set('[name=visualizeHDR]',true);hdrView(value);assert(!el('[name=visualizeHDR]').checked&&el('.scene-previews [data-val='+value+']').ariaPressed==='true');}
+                  act('edit-zoom','pixels');assert(S.pixelView&&S.editZoom>1);act('edit-zoom','fit');assert(!S.pixelView&&S.editZoom===1);
+                  assert(JSON.stringify(e.recipe)===frozen&&!el('.scene-hud'));
+                  act('scene-mode','bw');act('edit-tool','color');await page('.bw-mixer');set('[data-adjustment=bwBlue]','-45');
+                  await wait(()=>!el('.bw-range-preview').hidden);
+                  const pixel=el('.bw-range-preview').getContext('2d').getImageData(100,100,1,1).data;
+                  assert(currentEdit().recipe.bwBlue===-45&&pixel[0]===pixel[1]&&pixel[1]===pixel[2]);
+                """)
+                capture("04-bw-mixer")
+                scenario("黑白切彩色并返回 HDR，当前图只调整所选节点", """
+                  act('edit-tool','basic');await page('.scene-modes');act('scene-mode','sdr');assert(!currentEdit().recipe.mono);
+                  act('scene-mode','hdr');assert(currentEdit().recipe.wbTemperature===6250&&currentEdit().recipe.shadow===15);
+                  act('dag-view-toggle');await page('.dag-viewport');const e=currentEdit(),n=dagNode(),before=e.recipe.shadow;
+                  set('.photo-node-scope [name=dagNumber][data-key=ev]','.4');assert(dagNode().params.ev===.4&&e.recipe.shadow===before);
+                  set('[data-adjustment=ev]','.75');assert(e.recipe.dag.photographic.ev===.75&&dagNode().params.ev===.4,'photographic and node values separate');
+                  el('.inspector-content').scrollTop=0;act('dag-fit');
+                  assert(el('.dag-window-title').textContent==='工作流 Graph'&&el('.graph-text-tools').innerText.includes('适合全图'));
+                  sessionStorage.setItem('parity.graph',JSON.stringify({x:el('.dag-floating').offsetLeft,y:el('.dag-floating').offsetTop,history:e.past.length,zoom:dagTransform().scale}));
+                """)
+                capture("05-scene-graph")
+                drag(".dag-window-title",38,24)
+                scenario("标题栏移动图窗，空白平移与关闭返回独立", """
+                  const a=JSON.parse(sessionStorage.getItem('parity.graph')),p=el('.dag-floating');
+                  assert(p.offsetLeft===a.x+38&&p.offsetTop===a.y+24&&dagTransform().scale===a.zoom);
+                  sessionStorage.setItem('parity.pan',JSON.stringify({x:dagTransform().x,y:dagTransform().y,win:p.offsetLeft}));
+                """)
+                drag(".dag-viewport",28,18,.18,.85)
+                scenario("画布平移后保留照片、窗口与配方", """
+                  const a=JSON.parse(sessionStorage.getItem('parity.pan')),g=JSON.parse(sessionStorage.getItem('parity.graph'));
+                  assert(dagTransform().x===a.x+28&&dagTransform().y===a.y+18&&el('.dag-floating').offsetLeft===a.win);
+                  assert(currentEdit().past.length===g.history);tap('.graph-system-close');assert(!el('.dag-floating')&&document.activeElement.dataset.act==='dag-view-toggle');
+                  act('dag-view-toggle');await page('.dag-viewport');assert(el('.dag-floating').offsetLeft===a.win);
+                  key(el('.dag-viewport'),'Escape');assert(!el('.dag-floating'));
+                  showLab();act('scene-review-fail',null,el('.scene-lab'));assert(all('.editor-toast').length===1&&el('.editor-toast [role=alert]'));
+                  el('.inspector-content').scrollTop=0;window.errorID=el('.editor-toast').dataset.noticeId;window.host=el('.editor-notices');
+                  render();assert(el('.editor-notices')===window.host&&el('.editor-toast').dataset.noticeId===window.errorID);
+                """)
+                capture("06-error-toast")
+                browser("wait","6100")
+                scenario("错误消退，后台可查，重试成功只显示新通知", """
+                  assert(!el('.editor-toast'));act('activity-open');act('activity-tab','notices');assert(el('.activity-list').textContent.includes('HDR 预览失败'));
+                  act('activity-close');act('scene-review-retry',null,el('.scene-mode-bar'));const n=el('.editor-toast');assert(n?.classList.contains('info')&&all('.editor-toast').length===1);
+                  const e=currentEdit();act('workflow','export');await page('#export-frame[src]');const draft=S.delivery.items[0].versions.find(v=>v.sceneOutput);
+                  assert(draft.sceneOutput.bandEV[1]>0&&draft.sceneOutput.bandEV[2]===0&&!JSON.stringify(draft).includes('visualizeHDR'),'032 freezes adjusted ranges only');
+                  act('workflow','edit');await page('.scene-modes');assert(!el('.editor-toast')&&e===currentEdit());
+                """)
+                browser("open",host + ENTRY)
+                browser("set","viewport","390","844")
+                scenario("窄窗深色的兼容图和返回焦点", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
+                  await hash('library/project/river');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.scene-modes');
+                  act('scene-mode','hdr');assert(el('.editor-toast.error')&&!SceneEditor.hdr()&&!modal().open);
+                  act('editor-notice-dismiss',null,el('.editor-toast'));act('compatibility-graph-toggle');await page('.dag-compat-canvas');
+                  assert(el('.dag-window-title').textContent==='只读兼容图'&&!el('.dag-commandbar')&&el('.dag-compat').getBoundingClientRect().right<=innerWidth);
+                  assert(document.documentElement.scrollWidth===innerWidth);
+                """)
+                capture("07-compatibility-narrow")
+                scenario("只读图窗的菜单收起、展开与 Esc", """
+                  tap('.graph-window-menu summary');act('graph-window-command','collapse');assert(!el('.dag-compat-canvas')&&el('.dag-window-title'));
+                  tap('.graph-window-menu summary');act('graph-window-command','collapse');assert(el('.dag-compat-canvas'));
+                  key(el('.dag-compat-canvas'),'Escape');assert(document.activeElement.dataset.act==='compatibility-graph-toggle');
+                  act('workflow','library');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
+                  assert(SceneEditor.hdr());el('.scene-mode-bar').scrollIntoView({block:'center'});
+                  assert(all('.scene-previews button').every(b=>b.offsetWidth>65)&&!el('.scene-hud')&&!modal().open);
+                """)
+                capture("08-appearance-narrow")
+                browser("open",(ROOT / ENTRY).as_uri())
+                scenario("双击本地 HTML 也可按照片亮度查看分档", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
+                  act('scene-mode','hdr');showLight();set('[name=visualizeHDR]',true);
+                  const c=el('.hdr-range-preview');await wait(()=>!c.hidden&&c.width>300);
+                  assert(location.protocol==='file:'&&c.getContext('2d').filter.includes('photographic-preview-filter')&&el('.hdr-bands-key'));
+                  hdrView('sdr');assert(!el('[name=visualizeHDR]').checked);
+                """)
+                check_browser_errors()
+                return
             if args.appearance_activity_only:
                 evidence = os.environ.get("RAWMASTER_APPEARANCE_EVIDENCE")
                 def capture_view(name):
@@ -128,7 +279,7 @@ def main():
                   set('[data-adjustment=ev]','0.55');const before=JSON.stringify(currentEdit().recipe);
                   act('scene-mode','hdr');assert(!modal().open&&SceneEditor.hdr()&&el('.scene-mode-bar [name=sceneLimit]')&&el('.scene-mode-bar .scene-rendition'));
                   assert(all('.inspector-rail button').map(x=>x.dataset.val).join()===nav&&all('.editing-scopes .scene-rgb svg g path').length===3&&el('path.scope-white-mark'),'same navigation with the HDR RGB histogram and white point');
-                  set('[name=sceneGraphExposure]','1.25');act('scene-review-exposure');
+                  set('[data-adjustment=ev]','1.25');
                   act('scene-mode','sdr');assert(!modal().open&&currentEdit().recipe.ev===0.55);
                   act('scene-mode','bw');assert(currentEdit().recipe.mono&&el('.scene-modes [data-val=bw]').ariaPressed==='true');
                   act('scene-mode','hdr');assert(currentEdit().recipe.ev===1.25&&SceneEditor.hdr()&&!currentEdit().versions.length);
@@ -139,7 +290,7 @@ def main():
                 """)
                 capture_view("01-hdr-appearance")
                 scenario("单条通知、更替和后台历史", """
-                  act('scene-open');act('scene-review-fail',null,modal());assert(all('.editor-toast').length===1&&el('.editor-toast.error'));
+                  showLab();act('scene-review-fail',null,el('.scene-lab'));assert(all('.editor-toast').length===1&&el('.editor-toast.error'));
                   act('activity-open');await page('#activity-window[open]');assert(el('.activity-list').innerText.includes('HDR 预览失败'));
                 """)
                 capture_view("02-background")
@@ -233,13 +384,13 @@ def main():
                   set('[name=quickPrompt]','保留远处水面的颜色');act('quick-close');await page('.scene-mode-bar');
                   act('scene-mode','hdr');act('edit-step','undo');assert(!SceneEditor.hdr(),'undo restores SDR');
                   act('scene-mode','hdr');assert(SceneEditor.hdr()&&el('.editor-toast.info'));
-                  act('scene-open');act('scene-review-fail',null,modal());
+                  showLab();act('scene-review-fail',null,el('.scene-lab'));
                   assert(all('.editor-toast').length===1&&el('.editor-toast.error [role=alert]'),'latest error replaces prior transient');
                   assert(el('.editor-notices').getBoundingClientRect().top-el('.edit-center').getBoundingClientRect().top===8,'notices anchored above photo');
                 """)
                 capture("rails-and-notices.png")
                 browser("wait", "3100")
-                scenario("消息持续、分张关闭、纯画布 Graph", """
+                scenario("消息持续、分张关闭、玻璃 Graph 图窗", """
                   assert(el('.editor-toast.error')&&!el('.editor-toast.info'),'error has a longer reading interval');
                   act('edit-tool','tones',el('.inspector-rail'));assert(el('.editor-toast.error'),'survives inspector render');
                   act('workflow','library');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.edit-page');
@@ -249,12 +400,12 @@ def main():
                   act('edit-tool','basic');await page('.scene-mode-bar');act('scene-review-retry',null,el('.scene-mode-bar'));assert(el('.editor-toast.info')&&SceneEditor.hdr(),'successful HDR retry');
                   for (const row of all('.editor-toast')) act('editor-notice-dismiss',null,row);
                   act('edit-tool','basic');await page('.scene-mode-bar');act('dag-view-toggle');await page('.dag-viewport');
-                  assert(!el('.dag-floating header')&&document.activeElement===el('.dag-viewport'),'canvas receives initial focus');
+                  assert(el('.dag-window-title').textContent==='工作流 Graph'&&document.activeElement===el('.dag-viewport'),'canvas receives initial focus');
                   const panel=el('.dag-floating').getBoundingClientRect(),vp=el('.dag-viewport').getBoundingClientRect();
-                  assert(Math.abs(panel.width-vp.width)<=3&&Math.abs(panel.height-vp.height)<=3,'graph fills window without title row');
+                  assert(Math.abs(panel.width-vp.width)<=3&&panel.height-vp.height>=26&&panel.height-vp.height<=33,'compact title above the graph');
                   const before=JSON.stringify(currentEdit().recipe);
-                  const left=panel.left;key(el('[data-dag-window-drag]'),'ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().left===left-20,'move without dragging a node');
-                  key(el('[data-dag-window-resize]'),'ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().width===panel.width-20,'keyboard resize');
+                  const left=panel.left;graphKey('move','ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().left===left-16,'move without dragging a node');
+                  graphKey('resize','ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().width===panel.width-16,'keyboard resize');
                   act('dag-fit');assert(before===JSON.stringify(currentEdit().recipe),'presentation leaves graph intact');
                 """)
                 capture("graph-canvas.png")
@@ -272,7 +423,7 @@ def main():
                   await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.dag-scope-head');
                   act('compatibility-graph-toggle',null,el('.dag-scope-head'));await page('.dag-compat');
                   const panel=el('.dag-compat').getBoundingClientRect(),vp=el('.dag-compat-canvas').getBoundingClientRect();
-                  assert(!el('.dag-compat header')&&panel.left>=0&&panel.right<=innerWidth&&Math.abs(vp.height-panel.height)<=3);
+                  assert(el('.dag-window-title').textContent==='只读兼容图'&&panel.left>=0&&panel.right<=innerWidth&&panel.height-vp.height>=26&&panel.height-vp.height<=33);
                   assert(document.documentElement.dataset.theme==='dark'&&document.activeElement===el('.dag-compat-canvas'));
                   key(el('.dag-compat-canvas'),'+');assert(compatibilityGraphFrame().scale>1,'zoom');
                   key(el('.dag-compat-canvas'),'0');assert(compatibilityGraphFrame().scale===1,'restore');
@@ -332,8 +483,8 @@ def main():
                   assert(el('.scene-scopes').innerText.includes('35%，60%'),'sample stays fixed to image');
                   act('scene-scope','output');const axis=el('.scene-chart-white').getAttribute('d');
                   act('scene-overlay','sensor');act('scene-overlay','target');assert(all('.scene-marks i').length===2);
-                  act('scene-open');act('scene-screen','unknown',modal());assert(el('[data-act=scene-overlay][data-val=screen]',modal()).disabled);
-                  act('close',null,modal());assert(el('.scene-chart-white').getAttribute('d')===axis);
+                  showLab();act('scene-screen','unknown',el('.scene-lab'));assert(el('[data-act=scene-overlay][data-val=screen]').disabled);
+                  assert(el('.scene-chart-white').getAttribute('d')===axis);
                   act('scene-pick');key(document.activeElement,'Escape');assert(all('.scene-marks i').length===2);
                   key(document.activeElement,'Escape');assert(!all('.scene-marks i').length);
                   assert(JSON.stringify(currentEdit().recipe)===recipe&&currentEdit().past.length===h,'diagnostics and sample are transient');
@@ -504,11 +655,11 @@ def main():
                   act('scene-mode','hdr');
                   assert(e.recipe.sceneOutput?.intent==='hdr'&&!Studio.edit('r1').recipe.sceneOutput,'current photo only');
                   const past=e.past.length;hdrView('sdr');assert(e.past.length===past,'view does not write history');
-                  el('[name=sceneGraphExposure]').value='1.25';act('scene-review-exposure');assert(e.recipe.ev===1.25,'node exposure');
+                  set('[data-adjustment=ev]','1.25');assert(e.recipe.ev===1.25,'node exposure');
                   act('edit-step','undo');assert(e.recipe.sceneOutput&&e.recipe.ev===0,'undo exposure only');
                   act('edit-step','undo');assert(JSON.stringify(e.recipe)===old,'undo HDR restores exact SDR');
-                  act('scene-mode','hdr');act('scene-open');
-                  act('scene-review-fail',null,modal());assert(el('.editor-toast.error').innerText.includes('预览失败'),'visible failure');
+                  act('scene-mode','hdr');showLab();
+                  act('scene-review-fail',null,el('.scene-lab'));assert(el('.editor-toast.error').innerText.includes('预览失败'),'visible failure');
                   act('scene-review-retry');assert(!el('.editor-toast [data-act=scene-review-retry]')&&SceneEditor.hdr(),'retry returns to same HDR draft');
                 """)
                 scene_evidence = os.environ.get("RAWMASTER_UI_SCENE_EVIDENCE")
@@ -522,7 +673,7 @@ def main():
                       await hash('edit/basic');await page('.scene-mode-bar');
                       assert(document.documentElement.scrollWidth<=innerWidth,'no horizontal overflow');
                       hdrView('target');
-                      assert(el('.scene-hud').innerText.includes('屏幕无 HDR 余量'),'fallback explicit');
+                      assert(el('.appearance-info').innerText.includes('SDR 派生回退'),'fallback explicit');
                       const e=Studio.edit('b1'), hdr=JSON.stringify(e.recipe);Studio.asset('b1').online=false;render();
                       act('scene-mode','sdr');assert(all('.editor-toast.error').some(row=>row.innerText.includes('离线'))&&JSON.stringify(e.recipe)===hdr,'offline is fail closed');
                       Studio.asset('b1').online=true;render();
@@ -548,7 +699,7 @@ def main():
                   assert(document.documentElement.dataset.theme==='dark'&&el('.dag-compat').getBoundingClientRect().left>innerWidth/2,'desktop Graph opens to the side so the main photo remains visible');
                   assert(all('.dag-compat-canvas b').map(x=>x.textContent).join()==='照片来源,兼容显影,最终输出','matches the native stage order');
                   assert(el('[data-act=compatibility-ignore]').disabled&&!el('.dag-compat [data-dag-node]'),'read-only graph has no editing commands');
-                  assert(!el('.dag-compat header')&&document.activeElement===el('.dag-compat-canvas'),'titleless canvas receives focus');
+                  assert(el('.dag-window-title').textContent==='只读兼容图'&&document.activeElement===el('.dag-compat-canvas'),'titled utility panel gives its canvas focus');
                   act('compatibility-zoom','in');assert(compatibilityGraphFrame().scale>1,'zoom');
                   act('compatibility-zoom','fit');
                   assert(JSON.stringify(edit.recipe)===before&&edit.past.length===history&&!edit.recipe.dag,'presentation does not seed a recipe or history');
@@ -557,12 +708,15 @@ def main():
                 if compatibility_evidence:
                     Path(compatibility_evidence).mkdir(parents=True, exist_ok=True)
                     browser("screenshot", str(Path(compatibility_evidence) / "compatibility-1440-dark.png"))
-                browser("focus", ".dag-compat [data-dag-window-resize]")
+                browser("click", ".dag-compat .graph-window-menu summary")
+                browser("click", ".dag-compat [data-act=graph-window-command][data-val=resize]")
                 browser("press", "ArrowLeft")
                 scenario("Node DAG 兼容评审：键盘调整窗宽不翻片", """
-                  assert(el('.dag-compat').getBoundingClientRect().width===620&&document.activeElement.matches('[data-dag-window-resize]'),'keyboard resize preserves focus');
+                  assert(el('.dag-compat').getBoundingClientRect().width===624&&document.activeElement.matches('[data-act=graph-window-command][data-val=resize]'),'keyboard resize preserves focus');
                   assert(Studio.data.work==='r1'&&JSON.stringify(Studio.edit('r1').recipe)===sessionStorage.getItem('compat.before'),'resizing does not route to the photo');
                 """)
+                browser("press", "Enter")
+                browser("focus", ".dag-compat-canvas")
                 browser("press", "Escape")
                 scenario("Node DAG 兼容评审：Escape 关闭并返还焦点", """
                   assert(!el('.dag-compat')&&document.activeElement===el('.dag-scope-head [data-act=compatibility-graph-toggle]'),'Escape restores the trigger');
@@ -585,7 +739,7 @@ def main():
                 browser("set", "viewport", "900", "360")
                 scenario("Node DAG 兼容评审：短窗画布与原片离线", """
                   await wait(()=>el('.dag-compat').getBoundingClientRect().bottom<=innerHeight);
-                  assert(el('.dag-compat-canvas').checkVisibility()&&!el('.dag-window-head'),'short window preserves the canvas');
+                  assert(el('.dag-compat-canvas').checkVisibility()&&el('.dag-window-head'),'short window preserves the canvas');
                   el('.dag-compat [data-act=compatibility-graph-toggle]').click();
                   Studio.asset('r1').online=false;render();
                   assert(!el('.dag-compat')&&el('[data-act=compatibility-graph-toggle]').disabled&&el('.dag-scope-head small').textContent.includes('离线'),'offline source has a reason');
@@ -614,12 +768,12 @@ def main():
                   const limit=el('[name=sceneLimit]');
                   assert(limit.labels[0]?.textContent==='HDR 高光限制','HDR Limit has an accessible label');
                   limit.value='1.5';limit.dispatchEvent(new Event('input',{bubbles:true}));
-                  assert(el('.scene-limit output').value==='+1.5 EV'&&edit.past.length===history,'dragging updates the live readout before committing');
+                  assert(el('.scene-limit output').value==='+1.50 EV'&&edit.past.length===history,'dragging updates the live readout before committing');
                   limit.dispatchEvent(new Event('change',{bubbles:true}));
                   assert(edit.recipe.sceneOutput.limitEV===1.5&&edit.recipe.sceneOutput.peak===1000&&el('.scene-chart-ok').getAttribute('d')===marker,'HDR Limit is separate from display and file target');
                   act('edit-step','undo');
                   tap('.scene-rendition summary');set('.scene-rendition [name=sceneExposure]','0.5');
-                  act('scene-view','sdr',el('.scene-rendition'));
+                  hdrView('sdr');
                   assert(el('.scene-rendition [name=sceneExposure]').value==='0.5'&&edit.past.length===history,'inline SDR preview keeps draft and history');
                   act('scene-trim','',el('.scene-rendition'));assert(edit.recipe.sceneOutput.trim.exposure===0.5,'inline SDR apply');
                   act('edit-step','undo');
@@ -629,9 +783,9 @@ def main():
                   assert(all('.scene-marks i').length===2,'independent overlays');
                   key(document.activeElement,'Escape');
                   assert(!all('.scene-marks i').length&&document.activeElement.dataset.act==='scene-overlay','overlay Escape restores focus');
-                  tap('.scene-entry'); set('[name=sceneExposure]','1',modal()); act('scene-screen','hdr',modal());
-                  assert(el('[name=sceneExposure]',modal()).value==='1'&&edit.past.length===history,'view preserves draft and history');
-                  act('scene-trim','',modal());
+                  showLab();act('scene-screen','hdr',el('.scene-lab'));showTrim();set('[name=sceneExposure]','1',el('.scene-rendition'));hdrView('target');
+                  assert(el('[name=sceneExposure]',el('.scene-rendition')).value==='1'&&edit.past.length===history,'view preserves draft and history');
+                  act('scene-trim','',el('.scene-rendition'));
                   assert(edit.recipe.sceneOutput.trim.exposure===1&&edit.past.length===history+1,'one SDR history step');
                   act('edit-step','undo');assert(edit.recipe.sceneOutput.trim.exposure===0,'undo trim only');
                   const film=el('[data-act=film-stock]');tap('[data-act=film-stock][data-val="'+CSS.escape(film.dataset.val)+'"]');
@@ -652,9 +806,9 @@ def main():
                   assert(activeBrowser().focus==='b1','return to selected photo');
                   const saved=Studio.candidate('b1','HDR 已有结果',edit.recipe).id;edit.adopted=saved;
                   Studio.asset('b1').online=false;Studio.save();
-                  act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic');await page('.scene-entry');tap('.scene-entry');
-                  assert(modal().textContent.includes('原片已离线')&&el('[name=sceneExposure]',modal()).disabled,'offline HDR settings');
-                  act('close',null,modal());act('workflow','library');await page('.photo-card');
+                  act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic');await page('.scene-mode-bar');showTrim();
+                  assert(el('.appearance-info').textContent.includes('原片已离线')&&el('[name=sceneExposure]',el('.scene-rendition')).disabled,'offline HDR settings');
+                  act('workflow','library');await page('.photo-card');
                   act('multi');act('photo','r1');act('workflow','export');await page('#export-frame[src]');
                   const mix=()=>el('#export-frame').contentDocument;
                   await wait(()=>mix()?.readyState==='complete'&&el('#scene-target',mix())?.checkVisibility());
@@ -671,19 +825,17 @@ def main():
                   const options=['light','dark'];
                   for(const theme of options){
                     await hash('settings/general');await page('[name=theme]');set('[name=theme]',theme);
-                    await hash('edit/basic');await page('.scene-entry');
+                    await hash('edit/basic');await page('.scene-mode-bar');
                     const bounds=el('.edit-right').getBoundingClientRect();
                     assert(bounds.left>=0&&bounds.right<=innerWidth&&all('.scene-modes button').length===3,'mode bar fits '+theme);
-                    tap('.scene-entry');
-                    assert(document.documentElement.dataset.theme===theme&&modal().getBoundingClientRect().width<=innerWidth,'dialog fits '+theme);
-                    assert(el('[data-act=scene-screen][data-val=hdr]',modal()).checkVisibility(),'screen control reachable at 390px');
-                    act('close',null,modal());
+                    showLab();assert(!modal().open&&document.documentElement.dataset.theme===theme&&el('.appearance-info').getBoundingClientRect().width<=innerWidth,'inline details fit '+theme);
+                    assert(el('[data-act=scene-screen][data-val=hdr]',el('.scene-lab')).checkVisibility(),'screen control reachable at 390px');
                   }
                 """)
                 browser("set", "viewport", "1440", "900")
                 scenario("037 HDR 旧版外观冲突", """
                   await hash('library/project/river');await page('.photo-card');
-                  act('photo','m1');act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic'); await page('.scene-entry');
+                  act('photo','m1');act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic'); await page('.scene-mode-bar');
                   const old=Studio.edit('m1');
                   act('film-stock',el('[data-act=film-stock]').dataset.val);
                   const recipe=JSON.stringify(old.recipe);
@@ -716,8 +868,8 @@ def main():
                   assert(!menu()?.matches(':popover-open')&&document.activeElement===el('[data-dag-viewport]')&&el('.dag-floating'),'canvas context Escape returns to the canvas');
                   const e=Studio.edit('m1'), selected=dagView().selection.join(), graphNodeBytes=()=>JSON.stringify([e.recipe.dag.nodes,e.recipe.dag.edges]);
                   const nodes=graphNodeBytes(), past=e.past.length, recipe=JSON.stringify(e.recipe);
-                  act('dag-solo'); assert(el('.dag-photo-status').textContent.includes('Solo')&&el('.dag-monitor').textContent.includes('Solo'),'Solo labels both previews');
-                  act('dag-preview-bypass');assert(el('.dag-photo-status').textContent.includes('旁路')&&!dagPreviewState().solo,'view overrides are exclusive');
+                  menuAction('dag-solo'); assert(el('.dag-photo-status').textContent.includes('Solo')&&el('.dag-monitor').textContent.includes('Solo'),'Solo labels both previews');
+                  menuAction('dag-preview-bypass');assert(el('.dag-photo-status').textContent.includes('旁路')&&!dagPreviewState().solo,'view overrides are exclusive');
                   act('dag-preview-final'); assert(JSON.stringify(e.recipe)===recipe&&e.past.length===past,'temporary view does not change recipe or export');
                   const sw=m=>el('[data-act=scene-mode][data-val='+m+']');
                   sw('hdr').focus();key(sw('hdr'),'ArrowRight');
@@ -727,8 +879,8 @@ def main():
                   act('edit-step','undo');assert(e.recipe.sceneOutput?.intent==='hdr'&&graphNodeBytes()===nodes,'undo reopens exact HDR graph');
                   act('dag-toggle-current');
                   assert(e.recipe.sceneOutput?.intent==='hdr'&&el('[data-act=dag-toggle-current]').getAttribute('aria-pressed')==='true','node changes keep active appearance');
-                  showDiagnostics();act('scene-overlay','bands');act('dag-picker');key(document.activeElement,'Escape');
-                  assert(!el('#dag-node-picker').matches(':popover-open')&&el('.scene-marks .bands')&&document.activeElement===el('[name=dagNode]'),'picker Escape does not clear HDR diagnostics');
+                  showLight();set('[name=visualizeHDR]',true);act('dag-picker');key(document.activeElement,'Escape');
+                  assert(!el('#dag-node-picker').matches(':popover-open')&&el('.hdr-range-preview[data-visualize=true]')&&document.activeElement===el('[name=dagNode]'),'picker Escape does not clear HDR diagnostics');
                   act('dag-view-toggle');assert(!el('.dag-floating')&&sw('hdr').getAttribute('aria-pressed')==='true','Graph control remains independent');
                   openResults();await page('.version-row');
                   assert(modal().open&&!el('.scene-modes',modal())&&!el('.dag-scope-head',modal()),'saved result is read-only');act('return-adjustments',null,modal());
@@ -1453,7 +1605,7 @@ def main():
             browser("tab", workbench["tabId"])
             scenario("Node DAG 九域作用域、图事务与显示状态", """
               await hash('library/project/river');act('photo','r1');act('workflow','edit');
-              await page('.dag-scope-head');assert(!el('.edit-left .dag-library,.edit-left [data-act^=dag-]')&&all('.edit-library-panel > section').map(n=>el('#'+n.getAttribute('aria-labelledby'),n).textContent).join('/')==='滤镜/快照/历史','the library panel groups filters, snapshots and history');act('dag-view-toggle');await page('.dag-workspace');
+              await page('.dag-scope-head');assert(!el('.edit-left .dag-library,.edit-left [data-act^=dag-]')&&all('.edit-library-panel > section').map(n=>el('#'+n.getAttribute('aria-labelledby'),n).textContent).join('/')==='滤镜/快照/历史','the library panel groups filters, snapshots and history');assert(el('[data-act=compatibility-graph-toggle]'),'legacy photo opens read-only graph from normal editor');await hash('edit/dag');await page('.dag-workspace');
               assert(dagTransform().scale===1&&!el('.dag-photo-status'),'one editable node opens at readable size without a routine status chip');
               menuAction('dag-preview');assert(el('.dag-photo-status').innerText.includes('不用于导出')&&el('[data-act=dag-preview-final]'),'explicit node output still warns with one editable node');act('dag-preview-final');assert(!el('.dag-photo-status'),'return to final hides routine single-node status');
               pickNode('output');act('dag-failure');assert(el('.editor-toast.error [data-act=dag-retry]'),'a failure still offers retry with one editable node');act('dag-retry');assert(!el('.dag-photo-status'),'successful retry restores quiet single-node state');pickNode('grade');
@@ -1554,7 +1706,7 @@ def main():
               act('dag-fit');const initialCards=all('.dag-card').map(card=>card.getBoundingClientRect());assert(initialCards.length===graph().nodes.length&&initialCards.every(card=>card.left>=graphViewport.left-1&&card.right<=graphViewport.right+1&&card.top>=graphViewport.top-1&&card.bottom<=graphViewport.bottom+1),'explicit fit still contains all cards');
               act('dag-readable');act('dag-zoom','in');const manual={...dagTransform()};act('dag-view-toggle');act('dag-view-toggle');await wait(()=>el('.dag-stage'));assert(JSON.stringify(dagTransform())===JSON.stringify(manual),'reopening respects a deliberate manual zoom');act('dag-readable');
               assert(S.editZoom===view.zoom&&el('.canvas-fit').scrollLeft===view.left&&el('.canvas-fit').scrollTop===view.top&&el('.edit-image').getBoundingClientRect().width===imageBox.width,'Graph reopening preserves photo zoom, pan and geometry');
-              const resize=el('.dag-window-resize');resize.focus();key(resize,'ArrowRight');
+              graphKey('resize','ArrowRight');key(document.activeElement,'Enter');
               act('dag-view-toggle');assert(!el('.dag-floating'),'closed');act('dag-view-toggle');
               assert(JSON.stringify(graph())===base&&history()===past&&Studio.data.work===photo,'window resize and collapse create no pixel history');
               act('canvas-crop');assert(el('.canvas-crop-box')&&!el('.dag-floating')&&dagView().mode==='graph','crop range and unobstructed photo');
@@ -1627,14 +1779,14 @@ def main():
               assert(document.visibilityState==='visible','the active workbench must receive viewport changes');
               await wait(()=>el('.dag-floating').getBoundingClientRect().bottom<=innerHeight);
               const box=el('.dag-floating').getBoundingClientRect();
-              assert(innerWidth===900&&innerHeight===360&&el('.dag-viewport').offsetHeight>=238&&!el('.dag-window-head'),'short window shows the canvas');
-              assert(box.top>=0&&box.bottom<=innerHeight&&el('.graph-window-actions [data-act=dag-view]').checkVisibility(),'close button remains reachable');
+              assert(innerWidth===900&&innerHeight===360&&el('.dag-viewport').offsetHeight>=238&&el('.dag-window-head'),'short window shows the canvas');
+              assert(box.top>=0&&box.bottom<=innerHeight&&el('.dag-window-head [data-act=dag-view]').checkVisibility(),'close button remains reachable');
             """)
             dag_evidence = os.environ.get("RAWMASTER_UI_DAG_EVIDENCE")
             if dag_evidence and not editing_only:
                 Path(dag_evidence).mkdir(parents=True, exist_ok=True)
                 browser("screenshot", str(Path(dag_evidence) / "graph-short-window.png"))
-            browser("click", ".graph-window-actions [data-act=dag-view][data-val=photo]")
+            browser("click", ".dag-window-head [data-act=dag-view][data-val=photo]")
             scenario("Node DAG 短窗真实关闭", """
               assert(!el('.dag-floating')&&el('.developed')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='false','short-window close removes the floating panel and leaves the primary photo in place');
             """)

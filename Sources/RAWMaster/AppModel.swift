@@ -1099,6 +1099,12 @@ final class AppModel: ObservableObject {
         if event.keyCode == 48, !flags.contains(.command), !flags.contains(.control), !flags.contains(.option) {
             cycleWorkflow(reverse: flags.contains(.shift)); return true
         }
+        if isNativeEditing {
+            if [123, 124].contains(Int(event.keyCode)), flags.intersection([.command, .control, .option, .shift]).isEmpty {
+                move(event.keyCode == 123 ? -1 : 1); return true
+            }
+            return editing?.handleDevelopmentKey(event) ?? false
+        }
         guard !isCatalog else { return false }
         if searchControlsOwnKeyboard {
             if event.keyCode == 53 {
@@ -1106,13 +1112,6 @@ final class AppModel: ObservableObject {
                 return true
             }
             return false
-        }
-        if isNativeEditing {
-            if [123, 124].contains(Int(event.keyCode)), !flags.contains(.command), !flags.contains(.control), !flags.contains(.option), !flags.contains(.shift) {
-                move(event.keyCode == 123 ? -1 : 1); return true
-            }
-            // The editor owns remaining keys even when its history is empty.
-            return editing?.handleDevelopmentKey(event) ?? false
         }
         let characters = event.charactersIgnoringModifiers?.lowercased()
         if flags == .command, characters == "a" {

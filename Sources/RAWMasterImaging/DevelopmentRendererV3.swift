@@ -240,7 +240,7 @@ enum DevelopmentRendererV3 {
                       nativeNoiseDomain: PreviewNativeNoiseDomain? = nil,
                       advancedDetailWindow: CGRect? = nil,
                       advancedDetailCacheIdentity: String? = nil,
-                      advancedDetailDetailRequest: Bool = false) throws -> DevelopedV3Graph {
+                      advancedDetailDetailRequest: Bool = false, scenePhotographicInput: Bool = false) throws -> DevelopedV3Graph {
     let performanceToken = ImagePerformanceTelemetry.shared.begin(operation: "DevelopmentRendererV3.develop",
       stage: applyGeometry ? "完整显影图" : "分析图", queue: "显影引擎", boundary: .graphAndValidation)
     var performanceOutcome = ImagePerformanceOutcome.failed
@@ -304,7 +304,7 @@ enum DevelopmentRendererV3 {
     }
     var brillianceObservation:DevelopmentBrilliancePublicV1.Observation?
     if preparingNaturalCurvePicker {
-      guard !applyGeometry,suppliedRawBase == nil,suppliedImageBase == nil,thumbnailNativeSink == nil,
+      guard !applyGeometry,(suppliedRawBase == nil || scenePhotographicInput),suppliedImageBase == nil,thumbnailNativeSink == nil,
         canonicalFiniteEvidence == nil,canonicalNaturalEvidence == nil,naturalFiniteObservation == nil,localDecoderContractFingerprint == nil,!preparingLocal,preparingDehazeContext == nil else { throw DevelopmentV3Error.invalidGraph }
       try DevelopmentNaturalCurvePickerV1.validateAdmission(p,sourceIsRAW:isRAW)
       try checkCancellation?()
@@ -437,8 +437,14 @@ enum DevelopmentRendererV3 {
       var remainingLight=p.light;remainingLight.brilliance=0
       image = try DevelopmentSpatialEngineV3.applyLight(remainingLight,to:image)
     } else { image = try DevelopmentSpatialEngineV3.applyLight(p.light,to:image) }
-    image = try DevelopmentBlackAndWhiteMixerEngineV3.apply(p.blackAndWhite,to:image)
-    image = try DevelopmentColorEngineV3.applyPointwise(p,to:image,context:context,checkCancellation:checkCancellation)
+    let monochromeOutput = p.blackAndWhite.enabled && p.blackAndWhite.placement == .afterPhotographicColorV1
+    var colorStage = p
+    if monochromeOutput {
+      colorStage.blackAndWhite = .init()
+      colorStage.effects?.grain = 0
+    }
+    image = try DevelopmentBlackAndWhiteMixerEngineV3.apply(colorStage.blackAndWhite,to:image)
+    image = try DevelopmentColorEngineV3.applyPointwise(colorStage,to:image,context:context,checkCancellation:checkCancellation)
     if preparingNaturalCurvePicker {
       try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
       try checkCancellation?()
@@ -589,6 +595,13 @@ enum DevelopmentRendererV3 {
       previewHalfFIT:hasActiveMask ? previewHalfFIT:nil,nativeSharpenMean:nativeSharpenMean)
     if hasActiveMask { checkedImage = image }
     image = try DevelopmentLocalEngineV3.apply(p.localEdits,to:image,context:context,checkCancellation:checkCancellation)
+    if monochromeOutput {
+      var mono = p.neutralForSameSource
+      mono.blackAndWhite = p.blackAndWhite
+      mono.effects = p.effects
+      image = try DevelopmentBlackAndWhiteMixerEngineV3.apply(mono.blackAndWhite, to: image)
+      image = try DevelopmentColorEngineV3.applyPointwise(mono, to: image, context: context, checkCancellation: checkCancellation)
+    }
     let overlaySharpenMean = try nativeSharpenMean?.mean(for:image,at:.overlay)
     image = try DevelopmentGlobalEngineV3.applySharpenMaskPreview(p,to:image,preparedSharpMean:overlaySharpenMean)
     if overlaySharpenMean != nil {

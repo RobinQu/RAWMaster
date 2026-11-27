@@ -5,7 +5,7 @@ import RAWMasterCore
 extension DevelopmentAdjustmentID {
     var photosTitle: String {
         switch self {
-        case .light: return "光效"
+        case .light: return "光照"
         case .color: return "颜色"
         case .blackAndWhite: return "黑白"
         case .retouch: return "修复"

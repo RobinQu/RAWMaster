@@ -14,7 +14,7 @@ struct PhotosDevelopmentInspector: View {
 
     var body: some View {
         Group {
-            if editing.cropEditing, let context = editing.developmentPresentationContext, editing.recipe.sceneGraph == nil {
+            if editing.cropEditing, let context = editing.developmentPresentationContext {
                 PhotosCropPanel(editing: editing, session: editing.developmentSession, context: context)
                     .disabled(editing.developmentContext == nil)
             } else {
@@ -62,12 +62,10 @@ struct PhotosDevelopmentInspector: View {
     }
 
     @ViewBuilder private var controls: some View {
-        if let graph = editing.recipe.sceneGraph {
-            EditingSceneInspector(editing: editing, graph: graph, destination: destination)
-        } else if let context = editing.developmentPresentationContext {
+        if let context = editing.developmentPresentationContext {
             PhotosDevelopmentContent(editing: editing, session: editing.developmentSession, context: context,
                 viewportHeight: viewportHeight, destination: destination)
-                .disabled(editing.developmentContext == nil).id(context)
+                .disabled(editing.developmentContext == nil || (editing.recipe.sceneGraph != nil && editing.sceneGraphTicket == nil)).id(context)
         } else {
             VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                 if editing.sourceNeedsRevalidation {
@@ -110,7 +108,7 @@ struct PhotosDevelopmentInspector: View {
                     ZStack {
                         Image(systemName: item.symbol).font(.system(size: 14, weight: .medium))
                             .frame(width: 32, height: 32)
-                        if let parameters = editing.recipe.adjustmentsV3, item.groups.contains(where: { PhotosAdjustmentCommands.isModified($0, in: parameters) }) {
+                        if let parameters = editing.photographicUIRecipe.adjustmentsV3, item.groups.contains(where: { PhotosAdjustmentCommands.isModified($0, in: parameters) }) {
                             Circle().fill(AppPalette.accent).frame(width: 4, height: 4)
                                 .offset(x: 11, y: 11).accessibilityLabel("已调整")
                         }
@@ -226,18 +224,25 @@ private struct PhotosDevelopmentContent: View {
         case .masks:
             PhotosMaskControls(editing: editing, session: session, context: context)
         default:
-            LazyVStack(spacing: 0) {
+            VStack(spacing: 0) {
                 if destination == .detail {
+                    if let graph = editing.recipe.sceneGraph {
+                        EditingSceneInspector(editing: editing, graph: graph)
+                    } else {
                     VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                         PhotosAIDenoiseControls(editing: editing, session: session, context: context)
                         PhotosRawDetailsControl(editing: editing, session: session, context: context)
                         PhotosSuperResolutionControl(session: session, context: context)
                     }.frame(maxWidth: .infinity, alignment: .leading).padding(16)
+                    }
                     Divider().opacity(0.65)
                 }
                 ForEach(destination.groups, id: \.self) { group in
                     section(group)
                     Divider().opacity(0.65)
+                }
+                if destination == .basic, let graph = editing.recipe.sceneGraph {
+                    EditingSceneInspector(editing: editing, graph: graph, showsNode: true)
                 }
             }
         }
@@ -306,6 +311,7 @@ private struct PhotosDevelopmentContent: View {
                         context: context, tool: group == .retouch ? .retouch : .redEye)
                 case .light, .color:
                     VStack(spacing: PhotosControlLayout.spacing) {
+                        if group == .light, editing.recipe.sceneGraph != nil { EditingHDRVisualizationControl(editing: editing) }
                         PhotosSummaryStrengthControl(editing: editing, session: session, context: context,
                             group: group, viewportHeight: viewportHeight)
                         PhotosScalarAdjustmentControls(session: session, context: context, group: group, onError: report,
@@ -481,6 +487,9 @@ enum PhotosHistogramZone: String, CaseIterable {
     var fieldID: String {
         switch self { case .blacks: "blackPoint"; case .shadows: "shadows"; case .exposure: "exposure"; case .highlights: "highlights"; case .whites: "whites" }
     }
+    var normalizedRange: ClosedRange<CGFloat> {
+        switch self { case .blacks: 0...0.1; case .shadows: 0.1...0.3; case .exposure: 0.3...0.7; case .highlights: 0.7...0.9; case .whites: 0.9...1 }
+    }
     static func at(_ fraction: Double) -> Self {
         switch min(1, max(0, fraction)) { case ..<0.1: .blacks; case ..<0.3: .shadows; case ..<0.7: .exposure; case ..<0.9: .highlights; default: .whites }
     }
@@ -573,7 +582,7 @@ struct PhotosHistogramView: View {
         }
     }
     private func zoneBounds(_ zone: PhotosHistogramZone, size: CGSize) -> CGRect? {
-        let range: ClosedRange<Double> = switch zone { case .blacks: 0...0.1; case .shadows: 0.1...0.3; case .exposure: 0.3...0.7; case .highlights: 0.7...0.9; case .whites: 0.9...1 }
+        let range = zone.normalizedRange
         return CGRect(x: size.width * range.lowerBound, y: 0, width: size.width * (range.upperBound - range.lowerBound), height: size.height)
     }
     private func change(_ drag: DragGesture.Value) {

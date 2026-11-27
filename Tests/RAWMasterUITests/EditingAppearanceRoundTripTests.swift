@@ -55,6 +55,43 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             let first = try XCTUnwrap(editor.recipe.sceneGraph?.graph.nodes.first)
             guard case let .corrector(_, _, initialEV, _, _, _) = first.operation else { return XCTFail("Missing AP1 grade") }
             XCTAssertEqual(initialEV, 0.75)
+            try await wait { editor.developmentContext != nil }
+            let photoContext = try XCTUnwrap(editor.developmentContext)
+            XCTAssertNotEqual(photoContext.draftBranchID, originalContext.draftBranchID)
+            XCTAssertEqual(editor.developmentSession.parameters.color.saturation, 0.23)
+            let beforeGesture = editor.recipe, session = editor.developmentSession
+            let control = EditingControlID(group: .color, name: "自然饱和度")
+            let gesture = try session.beginGesture(control, context: photoContext)
+            for value in [0.1, 0.2, 0.35] {
+                var color = session.parameters.color; color.enabled = true; color.vibrance = value
+                try session.apply(.setParameters(.color(color)), event: .init(context: photoContext, control: control), gesture: gesture)
+            }
+            try session.endGesture(gesture, .commit)
+            let adjusted = editor.recipe
+            XCTAssertEqual(adjusted.sceneGraph?.photographic?.color.vibrance, 0.35)
+            XCTAssertEqual(editor.compatibilityAppearance, sdr)
+            XCTAssertTrue(editor.stepSceneHistory(redo: false)); XCTAssertEqual(editor.recipe, beforeGesture)
+            XCTAssertTrue(editor.stepSceneHistory(redo: true)); XCTAssertEqual(editor.recipe, adjusted)
+            try await wait { editor.sceneFrame != nil && !editor.scenePreviewBusy }
+            editor.beginDevelopmentPicker(.whiteBalance(.neutralGray), context: photoContext)
+            let pick = try XCTUnwrap(editor.scenePhotographicPickHandler, editor.message ?? "")
+            pick(.init(x: 0.58, y: 0.42))
+            try await wait { !editor.developmentAnalysisBusy }
+            XCTAssertNotNil(editor.recipe.sceneGraph?.photographic?.whiteBalance.resolvedState, editor.message ?? "")
+            XCTAssertEqual(editor.compatibilityAppearance, sdr)
+            XCTAssertTrue(editor.stepSceneHistory(redo: false)); XCTAssertEqual(editor.recipe, adjusted)
+            try await wait { editor.sceneFrame != nil && !editor.scenePreviewBusy }
+            editor.toggleDevelopmentCrop(context: photoContext)
+            let cropContext = try XCTUnwrap(editor.developmentContext)
+            XCTAssertNotEqual(cropContext.draftBranchEpoch, photoContext.draftBranchEpoch)
+            try await wait { editor.developmentCropFrame(context: cropContext) != nil }
+            var geometry = session.parameters.geometry
+            geometry.crop = .init(x: 0.1, y: 0.1, width: 0.7, height: 0.7)
+            try editor.setDevelopmentGeometry(geometry, context: cropContext, control: "crop.bounds")
+            XCTAssertEqual(editor.recipe.sceneGraph?.photographic?.geometry.crop, geometry.crop)
+            XCTAssertEqual(editor.visibleSceneGraph?.photographic?.geometry.crop, .init())
+            editor.cancelDevelopmentCrop(context: cropContext)
+            XCTAssertEqual(editor.recipe, adjusted)
             let beforeModel = editor.recipe
             editor.applySceneModelStages([.superResolution()], ticket: try XCTUnwrap(editor.sceneGraphTicket))
             try await wait { !editor.sceneStarting }
@@ -121,7 +158,7 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             XCTAssertEqual(editor.recipe, hdr)
             editor.updateSceneSnapshot(sceneSnapshotID, name: nil, ticket: try XCTUnwrap(editor.sceneTicket))
             editor.leaveSceneDraft(ticket: try XCTUnwrap(editor.sceneTicket), monochrome: true)
-            var mono = sdr; mono.adjustmentsV3?.blackAndWhite.enabled = true
+            var mono = sdr; mono.adjustmentsV3?.blackAndWhite.enabled = true; mono.adjustmentsV3?.blackAndWhite.placement = .afterPhotographicColorV1
             XCTAssertEqual(editor.recipe, mono)
             editor.beginDevelopmentInterface()
             try await wait { editor.developmentHistogram != nil && editor.previews.primary.frameRecipe == mono }

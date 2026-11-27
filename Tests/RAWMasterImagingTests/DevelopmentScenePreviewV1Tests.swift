@@ -49,6 +49,41 @@ final class DevelopmentScenePreviewV1Tests: XCTestCase {
     XCTAssertEqual(counts.raw + counts.graph + counts.display, 0)
   }
 
+  func testOptInSnowVisualizeUsesHDRLuminanceOnAnSDRDisplayAndRestoresCachedDerivatives() async throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else { throw XCTSkip("Use fixed snow.ARW") }
+    let url = URL(fileURLWithPath: path)
+    let source = makeSource(url, count: Int64(try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)))
+    let service = DevelopmentScenePreviewV1(), graph = try grade(ev: 2)
+    let sampling = DevelopmentScenePreviewV1.Sampling.fit(maximumEdge: 320)
+    func show(_ target: DevelopmentSceneOutputStateV1.Target, visualize: Bool = false) async throws -> DevelopmentScenePreviewFrameV1 {
+      try await service.render(source: source, graph: graph, view: .init(), target: target, sampling: sampling, visualizeHDR: visualize)
+    }
+    let hdr = try await show(.hdr2020), sdr = try await show(.sdr709)
+    let diagnostic = try await show(.sdr709, visualize: true)
+    XCTAssertEqual(diagnostic.target, .sdr709)
+    XCTAssertNotEqual(diagnostic.id, sdr.id)
+    let original = try pixels(hdr.texture), mapped = try pixels(diagnostic.texture)
+    XCTAssertEqual(original.count, mapped.count)
+    var counts = Array(repeating: 0, count: 5)
+    for (pixel, sample) in zip(original, mapped) {
+      let y = pixel.x * 0.2627 + pixel.y * 0.6780 + pixel.z * 0.0593
+      if y <= 1 {
+        counts[0] += 1
+        XCTAssertEqual(sample.x, sample.y, accuracy: 0.0001)
+        XCTAssertEqual(sample.y, sample.z, accuracy: 0.0001)
+      } else {
+        let band = min(3, Int(log2(y)))
+        counts[band + 1] += 1
+        XCTAssertEqual(sample, DevelopmentSceneOutputStateV1.HDRBand.visualizationColors[band])
+      }
+    }
+    XCTAssertGreaterThan(counts[0], 0)
+    XCTAssertGreaterThan(counts[1...].reduce(0, +), 0)
+    let restoredSDR = try await show(.sdr709), restoredHDR = try await show(.hdr2020)
+    XCTAssertEqual(restoredSDR.id, sdr.id)
+    XCTAssertEqual(restoredHDR.id, hdr.id)
+  }
+
   func testOptInRealARWPreviewReuseAndNativeROI() async throws {
     guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else { throw XCTSkip("Use fixed snow.ARW") }
     let here = FileManager.default.temporaryDirectory.appendingPathComponent("ScenePreview-\(UUID().uuidString)")

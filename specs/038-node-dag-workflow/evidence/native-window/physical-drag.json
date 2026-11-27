@@ -1,0 +1,189 @@
+{
+  "testedBuild": "Ad-hoc signed Debug native app, separate bundle id and library",
+  "bundleIdentifier": "io.robinqu.RAWMaster.qa.graphAppearance",
+  "executableSHA256": "507f6b2ef347e8d9def6a8f8b6bedd889201cc9faf67ebea04cb488e113ccb39",
+  "coordinateSpace": "macOS accessibility / Quartz global points; rectangles are [x,y,width,height]",
+  "graphs": {
+    "hdr": {
+      "afterCanvasDrag": [
+        993,
+        -1107,
+        640,
+        392
+      ],
+      "afterRightEdgeDrag": [
+        993,
+        -1107,
+        608,
+        392
+      ],
+      "afterTitleDrag": [
+        993,
+        -1107,
+        640,
+        392
+      ],
+      "bundle": "RAWMaster.app",
+      "canvasDrag": [
+        43,
+        -27
+      ],
+      "displayID": 5,
+      "focusAfterClose": "editing.scene.graph.toggle",
+      "initial": [
+        1059,
+        -1063,
+        640,
+        392
+      ],
+      "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+      "nativeClose": "AXCloseButton/AXPress",
+      "nodeAfterCanvasRelative": [
+        228,
+        151,
+        118,
+        56
+      ],
+      "nodeAfterTitleRelative": [
+        185,
+        178,
+        118,
+        56
+      ],
+      "nodeInitiallyRelative": [
+        185,
+        178,
+        118,
+        56
+      ],
+      "observedTitleDrag": [
+        -66,
+        -44
+      ],
+      "os": "Version 27.0.1 (Build 26A434)",
+      "ownerFrame": [
+        231,
+        -1535,
+        1480,
+        940
+      ],
+      "pid": 91273,
+      "reopened": [
+        993,
+        -1107,
+        608,
+        392
+      ],
+      "requestedTitleDrag": [
+        -72,
+        -48
+      ],
+      "title": "工作流 Graph",
+      "titlePoint": [
+        1449.4,
+        -1053.5
+      ],
+      "windowRole": "AXWindow",
+      "windowSubrole": "AXFloatingWindow",
+      "inputPhoto": "snow.ARW",
+      "inputPhotoSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+      "controlsAX": [
+        "Role=AXMenuButton  Title=添加  Enabled=1  Focused=0  rect=1066,-1037,53,26  AXShowMenu,AXPress",
+        "Role=AXMenuButton  Title=更多  Enabled=1  Focused=0  rect=1123,-1037,53,26  AXShowMenu,AXPress",
+        "Role=AXButton  Description=100%  Enabled=1  Focused=0  rect=1180,-1037,45,26  AXPress",
+        "Role=AXButton  Identifier=scene.graph.fit  Description=适合全图  Enabled=1  Focused=0  rect=1229,-1037,58,26  AXPress",
+        "Role=AXMenuButton  Identifier=scene.graph.window.menu  Description=图窗操作  Enabled=1  Focused=0  rect=1670,-1064,30,21  AXShowMenu,AXPress"
+      ]
+    },
+    "legacy": {
+      "afterCanvasDrag": [
+        993,
+        -1107,
+        640,
+        392
+      ],
+      "afterRightEdgeDrag": [
+        993,
+        -1107,
+        608,
+        392
+      ],
+      "afterTitleDrag": [
+        993,
+        -1107,
+        640,
+        392
+      ],
+      "bundle": "RAWMaster.app",
+      "canvasDrag": [
+        43,
+        -27
+      ],
+      "displayID": 5,
+      "focusAfterClose": "editing.compatibilityGraph",
+      "initial": [
+        1059,
+        -1063,
+        640,
+        392
+      ],
+      "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+      "nativeClose": "AXCloseButton/AXPress",
+      "nodeAfterCanvasRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "nodeAfterTitleRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "nodeInitiallyRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "observedTitleDrag": [
+        -66,
+        -44
+      ],
+      "os": "Version 27.0.1 (Build 26A434)",
+      "ownerFrame": [
+        231,
+        -1535,
+        1480,
+        940
+      ],
+      "pid": 91273,
+      "reopened": [
+        993,
+        -1107,
+        608,
+        392
+      ],
+      "requestedTitleDrag": [
+        -72,
+        -48
+      ],
+      "title": "只读兼容图",
+      "titlePoint": [
+        1449.4,
+        -1053.5
+      ],
+      "windowRole": "AXWindow",
+      "windowSubrole": "AXFloatingWindow",
+      "inputPhoto": "compatibility.jpg",
+      "inputPhotoSHA256": "8cddfc382644c17eeab8eda8f9d87c7188513ccef350cc3b6867e99ef241a556",
+      "controlsAX": [
+        "Role=AXButton  Identifier=scene.graph.compatibility.zoom.out  Description=缩小兼容图  Enabled=1  Focused=0  rect=1066,-704,26,26  AXPress",
+        "Role=AXButton  Identifier=scene.graph.compatibility.zoom.reset  Description=复位兼容图缩放  Value=100%  Enabled=1  Focused=0  rect=1096,-704,45,26  AXPress",
+        "Role=AXButton  Identifier=scene.graph.compatibility.zoom.in  Description=放大兼容图  Enabled=1  Focused=0  rect=1145,-704,26,26  AXPress",
+        "Role=AXMenuButton  Identifier=scene.graph.window.menu  Description=图窗操作  Enabled=1  Focused=0  rect=1670,-1064,30,21  AXShowMenu,AXPress"
+      ]
+    }
+  }
+}

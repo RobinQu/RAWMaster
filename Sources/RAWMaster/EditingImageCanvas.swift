@@ -55,19 +55,9 @@ struct EditingImageCanvas: View {
         .background(editing.darkroomBackground.color)
         .onGeometryChange(for: CGFloat.self) { geometry in geometry.size.width } action: { canvasWidth = $0 }
         .overlay(alignment: .top) {
-            GeometryReader { geometry in
-                VStack(spacing: 4) {
-                    if editing.activeNotice != nil {
-                        EditingNoticeOverlay(editing: editing) { fitFocused = true }
-                            .frame(maxHeight: geometry.size.height * 0.38, alignment: .top)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    if editing.visibleSceneGraph != nil { sceneViewingControls }
-                }
-                .frame(width: min(520, max(100, geometry.size.width - EditingLayout.fitInsets.left - EditingLayout.fitInsets.right)))
-                .frame(maxWidth: .infinity, alignment: .top)
+            EditingNoticeOverlay(editing: editing) { fitFocused = true }
+                .frame(maxWidth: min(400, max(140, canvasWidth - EditingLayout.fitInsets.left - EditingLayout.fitInsets.right)))
                 .padding(.top, 8)
-            }
         }
         .overlay(alignment: .bottom) {
             QuickPromptDock(editing: editing, width: dockWidth, canvasControls: { canvasControls },
@@ -81,6 +71,9 @@ struct EditingImageCanvas: View {
             quickPromptDetail = nil; quickPromptReviewTransform = .init()
         }
         .onChange(of: editing.selectedVersionID) { _, _ in fit() }
+        .onChange(of: editing.actualPixels) { _, actual in
+            if actual, editing.visibleSceneGraph != nil { transform.physicalMagnification = 1 }
+        }
         .onChange(of: editing.previews.primary.frame?.id) { _, _ in editing.colorReadout.refresh(editing.previews.primary.frame) }
         .onDisappear { editing.colorReadout.clear() }
         .onChange(of: editing.comparison) { old, new in
@@ -126,6 +119,12 @@ struct EditingImageCanvas: View {
             Button { editing.requestCanvasCommand(.fit) } label: { Text("FIT").font(.system(size: 10, weight: .semibold)).frame(width: 30, height: 26) }
                 .help("适合可用画面 · 0 / ⌘0").accessibilityLabel("适合可用画面").accessibilityIdentifier("editing.fit")
                 .focused($fitFocused)
+            Button {
+                if editing.visibleSceneGraph != nil { transform.physicalMagnification = 1 }
+                editing.setActualPixels(true, nativeEvent: true)
+            } label: { Text("1:1").font(.system(size: 10, weight: .semibold)).frame(width: 30, height: 26) }
+            .disabled(editing.cropEditing || editing.developmentPicker != nil)
+            .help("实际像素 · Z").accessibilityLabel("实际像素").accessibilityIdentifier("editing.actualPixels")
             Button {
                 if let context = editing.developmentContext { editing.toggleDevelopmentCrop(context: context) }
             } label: {
@@ -458,7 +457,9 @@ struct EditingImageCanvas: View {
         VStack(spacing: 0) {
             ZStack {
                 if editing.visibleSceneGraph != nil {
-                    scenePane
+                    if editing.cropEditing, let context = editing.developmentContext {
+                        PhotosCropCanvas(editing: editing, context: context, transform: $transform).id(context)
+                    } else { scenePane }
                 } else if let review = editing.quickPromptReview, editing.quickPromptPresented {
                     quickPromptReviewCanvas(review)
                 } else if editing.quickPromptPresented {
@@ -526,30 +527,6 @@ struct EditingImageCanvas: View {
     private var scenePane: some View {
         EditingSceneScopesCanvas(editing: editing, scopes: editing.sceneScopes, transform: $transform)
             .accessibilityIdentifier("editing.scene.canvas")
-    }
-
-    private var sceneViewingControls: some View {
-        VStack(spacing: 6) {
-            if let monitor = editing.sceneGraphMonitorText {
-                HStack {
-                    Text(monitor).font(.caption).accessibilityIdentifier("editing.scene.graph.monitor")
-                    Button("返回最终结果") { editing.stopSceneGraphMonitor() }.controlSize(.small)
-                }
-            }
-            if editing.scenePreviewError == nil {
-                Text(editing.sceneTarget == .hdr2020
-                    ? "HDR 目标预览 · 屏幕余量 \(editing.sceneHeadroom, specifier: "%.2f")×"
-                    : editing.sceneRequestedHDR ? "HDR · SDR 派生预览（屏幕无 HDR 余量）" : "HDR · SDR 派生预览")
-                    .font(.caption).accessibilityIdentifier("editing.scene.viewState")
-                HStack(spacing: 6) {
-                    Button("按 HDR 目标查看") { editing.setSceneViewingHDR(true) }.disabled(editing.sceneRequestedHDR)
-                    Button("预览 SDR 派生") { editing.setSceneViewingHDR(false) }.disabled(!editing.sceneRequestedHDR)
-                    Button("1:1") { transform.physicalMagnification = 1 }.accessibilityLabel("实际像素")
-                }.controlSize(.small)
-                if editing.scenePreviewBusy { ProgressView().controlSize(.small).accessibilityLabel("正在准备场景预览") }
-            }
-        }.padding(8)
-         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 9))
     }
 
     private func quickPromptReviewCanvas(_ review: QuickPromptReview) -> some View {

@@ -17,9 +17,10 @@ function dagSeed(recipe = currentEdit().recipe) {
   delete params.masks;
   delete params.sceneOutput;
   delete params.colorMode;
-  return { schema: 1, base: structuredClone({ ...recipe, dag: undefined }), nodes: [
+  const photographic = SceneEditor.hdr() ? structuredClone(params) : undefined;
+  return { schema: 1, photographic, base: structuredClone({ ...recipe, dag: undefined }), nodes: [
     { id: 'source', kind: 'source', name: '原片显影', enabled: true, params: {} },
-    { id: 'grade', kind: 'grade', name: '基础调色', enabled: true, params },
+    { id: 'grade', kind: 'grade', name: '基础调色', enabled: true, params:photographic ? {} : params },
     { id: 'geometry', kind: 'geometry', name: '裁切与几何', enabled: true, params: { crop: recipe.crop, angle: recipe.angle } },
     { id: 'output', kind: 'output', name: '最终输出', enabled: true, params: {} },
   ], edges: [{ from: 'source', to: 'grade', slot: 'image' }, { from: 'grade', to: 'geometry', slot: 'image' }, { from: 'geometry', to: 'output', slot: 'image' }] };
@@ -154,7 +155,7 @@ function dagEvaluate(g, target, initial = {}, memo = new Map(), preview = null) 
 }
 function dagProject(root, preview = null) {
   const neutral = { ...root.base, ...Studio.freshRecipe(), masks: root.base.masks ?? [], repairs: root.base.repairs ?? [], ...Object.fromEntries(dagScalarKeys.map(k => [k, 0])), filmStock: null, lut: '无' };
-  return { ...neutral, ...dagEvaluate(root, null, {}, new Map(), preview), sceneOutput: root.base.sceneOutput, colorMode: root.base.colorMode, dag: root };
+  return { ...neutral, ...dagEvaluate(root, null, root.photographic || {}, new Map(), preview), sceneOutput: root.base.sceneOutput, colorMode: root.base.colorMode, dag: root };
 }
 function dagPatch(label, fields) {
   return dagCommit(label, (g, root) => {
@@ -227,7 +228,7 @@ function dagToolbar() {
     ${btn('忽略该节点','dag-toggle-current',n?.id || '',{icon:'bypass',only:true,cls:'icon-btn',pressed:v.selection.length===1&&n?.enabled===false,disabled:!!reason,title:reason ? '忽略该节点：'+reason : n?.enabled===false ? '恢复该节点（已忽略）' : '忽略该节点'}).replace('<button ','<button data-photo="'+h(Studio.data.work)+'" ')}
     ${btn('Graph 窗口','dag-view-toggle','',{icon:'layers',only:true,cls:'icon-btn',pressed:v.mode==='graph',expanded:v.mode==='graph',controls:'dag-floating-window'})}</div>
     <div id="dag-node-picker" class="dag-picker-popover" popover="auto" role="dialog" aria-label="选择节点与常用图操作">${v.path.length ? '' : `<div class="dag-picker-base">${btn('基础校正','dag-picker-command','base',{icon:'sliders',pressed:n?.kind==='source'})}</div>`}<h3>${v.path.length ? '组内可编辑节点' : '可编辑节点'}</h3><div class="dag-picker-list">${nodes.map(node=>btn(node.name+(node.enabled===false?' · 已忽略':''),'dag-picker-select',node.id,{pressed:v.selection.length===1&&v.active===node.id,icon:node.kind==='group'?'folder':node.kind==='mix'?'mix':'sliders'})).join('') || '<p class="small">暂无可编辑节点</p>'}</div><div class="dag-picker-commands">${btn('添加节点…','dag-picker-command','add',{icon:'plus'})}${btn('自动整理','dag-picker-command','layout',{disabled:!dagEnabled()})}${btn('更多节点操作…','dag-picker-command','more',{icon:'menu'})}</div></div>
-    <small>${h(dagEnabled() ? n ? dagKinds[n.kind] + ' · ' + n.name : '工作流' : '兼容显影节点 · 输入与基础调整')}</small>
+    <small>${h(dagEnabled() ? n ? dagKinds[n.kind] + ' · ' + n.name : '工作流' : SceneEditor.hdr() ? '场景调色 · HDR 摄影调整' : '兼容显影节点 · 输入与基础调整')}</small>
     ${!['smart', 'agent'].includes(S.tool) && dagEnabled() ? '<small role="status">' + h(v.selection.length===1 ? dagStateText(n) : v.selection.length ? '多选仅管理，不广播参数' : '请选择节点编辑参数') + '</small>' : '<small>智能预设与版本操作作用于整张照片</small>'}</section>`;
 }
 function dagPickerClose() {
@@ -289,8 +290,8 @@ function dagInspector() {
   if (n.kind === 'geometry') return head + '<p>固定照片几何阶段。请使用照片底部 Crop 工具；此处只显示阶段，不提供节点裁切参数。</p>' + fact('比例',p.crop || '原始');
   if (n.kind === 'source') return head + '<p>原片解码和白平衡是输入阶段。预览不代表真实 RAW 运算。</p>' + dagRange('warmth', '原生白平衡（示意）', -100, 100, 1, p.warmth || 0) + check('原片离线（模拟）', 'dagOffline', !Studio.asset(Studio.data.work).online) + '<p>离线仍能编辑已保存图结构；素材重建和精确输出需要原件。</p>';
   if (n.kind === 'mix') return head + select('Mixer 类型','dagMixMode',[['parallel','Parallel Mixer'],['layer','Layer Mixer']],p.mode || 'parallel') + '<h3>有序输入</h3>' + dagCurrent().edges.filter(e => e.to === n.id).sort((a,b)=>dagSlotRank(a.slot)-dagSlotRank(b.slot)).map((e,i) => `<div class="dag-input-row"><p><b>${e.slot === 'base' ? '基底 base' : '图层 '+e.slot}</b>：${h(dagCurrent().nodes.find(x => x.id === e.from)?.name)}</p>${p.mode === 'layer' && i ? select('混合方式','dagBlend',dagBlendModes,p['blend:'+e.slot] || 'normal').replace('<select ','<select data-slot="'+h(e.slot)+'" ') : ''}${i>1 ? dagRange('weight:'+e.slot,'输入权重',0,100,1,p['weight:'+e.slot] ?? 0) : ''}${btn('上移输入','dag-input-move',e.slot+':-1',{disabled:i===0})}${btn('下移输入','dag-input-move',e.slot+':1',{disabled:i===dagCurrent().edges.filter(x=>x.to===n.id).length-1})}</div>`).join('') + dagRange('amount', '混合强度', 0, 100, 1, p.amount ?? 0) + btn('交换输入顺序', 'dag-swap') + btn('添加输入支路','dag-add-input') + '<p>忽略返回基底；Parallel 权重与 Layer 有序混合分开。13 种混合方式仅演示选择与顺序，不声称 CSS 是真实混合公式。</p>';
-  if (nativeGraphReview && SceneEditor.hdr()) return head + dagRange('ev','节点曝光（EV）',-12,12,.05,p.ev ?? 0) +
-    dagRange('nodeAmount','节点强度',0,100,1,p.nodeAmount ?? 100) + '<p class="small">其他类型的调色、画布工具与模型暂未接入。多选不广播数值。</p>';
+  if (SceneEditor.hdr() && photoControls()) return head + dagRange('ev','节点曝光（EV）',-12,12,.05,p.ev ?? 0) +
+    dagRange('curveHigh','节点高光曲线',-100,100,1,p.curveHigh ?? 0) + dagRange('nodeAmount','节点强度',0,100,1,p.nodeAmount ?? 100);
   const cat = Object.hasOwn(editTools, S.tool) ? S.tool : 'basic';
   const fields = dagPanels.includes(cat) ? dagFields(cat,p) : null;
   if (cat === 'masks') return dagMaskInspector(n);
@@ -309,11 +310,13 @@ function dagPosition(n, index) {
 function dagTransform() { return dagView().views[dagView().path.join('/')] ??= { x: 0, y: 0, scale: 1, framing: 'readable' }; }
 function dagZoomLabel(scale) { return '可读居中 · ' + Math.round(scale * 100) + '%'; }
 function dagPaintTransform(tr) {
-  const stage = $('.dag-stage'), label = $('.dag-zoom-controls [data-act=dag-readable]');
-  if (!stage || !label) return;
-  stage.style.transform = `translate(${tr.x}px,${tr.y}px) scale(${tr.scale})`;
-  label.textContent = Math.round(tr.scale * 100) + '%';
-  label.setAttribute('aria-label', dagZoomLabel(tr.scale)); label.title = dagZoomLabel(tr.scale);
+  const stage=$('.dag-stage');
+  if (!stage) return;
+  stage.style.transform=`translate(${tr.x}px,${tr.y}px) scale(${tr.scale})`;
+  for(const label of $$('.dag-floating [data-act=dag-readable]')) {
+    label.textContent=Math.round(tr.scale*100)+'%';
+    label.setAttribute('aria-label',dagZoomLabel(tr.scale));label.title=dagZoomLabel(tr.scale);
+  }
 }
 function dagCanvas() {
   const v = dagView(), g = S.dagConnectionDraft ?? dagCurrent(), tr = dagTransform(), error = S.dagConnectionDraft ? dagError(g) : '', reached = dagReachable(g);
@@ -341,13 +344,16 @@ function dagCanvas() {
   return `<section class="dag-workspace" aria-label="节点 Graph"><div class="dag-topline">${v.path.length ? `<div class="dag-breadcrumb">${crumbs}</div>` : ''}${dagToolbarCommands(v, g, tr)}</div>
     <div class="dag-viewport" tabindex="0" aria-label="Graph 画布" data-dag-viewport><div class="dag-stage" style="transform:translate(${tr.x}px,${tr.y}px) scale(${tr.scale})"><svg class="dag-wires" width="5000" height="3000">${wires}</svg>${cards}</div><div class="dag-marquee" hidden></div>
       ${v.monitor ? `<div class="dag-monitor">${pic(Studio.data.work, '', 'style="filter:' + dagPhotoFilter() + '"')}<small>${h(dagPreviewState().solo ? 'Solo · 不用于导出' : dagPreviewState().bypass ? '调色旁路 · 不用于导出' : v.target ? '中间结果 · 不用于导出' : '最终结果（示意）')}</small></div>` : ''}</div>
-    <div class="dag-status" ${S.dagWireFrom || S.dagConnectionDraft || v.edge || v.selection.length > 1 ? '' : 'hidden'} role="status" title="${h(S.dagConnectionDraft ? '连接草稿：'+(error || '有效，应用后进入历史') : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放')}">${S.dagWireFrom ? '连接中：请选择输入端口；Escape 取消' : S.dagConnectionDraft ? error ? '连接草稿无效：' + h(error) : '连接草稿有效 · 应用后进入历史' : v.edge ? '已选连线 · 添加将插入此边' : v.selection.length > 1 ? '已选 ' + v.selection.length + ' 个节点 · 数值不广播' : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放'}</div>
+    <div class="dag-status" ${S.dagWireFrom || S.dagConnectionDraft || v.edge || v.selection.length > 1 ? '' : 'hidden'} role="status" title="${h(S.dagConnectionDraft ? '连接草稿：'+(error || '有效，应用后进入历史') : '拖节点移动位置；空白拖动平移；Shift 拖动框选；捏合或 Ctrl+滚轮缩放')}">${S.dagWireFrom ? '连接中：请选择输入端口；Escape 取消' : S.dagConnectionDraft ? error ? '连接草稿无效：' + h(error) : '连接草稿有效 · 应用后进入历史' : v.edge ? '已选连线 · 添加将插入此边' : v.selection.length > 1 ? '已选 ' + v.selection.length + ' 个节点 · 数值不广播' : '拖节点移动位置；空白拖动平移；Shift 拖动框选；捏合或 Ctrl+滚轮缩放'}</div>
     ${S.dagConnectionDraft ? `<div class="dag-draft-actions">${btn('应用连接', 'dag-connect-apply', '', { cls: 'primary', disabled: !!error })}${btn('取消连接草稿', 'dag-connect-cancel')}</div>` : ''}
-    <div class="dag-zoom-controls" aria-label="Graph 缩放">${btn('−', 'dag-zoom', 'out')}${btn(Math.round(tr.scale * 100) + '%', 'dag-readable', '', {title:dagZoomLabel(tr.scale)})}${btn('＋', 'dag-zoom', 'in')}</div></section>`;
+    <div class="dag-zoom-controls" aria-label="Graph 缩放"${nativeGraphReview || SceneEditor.hdr() ? ' hidden' : ''}>${btn('−', 'dag-zoom', 'out')}${btn(Math.round(tr.scale * 100) + '%', 'dag-readable', '', {title:dagZoomLabel(tr.scale)})}${btn('＋', 'dag-zoom', 'in')}</div></section>`;
 }
 function dagToolbarCommands(v, graph) {
   const preview = dagPreviewState(), node = graph.nodes.find(n => n.id === v.active);
   const disabled = !!S.dagConnectionDraft;
+  if (nativeGraphReview || SceneEditor.hdr()) return `<div class="dag-commandbar graph-text-tools" role="toolbar" aria-label="Graph 节点操作">
+    ${btn('添加','dag-add-menu','',{disabled})}${btn('更多','dag-menu')}
+    ${btn(Math.round(dagTransform().scale*100)+'%','dag-readable','',{title:'按 100% 可读居中'})}${btn('适合全图','dag-fit')}</div>`;
   const tool = (name, action, glyph, opts = {}, val = '') => btn(name,action,val,{icon:glyph,only:true,...opts});
   return `<div class="dag-commandbar" role="toolbar" aria-label="Graph 节点操作">
     <div class="dag-tools-group" role="group" aria-label="添加节点">${tool('添加串行调色','dag-add','arrowRight',{disabled},'serial')}${tool('添加并行调色','dag-add','linearMask',{disabled},'parallel')}${tool('添加 Layer 混合','dag-add','layers',{disabled},'layer')}</div>
@@ -393,7 +399,7 @@ actions['dag-view'] = mode => {
   dagEnsure(); if (mode !== 'graph') { dagClearPreview(); if (nativeGraphReview) S.dagConnectionDraft = null; }
   S.graphOpen = mode === 'graph'; dagView().mode = mode; S.canvasMenu = ''; S.dagWireFrom = null;
   if (!S.canvasTool && ['smart', 'agent', 'versions'].includes(S.tool)) { go('edit/basic'); }
-  dagRenderFocus(mode === 'graph' ? '[data-dag-viewport]' : '[data-act=dag-view-toggle]');
+  dagRenderFocus(mode === 'graph' ? dagWindowFrame().collapsed ? '.graph-window-menu summary' : '[data-dag-viewport]' : '[data-act=dag-view-toggle]');
 };
 actions['dag-focus-photo'] = () => { const image = $('.edit-image'); if (image) { image.tabIndex = 0; image.focus({preventScroll:true}); } };
 changes.dagNode = el => dagSelect(el.value);
@@ -409,13 +415,15 @@ actions['dag-solo'] = () => {
   if (state.solo) state.solo = null;
   else if (!S.dagConnectionDraft && dagSoloCandidate(node)) { state.solo = node.id; state.bypass = false; dagView().target = null; }
   else return;
-  dagRenderFocus('[data-act=dag-solo]');
+  if(sheet.open)closeSheet();
+  dagRenderFocus($('.graph-text-tools') ? '.graph-text-tools [data-act=dag-menu]' : '[data-act=dag-solo]');
 };
 actions['dag-preview-bypass'] = () => {
   const state = dagPreviewState();
   if (S.dagConnectionDraft && !state.bypass) return;
   state.bypass = !state.bypass; state.solo = null; dagView().target = null;
-  dagRenderFocus('[data-act=dag-preview-bypass]');
+  if(sheet.open)closeSheet();
+  dagRenderFocus($('.graph-text-tools') ? '.graph-text-tools [data-act=dag-menu]' : '[data-act=dag-preview-bypass]');
 };
 actions['dag-monitor'] = () => { if (sheet.open) closeSheet(); dagView().monitor = !dagView().monitor; dagRenderFocus('.dag-commandbar [data-act=dag-monitor]'); };
 function dagContextMenu(event) {
@@ -473,7 +481,7 @@ actions['dag-context-run'] = (value, event, button) => {
 };
 actions['dag-menu'] = () => {
   dagEnsure(); const n = dagNode(), v = dagView(), many = v.selection.length > 1, single = v.selection.length === 1, fixed = !n || ['source','geometry','output'].includes(n.kind), editable = v.selection.some(id=>dagCurrent().nodes.some(node=>node.id===id&&!['source','geometry','output'].includes(node.kind)));
-  dialog(many ? '管理 ' + v.selection.length + ' 个节点' : '节点操作 · ' + (n?.name || '工作流'), `<div class="dag-menu-grid">${btn('重命名…','dag-rename','',{disabled:!single||fixed})}${btn('复制并插入','dag-duplicate','',{disabled:!single||n?.kind!=='grade'})}${btn('粘贴参数','dag-paste-attributes','',{disabled:!single||n?.kind!=='grade'||!S.dagClipboard?.nodes.some(node=>node.kind==='grade')})}${btn('复位本节点','dag-reset','',{disabled:!single||n?.kind!=='grade'})}${btn('查看此节点输出','dag-preview','',{disabled:!single||!n})}${btn('删除','dag-delete','',{disabled:!editable})}</div><details class="dag-menu-advanced"><summary>高级图操作</summary><div class="dag-menu-grid">${btn('复制节点','dag-copy','',{disabled:!editable})}${btn('粘贴节点','dag-paste','',{disabled:!S.dagClipboard})}${btn('成组','dag-group','',{disabled:!editable})}${btn('解组','dag-ungroup','',{disabled:!single||n?.kind!=='group'})}${btn('编辑连接…','dag-connect-menu')}${btn(v.monitor?'隐藏结果监看':'显示结果监看','dag-monitor')}${btn('自动整理','dag-layout')}${btn('复位调色参数，保留节点','dag-reset-grades')}${btn('切换忽略全部调色节点','dag-bypass-all')}${btn('保存整个工作流…','dag-template-save','whole')}${btn('应用模板到本张…','dag-template-library','',{disabled:!Studio.data.dagTemplates?.length})}${btn('评审场景与模拟状态','dag-review')}</div></details>`,btn('关闭','close'));
+  dialog(many ? '管理 ' + v.selection.length + ' 个节点' : '节点操作 · ' + (n?.name || '工作流'), `<div class="dag-menu-grid">${btn('重命名…','dag-rename','',{disabled:!single||fixed})}${btn('复制并插入','dag-duplicate','',{disabled:!single||n?.kind!=='grade'})}${btn('粘贴参数','dag-paste-attributes','',{disabled:!single||n?.kind!=='grade'||!S.dagClipboard?.nodes.some(node=>node.kind==='grade')})}${btn('复位本节点','dag-reset','',{disabled:!single||n?.kind!=='grade'})}${btn('查看此节点输出','dag-preview','',{disabled:!single||!n})}${btn('删除','dag-delete','',{disabled:!editable})}</div><details class="dag-menu-advanced"><summary>高级图操作</summary><div class="dag-menu-grid">${btn('Solo 调色节点','dag-solo','',{disabled:!dagSoloCandidate(n)})}${btn('旁路全部调色（仅查看）','dag-preview-bypass')}${btn('复制节点','dag-copy','',{disabled:!editable})}${btn('粘贴节点','dag-paste','',{disabled:!S.dagClipboard})}${btn('成组','dag-group','',{disabled:!editable})}${btn('解组','dag-ungroup','',{disabled:!single||n?.kind!=='group'})}${btn('编辑连接…','dag-connect-menu')}${btn(v.monitor?'隐藏结果监看':'显示结果监看','dag-monitor')}${btn('自动整理','dag-layout')}${btn('复位调色参数，保留节点','dag-reset-grades')}${btn('切换忽略全部调色节点','dag-bypass-all')}${btn('保存整个工作流…','dag-template-save','whole')}${btn('应用模板到本张…','dag-template-library','',{disabled:!Studio.data.dagTemplates?.length})}${btn('评审场景与模拟状态','dag-review')}</div></details>`,btn('关闭','close'));
 };
 actions['dag-add-menu'] = () => {
   dagEnsure(); const node=dagNode(),single=dagView().selection.length===1;
@@ -876,7 +884,7 @@ document.addEventListener('pointerdown', event => {
   if (node && event.target.closest('button:not(.dag-node-title)')) return;
   if (!node && event.target.closest('.dag-wire')) return;
   const transform = dagTransform();
-  dagPointer = { kind: dagSpace || event.button === 1 ? 'pan' : node ? 'node' : 'marquee', id: node?.dataset.dagCard, startX: event.clientX, startY: event.clientY, origin: { ...transform }, moved: false, viewport, rect: viewport.getBoundingClientRect(), additive: event.shiftKey || event.ctrlKey || event.metaKey };
+  dagPointer = { kind: dagSpace || event.button === 1 || !node && !event.shiftKey ? 'pan' : node ? 'node' : 'marquee', id: node?.dataset.dagCard, startX: event.clientX, startY: event.clientY, origin: { ...transform }, moved: false, viewport, rect: viewport.getBoundingClientRect(), additive: event.shiftKey || event.ctrlKey || event.metaKey };
   if (node) { const n = dagCurrent().nodes.find(n => n.id === dagPointer.id); dagPointer.position = { ...dagPosition(n, dagCurrent().nodes.indexOf(n)) }; }
   viewport.setPointerCapture(event.pointerId); if (dagPointer.kind === 'pan') event.preventDefault();
 });

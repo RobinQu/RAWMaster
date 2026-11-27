@@ -23,6 +23,14 @@ struct EditingDevelopmentCropFrame {
     }
     var body: some View {
         ZStack {
+            if editing.recipe.sceneGraph != nil {
+                EditingSceneCanvas(frame: editing.sceneFrame, target: editing.sceneTarget, requestHDR: editing.sceneRequestedHDR && !editing.sceneVisualizeHDR,
+                    fitInsets: EditingLayout.fitInsets, transform: $transform, onDisplay: editing.setSceneDisplay,
+                    onSampling: editing.setSceneSampling, onPresentationError: editing.scenePresentationFailed,
+                    onPhotographicPointer: interaction.pointer, onPhotographicViewport: interaction.scheduleViewport,
+                    onPhotographicDoubleClick: { editing.completeDevelopmentCrop(context: context) })
+                    .accessibilityLabel("裁切画布")
+            } else {
             ZoomableImageView(image: editing.preview, actualPixels: false, transform: $transform, backgroundColor: editing.darkroomBackground.nsColor,
                 frameID: editing.previews.primary.frame?.id, onFrameDrawn: { editing.previews.primary.didDraw($0) },
                 onPointerEvent: interaction.pointer, onViewportChange: interaction.scheduleViewport,
@@ -31,6 +39,7 @@ struct EditingDevelopmentCropFrame {
                 .fitting(around: EditingLayout.fitInsets)
                 .accessibilityLabel("裁切画布")
                 .accessibilityHint("拖动边角调整范围，框内移动，框外拉直。也可使用右侧裁切比例、拉直和精确位置数值。")
+            }
             if let presentation = interaction.overlayPresentation() {
                 overlay(presentation.viewport, frame: presentation.frame)
             }

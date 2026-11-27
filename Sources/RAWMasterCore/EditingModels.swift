@@ -131,8 +131,9 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
     guard data.count <= metadataLimit + 2 * maximumSlots * DevelopmentColorLUT.maximumCubeBytes,
           data.range(of: Data(("\"" + DevelopmentColorLUT.payloadKey + "\"").utf8)) != nil else { throw EditingError.invalidRecipe }
     let recipe = try JSONDecoder().decode(Self.self, from: data)
-    let global = recipe.adjustmentsV3?.gradingLUTs?.layers ?? []
-    let local = recipe.adjustmentsV3?.masks.compactMap { $0.adjustments.gradingLUT } ?? []
+    let photographic = recipe.sceneGraph?.photographic ?? recipe.adjustmentsV3
+    let global = photographic?.gradingLUTs?.layers ?? []
+    let local = photographic?.masks.compactMap { $0.adjustments.gradingLUT } ?? []
     let tableBytes = (global + local).reduce(0) { $0 + $1.cube.rgb.count }
     guard data.count <= metadataLimit + 2 * tableBytes else { throw EditingError.invalidRecipe }
     return recipe

@@ -39,8 +39,8 @@ enum DevelopmentDehazeAnalysisV3 {
     try cancellation?.check()
     let p=try projection(request)
     guard p.input.context==current else { throw DevelopmentDehazePreparationError.staleInput }
-    let graph=try DevelopmentRendererV3.develop(capture,recipe:p.samplingRecipe,applyGeometry:false,context:context,
-      preparingDehazeContext:current,checkCancellation:{ try cancellation?.check() })
+    let graph=try request.measurementGraph(capture,recipe:p.samplingRecipe,context:context,
+      preparingDehaze:current,checkCancellation:{ try cancellation?.check() })
     guard graph.sourceSize==CGSize(width:current.source.orientedWidth,height:current.source.orientedHeight),
       graph.image.extent==CGRect(x:0,y:0,width:current.source.orientedWidth,height:current.source.orientedHeight) else { throw DevelopmentV3Error.invalidGraph }
     try DevelopmentColorEngineV3.validateFinite(graph.image,context:context,checkCancellation:{ try cancellation?.check() })

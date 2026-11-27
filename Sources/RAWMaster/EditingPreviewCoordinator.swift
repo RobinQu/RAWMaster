@@ -155,9 +155,11 @@ struct EditingPreviewIntent: Sendable, Equatable {
     let quality: PreviewQuality
     let draftPresentation: EditingDraftPresentation?
     let presentationID: String
+    let sourceFactsOnly: Bool
     var isRaw: Bool { if case .raw = source { return true }; return false }
     let viewport: PreviewViewport
-    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed", detailWindow: CGRect? = nil, detailScale: CGFloat? = nil) throws {
+    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed", detailWindow: CGRect? = nil, detailScale: CGFloat? = nil, sourceFactsOnly: Bool = false) throws {
+        self.sourceFactsOnly = sourceFactsOnly
         viewport = .init(maxPixel: quality == .detail ? 0 : 2400,
                          window: quality == .detail ? detailWindow : nil,
                          detailScale: quality == .detail ? detailScale : nil)
@@ -167,7 +169,7 @@ struct EditingPreviewIntent: Sendable, Equatable {
         case .artifact(let url, let artifact): sourceKey = "artifact:" + url.path + ":" + (try EditingFingerprint.of(artifact))
         }
     }
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID && lhs.viewport == rhs.viewport }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID && lhs.viewport == rhs.viewport && lhs.sourceFactsOnly == rhs.sourceFactsOnly }
 }
 /// QA-only scheduling change. The existing canonical capability still decides the image domain.
 enum EditingPreviewPromptDispatch {
@@ -496,7 +498,7 @@ enum EditingPreviewPromptDispatch {
         if sourceInvalidated && desired?.intent.sourceKey == next.sourceKey {
             diagnoseNoRender(input, quality: next.quality, outcome: "blocked", reason: "source-invalidated"); return
         }
-        guard next != desired?.intent || (frame == nil && (legacy == nil || legacyFinished) && channel == nil) || suspendedAfterRevalidation || blockedAfterError else {
+        guard next != desired?.intent || (!next.sourceFactsOnly && frame == nil && (legacy == nil || legacyFinished) && channel == nil) || suspendedAfterRevalidation || blockedAfterError else {
             channel?.noteActivity()
             diagnoseNoRender(input, quality: next.quality, outcome: duplicateReason ?? "deduplicated", reason: "unchanged-pixels"); return
         }
@@ -575,6 +577,12 @@ enum EditingPreviewPromptDispatch {
                 continue
             }
             guard let info = lease else { continue }
+            if target.intent.sourceFactsOnly {
+                if channel != nil || reader != nil || legacy != nil { await retireRenderer() }
+                guard desired?.revision == target.revision else { continue }
+                if rendering { rendering = false; onChange?() }
+                return
+            }
             if usesProgress(target.intent) {
                 if channel == nil || channelEpoch != target.epoch || channelFence != Fence(target.intent) {
                     await retireRenderer()

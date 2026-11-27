@@ -545,6 +545,8 @@ function render() {
       root.querySelector('.edit-page')?.dataset.photo === Studio.data.work
         ? $$('.canvas-fit').map((fit) => [fit.scrollLeft, fit.scrollTop])
         : [];
+  const noticeHost = S.page === 'edit' && root.querySelector('.edit-page')?.dataset.photo === Studio.data.work
+    ? root.querySelector('.editor-notices') : null;
   root.innerHTML =
     S.page === 'library'
       ? libraryView()
@@ -553,6 +555,11 @@ function render() {
         : S.page === 'jobs'
           ? jobsView()
           : toolView();
+  if (noticeHost) {
+    const replacement=root.querySelector('.editor-notices');
+    if (replacement && noticeHost.firstElementChild?.dataset.noticeId===replacement.firstElementChild?.dataset.noticeId) replacement.replaceWith(noticeHost);
+  }
+  if (S.page === 'edit') PhotographicScopes.drawImagePreview();
   if (S.renderRoute === location.hash) {
     const scroll = root.querySelector('.photos-scroll'),
       ins = root.querySelector('.inspector,.inspector-content');
@@ -678,7 +685,7 @@ document.addEventListener('keydown', (event) => {
       actions['canvas-nav'](key === 'arrowleft' ? 'previous' : 'next');
     } else if (['-', '=', '+', 'z'].includes(key)) {
       event.preventDefault();
-      actions['edit-zoom'](key === 'z' ? 'pixels' : key === '-' ? 'out' : 'in');
+      actions['edit-zoom'](key === 'z' ? (S.pixelView ? 'fit' : 'pixels') : key === '-' ? 'out' : 'in');
     } else if (key === 'c') actions['canvas-crop']();
     else if (key === 'v') actions['edit-compare']();
     else if (key === 'b') {

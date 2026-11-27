@@ -50,7 +50,7 @@ struct EditingLeftSidebar: View {
     }
 
     @ViewBuilder private var content: some View {
-        if let context = editing.developmentPresentationContext, let work = editing.work {
+        if editing.recipe.sceneGraph == nil, let context = editing.developmentPresentationContext, let work = editing.work {
             let session = editing.developmentSession
             ScrollViewReader { proxy in
                 ScrollView {

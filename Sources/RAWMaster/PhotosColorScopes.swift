@@ -52,7 +52,7 @@ struct PhotosColorScopes: View {
                 }.font(.caption2).accessibilityIdentifier("photos.scopes.mask")
             }
             if vectorscope {
-                let hdrTarget = isScene && editing.sceneRequestedHDR
+                let hdrTarget = isScene && (editing.sceneRequestedHDR || editing.sceneVisualizeHDR)
                 let waiting = isScene ? scene.report == nil : editing.developmentHistogram == nil
                 PhotosVectorscope(histogram: isScene ? nil : editing.developmentHistogram,
                     skinIndicator: skinIndicator, redAtThree: redAtThree,
@@ -78,8 +78,8 @@ struct PhotosColorScopes: View {
                     Toggle("红色在三点钟", isOn: $redAtThree)
                 }.toggleStyle(PhotosFlatCheckboxStyle()).font(.caption2).frame(maxWidth: .infinity, alignment: .leading)
             } else if isScene {
-                let stage: DevelopmentSceneScopesV1.Stage = editing.sceneRequestedHDR ? .target : .derivative
-                EditingSceneHistogram(plot: stage == .target ? scene.report?.targetPlot : scene.report?.derivativePlot, stage: stage,
+                let stage: DevelopmentSceneScopesV1.Stage = editing.sceneRequestedHDR || editing.sceneVisualizeHDR ? .target : .derivative
+                EditingSceneHistogram(editing: editing, plot: stage == .target ? scene.report?.targetPlot : scene.report?.derivativePlot, stage: stage,
                     headroom: Float(editing.sceneHeadroom), limitEV: editing.visibleSceneGraph?.output.hdrHighlightLimitEV,
                     failure: scene.failure, retry: editing.retrySceneScopes)
             } else {
@@ -91,8 +91,9 @@ struct PhotosColorScopes: View {
             }
             if !isScene { PhotosColorReadoutView(readout: editing.colorReadout) }
             if let context = editing.developmentContext {
-                PhotosColorSamplerRows(samplers: editing.colorSamplers, frame: editing.previews.primary.frame,
-                                       mapping: editing.presentedSamplerMapping) { index in
+                PhotosColorSamplerRows(samplers: editing.colorSamplers, frame: isScene ? nil : editing.previews.primary.frame,
+                    mapping: editing.presentedSamplerMapping, showsScene: isScene, sceneFrame: editing.sceneSamplerFrame,
+                    visualizingHDR: isScene && editing.sceneVisualizeHDR) { index in
                     editing.beginDevelopmentPicker(.colorSampler(replacing: index), context: context)
                 }
             }

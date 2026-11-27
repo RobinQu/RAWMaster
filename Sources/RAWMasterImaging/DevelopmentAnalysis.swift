@@ -39,6 +39,7 @@ public enum DevelopmentAnalysisSampling: Equatable, Sendable {
 }
 
 public struct DevelopmentAnalysisRequest: Sendable {
+  package var photographicScene: DevelopmentSceneGraphV1?
   public let sampling: DevelopmentAnalysisSampling
   public let cropAutoInputV1: DevelopmentCropAutoInputV1?
   public let localInputV1: DevelopmentLocalInputV1?
@@ -65,6 +66,30 @@ public struct DevelopmentAnalysisRequest: Sendable {
   /// Includes the active Photo Filter resource identity, where applicable.
   public func matchesSamplingVersion(_ actual: String) throws -> Bool {
     actual == (try DevelopmentAnalysisEngine.validatedSamplingVersion(self))
+  }
+  /// Every operation reads the same calibrated, full-size native domain as the parameters it resolves.
+  func measurementGraph(_ capture: URL, recipe: DevelopmentRecipe, context: CIContext,
+                        localDecoder: String? = nil, preparingLocal: Bool = false,
+                        preparingDehaze: DevelopmentDehazeContextV1? = nil, preparingNatural: Bool = false,
+                        legacy: Bool = false, residentInput: DevelopmentBWSummaryResidentV3.Input? = nil,
+                        checkCancellation: @escaping () throws -> Void) throws -> DevelopedV3Graph {
+    guard let scene = photographicScene else {
+      return try DevelopmentRendererV3.develop(capture, recipe: recipe, applyGeometry: false, context: context,
+        localDecoderContractFingerprint: localDecoder, preparingLocal: preparingLocal, preparingDehazeContext: preparingDehaze,
+        preparingNaturalCurvePicker: preparingNatural, analysisOwnsLegacyValidationContext: legacy,
+        analysisResidentInput: residentInput, checkCancellation: checkCancellation)
+    }
+    try checkCancellation()
+    guard let parameters = recipe.adjustmentsV3, let device = MTLCreateSystemDefaultDevice(),
+          sampling == .legacy, residentInput == nil else { throw DevelopmentV3Error.unsupportedAnalysis }
+    let decoder = try DevelopmentSceneRAWV1(device: device), mosaic = try decoder.prepare(capture)
+    let model = try scene.models.map { program in
+      try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: decoder,
+        provider: DevelopmentSceneProductionModelProvider(device: device), budget: 440 << 20)
+    }
+    return try DevelopmentScenePhotographicV1(parameters, capture: capture, mosaic: mosaic, decoder: decoder,
+      modeled: model?.native.image, applyGeometry: false, preparingLocal: preparingLocal,
+      preparingDehaze: preparingDehaze, preparingNaturalCurve: preparingNatural, cancellation: checkCancellation).workingGraph
   }
   func validateSamplingChoice() throws {
     if sampling.usesBlackAndWhiteStripes {
@@ -269,9 +294,12 @@ enum DevelopmentAnalysisEngine {
     switch request.operation {
     case .automatic(let group): if let group, ![.light,.color,.blackAndWhite,.curves,.levels,.definition,.noiseReduction,.sharpen,.vignette].contains(group) { throw DevelopmentV3Error.unsupportedAnalysis }
     default: break }
-    let sampling = try samplingRecipe(request), fingerprint = try EditingFingerprint.of(sampling)
+    let sampling = try samplingRecipe(request)
+    let fingerprint = try EditingFingerprint.of(sampling)
     let filterIdentity = try DevelopmentPhotoFilterEngineV3.activeResourceIdentity(sampling)
     let effectiveVersion = resultSamplingVersion(request, filterIdentity: filterIdentity)
+    let sceneIdentity = try request.photographicScene.map { try EditingFingerprint.of($0.models) }
+    let cacheFingerprint = sceneIdentity.map { fingerprint + "/scene-f32/" + $0 } ?? fingerprint
     let retainsImage: Bool
     switch request.operation {
     case .automatic, .automaticLight, .curvePicker, .whiteBalanceAutomatic, .selectiveColorPicker, .defringePicker, .pointColorPicker: retainsImage = true
@@ -287,7 +315,7 @@ enum DevelopmentAnalysisEngine {
     cacheable.light = parameters.light; cacheable.color = parameters.color; cacheable.whiteBalance = parameters.whiteBalance
     cacheable.curves = parameters.curves; cacheable.rawDetails = parameters.rawDetails
     let images = retainsImage && request.sampling == .legacy && parameters.rawDecoder == .flashRaw031 &&
-      cacheable == parameters && pixels <= maximumPixels ? analysisImages : nil
+      cacheable == parameters && pixels <= maximumPixels && sceneIdentity == nil ? analysisImages : nil
     let imageEpoch = images?.currentEpoch
     let context = images?.context(memoryHint:memoryHint) ?? CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
     defer { if images == nil { context.clearCaches() } }
@@ -299,8 +327,8 @@ enum DevelopmentAnalysisEngine {
       filterResource:filterIdentity,graphKind:natural ? "pre-natural-curves" : (ownLegacy ? "owned-legacy" : "working"))
     func stillCurrent() throws { try cancellation?.check(); try Task.checkCancellation(); try sourceAuthority?() }
     func samplingImage() throws -> CIImage {
-      let build = { try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,
-        preparingNaturalCurvePicker:natural,analysisOwnsLegacyValidationContext:ownLegacy,analysisResidentInput:residentInput,
+      let build = { try request.measurementGraph(capture, recipe:sampling, context:context,
+        preparingNatural:natural, legacy:ownLegacy, residentInput:residentInput,
         checkCancellation:{ try cancellation?.check(); try residentInput?.requireCurrent() }).image }
       if let images { return try images.image(for:key,validate:stillCurrent,build:build) }
       return try build()
@@ -311,7 +339,7 @@ enum DevelopmentAnalysisEngine {
     var localReceipt: DevelopmentLocalPixelAttestation?
     if case .cropAutomatic = request.operation {
       guard let input = request.cropAutoInputV1 else { throw DevelopmentPreviewError.invalidRequest }
-      let graph = try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,checkCancellation:{ try cancellation?.check() })
+      let graph = try request.measurementGraph(capture,recipe:sampling,context:context,checkCancellation:{ try cancellation?.check() })
       value = .geometry(try DevelopmentCropAutoV1.resolve(image:graph.image,request:request,source:sourceBinding,input:input,context:context,checkCancellation:{ try cancellation?.check() }))
     } else if case .prepareDehaze=request.operation {
       guard let actual=dehazeContext,actual.source==sourceBinding else { throw DevelopmentDehazePreparationError.missingContext }
@@ -370,13 +398,13 @@ enum DevelopmentAnalysisEngine {
       }
     } else {
       let scalars: DevelopmentAnalysisScalars
-      if let entry = cache, entry.matches(recipeFingerprint:fingerprint,stage:request.stage,roi:request.roi,filterResourceIdentity:filterIdentity,samplingVersion:effectiveVersion,residentIdentity:residentInput?.identity) {
+      if let entry = cache, entry.matches(recipeFingerprint:cacheFingerprint,stage:request.stage,roi:request.roi,filterResourceIdentity:filterIdentity,samplingVersion:effectiveVersion,residentIdentity:residentInput?.identity) {
         try residentInput?.willPublish(cacheHit: true); scalars = entry.scalars
       }
       else if let previous = images?.scalars(for:key,roi:request.roi) { try stillCurrent(); scalars = previous }
       else {
         scalars = try analyzePixels(samplingImage(),roi:request.roi,context:context,sampling:request.sampling,cancellation:cancellation)
-        let entry = DevelopmentAnalysisCacheEntry(recipeFingerprint:fingerprint,stage:request.stage,roi:request.roi,
+        let entry = DevelopmentAnalysisCacheEntry(recipeFingerprint:cacheFingerprint,stage:request.stage,roi:request.roi,
           scalars:scalars,filterResourceIdentity:filterIdentity,samplingVersion:effectiveVersion,residentIdentity:residentInput?.identity)
         try residentInput?.willPublish(cacheHit: false)
         if request.sampling.usesBlackAndWhiteStripes {

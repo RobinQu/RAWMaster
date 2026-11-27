@@ -6,6 +6,8 @@
 
 前一轮以 Sony ILCE-7RM5 的 9504 × 6336 原片复验原生编辑、显式保存旧候选、全尺寸双格式交付与重开后逐项读取的 Rust 执行回执。工作台初次分页和选区恢复也进入签名包走查。[安装包与实拍回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json) · [成像与内存测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
 
+本轮在 `7e91aa47` 的资料库虚拟副本、命名快照和 032 选片上继续。摄影调整随每一份呈现持久化。HDR 把白平衡、光照、颜色、几何等摄影操作在经校准的浮点输入上执行，再由原生 Metal 纹理交给 Rust DAG。两条输出共用最终根，诊断伪色只进入显示。9504 × 6336 实拍冻结后分别交付 PQ AVIF 和 SDR JPEG，每份 35 块，图执行峰值 1,458,929,664 字节，预算 1,610,612,736 字节。票据的 `backend=mixed`、`dagBackend=rust` 和摄影引擎名分别描述实际执行者。[原寸成片与资源回执](../037-color-film-hdr/evidence/2026-11-27-photographic-60mp.json) · [三种外观与图窗](../025-editing-workspace/appearance-parity.md) · [同源多份修图的实拍验收](../025-editing-workspace/virtual-copies.md#原生复验)
+
 ## 规格归属
 
 | 规格 | 负责的契约 |
@@ -24,7 +26,7 @@
 | 路径 | `main` 已实现 | 尚缺的产品证据或接线 |
 | --- | --- | --- |
 | 旧显影 | v1–v3 等价回放、Core Image／Metal 产品路径，035 部分 Rust 算子可重放，部分通过 QA 开关接入预览。旧 Graph 是只读兼容投影。 | 035 Batch 34 的 161 个控件 ID 有封存证据。首次精确、定稿及缩放平移在同包正式复验中仍超门。控件记录不证明 Rust 路径已接管。 [035 发布复验](acceptance.md#同一封存构建的两次正式运行) · [旧配方验证](../038-node-dag-workflow/validation.md#原生兼容图与冻结-sdr-导出) |
-| 场景显影与 DAG | 已准入的 Bayer ARW 可创建 v4 场景草稿。可编辑 Graph 已有串行、Parallel、Layer、组、连接草案、监看、模板和批量候选。本阶段检查器有曝光、强度和混合等参数。 | 九类调色、画布工具及来源绑定资产仍需逐项接入。组内监看的实际后端可从预览帧回执核对。20／200 张验过候选事务，主要样本是同一 RAW 的多目标身份。异源整批成片、实际窗口指针操作及 VoiceOver 未签收。 [038 原生图](../038-node-dag-workflow/validation.md#原生可编辑-graph) · [候选批次](../038-node-dag-workflow/validation.md#原生模板与可恢复批量) |
+| 场景显影与 DAG | 已准入的 Bayer ARW 可创建 v4 场景草稿。可编辑 Graph 已有串行、Parallel、Layer、组、连接草案、监看、模板和批量候选。本阶段检查器有曝光、强度和混合等参数。 | 整幅摄影调整已接到预览、示波器和全尺寸导出。节点级调色、绑定到来源的模型遮罩与几何组合，仍需分别验证作用域。组内监看的实际后端可从预览帧回执核对。20／200 张验过候选事务，主要样本是同一 RAW 的多目标身份。两种图窗的标题拖动、边缘缩放与关闭还焦已有原生记录。异源整批成片与 VoiceOver 人工读屏仍待签收。 [038 原生图](../038-node-dag-workflow/validation.md#原生可编辑-graph) · [候选批次](../038-node-dag-workflow/validation.md#原生模板与可恢复批量) |
 | HDR 显示与输出 | 固定 ACES 2 输出，浮点 `CAMetalLayer`，有限的示波器和诊断，032 的 SDR JPEG／PNG 和全尺寸 10 位 Rec.2020/PQ AVIF。已有两张固定 ARW 的 PQ 进程中断、恢复和独立回读证据。 | 实际屏幕余量的数值测试、绘制完成和文件回读分别验证不同环节。签名包已完成 HDR↔SDR 跨屏。亮度变化、比较、FIT／1:1、真实客户端观片和多目标／卷恢复仍需独立验收。 [037 验收](../037-color-film-hdr/validation.md) · [EDR 数值测试](../../Tests/RAWMasterImagingTests/DevelopmentSceneEDRCrossScreenTests.swift) |
 | Rust 场景执行 | 顶层、组内和最终图可在 Rust Metal 上执行。预览帧、示波器结果和 032 队列的已准备／已交付条目分别保存本次求值的回执。 | 9504×6336 实片已用产品预算验证。强制 Rust 暴露并修复了零权重分支和长链多分配一幅纹理的问题。继续逐项量化兼容算子、模型及编码的实际工作集。 [60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [039 性能与边界](../039-rust-scene-backend/validation.md) |
 | 确定性模型 | v4 配方支持图文档 v2，冻结模型阶段、参数、算法标识及顺序。无模型的旧图继续使用图文档 v1。预览、示波器和冻结交付读同一份模型程序。 | PhotoVGG7、PhotoUpconv7、Vision 和可选 EfficientViT 各有独立资源要求。缺资源和超出全图模型预算须给出明确原因。不同模型的大图作用尺度和额外算子按实测逐项放行。 [配方](../../Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift) · [场景模型](../../Sources/RAWMasterCore/DevelopmentSceneModelV1.swift) |
@@ -40,7 +42,8 @@
 ```mermaid
 flowchart LR
   RAW[已校准 RAW] --> AP1[场景线性 ACEScg AP1]
-  AP1 --> DAG[模型前缀和 038 DAG]
+  AP1 --> PREFIX[按冻结配方运行模型与摄影调整]
+  PREFIX --> DAG[038 DAG]
   DAG --> FINAL[冻结最终根]
   DAG --> VIEW[最终预览或临时监看]
   FINAL --> OUT[每目标一次成像变换]
