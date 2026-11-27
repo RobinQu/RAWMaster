@@ -22,7 +22,7 @@ struct PhotosCropPanel: View {
             HStack(spacing: 12) {
                 Button {
                     do { try editing.resetDevelopmentCrop(context: context) }
-                    catch { editing.message = "复位裁切未完成，请检查当前编辑状态。" }
+                    catch { editing.reportPhotographicControlError(error, fallback: "复位裁切未完成，请检查当前编辑状态。") }
                 } label: { Label("复位", systemImage: "arrow.counterclockwise") }
                     .buttonStyle(.borderless).frame(maxWidth: .infinity)
                     .accessibilityIdentifier("photos.crop.reset")
@@ -207,7 +207,11 @@ struct PhotosGeometryControls: View {
         perform { try editing.setDevelopmentCropConstraint(value, context: context) }
     }
     private func perform(_ action: () throws -> Void) {
-        do { try action() } catch { if session.context == context { editing.message = "裁切未应用，请检查当前数值或等待预览。" } }
+        do { try action() }
+        catch {
+            guard session.context == context else { return }
+            editing.reportPhotographicControlError(error, fallback: "裁切未应用，请检查当前数值或等待预览。")
+        }
     }
 }
 
@@ -231,19 +235,22 @@ private struct PhotosGeometryValueRow: View {
             if range.lowerBound < range.upperBound {
                 Slider(value: .init(get: { value }, set: { change($0, gesture: token) }), in: range, step: step, onEditingChanged: { active in
                     if active {
-                        do { token = try session.beginGesture(.init(group: nil, name: control), context: context) } catch { report() }
+                        do { token = try session.beginGesture(.init(group: nil, name: control), context: context) } catch { report(error) }
                     } else { finish() }
                 }).accessibilityLabel(title)
             }
         }.onDisappear { finish() }
     }
     private func change(_ value: Double, gesture: EditingGestureToken?) {
-        do { try session.validateInteraction(context, gesture: gesture); try apply(value, gesture) } catch { report() }
+        do { try session.validateInteraction(context, gesture: gesture); try apply(value, gesture) } catch { report(error) }
     }
     private func finish() {
         guard let token else { return }; self.token = nil
         guard session.context == context, session.activeGesture == token else { return }
-        do { try session.endGesture(token, .commit) } catch { report() }
+        do { try session.endGesture(token, .commit) } catch { report(error) }
     }
-    private func report() { if session.context == context { editing.message = "裁切数值无效，已保留此前调整。" } }
+    private func report(_ error: Error) {
+        guard session.context == context else { return }
+        editing.reportPhotographicControlError(error, fallback: "裁切数值无效，已保留此前调整。")
+    }
 }

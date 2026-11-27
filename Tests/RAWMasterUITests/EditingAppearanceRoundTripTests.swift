@@ -141,11 +141,28 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             print("appearance ARW 4000×6000 · samples \(report.size.x)×\(report.size.y) · AP1 max \(sceneMaximum) · capped Rec.2020 max \(targetMaximum) · target/derivative occupied chroma bins \(report.targetPlot.chroma.filter { $0 > 0 }.count)/\(report.derivativePlot.chroma.filter { $0 > 0 }.count)")
             let workID = try XCTUnwrap(editor.work?.id)
             try await wait { (try? store.photoWork(id: workID).liveAlternateAppearance?.recipe) == sdr }
+            typealias Graph = DevelopmentSceneGraphV1
+            let model = DevelopmentSceneModelStageV1.segmentation(.subject)
+            let coverage = Graph.Node(name: "主体", operation: .externalCoverage(id: model.id))
+            let bound = Graph.Node(name: "前景曝光", operation: .corrector(image: .input, mask: coverage.id, exposureEV: 1,
+                curve: [], strength: 1, enabled: true))
+            var previousSettings = DevelopmentAdjustmentsV3()
+            previousSettings.geometry.crop = .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8)
+            let oldGraph = try Graph(graph: .init(nodes: [bound, coverage], output: .node(bound.id)),
+                output: XCTUnwrap(hdr.sceneGraph?.output), models: .init(stages: [model]), photographic: previousSettings)
+            let incompatibleID = UUID(), parentID = try XCTUnwrap(editor.draftParentID)
+            _ = try store.updateDevelopmentSnapshots(in: .init(workID: workID, parentVersionID: parentID, appearance: .hdr),
+                .create(id: incompatibleID, name: "旧的几何与模型蒙版", createdAt: Date(), recipe: .init(sceneGraph: oldGraph), adoptions: nil))
             await editor.shutdown()
             editor = try EditingController(store: LibraryStore(databaseURL: db), libraryURL: db, defaults: defaults)
             try await open()
             XCTAssertEqual(editor.recipe, hdr)
-            XCTAssertEqual(editor.sceneSnapshots.map(\.id), [sceneSnapshotID])
+            XCTAssertEqual(editor.sceneSnapshots.map(\.id), [sceneSnapshotID, incompatibleID])
+            editor.restoreSceneSnapshot(incompatibleID, ticket: try XCTUnwrap(editor.sceneTicket))
+            XCTAssertEqual(editor.recipe, hdr)
+            XCTAssertTrue(editor.message?.contains("模型蒙版") == true)
+            XCTAssertEqual(try store.photoWork(id: workID).liveRecipe, hdr)
+            editor.updateSceneSnapshot(incompatibleID, name: nil, ticket: try XCTUnwrap(editor.sceneTicket))
             XCTAssertEqual(editor.sceneSnapshots.first?.name, "雪地高光")
             XCTAssertEqual(editor.sceneSnapshots.first?.recipe, hdr)
             editor.setSceneHighlightLimit(1, ticket: try XCTUnwrap(editor.sceneTicket))

@@ -4733,8 +4733,9 @@ extension EditingController {
             guard self.sceneTicket == ticket else { return }
             switch result {
             case .success:
-                self.applySceneCommit(.init(sceneGraph: graph))
-                if entering { self.postNotice("已进入 HDR 编辑模式。") }
+                if self.applySceneCommit(.init(sceneGraph: graph)), entering {
+                    self.postNotice("已进入 HDR 编辑模式。")
+                }
             case .failure(let error):
                 self.postNotice(error.localizedDescription, kind: .error, action: entering ? .enterScene : nil)
             }
@@ -4831,6 +4832,13 @@ extension EditingController {
             throw error
         }
     }
+
+    func reportPhotographicControlError(_ error: Error, fallback: String) {
+        // Scene admission publishes its actionable reason before rejecting the edit.
+        guard !(error is DevelopmentSceneGraphV1.PhotographicCoverageMisalignment) else { return }
+        message = fallback
+    }
+
     @discardableResult private func applySceneCommit(_ next: DevelopmentRecipe) -> Bool {
         guard next != recipe else { return false }
         if let graph = next.sceneGraph {

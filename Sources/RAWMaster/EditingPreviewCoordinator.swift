@@ -336,7 +336,15 @@ enum EditingPreviewPromptDispatch {
     func developmentSourceContext() async throws -> EditingPreviewSourceContext {
         guard canInspectDevelopmentSource, let lease, let target = desired,
               case .raw(let source) = target.intent.source else { throw DevelopmentPreviewError.closed }
-        let facts = try await backend.sourceFacts(lease)
+        let facts: DevelopmentSourceFacts
+        do {
+            facts = try await backend.sourceFacts(lease)
+        } catch {
+            try Task.checkCancellation()
+            guard self.lease?.id == lease.id, self.lease?.generation == lease.generation,
+                  desired?.intent.sourceKey == target.intent.sourceKey else { throw DevelopmentPreviewError.superseded }
+            throw error
+        }
         try Task.checkCancellation()
         guard canInspectDevelopmentSource, self.lease?.id == lease.id, self.lease?.generation == lease.generation,
               desired?.intent.sourceKey == target.intent.sourceKey, facts.sourceGeneration == lease.generation,

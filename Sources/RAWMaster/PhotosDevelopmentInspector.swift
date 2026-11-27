@@ -416,7 +416,7 @@ private struct PhotosDevelopmentContent: View {
 
     private func report(_ error: Error) {
         guard session.context == context else { return }
-        editing.message = "调整未应用，请检查当前数值。"
+        editing.reportPhotographicControlError(error, fallback: "调整未应用，请检查当前数值。")
     }
 
     private func perform(_ action: () throws -> Void) { do { try action() } catch { report(error) } }
