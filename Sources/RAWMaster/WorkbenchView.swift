@@ -424,8 +424,7 @@ struct BrowserView: View {
             switch model.mode {
             case .grid:
                 grid.safeAreaInset(edge: .bottom, spacing: 0) {
-                    if model.selectedIDs.count == 1, model.scope == .project || model.scope == .all,
-                       let asset = model.selectedAssets.first {
+                    if let asset = model.singleSelectedGridAsset {
                         singlePhotoActions(asset)
                     }
                 }.overlay(alignment: .bottom) {

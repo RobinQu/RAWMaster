@@ -27,14 +27,10 @@ final class EditingLayoutInteractionTests: XCTestCase {
             field.perform(setter, with: value as NSString)
             XCTAssertEqual(axValue(field, "accessibilityValue") as? String, value)
         }
-        func type(_ value: String, then command: Selector) throws {
-            func editableField(_ view: NSView) -> NSTextField? {
-                if let field = view as? NSTextField, field.isEditable { return field }
-                return view.subviews.lazy.compactMap(editableField).first
-            }
-            let field = try XCTUnwrap(window.contentView.flatMap(editableField))
-            XCTAssertTrue(window.makeFirstResponder(field))
-            let input = try XCTUnwrap(window.fieldEditor(true, for: field) as? NSTextView)
+        func type(_ value: String, then command: Selector) async throws {
+            window.makeKey()
+            try await wait { (window.firstResponder as? NSTextView)?.isFieldEditor == true }
+            let input = try XCTUnwrap(window.firstResponder as? NSTextView)
             input.selectAll(nil); input.insertText(value, replacementRange: input.selectedRange())
             input.doCommand(by: command)
         }
@@ -54,9 +50,7 @@ final class EditingLayoutInteractionTests: XCTestCase {
             try press(try XCTUnwrap(element("editing.leftRail.filters")))
             try await wait { element(menuID) != nil }
             let menu = try XCTUnwrap(element(menuID))
-            let names = ["accessibilityLabel", "accessibilityTitle", "accessibilityHelp"].compactMap { axValue(menu, $0) as? String }
-            XCTAssertTrue(names.contains("快照操作 · " + second.name), "Snapshot menu exposed \(names)")
-            print("snapshot rename AX menu label \(axValue(menu, "accessibilityLabel") as? String ?? "")")
+            XCTAssertEqual(axValue(menu, "accessibilityLabel") as? String, "快照操作 · " + second.name)
             let request = try XCTUnwrap(editor.snapshotRenameRequest(for: second))
             var dismissals = 0
             func showForm() {
@@ -83,12 +77,12 @@ final class EditingLayoutInteractionTests: XCTestCase {
             XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景彩色"])
             showForm()
             try await wait { element("editing.snapshot.rename.name") != nil }
-            try type("雪景暖色", then: #selector(NSResponder.insertNewline(_:)))
+            try await type("雪景暖色", then: #selector(NSResponder.insertNewline(_:)))
             try await wait { dismissals == 3 }
             XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景暖色"])
             showForm()
             try await wait { element("editing.snapshot.rename.name") != nil }
-            try type("放弃输入", then: #selector(NSResponder.cancelOperation(_:)))
+            try await type("放弃输入", then: #selector(NSResponder.cancelOperation(_:)))
             try await wait { dismissals == 4 }
             XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景暖色"])
         } catch { await editor.shutdown(); throw error }
@@ -126,6 +120,66 @@ final class EditingLayoutInteractionTests: XCTestCase {
             pending += ((axValue(node, "accessibilityChildren") as? [Any]) ?? []).compactMap { $0 as? NSObject }
         }
         return result
+    }
+
+    @MainActor func testColdGridKeepsSinglePhotoActionsForAnOffPageVirtualCopy() async throws {
+        try await assertOffPageCopyActions(focusOriginal: false)
+    }
+
+    @MainActor func testColdGridActsOnTheOnlySelectedOffPageCopyWhenItsSourceHasFocus() async throws {
+        try await assertOffPageCopyActions(focusOriginal: true)
+    }
+
+    @MainActor private func assertOffPageCopyActions(focusOriginal: Bool) async throws {
+        let fixture = try ProjectReviewUITests.Fixture()
+        defer { fixture.clean() }
+        let count = focusOriginal ? 126 : 66
+        let names = (0..<count).map { String(format: "shot-%03d.jpg", $0) }
+        let project = try await fixture.populate("Cold grid", filenames: names).projectID
+        let original = try XCTUnwrap(fixture.store.loadAssets().first { $0.filename == names[count - 2] })
+        let copy = try fixture.store.createVirtualCopy(of: original, name: "黑白归档")
+        let focusID = focusOriginal ? original.id : copy.id
+        _ = try fixture.store.saveProjectReviewState(.init(projectID: project, sort: .filename, mode: "grid",
+            focusedAssetID: focusID, selectedAssetIDs: [copy.id]))
+        fixture.defaults.set("project", forKey: "browse.scope")
+        fixture.defaults.set(project, forKey: "browse.id")
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, usesPagedLibrary: true)
+        try await wait { model.catalogGrid?.watermark != nil && model.focusedAsset?.id == focusID }
+        XCTAssertEqual(model.selectedIDs, [copy.id])
+        XCTAssertTrue(model.selectedAssets.isEmpty, "The retained copy must be outside the first page")
+        _ = NSApplication.shared
+        let enhanced = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let previous = NSApp.accessibilityAttributeValue(enhanced)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+        defer { NSApp.accessibilitySetValue(previous, forAttribute: enhanced) }
+        let rect = NSRect(x: 0, y: 0, width: 720, height: 420)
+        let host = NSHostingView(rootView: BrowserView().environmentObject(model).frame(width: rect.width, height: rect.height))
+        let window = NSWindow(contentRect: rect, styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.contentView = host
+        window.orderFront(nil)
+        defer { window.orderOut(nil); window.contentView = nil; window.close() }
+        try await wait {
+            host.layoutSubtreeIfNeeded()
+            return accessibleElements(window).contains { axValue($0, "accessibilityIdentifier") as? String == "library.selection.more" }
+        }
+        XCTAssertFalse(model.browserAssets.contains { $0.id == copy.id })
+        let target = try XCTUnwrap(model.singleSelectedGridAsset)
+        XCTAssertEqual(target.id, copy.id)
+        model.requestVirtualCopy(.rename, for: target)
+        let request = try XCTUnwrap(model.virtualCopyRequest)
+        XCTAssertEqual(request.asset.id, copy.id)
+        XCTAssertEqual(request.suggestedName, "黑白归档")
+        if focusOriginal {
+            model.catalogGrid?.loadMore()
+            try await wait { model.browserAssets.count == 120 }
+            XCTAssertFalse(model.browserAssets.contains { $0.id == copy.id })
+            XCTAssertEqual(model.focusedAsset?.id, original.id)
+            XCTAssertEqual(model.singleSelectedGridAsset?.id, copy.id)
+        }
+        try await model.commitVirtualCopy(request, name: "重命名归档")
+        let renamed = try fixture.store.virtualCopies(projectID: project).first { $0.id == copy.id }
+        XCTAssertEqual(renamed?.name, "重命名归档")
     }
 
     @MainActor func testProjectGridExposesSinglePhotoMenuAndKeepsItsBatchActions() async throws {

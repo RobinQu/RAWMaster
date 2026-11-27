@@ -374,6 +374,11 @@ final class AppModel: ObservableObject {
     }
     var focusedAsset: AssetRecord? { isCatalog ? nil : focusedID.flatMap { assetByID[$0] } }
     var selectedAssets: [AssetRecord] { scopedAssets.filter { selectedIDs.contains($0.id) } }
+    var singleSelectedGridAsset: AssetRecord? {
+        guard mode == .grid, scope == .project || scope == .all,
+              selectedIDs.count == 1, let id = selectedIDs.first else { return nil }
+        return assetByID[id]
+    }
     var compareAssets: [AssetRecord] { Array(browserAssets.filter { selectedIDs.contains($0.id) }.prefix(4)) }
     struct ComparisonPanel: Identifiable {
         let selectionAsset: AssetRecord
@@ -596,6 +601,7 @@ final class AppModel: ObservableObject {
             let mountedIDs = Set(mounted)
             let offPage = prior.assetIDs.filter { selectedIDs.contains($0) && !mountedIDs.contains($0) }
             frozenSelection = offPage.isEmpty ? nil : prior.replacingMembers(mounted.filter(selectedIDs.contains) + offPage)
+            if selectedIDs.count == 1 { cacheOffPageAssets(offPage, from: prior) }
         }
         focusedID = asset.id
         synchronizeNativeEditingContext()
@@ -2237,6 +2243,13 @@ extension AppModel {
         firstGridStart = nil
     }
 
+    private func cacheOffPageAssets(_ ids: [String], from selection: CatalogFrozenSelection) {
+        let missing = Set(ids.filter { assetByID[$0] == nil })
+        guard !missing.isEmpty, let store,
+              let records = try? store.catalogAssets(for: selection.replacingMembers(missing.sorted())) else { return }
+        for record in records { assetByID[record.id] = record }
+    }
+
     private func applyCatalogPage() {
         guard isPagedGrid, let grid = catalogGrid else { return }
         if let error = grid.errorDescription {
@@ -2248,15 +2261,15 @@ extension AppModel {
         // reconcile a saved selection against this query.
         guard grid.watermark != nil else { return }
         let priorFocus = focusedAsset
+        let priorSelection = singleSelectedGridAsset
         assets = grid.cards.map(\.asset)
         if let restored = grid.takeRestoredSelection() {
             let members = Set(restored.assetIDs)
             let retained = restored.assetIDs.filter(selectedIDs.contains)
             selectedIDs = Set(retained)
             let nextFocus = focusedID.flatMap { members.contains($0) ? $0 : nil } ?? retained.first ?? assets.first?.id
-            if let id = nextFocus, assetByID[id] == nil {
-                assetByID[id] = try? store?.catalogAssets(for: restored.replacingMembers([id])).first
-            }
+            let soleSelection = retained.count == 1 ? retained.first : nil
+            cacheOffPageAssets([nextFocus, soleSelection].compactMap { $0 }, from: restored)
             focusedID = nextFocus
             if selectedIDs.isEmpty, let nextFocus { selectedIDs = [nextFocus] }
             if !selectedIDs.isSubset(of: assets.map(\.id)) {
@@ -2264,8 +2277,10 @@ extension AppModel {
             }
             return
         }
-        if let priorFocus, assetByID[priorFocus.id] == nil, frozenSelection?.assetIDs.contains(priorFocus.id) == true {
-            assetByID[priorFocus.id] = priorFocus
+        if frozenSelection != nil {
+            for record in [priorFocus, priorSelection].compactMap({ $0 }) where assetByID[record.id] == nil {
+                assetByID[record.id] = record
+            }
         }
         if let id = focusedID, assetByID[id] != nil { return }
         if let first = assets.first {
