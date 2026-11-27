@@ -1,14 +1,16 @@
 # 039 · Rust 场景后端验证
 
-下文保留 2026-11-27 原始分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
+本轮从本地 `1e5a1ceb` 继续验收。60 MP 的 FIT、原寸取景和全图示波器均沿用产品内存上限。示波器携带本次图求值回执。032 将实际后端、瓦片和派发次数、峰值及预算与暂存文件票据写入同一目录事务，已交付后重开仍可核对。模型阶段随场景图 v2 冻结，要求整图输入的模型单独检查全分辨率预算。[实拍测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [冻结交付回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json)
+
+下文保留 2026-11-27 的历史分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
 
 ## 组内监看与实际后端
 
 原实现只在顶层调用 Rust，桥接层省略组路径，执行器也没有使用 ABI 中的 `groupPath`。此外，历史影子测试中标作 Swift 的一侧使用默认模式。修复后，同一份 038 图在两个显式指定的渲染器上运行。测试含两层嵌套、父组禁用、子组部分强度、组前曝光、组内解析覆盖以及非零原点 ROI。组输入、指定节点和组最终根逐通道比较，允许的绝对误差为 2×10⁻⁵ × max(1, |参考通道值|)。返回全图时像素逐值相同。非法组或覆盖目标会报错并清除上次回执。[严格后端回归](../../Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift)
 
-对实拍雪景用签名包重开，HDR drawable 记录了帧 ID、Rust 后端、一次图派发与 66,355,200 字节图峰值。切换查看目标时缓存帧保留原回执，根输入直通记录零派发。模型程序变化会清理预览后缀，带模型的执行暂时关闭源图节点的跨请求缓存，解析遮罩仍可复用。示波器与持久化 032 任务的后端回执、版本化模型资源仍待接通。[帧及测量记录](../032-export-workspace/grid-delivery-20261127.json) · [实拍预览回归](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift)
+对实拍雪景用签名包重开，HDR drawable 记录了帧 ID、Rust 后端、一次图派发与 66,355,200 字节图峰值。切换查看目标时缓存帧保留原回执，根输入直通记录零派发。模型程序变化会清理预览后缀，带模型的执行暂时关闭源图节点的跨请求缓存，解析遮罩仍可复用。此轮只记录了预览帧，后续示波器、模型和 032 的验收见页首。[帧及测量记录](../032-export-workspace/grid-delivery-20261127.json) · [实拍预览回归](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift)
 
-同一 M4 Max 上，600 万像素图各 15 个暖样本的 p95 为 Rust 14.26 ms、Swift 14.27 ms。61.44 MP 合成输入使用 6 GiB 图预算，分 6 瓦片，派发 42 次，图峰值 4.70 GiB。真实相机 60 MP 仍按产品解码、图和末端共同预算单独验收。[039 放行条件](spec.md#编译瓦片和回执)
+同一 M4 Max 上，600 万像素图各 15 个暖样本的 p95 为 Rust 14.26 ms、Swift 14.27 ms。61.44 MP 合成输入使用 6 GiB 图预算，分 6 瓦片，派发 42 次，图峰值 4.70 GiB。本轮真实相机 60 MP 在产品预算下的分项实测见页首。[039 放行条件](spec.md#编译瓦片和回执)
 
 ## Builds
 

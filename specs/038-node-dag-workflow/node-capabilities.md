@@ -6,7 +6,7 @@
 
 REA 父证据：`ev_7c17d442fa302e9af5fb180580cf26b25bf0f0552b4e3613ec4285bb87c54b21`。5 份 JavaScript 资产共读取 1,948,330 字节、解析 510,205 个 AST 节点，语法解析失败为 0；静态关系和语义图均为 partial，存在别名与保留预算限制，6000 个保留 unknowns。静态解析不证明运行时执行。
 
-完整两条 Evidence 已保存为[本机研究证据包](../../output/research/node-dag/lightflow-node-rea-20261126.json)，不加入产品分发。导出的 tracked-question ledger 数量为 0，不等于上述语义 unknowns 为 0。
+当时的两条 Evidence 导出至本机 `output/research/node-dag/lightflow-node-rea-20261126.json`。这份临时文件在本次检出中缺失。下表保留了资产、字节范围与观察记录。历史导出的 tracked-question ledger 有 0 项，语义图仍有上述 unknowns。
 
 另以原文件 UTF-8 零基字节区间复核下列注册表与工厂。源目录为本机 `output/research/node-dag/lightflow/`，研究资产不作为产品分发依赖。
 

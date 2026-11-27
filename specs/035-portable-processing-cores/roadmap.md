@@ -1,8 +1,10 @@
 # 035–039 · 图像引擎、HDR 与 DAG 联合实施和验收
 
-2026-11-27 审核本地 `main@b238c0ab`。保留统一的色彩契约、HDR 工作流、Rust + Metal 图像引擎和可持久化 DAG。以一张实拍照片从暗房编辑、查看、重开到 032 冻结交付的闭环为验收单位，同时核对旧照片回放与导出。默认显示入口、组件通过和产品签收各有凭据。
+首轮审核的本地基线为 `b238c0ab`。2026-11-27 在 `1e5a1ceb` 上继续实施，同一条场景路径贯穿色彩管理、HDR、Rust + Metal 与可持久化 DAG。以一张实拍照片从暗房编辑、查看、重开到 032 冻结交付的闭环为验收单位，同时核对旧照片回放与导出。默认显示入口、组件通过和产品签收各有凭据。
 
 阶段 1 已在同一签名 Release 上跑通暗房入口。雪景和人像的 032 PQ／SDR 批次均使用各自同一冻结候选，雪景窗口完成实体 HDR→SDR→HDR 往返。资料库网格送交的故障、修复与实拍复验见 [032 网格交付](../032-export-workspace/spec.md#资料库网格直接交付)。[037 实拍验收](../037-color-film-hdr/validation.md#同一签名-release-首条闭环) · [038 Graph 实拍验收](../038-node-dag-workflow/validation.md#与-037-同包的首条-graph-闭环)
+
+本轮以 Sony ILCE-7RM5 的 9504 × 6336 原片复验原生编辑、保存候选、全尺寸双格式交付与重开后逐项读取的 Rust 执行回执。工作台初次分页和选区恢复也进入签名包走查。[安装包与实拍回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json) · [成像与内存测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
 
 ## 规格归属
 
@@ -71,7 +73,7 @@ flowchart LR
 
 ## 本次 main 复验
 
-Apple M4 Max、macOS 27.0.1（26A434）。Release 测试包在当前 `main@b238c0ab` 构建，Imaging、UI、Rust runtime 的 SHA-256 分别以 `5f580bbef9f1`、`b897791db403`、`8b891ef3bd6e` 开头。`person.ARW`、`snow.ARW` 的实际 SHA 与 037 夹具一致。测试使用隔离资料库和工作目录。本机原始记录在 `output/035-039-main-audit/`。[RAW 样本清单](../037-color-film-hdr/evidence/scene-raw-m2.json)
+Apple M4 Max、macOS 27.0.1（26A434）。本节历史 Release 测试包在 `b238c0ab` 构建，Imaging、UI、Rust runtime 的 SHA-256 分别以 `5f580bbef9f1`、`b897791db403`、`8b891ef3bd6e` 开头。`person.ARW`、`snow.ARW` 的实际 SHA 与 037 夹具一致。测试使用隔离资料库和工作目录。本机原始记录在 `output/035-039-main-audit/`。[RAW 样本清单](../037-color-film-hdr/evidence/scene-raw-m2.json)
 
 | 复验 | 结果与边界 |
 | --- | --- |

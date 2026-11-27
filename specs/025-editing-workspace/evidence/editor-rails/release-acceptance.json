@@ -1,0 +1,238 @@
+{
+  "date": "2026-11-27T18:32:14+08:00",
+  "baseCommit": "1e5a1ceb7e8975d5e33715cfe41b9e445fca504d",
+  "implementationCommit": "5aee83c1abc8fe1b6902b253ce7e31dc95303538",
+  "hardware": "Apple M4 Max",
+  "macOS": "27.0.1",
+  "macOSBuild": "26A434",
+  "release": {
+    "configuration": "Release, local ad hoc signature",
+    "path": "/Applications/RAWMaster.app",
+    "cdhash": "4fce8525b0c2315a8a2ca065dbfef25e48742346",
+    "binarySHA256": "3e5a2615994ee6212defc3eeb436d4791ffb11eda4a6dc08489d1fb94306f831",
+    "rustImageSHA256": "746c5334a4d1ed40c71ca9971ab258a842169a6f589b9a2736cfa92ce904e475",
+    "rustLibrarySHA256": "ee184fbbf0338fdb9b441c458379078f42a7d3a2a51a91d0ad4cc82b3b7a7801",
+    "flashRawSHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+    "replacedCDHash": "aca6e1218affc35e73ae2467651bc1c399cf2c20",
+    "cleanRelaunch": true,
+    "additionalStandardReopenAfterInstall": true
+  },
+  "source": {
+    "camera": "Sony ILCE-7RM5",
+    "name": "DSC05995-authorized-copy.ARW",
+    "pixels": [
+      9504,
+      6336
+    ],
+    "sha256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89"
+  },
+  "signedWindow": {
+    "entry": "Open an isolated project with saved snow.ARW + person.ARW selection, batch export, return. Reopen 60 MP project, switch to SDR, click HDR and confirm, dismiss one photo notice.",
+    "coldGrid": {
+      "selected": [
+        "84A080D6-2EC2-4760-80CC-FA16EB2D49A7",
+        "C22FBEC7-54B8-4F15-8DB7-94FB97A32133"
+      ],
+      "focus": "84A080D6-2EC2-4760-80CC-FA16EB2D49A7",
+      "frozenCount": 2
+    },
+    "coldGridLaunch": {
+      "secondaryInstance": true,
+      "standardReopenNeeded": false,
+      "gridClicksBeforeExport": 0
+    },
+    "hdr": {
+      "target": "hdr2020",
+      "screenHeadroom": 3.347646474838257,
+      "displayID": 5,
+      "displayProfileSHA256": "4234d6a8d7230c6abbb1c71d1557552511dba99cb3826c6bbb6b9eeb5630d566",
+      "windowNumberAtCapture": 58276,
+      "frameID": "767250B8-3B03-4C68-B0E8-D5EF84984D19",
+      "edrEnabled": true,
+      "drawablePixels": [
+        824,
+        550
+      ],
+      "backend": "rust",
+      "graphDispatches": 0,
+      "noticesBeforeDismissal": 2,
+      "noticesAfterDismissal": 1,
+      "screenshot": "release-60mp-hdr.webp",
+      "screenshotRole": "sRGB UI capture; display metadata comes from the actual presented drawable."
+    }
+  },
+  "signedBatch": {
+    "entry": "Reopened adopted exposure +0.50 EV, normal Edit → Export → Full-size JPEG and HDR PQ review. Isolated destination selected by launch argument.",
+    "readback": "Reopened the catalog, matched frozen manifests and tickets to each file, decoded every pixel independently.",
+    "items": {
+      "jpeg8": {
+        "filename": "DSC05995-authorized-copy-0001.jpg",
+        "state": "delivered",
+        "sha256": "07381fb80376cb57a418ae0441497fe04278a4e3ea8102becaf29d43882a2b97",
+        "bytes": 8374556,
+        "frozenVersionID": "348AE42A-032C-4C47-A528-5ABF22E6F0E5",
+        "frozenInputSHA256": "9e5e301d431d8dda35ae77a6b0183f4742894bfb7f62cdeb486a5f98adece1b4",
+        "batchID": "0217dd9e-2c4f-4bbb-9910-93633fb00b6f",
+        "manifestSHA256": "681e8d034b4603f48605d3272cda56ff1068388a80d3755bf36840736146e1b5",
+        "exposureEV": 0.5,
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 35,
+          "nodes": 35,
+          "dispatches": 35,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1250525184,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 45.909707000000004
+        },
+        "decoded": {
+          "decoder": "FFmpeg",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "depth": 8,
+          "iccProfile": "sRGB built-in",
+          "decodedFrameMD5": "521eb3286d5e8eff64fda4b9d34086c6"
+        }
+      },
+      "avif10": {
+        "filename": "DSC05995-authorized-copy-0001.avif",
+        "state": "delivered",
+        "sha256": "ab4f5b7b23cbebac550b7b3889850bf2afc1002d1f6278ec4fd0e217e6b8e58c",
+        "bytes": 11542129,
+        "frozenVersionID": "348AE42A-032C-4C47-A528-5ABF22E6F0E5",
+        "frozenInputSHA256": "9e5e301d431d8dda35ae77a6b0183f4742894bfb7f62cdeb486a5f98adece1b4",
+        "batchID": "cf4f5da9-698e-4ba8-acd4-1180a543658e",
+        "manifestSHA256": "a248d3beafbd40a63dc908cd9dd1db5f96f197f1a0679bd422265b3f30ee5c88",
+        "exposureEV": 0.5,
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 35,
+          "nodes": 35,
+          "dispatches": 35,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1250525184,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 41.768876999999996
+        },
+        "decoded": {
+          "decoder": "libavif/dav1d",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "depth": 10,
+          "cicp": [
+            9,
+            16,
+            1
+          ],
+          "range": "full"
+        }
+      }
+    }
+  },
+  "releaseControllerIntegration": {
+    "test": "testOptIn60MPEditorAndPublishedBatchReceipts",
+    "entry": "Repository RAW → open Edit → HDR → +0.50 EV → scopes → save → adopt → normal Export controller → reopen two published 032 items",
+    "items": {
+      "jpeg8": {
+        "filename": "DSC05995-authorized-copy.jpg",
+        "state": "delivered",
+        "sha256": "a9dffb2b67027284f8d10187779bef4221ff0c2c384fd9b894073461ea29b699",
+        "bytes": 8372217,
+        "frozenVersionID": "348AE42A-032C-4C47-A528-5ABF22E6F0E5",
+        "frozenInputSHA256": "9e5e301d431d8dda35ae77a6b0183f4742894bfb7f62cdeb486a5f98adece1b4",
+        "batchID": "32e3695e-c2ba-45df-ae63-8efe3fbafc21",
+        "manifestSHA256": "00d735e192f53a0b4697ffc459ed2264e50851a805aa36f40bc533734b637d70",
+        "exposureEV": 0.5,
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 35,
+          "nodes": 35,
+          "dispatches": 35,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1250525184,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 44.48299799999999
+        },
+        "decoded": {
+          "decoder": "FFmpeg",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "depth": 8,
+          "iccProfile": "sRGB built-in",
+          "decodedFrameMD5": "521eb3286d5e8eff64fda4b9d34086c6"
+        }
+      },
+      "avif10": {
+        "filename": "DSC05995-authorized-copy.avif",
+        "state": "delivered",
+        "sha256": "ab4f5b7b23cbebac550b7b3889850bf2afc1002d1f6278ec4fd0e217e6b8e58c",
+        "bytes": 11542129,
+        "frozenVersionID": "348AE42A-032C-4C47-A528-5ABF22E6F0E5",
+        "frozenInputSHA256": "9e5e301d431d8dda35ae77a6b0183f4742894bfb7f62cdeb486a5f98adece1b4",
+        "batchID": "3aa59e7d-d864-4928-a287-5ee1b9450fd8",
+        "manifestSHA256": "55aa083006dd77fe6ae21c773e7824dd75b3c11ed9d6fc3634d1ae9a5413feaf",
+        "exposureEV": 0.5,
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 35,
+          "nodes": 35,
+          "dispatches": 35,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1250525184,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 41.56925400000001
+        },
+        "decoded": {
+          "decoder": "libavif/dav1d",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "depth": 10,
+          "cicp": [
+            9,
+            16,
+            1
+          ],
+          "range": "full"
+        }
+      }
+    }
+  },
+  "independentInterfaceChecks": {
+    "prototypeFull": 60,
+    "prototypeEditorScenarios": 6,
+    "nativePresetChecks": 12,
+    "nativeChromeChecks": 7,
+    "optimizedIsolatedBundleIdentifier": "io.robinqu.RAWMaster.qa.editorchrome",
+    "graphKeyboard": {
+      "legacy": {
+        "movedLeftPoints": 16,
+        "increasedHeightPoints": 16,
+        "escapeClosed": true,
+        "triggerRegainedFocus": true
+      },
+      "hdr": {
+        "movedLeftPoints": 16,
+        "increasedHeightPoints": 16,
+        "escapeClosed": true,
+        "triggerRegainedFocus": true
+      }
+    }
+  },
+  "imagingMeasurements": "../../../037-color-film-hdr/evidence/real-60mp-bayer-budget.json",
+  "limits": [
+    "24/60 MP warm scope timings measure service work on this Mac.",
+    "Full-image model stages use native resolution and report budgets separately. Legacy SDR operator migration, optical HDR luminance and heterogeneous batch throughput have separate acceptance criteria."
+  ]
+}

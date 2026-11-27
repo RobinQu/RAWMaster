@@ -202,6 +202,8 @@ RAWMASTER_SCENE_DARKROOM_REPORT="$evidence/fit.json" \
 
 ### 真实 60 MP Bayer 的预览和示波器预算
 
+签名 Release 的正常 HDR 入口、实体屏幕 drawable、+0.50 EV 冻结候选及 032 两个实际交付批次均已复验。下列成像测量按阶段记录内存和时间；两份最终文件的尺寸、色彩标记、版本与执行回执见工作台记录。[签名包与双格式成片](../025-editing-workspace/evidence/editor-rails/release-acceptance.json)
+
 Sony ILCE-7RM5 的授权 DSC05995.ARW 有 9728×6656 个传感器位置，成像裁切为 9504×6336。用 `main@1e5a1ceb` 的 Release 解码器读取同一 SHA 后，打开 FIT 报 `surfaceBudget`。当时在读取取景请求前，就为全图 AP1 F32 加传感器饱和标志估算 1,023,694,848 字节，超过 440 MiB。新路径一次保留 16 位 mosaic。960×640 FIT 连同 mosaic 和标志实占 144,179,200 字节，在 (5940, 1584) 的 1188×792 原寸窗口实占 150,405,120 字节。后者在有符号 AP1 和处理后 HDR 两处都与独立原生对照逐像素一致。[Release 实片数据](evidence/real-60mp-bayer-budget.json)
 
 M4 Max 上第一次显示 FIT 用时 436.68 ms，第一次切至该窗口用时 2.36 ms，首次计算全图示波器用时 135.58 ms。+4 EV 的 HDR FIT 峰值是参考白的 8.695 倍。192×128 栅格记录 104 个传感器饱和格点，最终图有当次 Rust 回执，旁路返回直通回执。各预热 5 次再取 30 个样本，60 MP 示波器 p95 为 5.98 ms，24 MP 雪景为 11.79 ms。切回雪景得到 4000×6000 原图尺寸，累计原片采集为两次。完整回归进程中复跑，服务初次 FIT 为 120.25 ms，60 MP／24 MP 的暖态示波器 p95 分别为 1.22／1.44 ms。上述时延止于预览服务返回。八种方向和非整数缩放的面积平均另以独立双精度参考核对。60 MP 整幅 AP1 的最小／最大分量为 −0.002659／2.599685，88 个像素含负分量，433,446 个像素含超白分量。两张 24 MP 实片也保留了负值和超白，雪景 AP1 极值为 −0.119 和 2.415。[原生取样与回归](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift) · [Bayer 数值对照](../../Tests/RAWMasterImagingTests/DevelopmentSceneRAWV1Tests.swift)

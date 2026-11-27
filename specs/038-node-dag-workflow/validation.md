@@ -4,6 +4,8 @@
 
 记录从早期原型、组件推进到 `main@b238c0ab` 的原生默认入口。兼容视图、可编辑场景图、模板和批量候选已有下列分阶段证据。完整工具、可访问性和异源出片仍待签收。[本次 main 实拍复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
+60 MP 的单 Corrector 配方在候选重开后由 032 交付，独立解码验证了两种全尺寸目标。两份票据都保留该冻结版本的真实图派发和资源峰值。图文档 v2 往返验证了模型程序随图编辑和模板保存的身份；公开算子与模型预算继续按能力表逐项验收。[签名包和目录回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json) · [图文档模型回归](../../Tests/RAWMasterCoreTests/DevelopmentSceneGraphV1Tests.swift)
+
 ## 原生兼容图与冻结 SDR 导出
 
 [只读投影](../../Sources/RAWMasterCore/DevelopmentCompatibilityGraphV1.swift)把无归档成片的原片或编辑版本投影成「来源 → 兼容调色 → 最终输出」。节点身份按照片和阶段固定；旧几何与算子顺序封装在现有渲染器内，不拆成声称等价的场景算子。投影不序列化，不迁移配方，不改变候选、草稿、历史或档案。已有归档成片仍直接作为输出来源；未知配方拒绝投影。旧 SDR 配方不进入 HDR 母版。

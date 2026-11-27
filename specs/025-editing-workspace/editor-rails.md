@@ -32,12 +32,14 @@
 | 分别从两张照片打开 Graph，再使用角落的关闭按钮 | 主窗口和独立无标题图窗同时可见。关闭后焦点回到原照片的 Graph 开关。[兼容图与照片](evidence/editor-rails/release-ui-legacy-graph.webp) · [HDR 图与照片](evidence/editor-rails/release-ui-hdr-graph.webp) |
 | 在 JPEG 上选择 HDR，或从雪景 HDR 切回彩色编辑 | 第一种操作提示「此原片未通过 HDR 场景校准准入」，第二种操作提示「已切换到彩色编辑模式」。分别关闭对应通知后，保留当前照片及上下文。[准入错误](evidence/editor-rails/release-ui-legacy-notice.webp) · [切换模式消息](evidence/editor-rails/release-ui-hdr-notice.webp) |
 
-上述 Release 窗口走查在 18:10 构建的优化可执行文件上执行，测试副本以隔离标识 `io.robinqu.RAWMaster.qa.editorchrome` 重新签名。关闭首次启动提示后，逐张核对六份截图和对应的 AppKit 辅助功能树。两张照片的四块面板与底部工具条在失焦时各有明暗变化，回焦后五处取样均恢复到编辑时的原值。截图按原始显示配置转换为带 sRGB 配置的 WebP，用于阅读界面与窗口状态。AppKit 专项向原生图窗派发按键，另行验证键盘关闭与还焦。
+上述 Release 窗口走查在 18:10 构建的优化可执行文件上执行，测试副本以隔离标识 `io.robinqu.RAWMaster.qa.editorchrome` 重新签名。关闭首次启动提示后，逐张核对六份截图和对应的 AppKit 辅助功能树。两张照片的四块面板与底部工具条在失焦时各有明暗变化，回焦后五处取样均恢复到编辑时的原值。截图按原始显示配置转换为带 sRGB 配置的 WebP，用于阅读界面与窗口状态。另将方向键和 Esc 投递到两种 Release 图窗。移动手柄左移 16 pt，缩放手柄增高 16 pt，Esc 关闭后原 Graph 开关恢复键盘焦点。
 
 目录显示名以 Lightroom Classic 的 `zh_cn.lproj/TranslatedStrings.txt` 和 Camera Raw 的 XMP 名称为依据。对照迁移清单核验了 51 个预设与 2 个自适应配置文件的中文名与原 ID。在原生侧栏搜索和采用胶片、撤销、查看语义蒙版，以及包含 1,075 条记录的检索与收藏均通过。用户导入和原始 XMP 名称保留原文。[迁移清单](../031-preset-browser/contracts/migration-manifest-v1.json) · [Adobe 简中预设帮助](https://helpx.adobe.com/cn/lightroom/web/edit-photos/use-presets/apply-presets.html)
 
 ### 最终签名 Release 与实拍原片
 
-最终签名应用的构建、安装、重新启动，以及同一签名包的选片恢复、60 MP 原片和 Spec 032 冻结交付回执，按可执行文件身份记录。[最终安装与实拍验收](evidence/editor-rails/release-acceptance.json)
+签名 Release 冷启动后，资料库直接恢复人像和雪景两张选片。点击「批量导出」带入两张，返回网格时两张仍被选中。另在隔离项目打开 60 MP 原片，从「基础 → HDR」确认进入，LG TV SSCR2 上完成的 HDR 帧记录屏幕余量 3.35×。关闭主图上两条通知中的一条后，另一条持续可见。[60 MP 的签名包窗口](evidence/editor-rails/release-60mp-hdr.webp) · [安装、重启与实拍验收](evidence/editor-rails/release-acceptance.json)
+
+将同张原片曝光调至 +0.50 EV，保存并采用候选，再从签名包的导出工作台依次提交「全尺寸 JPEG」和「HDR 成片」。两个批次引用同一份冻结版本，每张均为 9504 × 6336，分别运行 35 个分块和 35 次 Rust Metal 派发。独立解码读取到 8 位 sRGB JPEG 和 10 位全范围 Rec.2020/PQ AVIF，并核对了重开资料库后的文件摘要。另一次三节点成像测量每个目标派发 105 次。[逐成片回执](evidence/editor-rails/release-acceptance.json) · [三节点分块测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
 
 普通 HDR 取景和全分辨率神经模型使用不同的内存路径。Sony ILCE-7RM5 的 DSC05995.ARW 为 9504 × 6336，FIT 和 1∶1 ROI 已通过实测，查看这张原片无需先展开全幅 AP1 浮点画面。若当前版本包含要求整图输入的神经模型且所需表面超过预算，主图顶部的错误应指出模型需要全分辨率处理，并保留原照片与当前草稿。用户可回原图调整该模型，再重新尝试预览或从更新后的版本交付。模型运行结果单独验收。[60 MP 预算与取景记录](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
