@@ -458,11 +458,9 @@ struct BrowserView: View {
                 .accessibilityLabel("更多照片操作")
                 .accessibilityIdentifier("library.selection.more")
             Spacer(minLength: AppDesign.Spacing.inline)
-            Button {
-                if model.focusedID != asset.id { model.select(asset) }
-                model.activateWorkflow(.edit)
-            } label: { Label("编辑照片", systemImage: "slider.horizontal.3") }
+            Button { model.activateWorkflow(.edit) } label: { Label("编辑照片", systemImage: "slider.horizontal.3") }
                 .disabled(model.editingAdmissions[asset.physicalAssetID] == nil)
+                .accessibilityIdentifier("library.selection.edit")
             Button { model.openSelectionExport() } label: { Label("导出", systemImage: "square.and.arrow.up") }
                 .disabled(!model.canExport)
         }

@@ -170,6 +170,7 @@ final class EditingLayoutInteractionTests: XCTestCase {
         let request = try XCTUnwrap(model.virtualCopyRequest)
         XCTAssertEqual(request.asset.id, copy.id)
         XCTAssertEqual(request.suggestedName, "黑白归档")
+        model.virtualCopyRequest = nil
         if focusOriginal {
             model.catalogGrid?.loadMore()
             try await wait { model.browserAssets.count == 120 }
@@ -177,7 +178,22 @@ final class EditingLayoutInteractionTests: XCTestCase {
             XCTAssertEqual(model.focusedAsset?.id, original.id)
             XCTAssertEqual(model.singleSelectedGridAsset?.id, copy.id)
         }
-        try await model.commitVirtualCopy(request, name: "重命名归档")
+        let base = try XCTUnwrap(fixture.store.editingWorks(for: original).last)
+        let edit = try XCTUnwrap(accessibleElements(window).first { axValue($0, "accessibilityIdentifier") as? String == "library.selection.edit" })
+        try press(edit)
+        let editor = try XCTUnwrap(model.editing)
+        do {
+            try await wait { model.isNativeEditing && editor.sourceReady && editor.work?.presentationID == copy.id }
+            XCTAssertEqual(model.focusedID, copy.id)
+            editor.setRecipe { $0.exposureEV = -0.625 }
+            try await editor.awaitPendingRenditionWrites(for: copy.id)
+            XCTAssertEqual(try fixture.store.photoWork(id: copy.id).liveRecipe?.exposureEV, -0.625)
+            XCTAssertEqual(try fixture.store.photoWork(id: base.id).liveRecipe, base.liveRecipe)
+        } catch { await editor.shutdown(); throw error }
+        model.activateWorkflow(.library)
+        await editor.shutdown()
+        model.requestVirtualCopy(.rename, for: target)
+        try await model.commitVirtualCopy(XCTUnwrap(model.virtualCopyRequest), name: "重命名归档")
         let renamed = try fixture.store.virtualCopies(projectID: project).first { $0.id == copy.id }
         XCTAssertEqual(renamed?.name, "重命名归档")
     }

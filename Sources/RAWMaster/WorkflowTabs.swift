@@ -41,6 +41,7 @@ extension AppModel {
                 if !returningFromExport { editing?.stage = .development }
             }
             else {
+                if let selected = singleSelectedGridAsset { focusedID = selected.id }
                 if mode != .single { setMode(.single) }
                 if canOpenNativeEditing { openNativeEditing() }
             }

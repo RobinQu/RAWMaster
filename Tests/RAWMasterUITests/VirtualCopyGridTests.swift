@@ -4,6 +4,39 @@ import XCTest
 @testable import RAWMasterCore
 
 @MainActor final class VirtualCopyGridTests: XCTestCase {
+    func testNextPageKeepsSelectedMountedCopyAndUnselectedOffPageFocusForDelivery() async throws {
+        let f = try ProjectReviewUITests.Fixture()
+        defer { f.clean() }
+        let filenames = (0..<126).map { String(format: "photo-%03d.jpg", $0) }
+        let project = try await f.populate("Mounted copy", filenames: filenames).projectID
+        let files = try f.store.loadAssets()
+        let source = try XCTUnwrap(files.first { $0.filename == filenames[1] })
+        let focus = try XCTUnwrap(files.first { $0.filename == filenames[124] })
+        let copy = try f.store.createVirtualCopy(of: source, name: "黑白备选")
+        _ = try f.store.saveProjectReviewState(.init(projectID: project, sort: .filename, mode: "grid",
+            focusedAssetID: focus.id, selectedAssetIDs: [copy.id]))
+        f.defaults.set("project", forKey: "browse.scope")
+        f.defaults.set(project, forKey: "browse.id")
+        let model = AppModel(libraryURL: f.library, defaults: f.defaults, usesPagedLibrary: true)
+        try await wait { model.catalogGrid?.watermark != nil && model.browserAssets.count == 60 }
+        for size in [60, 120] {
+            if size > 60 {
+                model.catalogGrid?.loadMore()
+                try await wait { model.browserAssets.count == size }
+            }
+            XCTAssertTrue(model.browserAssets.contains { $0.id == copy.id })
+            XCTAssertFalse(model.browserAssets.contains { $0.id == focus.id })
+            XCTAssertEqual(model.focusedAsset?.id, focus.id)
+            XCTAssertEqual(model.selectedIDs, [copy.id])
+            XCTAssertEqual(model.actionAssetIDs, [copy.id])
+        }
+        model.openSelectionExport()
+        await model.pendingGridExport?.value
+        XCTAssertTrue(model.exportWorkspacePresented, model.errorMessage ?? "")
+        XCTAssertEqual(model.workbenchExportCandidates.map(\.id), [copy.id])
+        XCTAssertEqual(model.focusedAsset?.id, focus.id)
+    }
+
     func testPagedOffscreenSelectionAcrossRestartAndUndoChain() async throws {
         let f = try ProjectReviewUITests.Fixture()
         defer { f.clean() }

@@ -2272,7 +2272,8 @@ extension AppModel {
             cacheOffPageAssets([nextFocus, soleSelection].compactMap { $0 }, from: restored)
             focusedID = nextFocus
             if selectedIDs.isEmpty, let nextFocus { selectedIDs = [nextFocus] }
-            if !selectedIDs.isSubset(of: assets.map(\.id)) {
+            let mounted = Set(assets.map(\.id))
+            if !selectedIDs.isSubset(of: mounted) || nextFocus.map({ !mounted.contains($0) }) == true {
                 frozenSelection = restored.replacingMembers(restored.assetIDs.filter(selectedIDs.contains))
             }
             return
