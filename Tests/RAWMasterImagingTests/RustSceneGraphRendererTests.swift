@@ -277,18 +277,66 @@ final class RustSceneGraphRendererTests: XCTestCase {
     try compare(cached, fresh, tolerance: 0, message: "changed mask coverage")
   }
 
+  func testReturnedAndCallerOwnedSurfacesPreserveSourceAndExternalCoverage() throws {
+    let (device, _, raw, _, source) = try fixture(width: 12, height: 8)
+    let stageID = UUID(), mask = Node(name: "Mask", operation: .externalCoverage(id: stageID))
+    let grade = Node(name: "Light", operation: .corrector(image: .input, mask: mask.id,
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    struct Document: Encodable {
+      let schemaVersion = 1
+      let graph: Graph.Scope
+    }
+    let document = try workflow([mask, grade], final: grade)
+    let program = try RAWMasterImageKernel.SceneProgram(graph: JSONEncoder().encode(Document(graph: document.graph)), device: device)
+    func texture(_ format: MTLPixelFormat) throws -> MTLTexture {
+      let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format, width: 12, height: 8, mipmapped: false)
+      descriptor.usage = [.shaderRead, .shaderWrite]
+      descriptor.storageMode = .shared
+      return try XCTUnwrap(device.makeTexture(descriptor: descriptor))
+    }
+    let output = try texture(.rgba32Float)
+    try program.render(input: raw.texture, output: output, view: .bypass)
+    XCTAssertEqual(try read(output), source)
+    let alias = try program.renderSurface(input: raw.texture, view: .bypass, surfaceBudget: raw.texture.allocatedSize)
+    XCTAssertTrue(alias === raw.texture)
+    let coverage = try texture(.r32Float)
+    let values = (0..<(12 * 8)).map { $0 % 2 == 0 ? Float(0) : Float(1) }
+    values.withUnsafeBytes { bytes in
+      coverage.replace(region: MTLRegionMake2D(0, 0, 12, 8), mipmapLevel: 0,
+        withBytes: bytes.baseAddress!, bytesPerRow: 12 * MemoryLayout<Float>.stride)
+    }
+    try program.render(input: raw.texture, output: output, coverages: [stageID: coverage])
+    let rendered = try program.renderSurface(input: raw.texture, coverages: [stageID: coverage])
+    let pixels = try read(rendered)
+    XCTAssertEqual(pixels, try read(output))
+    XCTAssertEqual(pixels[0], .zero, "The corrector canonicalizes fully transparent pixels")
+    XCTAssertEqual(pixels[2], source[2], "A visible pixel with zero coverage keeps its channels")
+    XCTAssertNotEqual(pixels[1], source[1])
+    XCTAssertEqual(try read(raw.texture), source)
+    XCTAssertThrowsError(try program.renderSurface(input: raw.texture, revision: 13, isCurrent: { _ in false })) { error in
+      guard case RAWMasterImageKernel.Failure.staleFrame = error else { return XCTFail("Unexpected error \(error)") }
+    }
+  }
+
   func testAutoFallbackCarriesAReceiptAndReason() throws {
-    let (device, _, raw, geometry, _) = try fixture(width: 24, height: 16)
+    let (device, _, raw, geometry, _) = try fixture(width: 128, height: 64)
     let brighter = Node(name: "Bright", operation: .corrector(image: .input, mask: nil,
-      exposureEV: 5, curve: [], strength: 1, enabled: true))
-    let mix = Node(name: "Zero", operation: .parallel(base: .input,
-      layers: [.init(.node(brighter.id), weight: 0)], enabled: true))
-    let graph = try workflow([brighter, mix], final: mix)
-    let renderer = try Renderer(device: device, surfaceBudget: raw.texture.allocatedSize, backend: .auto)
-    XCTAssertTrue(try renderer.prepareFinal(raw, geometry: geometry, graph: graph).image.texture === raw.texture)
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    let graph = try workflow([brighter], final: brighter)
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: 128, height: 64, mipmapped: false)
+    descriptor.storageMode = .private
+    descriptor.usage = [.shaderRead, .shaderWrite]
+    // The Swift single-pass graph fits. Forcing two Rust tiles also needs their assembly destination.
+    let budget = raw.texture.allocatedSize + device.heapTextureSizeAndAlign(descriptor: descriptor).size
+    let renderer = try Renderer(device: device, surfaceBudget: budget, backend: .auto)
+    let rendered = try renderer.prepareFinal(raw, geometry: geometry, graph: graph, tileEdge: 64)
     let receipt = try XCTUnwrap(renderer.lastReceipt)
     XCTAssertEqual(receipt.backend, .swiftFallback)
-    XCTAssertNotNil(receipt.fallbackReason)
+    XCTAssertEqual(receipt.fallbackReason, String(describing: Renderer.Failure.surfaceBudget))
+    let expected = try Renderer(device: device, surfaceBudget: budget, backend: .swift)
+      .prepareFinal(raw, geometry: geometry, graph: graph)
+    XCTAssertEqual(try read(rendered.image.texture), try read(expected.image.texture))
   }
 
   func testOptIn60MegapixelSceneBudgetAndReceipt() throws {

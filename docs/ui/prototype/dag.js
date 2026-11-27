@@ -285,7 +285,7 @@ function dagInspector() {
   if (v.mask && n.mask) return dagMaskInspector(n);
   const head = `<h2>${h(n.name)}</h2><p class="dag-hint">${h(dagKinds[n.kind])}节点 · ${h(dagStateText(n))}</p>`;
   if (n.kind === 'group') return head + dagRange('nodeAmount','组强度',0,100,1,p.nodeAmount ?? 100) + btn('进入组', 'dag-enter', n.id, { cls: 'primary wide' }) + btn('保存组工作流…', 'dag-template-save', 'group') + '<p>组只提供管理与忽略；进入组后编辑具体节点。</p>';
-  if (n.kind === 'output') return head + '<p>最终输出固定连接，保存候选和导出始终读取此输出，不受查看的节点影响。</p>' + btn('保存候选', 'save-version') + btn('打开导出工作台', 'export') + btn('模拟渲染失败', 'dag-failure');
+  if (n.kind === 'output') return head + '<p>最终输出固定连接，交付始终冻结此输出，不受查看的节点影响。</p>' + btn('打开导出工作台', 'export') + btn('模拟渲染失败', 'dag-failure');
   if (n.kind === 'geometry') return head + '<p>固定照片几何阶段。请使用照片底部 Crop 工具；此处只显示阶段，不提供节点裁切参数。</p>' + fact('比例',p.crop || '原始');
   if (n.kind === 'source') return head + '<p>原片解码和白平衡是输入阶段。预览不代表真实 RAW 运算。</p>' + dagRange('warmth', '原生白平衡（示意）', -100, 100, 1, p.warmth || 0) + check('原片离线（模拟）', 'dagOffline', !Studio.asset(Studio.data.work).online) + '<p>离线仍能编辑已保存图结构；素材重建和精确输出需要原件。</p>';
   if (n.kind === 'mix') return head + select('Mixer 类型','dagMixMode',[['parallel','Parallel Mixer'],['layer','Layer Mixer']],p.mode || 'parallel') + '<h3>有序输入</h3>' + dagCurrent().edges.filter(e => e.to === n.id).sort((a,b)=>dagSlotRank(a.slot)-dagSlotRank(b.slot)).map((e,i) => `<div class="dag-input-row"><p><b>${e.slot === 'base' ? '基底 base' : '图层 '+e.slot}</b>：${h(dagCurrent().nodes.find(x => x.id === e.from)?.name)}</p>${p.mode === 'layer' && i ? select('混合方式','dagBlend',dagBlendModes,p['blend:'+e.slot] || 'normal').replace('<select ','<select data-slot="'+h(e.slot)+'" ') : ''}${i>1 ? dagRange('weight:'+e.slot,'输入权重',0,100,1,p['weight:'+e.slot] ?? 0) : ''}${btn('上移输入','dag-input-move',e.slot+':-1',{disabled:i===0})}${btn('下移输入','dag-input-move',e.slot+':1',{disabled:i===dagCurrent().edges.filter(x=>x.to===n.id).length-1})}</div>`).join('') + dagRange('amount', '混合强度', 0, 100, 1, p.amount ?? 0) + btn('交换输入顺序', 'dag-swap') + btn('添加输入支路','dag-add-input') + '<p>忽略返回基底；Parallel 权重与 Layer 有序混合分开。13 种混合方式仅演示选择与顺序，不声称 CSS 是真实混合公式。</p>';
@@ -941,7 +941,7 @@ document.addEventListener('keydown', event => {
 });
 document.addEventListener('keyup', event => { if (event.key === ' ') dagSpace = false; });
 window.addEventListener('blur', () => { dagSpace = false; dagPointer = null; });
-for (const name of ['save-version', 'open-versions', 'export']) {
+for (const name of ['open-versions', 'export']) {
   const original = actions[name];
   actions[name] = (...args) => {
     if (S.dagConnectionDraft || S.dagMaskSession) return notify('先完成或取消当前连接／蒙版草稿');

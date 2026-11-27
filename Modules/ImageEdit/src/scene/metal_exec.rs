@@ -25,19 +25,20 @@ struct Params {
 
 /// Tracks every surface owned by this program so the Rust backend obeys the same memory cap as
 /// the Swift executor rather than trusting graph node limits alone.
-struct SurfaceBudget {
+struct SurfaceBudget<'a> {
     maximum: usize,
     used: usize,
-    peak: usize,
+    peak: &'a mut usize,
+    cache_results: bool,
 }
 
-impl SurfaceBudget {
-    fn new(maximum: usize, input: usize) -> Self {
-        let used = input.min(maximum);
+impl<'a> SurfaceBudget<'a> {
+    fn new(maximum: usize, cache_results: bool, peak: &'a mut usize) -> Self {
         Self {
             maximum,
-            used,
-            peak: used,
+            used: 0,
+            peak,
+            cache_results,
         }
     }
 
@@ -48,7 +49,7 @@ impl SurfaceBudget {
             ));
         }
         self.used += bytes;
-        self.peak = self.peak.max(self.used);
+        *self.peak = (*self.peak).max(self.used);
         Ok(())
     }
 
@@ -99,6 +100,12 @@ impl TextureCache {
         }
     }
 
+    fn clear(&mut self) {
+        self.entries.clear();
+        self.order.clear();
+        self.bytes = 0;
+    }
+
     fn get(&mut self, key: &str) -> Option<Arc<metal::Texture>> {
         let texture = self.entries.get(key)?.0.clone();
         if let Some(index) = self.order.iter().position(|item| item == key) {
@@ -115,17 +122,13 @@ impl TextureCache {
         bytes: usize,
         budget: &mut SurfaceBudget,
     ) {
-        if bytes > self.max_entry_bytes || bytes > self.budget {
+        if !budget.cache_results || bytes > self.max_entry_bytes || bytes > self.budget {
             return;
         }
         if let Some((old, old_bytes)) = self.entries.remove(&key) {
             self.bytes = self.bytes.saturating_sub(old_bytes);
             if let Ok(texture) = Arc::try_unwrap(old) {
-                budget.release(texture_bytes(
-                    texture.width() as u32,
-                    texture.height() as u32,
-                    texture.pixel_format(),
-                ));
+                budget.release(texture.allocated_size() as usize);
             }
         }
         while self.bytes + bytes > self.budget || self.entries.len() >= self.max_entries {
@@ -135,11 +138,7 @@ impl TextureCache {
             if let Some((old, old_bytes)) = self.entries.remove(&oldest) {
                 self.bytes = self.bytes.saturating_sub(old_bytes);
                 if let Ok(texture) = Arc::try_unwrap(old) {
-                    budget.release(texture_bytes(
-                        texture.width() as u32,
-                        texture.height() as u32,
-                        texture.pixel_format(),
-                    ));
+                    budget.release(texture.allocated_size() as usize);
                 }
             }
         }
@@ -195,18 +194,12 @@ impl SurfacePool {
             .iter()
             .position(|(w, h, f, _)| *w == width && *h == height && *f == format)?;
         let (_, _, _, texture) = self.textures.remove(index);
-        self.bytes = self
-            .bytes
-            .saturating_sub(texture_bytes(width, height, format));
+        self.bytes = self.bytes.saturating_sub(texture.allocated_size() as usize);
         Some(texture)
     }
 
     fn give(&mut self, texture: metal::Texture, budget: &mut SurfaceBudget) {
-        let bytes = texture_bytes(
-            texture.width() as u32,
-            texture.height() as u32,
-            texture.pixel_format(),
-        );
+        let bytes = texture.allocated_size() as usize;
         if self.bytes + bytes <= Self::BUDGET {
             self.bytes += bytes;
             self.textures.push((
@@ -227,15 +220,6 @@ impl SurfacePool {
             }
         }
     }
-}
-
-fn texture_bytes(width: u32, height: u32, format: MTLPixelFormat) -> usize {
-    let pixel = if format == MTLPixelFormat::R32Float {
-        4
-    } else {
-        16
-    };
-    width as usize * height as usize * pixel
 }
 
 fn node_key(
@@ -403,12 +387,62 @@ impl SceneProgram {
     pub fn render(
         &self,
         input: &metal::TextureRef,
-        output: &metal::TextureRef,
+        output: Option<&metal::TextureRef>,
         view: &ViewSpec,
         external_coverages: &HashMap<String, Arc<metal::Texture>>,
         current: impl Fn() -> bool,
-    ) -> Result<(), SceneError> {
+    ) -> Result<Arc<metal::Texture>, SceneError> {
         let started = Instant::now();
+        let mut peak = 0;
+        let mut state = self
+            .state
+            .lock()
+            .map_err(|_| SceneError::Render("scene execution state poisoned".into()))?;
+        let mut result = self.render_attempt(
+            input,
+            output,
+            view,
+            external_coverages,
+            &current,
+            &mut state,
+            true,
+            &mut peak,
+        );
+        if let Err(error) = &result {
+            // A failed command buffer cannot publish its partially encoded textures. When retained
+            // previews used the working budget, run once without caches before reporting exhaustion.
+            let cached = !state.nodes.entries.is_empty() || !state.coverage.entries.is_empty();
+            state.nodes.clear();
+            state.coverage.clear();
+            if matches!(error, SceneError::Budget(_)) && cached && current() {
+                result = self.render_attempt(
+                    input,
+                    output,
+                    view,
+                    external_coverages,
+                    &current,
+                    &mut state,
+                    false,
+                    &mut peak,
+                );
+            }
+        }
+        state.receipt.peak_bytes = peak as u64;
+        state.receipt.cpu_ms = started.elapsed().as_secs_f64() * 1000.0;
+        result
+    }
+
+    fn render_attempt(
+        &self,
+        input: &metal::TextureRef,
+        output: Option<&metal::TextureRef>,
+        view: &ViewSpec,
+        external_coverages: &HashMap<String, Arc<metal::Texture>>,
+        current: &impl Fn() -> bool,
+        state: &mut ExecutionState,
+        cache_results: bool,
+        peak: &mut usize,
+    ) -> Result<Arc<metal::Texture>, SceneError> {
         if !current() {
             return Err(SceneError::Render("stale scene frame".into()));
         }
@@ -417,19 +451,18 @@ impl SceneProgram {
         if width == 0
             || height == 0
             || input.pixel_format() != MTLPixelFormat::RGBA32Float
-            || output.pixel_format() != MTLPixelFormat::RGBA32Float
-            || input.width() != output.width()
-            || input.height() != output.height()
-            || !output.usage().contains(MTLTextureUsage::ShaderWrite)
+            || output.is_some_and(|output| {
+                output.pixel_format() != MTLPixelFormat::RGBA32Float
+                    || input.width() != output.width()
+                    || input.height() != output.height()
+                    || !output.usage().contains(MTLTextureUsage::ShaderWrite)
+            })
         {
             return Err(SceneError::Invalid(
                 "scene surfaces must be matching RGBA32F textures".into(),
             ));
         }
-        let input_owned = input.to_owned();
-        let output_owned = output.to_owned();
-        let input = Arc::new(input_owned);
-        let output_surface = Arc::new(output_owned);
+        let input = Arc::new(input.to_owned());
         let flag = self
             .device
             .new_buffer(4, MTLResourceOptions::StorageModeShared);
@@ -457,25 +490,41 @@ impl SceneProgram {
             }
         }
 
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|_| SceneError::Render("scene execution state poisoned".into()))?;
         state.receipt = Receipt {
             abi: RECEIPT_ABI,
             ..Receipt::default()
         };
         let mut pool = SurfacePool::new();
         let maximum = view.surface_budget.unwrap_or(1_536 * 1024 * 1024) as usize;
-        let mut budget = SurfaceBudget::new(
-            maximum,
-            texture_bytes(width, height, MTLPixelFormat::RGBA32Float)
-                + texture_bytes(width, height, MTLPixelFormat::RGBA32Float),
-        );
+        let mut budget = SurfaceBudget::new(maximum, cache_results, peak);
+        budget.reserve(input.allocated_size() as usize)?;
+        budget.reserve(state.nodes.bytes + state.coverage.bytes)?;
+        let mut mask_ids = HashSet::new();
+        for mask in external_coverages.values() {
+            if mask_ids.insert(mask.as_ptr()) {
+                budget.reserve(mask.allocated_size() as usize)?;
+            }
+        }
         state.receipt.budget_bytes = maximum as u64;
         let tile_edge = view.tile_edge.unwrap_or(0);
         let tiles = tile_ranges(width, height, tile_edge);
         state.receipt.tiles = tiles.len() as u32;
+        // A single tile can return the evaluated surface itself, including a reference to the
+        // original input. Only a caller-supplied destination or tiled assembly requires a copy.
+        let mut destination = match output {
+            Some(output) => {
+                budget.reserve(output.allocated_size() as usize)?;
+                Some(Arc::new(output.to_owned()))
+            }
+            None if tiles.len() > 1 => Some(Arc::new(self.make_texture(
+                &mut pool,
+                &mut budget,
+                width,
+                height,
+                MTLPixelFormat::RGBA32Float,
+            )?)),
+            None => None,
+        };
         let ExecutionState {
             graph,
             coverage,
@@ -560,31 +609,34 @@ impl SceneProgram {
             }
             drop(tile_masks);
             retired.extend(owned_masks);
-            if rendered.as_ptr() != output_surface.as_ptr() {
-                let blit = command.new_blit_command_encoder();
-                blit.copy_from_texture(
-                    rendered.as_ref(),
-                    0,
-                    0,
-                    MTLOrigin { x: 0, y: 0, z: 0 },
-                    MTLSize::new(tile_width as u64, tile_height as u64, 1),
-                    output_surface.as_ref(),
-                    0,
-                    0,
-                    MTLOrigin {
-                        x: x as u64,
-                        y: y as u64,
-                        z: 0,
-                    },
-                );
-                blit.end_encoding();
+            if let Some(output_surface) = &destination {
+                if rendered.as_ptr() != output_surface.as_ptr() {
+                    let blit = command.new_blit_command_encoder();
+                    blit.copy_from_texture(
+                        rendered.as_ref(),
+                        0,
+                        0,
+                        MTLOrigin { x: 0, y: 0, z: 0 },
+                        MTLSize::new(tile_width as u64, tile_height as u64, 1),
+                        output_surface.as_ref(),
+                        0,
+                        0,
+                        MTLOrigin {
+                            x: x as u64,
+                            y: y as u64,
+                            z: 0,
+                        },
+                    );
+                    blit.end_encoding();
+                }
+                retired.push(rendered);
+            } else {
+                destination = Some(rendered);
             }
             pool.recycle(&mut retired, &mut budget);
         }
         command.commit();
         command.wait_until_completed();
-        receipt.peak_bytes = budget.peak as u64;
-        receipt.cpu_ms = started.elapsed().as_secs_f64() * 1000.0;
         if command.status() != MTLCommandBufferStatus::Completed {
             return Err(SceneError::Render("scene command buffer failed".into()));
         }
@@ -597,7 +649,7 @@ impl SceneProgram {
         if !current() {
             return Err(SceneError::Render("stale scene frame".into()));
         }
-        Ok(())
+        destination.ok_or_else(|| SceneError::Render("scene produced no image".into()))
     }
 
     fn crop_coverages(
@@ -1247,7 +1299,7 @@ impl SceneProgram {
                     coverage_cache.put(
                         key.clone(),
                         result.clone(),
-                        texture_bytes(width, height, MTLPixelFormat::R32Float),
+                        result.allocated_size() as usize,
                         budget,
                     );
                 }
@@ -1260,7 +1312,7 @@ impl SceneProgram {
                     node_cache.put(
                         key.clone(),
                         result.clone(),
-                        texture_bytes(width, height, MTLPixelFormat::RGBA32Float),
+                        result.allocated_size() as usize,
                         budget,
                     );
                 }
@@ -1314,7 +1366,6 @@ impl SceneProgram {
         if let Some(texture) = pool.take(width, height, format) {
             return Ok(texture);
         }
-        budget.reserve(texture_bytes(width, height, format))?;
         let descriptor = metal::TextureDescriptor::new();
         descriptor.set_texture_type(metal::MTLTextureType::D2);
         descriptor.set_pixel_format(format);
@@ -1322,7 +1373,15 @@ impl SceneProgram {
         descriptor.set_height(height as u64);
         descriptor.set_storage_mode(MTLStorageMode::Private);
         descriptor.set_usage(MTLTextureUsage::ShaderRead | MTLTextureUsage::ShaderWrite);
+        let estimate = self.device.heap_texture_size_and_align(&descriptor).size as usize;
+        budget.reserve(estimate)?;
         let texture = self.device.new_texture(&descriptor);
+        let actual = texture.allocated_size() as usize;
+        if actual > estimate {
+            budget.reserve(actual - estimate)?;
+        } else {
+            budget.release(estimate - actual);
+        }
         if texture.width() != width as u64 || texture.height() != height as u64 {
             return Err(SceneError::Backend(
                 "scene texture allocation failed".into(),

@@ -127,7 +127,7 @@ const S = {
   drawer: false,
   librarySidebar: true,
   zoom: false,
-  tool: 'smart',
+  tool: 'basic',
   editZoom: 1,
   editReturn: 'edit/development',
   compareMode: 'wipeHorizontal',
@@ -138,7 +138,6 @@ const S = {
   selectedLayer: 0,
   compare: false,
 };
-const noticesByPhoto = new Map();
 function editorNoticeRow(notice) {
   const error = notice.kind === 'error';
   return `<div class="editor-toast ${error ? 'error' : 'info'}" data-notice-id="${notice.id}">${icon(error ? 'warning' : 'info', 16)}
@@ -146,35 +145,26 @@ function editorNoticeRow(notice) {
     ${notice.retry ? btn('重试', notice.retry) : ''}${btn('关闭' + (error ? '错误' : '消息'), 'editor-notice-dismiss', notice.id, {icon:'close', only:true})}</div>`;
 }
 function editorNotices(photo) {
-  return `<section class="editor-notices" aria-label="当前照片的处理通知">${(noticesByPhoto.get(photo) || []).map(editorNoticeRow).join('')}</section>`;
+  const notice = Activity.toast(photo);
+  return `<section class="editor-notices" aria-label="当前照片的处理通知">${notice ? editorNoticeRow(notice) : ''}</section>`;
 }
 function notifyEditor(message, kind = 'info', photo = Studio.data.work, retry = '') {
-  const notice = {id:Studio.uid(), message, kind, retry};
-  if (!noticesByPhoto.has(photo)) noticesByPhoto.set(photo, []);
-  noticesByPhoto.get(photo).push(notice);
-  if (S.page === 'edit' && Studio.data.work === photo)
-    $('.editor-notices')?.insertAdjacentHTML('beforeend', editorNoticeRow(notice));
+  Activity.post(message,kind,photo,retry);
 }
 function resolveEditorRetry(action, photo = Studio.data.work) {
-  for (const notice of noticesByPhoto.get(photo) || []) {
-    if (notice.retry === action) notice.retry = '';
-  }
+  Activity.resolve(action,photo);
 }
 actions['editor-notice-dismiss'] = (id, _, button) => {
-  const photo = Studio.data.work;
-  const row = button.closest('[data-notice-id]');
-  if (!row || !row.closest('.edit-page') || row.closest('.edit-page').dataset.photo !== photo) return;
-  const next = (row.nextElementSibling || row.previousElementSibling)?.querySelector('[data-act=editor-notice-dismiss]');
-  const hadFocus = row.contains(document.activeElement);
-  noticesByPhoto.set(photo, (noticesByPhoto.get(photo) || []).filter(item => item.id !== id));
-  row.remove();
-  if (hadFocus) (next || $('.scene-modes [aria-pressed=true]') || $('.edit-page [data-act=goto]'))?.focus({preventScroll:true});
+  const focused = button?.closest('[data-notice-id]')?.contains(document.activeElement);
+  Activity.dismiss(id);
+  if (focused) ($('.scene-modes [aria-pressed=true]') || $('.edit-page [data-act=goto]'))?.focus({preventScroll:true});
 };
 window.addEventListener('blur', () => { document.documentElement.dataset.windowActive = 'false'; });
 window.addEventListener('focus', () => { document.documentElement.dataset.windowActive = 'true'; });
 let toastTimer;
 function notify(message, kind = 'info') {
   if (S.page === 'edit') return notifyEditor(message, kind);
+  Activity.post(message,kind);
   const n = $('#notice');
   n.textContent = message;
   n.classList.add('show');
@@ -184,6 +174,7 @@ function notify(message, kind = 'info') {
 const sheet = $('#sheet');
 let sheetOpener;
 function dialog(title, body, footer = '') {
+  delete sheet.dataset.savedResults;
   delete sheet.dataset.job;
   delete sheet.dataset.dagBatch;
   if (!sheet.open) sheetOpener = document.activeElement;
@@ -197,6 +188,7 @@ function closeSheet() {
 }
 sheet.addEventListener('close', () => {
   if (sheetOpener?.isConnected) sheetOpener.focus({ preventScroll: true });
+  else if (sheet.dataset.savedResults) $(S.beforeResultsFocus || '.results-menu summary')?.focus({preventScroll:true});
 });
 function value(name, root = sheet) {
   return root.querySelector(`[name="${name}"]`)?.value ?? '';
@@ -220,6 +212,8 @@ function mutate(label, fn) {
   notify(label);
 }
 function withPhoto(id) {
+  if (id === Studio.data.work) return;
+  Activity.leavePhoto();
   dagLeavePhoto();
   quickExitCanvas();
   S.quickView = null;
@@ -262,6 +256,7 @@ function route() {
   const raw = decodeURI(location.hash.slice(1)) || 'library/project/river';
   document.body.dataset.route = raw;
   const [page, ...rest] = raw.split('/');
+  if (S.page === 'edit' && page !== 'edit') Activity.leavePhoto();
   S.page = ['library', 'edit', 'export', 'tools', 'settings', 'jobs'].includes(page) ? page : 'library';
   S.sub = rest.join('/');
   if (S.page === 'library') {
@@ -270,7 +265,8 @@ function route() {
     Studio.save();
   }
   if (S.page === 'edit') {
-    S.tool = S.sub === 'dag' ? 'basic' : Object.hasOwn(editTools, S.sub) || ['agent', 'versions'].includes(S.sub) ? S.sub : 'smart';
+    S.tool = S.sub === 'dag' ? 'basic' : Object.hasOwn(editTools, S.sub) || S.sub === 'agent' ? S.sub : 'basic';
+    if (S.sub === 'versions') queueMicrotask(() => { actions['open-versions'](S.pendingResult); S.pendingResult=null; });
     if (S.sub === 'dag' && !compatibilityGraphMode) { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
     if (['masks','repair'].includes(S.tool)) { S.canvasRouteTool = S.tool === 'masks' ? 'mask' : 'remove'; S.tool = 'basic'; }
     S.editReturn = 'edit/' + (S.sub || 'development');
@@ -294,11 +290,7 @@ actions.workflow = (page) => {
     if (S.page !== 'export') showExport();
   } else go('library/' + S.scope);
 };
-actions['export-choice'] = (value) => {
-  closeSheet();
-  const id = Studio.data.work;
-  showExport(value === 'draft' ? Studio.candidate(id, '初修').id : Studio.edit(id).adopted);
-};
+
 actions.drawer = () => {
   if (compactLibraryNavigation.matches) S.drawer = !S.drawer;
   else S.librarySidebar = !S.librarySidebar;

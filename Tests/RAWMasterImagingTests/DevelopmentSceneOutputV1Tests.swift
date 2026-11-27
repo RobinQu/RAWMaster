@@ -45,6 +45,26 @@ final class DevelopmentSceneOutputV1Tests: XCTestCase {
     }
   }
 
+  func testHighlightCeilingPreservesChromaticityAndAlphaAndLeavesSDRIdentical() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let raw = try upload([.init(36, 11, 4, 1), .init(9, 2.75, 1, 0.25), .init(0.2, 0.1, 0.03, 1)], device: device)
+    let scene = DevelopmentSceneMetalV1.Image(texture: raw, port: .working)
+    for target in Output.Target.allCases {
+      let renderer = try Output(device: device, target: target)
+      let baseline = try read(renderer.render(scene).texture)
+      let capped = try read(renderer.render(scene, hdrLimitEV: 1).texture)
+      if target == .sdr709 { XCTAssertEqual(capped, baseline); continue }
+      let factor = 2 / max(baseline[0].x, baseline[0].y, baseline[0].z)
+      XCTAssertLessThan(factor, 1)
+      for channel in 0..<3 {
+        XCTAssertEqual(capped[0][channel], baseline[0][channel] * factor, accuracy: 1e-5)
+        XCTAssertEqual(capped[1][channel], capped[0][channel] * 0.25, accuracy: 1e-5)
+      }
+      XCTAssertEqual(capped[1].w, 0.25)
+      XCTAssertEqual(capped[2], baseline[2])
+    }
+  }
+
   func testEncodingAnchorsAndInvalidBoundaries() throws {
     XCTAssertEqual(try Output.Target.sdr709.encodeChannel(0),0)
     XCTAssertEqual(try Output.Target.sdr709.encodeChannel(0.18),0.46135613,accuracy:1e-7)

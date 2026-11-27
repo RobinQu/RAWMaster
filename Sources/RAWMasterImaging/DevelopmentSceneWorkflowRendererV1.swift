@@ -66,6 +66,6 @@ final class DevelopmentSceneWorkflowRendererV1 {
     } else {
       branch = image
     }
-    return try DevelopmentSceneOutputV1(device: device, target: target).render(branch)
+    return try DevelopmentSceneOutputV1(device: device, target: target).render(branch, hdrLimitEV: output.hdrHighlightLimitEV)
   }
 }

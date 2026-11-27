@@ -9,7 +9,7 @@ struct WorkbenchToolbarActions: View {
             if model.mode == .single {
                 if model.canOpenNativeEditing && !model.isNativeEditing {
                     Button("编辑照片") { model.openNativeEditing() }
-                        .help("初修、AI 精修与版本").accessibilityIdentifier("editing.open")
+                        .help("调整当前照片，或使用 Quick Prompt 编辑").accessibilityIdentifier("editing.open")
                 }
                 if model.canExport {
                     if model.canOpenNativeEditing {

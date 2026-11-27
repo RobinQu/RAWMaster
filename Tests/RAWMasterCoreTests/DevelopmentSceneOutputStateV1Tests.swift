@@ -22,6 +22,18 @@ final class DevelopmentSceneOutputStateV1Tests: XCTestCase {
     XCTAssertThrowsError(try Output.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: -.infinity))
   }
 
+  func testOptionalHDRLimitKeepsLegacyPayloadAndSurvivesTrimChanges() throws {
+    let trim = try Output.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
+    let original = Output.Version(sdrTrim: trim)
+    let legacy = try JSONEncoder().encode(original)
+    XCTAssertFalse(String(decoding: legacy, as: UTF8.self).contains("hdrHighlightLimitEV"))
+    XCTAssertEqual(try original.replacingHDRLimit(Output.Version.maximumHDRLimitEV), original)
+    let limited = try original.replacingHDRLimit(0.5)
+    XCTAssertEqual(try JSONDecoder().decode(Output.Version.self, from: JSONEncoder().encode(limited)), limited)
+    XCTAssertEqual(limited.replacingSDRTrim(try .init(exposureEV: 1, mapping: .balanced, highlightCompression: 0)).hdrHighlightLimitEV, 0.5)
+    for ev in [Double.nan, .infinity, -1, 4] { XCTAssertThrowsError(try original.replacingHDRLimit(ev)) }
+  }
+
   func testViewingDoesNotRetargetFrozenDelivery() throws {
     let version = Output.Version(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
     let source = EditingSourceSnapshot(projectID: "project", assetID: "asset", contentSHA256: String(repeating: "a", count: 64),

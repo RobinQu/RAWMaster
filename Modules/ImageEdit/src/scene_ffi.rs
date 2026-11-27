@@ -4,7 +4,7 @@ use crate::scene::{
     metal_exec::{Receipt, SceneProgram},
     ViewSpec,
 };
-use foreign_types::ForeignTypeRef;
+use foreign_types::{ForeignType, ForeignTypeRef};
 use std::collections::HashMap;
 use std::ffi::{c_char, c_void, CStr};
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -89,6 +89,7 @@ pub unsafe extern "C" fn rm_scene_program_render_v1(
         program,
         input,
         output,
+        std::ptr::null_mut(),
         view_json,
         view_bytes,
         std::ptr::null(),
@@ -118,6 +119,42 @@ pub unsafe extern "C" fn rm_scene_program_render_coverages_v1(
         program,
         input,
         output,
+        std::ptr::null_mut(),
+        view_json,
+        view_bytes,
+        coverage_ids,
+        coverage_textures,
+        coverage_count,
+        revision,
+        current,
+        context,
+    )
+}
+
+/// Returns a +1 Metal texture. A single-tile identity plan can return the input texture.
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_program_render_surface_v1(
+    program: *const SceneProgram,
+    input: *mut c_void,
+    retained_output: *mut *mut c_void,
+    view_json: *const u8,
+    view_bytes: usize,
+    coverage_ids: *const *const c_char,
+    coverage_textures: *const *mut c_void,
+    coverage_count: usize,
+    revision: u64,
+    current: Option<Current>,
+    context: *mut c_void,
+) -> i32 {
+    if retained_output.is_null() {
+        return 1;
+    }
+    retained_output.write(std::ptr::null_mut());
+    render(
+        program,
+        input,
+        std::ptr::null_mut(),
+        retained_output,
         view_json,
         view_bytes,
         coverage_ids,
@@ -133,6 +170,7 @@ unsafe fn render(
     program: *const SceneProgram,
     input: *mut c_void,
     output: *mut c_void,
+    retained_output: *mut *mut c_void,
     view_json: *const u8,
     view_bytes: usize,
     coverage_ids: *const *const c_char,
@@ -146,7 +184,7 @@ unsafe fn render(
         let Some(program) = program.as_ref() else {
             return 1;
         };
-        if input.is_null() || output.is_null() {
+        if input.is_null() || (output.is_null() && retained_output.is_null()) {
             return 1;
         }
         let view: ViewSpec = if view_json.is_null() || view_bytes == 0 {
@@ -163,7 +201,7 @@ unsafe fn render(
                 .unwrap_or(true)
         };
         let input = metal::TextureRef::from_ptr(input.cast());
-        let output = metal::TextureRef::from_ptr(output.cast());
+        let output = (!output.is_null()).then(|| metal::TextureRef::from_ptr(output.cast()));
         let mut coverages: HashMap<String, Arc<metal::Texture>> = HashMap::new();
         if coverage_count > 0 {
             if coverage_ids.is_null() || coverage_textures.is_null() {
@@ -184,7 +222,12 @@ unsafe fn render(
             }
         }
         match program.render(input, output, &view, &coverages, check) {
-            Ok(()) => 0,
+            Ok(result) => {
+                if !retained_output.is_null() {
+                    retained_output.write(result.as_ref().to_owned().into_ptr().cast());
+                }
+                0
+            }
             Err(crate::scene::SceneError::Invalid(_)) => 1,
             Err(crate::scene::SceneError::Backend(_)) => 2,
             Err(crate::scene::SceneError::Render(message)) if message.contains("stale") => 5,

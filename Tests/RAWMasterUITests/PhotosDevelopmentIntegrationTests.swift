@@ -128,6 +128,41 @@ final class PhotosDevelopmentIntegrationTests: XCTestCase {
         XCTAssertEqual(editing.recipe, current); XCTAssertFalse(editing.developmentSession.canUndo)
         await editing.shutdown()
     }
+    @MainActor func testFocusResumesWithTheSameMeasurementAndRejectsAnOldPixelResult() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend()
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: backend)
+        try await ready(editing, asset: fixture.assets[0])
+        let original = try await activate(editing)
+        try await promptWait { editing.developmentHistogram != nil }
+        let first = editing.developmentHistogram, count = await backend.displayRequests.count
+        editing.suspendDevelopmentFocus()
+        XCTAssertNil(editing.developmentContext)
+        XCTAssertEqual(editing.developmentHistogram, first)
+        let resumed = try await activate(editing)
+        XCTAssertNotEqual(resumed, original)
+        await settled(editing)
+        let afterFocus = await backend.displayRequests.count
+        XCTAssertEqual(afterFocus, count)
+        let gate = PhotosAnalysisGate()
+        await backend.setDisplayGate(gate)
+        do {
+            editing.setRecipe { $0.exposureEV = 0.5 }
+            try await promptWait { await gate.didEnter }
+            editing.suspendDevelopmentFocus()
+            let canceled = await gate.didCancel
+            XCTAssertFalse(canceled)
+            await backend.setDisplayGate(nil)
+            _ = try await activate(editing)
+            editing.setRecipe { $0.exposureEV = 1.0 }
+            await gate.release()
+            try await promptWait { await backend.displayRequests.last?.preview.recipe == editing.recipe && editing.developmentHistogram != nil }
+            let total = await backend.displayRequests.count
+            XCTAssertEqual(total, count + 2)
+        } catch { await gate.release(); await editing.shutdown(); throw error }
+        await editing.shutdown()
+    }
+
     @MainActor func testDisplayHistogramUsesTypedBackgroundRequestWithoutChangingRecipeOrAutoRoute() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
         let backend = PhotosDevelopmentBackend()
@@ -778,7 +813,7 @@ actor PhotosDevelopmentBackend: EditingPreviewBackend {
     }
     func joinThumbnails(_ registration: DevelopmentThumbnailRegistration) async { thumbnailJoins += 1 }
     func setFactsGate(_ gate: PhotosAnalysisGate) { factsGate = gate }
-    func setDisplayGate(_ gate: PhotosAnalysisGate) { displayGate = gate }
+    func setDisplayGate(_ gate: PhotosAnalysisGate?) { displayGate = gate }
     private func noteProgress(_ box: ProgressPresentationBox, request: DevelopmentPreviewRequest) {
         progressSubmissions.append(.init(box: box, request: request)); progressSubmitted?(progressSubmissions.count)
     }
@@ -2161,7 +2196,7 @@ extension PhotosDevelopmentIntegrationTests {
         let before = editing.recipe, versions = editing.versions.count
         for held in [false, true] {
             editing.openExport()
-            XCTAssertTrue(editing.showExport); XCTAssertFalse(editing.showDraftExportChoice)
+            XCTAssertTrue(editing.showExport)
             XCTAssertEqual(editing.exportVersion?.recipe, before)
             editing.showExport = false
             let gate = PhotosAnalysisGate(); await backend.setGate(gate)
@@ -2340,7 +2375,7 @@ extension PhotosDevelopmentIntegrationTests {
                     editing.undoDevelopment(context: context, redo: redo) // Even another menu command during actual retirement is consumed.
                     XCTAssertEqual(editing.recipe, before); XCTAssertEqual(editing.developmentSession.history.entryCount, count)
                     editing.saveDevelopment(context: context); editing.openExport()
-                    XCTAssertFalse(editing.saving); XCTAssertFalse(editing.showDraftExportChoice)
+                    XCTAssertFalse(editing.saving)
                     await gate.release(); await localFinished(editing)
                     XCTAssertFalse(editing.developmentRedEyeAutomaticInProgress)
                     XCTAssertEqual(editing.recipe, before); XCTAssertEqual(editing.developmentSession.history.entryCount, count)
@@ -3589,7 +3624,7 @@ extension PhotosDevelopmentIntegrationTests {
             let exportEditor = numberEditor(editing, context: current, didWrite: { writes += 1 }); hosts.append(exportEditor)
             _ = try exportEditor.enter("0.62")
             editing.openExport()
-            XCTAssertEqual(writes, 2); XCTAssertFalse(editing.showDraftExportChoice)
+            XCTAssertEqual(writes, 2)
             XCTAssertTrue(editing.showExport); XCTAssertFalse(editing.saving)
             XCTAssertEqual(editing.exportVersion?.recipe.adjustmentsV3?.color.saturation, 0.62)
             XCTAssertEqual(editing.versions.count, 2)

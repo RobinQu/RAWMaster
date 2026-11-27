@@ -91,20 +91,38 @@ final class DevelopmentSceneGraphRendererV1Tests: XCTestCase {
     let geometry = Renderer.Geometry(width: 32, height: 16)
     let budget = raw.texture.allocatedSize, brighter = grade(ev: 7)
     let mix = Node(name: "Parallel", operation: .parallel(base: .input, layers: [.init(.node(brighter.id), weight: 0)], enabled: true))
-    let noAllocation = try Renderer(device: device, surfaceBudget: budget)
-    XCTAssertTrue(try noAllocation.prepareFinal(raw, geometry: geometry, graph: workflow([brighter, mix], final: mix)).image.texture === raw.texture)
-    XCTAssertThrowsError(try noAllocation.prepareFinal(raw, geometry: geometry, graph: workflow([brighter], final: brighter))) {
-      XCTAssertEqual($0 as? Renderer.Failure, .surfaceBudget)
-    }
     let d = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: 32, height: 16, mipmapped: false)
     d.storageMode = .private; d.usage = [.shaderRead, .shaderWrite]
-    let bounded = try Renderer(device: device, surfaceBudget: budget + 2 * device.heapTextureSizeAndAlign(descriptor: d).size)
+    let chainBudget = budget + 2 * device.heapTextureSizeAndAlign(descriptor: d).size
     var chain: [Node] = [], edge = Graph.Endpoint.input
     for i in 0..<64 {
       let n = grade(input: edge, ev: i % 2 == 0 ? 1 : -1); chain.append(n); edge = .node(n.id)
     }
-    let final = try bounded.prepareFinal(raw, geometry: geometry, graph: workflow(chain, final: XCTUnwrap(chain.last)))
-    XCTAssertEqual(try read(final.image.texture), try read(raw.texture))
+    let identity = try workflow([brighter, mix], final: mix)
+    let single = try workflow([brighter], final: brighter)
+    let sequence = try workflow(chain, final: XCTUnwrap(chain.last))
+    let original = try read(raw.texture)
+    for backend in [RustSceneGraphRenderer.Mode.swift, .rust] {
+      let noAllocation = try Renderer(device: device, surfaceBudget: budget, backend: backend)
+      XCTAssertTrue(try noAllocation.prepareFinal(raw, geometry: geometry, graph: identity).image.texture === raw.texture)
+      XCTAssertEqual(noAllocation.lastReceipt?.dispatches, 0)
+      XCTAssertEqual(noAllocation.lastReceipt?.peakBytes, budget)
+      XCTAssertThrowsError(try noAllocation.prepareFinal(raw, geometry: geometry, graph: single)) {
+        XCTAssertEqual($0 as? Renderer.Failure, .surfaceBudget)
+      }
+      let bounded = try Renderer(device: device, surfaceBudget: chainBudget, backend: backend)
+      for revision: UInt64 in [0, 1] {
+        let final = try bounded.prepareFinal(raw, geometry: geometry, graph: sequence, sourceRevision: revision)
+        XCTAssertEqual(try read(final.image.texture), original)
+        let receipt = try XCTUnwrap(bounded.lastReceipt)
+        XCTAssertEqual(receipt.backend, backend == .rust ? .rust : .swift)
+        XCTAssertEqual(receipt.dispatches, 64)
+        XCTAssertLessThanOrEqual(receipt.peakBytes, chainBudget)
+        if backend == .rust {
+          print("scene surface budget · revision \(revision) · input \(budget) B · 64 dispatches · peak \(receipt.peakBytes) / \(chainBudget) B")
+        }
+      }
+    }
   }
 
   func testOptInGraphSurfacePerformance() throws {

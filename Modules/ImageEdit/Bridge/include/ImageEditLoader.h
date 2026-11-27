@@ -64,6 +64,10 @@ int32_t rm_image_host_scene_render_coverages(const RMImageRuntime *runtime,
     const RMSceneProgram *program, void *input, void *output, const uint8_t *view,
     size_t view_bytes, const char *const *coverage_ids, void *const *coverage_textures,
     size_t coverage_count, uint64_t revision, RMSceneIsCurrent current, void *context);
+int32_t rm_image_host_scene_render_surface(const RMImageRuntime *runtime,
+    const RMSceneProgram *program, void *input, void **retained_output, const uint8_t *view,
+    size_t view_bytes, const char *const *coverage_ids, void *const *coverage_textures,
+    size_t coverage_count, uint64_t revision, RMSceneIsCurrent current, void *context);
 int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,
     const RMSceneProgram *program, RMSceneReceiptV1 *out);
 void rm_image_host_scene_close(const RMImageRuntime *runtime, RMSceneProgram *program);

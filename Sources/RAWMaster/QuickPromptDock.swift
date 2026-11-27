@@ -327,7 +327,11 @@ struct QuickPromptDock<CanvasControls: View>: View {
                 Button("返回", action: editing.leaveQuickPromptReview)
                 Button("丢弃", action: editing.discardQuickPromptReview)
                 Spacer(minLength: 0)
-                if !editing.canAdoptQuickPrompt { Text("基线或纪实策略已变更").font(.caption).foregroundStyle(.secondary) }
+                if !editing.canAdoptQuickPrompt {
+                    Button("已有编辑结果…") { editing.showSavedResults(review.version.id) }
+                        .help("基线或纪实策略已变更，可以查看已保存的结果。")
+                        .accessibilityIdentifier("editing.quickPrompt.savedResults")
+                }
                 Button("应用到照片", action: editing.applyQuickPromptReview).buttonStyle(.borderedProminent)
                     .disabled(!editing.canAdoptQuickPrompt || editing.saving)
                     .accessibilityIdentifier("editing.quickPrompt.adopt")

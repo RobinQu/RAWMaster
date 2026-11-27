@@ -4,10 +4,13 @@ import Foundation
 /// Canonical JSON fingerprints exclude mutable catalogue annotations and file locations.
 public enum EditingFingerprint {
   private static let hexDigits = Array("0123456789abcdef".utf8)
-  public static func of<T: Encodable>(_ value: T) throws -> String {
+  static func digest<T: Encodable>(of value: T) throws -> SHA256.Digest {
     let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
     encoder.userInfo[DevelopmentColorLUT.fingerprintOnly] = true
-    let digest = SHA256.hash(data: try encoder.encode(value))
+    return SHA256.hash(data: try encoder.encode(value))
+  }
+  public static func of<T: Encodable>(_ value: T) throws -> String {
+    let digest = try digest(of: value)
     var hex = [UInt8]()
     hex.reserveCapacity(64)
     for byte in digest {
@@ -248,6 +251,16 @@ public struct EditingVersion: Codable, Equatable, Sendable, Identifiable {
     self.source = source; self.recipe = recipe; self.artifact = artifact; self.configuration = configuration; self.createdAt = createdAt
   }
 }
+/// Companion to the live editing draft. Immutable versions and render fingerprints contain only their active recipe.
+public struct DevelopmentAppearanceAlternate: Codable, Equatable, Sendable {
+  public let recipe: DevelopmentRecipe
+  public let presetAdoptions: [DevelopmentPresetAdoption]?
+  public init(recipe: DevelopmentRecipe, presetAdoptions: [DevelopmentPresetAdoption]? = nil) {
+    self.recipe = recipe
+    self.presetAdoptions = presetAdoptions
+  }
+}
+
 public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
   public var id: String
   public var source: EditingSourceSnapshot
@@ -257,6 +270,7 @@ public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
   /// The live recipe is separate from immutable candidates. Missing fields in older JSON mean no live edit.
   public var liveRecipe: DevelopmentRecipe?
   public var liveParentVersionID: String?
+  public var liveAlternateAppearance: DevelopmentAppearanceAlternate?
   public var liveRevision: Int?
   public var livePresetAdoptions: [DevelopmentPresetAdoption]?
   public var strictDocumentary: Bool?

@@ -450,6 +450,26 @@ public enum RAWMasterImageKernel {
                            tileEdge: Int? = nil, sourceRevision: UInt64 = 0,
                            coverages: [UUID: any MTLTexture] = [:],
                            revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true }) throws {
+            _ = try renderResult(input: input, output: output, view: view, groupPath: groupPath,
+                origin: origin, geometry: geometry, surfaceBudget: surfaceBudget, tileEdge: tileEdge,
+                sourceRevision: sourceRevision, coverages: coverages, revision: revision, isCurrent: isCurrent)
+        }
+
+        /// Returns the completed graph surface. A single-tile graph does not need a separate destination texture.
+        public func renderSurface(input: any MTLTexture, view: SceneView = .final, groupPath: [UUID] = [],
+                                  origin: SIMD2<Int> = .zero, geometry: SIMD2<Int>? = nil,
+                                  surfaceBudget: Int? = nil, tileEdge: Int? = nil, sourceRevision: UInt64 = 0,
+                                  coverages: [UUID: any MTLTexture] = [:],
+                                  revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true }) throws -> any MTLTexture {
+            try renderResult(input: input, output: nil, view: view, groupPath: groupPath, origin: origin,
+                geometry: geometry, surfaceBudget: surfaceBudget, tileEdge: tileEdge, sourceRevision: sourceRevision,
+                coverages: coverages, revision: revision, isCurrent: isCurrent)
+        }
+
+        private func renderResult(input: any MTLTexture, output: (any MTLTexture)?, view: SceneView, groupPath: [UUID],
+                                  origin: SIMD2<Int>, geometry: SIMD2<Int>?, surfaceBudget: Int?, tileEdge: Int?,
+                                  sourceRevision: UInt64, coverages: [UUID: any MTLTexture], revision: UInt64,
+                                  isCurrent: @escaping (UInt64) -> Bool) throws -> any MTLTexture {
             var payload: [String: Any] = switch view {
             case .final: ["target": "final"]
             case .bypass: ["target": "bypass"]
@@ -463,16 +483,27 @@ public enum RAWMasterImageKernel {
             if sourceRevision != 0 { payload["sourceRevision"] = sourceRevision }
             let viewData = try JSONSerialization.data(withJSONObject: payload)
             let entries = Array(coverages)
+            var retained: UnsafeMutableRawPointer?
             let status = withExtendedLifetime((input, output, entries.map(\.1))) {
                 RAWMasterImageKernel.withFrameAuthorization(isCurrent) { current, context in
                     viewData.withUnsafeBytes { bytes in
-                        if entries.isEmpty {
-                            return rm_image_host_scene_render(runtime.handle, program,
-                                Unmanaged.passUnretained(input as AnyObject).toOpaque(),
-                                Unmanaged.passUnretained(output as AnyObject).toOpaque(),
-                                bytes.bindMemory(to: UInt8.self).baseAddress, bytes.count,
-                                revision, current, context)
+                        func render(_ ids: UnsafePointer<UnsafePointer<CChar>?>?,
+                                    _ textures: UnsafePointer<UnsafeMutableRawPointer?>?) -> Int32 {
+                            let source = Unmanaged.passUnretained(input as AnyObject).toOpaque()
+                            let view = bytes.bindMemory(to: UInt8.self).baseAddress
+                            guard let output else {
+                                return rm_image_host_scene_render_surface(runtime.handle, program, source, &retained,
+                                    view, bytes.count, ids, textures, entries.count, revision, current, context)
+                            }
+                            let target = Unmanaged.passUnretained(output as AnyObject).toOpaque()
+                            if entries.isEmpty {
+                                return rm_image_host_scene_render(runtime.handle, program, source, target,
+                                    view, bytes.count, revision, current, context)
+                            }
+                            return rm_image_host_scene_render_coverages(runtime.handle, program, source, target,
+                                view, bytes.count, ids, textures, entries.count, revision, current, context)
                         }
+                        if entries.isEmpty { return render(nil, nil) }
                         var names: [CChar] = [], offsets: [Int] = []
                         for entry in entries {
                             offsets.append(names.count)
@@ -486,12 +517,7 @@ public enum RAWMasterImageKernel {
                             var ids: [UnsafePointer<CChar>?] = offsets.map { UnsafePointer(buffer.baseAddress! + $0) }
                             return ids.withUnsafeMutableBufferPointer { idPointers in
                                 textures.withUnsafeMutableBufferPointer { texturePointers in
-                                    rm_image_host_scene_render_coverages(runtime.handle, program,
-                                        Unmanaged.passUnretained(input as AnyObject).toOpaque(),
-                                        Unmanaged.passUnretained(output as AnyObject).toOpaque(),
-                                        bytes.bindMemory(to: UInt8.self).baseAddress, bytes.count,
-                                        idPointers.baseAddress, texturePointers.baseAddress,
-                                        entries.count, revision, current, context)
+                                    render(idPointers.baseAddress, texturePointers.baseAddress)
                                 }
                             }
                         }
@@ -499,7 +525,12 @@ public enum RAWMasterImageKernel {
                 }
             }
             switch status {
-            case 0: break
+            case 0:
+                if let output { return output }
+                guard let retained, let result = Unmanaged<AnyObject>.fromOpaque(retained).takeRetainedValue() as? any MTLTexture else {
+                    throw Failure.renderFailed
+                }
+                return result
             case 1: throw Failure.invalidParameters
             case 2: throw Failure.unavailable
             case 5: throw Failure.staleFrame

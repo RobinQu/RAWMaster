@@ -60,16 +60,7 @@ function showExport(preferred = null) {
     );
     return;
   }
-  if (editing && Studio.dirty(focus) && preferred === null) {
-    dialog(
-      '导出哪个版本？',
-      '<p>当前照片有未保存的初修调整。</p>',
-      btn('取消', 'close') +
-        btn('导出采用版本', 'export-choice', 'adopted') +
-        btn('保存新版本并导出', 'export-choice', 'draft', { cls: 'primary' }),
-    );
-    return;
-  }
+  if (editing && preferred === null && (Studio.dirty(focus) || JSON.stringify(Studio.edit(focus).recipe) !== JSON.stringify(Studio.freshRecipe()))) preferred = 'draft';
   handoffDelivery(ids, editing ? '编辑所选' : '资料库所选', { version: preferred });
 }
 actions['export-visible'] = () => {
@@ -77,7 +68,7 @@ actions['export-visible'] = () => {
   closeSheet();
   handoffDelivery(ids, '当前浏览范围');
 };
-actions['version-export'] = (id) => handoffDelivery([Studio.data.work], '作品版本', { version: id });
+actions['version-export'] = (id) => { closeSheet(); handoffDelivery([Studio.data.work], '已有编辑结果', {version:id}); };
 actions['original-review'] = (kind) => {
   const selected = new Set(activeIDs());
   const ids = Studio.visible(S.scope).filter(
@@ -181,6 +172,7 @@ window.addEventListener('message', (event) => {
     j = { id, delivery: frame.delivery };
     jobs.unshift(j);
   }
+  const previousState = j.state;
   Object.assign(j, {
     kind: m.kind,
     state: m.photoReceipt && ['running','done','unknown','failed','cancelled'].includes(m.state) ? m.state
@@ -193,6 +185,8 @@ window.addEventListener('message', (event) => {
     frame.dataset.receipt = m.id;
   } else { delete frame.dataset.receipt; }
   frame.dataset.running = String(m.running);
+  if (previousState !== j.state) Activity.log('成片交付', (j.kind || '交付任务') + ' · ' + (j.deliveryStatus || jobNames[j.state]));
+  else Activity.refresh();
   Studio.save();
   if (frame.hidden && !m.running) frame.remove();
   if (S.page === 'jobs') {

@@ -1,5 +1,7 @@
 # 037 · HDR 实现与验收记录
 
+下文保留各次签名包的原始操作和测量。确认工作表、「保存候选」和「作品版本」是当时的入口。本轮在「色彩外观」直接切换，从编辑冻结 032 输入，旧结果可在快照更多中找回。[本轮规格与走查](../025-editing-workspace/appearance-activity.md) [两种引擎的调整范围与实拍回归](evidence/appearance-roundtrip-20261127.md)
+
 记录从 2026-11-26 原型、诊断文件，到 `main@b238c0ab` 的默认 HDR 入口和 032。应用阶段、显示物理证据及文件交付各自归档。[本次 main 实拍复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
 ## 同一签名 Release 首条闭环

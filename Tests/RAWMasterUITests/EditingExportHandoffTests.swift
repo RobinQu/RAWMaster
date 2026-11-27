@@ -42,10 +42,14 @@ final class EditingExportHandoffTests: XCTestCase {
         XCTAssertEqual(try dimensions(cropped), CGSize(width: 512, height: 684))
         XCTAssertFalse(editing.showExport || model.showExport)
         model.activateWorkflow(.edit)
-        editing.stage = .versions
+        let previousRecipe = editing.recipe
         let savedOriginal = try XCTUnwrap(editing.versions.first { $0.id == work.originalVersionID })
-        editing.selectVersion(savedOriginal)
-        model.openExportWorkspace(.render)
+        editing.showSavedResults(savedOriginal.id)
+        XCTAssertEqual(editing.stage, .development)
+        XCTAssertEqual(editing.recipe, previousRecipe)
+        XCTAssertEqual(editing.work?.adoptedVersionID, work.originalVersionID)
+        model.openSavedResultExport(savedOriginal)
+        XCTAssertNil(editing.savedResultsSelection)
         let frozen = try await editing.workbenchExportInput(for: asset.id)
         XCTAssertEqual(frozen?.1.id, savedOriginal.id)
         XCTAssertEqual(frozen?.1.recipe, savedOriginal.recipe)
@@ -56,9 +60,8 @@ final class EditingExportHandoffTests: XCTestCase {
         let full = try await model.exportWorkbenchPhotos(directory: destination, namingTemplate: "version-{index}",
             configuration: .init(format: .tiff16), includedIDs: [asset.id]) { _, _, _ in }
         XCTAssertEqual(try dimensions(XCTUnwrap(full.first)), CGSize(width: 1024, height: 684))
-        editing.stage = .versions
         model.activateWorkflow(.edit)
-        XCTAssertEqual(editing.stage, .versions)
+        XCTAssertEqual(editing.stage, .development)
         XCTAssertEqual(editing.selectedVersionID, savedOriginal.id)
         XCTAssertEqual(try Data(contentsOf: original), try Data(contentsOf: sample))
         await editing.shutdown()
@@ -84,15 +87,16 @@ final class EditingExportHandoffTests: XCTestCase {
         let position = try XCTUnwrap(model.assets.firstIndex { $0.id == asset.id })
         model.assets[position].availability = .missing
         try await wait { !editing.loading && !editing.sourceReady && editing.work != nil }
-        editing.stage = .versions
-        editing.selectVersion(archived)
-        model.openExportWorkspace(.render)
+        editing.showSavedResults(archived.id)
+        model.openSavedResultExport(archived)
+        let input = try await editing.workbenchExportInput(for: asset.id)
+        XCTAssertEqual(input?.1.id, archived.id)
         let target = fixture.root.appendingPathComponent("archive-delivery")
         let files = try await model.exportWorkbenchPhotos(directory: target, namingTemplate: "archived",
             configuration: .init(format: .png16), includedIDs: [asset.id]) { _, _, _ in }
         XCTAssertEqual(try dimensions(XCTUnwrap(files.first)), CGSize(width: 60, height: 80))
         XCTAssertFalse(FileManager.default.fileExists(atPath: asset.resolvedURL.path))
-        XCTAssertEqual(editing.exportVersionID, archived.id)
+        XCTAssertNil(editing.savedResultsSelection)
         XCTAssertFalse(editing.showExport || model.showExport)
         await editing.shutdown()
     }

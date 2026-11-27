@@ -10,6 +10,7 @@ private let panelColor = AppPalette.panel
 
 struct WorkbenchView: View {
     @EnvironmentObject var model: AppModel
+    @Environment(\.openWindow) private var openWindow
     @State private var sidebarBeforeEditing: Bool?
     @State private var appearanceBeforeEditing: NSAppearance?
     @State private var showFluxFirstRun = false
@@ -97,6 +98,13 @@ struct WorkbenchView: View {
             }
             ToolbarItem(placement: .principal) {
                 WorkflowTabs()
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button { openWindow(id: "background-activity") } label: {
+                    Label("后台信息", systemImage: "waveform.path.ecg").overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+                }
+                .labelStyle(.iconOnly).help("后台信息")
+                .accessibilityLabel("后台信息").accessibilityIdentifier("workbench.backgroundActivity")
             }
         }
         .navigationTitle("RAWMaster")

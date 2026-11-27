@@ -86,7 +86,7 @@ final class NativeEditingRealRAWTests: XCTestCase {
         profile.configuration["licenseScope"] = "research-evaluation"
         profile.configuration["decoder"] = environment["RAWMASTER_EDITING_TEXTURE_FIX"] == "1" ? "texture_fix" : "stock"
         try await controller.saveProfile(profile, secret: nil); controller.selectedProfileID = profile.id
-        controller.stage = .ai
+        controller.stage = .versions
         controller.prompt = "自然增强照片，保留主体、构图、几何与真实细节。"
         XCTAssertNil(controller.providerOverride)
         XCTAssertTrue(controller.canGenerate, controller.message ?? "local profile not ready")

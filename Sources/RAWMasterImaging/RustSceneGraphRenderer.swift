@@ -25,12 +25,12 @@ final class RustSceneGraphRenderer {
         }
     }
 
-    func render(input: any MTLTexture, output: any MTLTexture,
+    func render(input: any MTLTexture,
                 graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
                 origin: SIMD2<Int>, geometry: SIMD2<Int>,
                 tileEdge: Int?, sourceRevision: UInt64,
                 coverages: [UUID: any MTLTexture] = [:]) throws
-      -> RAWMasterImageKernel.SceneProgram.SceneReceipt {
+      -> (texture: any MTLTexture, receipt: RAWMasterImageKernel.SceneProgram.SceneReceipt) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(Document(graph: graph.graph))
@@ -53,12 +53,12 @@ final class RustSceneGraphRenderer {
         case .node(let id): .node(id.uuidString)
         }
         do {
-            try program.render(input: input, output: output, view: sceneView, groupPath: view.groupPath,
+            let texture = try program.renderSurface(input: input, view: sceneView, groupPath: view.groupPath,
                                origin: origin, geometry: geometry, surfaceBudget: surfaceBudget,
                                tileEdge: tileEdge, sourceRevision: sourceRevision,
                                coverages: coverages)
             guard let receipt = program.receipt() else { throw RAWMasterImageKernel.Failure.renderFailed }
-            return receipt
+            return (texture, receipt)
         } catch RAWMasterImageKernel.Failure.surfaceBudget {
             throw DevelopmentSceneGraphRendererV1.Failure.surfaceBudget
         }

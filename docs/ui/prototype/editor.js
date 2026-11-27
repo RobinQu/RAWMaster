@@ -65,12 +65,11 @@ const editTools = {
       ['balance', '平衡'],
     ],
   ],
-  smart: ['智能编辑', []],
+  smart: ['智能预设', []],
   masks: ['蒙版', []],
   repair: ['修复', []],
 };
 const panelIcons = {
-  smart: 'spark',
   basic: 'sliders',
   tones: 'curve',
   color: 'mix',
@@ -80,6 +79,7 @@ const panelIcons = {
   grading: 'grading',
   masks: 'mask',
   repair: 'repair',
+  smart: 'spark',
 };
 const currentEdit = () => canvasToolEdit();
 const toneBands = [
@@ -215,7 +215,7 @@ function presetList() {
       <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
       ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
       ${filterDirectory(recipe)}</div>` : ''}</section>
-    <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2>${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}</div>
+    <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2><div class="snapshot-actions">${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}<details class="snapshot-menu results-menu"><summary aria-label="更多快照操作">${icon('ellipsis',15)}</summary><div>${btn('已有编辑结果…','open-versions')}</div></details></div></div>
       <div class="snapshot-list">${e.snapshots.map((x, i) => `<div class="preset-item">
         ${btn(x.name, 'restore-snap', i, { icon: 'photo', cls: 'sidebar-row' })}
         <details class="snapshot-menu"><summary aria-label="管理快照 ${h(x.name)}">${icon('menu', 14)}</summary><div>
@@ -413,12 +413,11 @@ actions['sampler-remove'] = (index) => {
   S.canvasSelection = null; Studio.save(); render(); $('[data-act=sampler-pick]')?.focus({preventScroll:true});
 };
 function scopesPanel(docked) {
-  if (SceneEditor.hdr()) return SceneEditor.scope(docked);
   const mode = S.scopePlot ?? 'histogram';
   const plots = [['histogram', '直方图'], ['vector', '矢量示波器']];
   const vector = `<svg class="vector-plot" viewBox="0 0 120 48" role="img" aria-label="矢量分布示意"><g fill="none" stroke="#52616a"><circle cx="60" cy="24" r="16"/><circle cx="60" cy="24" r="8"/><path d="M44 24h32m-16-16v32"/></g><path fill="#aab8bd" opacity=".6" d="M52 28l7-11 9 3 4 5-10 6z"/><path stroke="#ffbb80" stroke-dasharray="2 2" d="M60 24l11-12"/></svg>`;
   return `<section class="editing-scopes${docked ? ' docked' : ''}"><div class="row">${flatTabs('示波器', 'scope-plot', plots, mode)}${docked ? btn('在独立窗口显示示波器', 'scopes', '', {icon:'pulse', only: true, cls:'icon-btn'}) : ''}</div>
-    ${mode === 'vector' ? vector : `<div${docked ? ' class="tone-control" title="左右拖动色调区域调整亮度"' : ''}>${histogram(Studio.data.work)}</div>`}
+    ${mode === 'vector' ? vector : SceneEditor.hdr() ? SceneEditor.rgbPlot() : `<div${docked ? ' class="tone-control" title="左右拖动色调区域调整亮度"' : ''}>${histogram(Studio.data.work)}</div>`}
     ${colorSamplerPanel()}</section>`;
 }
 const maskTools = [['主体', '背景', '前景实例', '画笔'], ['线性渐变', '径向渐变', '亮度范围']];
@@ -454,7 +453,7 @@ function maskPanel(r) {
 }
 function developInspector(r) {
   return `<div class="row between"><h2>${editTools[S.tool][0]}</h2></div>
-    ${S.tool === 'basic' ? scopesPanel(true) : ''}${toolFields(r)}
+    ${toolFields(r)}
     <div class="ins-block">${btn('复位当前照片…', 'reset-recipe', '', { cls: 'link' })}</div>`;
 }
 const cards = {
@@ -517,7 +516,7 @@ function inspectorRail() {
   return `<div class="inspector-rail" role="toolbar" aria-label="调整面板" aria-orientation="vertical">${Object.entries(
     panelIcons,
   )
-    .filter(([key]) => dagCapabilities().includes(key))
+    .filter(([key]) => dagCapabilities().includes(key) || key === 'smart' && !dagEnabled())
     .map(([key, symbol]) =>
       `<button type="button" class="rail-tool" data-act="edit-tool" data-val="${key}"
         aria-label="${h(editTools[key][0])}"${S.canvasTool ? ' disabled' : ''} aria-controls="adjustment-panel" aria-pressed="${active === key}">${icon(symbol)}</button>`,
@@ -566,20 +565,24 @@ document.addEventListener('focusout', (event) => {
 document.addEventListener('scroll', hideRailTip, true);
 window.addEventListener('resize', hideRailTip);
 window.addEventListener('blur', hideRailTip);
-function versionsInspector() {
+function savedResultsSheet() {
   const e = currentEdit(),
     rows = [{ id: 'original', name: '原始版本', recipe: Studio.freshRecipe() }, ...e.versions].reverse();
-  return `<h2>作品版本</h2>${btn('返回调整', 'return-adjustments', '', { icon: 'previous', cls: 'link' })}<p class="muted">选择候选查看效果，采用后用于交付。</p>${rows
+  const selected = S.versionView || e.adopted, item = rows.find(v=>v.id===selected);
+  const preview = pic(Studio.data.work,'',`style="filter:${h(RMPhotos.filter(RMPhotos.displayLook(RMSceneOutput.sdrPreview(item?.recipe || Studio.freshRecipe()))))}"`);
+  dialog('已有编辑结果',`<figure class="result-preview"><div>${preview}${quickCanvasEffect(Studio.data.work,item?.recipe || Studio.freshRecipe(),selected)}</div><figcaption>${h(item?.name || '原片')}</figcaption></figure>
+    ${e.versions.length ? '' : '<p class="muted">当前照片还没有已保存的编辑结果。</p>'}<div class="results-list">${rows
     .map((v) => {
       const issue = v.quickPrompt ? quickAdoptionIssue(quickJobForVersion(v.id)) : '';
-      const adopt = v.id !== e.adopted && !v.discarded ? btn('采用', 'adopt', v.id, { disabled: !!issue, title: issue || '采用' }) : '';
+      const adopt = v.id !== e.adopted && !v.discarded ? btn('采用此结果', 'adopt', v.id, { disabled: !!issue, title: issue || '采用此结果' }) : '';
       return `<div class="version-row"><strong>${h(v.name)}</strong><small>${v.id === e.adopted ? '当前采用' : v.discarded ? '已放弃' : v.retained ? '已保留' : '候选'}</small><div class="row wrap">
       ${btn('查看', 'inspect-version', v.id, { pressed: (S.versionView || e.adopted) === v.id })}${adopt}${v.quickPrompt ? '' : btn('从此继续', 'continue-version', v.id)}${btn('导出此版本…', 'version-export', v.id, { disabled: !!v.discarded || (v.quickPrompt && e.conversation?.strict) })}
       ${v.id !== 'original' && v.id !== e.adopted ? btn(v.discarded ? '恢复' : '放弃', 'discard-version', v.id, { cls: 'link' }) + (!v.retained ? btn('保留', 'retain-version', v.id, { cls: 'link' }) : '') : ''}</div>
       ${issue ? '<small>' + h(issue) + '</small>' : ''}</div>`;
     })
     .join('')}
-    ${btn('关联外部编辑副本…', 'external', '', { cls: 'wide' })}`;
+    </div>`,btn('关联外部编辑副本…','external') + btn('返回编辑','return-adjustments','',{cls:'primary'}));
+  sheet.dataset.savedResults=Studio.data.work;
 }
 function versionRecipe(id) {
   return currentEdit().versions.find((v) => v.id === id)?.recipe ?? Studio.freshRecipe();
@@ -595,11 +598,9 @@ function editorView() {
     versions = S.tool === 'versions';
   const r = canvasToolPreview(versions ? versionRecipe(S.versionView || e.adopted) : e.recipe);
   if (dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
-  const sceneReview = SceneEditor.nativeReview && SceneEditor.hdr() && !versions && !(nativeGraphReview && dagEnabled());
+  const sceneReview = SceneEditor.nativeReview && SceneEditor.hdr() && S.tool === 'basic' && !dagEnabled() && !S.canvasTool;
   const inspector = sceneReview ? SceneEditor.reviewInspector() : S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && dagEnabled() && !['smart', 'agent'].includes(S.tool)
     ? dagInspector()
-    : versions
-    ? versionsInspector()
     : S.tool === 'agent'
       ? agentInspector()
       : S.tool === 'smart'
@@ -609,15 +610,15 @@ function editorView() {
   const sceneTool = SceneEditor.toolNote();
   const canvas = `<div class="edit-center">${dagPhotoCanvas(r, id)}${editorNotices(id)}</div>`;
   const basic = S.tool === 'basic' && !S.canvasTool;
-  const sceneControls = basic ? SceneEditor.modeBar() + (dagEnabled() && !sceneReview || SceneEditor.scopesReview && SceneEditor.hdr() ? (SceneEditor.scopesReview ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${scopesPanel(true)}</details>` : scopesPanel(true)) : '') : '';
+  const sceneControls = basic ? scopesPanel(true) + SceneEditor.modeBar() + (SceneEditor.hdr() ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${SceneEditor.scope(true)}</details>` : '') : '';
   const right = `<div class="edit-right">${versions ? '' : compatibilityGraphMode ? compatibilityGraphToolbar() : dagToolbar()}
     <aside class="edit-inspector" aria-label="调整工具">${inspectorRail()}
     <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">` +
     sceneControls + (sceneTool ? `<p class="control-hint">${h(sceneTool)}</p><fieldset class="scene-tool-controls" disabled>${inspector}</fieldset>` : inspector) +
-    (basic && SceneEditor.hdr() ? SceneEditor.rendition() : '') + '</div></aside></div>';
+    '</div></aside></div>';
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
       <strong>${h(Studio.asset(id).name)}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
-      <div class="row">${btn('智能编辑', 'edit-tool', 'smart', { icon:'spark' })}${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) || !!S.dagConnectionDraft, title: S.dagConnectionDraft ? '先应用或取消 Graph 连接草稿' : '' })}</div></header>
+</header>
     <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${compatibilityGraphMode ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
 function editPanel(path, focus) {
@@ -639,28 +640,23 @@ actions['edit-tool'] = (key, event, el) => {
     : '#adjustment-panel';
   editPanel('edit/' + key, focus);
 };
-actions['open-versions'] = () => {
-  if (S.tool === 'versions') return actions['return-adjustments']();
-  S.beforeVersions = S.editReturn;
-  editPanel('edit/versions', '#adjustment-panel');
+actions['open-versions'] = requested => {
+  const menu = $('.results-menu');
+  S.beforeResultsFocus = quickPromptVisible() && requested ? '[data-act=quick-inspect-version]' : '.results-menu summary';
+  if (menu) menu.open=false;
+  $(S.beforeResultsFocus)?.focus({preventScroll:true});
+  S.versionView = currentEdit().versions.some(v=>v.id===requested) ? requested : currentEdit().adopted;
+  savedResultsSheet();
 };
-actions['return-adjustments'] = () =>
-  editPanel(S.beforeVersions || 'edit/development', '[data-act="open-versions"]');
+actions['return-adjustments'] = () => { closeSheet(); $(S.beforeResultsFocus || '.results-menu summary')?.focus({preventScroll:true}); };
 actions['edit-step'] = (v) => {
   if (S.tool === 'versions') return;
   Studio.stepEdit(Studio.data.work, v === 'redo');
   render();
 };
-actions['save-version'] = () => {
-  if (S.tool !== 'versions' && !S.dagConnectionDraft && Studio.dirty(Studio.data.work)) {
-    const v = Studio.candidate(Studio.data.work, '初修');
-    render();
-    notify('已保存候选 · ' + v.name);
-  }
-};
 actions['inspect-version'] = (id) => {
   S.versionView = id;
-  render();
+  savedResultsSheet();
 };
 actions.adopt = (id) => {
   if (currentEdit().versions.find((v) => v.id === id)?.quickPrompt) {
@@ -669,18 +665,19 @@ actions.adopt = (id) => {
   S.versionView = id;
   Studio.save();
   render();
-  notify('已采用此版本');
+  savedResultsSheet();
+  notify('已采用此结果');
 };
 actions['discard-version'] = (id) => {
   const v = currentEdit().versions.find((x) => x.id === id);
   v.discarded = !v.discarded;
   Studio.save();
-  render();
+  savedResultsSheet();
 };
 actions['retain-version'] = (id) => {
   currentEdit().versions.find((x) => x.id === id).retained = true;
   Studio.save();
-  render();
+  savedResultsSheet();
 };
 actions['continue-version'] = (id) => {
   const e = currentEdit();
@@ -701,6 +698,7 @@ actions['external-result'] = () => {
   S.versionView = v.id;
   closeSheet();
   render();
+  savedResultsSheet();
   notify('已关联为独立候选');
 };
 function adjusted(el) {
@@ -865,7 +863,7 @@ changes.ground = (el) => {
 actions['reset-recipe'] = () =>
   dialog(
     '复位当前照片？',
-    '<p>恢复初始参数。已保存的版本可在作品版本中查看。</p>',
+    '<p>恢复初始参数。已保存的版本可在「已有编辑结果」中查看。</p>',
     btn('取消', 'close') + btn('复位调整', 'confirm-reset'),
   );
 actions['confirm-reset'] = () => {

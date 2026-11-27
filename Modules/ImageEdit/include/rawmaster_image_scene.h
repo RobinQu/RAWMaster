@@ -47,6 +47,15 @@ int32_t rm_scene_program_render_coverages_v1(const RMSceneProgram *program,
                                              size_t coverage_count,
                                              uint64_t revision, RMSceneIsCurrent current,
                                              void *context);
+/* Returns a retained RGBA32F MTLTexture. The caller owns one reference on success.
+   A one-tile execution returns its final graph surface directly, including an input alias. */
+int32_t rm_scene_program_render_surface_v1(const RMSceneProgram *program,
+                                            void *input, void **retained_output,
+                                            const uint8_t *view_json, size_t view_bytes,
+                                            const char *const *coverage_ids,
+                                            void *const *coverage_textures, size_t coverage_count,
+                                            uint64_t revision, RMSceneIsCurrent current,
+                                            void *context);
 int32_t rm_scene_program_receipt_v1(const RMSceneProgram *program, RMSceneReceiptV1 *out);
 void rm_scene_program_close_v1(RMSceneProgram *program);
 #ifdef __cplusplus

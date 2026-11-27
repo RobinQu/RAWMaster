@@ -4,6 +4,21 @@
 
 下文保留 2026-11-27 的历史分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
 
+## 零权重分支与长链预算
+
+2026-11-27 在 Apple M4 Max 上分别强制 Rust 和 Swift 运行同一张 32×16 的线性 AP1 图。早期 Rust 桥接对每张图预先分配整幅输出。零权重的 Parallel 即使直接选择输入也触发预算失败，64 个交替 ±1 EV 的有效节点则多占一个整幅表面。自动模式可回退 Swift，单跑默认配置会掩盖这两个失败。[场景执行器](../../Sources/RAWMasterImaging/DevelopmentSceneGraphRendererV1.swift) · [Rust 金属表面管理](../../Modules/ImageEdit/src/scene/metal_exec.rs)
+
+| 验证 | 实测 |
+|---|---|
+| 一个零权重分支，预算 8,320 字节 | 两个后端均返回同一输入纹理引用，派发 0 次，峰值 8,320 字节。相同预算下，真正需要输出纹理的 +7 EV 节点会报 `surfaceBudget`。 |
+| 64 个有效曝光节点 | 输入占 8,320 字节，两个可复用的私有表面各占 8,192 字节。对源修订 0 和 1，严格 Rust 都派发 64 次，峰值 24,704 字节，最终所有通道逐值等于原图。相同输入和预算也通过 Swift 参考对照。 |
+| 强制两个瓦片，预算只容纳一次整幅曝光 | Rust 按装配所需内存报预算不足。自动模式改用 Swift 全图完成，回执记录 `swiftFallback` 和 `surfaceBudget`，像素与显式 Swift 一致。 |
+| 已有与新增 C 调用 | 已有调用方可继续把结果写入指定纹理，包括外部覆盖入口。新增入口对最终纹理交付一个持有引用。两种接口产生一致的已遮罩像素；根输入零拷贝、取消与保留原始输入均有回归。 |
+
+实拍复验覆盖 9504×6336 的 Sony ARW、960×640 FIT、非居中 1188×792 原寸取景、全图示波器、切回 24 MP 雪景及完整尺寸的 HDR PQ／SDR 编码。预览维持现有 640 MiB 图预算；成片回执使用严格 Rust，逐目标核对峰值、预算及完整分辨率。[双后端预算回归](../../Tests/RAWMasterImagingTests/DevelopmentSceneGraphRendererV1Tests.swift) · [ABI、分块与自动回退回归](../../Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift) · [实拍预览](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift) · [实拍冻结交付](../../Tests/RAWMasterImagingTests/DevelopmentSceneDeliveryServiceV1Tests.swift)
+
+本次 Debug 套件含 36 例。32 例带真实解码器和两张 ARW 通过；其余四项分别提供合成输入、性能报告位置或禁用解码器的独立进程，全部通过。同机 3000×2000 六节点图每种后端各测 15 个暖样本，Rust p50／p95 为 13.32／13.71 ms，Swift 为 18.43／19.14 ms。9600×6400 的合成样本用 6 GiB 图预算，以 6 个瓦片、42 次派发完成，冷图峰值 4,266,655,744 字节。第二遍回执记为 42 次派发、零个解析遮罩缓存命中。
+
 ## 组内监看与实际后端
 
 原实现只在顶层调用 Rust，桥接层省略组路径，执行器也没有使用 ABI 中的 `groupPath`。此外，历史影子测试中标作 Swift 的一侧使用默认模式。修复后，同一份 038 图在两个显式指定的渲染器上运行。测试含两层嵌套、父组禁用、子组部分强度、组前曝光、组内解析覆盖以及非零原点 ROI。组输入、指定节点和组最终根逐通道比较，允许的绝对误差为 2×10⁻⁵ × max(1, |参考通道值|)。返回全图时像素逐值相同。非法组或覆盖目标会报错并清除上次回执。[严格后端回归](../../Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift)
@@ -191,8 +206,8 @@ enforces no more than a 20% 6MP regression, while the structural wins are the si
 reused surfaces and cross-frame analytic masks. Reports are written with
 `RAWMASTER_SCENE_BACKEND_PERFORMANCE=/path/report.json swift test --filter testOptInRustBackendPerformance`.
 
-## 待补证据
+## 后续验收
 
-- 用真实 60 MP RAW 按产品配置测试冷暖预览、1:1 和冻结 HDR／SDR 成片。合成图已取得执行与瓦片回执，源解码、全链路预算和批量仍需实测。
-- 在实际安装包中记录两个显示环境的换屏、亮度及关联帧。组件余量测试记录目标分支和纹理数值，实际显示按 [037](../037-color-film-hdr/plan.md)验收。
-- 该轮组内监看由 Swift 执行，本轮已补严格后端对照。后续将回执延伸至示波器和 032 冻结任务。`externalCoverage` 随模型阶段及目标来源重绑，按[迁移顺序](spec.md#迁移顺序)验证。
+- 已用真实 60 MP RAW 通过产品设置下的 FIT、非居中 1:1、全图示波器与全分辨率 HDR／SDR 成片。下一步按同一来源测量带模型前缀、编码和多项并发时的进程总驻留与尾延迟。[实拍与文件回执](../025-editing-workspace/appearance-acceptance.md) · [036 性能口径](../036-render-pipeline-performance/validation.md)
+- 签名应用已有 HDR→SDR→HDR 实体跨屏记录。亮度变化的连续帧、参考白绝对亮度和真实客户端观片仍需独立测量。[037 显示验收](../037-color-film-hdr/validation.md)
+- 组内监看已通过严格 Rust 与 Swift 对照，示波器与 032 已携带各自的执行回执。后续逐项验证带模型的超大图、来源绑定覆盖与异源批处理。[迁移顺序](spec.md#迁移顺序)

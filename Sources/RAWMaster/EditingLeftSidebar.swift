@@ -12,6 +12,7 @@ struct EditingLeftSidebar: View {
     @State private var lensName: String?
     @State private var renamingSnapshot: DevelopmentSnapshot?
     @State private var snapshotName = ""
+    @FocusState private var resultsMenuFocused: Bool
     @FocusState private var focusedSnapshot: DevelopmentSnapshot.ID?
 
     init(editing: EditingController, presetCatalog: DevelopmentPresetCatalog = .shared) {
@@ -40,6 +41,10 @@ struct EditingLeftSidebar: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel("滤镜、快照与操作历史")
         .accessibilityIdentifier("editing.leftRail")
+        .sheet(isPresented: Binding(get: { editing.savedResultsSelection != nil }, set: { if !$0 { editing.closeSavedResults() } }),
+               onDismiss: { if !editing.quickPromptPresented { resultsMenuFocused = true } }) {
+            EditingSavedResultsSheet(editing: editing)
+        }
         .alert("重命名快照", isPresented: Binding(get: { renamingSnapshot != nil }, set: { if !$0 { renamingSnapshot = nil } })) {
             TextField("快照名称", text: $snapshotName)
             Button("取消") { renamingSnapshot = nil }
@@ -57,7 +62,7 @@ struct EditingLeftSidebar: View {
                             catalog: presetCatalog, sectionExpanded: $filtersExpanded)
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
-                                        actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create") {
+                                        accessory: resultsMenu, actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create") {
                             createSnapshot(context: context)
                         } content: {
                             snapshotList(session: session, context: context)
@@ -86,25 +91,61 @@ struct EditingLeftSidebar: View {
                         editing.postNotice("无法读取滤镜目录。\(error.localizedDescription)", kind: .error, for: work.source.assetID)
                     }
                     Divider()
-                    LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded) {
-                        Text("在右下角保存 HDR 候选，可从作品版本返回。")
-                            .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14).padding(.bottom, 12)
+                    let ticket = editing.sceneTicket
+                    LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu,
+                                    actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create",
+                                    action: ticket.map { ticket in { editing.createSceneSnapshot(ticket: ticket) } }) {
+                        if editing.sceneSnapshots.isEmpty {
+                            Text("尚无快照").photosInspectorParagraph().foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 14).padding(.bottom, 12)
+                        } else if let ticket {
+                            ForEach(editing.sceneSnapshots) { snapshot in
+                                HStack(spacing: 2) {
+                                    Button { editing.restoreSceneSnapshot(snapshot.id, ticket: ticket) } label: {
+                                        EditingSidebarRowLabel(title: snapshot.name, symbol: "photo", active: snapshot.recipe == editing.recipe) { _ in }
+                                    }
+                                    .buttonStyle(.plain).accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
+                                    Menu {
+                                        Button("重命名…") { snapshotName = snapshot.name; renamingSnapshot = snapshot }
+                                        Button("删除", role: .destructive) { editing.updateSceneSnapshot(snapshot.id, name: nil, ticket: ticket) }
+                                    } label: { Image(systemName: "ellipsis").frame(width: 24, height: 24) }
+                                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize().accessibilityLabel("快照操作")
+                                }.padding(.horizontal, 12)
+                            }
+                        }
                     }
                     Divider()
                     LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
-                        Text("在当前节点面板撤销或重做 HDR 调整。")
-                            .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14).padding(.bottom, 12)
+                        HStack {
+                            Button { editing.stepSceneHistory(redo: false) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+                                .disabled(!editing.sceneCanUndo).accessibilityIdentifier("editing.history.undo")
+                            Button { editing.stepSceneHistory(redo: true) } label: { Label("重做", systemImage: "arrow.uturn.forward") }
+                                .disabled(!editing.sceneCanRedo).accessibilityIdentifier("editing.history.redo")
+                        }.font(.caption).padding(.bottom, 10)
                     }
                 }
             }
         } else {
             VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                Label("滤镜、快照与历史", systemImage: "slider.horizontal.3").font(.caption)
-                Text("照片恢复后会继续显示滤镜、快照和操作历史。")
-                    .photosInspectorParagraph().foregroundStyle(.secondary)
+                LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu) {
+                    Text("原片可用后可以继续调整和创建快照。")
+                        .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14)
+                }
             }
-            .padding(16).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
+    }
+
+    private var resultsMenu: AnyView {
+        AnyView(Menu {
+            Button("已有编辑结果…") { editing.showSavedResults() }
+        } label: {
+            Image(systemName: "ellipsis").frame(width: 24, height: 26)
+        }
+        .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+        .disabled(editing.work == nil || editing.loading)
+        .focused($resultsMenuFocused)
+        .help("更多快照操作").accessibilityLabel("更多快照操作").accessibilityIdentifier("editing.snapshots.more"))
     }
 
     @ViewBuilder private var rawSummary: some View {
@@ -258,7 +299,13 @@ struct EditingLeftSidebar: View {
         catch { editing.message = "无法创建快照，请完成当前调整后重试。" }
     }
     private func renameSnapshot() {
-        guard let snapshot = renamingSnapshot, let context = editing.developmentContext else { renamingSnapshot = nil; return }
+        guard let snapshot = renamingSnapshot else { return }
+        if snapshot.recipe.sceneGraph != nil, let ticket = editing.sceneTicket {
+            editing.updateSceneSnapshot(snapshot.id, name: snapshotName, ticket: ticket)
+            renamingSnapshot = nil
+            return
+        }
+        guard let context = editing.developmentContext else { renamingSnapshot = nil; return }
         do { try editing.developmentSession.renameSnapshot(id: snapshot.id, name: snapshotName, context: context) }
         catch { editing.message = "无法重命名快照，请重试。" }
         renamingSnapshot = nil

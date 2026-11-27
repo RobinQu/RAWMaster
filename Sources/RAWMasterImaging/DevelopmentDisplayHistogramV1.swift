@@ -82,6 +82,16 @@ enum DevelopmentDisplayHistogramEngineV1 {
     guard pixels.allSatisfy(\.isFinite)else{throw DevelopmentError.invalidEncoding}
     return .init(rgba:pixels,width:width,height:height)
   }
+  /// Hue and relative saturation of transfer-encoded RGB; the display supplies the matching primary axes.
+  static func chromaBin(_ rgb: SIMD3<Double>) -> Int {
+    let high = max(rgb.x, rgb.y, rgb.z), low = min(rgb.x, rgb.y, rgb.z)
+    let saturation = high > 0 ? (high - low) / high : 0
+    let hues = DevelopmentDisplayHistogramV1.hueBins, saturations = DevelopmentDisplayHistogramV1.saturationBins
+    let h = Int((DevelopmentGlobalEngineV3.hue(rgb) * Double(hues)).rounded()) % hues
+    let s = Int((saturation * Double(saturations - 1)).rounded())
+    return s * hues + h
+  }
+
   static func histogram(_ pixels:ProxyPixels, coverage: ProxyPixels? = nil)throws->DevelopmentDisplayHistogramV1 {
     guard (1...128).contains(pixels.width),(1...128).contains(pixels.height),pixels.rgba.count==pixels.width*pixels.height*4 else {throw DevelopmentPreviewError.invalidRequest}
     if let coverage, coverage.width != pixels.width || coverage.height != pixels.height || coverage.rgba.count != pixels.rgba.count {
@@ -99,11 +109,7 @@ enum DevelopmentDisplayHistogramEngineV1 {
       let rgb = SIMD3(encoded(c.x), encoded(c.y), encoded(c.z))
       red[Int(rgb.x * 255)] += 1; green[Int(rgb.y * 255)] += 1; blue[Int(rgb.z * 255)] += 1
       bins[Int(encoded(DevelopmentColorEngineV2.luma(c)) * 255)] += 1; visible += 1
-      let high = max(rgb.x, rgb.y, rgb.z), low = min(rgb.x, rgb.y, rgb.z)
-      let saturation = high > 0 ? (high - low) / high : 0
-      let h = Int((DevelopmentGlobalEngineV3.hue(rgb) * Double(hues)).rounded()) % hues
-      let s = Int((saturation * Double(saturations - 1)).rounded())
-      chroma[s * hues + h] += 1
+      chroma[chromaBin(rgb)] += 1
     }
     let value=DevelopmentDisplayHistogramV1(luminance:bins,visibleSamples:visible,transparentSamples:transparent,
       sampledSize:.init(width:pixels.width,height:pixels.height),red:red,green:green,blue:blue,chroma:chroma)

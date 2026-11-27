@@ -124,6 +124,27 @@ package struct DevelopmentSceneGraphV1: Codable, Equatable, Sendable {
   package let output: DevelopmentSceneOutputStateV1.Version
   package let models: DevelopmentSceneModelProgramV1?
 
+  /// Seed the scene-linear grade with the photographic EV and model stages implemented by both engines.
+  /// The complete compatibility recipe remains attached to the live draft for its next SDR/B&W edit.
+  package static func initialAppearance(from recipe: DevelopmentRecipe) throws -> Self {
+    guard let legacy = try recipe.promotingToV3().adjustmentsV3 else { throw EditingError.invalidRecipe }
+    let basis = legacy.legacyBasis?.exposureEV ?? 0
+    let light = legacy.light.enabled ? 2 * legacy.light.exposure : 0
+    let total = basis + light
+    // A compatibility recipe can reach ±14 EV; each corrector accepts ±12.
+    let first = Node(name: "基础调色", operation: .corrector(image: .input, mask: nil,
+      exposureEV: Float(abs(total) <= 12 ? total : basis), curve: [], strength: 1, enabled: true))
+    var nodes = [first], output = first.id
+    if abs(total) > 12 {
+      let second = Node(name: "光效曝光", operation: .corrector(image: .node(first.id), mask: nil,
+        exposureEV: Float(light), curve: [], strength: 1, enabled: true))
+      nodes.append(second); output = second.id
+    }
+    let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
+    return try Self(graph: .init(nodes: nodes, output: .node(output)), output: .init(sdrTrim: trim),
+                    models: DevelopmentSceneModelProgramV1.derived(from: legacy))
+  }
+
   package init(graph: Scope, output: DevelopmentSceneOutputStateV1.Version, models: DevelopmentSceneModelProgramV1? = nil) throws {
     var all: Set<UUID> = []
     try Self.validate(graph, depth: 1, all: &all)

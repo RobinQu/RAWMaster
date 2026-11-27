@@ -178,18 +178,24 @@ const Studio = (() => {
     save();
     return true;
   }
+  function editedDimensions(source, recipe) {
+    const rotated = (recipe.quarterTurns || 0) % 2 !== 0;
+    const box = recipe.cropBox || {width: 100, height: 100};
+    const width = Math.max(1, Math.round((rotated ? source.h : source.w) * box.width / 100));
+    const height = Math.max(1, Math.round((rotated ? source.w : source.h) * box.height / 100));
+    const ratio = { '1:1': 1, '4:5': 0.8, '3:2': 1.5, '16:9': 16 / 9 }[recipe.crop];
+    return { w: ratio ? Math.min(width, Math.round(height * ratio)) : width,
+      h: ratio ? Math.min(height, Math.round(width / ratio)) : height };
+  }
   function candidate(id, kind, recipe = edit(id).recipe, parent = edit(id).base ?? edit(id).adopted) {
-    const e = edit(id),
-      src = photo(id);
+    const e = edit(id);
     const version = {
       id: uid(),
       name: `${kind} ${e.versions.length + 1}`,
       recipe: structuredClone(recipe),
       parent,
+      ...editedDimensions(photo(id), recipe),
     };
-    const ratio = { '1:1': 1, '4:5': 0.8, '3:2': 1.5, '16:9': 16 / 9 }[recipe.crop];
-    version.w = ratio ? Math.min(src.w, Math.round(src.h * ratio)) : src.w;
-    version.h = ratio ? Math.min(src.h, Math.round(src.w / ratio)) : src.h;
     e.versions.push(version);
     if (kind === '初修') {
       e.saved = JSON.stringify(recipe);
@@ -308,7 +314,12 @@ const Studio = (() => {
           sceneOutput: RMSceneOutput.eligible(a.source || id, v.recipe.sceneOutput),
         })),
     ];
-    const first = versions.find((v) => v.id === (preferred ?? e.adopted)) ?? original;
+    if (preferred === 'draft') {
+      versions.unshift({id:'draft-' + uid(), label:'当前编辑', ...editedDimensions(p, e.recipe), archive:false,
+        recipe:structuredClone(e.recipe),look:RMPhotos.displayLook(RMSceneOutput.sdrPreview(e.recipe)),
+        sceneOutput:RMSceneOutput.eligible(a.source || id,e.recipe.sceneOutput)});
+    }
+    const first = preferred === 'draft' ? versions[0] : versions.find((v) => v.id === (preferred ?? e.adopted)) ?? original;
     return {
       id,
       source: a.source || id,

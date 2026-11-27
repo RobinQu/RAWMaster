@@ -3,20 +3,27 @@ import Foundation
 
 extension LibraryStore {
   public func enqueueRenderedExport(commandID: String, workID: String, versionID: String,
-    format: RenderedExportFormat, targetURL: URL) throws -> RenderedExportRecord {
+    format: RenderedExportFormat, targetURL: URL, liveScene: EditingVersion? = nil) throws -> RenderedExportRecord {
     try transaction {
       guard targetURL.isFileURL, targetURL.path.hasPrefix("/") else { throw EditingError.unsafePath }
       let target = FileSafety.canonical(targetURL)
-      let fingerprint = try EditingFingerprint.of(["workID": workID, "versionID": versionID, "format": format.rawValue, "target": target.path])
+      var identity = ["workID": workID, "versionID": versionID, "format": format.rawValue, "target": target.path]
+      if let liveScene { identity["sceneRecipe"] = try EditingFingerprint.of(liveScene.recipe) }
+      let fingerprint = try EditingFingerprint.of(identity)
       if let existing = try commandResult(id: commandID, fingerprint: fingerprint, action: "renderedExport", type: RenderedExportRecord.self) {
         return try renderedExport(id: existing.id)
       }
       let work = try photoWork(id: workID), version = try editingVersion(id: versionID)
       guard version.workID == workID, version.source.hasSameIdentity(as: work.source) else { throw EditingError.invalidParent }
+      if let liveScene {
+        guard liveScene.isLiveSceneDelivery, liveScene.parentVersionID == version.id else { throw EditingError.invalidParent }
+        _ = try checkedSceneDelivery(work: work, selection: liveScene, format: .jpeg8)
+      }
       try validateAdmission(work.source)
       if version.artifact == nil { try validateEditingSource(version.source) }
       var record = RenderedExportRecord(commandID: commandID, requestFingerprint: fingerprint, workID: workID,
         versionID: versionID, format: format, targetURL: target)
+      record.frozenSceneRecipe = liveScene?.recipe
       try validateRenderedExportDestination(record)
       if FileManager.default.fileExists(atPath: target.path) {
         record.state = .needsAttention; record.error = "目标文件已存在，请使用新文件名"
@@ -32,6 +39,20 @@ extension LibraryStore {
       return try decode(row[0], RenderedExportRecord.self)
     }
   }
+  /// Seal the queue receipt using the same frozen identity that the exporting worker submitted.
+  @discardableResult package func finishRenderedExportTask(id: String) throws -> Bool? {
+    try completeVerifiedCatalogTask(key: "rendered-export-" + id) { frozen in
+      let record = try renderedExport(id: id)
+      guard record.state == .succeeded, frozen["receipt"] == .string(id),
+            frozen["format"] == .string(record.format.rawValue) else { return nil }
+      let parent = try editingVersion(id: record.versionID)
+      let input = try record.frozenSceneRecipe.map { try parent.freezingSceneAppearance($0) } ?? parent
+      guard frozen["version"] == .string(input.id),
+            frozen["source"] == .string(input.source.contentSHA256) else { return nil }
+      return (true, id)
+    }
+  }
+
   public func loadRenderedExports(workID: String? = nil) throws -> [RenderedExportRecord] {
     try locked {
       try rows("SELECT data FROM editing_exports" + (workID == nil ? "" : " WHERE work_id=?") + " ORDER BY rowid", workID.map { [$0] } ?? [])

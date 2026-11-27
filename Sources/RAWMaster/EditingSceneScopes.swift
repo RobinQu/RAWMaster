@@ -8,6 +8,24 @@ import RAWMasterImaging
         let source: EditingSourceSnapshot
         let graph: DevelopmentSceneGraphV1
         let view: DevelopmentSceneGraphV1.View
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            guard lhs.source == rhs.source, lhs.view == rhs.view, lhs.graph.models == rhs.graph.models,
+                  lhs.graph.output == rhs.graph.output else { return false }
+            func samePixels(_ a: DevelopmentSceneGraphV1.Scope, _ b: DevelopmentSceneGraphV1.Scope) -> Bool {
+                guard a.output == b.output, a.nodes.count == b.nodes.count else { return false }
+                let byID = Dictionary(uniqueKeysWithValues: b.nodes.map { ($0.id, $0.operation) })
+                return a.nodes.allSatisfy { node in
+                    guard let other = byID[node.id] else { return false }
+                    if case let .group(input, child, weight, enabled) = node.operation,
+                       case let .group(inputB, childB, weightB, enabledB) = other {
+                        return input == inputB && weight == weightB && enabled == enabledB && samePixels(child, childB)
+                    }
+                    return node.operation == other
+                }
+            }
+            return samePixels(lhs.graph.graph, rhs.graph.graph)
+        }
     }
     @Published private(set) var open = false
     @Published private(set) var report: Report?
@@ -86,20 +104,26 @@ import RAWMasterImaging
 struct EditingSceneScopesInspector: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var state: EditingSceneScopesState
+    @State private var expanded = false
     @State private var stage = DevelopmentSceneScopesV1.Stage.target
     @State private var lastAction: String?
     @FocusState private var focus: String?
 
     var body: some View {
-        DisclosureGroup(isExpanded: Binding(get: { state.open }, set: { editing.setSceneScopesOpen($0) })) {
+        DisclosureGroup(isExpanded: $expanded) {
             VStack(alignment: .leading, spacing: 7) {
                 Picker("统计阶段", selection: $stage) {
                     Text("场景").tag(DevelopmentSceneScopesV1.Stage.scene)
                     Text("目标输出").tag(DevelopmentSceneScopesV1.Stage.target)
                     Text("SDR 派生").tag(DevelopmentSceneScopesV1.Stage.derivative)
                 }.pickerStyle(.segmented).labelsHidden().accessibilityIdentifier("editing.scene.scopes.stage")
-                if let report = state.report, let plot = report.plots[stage] {
-                    chart(plot)
+                if let report = state.report {
+                    if let plot = report.plots[stage] {
+                        let white = plot.bins[1...16].reduce(0, +)
+                        let bands = plot.bins.suffix(4).map(String.init).joined(separator: " / ")
+                        Text("亮度采样 · 负值 \(plot.bins[0]) · 参考白内 \(white)")
+                        Text("白点以上 0–1 / 1–2 / 2–3 / ≥3 EV：\(bands)").foregroundStyle(.secondary)
+                    }
                     sampleControls(report)
                     ForEach(DevelopmentSceneScopesV1.Overlay.allCases) { overlay in
                         let count = report.count(overlay, headroom: Float(editing.sceneHeadroom))
@@ -116,7 +140,7 @@ struct EditingSceneScopesInspector: View {
                          .accessibilityAddTraits(state.overlays.contains(overlay) ? .isSelected : [])
                          .accessibilityIdentifier("editing.scene.scopes." + overlay.rawValue)
                     }
-                    Text("\(report.size.x)×\(report.size.y) 全图样本，不是整幅像素计数。屏幕项仅为 ICC 模型估计；不提供 HDR Lab 或矢量图。")
+                    Text("\(report.size.x)×\(report.size.y) 全图采样 · 屏幕余量根据 ICC 估算。")
                         .foregroundStyle(.secondary)
                 } else if state.busy { ProgressView("正在分析 HDR…").controlSize(.small) }
                 else {
@@ -131,35 +155,6 @@ struct EditingSceneScopesInspector: View {
             if !old.isEmpty && new.isEmpty, let lastAction { focus = lastAction }
         }
         .onExitCommand { state.escape() }
-    }
-
-    private func chart(_ plot: DevelopmentSceneScopesV1.Plot) -> some View {
-        let maxCount = max(1, plot.bins.max() ?? 1)
-        let hdr = editing.sceneHeadroom
-        return VStack(alignment: .leading, spacing: 2) {
-            Canvas { context, size in
-                let step = size.width / CGFloat(plot.bins.count)
-                for (i, bin) in plot.bins.enumerated() where bin > 0 {
-                    let h = max(1, size.height * sqrt(CGFloat(bin) / CGFloat(maxCount)))
-                    context.fill(Path(CGRect(x: CGFloat(i)*step, y: size.height-h, width: max(1,step-1), height: h)), with: .color(AppPalette.accent.opacity(0.6)))
-                }
-                for tick in [17,18,19,20] {
-                    let x = CGFloat(tick) * step
-                    var marker = Path(); marker.move(to:.init(x:x,y:0)); marker.addLine(to:.init(x:x,y:size.height))
-                    context.stroke(marker, with:.color(.secondary), style:.init(lineWidth:1,dash:tick == 17 ? [] : [2,2]))
-                }
-                if stage == .target {
-                    let screen = (17 + min(4, max(0, log2(hdr)))) * step
-                    var line = Path(); line.move(to:.init(x:screen,y:2)); line.addLine(to:.init(x:screen,y:size.height))
-                    context.stroke(line, with:.color(AppPalette.warning),style:.init(lineWidth:1.5,dash:[4,2]))
-                }
-            }.frame(height: 54).background(.quaternary.opacity(0.22), in: .rect(cornerRadius: 5))
-            HStack {
-                Text("负值"); Spacer(); Text(stage == .scene ? "场景锚点 1.0" : "100 nits"); Text("+1  +2  +3")
-            }.foregroundStyle(.secondary)
-            if stage == .target { Text("虚线：当前屏幕余量 \(hdr, specifier: "%.2f")×").foregroundStyle(.secondary) }
-        }.accessibilityElement(children: .ignore)
-         .accessibilityLabel("\(stageName)亮度分布，最小 \(plot.minimum)，最大 \(plot.maximum)；目标白与屏幕余量分开")
     }
 
     private func sampleControls(_ report: DevelopmentSceneScopesV1) -> some View {
@@ -190,6 +185,57 @@ struct EditingSceneScopesInspector: View {
         case .screen: return "超屏幕余量 · 点阵"
         case .bands: return "HDR 分档 · 横线"
         }
+    }
+}
+
+struct EditingSceneHistogram: View {
+    typealias Distribution = DevelopmentSceneScopesV1.DisplayDistribution
+    let plot: Distribution?
+    let stage: DevelopmentSceneScopesV1.Stage
+    let headroom: Float
+    let limitEV: Double?
+    let failure: String?
+    let retry: () -> Void
+
+    var body: some View {
+        VStack(spacing: 4) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 6).fill(Color(white: 0.055))
+                if let plot {
+                    Canvas { graphics, size in
+                        let white = size.width * CGFloat(Distribution.sdrBins) / CGFloat(Distribution.binCount)
+                        let evWidth = size.width * CGFloat(Distribution.binsPerEV) / CGFloat(Distribution.binCount)
+                        func marker(_ x: CGFloat, color: Color, dash: [CGFloat]) {
+                            var path = Path(); path.move(to: .init(x: x, y: 0)); path.addLine(to: .init(x: x, y: size.height))
+                            graphics.stroke(path, with: .color(color), style: .init(lineWidth: 1, dash: dash))
+                        }
+                        PhotosHistogramDrawing.fill([(plot.red, .red), (plot.green, .green), (plot.blue, .blue)], in: graphics, size: size)
+                        marker(white, color: .white, dash: [])
+                        for tick in 1...3 { marker(white + CGFloat(tick) * evWidth, color: .gray, dash: [2, 3]) }
+                        if stage == .target {
+                            marker(white + CGFloat(min(4, max(0, log2(headroom)))) * evWidth, color: AppPalette.warning, dash: [4, 3])
+                            if let limitEV { marker(white + CGFloat(limitEV) * evWidth, color: AppPalette.accent, dash: []) }
+                        }
+                    }
+                } else if let failure {
+                    Button("重试直方图", action: retry).controlSize(.small).help(failure)
+                } else { ProgressView("读取直方图…").controlSize(.mini) }
+            }.frame(height: PhotosColorScopes.plotHeight)
+                .accessibilityIdentifier("photos.scopes.histogram.plot")
+            GeometryReader { geometry in
+                let width = geometry.size.width
+                let white = width * CGFloat(Distribution.sdrBins) / CGFloat(Distribution.binCount)
+                let evWidth = width * CGFloat(Distribution.binsPerEV) / CGFloat(Distribution.binCount)
+                ZStack(alignment: .leading) {
+                    Text(stage == .target ? "HDR 目标 · RGB" : "SDR 派生 · RGB")
+                    Text("100 nits").position(x: white, y: 6)
+                    ForEach(1...3, id: \.self) { tick in
+                        Text("+\(tick)").position(x: white + CGFloat(tick) * evWidth, y: 6)
+                    }
+                }
+            }.frame(height: 12).font(.system(size: 9)).foregroundStyle(.secondary)
+        }.accessibilityElement(children: .contain)
+        .accessibilityLabel("扩展 RGB 直方图，SDR 白点 100 nits，每档 1 EV")
     }
 }
 

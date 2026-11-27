@@ -42,6 +42,7 @@ struct RAWMasterApp: App {
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
         .windowResizability(.contentMinSize)
+        .defaultLaunchBehavior(.presented)
         .defaultSize(width: QAInitialWindowGeometry.initialSize.width, height: QAInitialWindowGeometry.initialSize.height)
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -65,7 +66,7 @@ struct RAWMasterApp: App {
             ProjectSearchCommands()
             WorkbenchUndoCommands()
             CommandMenu("编辑") {
-                Button("进入照片初修") { model.openNativeEditing() }
+                Button("编辑当前照片") { model.openNativeEditing() }
                     .keyboardShortcut("d", modifiers: [])
                     .disabled(model.isCatalog || model.isNativeEditing || !model.canOpenNativeEditing)
                 Button("完成编辑") { model.editing?.leaveBrowsingContext() }
@@ -107,6 +108,16 @@ struct RAWMasterApp: App {
                     .accessibilityIdentifier("menu.imagePerformanceMonitor")
             }
         }
+        Window("后台信息", id: "background-activity") {
+            WorkbenchActivityWindow(model: model).id(ObjectIdentifier(model))
+                .preferredColorScheme(appearance.preference.preferredColorScheme)
+                .workbenchFocusAppearance()
+        }
+        .defaultSize(width: 445, height: 420)
+        .windowResizability(.contentMinSize)
+        .windowLevel(.floating)
+        .restorationBehavior(.disabled)
+        .defaultLaunchBehavior(.suppressed)
         Window("颜色示波器", id: "editing-color-scopes") {
             Group {
                 if model.isNativeEditing, let editing = model.editing {
@@ -202,8 +213,9 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
     sender.reply(toApplicationShouldTerminate: true)
   }
 }
-    func applicationDidFinishLaunching(_ notification: Notification) { InteractionTrace.shared.install(); NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
+    func applicationDidFinishLaunching(_ notification: Notification) { WorkbenchApplicationLog.shared.event("已启动 RAWMaster"); InteractionTrace.shared.install(); NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
     func applicationWillTerminate(_ notification: Notification) {
+        WorkbenchApplicationLog.shared.event("正在退出 RAWMaster")
         qaMainPresentationSnapshot(.applicationWillTerminate, editing: model?.editing)
         PreviewQAMainPresentationWitness.flush()
         InteractionTrace.shared.flush()

@@ -220,6 +220,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var runningImportSessionID: String?
     @Published private(set) var sessionTask: SessionTaskState?
     let libraryURL: URL
+    lazy var activity = WorkbenchLibraryActivity(libraryURL: libraryURL, libraryID: try? store?.catalogLibraryIdentity(), defaults: defaults)
     let defaults: UserDefaults
 
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
@@ -314,12 +315,13 @@ final class AppModel: ObservableObject {
             }
             isRestoringReviewState = false
         } catch { isRestoringReviewState = false; errorMessage = "无法打开本地资料库：\(error.localizedDescription)" }
+        activity.observe(self)
     }
 
     private func attachEditor(store: LibraryStore, services: ApplicationEditingServices, backend: (any EditingPreviewBackend)?, archive: EditingArchive? = nil) {
         do {
             editing = try EditingController(store: store, libraryURL: libraryURL, defaults: defaults,
-                previewBackend: backend ?? SharedEditingPreviewBackend(), applicationServices: services, preparedArchive: archive)
+                previewBackend: backend ?? SharedEditingPreviewBackend(), applicationServices: services, preparedArchive: archive, activity: activity)
             editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         } catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
     }
@@ -1055,7 +1057,7 @@ final class AppModel: ObservableObject {
     }
     func reveal(_ path: String) { NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)]) }
     func handleKey(_ event: NSEvent) -> Bool {
-        guard editing?.showJobs != true, editing?.showSettings != true, editing?.showExport != true, editing?.unknownRetryJobID == nil, editing?.showDraftExportChoice != true else { return false }
+        guard editing?.showJobs != true, editing?.showSettings != true, editing?.showExport != true, editing?.unknownRetryJobID == nil else { return false }
         guard !showImport, !showExport, !showTimelapse, !showGroups, !showGroupReview, !showGroupHistory, !showRelocation, !showCompletion, !showQualityReview, !showPairReview, !showTagPreview, !showTagHistory else { return false }
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
         if event.keyCode == 48, !flags.contains(.command), !flags.contains(.control), !flags.contains(.option) {
@@ -1561,7 +1563,7 @@ extension AppModel {
 
     var searchScopeIdentity: String { scope.rawValue + ":" + scopeID }
     var hasBusinessSheet: Bool {
-        editing?.showJobs == true || editing?.showSettings == true || editing?.showExport == true || editing?.unknownRetryJobID != nil || editing?.showDraftExportChoice == true || showImport || showExport || showTimelapse || showGroups || showGroupReview || showGroupHistory || showExportReport
+        editing?.showJobs == true || editing?.showSettings == true || editing?.showExport == true || editing?.unknownRetryJobID != nil || showImport || showExport || showTimelapse || showGroups || showGroupReview || showGroupHistory || showExportReport
             || showRelocation || showCompletion || showQualityReview || showPairReview || showTagPreview || showTagHistory
     }
     var canActivateProjectSearch: Bool { supportsProjectSearch && mode == .grid && !hasBusinessSheet }

@@ -57,7 +57,7 @@ struct EditingImageCanvas: View {
         .overlay(alignment: .top) {
             GeometryReader { geometry in
                 VStack(spacing: 4) {
-                    if !editing.photoNotices.isEmpty {
+                    if editing.activeNotice != nil {
                         EditingNoticeOverlay(editing: editing) { fitFocused = true }
                             .frame(maxHeight: geometry.size.height * 0.38, alignment: .top)
                             .fixedSize(horizontal: false, vertical: true)

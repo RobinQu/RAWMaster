@@ -10,6 +10,8 @@ public struct RenderedExportRecord: Codable, Equatable, Sendable, Identifiable {
   public var requestFingerprint: String
   public var workID: String
   public var versionID: String
+  /// Active HDR appearance at submission. The version ID continues to reference a stored parent.
+  public var frozenSceneRecipe: DevelopmentRecipe?
   public var format: RenderedExportFormat
   public var targetURL: URL
   public var state: RenderedExportState

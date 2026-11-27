@@ -17,6 +17,7 @@
 
 - `RMSceneProgram` 通过版本化 C ABI 接收 038 图的运行文档。Rust 独立检查节点、深度、层数、依赖、参数、端口与最终根，与 Swift 使用同一组有效／无效文档作一致性测试。[解析器](../../Modules/ImageEdit/src/scene.rs) · [C ABI](../../Modules/ImageEdit/include/rawmaster_image_scene.h)
 - Rust 将可达图编码进一个 command buffer，再等待一次完成。ROI 使用源域尺寸和原点。当前瓦片从完整源图及覆盖纹理裁入工作区，瓦片结果写回完整输出。单次提交与瓦片执行都仍受内存带宽和全幅表面限制。程序缓存按拓扑复用。节点键含源修订、操作、依赖、几何与尺寸，解析覆盖可跨源复用。来源变化、已完成 fence 和取消代际决定缓存可否交付。[Metal 执行](../../Modules/ImageEdit/src/scene/metal_exec.rs)
+- App 可通过新增的 `rm_scene_program_render_surface_v1` 取得带一个引用的结果纹理。单瓦片返回最后一个活跃节点的表面，零权重分支可返回同一输入引用。多瓦片按需分配装配目标。已使用 `render_v1` 或 `render_coverages_v1` 的调用方继续提供自己的输出纹理。预算按 Metal 实际表面大小计入输入、活跃纹理、外部覆盖与缓存；缓存挤占工作区时最多清空后重试一次。单次调用的回执包含各次尝试的最高分配与总耗时。[ABI 合约](../../Modules/ImageEdit/include/rawmaster_image_scene.h) · [严格预算与像素对照](validation.md#零权重分支与长链预算)
 - 解码预算 440 MiB，预览图预算 640 MiB，交付图预算 1.5 GiB。已验证的 16 位 Bayer 按显示尺寸或原片区域产生 AP1 与饱和标志。大图无模型交付按原始坐标逐区执行 DAG 和 DRT，一次仅保留一个完整目标。每张成片的队列票据与文件摘要同时提交实际后端、分块、派发、缓存与峰值。旧票据缺少该字段时保持未知。系统编码器与模型内部内存另行计量。[60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [成片执行](../../Sources/RAWMasterImaging/DevelopmentSceneTiledDeliveryV1.swift)
 
 ## 模型与资源

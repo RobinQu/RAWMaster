@@ -15,26 +15,40 @@ final class EditingSceneDarkroomTests: XCTestCase {
         let assets = try fixture.store.loadAssets()
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
         let editing = try XCTUnwrap(model.editing)
-        editing.focus(assets[0])
+        editing.isPresented = true; editing.focus(assets[0])
         editing.postNotice("已完成")
-        editing.message = "无法应用"
-        editing.message = "无法应用"
-        editing.message = nil
-        XCTAssertEqual(editing.photoNotices.map(\.kind), [.information, .error])
-        let info = editing.photoNotices[0], error = editing.photoNotices[1]
-        editing.focus(assets[1])
-        editing.postNotice("后台结果已归档", for: assets[0].id)
-        XCTAssertTrue(editing.photoNotices.isEmpty)
-        XCTAssertNil(editing.message)
-        editing.focus(assets[0])
-        let completed = try XCTUnwrap(editing.photoNotices.last)
-        XCTAssertEqual(editing.photoNotices, [info, error, completed])
-        editing.dismissNotice(completed.id)
+        let info = try XCTUnwrap(editing.activeNotice)
+        XCTAssertEqual(info.duration, 3.5)
+        editing.message = "无法应用"; editing.message = "无法应用"
+        let error = try XCTUnwrap(editing.activeNotice)
+        XCTAssertEqual(error.duration, 6)
+        XCTAssertEqual(editing.photoNotices, [info, error])
         editing.dismissNotice(info.id)
-        XCTAssertEqual(editing.photoNotices, [error])
-        editing.dismissNotice(error.id)
-        XCTAssertTrue(editing.photoNotices.isEmpty)
+        XCTAssertEqual(editing.activeNotice, error, "An old presenter must not dismiss its replacement")
+        editing.focus(assets[1])
+        XCTAssertNil(editing.activeNotice)
+        editing.postNotice("后台结果已归档", for: assets[0].id)
+        XCTAssertNil(editing.activeNotice)
+        XCTAssertNil(editing.message)
+        XCTAssertEqual(editing.activity.notices.last?.photoName, assets[0].filename)
+        editing.focus(assets[0])
+        XCTAssertNil(editing.activeNotice, "Returning to a photo must not replay a toast")
+        XCTAssertEqual(editing.photoNotices.count, 3)
+        editing.postNotice("现在可查看")
+        let current = try XCTUnwrap(editing.activeNotice)
+        editing.dismissNotice(current.id)
+        XCTAssertNil(editing.activeNotice)
+        let reopened = WorkbenchLibraryActivity(libraryURL: fixture.library,
+            libraryID: try fixture.store.catalogLibraryIdentity(), defaults: fixture.defaults)
+        XCTAssertEqual(reopened.notices, editing.photoNotices)
+        let other = WorkbenchLibraryActivity(libraryURL: fixture.root.appendingPathComponent("other.sqlite"),
+            libraryID: UUID().uuidString, defaults: fixture.defaults)
+        XCTAssertTrue(other.notices.isEmpty)
         await editing.shutdown()
+    }
+
+    @MainActor private func fixtureVersions(model: AppModel, workID: String) throws -> [EditingVersion] {
+        try XCTUnwrap(model.store).loadEditingVersions(workID: workID)
     }
 
     @MainActor func testOptIn60MPEditorAndPublishedBatchReceipts() async throws {
@@ -66,15 +80,25 @@ final class EditingSceneDarkroomTests: XCTestCase {
             try await wait("60 MP exposure dispatch") {
                 !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
             }
+            let captured = editing.recipe
+            editing.createSceneSnapshot(ticket: try XCTUnwrap(editing.sceneTicket))
+            let snapshot = try XCTUnwrap(editing.sceneSnapshots.first)
+            editing.setSceneExposure(0.75, node: node, ticket: try XCTUnwrap(editing.sceneTicket))
+            editing.restoreSceneSnapshot(snapshot.id, ticket: try XCTUnwrap(editing.sceneTicket))
+            XCTAssertEqual(editing.recipe, captured)
+            XCTAssertTrue(editing.sceneCanUndo)
             editing.setSceneScopesOpen(true)
             try await wait("60 MP scope receipt") { editing.sceneScopes.report?.execution != nil }
             editing.setSceneScopesOpen(false)
             let recipe = editing.recipe
-            editing.saveDevelopment()
-            try await wait("60 MP candidate") { !editing.saving && editing.versions.contains { $0.recipe == recipe } }
-            let candidate = try XCTUnwrap(editing.versions.first { $0.recipe == recipe })
-            editing.adopt(candidate)
-            try await wait("60 MP adopted") { editing.work?.adoptedVersionID == candidate.id }
+            let workID = try XCTUnwrap(editing.work?.id)
+            let before = try fixtureVersions(model: model, workID: workID)
+            XCTAssertEqual(before.count, 1)
+            let original = try XCTUnwrap(before.first)
+            let frozen = try original.freezingSceneAppearance(recipe)
+            XCTAssertTrue(frozen.isLiveSceneDelivery)
+            XCTAssertEqual(frozen.parentVersionID, original.id)
+            XCTAssertNotEqual(frozen.id, original.id)
             model.activateWorkflow(.export)
             for format in [PhotoRenderFormat.avif10, .jpeg8] {
                 let review = format == .avif10 ? try await model.reviewWorkbenchPQ([asset]) : nil
@@ -97,12 +121,24 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 XCTAssertGreaterThan(execution.dispatches, 0)
                 XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
                 let input = try await queue.input(batchID: id.uuidString.lowercased(), ordinal: 1)
-                XCTAssertEqual(input.version.id, candidate.id)
+                XCTAssertEqual(input.version.id, frozen.id)
+                XCTAssertEqual(input.version.recipe, recipe)
+                XCTAssertTrue(input.version.isLiveSceneDelivery)
                 let image = try XCTUnwrap(CGImageSourceCreateWithURL(file as CFURL, nil))
                 let facts = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any])
                 XCTAssertEqual(facts[kCGImagePropertyPixelWidth] as? Int, 9504)
                 XCTAssertEqual(facts[kCGImagePropertyPixelHeight] as? Int, 6336)
             }
+            try await wait("live HDR persisted") {
+                (try? model.store?.photoWork(id: workID).liveRecipe) == recipe
+            }
+            model.activateWorkflow(.library)
+            model.setMode(.grid)
+            let gridReview = try await model.reviewWorkbenchPQ([asset])
+            XCTAssertTrue(gridReview.canSubmit)
+            XCTAssertEqual(gridReview.lines.first?.version, frozen.id)
+            XCTAssertEqual(try fixtureVersions(model: model, workID: workID).map(\.id), [original.id])
+            XCTAssertEqual(try XCTUnwrap(model.store).photoWork(id: workID).adoptedVersionID, original.id)
             await editing.shutdown()
         } catch { await editing.shutdown(); throw error }
     }
@@ -141,7 +177,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
                     || (!editing.sceneStarting && (editing.scenePreviewError != nil || editing.message != nil))
             }
             XCTAssertNil(editing.scenePreviewError)
-            XCTAssertNil(editing.message)
+            XCTAssertFalse(editing.photoNotices.contains { $0.kind == .error }, editing.message ?? "")
             let first = try XCTUnwrap(editing.recipe.sceneGraph)
             XCTAssertEqual(editing.versions.count, 1, "entering only creates a draft")
             let view = try await waitForCanvas(in: host)

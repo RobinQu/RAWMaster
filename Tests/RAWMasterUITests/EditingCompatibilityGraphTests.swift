@@ -127,21 +127,22 @@ final class EditingCompatibilityGraphTests: XCTestCase {
             XCTAssertEqual(Set(controls.compactMap { $0.cell?.accessibilityIdentifier() }),
                            ["scene.graph.window.move", "scene.graph.window.resize"])
             editing.postNotice("已保存候选")
-            editing.postNotice("原片读取失败", kind: .error)
             func closeNotice(_ label: String) -> NSObject? {
                 element(in: window, selector: "accessibilityLabel", equals: label)
             }
-            try await wait { closeNotice("关闭信息通知") != nil && closeNotice("关闭错误通知") != nil }
+            try await wait { closeNotice("关闭信息通知") != nil }
+            editing.postNotice("原片读取失败", kind: .error)
+            try await wait { closeNotice("关闭信息通知") == nil && closeNotice("关闭错误通知") != nil }
             if let path = ProcessInfo.processInfo.environment["RAWMASTER_EDITOR_NOTICE_CAPTURE"] {
                 window.displayIfNeeded()
                 let image = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
                 host.cacheDisplay(in: host.bounds, to: image)
                 try XCTUnwrap(image.representation(using: .png, properties: [:])).write(to: URL(fileURLWithPath: path))
             }
-            try press(try XCTUnwrap(closeNotice("关闭信息通知")))
-            try await wait { closeNotice("关闭信息通知") == nil && closeNotice("关闭错误通知") != nil }
             try press(try XCTUnwrap(closeNotice("关闭错误通知")))
-            try await wait { editing.photoNotices.isEmpty }
+            try await wait { editing.activeNotice == nil }
+            XCTAssertTrue(editing.photoNotices.contains { $0.text == "原片读取失败" })
+            XCTAssertTrue(editing.photoNotices.contains { $0.text == "已保存候选" })
             XCTAssertTrue(panel.isVisible)
             XCTAssertEqual(editing.asset?.id, asset.id)
             try sendKey(53, characters: "\u{1b}", to: panel)

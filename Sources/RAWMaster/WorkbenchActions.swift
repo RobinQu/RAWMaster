@@ -210,6 +210,13 @@ extension AppModel {
         guard canOpenNativeEditing else { return }
         editing?.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint }); editing?.isPresented = true
     }
+    func openSavedResultExport(_ version: EditingVersion) {
+        guard canExport, focusedID == version.source.assetID, let editing,
+              editing.beginSavedResultExport(version) else { return }
+        editing.closeSavedResults()
+        requestedWorkbenchExportMode = .render
+        prepareLibraryExport(.photo(id: version.source.assetID))
+    }
     func openRenderedPhotoExport(context: WorkbenchExportContext? = nil) {
         guard canExport, canOpenNativeEditing, let asset = focusedAsset,
               let admission = editingAdmissions[asset.id], let editing,

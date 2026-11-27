@@ -17,7 +17,7 @@ extension AppModel {
     var canOpenWorkbenchExport: Bool { workbenchExportStore != nil }
 
     var activeWorkbenchWorkflow: WorkbenchWorkflow {
-        if exportWorkspacePresented || showExport || editing?.showExport == true || editing?.showDraftExportChoice == true { return .export }
+        if exportWorkspacePresented || showExport || editing?.showExport == true { return .export }
         return isNativeEditing ? .edit : .library
     }
 

@@ -78,6 +78,10 @@ final class EditingSavePreviewHandoffTests: XCTestCase {
             XCTAssertEqual(editing.work?.adoptedVersionID, newOriginal)
             let oldVersions = try f.store.loadEditingVersions(workID: oldWork.id)
             XCTAssertEqual(oldVersions.count, fail ? 1 : 2)
+            let outcome = try XCTUnwrap(editing.activity.notices.last { $0.assetID == f.assets[0].id })
+            XCTAssertEqual(outcome.kind, fail ? .error : .information)
+            XCTAssertEqual(outcome.photoName, f.assets[0].filename)
+            XCTAssertNil(editing.activeNotice, "The other photo's archive outcome belongs in history")
             XCTAssertEqual(try f.store.photoWork(id: oldWork.id).adoptedVersionID, oldWork.originalVersionID)
             await backend.finish(1); try await wait { editing.preview != nil }
             await editing.shutdown()

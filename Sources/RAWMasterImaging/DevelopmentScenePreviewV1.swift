@@ -79,6 +79,7 @@ package actor DevelopmentScenePreviewV1 {
     let view: DevelopmentSceneGraphV1.View
     let route: DevelopmentSceneOutputStateV1.Version.Route
     let trim: DevelopmentSceneOutputStateV1.SDRTrim?
+    let hdrLimitEV: Double?
     let frame: DevelopmentScenePreviewFrameV1
   }
   // Keep final and node display suffixes resident, but never pin multiple graph masters.
@@ -126,7 +127,8 @@ package actor DevelopmentScenePreviewV1 {
       if selection?.scope != graph.graph || selection?.models != models { clearSelection() }
       let revision = Self.sourceRevision(stamp: stamp, sampling: sampling)
       let trim = target == .sdr709 ? graph.output.sdrTrim : nil
-      if let hit = suffixes.firstIndex(where: { $0.frame.target == target && $0.view == view && $0.route == graph.output.route && $0.trim == trim }) {
+      let hdrLimit = target == .hdr2020 ? graph.output.hdrHighlightLimitEV : nil
+      if let hit = suffixes.firstIndex(where: { $0.frame.target == target && $0.view == view && $0.route == graph.output.route && $0.trim == trim && $0.hdrLimitEV == hdrLimit }) {
         try ensureCurrent(source, stamp: stamp)
         let prior = suffixes.remove(at: hit)
         suffixes.append(prior)
@@ -146,7 +148,7 @@ package actor DevelopmentScenePreviewV1 {
       let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: display.texture, target: target,
         nativeSize: CGSize(width: modelPrefix?.native.width ?? Int(raw.sensor.size.x), height: modelPrefix?.native.height ?? Int(raw.sensor.size.y)),
         window: input.region, execution: selection.execution)
-      cache(.init(view: view, route: graph.output.route, trim: trim, frame: frame))
+      cache(.init(view: view, route: graph.output.route, trim: trim, hdrLimitEV: hdrLimit, frame: frame))
       counts.display += 1
       return frame
     }

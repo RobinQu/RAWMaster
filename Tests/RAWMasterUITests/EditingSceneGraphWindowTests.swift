@@ -36,28 +36,15 @@ final class EditingSceneGraphWindowTests: XCTestCase {
         window.contentView = host; window.makeKeyAndOrderFront(nil)
         defer { window.contentView = nil; window.close() }
         do {
-            editing.isPresented = true; editing.focus(asset)
+            let store = try LibraryStore(databaseURL: database)
+            let source = try store.captureEditingSourceSnapshot(assetID: asset.id)
+            editing.isPresented = true; editing.focus(asset, admissionFingerprint: source.admissionFingerprint)
             try await wait("original admitted") { editing.sourceReady && !editing.loading }
-            let compatibilityRecipe = editing.recipe
             try await press("editing.scene.mode.HDR", within: window)
-            try await wait("HDR confirmation sheet") { window.attachedSheet != nil }
-            // Exercise the workbench's focus-loss behavior even when the XCTest window never becomes key.
-            editing.suspendDevelopmentFocus()
-            XCTAssertNil(editing.developmentContext)
-            XCTAssertEqual(editing.recipe, compatibilityRecipe)
-            try await press("editing.scene.mode.cancel", within: XCTUnwrap(window.attachedSheet))
-            try await wait("cancelled HDR confirmation") { window.attachedSheet == nil }
-            editing.beginDevelopmentInterface()
-            XCTAssertEqual(editing.recipe, compatibilityRecipe)
-            try await press("editing.scene.mode.HDR", within: window)
-            try await wait("reopened HDR confirmation sheet") { window.attachedSheet != nil }
-            editing.suspendDevelopmentFocus()
-            try await press("editing.scene.mode.confirm", within: XCTUnwrap(window.attachedSheet))
-            try await wait("confirmed HDR and live frame") {
-                editing.sceneModeConfirmation == nil && editing.sceneGraphScope != nil && editing.sceneFrame != nil && !editing.scenePreviewBusy
+            try await wait("one-click HDR and live frame") {
+                editing.sceneGraphScope != nil && editing.sceneFrame != nil && !editing.scenePreviewBusy
             }
-            // A non-key XCTest host can retain SwiftUI's sheet window after the binding clears.
-            if let sheet = window.attachedSheet { window.endSheet(sheet) }
+            XCTAssertNil(window.attachedSheet)
             let initialRecipe = editing.recipe, originalFrame = editing.sceneFrame?.id
             let first = try XCTUnwrap(editing.sceneGraphState.single)
             let transform = editing.canvasCommand?.id
@@ -121,14 +108,14 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             if let report = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_GRAPH_MONITOR_REPORT"] {
                 try await measureMonitor(editing, first: first, in: host, report: report)
             }
-            // Group view is transient. Save reads the complete graph, not the preview's prefix.
+            // The normal 032 input freezes the complete DAG even while an intermediate node is monitored.
             let expected = try XCTUnwrap(editing.recipe.sceneGraph)
-            try await press("editing.scene.saveCandidate", within: window)
-            try await wait("frozen version with group") { !editing.saving && editing.versions.contains(where: { $0.recipe.sceneGraph == expected }) }
-            let candidate = try XCTUnwrap(editing.versions.first { $0.recipe.sceneGraph == expected })
-            let store = try LibraryStore(databaseURL: database)
-            let frozen = try store.freezeSceneDelivery(versionID: candidate.id, format: .avif10)
+            XCTAssertTrue(editing.beginWorkbenchExport(asset: asset, admissionFingerprint: source.admissionFingerprint))
+            let input = try await editing.workbenchExportInput(for: asset.id)
+            let (work, version) = try XCTUnwrap(input)
+            let frozen = try DevelopmentSceneDeliveryV1(work: work, version: version, format: .avif10)
             XCTAssertEqual(try frozen.program.fingerprint(), try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: expected)))
+            XCTAssertEqual(try store.loadEditingVersions(workID: work.id).count, 1)
             XCTAssertEqual(editing.canvasCommand?.id, transform)
             (graphWindow as? NSPanel)?.cancelOperation(nil) // first Escape exits monitor
             XCTAssertNil(editing.sceneGraphMonitorText)

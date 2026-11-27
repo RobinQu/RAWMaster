@@ -2,7 +2,7 @@ import Foundation
 
 public enum DevelopmentSceneOutputStateV1 {
   public enum Failure: Error, Equatable {
-    case invalidSDRTrim, invalidViewingConditions, invalidDeliveryIdentity, invalidDeliveryTargets
+    case invalidHDRLimit, invalidSDRTrim, invalidViewingConditions, invalidDeliveryIdentity, invalidDeliveryTargets
   }
 
   public enum Target: String, CaseIterable, Codable, Hashable, Sendable {
@@ -47,17 +47,37 @@ public enum DevelopmentSceneOutputStateV1 {
     public enum Route: String, Codable, Sendable { case aces2V1 }
     public let route: Route
     public let sdrTrim: SDRTrim
+    /// Display-linear highlight ceiling above 100-nit white. Omitted in existing recipes.
+    public private(set) var hdrHighlightLimitEV: Double?
+    public static let maximumHDRLimitEV = log2(Double(Target.hdr2020.peakNits / Target.hdr2020.referenceWhiteNits))
 
     public init(route: Route = .aces2V1, sdrTrim: SDRTrim) {
       self.route = route; self.sdrTrim = sdrTrim
     }
 
-    private enum CodingKeys: String, CodingKey { case route, sdrTrim }
+    public func replacingHDRLimit(_ value: Double?) throws -> Self {
+      var result = self
+      if let value {
+        guard (0...Self.maximumHDRLimitEV).contains(value) else { throw Failure.invalidHDRLimit }
+        result.hdrHighlightLimitEV = value == Self.maximumHDRLimitEV ? nil : value
+      } else { result.hdrHighlightLimitEV = nil }
+      return result
+    }
+
+    public func replacingSDRTrim(_ trim: SDRTrim) -> Self {
+      var result = Self(route: route, sdrTrim: trim)
+      result.hdrHighlightLimitEV = hdrHighlightLimitEV
+      return result
+    }
+
+    private enum CodingKeys: String, CodingKey { case route, sdrTrim, hdrHighlightLimitEV }
 
     public init(from decoder: Decoder) throws {
-      try RecipeCoding.requireKeys(decoder, ["route", "sdrTrim"])
       let fields = try decoder.container(keyedBy: CodingKeys.self)
-      self.init(route: try fields.decode(Route.self, forKey: .route), sdrTrim: try fields.decode(SDRTrim.self, forKey: .sdrTrim))
+      let required = ["route", "sdrTrim"]
+      try RecipeCoding.requireKeys(decoder, fields.contains(.hdrHighlightLimitEV) ? required + ["hdrHighlightLimitEV"] : required)
+      let output = Self(route: try fields.decode(Route.self, forKey: .route), sdrTrim: try fields.decode(SDRTrim.self, forKey: .sdrTrim))
+      self = try output.replacingHDRLimit(fields.decodeIfPresent(Double.self, forKey: .hdrHighlightLimitEV))
     }
   }
 

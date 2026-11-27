@@ -3,38 +3,142 @@ import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
 
-/// Current engine capabilities choose the usable controls. This integration checkpoint is not the
-/// final thirteen-group release; unsupported operators are not represented by inert fake controls.
+/// Navigation and measurements stay mounted when editing input focus or the active color engine changes.
 struct PhotosDevelopmentInspector: View {
     @ObservedObject var editing: EditingController
-    // Page changes renew the interaction context. Keep ordinary panel selection outside that
-    // identity so entering/leaving the independent crop panel does not reset it to Basic.
     @State private var destination: PhotosAdjustmentDestination = .basic
+    @State private var hoveredDestination: PhotosAdjustmentDestination?
+    @FocusState private var focusedTool: PhotosAdjustmentDestination?
+    @State private var viewportHeight: CGFloat = 0
+    private let destinations: [PhotosAdjustmentDestination] = [.basic, .local, .tones, .color, .detail, .optics, .effects, .grading, .masks]
+
     var body: some View {
-        VStack(spacing: 0) {
-            if let context = editing.developmentPresentationContext {
-                PhotosDevelopmentContent(editing: editing, session: editing.developmentSession, context: context,
-                    destination: $destination)
+        Group {
+            if editing.cropEditing, let context = editing.developmentPresentationContext, editing.recipe.sceneGraph == nil {
+                PhotosCropPanel(editing: editing, session: editing.developmentSession, context: context)
                     .disabled(editing.developmentContext == nil)
-                    .id(context)
             } else {
-                VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
-                    if editing.sourceNeedsRevalidation {
-                        Button(editing.revalidatingSource ? "正在验证原片…" : "重新验证原片") { editing.revalidatePreviewSource() }
-                            .disabled(editing.revalidatingSource)
-                    } else if editing.developmentToolsPaused {
-                        Label("调整工具已暂停", systemImage: "pause.circle").foregroundStyle(.secondary)
-                        Button("恢复调整工具") { editing.beginDevelopmentInterface() }
-                    } else { ProgressView("读取照片调整信息…").controlSize(.small) }
-                    if editing.message != nil, !editing.sourceNeedsRevalidation {
-                        Button("重试读取调整") { editing.beginDevelopmentInterface() }
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("当前编辑").font(.system(size: 13, weight: .semibold))
+                        Spacer()
+                        if let context = editing.developmentContext {
+                            Menu {
+                                Button("复位照片调整") { reset(all: false, context: context) }
+                                Button("复位全部编辑") { reset(all: true, context: context) }
+                            } label: { Image(systemName: "arrow.counterclockwise") }
+                                .menuStyle(.borderlessButton).frame(width: 28, height: 28)
+                                .accessibilityLabel("复位调整")
+                        }
+                    }.padding(.horizontal, 12).padding(.top, 12)
+                    HStack(spacing: 0) {
+                        toolNavigator.frame(width: 48).padding(.top, 10).zIndex(2)
+                        Divider()
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 0) {
+                                if destination == .basic {
+                                    PhotosColorScopes(editing: editing, floating: false)
+                                        .padding(.horizontal, 12).padding(.vertical, 6)
+                                    Divider()
+                                    if EditingController.sceneReviewEnabled {
+                                        EditingSceneModeStrip(editing: editing)
+                                        Divider()
+                                    }
+                                }
+                                controls
+                            }
+                        }
+                        .coordinateSpace(name: "photos.inspector.scroll")
+                        .background(GeometryReader { geometry in
+                            Color.clear.onAppear { viewportHeight = geometry.size.height }
+                                .onChange(of: geometry.size.height) { _, value in viewportHeight = value }
+                        })
                     }
-                    Spacer(minLength: 0)
-                }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
-        }.onAppear { editing.beginDevelopmentInterface() }
-            .onDisappear { editing.endDevelopmentInterface() }
+        }
+        .toggleStyle(PhotosFlatCheckboxStyle())
+        .onAppear { editing.beginDevelopmentInterface() }.onDisappear { editing.endDevelopmentInterface() }
     }
+
+    @ViewBuilder private var controls: some View {
+        if let graph = editing.recipe.sceneGraph {
+            EditingSceneInspector(editing: editing, graph: graph, destination: destination)
+        } else if let context = editing.developmentPresentationContext {
+            PhotosDevelopmentContent(editing: editing, session: editing.developmentSession, context: context,
+                viewportHeight: viewportHeight, destination: destination)
+                .disabled(editing.developmentContext == nil).id(context)
+        } else {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
+                if editing.sourceNeedsRevalidation {
+                    Button(editing.revalidatingSource ? "正在验证原片…" : "重新验证原片") { editing.revalidatePreviewSource() }
+                        .disabled(editing.revalidatingSource)
+                } else if editing.developmentToolsPaused {
+                    Label("调整工具已暂停", systemImage: "pause.circle").foregroundStyle(.secondary)
+                    Button("恢复调整工具") { editing.beginDevelopmentInterface() }
+                } else { ProgressView("读取照片调整信息…").controlSize(.small) }
+                if editing.message != nil, !editing.sourceNeedsRevalidation {
+                    Button("重试读取调整") { editing.beginDevelopmentInterface() }
+                }
+                Spacer(minLength: 0)
+            }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func reset(all: Bool, context: EditingInteractionContext) {
+        let session = editing.developmentSession
+        guard session.context == context else { return }
+        do {
+            if let token = session.activeGesture { try session.endGesture(token, .commit) }
+            let commands: [DevelopmentAdjustmentCommand] = all ? [.resetAll] : DevelopmentAdjustmentID.allCases.filter { $0 != .filter }.map { .reset($0) }
+            try session.applyAtomically(commands, title: all ? "复位全部编辑" : "复位照片调整",
+                event: .init(context: context, control: .init(group: nil, name: "复位照片调整"),
+                    nativeInput: .capture(control: "photos.复位", phase: "discrete", nativeEvent: true)))
+        } catch { editing.message = "调整未能复位，请检查当前编辑。" }
+    }
+
+    private var toolNavigator: some View {
+        LazyVStack(spacing: 4) {
+            ForEach(destinations, id: \.self) { item in
+                if item == .tones {
+                    Divider().padding(.vertical, 5).accessibilityIdentifier("photos.tool.primarySeparator")
+                }
+                Button {
+                    hoveredDestination = nil; destination = item
+                    if item != .masks { editing.developmentMaskInput.cancel() }
+                } label: {
+                    ZStack {
+                        Image(systemName: item.symbol).font(.system(size: 14, weight: .medium))
+                            .frame(width: 32, height: 32)
+                        if let parameters = editing.recipe.adjustmentsV3, item.groups.contains(where: { PhotosAdjustmentCommands.isModified($0, in: parameters) }) {
+                            Circle().fill(AppPalette.accent).frame(width: 4, height: 4)
+                                .offset(x: 11, y: 11).accessibilityLabel("已调整")
+                        }
+                    }
+                    .background(destination == item ? AppPalette.accent.opacity(0.18) : focusedTool == item ? AppDesign.fill(.hover) : Color.clear,
+                        in: RoundedRectangle(cornerRadius: 7))
+                    .foregroundStyle(destination == item ? AppPalette.accent : .secondary)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .focused($focusedTool, equals: item)
+                .onHover { hovering in
+                    if hovering { hoveredDestination = item }
+                    else if hoveredDestination == item { hoveredDestination = nil }
+                }
+                .overlay(alignment: .leading) {
+                    if hoveredDestination == item { PhotosRailTooltip(title: item.title) }
+                }
+                .zIndex(hoveredDestination == item ? 3 : 0)
+                .accessibilityLabel(item.title)
+                .accessibilityAddTraits(destination == item ? .isSelected : [])
+                .accessibilityIdentifier("photos.tool." + item.title)
+            }
+        }
+        .padding(.horizontal, 8).padding(.bottom, 10)
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
+
 }
 
 enum PhotosAdjustmentDestination: Hashable {
@@ -88,73 +192,16 @@ private struct PhotosDevelopmentContent: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
     let context: EditingInteractionContext
-    @State private var viewportHeight: CGFloat = 0
+    let viewportHeight: CGFloat
     @State private var levelsChannel: PhotosLevelsChannel = .luminance
-    @Binding var destination: PhotosAdjustmentDestination
-    @State private var hoveredDestination: PhotosAdjustmentDestination?
-    @FocusState private var focusedTool: PhotosAdjustmentDestination?
-    @Environment(\.colorScheme) private var colorScheme
-
-    private var destinations: [PhotosAdjustmentDestination] {
-        let available = Set(editing.availablePhotosGroups)
-        var result: [PhotosAdjustmentDestination] = []
-        for item in [PhotosAdjustmentDestination.basic, .local, .tones, .color, .detail, .optics, .effects, .grading, .masks] {
-            if item.groups.contains(where: available.contains) || item == .effects || item == .grading || item == .masks { result.append(item) }
-        }
-        return result
-    }
+    let destination: PhotosAdjustmentDestination
 
     var body: some View {
-        VStack(spacing: 0) {
-            if editing.cropEditing {
-                // Crop is a modal canvas tool, not a category in the ordinary adjustment navigator.
-                // Keep `destination` untouched so both Done and Cancel reveal the prior panel.
-                PhotosCropPanel(editing: editing, session: session, context: context)
-            } else {
-                HStack {
-                    Text("当前编辑").font(.system(size: 13, weight: .semibold))
-                    Spacer()
-                    Menu {
-                        Button("复位照片调整") { reset(all: false) }
-                        Button("复位全部编辑") { reset(all: true) }
-                    } label: { Image(systemName: "arrow.counterclockwise") }
-                        .menuStyle(.borderlessButton).frame(width: 28, height: 28)
-                        .accessibilityLabel("复位调整").help("复位照片调整或全部编辑")
-                }.padding(.horizontal, 12).padding(.top, 12)
-                HStack(spacing: 0) {
-                    toolNavigator
-                        .frame(width: 48)
-                        .padding(.top, 10)
-                        .zIndex(2)
-                    Divider()
-                    VStack(spacing: 0) {
-                        if destination == .basic {
-                            if EditingController.sceneReviewEnabled {
-                                EditingSceneModeStrip(editing: editing)
-                                Divider()
-                            }
-                            PhotosColorScopes(editing: editing, floating: false)
-                                .padding(.horizontal, 12).padding(.vertical, 6)
-                            Divider()
-                        }
-                        ScrollView {
-                            destinationContent
-                        }
-                        .coordinateSpace(name: "photos.inspector.scroll")
-                        .background(GeometryReader { geometry in
-                            Color.clear.onAppear { viewportHeight = geometry.size.height }
-                                .onChange(of: geometry.size.height) { _, value in viewportHeight = value }
-                        })
-                    }
-                }
-            }
-        }
-        .toggleStyle(PhotosFlatCheckboxStyle())
-        .onAppear(perform: validateDestination)
-        .onChange(of: editing.availablePhotosGroups) { _, _ in validateDestination() }
-        .onChange(of: editing.developmentContext) { _, _ in initializeSections() }
-        .onChange(of: destination) { _, _ in initializeSections() }
-        .onChange(of: sectionOrder) { _, _ in initializeSections() }
+        destinationContent
+            .onAppear(perform: initializeSections)
+            .onChange(of: editing.developmentContext) { _, _ in initializeSections() }
+            .onChange(of: destination) { _, _ in initializeSections() }
+            .onChange(of: sectionOrder) { _, _ in initializeSections() }
     }
 
     private var sectionOrder: [String] {
@@ -196,45 +243,6 @@ private struct PhotosDevelopmentContent: View {
         }
     }
 
-    private var toolNavigator: some View {
-        LazyVStack(spacing: 4) {
-            ForEach(destinations, id: \.self) { item in
-                if item == .tones {
-                    Divider().padding(.vertical, 5).accessibilityIdentifier("photos.tool.primarySeparator")
-                }
-                Button { select(item) } label: {
-                    ZStack {
-                        Image(systemName: item.symbol).font(.system(size: 14, weight: .medium))
-                            .frame(width: 32, height: 32)
-                        if item.groups.contains(where: { PhotosAdjustmentCommands.isModified($0, in: session.parameters) }) {
-                            Circle().fill(AppPalette.accent).frame(width: 4, height: 4)
-                                .offset(x: 11, y: 11).accessibilityLabel("已调整")
-                        }
-                    }
-                    .background(destination == item ? AppPalette.accent.opacity(0.18) : focusedTool == item ? AppDesign.fill(.hover) : Color.clear,
-                        in: RoundedRectangle(cornerRadius: 7))
-                    .foregroundStyle(destination == item ? AppPalette.accent : .secondary)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .focused($focusedTool, equals: item)
-                .onHover { hovering in
-                    if hovering { hoveredDestination = item }
-                    else if hoveredDestination == item { hoveredDestination = nil }
-                }
-                .overlay(alignment: .leading) {
-                    if hoveredDestination == item { PhotosRailTooltip(title: item.title) }
-                }
-                .zIndex(hoveredDestination == item ? 3 : 0)
-                .accessibilityLabel(item.title)
-                .accessibilityAddTraits(destination == item ? .isSelected : [])
-                .accessibilityIdentifier("photos.tool." + item.title)
-            }
-        }
-        .padding(.horizontal, 8).padding(.bottom, 10)
-        .frame(maxHeight: .infinity, alignment: .top)
-    }
-
     private var gradingSections: some View {
         let grading = editing.developmentLegacyBasis.color?.grading ?? .init()
         let lutEnabled = session.parameters.gradingLUTs?.enabled ?? true
@@ -274,22 +282,10 @@ private struct PhotosDevelopmentContent: View {
         }
     }
 
-    private func validateDestination() {
-        guard !destinations.isEmpty else { return }
-        if !destinations.contains(destination) { destination = destinations[0] }
-        initializeSections()
-    }
-
     private func initializeSections() {
         // A suspended snapshot is read-only and must not write expansion state through an old scope.
         guard editing.developmentContext == context else { return }
         perform { try session.openFirstSectionIfNeeded(sectionOrder, context: context) }
-    }
-
-    private func select(_ item: PhotosAdjustmentDestination) {
-        hoveredDestination = nil
-        destination = item
-        if item != .masks { editing.developmentMaskInput.cancel() }
     }
 
     private func section(_ group: DevelopmentAdjustmentID) -> some View {
@@ -407,14 +403,6 @@ private struct PhotosDevelopmentContent: View {
         if let token = session.activeGesture { try session.endGesture(token, .commit) }
     }
 
-    private func reset(all: Bool) {
-        perform {
-            try finishGesture()
-            let commands: [DevelopmentAdjustmentCommand] = all ? [.resetAll] : DevelopmentAdjustmentID.allCases.filter { $0 != .filter }.map { .reset($0) }
-            try session.applyAtomically(commands, title: all ? "复位全部编辑" : "复位照片调整", event: event(nil, "复位"))
-        }
-    }
-
     private func event(_ group: DevelopmentAdjustmentID?, _ action: String) -> EditingCommandEvent {
         .init(context: context, control: .init(group: group, name: action + (group?.photosTitle ?? "照片调整")),
             nativeInput: .capture(control: "photos." + action, phase: "discrete", nativeEvent: true))
@@ -528,17 +516,7 @@ struct PhotosHistogramView: View {
                         let channels = [(histogram.red, Color.red), (histogram.green, Color.green), (histogram.blue, Color.blue)]
                         let rgb = channels.allSatisfy { $0.0.count == 256 }
                         let source = rgb ? channels : [(histogram.luminance, Color.white)]
-                        let maximum = max(1e-9, source.flatMap { $0.0.map { log1p(Double($0)) } }.max() ?? 1)
-                        graphics.blendMode = .plusLighter
-                        for (bins, color) in source {
-                            let normalized = bins.map { log1p(Double($0)) }
-                            var path = Path(); path.move(to: .init(x: 0, y: size.height))
-                            for (i, count) in normalized.enumerated() {
-                                path.addLine(to: .init(x: Double(i) / 255 * size.width, y: size.height * (1 - count / maximum)))
-                            }
-                            path.addLine(to: .init(x: size.width, y: size.height)); path.closeSubpath()
-                            graphics.fill(path, with: .color(color.opacity(rgb ? 0.60 : 0.68)))
-                        }
+                        PhotosHistogramDrawing.fill(source, in: graphics, size: size)
                     }
                     .background(GeometryReader { geometry in
                         Color.clear.onAppear { histogramWidth = max(1, geometry.size.width) }

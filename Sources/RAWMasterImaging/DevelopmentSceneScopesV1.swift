@@ -37,9 +37,22 @@ package struct DevelopmentSceneScopesV1: Sendable {
     package let bins: [Int]
     package let minimum, maximum: Float
   }
+  package struct DisplayDistribution: Sendable {
+    package static let sdrBins = 144, binsPerEV = 28
+    package static let binCount = sdrBins + 4 * binsPerEV
+    package let red, green, blue: [UInt64]
+    package let chroma: [UInt32]
+
+    /// The reference-white boundary is stable across HDR preview, trims and monitor changes.
+    package static func bin(_ value: Float) -> Int {
+      if value <= 1 { return min(sdrBins - 1, Int(max(0, value) * Float(sdrBins))) }
+      return min(binCount - 1, sdrBins + Int(log2(value) * Float(binsPerEV)))
+    }
+  }
   package let size: SIMD2<Int>
   package let samples: [Sample]
   package let plots: [Stage: Plot]
+  package let targetPlot, derivativePlot: DisplayDistribution
   package let canMeasureSensor, canMeasureTarget, canMeasureScreen: Bool
   package let execution: DevelopmentSceneExecutionReceiptV1?
 
@@ -47,7 +60,7 @@ package struct DevelopmentSceneScopesV1: Sendable {
     .init(size: size, samples: samples.map { row in
       .init(sceneRGB: row.sceneRGB, targetRGB: row.targetRGB, derivativeRGB: row.derivativeRGB, sensorBits: row.sensorBits,
             targetExceeded: row.targetExceeded, monitorMaximum: monitor?.maximum(row.targetRGB))
-    }, plots: plots, canMeasureSensor: canMeasureSensor, canMeasureTarget: canMeasureTarget,
+    }, plots: plots, targetPlot: targetPlot, derivativePlot: derivativePlot, canMeasureSensor: canMeasureSensor, canMeasureTarget: canMeasureTarget,
        canMeasureScreen: monitor != nil, execution: execution)
   }
 
@@ -160,7 +173,25 @@ final class SceneScopesAnalyzerV1 {
       }
       return (stage, DevelopmentSceneScopesV1.Plot(bins:bins,minimum:low,maximum:high))
     })
-    return .init(size:.init(w,h), samples:samples, plots:plots,
+    typealias Distribution = DevelopmentSceneScopesV1.DisplayDistribution
+    func displayPlot(_ stage: DevelopmentSceneScopesV1.Stage, target: DevelopmentSceneOutputStateV1.Target) throws -> Distribution {
+      var red = [UInt64](repeating: 0, count: Distribution.binCount), green = red, blue = red
+      var counts = [UInt32](repeating: 0, count: DevelopmentDisplayHistogramV1.hueBins * DevelopmentDisplayHistogramV1.saturationBins)
+      let maximum = target.peakNits / target.referenceWhiteNits
+      func encode(_ value: Float) throws -> Double { try Double(target.encodeChannel(min(maximum, max(0, value)))) }
+      for sample in samples {
+        let rgb = sample.rgb(stage)
+        red[Distribution.bin(rgb.x)] += 1
+        green[Distribution.bin(rgb.y)] += 1
+        blue[Distribution.bin(rgb.z)] += 1
+        let index = try DevelopmentDisplayHistogramEngineV1.chromaBin(.init(encode(rgb.x), encode(rgb.y), encode(rgb.z)))
+        counts[index] += 1
+      }
+      return .init(red: red, green: green, blue: blue, chroma: counts)
+    }
+    let targetPlot = try displayPlot(.target, target: .hdr2020)
+    let derivativePlot = try displayPlot(.derivative, target: .sdr709)
+    return .init(size:.init(w,h), samples:samples, plots:plots, targetPlot: targetPlot, derivativePlot: derivativePlot,
                  canMeasureSensor:sourceSensor != nil, canMeasureTarget:preGamut != nil, canMeasureScreen:monitor != nil,
                  execution:execution)
   }

@@ -7,6 +7,7 @@ private struct LiveDevelopmentStateCommand: Codable {
   let expectedRevision: Int
   let recipe: DevelopmentRecipe
   var presetAdoptions: [DevelopmentPresetAdoption]?
+  var alternateAppearance: DevelopmentAppearanceAlternate?
 }
 
 extension LibraryStore {
@@ -143,10 +144,11 @@ extension LibraryStore {
   /// Persist the current non-destructive edit without rendering or creating an immutable candidate.
   /// The optimistic revision prevents an older asynchronous gesture from overwriting a newer one.
   public func saveLiveDevelopmentState(workID: String, recipe: DevelopmentRecipe, parentVersionID: String,
-                                       expectedRevision: Int, commandID: String = UUID().uuidString, presetAdoptions: [DevelopmentPresetAdoption]? = nil) throws -> PhotoWork {
+                                       expectedRevision: Int, commandID: String = UUID().uuidString, presetAdoptions: [DevelopmentPresetAdoption]? = nil,
+                                       alternateAppearance: DevelopmentAppearanceAlternate? = nil) throws -> PhotoWork {
     try transaction {
       let fingerprint = try EditingFingerprint.of(LiveDevelopmentStateCommand(workID: workID,
-        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe, presetAdoptions: presetAdoptions))
+        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe, presetAdoptions: presetAdoptions, alternateAppearance: alternateAppearance))
       if let existing = try commandResult(id: commandID, fingerprint: fingerprint,
           action: "saveLiveDevelopment", type: PhotoWork.self) { return existing }
       var work = try photoWork(id: workID)
@@ -156,6 +158,14 @@ extension LibraryStore {
       try recipe.validate()
       if recipe.sceneGraph != nil, presetAdoptions != nil { throw EditingError.invalidRecipe }
       try validateSceneRecipeSource(recipe, source: work.source); try validateAdmission(work.source)
+      if let alternateAppearance {
+        let alternate = alternateAppearance.recipe
+        try alternate.validate()
+        guard (alternate.sceneGraph == nil) != (recipe.sceneGraph == nil),
+              alternate.sceneGraph == nil || alternateAppearance.presetAdoptions == nil else { throw EditingError.invalidRecipe }
+        try validateSceneRecipeSource(alternate, source: work.source)
+      }
+      work.liveAlternateAppearance = alternateAppearance
       work.liveRecipe = recipe; work.liveParentVersionID = parentVersionID
       work.livePresetAdoptions = presetAdoptions
       work.liveRevision = expectedRevision + 1
@@ -183,6 +193,30 @@ extension LibraryStore {
       var source = version.source
       source.sourceLocation = try asset(source.assetID).resolvedURL
       return try .init(work: work, version: version, format: format, resolvedSource: source)
+    }
+  }
+
+  /// Validate the parent and source of a frozen live edit, or the immutable stored candidate.
+  /// The queue retains the exact selected recipe independently of later edits to the photo.
+  package func checkedSceneDelivery(work: PhotoWork, selection: EditingVersion,
+                                    format: DevelopmentSceneDeliveryV1.Format) throws -> DevelopmentSceneDeliveryV1 {
+    try withReadSnapshot {
+      let selected = try DevelopmentSceneDeliveryV1(work: work, version: selection, format: format)
+      if selection.isLiveSceneDelivery {
+        guard let parentID = selection.parentVersionID else { throw EditingError.invalidParent }
+        let parent = try editingVersion(id: parentID)
+        guard parent.workID == work.id, parent.source.hasSameIdentity(as: selection.source),
+              try versionDisposition(versionID: parentID) != .discarded,
+              try parent.freezingSceneAppearance(selection.recipe).id == selection.id else { throw EditingError.staleSource }
+        try validateSceneRecipeSource(selection.recipe, source: selection.source)
+        try validateEditingSource(selection.source)
+      } else {
+        let stored = try freezeSceneDelivery(versionID: selection.id, format: format)
+        guard stored.program == selected.program, stored.source.hasSameIdentity(as: selected.source) else {
+          throw EditingError.staleSource
+        }
+      }
+      return selected
     }
   }
 

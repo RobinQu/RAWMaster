@@ -119,7 +119,7 @@ extension AppModel {
         }
         let submitted = WorkbenchPhotoDelivery(directory: directory, assets: candidates.filter { ids.contains($0.id) })
         let scope = WorkbenchPhotoScope(batchID: submitted.id, candidates: candidates, catalog: isPagedGrid ? exportCatalogScope : nil,
-            fingerprints: fingerprints, editorInput: workflowVersions.isEmpty ? editing?.takeWorkbenchExportInput(for: ids) : nil,
+            fingerprints: fingerprints, editorInput: workflowVersions.isEmpty ? editing?.submitWorkbenchExportInput(for: ids) : nil,
             workflowVersions: workflowVersions)
         workbenchPhotoDelivery = submitted
         workbenchPhotoDeliveryTask = Task {
@@ -382,13 +382,15 @@ extension AppModel {
         var version: EditingVersion
         if let recipe = work.liveRecipe, let parent = work.liveParentVersionID {
             version = try store.editingVersion(id: parent)
-            if recipe.sceneGraph != nil, version.recipe != recipe {
-                throw LibraryError.invalid("\(asset.filename) 的 HDR 草稿尚未保存为候选。请先保存，再选取该版本。")
+            if recipe.sceneGraph != nil {
+                version = try version.freezingSceneAppearance(recipe)
+            } else if version.recipe != recipe && (version.kind == .development || version.kind == .original) {
+                version.artifact = nil
             }
             if version.artifact == nil && (asset.availability != .available || !FileManager.default.isReadableFile(atPath: asset.resolvedURL.path)) {
                 let adopted = try store.editingVersion(id: work.adoptedVersionID)
                 guard adopted.artifact != nil, adopted.recipe == recipe else {
-                    throw LibraryError.invalid("\(asset.filename) 的当前调整需要原片。请找回原片，或从版本列表选择已归档的版本。")
+                    throw LibraryError.invalid("\(asset.filename) 的当前调整需要原片。请找回原片，或从「已有编辑结果」选择已归档的成片。")
                 }
                 version = adopted
             } else {
@@ -435,13 +437,11 @@ extension AppModel {
                 do {
                     let (work, selected) = try await workbenchExportInput(asset)
                     guard selected.recipe.sceneGraph != nil else { throw WorkbenchDeliveryIssue.hdrMasterRequired }
-                    let stored = try store.freezeSceneDelivery(versionID: selected.id, format: .avif10)
-                    let chosen = try DevelopmentSceneDeliveryV1(work: work, version: selected, format: .avif10)
-                    guard stored.program == chosen.program, stored.source.hasSameIdentity(as: chosen.source) else { throw EditingError.staleSource }
-                    version = selected.id; source = stored.source.contentSHA256; recipe = try stored.program.fingerprint()
+                    let chosen = try store.checkedSceneDelivery(work: work, selection: selected, format: .avif10)
+                    version = selected.id; source = chosen.source.contentSHA256; recipe = try chosen.program.fingerprint()
                 } catch is CancellationError { throw CancellationError() }
                 catch WorkbenchDeliveryIssue.hdrMasterRequired { reason = "所选版本没有 HDR 母版" }
-                catch { reason = "请核对原片与已保存的 HDR 版本：\(error.localizedDescription)" }
+                catch { reason = "请核对原片和当前 HDR 外观：\(error.localizedDescription)" }
             }
             lines.append(.init(id: asset.id, name: asset.filename, version: version, sourceDigest: source, recipeDigest: recipe, reason: reason))
         }
@@ -458,13 +458,11 @@ extension AppModel {
             for (work, version) in frozen {
                 try Task.checkCancellation()
                 guard version.recipe.sceneGraph != nil else { throw WorkbenchDeliveryIssue.hdrMasterRequired }
-                let stored = try store.freezeSceneDelivery(versionID: version.id, format: .avif10)
-                let chosen = try DevelopmentSceneDeliveryV1(work: work, version: version, format: .avif10)
-                guard stored.program == chosen.program, stored.source.hasSameIdentity(as: chosen.source) else { throw WorkbenchDeliveryIssue.pqSelectionChanged }
+                let chosen = try store.checkedSceneDelivery(work: work, selection: version, format: .avif10)
                 if let accepted {
                     let shown = accepted[version.source.assetID]
-                    guard shown?.version == version.id, shown?.sourceDigest == stored.source.contentSHA256,
-                          shown?.recipeDigest == (try stored.program.fingerprint()) else { throw WorkbenchDeliveryIssue.pqSelectionChanged }
+                    guard shown?.version == version.id, shown?.sourceDigest == chosen.source.contentSHA256,
+                          shown?.recipeDigest == (try chosen.program.fingerprint()) else { throw WorkbenchDeliveryIssue.pqSelectionChanged }
                 }
             }
         }

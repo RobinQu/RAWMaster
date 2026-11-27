@@ -50,7 +50,7 @@ final class ProjectEditingFlowTests: XCTestCase {
         model.selectScope(.all)
         try await Task.sleep(nanoseconds: 250_000_000)
         XCTAssertFalse(editing.isPresented); XCTAssertFalse(editing.showExport)
-        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertNil(editing.asset); XCTAssertNil(editing.work)
+        XCTAssertNil(editing.asset); XCTAssertNil(editing.work)
         editing.focusSnapshotHook = nil
         model.selectScope(.project, id: f.assets[0].projectID); model.setMode(.single); model.select(f.assets[0]); model.openNativeEditing()
         try await wait { editing.work != nil }
@@ -67,11 +67,11 @@ final class ProjectEditingFlowTests: XCTestCase {
         model.selectScope(.project, id: f.assets[0].projectID); model.setMode(.single); model.select(f.assets[0]); model.openNativeEditing()
         let editing = try XCTUnwrap(model.editing); try await wait { editing.work != nil }
         editing.setRecipe { $0.exposureEV = 0.4 }; model.openRenderedPhotoExport()
-        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
         XCTAssertEqual(editing.exportVersion?.recipe.exposureEV, 0.4)
         model.admissions.removeAll { $0.assetID == f.assets[0].id }
         XCTAssertFalse(model.canOpenNativeEditing); XCTAssertFalse(editing.isPresented)
-        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertNil(editing.asset)
+        XCTAssertNil(editing.asset)
         XCTAssertFalse(editing.showExport); XCTAssertFalse(editing.saving)
         await editing.shutdown()
     }
@@ -95,7 +95,6 @@ final class ProjectEditingFlowTests: XCTestCase {
             }
             model.admissions = try f.store.loadAdmissions()
             XCTAssertFalse(editing.isPresented); XCTAssertNil(editing.work); XCTAssertNil(editing.asset)
-            XCTAssertFalse(editing.showDraftExportChoice)
             model.assets[0].availability = .missing
             XCTAssertFalse(model.canOpenNativeEditing, "An archive from an older admission is not the current photo work")
             model.assets = f.assets
@@ -118,7 +117,7 @@ final class ProjectEditingFlowTests: XCTestCase {
         let original = try XCTUnwrap(editing.work?.originalVersionID)
         editing.setRecipe { $0.exposureEV = 0.5 }
         model.openRenderedPhotoExport()
-        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
         XCTAssertEqual(editing.exportVersionID, original)
         XCTAssertEqual(editing.exportVersion?.recipe.exposureEV, 0.5)
         XCTAssertEqual(editing.versions.count, 1)
@@ -135,7 +134,7 @@ final class ProjectEditingFlowTests: XCTestCase {
         var profile = try XCTUnwrap(editing.profiles.first { $0.kind == .localComfy })
         profile.acceptedForUse = true; try await editing.saveProfile(profile, secret: nil); editing.selectedProfileID = profile.id
         editing.providerOverride = ProjectFlowCandidateProvider()
-        editing.stage = .ai; editing.generate()
+        editing.stage = .versions; editing.generate()
         try await wait { editing.jobs.first?.state == .running }
         model.selectScope(.all)
         XCTAssertFalse(editing.isPresented); XCTAssertNil(editing.asset)

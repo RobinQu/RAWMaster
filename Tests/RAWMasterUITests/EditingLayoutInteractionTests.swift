@@ -108,14 +108,14 @@ final class EditingLayoutInteractionTests: XCTestCase {
         let vector = try XCTUnwrap(element("photos.scopes.vectorscope"))
         if vector.responds(to: NSSelectorFromString("accessibilityFrame")) {
             let frame = try XCTUnwrap(vector.value(forKey: "accessibilityFrame") as? NSValue).rectValue
-            XCTAssertEqual(frame.height, 144, accuracy: 1)
+            XCTAssertEqual(frame.height, 96, accuracy: 1)
         } else { XCTFail("Vectorscope must expose its plot bounds") }
         try press(try XCTUnwrap(button("直方图")))
         try await wait { element("photos.scopes.vectorscope") == nil }
         host.layoutSubtreeIfNeeded()
         let histogram = try XCTUnwrap(element("photos.scopes.histogram.plot"))
         let histogramFrame = try XCTUnwrap(histogram.value(forKey: "accessibilityFrame") as? NSValue).rectValue
-        XCTAssertEqual(histogramFrame.height, 108, accuracy: 1)
+        XCTAssertEqual(histogramFrame.height, 96, accuracy: 1)
         try await wait { editing.developmentContext != nil }
         let beforeSampling = editing.recipe, samplingHistory = editing.developmentSession.history.entryCount
         for x in [0.2, 0.5, 0.8] { XCTAssertTrue(editing.colorSamplers.place(.init(x: x, y: 0.5))) }

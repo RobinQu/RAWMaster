@@ -9,7 +9,7 @@ let package = Package(
         .executable(name: "RAWMasterDiagnostics", targets: ["RAWMasterDiagnostics"]),
         .executable(name: "RAWMasterSequenceProbe", targets: ["RAWMasterSequenceProbe"])
     ],
-    dependencies: [.package(path: "experiments/MaskAI"), .package(path: "Modules/LibraryCatalog"), .package(path: "Modules/PhotoExport"), .package(path: "Modules/ImageEdit")],
+    dependencies: [.package(url: "https://github.com/sanzaru/SimpleToast.git", exact: "0.12.0"), .package(path: "experiments/MaskAI"), .package(path: "Modules/LibraryCatalog"), .package(path: "Modules/PhotoExport"), .package(path: "Modules/ImageEdit")],
     targets: [
         .systemLibrary(name: "CSQLite"),
         .target(name: "CFlashRaw"),
@@ -19,7 +19,7 @@ let package = Package(
         .target(name: "RAWMasterAI", dependencies: ["RAWMasterCore"], resources: [.copy("Resources")]),
         // VideoPlayer's SwiftUI overlay needs the Objective-C AVPlayerView superclass at runtime.
         // Importing AVKit alone can autolink only _AVKit_SwiftUI, causing an abort on first preview.
-        .executableTarget(name: "RAWMaster", dependencies: ["RAWMasterCore", "RAWMasterImaging", "RAWMasterAI", .product(name: "RAWMasterLibrary", package: "LibraryCatalog"), .product(name: "RAWMasterPhotoExport", package: "PhotoExport")],
+        .executableTarget(name: "RAWMaster", dependencies: ["RAWMasterCore", "RAWMasterImaging", "RAWMasterAI", .product(name: "SimpleToast", package: "SimpleToast"), .product(name: "RAWMasterLibrary", package: "LibraryCatalog"), .product(name: "RAWMasterPhotoExport", package: "PhotoExport")],
                           linkerSettings: [.linkedFramework("AVKit")]),
         .executableTarget(name: "RAWMasterDiagnostics", dependencies: ["RAWMasterCore", "RAWMasterImaging"]),
         .executableTarget(name: "RAWMasterSequenceProbe", dependencies: ["RAWMasterCore", "RAWMasterImaging"]),

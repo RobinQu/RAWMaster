@@ -59,7 +59,7 @@ struct PhotosAdjustmentSection<Content: View>: View {
     let enabled: Bool
     let modified: Bool
     let onExpand: () -> Void
-    let onEnable: (Bool) -> Void
+    let onEnable: ((Bool) -> Void)?
     let onReset: (() -> Void)?
     var autoAction: (() -> Void)? = nil
     var autoInProgress = false
@@ -98,17 +98,19 @@ struct PhotosAdjustmentSection<Content: View>: View {
                     }.buttonStyle(.plain).foregroundStyle(.secondary)
                         .accessibilityLabel("自动调整\(title)")
                 }
-                Button { onEnable(!enabled) } label: {
-                    Image(systemName: enabled ? "circle.inset.filled" : "circle")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(enabled ? Color.accentColor : Color.secondary)
-                        .frame(width: 27, height: 28).contentShape(Rectangle())
-                }.buttonStyle(.plain)
-                    .help("启用或停用\(title)，保留已设置的数值")
-                    .accessibilityAddTraits(.isToggle)
-                    .accessibilityLabel("启用\(title)")
-                    .accessibilityValue(enabled ? "已启用" : "已停用")
-                    .accessibilityIdentifier("photos.\(key).enabled")
+                if let onEnable {
+                    Button { onEnable(!enabled) } label: {
+                        Image(systemName: enabled ? "circle.inset.filled" : "circle")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(enabled ? Color.accentColor : Color.secondary)
+                            .frame(width: 27, height: 28).contentShape(Rectangle())
+                    }.buttonStyle(.plain)
+                        .help("启用或停用\(title)，保留已设置的数值")
+                        .accessibilityAddTraits(.isToggle)
+                        .accessibilityLabel("启用\(title)")
+                        .accessibilityValue(enabled ? "已启用" : "已停用")
+                        .accessibilityIdentifier("photos.\(key).enabled")
+                }
             }
             .frame(minHeight: 32)
             .foregroundStyle(photosAdjustmentTextColor(in: colorScheme))

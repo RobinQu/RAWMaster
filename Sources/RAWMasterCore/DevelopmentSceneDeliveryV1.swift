@@ -95,3 +95,26 @@ package struct DevelopmentSceneDeliveryV1: Codable, Equatable, Sendable {
     try fields.encode(target, forKey: .target); try fields.encode(format, forKey: .format)
   }
 }
+
+extension EditingVersion {
+  package var isLiveSceneDelivery: Bool { configuration["liveSceneDelivery"] == "v1" }
+
+  /// A live edit gets an identity inside the immutable export receipt. Looking at a photo or
+  /// exporting it never inserts a candidate into the photographer's list of saved results.
+  package func freezingSceneAppearance(_ activeRecipe: DevelopmentRecipe) throws -> Self {
+    guard activeRecipe.sceneGraph != nil, kind == .original || kind == .development else {
+      throw DevelopmentSceneDeliveryV1.Failure.invalidVersion
+    }
+    try activeRecipe.validate()
+    if kind == .development, artifact == nil, recipe == activeRecipe { return self }
+    let identity = ["scene-delivery-v1", workID, id, source.contentSHA256, source.admissionFingerprint,
+                    try EditingFingerprint.of(activeRecipe)]
+    var bytes = Array(try EditingFingerprint.digest(of: identity).prefix(16))
+    // UUIDv8 reserves the version/variant bits and leaves 122 bits of the content hash.
+    bytes[6] = (bytes[6] & 0x0f) | 0x80
+    bytes[8] = (bytes[8] & 0x3f) | 0x80
+    let identifier = NSUUID(uuidBytes: bytes).uuidString
+    return Self(id: identifier, workID: workID, parentVersionID: id, kind: .development,
+                source: source, recipe: activeRecipe, configuration: ["liveSceneDelivery": "v1"], createdAt: createdAt)
+  }
+}

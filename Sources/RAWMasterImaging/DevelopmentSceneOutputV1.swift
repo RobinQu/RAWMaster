@@ -109,9 +109,14 @@ final class DevelopmentSceneOutputV1 {
     self.device=device; self.queue=queue; self.target=target; self.sampler=sampler; self.boundary=boundary
   }
 
-  func render(_ image: DevelopmentSceneMetalV1.Image) throws -> DisplayImage {
+  func render(_ image: DevelopmentSceneMetalV1.Image, hdrLimitEV: Double? = nil) throws -> DisplayImage {
     guard boundary == .display else { throw Failure.invalidInput }
-    return DisplayImage(texture: try evaluate(image), target: target, origin: image.origin)
+    var peak: Float = 0
+    if target == .hdr2020, let hdrLimitEV {
+      guard (0...DevelopmentSceneOutputStateV1.Version.maximumHDRLimitEV).contains(hdrLimitEV) else { throw Failure.invalidInput }
+      peak = Float(exp2(hdrLimitEV))
+    }
+    return DisplayImage(texture: try evaluate(image, peak: peak), target: target, origin: image.origin)
   }
 
   struct TargetEvidence { let texture: MTLTexture }
@@ -120,7 +125,7 @@ final class DevelopmentSceneOutputV1 {
     return .init(texture: try evaluate(image))
   }
 
-  private func evaluate(_ image: DevelopmentSceneMetalV1.Image) throws -> MTLTexture {
+  private func evaluate(_ image: DevelopmentSceneMetalV1.Image, peak: Float = 0) throws -> MTLTexture {
     try Task.checkCancellation()
     let source=image.texture
     guard image.port == .working, source.device === device, source.textureType == .type2D,
@@ -135,6 +140,8 @@ final class DevelopmentSceneOutputV1 {
     encoder.setTexture(source,index:0); encoder.setTexture(output,index:1)
     encoder.setTexture(reach,index:2); encoder.setTexture(cusp,index:3)
     encoder.setSamplerState(sampler,index:0); encoder.setBuffer(flag,offset:0,index:0)
+    var limit = peak
+    encoder.setBytes(&limit, length: MemoryLayout<Float>.stride, index: 1)
     let lanes=pipeline.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:source.width,height:source.height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
@@ -151,7 +158,7 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
                           texture2d<float,access::write> display [[texture(1)]],
                           texture1d<float> reach [[texture(2)]], texture1d<float> cusp [[texture(3)]],
                           sampler lookup [[sampler(0)]], device atomic_uint& invalid [[buffer(0)]],
-                          uint2 xy [[thread_position_in_grid]]) {
+                          constant float& limit [[buffer(1)]], uint2 xy [[thread_position_in_grid]]) {
   float4 p=scene.read(xy);
   if (!all(isfinite(p)) || p.a < 0 || p.a > 1) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
   if (p.a == 0) { display.write(float4(0),xy); return; }
@@ -159,6 +166,9 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
   if (!all(isfinite(rgb))) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
   float3 shown=OCIOMain(reach,lookup,cusp,lookup,float4(rgb,1)).rgb;
   if (!all(isfinite(shown))) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
+  // Preserve Rec.2020 chromaticity and leave every component below the ceiling untouched.
+  float maximum = max(shown.r, max(shown.g, shown.b));
+  if (limit > 0 && maximum > limit) { shown *= limit / maximum; }
   display.write(float4(shown*p.a,p.a),xy);
 }
 """#

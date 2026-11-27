@@ -31,6 +31,7 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def main():
     parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--appearance-activity-only", action="store_true", help="Review direct color appearance, scopes, background activity and saved results.")
     parser.add_argument("--editor-rails-only", action="store_true", help="Exercise the glass rails, filter tree, canvas notices and titleless Graph.")
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
     parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
@@ -67,6 +68,9 @@ def main():
       const hash=async path=>{location.hash=path;await wait(()=>location.hash==='#'+path);await new Promise(ok=>setTimeout(ok,35));};
       const page=async selector=>wait(()=>document.body.dataset.route===(decodeURI(location.hash.slice(1))||'library/project/river')&&el(selector)?.checkVisibility());
       const modal=()=>el('#sheet');
+      const openResults=()=>{if(!el('.results-menu').open)tap('.results-menu summary');act('open-versions',null,el('.results-menu'));};
+      const showDiagnostics=()=>{if(!el('.scope-native-review').open)tap('.scope-native-review summary');};
+      const hdrView=value=>{const btn=el('.scene-mode-bar > [data-act=scene-view]');if(btn.dataset.val===value)btn.click();};
       const pickNode=id=>{
         if(['source','geometry','output'].includes(id)) return tap('[data-dag-node="'+id+'"]');
         act('dag-picker');act('dag-picker-select',id,el('#dag-node-picker'));
@@ -106,6 +110,90 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.appearance_activity_only:
+                evidence = os.environ.get("RAWMASTER_APPEARANCE_EVIDENCE")
+                def capture_view(name):
+                    if evidence:
+                        folder = Path(evidence)
+                        folder.mkdir(parents=True, exist_ok=True)
+                        browser("screenshot", str(folder / (name + ".png")))
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&scopesNativeReview=1")
+                browser("set", "viewport", "1440", "900")
+                browser("set", "media", "light")
+                scenario("直进调色，HDR、SDR 与黑白一键往返", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
+                  assert(!matchMedia('(prefers-color-scheme: dark)').matches,'light workbench');
+                  assert(S.tool==='basic'&&el('#appearance-title').textContent==='色彩外观'&&all('.scene-modes svg').length===3);
+                  const nav=all('.inspector-rail button').map(x=>x.dataset.val).join();assert(el('.tone-control .histogram')&&el('[data-act=quick-open]'));
+                  set('[data-adjustment=ev]','0.55');const before=JSON.stringify(currentEdit().recipe);
+                  act('scene-mode','hdr');assert(!modal().open&&SceneEditor.hdr()&&el('.scene-mode-bar [name=sceneLimit]')&&el('.scene-mode-bar .scene-rendition'));
+                  assert(all('.inspector-rail button').map(x=>x.dataset.val).join()===nav&&all('.editing-scopes .scene-rgb svg g path').length===3&&el('path.scope-white-mark'),'same navigation with the HDR RGB histogram and white point');
+                  set('[name=sceneGraphExposure]','1.25');act('scene-review-exposure');
+                  act('scene-mode','sdr');assert(!modal().open&&currentEdit().recipe.ev===0.55);
+                  act('scene-mode','bw');assert(currentEdit().recipe.mono&&el('.scene-modes [data-val=bw]').ariaPressed==='true');
+                  act('scene-mode','hdr');assert(currentEdit().recipe.ev===1.25&&SceneEditor.hdr()&&!currentEdit().versions.length);
+                  const chart=el('.histogram svg'), height=chart.getBoundingClientRect().height;
+                  window.dispatchEvent(new Event('blur'));window.dispatchEvent(new Event('focus'));assert(chart===el('.histogram svg'),'chart survives window focus changes');
+                  act('scope-plot','vector');assert(el('.vector-plot').getBoundingClientRect().height===height&&height===96);
+                  act('scope-plot','histogram');assert(document.activeElement.dataset.val==='histogram');act('editor-notice-dismiss',null,el('.editor-toast'));
+                """)
+                capture_view("01-hdr-appearance")
+                scenario("单条通知、更替和后台历史", """
+                  act('scene-open');act('scene-review-fail',null,modal());assert(all('.editor-toast').length===1&&el('.editor-toast.error'));
+                  act('activity-open');await page('#activity-window[open]');assert(el('.activity-list').innerText.includes('HDR 预览失败'));
+                """)
+                capture_view("02-background")
+                browser("wait","6100")
+                scenario("通知到点消退，消息和错误各有记录，日志取自工作台", """
+                  assert(!el('.editor-toast')&&el('.activity-list').innerText.includes('HDR 预览失败'));
+                  act('activity-tab','tasks');assert(el('.activity-list').innerText.includes('暂无后台任务'));
+                  act('activity-tab','logs');assert(el('.activity-list').innerText.includes('切换到 HDR'));
+                  act('activity-close');act('scene-mode','sdr');assert(el('.editor-toast.info'));
+                """)
+                browser("wait","3600")
+                scenario("快照更多找回旧结果，查看、采用、外部结果和取消", """
+                  assert(!el('.editor-toast'));tap('.results-menu summary');act('open-versions');assert(modal().open&&modal().textContent.includes('当前照片还没有已保存'));
+                  act('return-adjustments',null,modal());assert(document.activeElement.matches('.results-menu summary'));
+                  assert(!el('[data-act=save-version]'),'usual editing has no candidate action');openResults();act('external',null,modal());act('external-result',null,modal());assert(currentEdit().versions.length===1);
+                  const result=currentEdit().versions[0];act('inspect-version',result.id,modal());assert(modal().open&&el('.result-preview').textContent.includes(result.name));
+                  act('adopt',result.id,modal());assert(currentEdit().adopted===result.id);
+                  act('external',null,modal());act('external-result',null,modal());assert(modal().textContent.includes('外部编辑'));
+                """)
+                capture_view("03-saved-results")
+                scenario("离开照片不重播消息，窗口菜单、冷开和窄窗", """
+                  act('return-adjustments',null,modal());act('scene-mode','hdr');assert(el('.editor-toast'));
+                  act('workflow','library');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.scene-modes');
+                  act('scene-mode','hdr');assert(el('.editor-toast.error')&&!SceneEditor.hdr()&&!modal().open);
+                  act('workflow','library');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
+                  assert(!el('.editor-toast')&&currentEdit().recipe.ev===1.25);tap('.window-menu summary');act('activity-window-menu');act('activity-tab','notices');
+                  assert(el('.activity-list').innerText.includes('HDR 预览失败'));
+                  act('activity-close');act('scope-plot','vector');
+                """)
+                browser("set","viewport","390","844")
+                browser("set","media","dark")
+                scenario("小窗示波器仍是 96 px 且可用键盘切换", """
+                  assert(matchMedia('(prefers-color-scheme: dark)').matches,'dark workbench');
+                  assert(el('.vector-plot').getBoundingClientRect().height===96);el('[data-act=scope-plot][data-val=vector]').scrollIntoView({block:'center'});
+                  assert(document.documentElement.scrollWidth<=innerWidth+1);
+                """)
+                capture_view("04-compact-scopes")
+                browser("reload")
+                scenario("重开只恢复记录、调色草稿与选片", """
+                  await page('.scene-modes');assert(!el('.editor-toast')&&SceneEditor.hdr());act('activity-open');act('activity-tab','notices');
+                  assert(el('.activity-list').innerText.includes('HDR 预览失败')&&el('.activity-library').textContent==='本机资料库');
+                """)
+                scenario("后台任务来自实际队列，切库隔离旧通知", """
+                  act('activity-close');await hash('settings/runtime');await page('.settings-advanced');tap('.settings-advanced > summary');set('[name=licenseAck]',true);act('prepare-runtime');
+                  await page('.jobs-page');act('activity-open');act('activity-tab','tasks');
+                  assert(el('.activity-list').innerText.includes('准备本机 AI 环境')&&!el('.activity-list [data-act=job-detail]'));
+                  await wait(()=>el('.activity-list').innerText.includes('已完成'));
+                  act('activity-tab','logs');assert(el('.activity-list').innerText.includes('已完成 · 准备本机 AI 环境'));
+                  act('activity-close');await hash('tools/package');await page('[data-act=package-switch]');act('package-switch');
+                  set('[name=demoPackage]','new',modal());set('[name=packageName]','走查空库',modal());act('package-open',null,modal());await page('.workflow-switch');
+                  act('activity-open');act('activity-tab','notices');assert(el('.activity-library').textContent==='走查空库'&&el('.activity-list').innerText.includes('暂无通知')&&!el('.activity-list').innerText.includes('HDR 预览失败'));
+                """)
+                check_browser_errors()
+                return
             if args.editor_rails_only:
                 evidence = os.environ.get("RAWMASTER_UI_RAILS_EVIDENCE")
                 def capture(name):
@@ -143,22 +231,22 @@ def main():
                   act('quick-open');await page('[name=quickPrompt]');el('[name=quickPrompt]').focus();
                   assert(document.activeElement.name==='quickPrompt'&&getComputedStyle(document.activeElement).outlineStyle==='none','editable Prompt without blue ring');
                   set('[name=quickPrompt]','保留远处水面的颜色');act('quick-close');await page('.scene-mode-bar');
-                  act('scene-mode','hdr');act('close',null,modal());assert(!SceneEditor.hdr(),'cancel leaves SDR');
-                  act('scene-mode','hdr');act('scene-review-start',null,modal());assert(SceneEditor.hdr()&&el('.editor-toast.info'));
+                  act('scene-mode','hdr');act('edit-step','undo');assert(!SceneEditor.hdr(),'undo restores SDR');
+                  act('scene-mode','hdr');assert(SceneEditor.hdr()&&el('.editor-toast.info'));
                   act('scene-open');act('scene-review-fail',null,modal());
-                  assert(all('.editor-toast').map(x=>x.classList.contains('error')?'error':'info').slice(-2).join()==='info,error'&&el('.editor-toast.error [role=alert]')&&el('.editor-toast.info [role=status]'),'individual severities in arrival order');
+                  assert(all('.editor-toast').length===1&&el('.editor-toast.error [role=alert]'),'latest error replaces prior transient');
                   assert(el('.editor-notices').getBoundingClientRect().top-el('.edit-center').getBoundingClientRect().top===8,'notices anchored above photo');
                 """)
                 capture("rails-and-notices.png")
                 browser("wait", "3100")
                 scenario("消息持续、分张关闭、纯画布 Graph", """
-                  assert(el('.editor-toast.info')&&el('.editor-toast.error'),'no timeout');
+                  assert(el('.editor-toast.error')&&!el('.editor-toast.info'),'error has a longer reading interval');
                   act('edit-tool','tones',el('.inspector-rail'));assert(el('.editor-toast.error'),'survives inspector render');
                   act('workflow','library');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.edit-page');
                   assert(!el('.editor-toast'),'no other photo message');act('workflow','library');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.edit-page');
-                  assert(el('.editor-toast.error')&&el('.editor-toast.info'),'messages restored for original photo');
-                  act('editor-notice-dismiss',null,el('.editor-toast.info'));assert(el('.editor-toast.error')&&!el('.editor-toast.info'));
-                  act('scene-review-retry',null,el('.editor-toast.error'));assert(el('.editor-toast.info')&&SceneEditor.hdr(),'successful HDR retry');
+                  assert(!el('.editor-toast'),'leaving a photo clears its transient');
+                  act('activity-open');assert(el('.activity-list').innerText.includes('HDR 预览失败'),'history survives the view');act('activity-close');
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-review-retry',null,el('.scene-mode-bar'));assert(el('.editor-toast.info')&&SceneEditor.hdr(),'successful HDR retry');
                   for (const row of all('.editor-toast')) act('editor-notice-dismiss',null,row);
                   act('edit-tool','basic');await page('.scene-mode-bar');act('dag-view-toggle');await page('.dag-viewport');
                   assert(!el('.dag-floating header')&&document.activeElement===el('.dag-viewport'),'canvas receives initial focus');
@@ -210,7 +298,7 @@ def main():
                       assert(ids.length===2&&grid().textContent.includes('批量导出'));
                       Studio.save();grid().click();await page('#export-frame[src]');
                       assert(JSON.stringify(S.delivery.items.map(i=>i.id))===JSON.stringify(ids),'ordered physical selection');
-                      const doc=el('#export-frame').contentDocument;await wait(()=>el('#asset-list',doc));
+                      await wait(()=>el('#export-frame')?.contentDocument?.querySelector('#asset-list'));const doc=el('#export-frame').contentDocument;
                       act('workflow','library');await page('.photo-card');
                       assert(activeIDs().length===2&&activeBrowser().focus==='r1','return to selection and focus');
                       const old=project.ids.slice();project.ids=old.filter(id=>id!=='r1');
@@ -236,7 +324,7 @@ def main():
                 browser("set", "viewport", "1280", "800")
                 scenario("037 示波器：阶段、点位、屏幕标线与取消", """
                   await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
-                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');
                   const details=()=>el('.scope-native-review');assert(details()&&!details().open);tap('.scope-native-review summary');
                   await wait(()=>details().open);const recipe=JSON.stringify(currentEdit().recipe), h=currentEdit().past.length;
                   act('scene-scope','scene');await wait(()=>el('.scene-axis')?.checkVisibility());assert(el('.scene-scopes').innerText.includes('线性 AP1'));
@@ -305,7 +393,7 @@ def main():
                 browser("set", "viewport", "1440", "900")
                 scenario("038 原生评审：HDR 草稿、插入和节点监看", """
                   await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
-                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');
                   act('dag-view-toggle');await page('.dag-floating');
                   assert(el('.developed')?.checkVisibility()&&el('.dag-floating').getAttribute('aria-modal')==='false');
                   addNodeMenu();act('dag-add','serial',modal());const node=dagNode().id;
@@ -315,9 +403,9 @@ def main():
                   menuAction('dag-preview');assert(dagView().target==='grade'&&el('.dag-photo-status').innerText.includes('不用于导出'));
                   pickNode(node);assert(dagView().target==='grade'&&JSON.stringify(currentEdit().recipe.dag)===before);
                   const adopted=currentEdit().adopted, count=currentEdit().versions.length;
-                  act('save-version');
-                  const saved=currentEdit().versions.find(v=>JSON.stringify(v.recipe.dag)===before);
-                  assert(saved&&currentEdit().versions.length===count+1&&currentEdit().adopted===adopted&&dagView().target==='grade','save freezes final graph without adopting or changing monitoring');
+                  assert(!el('[data-act=save-version]'),'no manual candidate action');act('workflow','export');await page('#export-frame[src]');
+                  const frozen=S.delivery.items.find(i=>i.id===Studio.data.work).versions[0];assert(JSON.stringify(frozen.recipe.dag)===before&&currentEdit().versions.length===count&&currentEdit().adopted===adopted,'export freezes final graph without creating a visible candidate');
+                  act('workflow','edit');await page('.dag-scope-head');assert(dagView().target==='grade','node monitoring remains selected');
                   act('dag-preview-final');assert(currentEdit().past.length===history,'preview only');
                 """)
                 native_graph_evidence = os.environ.get("RAWMASTER_UI_NATIVE_GRAPH_EVIDENCE")
@@ -327,11 +415,10 @@ def main():
                 scenario("038 原生评审：无效草稿阻止交付，取消后可编辑", """
                   set('[name=dagNumber][data-key=ev]',1.50);
                   const node=dagNode().id, recipe=JSON.stringify(currentEdit().recipe.dag);
-                  await wait(()=>!el('[data-act=save-version]').disabled);
                   dagPropose(node,node,'image');assert(el('[data-act=dag-connect-apply]').disabled);
-                  assert(el('[data-act=save-version]').disabled,'open connection blocks save');
+                  assert(!el('[data-act=save-version]'),'no candidate action during a connection');
                   act('workflow','export');assert(!location.hash.includes('export'),'cannot hand off an uncommitted draft');
-                  act('dag-connect-cancel');assert(JSON.stringify(currentEdit().recipe.dag)===recipe&&!el('[data-act=save-version]').disabled);
+                  act('dag-connect-cancel');assert(JSON.stringify(currentEdit().recipe.dag)===recipe&&!S.dagConnectionDraft);
                   act('dag-view-toggle');assert(!el('.dag-floating')&&el('.developed')?.checkVisibility(),'close graph only');
                 """)
                 for theme in ['light','dark']:
@@ -356,7 +443,7 @@ def main():
                 scenario("037 PQ 队列：混合选区核对", """
                   await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
                   act('workflow','edit');await page('.inspector-rail');act('edit-tool','basic');await page('.scene-mode-bar');
-                  act('scene-mode','hdr');act('workflow','export');act('export-choice','draft',modal());await page('#export-frame[src]');
+                  act('scene-mode','hdr');act('workflow','export');await page('#export-frame[src]');
                   const d=()=>el('#export-frame').contentDocument;
                   await wait(()=>el('#scene-target',d())?.checkVisibility());
                   set('#scene-target','hdr',d());
@@ -398,13 +485,13 @@ def main():
                   await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
                   act('edit-tool','basic');await page('.scene-mode-bar');
                   const draft=Studio.edit('b1'), old=JSON.stringify(draft.recipe), count=draft.past.length;
-                  act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  act('scene-mode','hdr');
                   const mode=el('.scene-modes [data-val=hdr]');
                   assert(el('.editor-toast.error').textContent.includes('HDR 原片解码运行库不可用'),'runtime reason');
                   assert(!modal().open&&JSON.stringify(draft.recipe)===old&&draft.past.length===count,'no draft or history');
                   assert(document.activeElement===mode,'returns focus to HDR');
                   act('editor-notice-dismiss',null,el('.editor-toast.error'));assert(!el('.editor-toast.error'),'dismiss keeps photo in the editor');
-                  act('scene-mode','hdr');act('close',null,modal());assert(JSON.stringify(draft.recipe)===old,'can cancel again');
+                  act('scene-mode','hdr');assert(!modal().open&&JSON.stringify(draft.recipe)===old,'retry preserves old draft');
                 """)
                 browser("open", host + ENTRY + "?sceneNativeReview=1")
                 scenario("037 原生评审：从资料库取消、创建与撤销 HDR 草稿", """
@@ -412,18 +499,15 @@ def main():
                   act('edit-tool','basic');await page('.scene-mode-bar');
                   const e=Studio.edit('b1'), old=JSON.stringify(e.recipe);sessionStorage.setItem('scene.review.old',old);
                   act('scene-mode','hdr');
-                  const create=el('[data-act=scene-review-start]',modal()), cancel=el('.dialog-foot [data-act=close]',modal());
-                  assert(modal().innerText.includes('不会把现有 SDR 调整')&&modal().innerText.includes(Studio.asset('b1').name),'confirmation names the source and describes the draft');
-                  assert(!create.disabled&&!cancel.disabled&&JSON.stringify(e.recipe)===old,'both actions enabled before rendering');
-                  cancel.click();await wait(()=>document.activeElement.dataset.val==='hdr');
-                  assert(!modal().open&&JSON.stringify(e.recipe)===old,'cancel returns to HDR without editing');
-                  act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  assert(!modal().open&&e.recipe.sceneOutput?.intent==='hdr','switch is immediate');
+                  act('edit-step','undo');assert(JSON.stringify(e.recipe)===old,'undo restores original');
+                  act('scene-mode','hdr');
                   assert(e.recipe.sceneOutput?.intent==='hdr'&&!Studio.edit('r1').recipe.sceneOutput,'current photo only');
-                  const past=e.past.length;act('scene-view','sdr',el('.scene-hud'));assert(e.past.length===past,'view does not write history');
+                  const past=e.past.length;hdrView('sdr');assert(e.past.length===past,'view does not write history');
                   el('[name=sceneGraphExposure]').value='1.25';act('scene-review-exposure');assert(e.recipe.ev===1.25,'node exposure');
                   act('edit-step','undo');assert(e.recipe.sceneOutput&&e.recipe.ev===0,'undo exposure only');
                   act('edit-step','undo');assert(JSON.stringify(e.recipe)===old,'undo HDR restores exact SDR');
-                  act('scene-mode','hdr');act('scene-review-start',null,modal());act('scene-open');
+                  act('scene-mode','hdr');act('scene-open');
                   act('scene-review-fail',null,modal());assert(el('.editor-toast.error').innerText.includes('预览失败'),'visible failure');
                   act('scene-review-retry');assert(!el('.editor-toast [data-act=scene-review-retry]')&&SceneEditor.hdr(),'retry returns to same HDR draft');
                 """)
@@ -437,7 +521,7 @@ def main():
                       await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
                       await hash('edit/basic');await page('.scene-mode-bar');
                       assert(document.documentElement.scrollWidth<=innerWidth,'no horizontal overflow');
-                      act('scene-view','target',el('.scene-hud'));
+                      hdrView('target');
                       assert(el('.scene-hud').innerText.includes('屏幕无 HDR 余量'),'fallback explicit');
                       const e=Studio.edit('b1'), hdr=JSON.stringify(e.recipe);Studio.asset('b1').online=false;render();
                       act('scene-mode','sdr');assert(all('.editor-toast.error').some(row=>row.innerText.includes('离线'))&&JSON.stringify(e.recipe)===hdr,'offline is fail closed');
@@ -483,10 +567,10 @@ def main():
                 scenario("Node DAG 兼容评审：Escape 关闭并返还焦点", """
                   assert(!el('.dag-compat')&&document.activeElement===el('.dag-scope-head [data-act=compatibility-graph-toggle]'),'Escape restores the trigger');
                   act('compatibility-graph-toggle','',el('.dag-scope-head'));
-                  act('open-versions');await page('#adjustment-panel');
-                  assert(!el('.dag-compat')&&!el('.dag-scope-head'),'versions do not expose the graph');
+                  openResults();await page('.version-row');
+                  assert(modal().open&&!el('.dag-compat',modal())&&!el('.dag-scope-head',modal()),'saved results have a separate sheet');
                   act('return-adjustments');await page('.scene-mode-bar');
-                  assert(!el('.dag-compat')&&Studio.data.work==='r1','return to same editor without reopening the window');
+                  assert(el('.dag-compat')&&Studio.data.work==='r1','return preserves the open Graph');act('compatibility-graph-toggle','',el('.dag-scope-head'));
                 """)
                 browser("set", "viewport", "390", "844")
                 scenario("Node DAG 兼容评审：390px 浅色布局", """
@@ -539,7 +623,7 @@ def main():
                   assert(el('.scene-rendition [name=sceneExposure]').value==='0.5'&&edit.past.length===history,'inline SDR preview keeps draft and history');
                   act('scene-trim','',el('.scene-rendition'));assert(edit.recipe.sceneOutput.trim.exposure===0.5,'inline SDR apply');
                   act('edit-step','undo');
-                  act('scene-scope','scene'); act('scene-sample');
+                  showDiagnostics();act('scene-scope','scene'); act('scene-sample');
                   assert(el('.scene-scopes').textContent.includes('−0.02'),'signed AP1 sample');
                   act('scene-overlay','sensor');act('scene-overlay','target');
                   assert(all('.scene-marks i').length===2,'independent overlays');
@@ -553,7 +637,7 @@ def main():
                   const film=el('[data-act=film-stock]');tap('[data-act=film-stock][data-val="'+CSS.escape(film.dataset.val)+'"]');
                   assert(modal().textContent.includes('仅 SDR')&&el('.scene-film-preview',modal()),'separate film preview');
                   act('close',null,modal());assert(!edit.recipe.sceneOutput.film,'cancel film leaves recipe');
-                  act('workflow','export');act('export-choice','draft',modal());await page('#export-frame[src]');
+                  act('workflow','export');await page('#export-frame[src]');
                   const frame=el('#export-frame');
                   const d=()=>frame.contentDocument;
                   await wait(()=>d()?.readyState==='complete' && el('#scene-target',d())?.checkVisibility() && el('#out-name',d())?.textContent.includes('.jpg'));
@@ -566,7 +650,7 @@ def main():
                   tap('#retry',d());await wait(()=>el('#job-summary',d()).textContent.includes('已核验 2 / 2'));
                   tap('#close-job',d());act('workflow','library');await page('.photo-card');
                   assert(activeBrowser().focus==='b1','return to selected photo');
-                  const saved=edit.lastSaved;edit.adopted=saved;
+                  const saved=Studio.candidate('b1','HDR 已有结果',edit.recipe).id;edit.adopted=saved;
                   Studio.asset('b1').online=false;Studio.save();
                   act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic');await page('.scene-entry');tap('.scene-entry');
                   assert(modal().textContent.includes('原片已离线')&&el('[name=sceneExposure]',modal()).disabled,'offline HDR settings');
@@ -604,11 +688,10 @@ def main():
                   act('film-stock',el('[data-act=film-stock]').dataset.val);
                   const recipe=JSON.stringify(old.recipe);
                   act('scene-mode','hdr');
-                  assert(modal().textContent.includes('胶片外观'),'conflict explains incompatible Look');
-                  act('close',null,modal());assert(JSON.stringify(old.recipe)===recipe&&!old.versions.length,'cancel creates no versions');
-                  act('scene-mode','hdr');act('scene-new',null,modal());
-                  assert(old.recipe.sceneOutput?.intent==='hdr'&&!old.recipe.filmStock,'HDR draft carries no old film');
-                  assert(old.versions.some(v=>JSON.stringify(v.recipe)===recipe)&&old.adopted==='original','old SDR retained without auto-adoption');
+                  assert(!modal().open&&old.recipe.sceneOutput?.intent==='hdr'&&!old.recipe.filmStock,'HDR draft carries no unverified film');
+                  assert(!old.versions.length&&old.adopted==='original','switch creates no visible candidates');
+                  act('scene-mode','sdr');assert(old.recipe.filmStock&&old.recipe.filmStock===JSON.parse(recipe).filmStock,'SDR film preserved');
+                  act('scene-mode','hdr');
                 """)
                 scenario("037 色彩模式与 Graph 面板分区", """
                   await hash('edit/basic');await page('.scene-mode-bar');
@@ -639,22 +722,16 @@ def main():
                   const sw=m=>el('[data-act=scene-mode][data-val='+m+']');
                   sw('hdr').focus();key(sw('hdr'),'ArrowRight');
                   assert(document.activeElement===sw('bw')&&e.past.length===past&&sw('hdr').getAttribute('aria-pressed')==='true','keyboard focus only');
-                  act('scene-mode','bw');assert(modal().open&&e.past.length===past,'leaving HDR needs confirmation');
-                  act('close',null,modal());await wait(()=>document.activeElement===sw('bw'));
-                  assert(e.recipe.sceneOutput&&graphNodeBytes()===nodes,'cancel keeps HDR and graph');
-                  act('scene-mode','bw');act('scene-confirm-sdr','bw',modal());
-                  assert(!e.recipe.sceneOutput&&RMPhotos.displayLook(e.recipe).mono&&el('.developed').style.filter.includes('grayscale(1)'),'B&W applies grayscale');
-                  assert(graphNodeBytes()===nodes&&dagView().selection.join()===selected&&el('.dag-floating')&&e.past.length===past+1,'mode does not change graph topology, state or selection');
+                  act('scene-mode','bw');assert(!modal().open&&!e.recipe.sceneOutput&&RMPhotos.displayLook(e.recipe).mono,'one click activates BW');
+                  assert(e.past.length===past+1&&JSON.stringify(e.appearanceDrafts.hdr.dag.nodes)===JSON.stringify(JSON.parse(nodes)[0]),'HDR graph retained on its branch');
+                  act('edit-step','undo');assert(e.recipe.sceneOutput?.intent==='hdr'&&graphNodeBytes()===nodes,'undo reopens exact HDR graph');
                   act('dag-toggle-current');
-                  assert(el('[data-act=dag-toggle-current]').getAttribute('aria-pressed')==='true'&&e.recipe.colorMode==='bw'&&!e.recipe.sceneOutput,'bypass preserves mode');
-                  act('edit-step','undo');act('edit-step','undo');
-                  assert(e.recipe.sceneOutput?.intent==='hdr'&&sw('hdr').getAttribute('aria-pressed')==='true'&&dagView().selection.join()===selected,'undo restores HDR without losing selection');
-                  act('dag-toggle-current');assert(e.recipe.sceneOutput?.intent==='hdr','subsequent node edit preserves HDR');
-                  act('scene-overlay','bands');act('dag-picker');key(document.activeElement,'Escape');
+                  assert(e.recipe.sceneOutput?.intent==='hdr'&&el('[data-act=dag-toggle-current]').getAttribute('aria-pressed')==='true','node changes keep active appearance');
+                  showDiagnostics();act('scene-overlay','bands');act('dag-picker');key(document.activeElement,'Escape');
                   assert(!el('#dag-node-picker').matches(':popover-open')&&el('.scene-marks .bands')&&document.activeElement===el('[name=dagNode]'),'picker Escape does not clear HDR diagnostics');
                   act('dag-view-toggle');assert(!el('.dag-floating')&&sw('hdr').getAttribute('aria-pressed')==='true','Graph control remains independent');
-                  act('open-versions');await page('#adjustment-panel');
-                  assert(!el('.scene-modes')&&!el('.dag-scope-head'),'saved version is read-only');
+                  openResults();await page('.version-row');
+                  assert(modal().open&&!el('.scene-modes',modal())&&!el('.dag-scope-head',modal()),'saved result is read-only');act('return-adjustments',null,modal());
                 """)
                 if args.hdr_only:
                     check_browser_errors()
@@ -762,7 +839,7 @@ def main():
               act('mode','grid');
             """)
             scenario("暗房布局、智能预设与胶片采用", """
-              await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.smart-panel');
+              await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.inspector-rail');act('edit-tool','smart');await page('.smart-panel');
               assert(!el('.edit-head .switch,.edit-left .switch,.edit-inspector .tool-palette,.agent-panel'),'single darkroom');
               const headings=all('.edit-library-panel > section[aria-labelledby]').map(section=>el('#'+section.getAttribute('aria-labelledby'),section));
               assert(headings.map(n=>n.textContent).join('/')==='滤镜/快照/历史'&&headings[0].offsetTop<headings[1].offsetTop&&headings[1].offsetTop<headings[2].offsetTop,'stacked left sections');
@@ -853,12 +930,12 @@ def main():
               assert(el(light).ariaExpanded==='true','right panel remembers disclosure');
             """)
             scenario("紧凑示波器、白平衡与蒙版分层", """
-              assert(el('.docked .histogram svg').getBoundingClientRect().height===108,'docked histogram triple height');
+              assert(el('.docked .histogram svg').getBoundingClientRect().height===96,'shared scope plot height');
               const scope=el('[data-act=scope-plot][data-val=histogram]');scope.focus();key(scope,'ArrowRight');
               const selectedStyle=getComputedStyle(document.activeElement);
               assert(selectedStyle.backgroundColor==='rgba(0, 0, 0, 0)'&&selectedStyle.boxShadow==='none'&&selectedStyle.borderBottomWidth==='2px','flat selected tab with no raised background');
-              assert(el('.docked .vector-plot').getBoundingClientRect().height===144&&document.activeElement.dataset.val==='vector','docked vector triple height and keyboard selection');
-              act('scopes');assert(el('.vector-plot',modal()).getBoundingClientRect().height===130,'detached plot height');
+              assert(el('.docked .vector-plot').getBoundingClientRect().height===96&&document.activeElement.dataset.val==='vector','shared vector plot height and keyboard selection');
+              act('scopes');assert(el('.vector-plot',modal()).getBoundingClientRect().height===96,'detached plot height');
               act('scope-plot','histogram',modal());act('close',null,modal());
               const stacked=()=>{const menu=el('[name=wbMode]').getBoundingClientRect(),buttons=all('.wb-actions button').map(b=>b.getBoundingClientRect());assert(buttons.length===2&&buttons.every(b=>Math.abs(b.width-menu.width)<1&&Math.abs(b.left-menu.left)<1)&&buttons[0].bottom<buttons[1].top,'one full-width correction per row');assert(el('.wb-refinement').getBoundingClientRect().top-el('.wb-correction').getBoundingClientRect().bottom>=12,'correction refinement spacing');};stacked();
               assert(el('[name=wbPreset]').value===''&&el('[data-key=wbTemperature]').ariaLabel==='色温 K','no false daylight selection');
@@ -915,7 +992,7 @@ def main():
               key(el('#workspace'),'v');assert(!el('.comparison-layer')&&all('.canvas-fit').length===1,'compare off');
               act('canvas-menu','ground');act('canvas-ground','浅灰');const bg=el('.edit-body').style.getPropertyValue('--ground');
               key(el('#workspace'),'b');assert(el('.edit-body').style.getPropertyValue('--ground')!==bg,'cycle background');
-              await hash('library/project/river');await page('.contact-grid');act('photo','r1');act('workflow','edit');await page('.smart-panel');
+              await hash('library/project/river');await page('.contact-grid');act('photo','r1');act('workflow','edit');await page('.inspector-rail');act('edit-tool','smart');await page('.smart-panel');
               act('canvas-nav','next');assert(modal().open&&modal().textContent.includes('原片待找回'),'offline neighbor');
               act('relink','w1',modal());act('close',null,modal());assert(el('.edit-identity').textContent.includes('DJI_0348'),'cancel stays with current photo');
               act('workflow','library');await page('.contact-grid');
@@ -924,18 +1001,19 @@ def main():
               act('photo','r1');act('multi');act('photo','b1');act('workflow','edit');await page('.edit-inspector');
               act('edit-tool','basic');await page('[data-adjustment-section=light] .adjustment-disclosure');if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');set('[data-key=ev]','0.5');act('edit-tool','masks');await page('.mask-create');el('.mask-create').open=true;act('add-mask','亮度范围');
               assert(el('.mask-mark'),'mask preview');act('edit-step','undo');assert(!el('.mask-mark'),'undo layer');
-              act('edit-step','redo');act('canvas-tool-done');act('canvas-crop');set('[name=crop]','1:1');act('canvas-tool-done');act('save-version');
-              act('open-versions');await page('.version-row');
+              act('edit-step','redo');act('canvas-tool-done');act('canvas-crop');set('[name=crop]','1:1');act('canvas-tool-done');openResults();act('external',null,modal());act('external-result',null,modal());
+              await page('.version-row');
               assert(el('.version-row').textContent.includes('候选'),'saved independently');
               act('adopt',null,el('.version-row'));assert(el('.version-row').textContent.includes('当前采用'),'explicit adoption');
               act('return-adjustments');await page('[data-adjustment-section=light]');act('edit-tool','basic');await page('[data-adjustment-section=light] .adjustment-disclosure');if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');set('[data-key=ev]','0.75');
-              act('workflow','export');assert(modal().open&&modal().textContent.includes('导出哪个版本'),'draft decision');
-              act('export-choice','draft',modal());await page('#export-frame[src]');
+              act('workflow','export');assert(!modal().open,'freeze current editing directly');
+              await page('#export-frame[src]');
               const f=el('#export-frame');await wait(()=>f.contentDocument?.querySelector('#selected')?.textContent==='2 / 2');
               const doc=f.contentDocument;assert(el('#focus-name',doc).textContent==='DJI_0348.DNG','order');
               tap('#asset-rows .asset:nth-child(2) button',doc);
               assert(el('#focus-name',doc).textContent==='DSC_0712.ARW','second file');
-              assert(el('#version',doc).selectedOptions[0].textContent==='初修 2','chosen draft');
+              assert(el('#version',doc).selectedOptions[0].textContent==='当前编辑','chosen draft');
+              const frozen=S.delivery.items.find(i=>i.id===Studio.data.work).versions[0];assert(frozen.recipe.crop==='1:1'&&frozen.w===frozen.h&&!frozen.archive,'handoff freezes square output geometry and requires the source');
               await wait(()=>all('img',doc).some(i=>i.complete&&i.naturalWidth));tap('#edit-layout',doc);assert(el('#layout-dialog',doc).open,'watermark dialog');tap('#cancel-layout',doc);
               tap('#submit',doc);assert(el('#job',doc).open,'job');const cancelled=f.contentWindow.location.hash;
               tap('#cancel-job',doc);assert(el('#retry',doc).hidden&&el('#job-title',doc).textContent.includes('已取消'),'cancel ends this batch');
@@ -962,9 +1040,9 @@ def main():
               assert(el('#asset-rows',doc).textContent.includes('DJI_0348.JPG'),'companion filename');tap('#submit',doc);
               await wait(()=>frame.dataset.running==='true');act('workflow','library');await page('.contact-grid');
               act('photo','b1');act('workflow','export');await wait(()=>el('#export-frame')!==frame);
-              act('goto','jobs');await page('.jobs-page');await wait(()=>all('.jobs-page .record').some(r=>r.textContent.includes('原件交付')&&r.textContent.includes('已完成')));
-              const receipt=all('.jobs-page .record').find(r=>r.textContent.includes('原件交付'));act('job-detail',null,receipt);
-              assert(modal().textContent.includes('DJI_0348.JPG')&&modal().textContent.includes('清单'),'receipt preserved');act('close',null,modal());
+              act('activity-open');act('activity-tab','tasks');await wait(()=>all('.activity-list .activity-row').some(r=>r.textContent.includes('原件交付')&&r.textContent.includes('已完成')));
+              const receipt=all('.activity-list .activity-row').find(r=>r.textContent.includes('原件交付'));act('job-detail',null,receipt);
+              assert(modal().textContent.includes('DJI_0348.JPG')&&modal().textContent.includes('清单'),'receipt preserved');act('close',null,modal());act('activity-close');
               await hash('library/project/river');act('photo','r1');act('multi');act('photo','r1');act('workflow','export');
               assert(modal().open&&modal().textContent.includes('选择导出范围'),'no implicit focused export');act('close',null,modal());act('multi');
             """)
@@ -977,14 +1055,14 @@ def main():
               const name=el('#jobrows strong',doc).textContent;tap('#close-job',doc);
               await wait(()=>doc.activeElement===el('#show-job',doc));
               act('workflow','library');await page('.contact-grid');
-              act('goto','jobs');await page('.jobs-page');
-              await wait(()=>all('.jobs-page .record').some(row=>row.textContent.includes('成片导出')&&row.textContent.includes('已完成')));
-              const rows=all('.jobs-page .record').filter(row=>row.textContent.includes('成片导出'));
+              act('activity-open');act('activity-tab','tasks');
+              await wait(()=>all('.activity-list .activity-row').some(row=>row.textContent.includes('成片导出')&&row.textContent.includes('已完成')));
+              const rows=all('.activity-list .activity-row').filter(row=>row.textContent.includes('成片导出'));
               act('job-detail',null,rows[0]);assert(modal().textContent.includes(name),'same rendered file after navigation');
-              act('close',null,modal());
+              act('close',null,modal());act('activity-close');
             """)
             scenario("本机 AI 准备、取消、重试与独立候选", """
-              await hash('edit/retouch');assert(el('.smart-panel')&&!el('.agent-panel'),'old retouch link opens smart presets');
+              await hash('edit/retouch');assert(el('.scene-modes')&&!el('.agent-panel'),'old editing link opens normal adjustments');act('edit-tool','smart');await page('.smart-panel');
               act('edit-tool','agent');await page('[name=aiPrompt]');assert(!el('.smart-panel')&&!el('[data-act=ai-review]'),'independent Agent panel');
               set('[name=aiPrompt]','清理画面右边的杂物');act('agent-send');assert(el('.chat-log').textContent.includes('右边的杂物'),'conversation reply');
               set('[name=aiPrompt]','保留人物轮廓');act('canvas-nav','next');assert(!el('.chat-turn')&&!el('[name=aiPrompt]').value,'private to photo');
@@ -1003,7 +1081,7 @@ def main():
             """)
             browser("set", "viewport", "390", "844")
             scenario("窄窗暗房、外观与键盘", """
-              await hash('settings/general');set('[name=theme]','light');await hash('edit/development');await page('.smart-panel');
+              await hash('settings/general');set('[name=theme]','light');await hash('edit/development');await page('.scene-modes');act('edit-tool','smart');await page('.smart-panel');
               assert(document.documentElement.scrollWidth<=innerWidth&&document.documentElement.dataset.theme==='light','narrow light darkroom');
               const dock=el('.canvas-dock').getBoundingClientRect();
               assert(dock.left>=0&&dock.right<=innerWidth&&dock.bottom<=innerHeight,'all dock controls fit');
@@ -1149,7 +1227,7 @@ def main():
               act('quick-inspect-version');await page('.version-row');
               assert(S.versionView===j.result&&el('.quick-effect'),'inspect frozen creative candidate as a separate version');
               assert(el('[data-act=adopt][data-val="'+j.result+'"]').disabled,'versions use the same admission rule');
-              act('return-adjustments');await page('[data-act=quick-open]');act('quick-open');act('quick-discard');
+              act('return-adjustments',null,modal());await page('[data-act=quick-discard]');act('quick-discard');
             """)
             browser("set", "viewport", "1100", "720")
             scenario("快速 Prompt 已有蒙版、严格纪实和窄窗", """
@@ -1295,15 +1373,15 @@ def main():
                   await wait(()=>record()?.items[0].state==='待核验');
                   const pending=record();assert(pending.items.length===2&&!pending.items[0].acknowledged,'published before acknowledgement');
                   el('#job-demo',doc).open=true;tap('#disconnect-job',doc);tap('#close-job',doc);
-                  act('workflow','library');await page('.contact-grid');act('photo','m1');act('goto','jobs');await page('.jobs-page');
+                  act('workflow','library');await page('.contact-grid');act('photo','m1');act('activity-open');act('activity-tab','tasks');
                   await wait(()=>Studio.data.jobs.find(j=>j.photoReceipt===id)?.state==='unknown');
                   sessionStorage.setItem('qa.job',JSON.stringify({id,context:activeIDs(),focus:Studio.data.work,name:pending.items[0].name,
                     first:pending.items[0].ticket,names:pending.items.map(r=>r.name),versions:pending.items.map(r=>r.versionID)}));
                 """)
                 browser("reload")
                 scenario("从制作任务重开，授权同路径的另一卷仍保留原票据", """
-                  const saved=JSON.parse(sessionStorage.getItem('qa.job'));await page('.jobs-page');
-                  const receipt='delivery-'+saved.id;act('job-detail',receipt);assert(modal().textContent.includes(saved.name),'prior receipt');
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job'));await page('.contact-grid');act('activity-open');act('activity-tab','tasks');
+                  const receipt='delivery-'+saved.id;act('job-detail',receipt,el('.activity-list'));assert(modal().textContent.includes(saved.name),'prior receipt');
                   act('reopen-delivery',receipt,modal());await wait(()=>el('#export-frame')?.contentDocument?.querySelector('#job')?.open);
                   const frame=el('#export-frame'),doc=frame.contentDocument;assert(frame.dataset.receipt===saved.id&&el('#jobrows strong',doc).textContent===saved.name,'exact task');
                   render();assert(el('#export-frame')===frame&&el('#job',doc).open,'normal redraw retains the receipt and its focus');

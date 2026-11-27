@@ -125,6 +125,7 @@ test -f "$catalog_runtime"
 mkdir -p "$app/Contents/Helpers" "$app/Contents/Resources/LibraryNotices"
 Modules/LibraryCatalog/GroupRender/build.sh "$app/Contents/Helpers/rawmaster-group-render"
 cp Modules/LibraryCatalog/GroupRender/OpenCV-LICENSE.txt "$app/Contents/Resources/LibraryNotices/"
+install -m 0644 "${RAWMASTER_BUILD_PATH:-$PWD/.build}/checkouts/SimpleToast/LICENSE" "$app/Contents/Resources/LibraryNotices/SimpleToast-LICENSE.txt"
 discovery_pack="${RAWMASTER_LIBRARY_DISCOVERY_PACK:-$PWD/output/library-models/LibraryDiscovery}"
 if [[ -d "$discovery_pack" ]]; then
   python3 - "$discovery_pack" Modules/LibraryCatalog/Swift/Resources/discovery/models.json <<'DISCOVERY'

@@ -86,7 +86,7 @@ function catalogPanel(key) {
       <h3>集合</h3>${c.collections.map((col) => rowCard(col.name, col.smart ? '智能集合 · ≥ ' + col.rating + ' 星' : col.ids.length + ' 张作品', btn('打开', 'goto', 'library/collection/' + col.id))).join('')}
       <div class="row wrap">${btn('新建集合…', 'organize', 'collection')}${btn('保存为智能集合…', 'organize', 'smart')}</div></section>
       <section><h3>所选作品</h3>${ids.map((id) => rowCard(Studio.asset(id).name, Studio.photo(id).scene)).join('') || '<p>请先在资料库中选片。</p>'}
-      <div class="row wrap">${btn('加入集合…', 'organize', 'add', { disabled: !ids.length })}${btn('创建虚拟副本…', 'organize', 'virtual', { disabled: ids.length !== 1 })}${btn('重命名作品…', 'organize', 'rename', { disabled: ids.length !== 1 })}${btn('堆叠所选作品…', 'new-group', '', { disabled: ids.length < 2 })}</div></section></div>`;
+      <div class="row wrap">${btn('加入集合…', 'organize', 'add', { disabled: !ids.length })}${btn('重命名作品…', 'organize', 'rename', { disabled: ids.length !== 1 })}${btn('堆叠所选作品…', 'new-group', '', { disabled: ids.length < 2 })}</div></section></div>`;
     case 'package':
       return `<div class="tool-columns"><section><h3>本地资料库</h3>${rowCard(c.packageName || '本机资料库', '示例目录 · ' + Studio.admitted().length + ' 次拍摄')}<div class="row wrap">${btn('新建 / 打开…', 'package-switch')}${btn('重新定位整卷…', 'volume-review')}${btn('校验与重建索引', 'index-review')}</div></section>
       <section><h3>备份与还原</h3>${select('备份内容', 'backupMode', ['目录与预览', '包含可用原件与归档', '增量备份'], '包含可用原件与归档')}${btn('预览备份范围…', 'backup-plan', '', { cls: 'primary' })}
@@ -129,7 +129,6 @@ actions.organize = (op) => {
     collection: '新建集合',
     smart: '新建智能集合',
     add: '加入集合',
-    virtual: '创建虚拟副本',
     rename: '重命名作品',
   };
   const ids = activeIDs(),
@@ -145,11 +144,7 @@ actions.organize = (op) => {
       : field(
           '名称',
           'entityName',
-          op === 'virtual'
-            ? Studio.asset(ids[0]).name.replace(/(\.[^.]+)$/, '-副本$1')
-            : op === 'rename'
-              ? Studio.asset(ids[0]).name
-              : '',
+          op === 'rename' ? Studio.asset(ids[0]).name : '',
         ) +
           (op === 'smart' ? select('最低星级', 'smartStars', [1, 2, 3, 4, 5], 4) : '') +
           `<p>${ids.length} 张所选作品</p>`,
@@ -174,13 +169,7 @@ actions['organize-save'] = (op) => {
       if (dest) dest.ids = [...new Set([...dest.ids, ...ids])];
     }
     if (op === 'rename') Studio.asset(ids[0]).name = name;
-    if (op === 'virtual') {
-      const origin = ids[0],
-        id = Studio.uid(),
-        a = Studio.asset(origin);
-      c.records[id] = { ...structuredClone(a), id, source: a.source || origin, name, pair: false };
-      (c.projects.find((p) => p.ids.includes(origin)) ?? c.projects[0]).ids.push(id);
-    }
+
   });
   closeSheet();
   render();
@@ -247,6 +236,7 @@ actions['package-open'] = () => {
   d.backupSnapshot = null;
   Object.assign(d, next);
   d.catalog.packageName = name;
+  Activity.log('工作台','已打开资料库');
   clearDelivery();
   S.inspectIDs = null;
   S.processID = null;

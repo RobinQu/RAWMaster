@@ -72,7 +72,7 @@ private struct GeneralApplicationSettings: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("照片编辑") {
-                Text("初修、AI 和外部编辑结果保存为独立候选。只有明确采用后，才会成为当前版本。")
+                Text("色彩外观随照片的调整保存。AI 与外部编辑结果可从「快照 → 更多 → 已有编辑结果」查看和采用。")
                 Text("设置云服务或准备本机环境不会上传照片，也不会自动生成。")
                     .font(.caption).foregroundStyle(.secondary)
             }

@@ -788,12 +788,11 @@ body[data-route^='edit/'] .toast {
 }
 
 
-.editing-scopes { margin: 5px 0 8px; }
+.editing-scopes { margin: 5px 0 8px; --scope-plot-height: 96px; }
 .editing-scopes .histogram { margin: 4px 0 0; }
 .editing-scopes.docked .histogram figcaption { display: none; }
-.editing-scopes.docked .histogram svg { display: block; width: 100%; height: 108px; }
-.editing-scopes .vector-plot { display: block; width: 100%; height: 130px; margin-top: 4px; background: #101112; border-radius: 5px; }
-.editing-scopes.docked .vector-plot { height: 144px; }
+.editing-scopes .histogram svg, .editing-scopes .vector-plot { display: block; width: 100%; height: var(--scope-plot-height); }
+.editing-scopes .vector-plot { margin-top: 4px; background: #101112; border-radius: 5px; }
 .flat-tabs { display: flex; flex: 1; gap: 7px; min-width: 0; align-items: stretch; }
 :is(.manual-inspector, .editing-scopes) .flat-tabs button {
   flex: 1; min-width: 0; padding: 3px; border: 0; border-bottom: 2px solid transparent;

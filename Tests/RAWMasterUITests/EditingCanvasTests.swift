@@ -12,7 +12,7 @@ final class EditingCanvasTests: XCTestCase {
         var profile = try XCTUnwrap(controller.profiles.first { $0.kind == .localComfy })
         profile.acceptedForUse = true; try await controller.saveProfile(profile, secret: nil); controller.selectedProfileID = profile.id
         controller.providerOverride = CanvasCandidateProvider()
-        controller.stage = .ai; controller.generate()
+        controller.stage = .versions; controller.generate()
         try await wait { controller.jobs.first?.state == .succeeded }
         let id = try XCTUnwrap(controller.jobs.first?.resultVersionID)
         try await wait { controller.versions.contains { $0.id == id } }
@@ -20,14 +20,14 @@ final class EditingCanvasTests: XCTestCase {
         controller.selectVersion(candidate); controller.adopt(candidate)
         try await wait { controller.work?.adoptedVersionID == candidate.id }
         controller.stage = .development
-        XCTAssertEqual(controller.canvasTitle, "原片初修草稿")
+        XCTAssertEqual(controller.canvasTitle, "当前编辑")
         XCTAssertNil(controller.displayedSavedVersion, "The footer cannot offer adoption of AI pixels while the canvas shows a RAW draft")
         controller.stage = .versions
         XCTAssertEqual(controller.canvasTitle, "AI 候选")
         XCTAssertEqual(controller.displayedSavedVersion?.id, candidate.id)
         controller.stage = .development; controller.saveDevelopment()
         try await wait { !controller.saving && controller.selectedVersion?.kind == .development }
-        XCTAssertEqual(controller.canvasTitle, "原片初修草稿")
+        XCTAssertEqual(controller.canvasTitle, "当前编辑")
         XCTAssertEqual(controller.displayedSavedVersion?.id, controller.selectedVersionID)
         XCTAssertNotEqual(controller.displayedSavedVersion?.id, controller.work?.adoptedVersionID)
         await controller.checkRuntime()

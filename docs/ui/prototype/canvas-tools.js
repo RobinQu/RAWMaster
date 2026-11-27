@@ -254,7 +254,7 @@ actions['edit-step'] = mode => {
   if(s.kind==='remove')canvasRemoveStatus(s);
   render();
 };
-for (const name of ['save-version','export','open-versions','snapshot','restore-snap','reset-recipe','confirm-reset','apply-preset','adaptive-preset','film-stock','remove-film']) {
+for (const name of ['export','open-versions','snapshot','restore-snap','reset-recipe','confirm-reset','apply-preset','adaptive-preset','film-stock','remove-film']) {
   const command = actions[name]; actions[name] = (...args) => S.canvasTool ? notify('请先完成或取消画布草案') : command(...args);
 }
 const canvasPreviousPoint = actions['canvas-point'];

@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+import RAWMasterLibrary
 @testable import RAWMasterCore
 
 final class RenderedExportTests: XCTestCase {
@@ -7,7 +8,7 @@ final class RenderedExportTests: XCTestCase {
   override func setUpWithError() throws {
     root = FileManager.default.temporaryDirectory.appendingPathComponent("RenderedExports-" + UUID().uuidString)
     db = root.appendingPathComponent("library.sqlite")
-    source = root.appendingPathComponent("Originals/source.RAW")
+    source = root.appendingPathComponent("Originals/source.ARW")
     target = root.appendingPathComponent("Exports/finished.jpg")
     try FileManager.default.createDirectory(at: source.deletingLastPathComponent(), withIntermediateDirectories: true)
     try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -77,6 +78,59 @@ final class RenderedExportTests: XCTestCase {
     XCTAssertEqual(try store.prepareRenderedExport(id: plan.id, artifact: artifact, stagingURL: stage), prepared)
     var other = artifact; other.pixelWidth += 1
     XCTAssertThrowsError(try store.prepareRenderedExport(id: plan.id, artifact: other, stagingURL: stage)) { XCTAssertEqual($0 as? EditingError, .commandConflict) }
+  }
+  func testLiveSceneReceiptKeepsStoredParentAndRejectsChangedOrForgedRecipe() throws {
+    let original = try store.editingVersion(id: work.originalVersionID)
+    let graph = try DevelopmentSceneGraphV1.initialAppearance(from: original.recipe)
+    let recipe = DevelopmentRecipe(sceneGraph: graph)
+    let frozen = try original.freezingSceneAppearance(recipe)
+    let reopened = try JSONDecoder().decode(EditingVersion.self, from: JSONEncoder().encode(frozen))
+    XCTAssertEqual(frozen, reopened)
+    XCTAssertEqual(try original.freezingSceneAppearance(recipe).id, frozen.id)
+    let plan = try store.enqueueRenderedExport(commandID: "live", workID: work.id, versionID: original.id,
+                                               format: .jpeg8, targetURL: target, liveScene: frozen)
+    XCTAssertEqual(try store.renderedExport(id: plan.id).frozenSceneRecipe, recipe)
+    XCTAssertEqual(plan.versionID, original.id)
+    XCTAssertEqual(try store.loadEditingVersions(workID: work.id).map(\.id), [original.id])
+    let same = try store.enqueueRenderedExport(commandID: "live", workID: work.id, versionID: original.id,
+                                               format: .jpeg8, targetURL: target, liveScene: reopened)
+    XCTAssertEqual(same, plan)
+    let other = try original.freezingSceneAppearance(.init(sceneGraph: graph.remapped()))
+    XCTAssertNotEqual(other.id, frozen.id)
+    XCTAssertThrowsError(try store.enqueueRenderedExport(commandID: "live", workID: work.id, versionID: original.id,
+                                                          format: .jpeg8, targetURL: target, liveScene: other)) {
+      XCTAssertEqual($0 as? EditingError, .commandConflict)
+    }
+    var forged = frozen; forged.recipe = other.recipe
+    XCTAssertThrowsError(try store.checkedSceneDelivery(work: work, selection: forged, format: .avif10))
+  }
+  func testReopenFinishesQueueTaskForPublishedLiveHDRWithoutAddingACandidate() async throws {
+    let parent = try store.editingVersion(id: work.originalVersionID)
+    let recipe = DevelopmentRecipe(sceneGraph: try .initialAppearance(from: parent.recipe))
+    let frozen = try parent.freezingSceneAppearance(recipe)
+    let record = try store.enqueueRenderedExport(commandID: "live-hdr", workID: work.id, versionID: parent.id,
+                                                format: .jpeg8, targetURL: target, liveScene: frozen)
+    let payload = CatalogJSON.object(["receipt": .string(record.id), "version": .string(frozen.id),
+                                      "source": .string(parent.source.contentSHA256), "format": .string("jpeg8")])
+    let queue = CatalogTaskQueue(database: db), key = "rendered-export-" + record.id
+    let (staged, artifact) = try stage()
+    let database = try XCTUnwrap(db), final = try XCTUnwrap(target)
+    let result = try await queue.withLease(key: key, lane: "export", resource: "gpu", payload: payload,
+                                           replaySafe: false, restore: { $0 }) { lease in
+      let writer = try LibraryStore(databaseURL: database)
+      _ = try writer.withCatalogTaskFence(lease) {
+        try writer.prepareRenderedExport(id: record.id, artifact: artifact, stagingURL: staged)
+      }
+      try FileManager.default.linkItem(at: staged, to: final)
+      let reopened = try LibraryStore(databaseURL: database)
+      XCTAssertEqual(try reopened.reconcileRenderedExports().first?.state, .succeeded)
+      XCTAssertEqual(try reopened.finishRenderedExportTask(id: record.id), true)
+      XCTAssertEqual(try reopened.loadEditingVersions(workID: record.workID).count, 1)
+      return (record.id, record.id)
+    }
+    XCTAssertEqual(result, record.id)
+    let status = try await queue.status(key: key)
+    XCTAssertEqual(status["state"], .string("done"))
   }
   func testExistingDifferentFileHasNoReceiptAndIsNeverClaimedOrReplaced() throws {
     try Data("existing file".utf8).write(to: target)

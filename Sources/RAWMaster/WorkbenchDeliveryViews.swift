@@ -188,7 +188,7 @@ private struct WorkbenchDeliveryDetail: View {
     }
 }
 
-private extension WorkbenchDeliveryCatalog.Batch.Phase {
+extension WorkbenchDeliveryCatalog.Batch.Phase {
     var title: String {
         switch self {
         case .running: "交付进行中"

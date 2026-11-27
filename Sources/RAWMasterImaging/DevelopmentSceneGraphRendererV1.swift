@@ -167,7 +167,7 @@ final class DevelopmentSceneGraphRendererV1 {
     } else { branch = image }
     let stage = try outputStages[target] ?? DevelopmentSceneOutputV1(device: device, target: target)
     outputStages[target] = stage
-    return try stage.render(branch)
+    return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV)
   }
 
   private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
@@ -203,24 +203,18 @@ final class DevelopmentSceneGraphRendererV1 {
           throw Graph.Failure.unknownNode(id)
         }
       }
-      let output = try makeTexture(width: t.width, height: t.height, format: .rgba32Float)
-      let effectiveTileEdge = tileEdge ?? rustTileEdge(input: t, output: output)
-      var reserved = false
+      let effectiveTileEdge = tileEdge ?? rustTileEdge(input: t)
       do {
-        try budget.reserve(output.allocatedSize)
-        reserved = true
-        let raw = try rust.render(input: t, output: output, graph: graph, view: view,
+        let (texture, raw) = try rust.render(input: t, graph: graph, view: view,
           origin: image.origin, geometry: .init(geometry.width, geometry.height),
           tileEdge: effectiveTileEdge, sourceRevision: sourceRevision, coverages: externalCoverages)
         lastReceipt = DevelopmentSceneExecutionReceiptV1(backend: .rust,
           tiles: raw.tiles, nodes: raw.nodes, dispatches: raw.dispatches,
           coverageCacheHits: raw.coverageHits, nodeCacheHits: raw.nodeHits,
           peakBytes: raw.peakBytes, budgetBytes: raw.budgetBytes,
-          cpuMilliseconds: raw.cpuMilliseconds,
-          fallbackReason: nil)
-        return Surface(texture: output, origin: image.origin, domain: .image, budget: budget)
+          cpuMilliseconds: raw.cpuMilliseconds, fallbackReason: nil)
+        return Surface(texture: texture, origin: image.origin, domain: .image)
       } catch {
-        if reserved { budget.used = max(budget.used - output.allocatedSize, 0) }
         // Auto mode keeps the shipping path alive if the optional Rust core cannot compile,
         // load, execute or fit this machine's budget. The strict mode used by shadow tests
         // never falls back, so a backend regression cannot hide there.
@@ -243,9 +237,9 @@ final class DevelopmentSceneGraphRendererV1 {
   /// Tiling is chosen from the budget left after the full input and output surfaces. A 60MP graph
   /// cannot hold five full-resolution intermediates, so it runs in bounded tiles on one command
   /// buffer; smaller graphs keep the direct single-pass path.
-  private func rustTileEdge(input: MTLTexture, output: MTLTexture) -> Int? {
+  private func rustTileEdge(input: MTLTexture) -> Int? {
     let imageBytes = input.width * input.height * 16
-    let available = surfaceBudget - input.allocatedSize - output.allocatedSize
+    let available = surfaceBudget - input.allocatedSize - imageBytes
     guard available > 0, imageBytes * 5 > available else { return nil }
     let tileBytes = max(available / 8, 64 * 64 * 16)
     let edge = min(4_096, max(512, Int(sqrt(Double(tileBytes) / 16.0))))
@@ -255,14 +249,6 @@ final class DevelopmentSceneGraphRendererV1 {
 
   private static func elapsedMilliseconds(since start: UInt64) -> Double {
     Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
-  }
-
-  private func makeTexture(width: Int, height: Int, format: MTLPixelFormat) throws -> MTLTexture {
-    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format, width: width, height: height, mipmapped: false)
-    descriptor.storageMode = .private
-    descriptor.usage = [.shaderRead, .shaderWrite]
-    guard let texture = device.makeTexture(descriptor: descriptor) else { throw Failure.surfaceBudget }
-    return texture
   }
 
   private func evaluate(_ scope: Graph.Scope, input: Surface, geometry: Geometry, budget: Budget,

@@ -197,6 +197,8 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
       defer{event.signaledValue=1;command.waitUntilCompleted()}
       let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root,device:device)
       var pair:DevelopmentPhotoFilterResourceStore.Pair?=try store.pair(.init(enabled:true,selection:.vivid,intensity:100))
+      XCTAssertEqual(pair?.lower.bytes, DevelopmentPhotoFilterCatalog.payloadBytes)
+      XCTAssertEqual(pair?.lower.buffer.length, DevelopmentPhotoFilterCatalog.payloadBytes)
       command.encodeWaitForEvent(event,value:1)
       let blit=try XCTUnwrap(command.makeBlitCommandEncoder())
       blit.copy(from:pair!.lower.buffer,sourceOffset:0,to:destination,destinationOffset:0,size:16)

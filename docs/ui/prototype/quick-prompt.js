@@ -119,7 +119,7 @@ function promptDock() {
     body = `<div class="quick-result"><p role="status">${h(issue || ('候选已就绪' + dimensions + '。请核对效果和边缘。'))}</p>
     <div class="quick-buttons">${btn('生成前', 'quick-compare', 'before', { pressed: d.before, disabled: stale })}
     ${btn('候选', 'quick-compare', 'after', { pressed: !d.before, disabled: stale })}${btn('100%', 'quick-inspect', '', { disabled: stale, pressed: !!S.quickInspect })}
-    ${stale ? btn('在作品版本查看', 'quick-inspect-version') : ''}${btn('放弃候选', 'quick-discard')}
+    ${stale ? btn('查看已有编辑结果', 'quick-inspect-version') : ''}${btn('放弃候选', 'quick-discard')}
     ${btn('应用到照片', 'quick-apply', '', { cls: 'quick-primary', disabled: !!issue })}</div></div>`;
   } else {
     const status = quickStatus(d, job);
@@ -488,8 +488,7 @@ actions['quick-discard'] = () => {
 actions['quick-inspect-version'] = () => {
   const job = quickTask();
   if (!job?.result) return;
-  actions['open-versions']();
-  S.versionView = job.result;
+  actions['open-versions'](job.result);
 };
 function applyQuickVersion(version) {
   const j = quickJobForVersion(version), id = Studio.data.work;

@@ -810,7 +810,7 @@ enum EditingPreviewPromptDispatch {
         publicationEpoch &+= 1; revision &+= 1; resourceChild?.cancel()
         desiredFingerprintMemo = nil
         clearFrame(); sourceInvalidated = true; rendering = false
-        error = "原片已变化或不可用。重新验证后才能继续初修。"; onChange?(); wakeDriver()
+        error = "原片已变化或不可用。重新验证后可以继续调整照片。"; onChange?(); wakeDriver()
     }
     func revalidate(source: EditingSourceSnapshot) async throws {
         guard hasRawSource, !stopped, revalidation == nil else { throw DevelopmentPreviewError.invalidRequest }

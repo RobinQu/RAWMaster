@@ -185,20 +185,29 @@ final class DevelopmentPhotoFilterAtlas {
     let row=512*16,page=Int(getpagesize()),length=((row*512+page-1)/page)*page
     guard row%max(256,device.minimumLinearTextureAlignment(for:.rgba32Float))==0 else{throw DevelopmentPhotoFilterError.unavailableDevice}
     let charge=try DevelopmentPhotoFilterCharge(bytes:length,state:.loading)
-    var pointer:UnsafeMutableRawPointer?
-    guard posix_memalign(&pointer,page,length)==0,let pointer else{throw DevelopmentPhotoFilterError.budgetUnavailable}
-    var handedOff=false
-    defer{if !handedOff{free(pointer)}}
-    try charge.grow(to:max(length,malloc_size(pointer)))
-    _=try FilterResourceIO.payload(url,record:record,destination:pointer,expected:stamp)
-    guard let b=device.makeBuffer(bytesNoCopy:pointer,length:length,options:.storageModeShared,deallocator:{p,_ in free(p);withExtendedLifetime(charge){}}) else{throw DevelopmentPhotoFilterError.unavailableDevice}
-    handedOff=true
-    try charge.grow(to:max(length,max(malloc_size(pointer),b.allocatedSize)))
+    // A reused malloc block can exceed the 4 MiB plane. Map exactly the pages reserved
+    // by both the filter store and the thumbnail worker before handing them to Metal.
+    let mapping = mmap(nil, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0)
+    guard mapping != MAP_FAILED else { throw DevelopmentPhotoFilterError.budgetUnavailable }
+    guard let pointer = mapping else {
+      munmap(mapping, length)
+      throw DevelopmentPhotoFilterError.budgetUnavailable
+    }
+    var handedOff = false
+    defer { if !handedOff { munmap(pointer, length) } }
+    _ = try FilterResourceIO.payload(url, record: record, destination: pointer, expected: stamp)
+    guard let b = device.makeBuffer(bytesNoCopy: pointer, length: length, options: .storageModeShared, deallocator: { address, _ in
+      munmap(address, length)
+      withExtendedLifetime(charge) {}
+    }) else { throw DevelopmentPhotoFilterError.unavailableDevice }
+    handedOff = true
+    let allocationBytes = max(length, b.allocatedSize)
+    try charge.grow(to: allocationBytes)
     let description=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba32Float,width:512,height:512,mipmapped:false)
     description.storageMode = .shared;description.usage = .shaderRead
     guard let texture=b.makeTexture(descriptor:description,offset:0,bytesPerRow:row),
       let image=CIImage(mtlTexture:texture,options:[.colorSpace:NSNull()]) else{throw DevelopmentPhotoFilterError.invalidGraph}
-    self.buffer=b;self.texture=texture;self.image=image;self.charge=charge;bytes=max(length,max(malloc_size(pointer),b.allocatedSize));charge.state(.ready)
+    self.buffer=b;self.texture=texture;self.image=image;self.charge=charge;bytes=allocationBytes;charge.state(.ready)
   }
   func published(){charge.state(.active)}
   deinit{charge.state(.retiring)}

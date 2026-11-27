@@ -26,8 +26,9 @@ final class EditingLayoutCaptureTests: XCTestCase {
                 editing.stage = .development; editing.cropEditing = true
                 editing.setRecipe { $0.exposureEV = 0.35; $0.crop = .init(x: 0.05, y: 0.1, width: 0.9, height: 0.8) }
                 evidence.append(try await capture(WorkbenchView().environmentObject(model), size: size, dark: dark, output: output, name: "development-" + suffix))
-                editing.stage = .ai; editing.cropEditing = false; editing.requestPreview()
-                evidence.append(try await capture(WorkbenchView().environmentObject(model), size: size, dark: dark, output: output, name: "ai-unconfigured-" + suffix))
+                editing.cropEditing = false; editing.requestPreview(); editing.openQuickPrompt()
+                evidence.append(try await capture(WorkbenchView().environmentObject(model), size: size, dark: dark, output: output, name: "quick-prompt-" + suffix))
+                editing.closeQuickPrompt()
             }
         }
         editing.stage = .development; editing.saveDevelopment()

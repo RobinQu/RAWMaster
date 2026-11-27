@@ -44,7 +44,7 @@ final class AppModelTests: XCTestCase {
         XCTAssertEqual(model.activeWorkbenchWorkflow, .edit)
         model.activateWorkflow(.export)
         XCTAssertTrue(model.exportWorkspacePresented)
-        XCTAssertFalse(model.editing?.showExport == true || model.editing?.showDraftExportChoice == true)
+        XCTAssertFalse(model.editing?.showExport == true)
         XCTAssertEqual(model.activeWorkbenchWorkflow, .export)
         model.activateWorkflow(.edit)
         XCTAssertFalse(model.exportWorkspacePresented)

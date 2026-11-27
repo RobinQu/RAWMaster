@@ -28,6 +28,7 @@ struct RMImageRuntime {
     int32_t (*scene_update)(const RMSceneProgram *, const uint8_t *, size_t);
     int32_t (*scene_render)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, uint64_t, RMSceneIsCurrent, void *);
     int32_t (*scene_render_coverages)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, const char *const *, void *const *, size_t, uint64_t, RMSceneIsCurrent, void *);
+    int32_t (*scene_render_surface)(const RMSceneProgram *, void *, void **, const uint8_t *, size_t, const char *const *, void *const *, size_t, uint64_t, RMSceneIsCurrent, void *);
     int32_t (*scene_receipt)(const RMSceneProgram *, RMSceneReceiptV1 *);
     void (*scene_close)(RMSceneProgram *);
     void (*metal_program_close)(RMImageMetalProgram *);
@@ -85,6 +86,7 @@ RMImageRuntime *rm_image_host_open(const char *path) {
         runtime->scene_update = dlsym(library, "rm_scene_program_update_v1");
         runtime->scene_render = dlsym(library, "rm_scene_program_render_v1");
         runtime->scene_render_coverages = dlsym(library, "rm_scene_program_render_coverages_v1");
+        runtime->scene_render_surface = dlsym(library, "rm_scene_program_render_surface_v1");
         runtime->scene_receipt = dlsym(library, "rm_scene_program_receipt_v1");
         runtime->scene_close = dlsym(library, "rm_scene_program_close_v1");
         runtime->metal_program_close = dlsym(library, "rm_image_metal_program_close_v1");
@@ -257,6 +259,14 @@ int32_t rm_image_host_scene_render_coverages(const RMImageRuntime *runtime,
     size_t coverage_count, uint64_t revision, RMSceneIsCurrent current, void *context) {
     if (!runtime || !runtime->scene_render_coverages) return 2;
     return runtime->scene_render_coverages(program, input, output, view, view_bytes,
+        coverage_ids, coverage_textures, coverage_count, revision, current, context);
+}
+int32_t rm_image_host_scene_render_surface(const RMImageRuntime *runtime,
+    const RMSceneProgram *program, void *input, void **retained_output, const uint8_t *view,
+    size_t view_bytes, const char *const *coverage_ids, void *const *coverage_textures,
+    size_t coverage_count, uint64_t revision, RMSceneIsCurrent current, void *context) {
+    if (!runtime || !runtime->scene_render_surface) return 2;
+    return runtime->scene_render_surface(program, input, retained_output, view, view_bytes,
         coverage_ids, coverage_textures, coverage_count, revision, current, context);
 }
 int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,

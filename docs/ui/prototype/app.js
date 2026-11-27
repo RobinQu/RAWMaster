@@ -83,6 +83,7 @@ function settingsPanel(key) {
       ],
       p.theme,
     )}
+    <h3>照片编辑</h3><p>色彩外观随照片的调整保存。AI 与外部编辑结果可从「快照 → 更多 → 已有编辑结果」查看和采用。</p>
     <h3>原型样本</h3><p>本机浏览器保存示例选片、版本和设置。可以恢复到初始拍摄项目。</p>${btn('重置示例工作台…', 'reset-demo')}</section>`;
   if (key === 'storage')
     return `<section class="settings-box">${factList([
@@ -370,6 +371,7 @@ function startJob(kind, photo, group = null, agent = null, quickPrompt = null) {
     recipe: photo ? structuredClone(Studio.edit(photo).recipe) : null,
   };
   Studio.data.jobs.unshift(job);
+  Activity.log('任务', '已加入队列 · ' + job.kind);
   Studio.save();
   if (!quickPrompt) go('jobs');
   if (quickPrompt || S.page === 'jobs') render();
@@ -388,6 +390,7 @@ function settleJobs() {
   for (const j of Studio.data.jobs) {
     if (j.delivery || j.state !== 'running' || Date.now() < j.due) continue;
     j.state = 'done';
+    Activity.log('任务', '已完成 · ' + j.kind);
     modified = true;
     if (j.kind === '准备本机 AI 环境') Studio.data.prefs.runtime = '就绪';
     else if (j.group) j.result = j.group.group + ' · ' + j.kind + (j.kind === '延时视频' ? '.mp4' : '.tiff');
@@ -484,7 +487,7 @@ actions['job-version'] = (id) => {
   if (j?.quickPrompt && !j.quickPrompt.reviewed) return quickOpenJob(j);
   S.beforeVersions = S.editReturn === 'edit/versions' ? 'edit/development' : S.editReturn;
   withPhoto(j.photo);
-  S.versionView = j.result;
+  S.pendingResult = j.result;
   closeSheet();
   go('edit/versions');
 };
@@ -512,7 +515,7 @@ function chrome() {
         }),
       )
       .join('')}</nav>
-    <div class="chrome-actions">${btn('制作任务', 'goto', 'jobs', { icon: 'pulse', only: true, cls: 'icon-btn', pressed: page === 'jobs' })}${btn('设置', 'goto', 'settings/general', { icon: 'settings', only: true, cls: 'icon-btn', pressed: page === 'settings' })}</div>`;
+    <div class="chrome-actions"><details class="window-menu"><summary>窗口</summary><div>${btn('后台信息','activity-window-menu')}</div></details>${btn('后台信息','activity-open','',{icon:'pulse',only:true,cls:'icon-btn'})}${btn('设置', 'goto', 'settings/general', { icon: 'settings', only: true, cls: 'icon-btn', pressed: page === 'settings' })}</div>`;
 }
 function render() {
   const previous = document.activeElement;
@@ -523,6 +526,7 @@ function render() {
     p = Studio.data.prefs;
   document.documentElement.dataset.theme = p.theme;
   $('#chrome').innerHTML = chrome();
+  Activity.refresh();
   root.hidden = exp;
   $('#delivery').hidden = !exp;
   if (exp) {
@@ -638,7 +642,8 @@ document.addEventListener('keydown', (event) => {
   if (S.page === 'edit') {
     if (cmd && key === 's') {
       event.preventDefault();
-      actions['save-version']();
+      Studio.save();
+      notifyEditor('已存储当前编辑。');
     }
     if (cmd && key === 'z') {
       event.preventDefault();
@@ -646,7 +651,7 @@ document.addEventListener('keydown', (event) => {
     }
     if (cmd && key === 'enter') {
       event.preventDefault();
-      actions['save-version']();
+      Studio.save();
       go('library/' + S.scope);
     }
     const rail = event.target.closest('.inspector-rail');

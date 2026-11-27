@@ -205,7 +205,7 @@
 
 | 现有入口 | 逐项验证 |
 | --- | --- |
-| [基础与 HDR 示波器](../../docs/ui/prototype/index.html?sceneNativeReview=1&scopesNativeReview=1) | 照片模式和节点选择各在自己的面板。Tab 定位、方向键移焦、确认只写一次编辑。示波器切阶段、采样取消和屏幕围栏均有文字与可访问名称。窗体换屏后 UI、焦点和叠加维持 SDR 呈现。 |
+| [基础与 HDR 示波器](../../docs/ui/prototype/index.html?sceneNativeReview=1&scopesNativeReview=1) | 在基础调整的「色彩外观」选择 SDR、HDR 或 B&W，节点选择保留在上方。分组按钮支持 Tab 定位与方向键移焦，点击或按空格即应用。示波器切阶段、采样取消和屏幕围栏均有文字与可访问名称。窗体换屏后 UI、焦点和叠加维持 SDR 呈现。 |
 | [可编辑 Graph](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1) | 单选数值、连接草案及监看有清晰状态。通过实际 AppKit 键盘和 VoiceOver 核对非模态焦点、窄窗展开和 Escape 的层级。原生场景数值行收敛到共享样式时复用稳定标识和草稿作用域，复跑 036 的 drawable 门槛。 |
 | [032 PQ 预检](../../docs/ui/prototype/index.html?pqReview=1) | 逐行读出已存版本、格式、色彩信号和无法交付原因。取消返回选片，结果可继续原任务。工作台弹窗的键盘焦点遵循中性提示约定。 |
 

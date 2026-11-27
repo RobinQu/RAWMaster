@@ -4,7 +4,7 @@
 
 阶段 1 已在同一签名 Release 上跑通暗房入口。雪景和人像的 032 PQ／SDR 批次均使用各自同一冻结候选，雪景窗口完成实体 HDR→SDR→HDR 往返。资料库网格送交的故障、修复与实拍复验见 [032 网格交付](../032-export-workspace/spec.md#资料库网格直接交付)。[037 实拍验收](../037-color-film-hdr/validation.md#同一签名-release-首条闭环) · [038 Graph 实拍验收](../038-node-dag-workflow/validation.md#与-037-同包的首条-graph-闭环)
 
-本轮以 Sony ILCE-7RM5 的 9504 × 6336 原片复验原生编辑、保存候选、全尺寸双格式交付与重开后逐项读取的 Rust 执行回执。工作台初次分页和选区恢复也进入签名包走查。[安装包与实拍回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json) · [成像与内存测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
+前一轮以 Sony ILCE-7RM5 的 9504 × 6336 原片复验原生编辑、显式保存旧候选、全尺寸双格式交付与重开后逐项读取的 Rust 执行回执。工作台初次分页和选区恢复也进入签名包走查。[安装包与实拍回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json) · [成像与内存测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json)
 
 ## 规格归属
 
@@ -17,6 +17,8 @@
 | [039 Rust 场景后端](../039-rust-scene-backend/spec.md) | 038 图的 Rust 编译和执行、Metal 资源、严格模式与回执。 |
 | [039 界面规范](../039-design-system/spec.md) | HDR、Graph 和 032 使用的控件、焦点、状态、辅助功能与原型证据。保留现有目录名，引用 039 时写明全名。 |
 
+当前产品把 SDR、HDR 和黑白放在同一照片的「色彩外观」内。当前图、显示目标和交付输入各有独立身份。编辑和资料库都能冻结自动保存的 HDR 草稿。显式查看旧结果时可导出该结果。检查器、示波器与 032 的本次实拍交付共用这一约定。[编辑与成片复验](../025-editing-workspace/appearance-acceptance.md) · [两条管线的参数覆盖](../037-color-film-hdr/evidence/appearance-roundtrip-20261127.md)
+
 ## 当前实现和签收缺口
 
 | 路径 | `main` 已实现 | 尚缺的产品证据或接线 |
@@ -24,14 +26,14 @@
 | 旧显影 | v1–v3 等价回放、Core Image／Metal 产品路径，035 部分 Rust 算子可重放，部分通过 QA 开关接入预览。旧 Graph 是只读兼容投影。 | 035 Batch 34 的 161 个控件 ID 有封存证据。首次精确、定稿及缩放平移在同包正式复验中仍超门。控件记录不证明 Rust 路径已接管。 [035 发布复验](acceptance.md#同一封存构建的两次正式运行) · [旧配方验证](../038-node-dag-workflow/validation.md#原生兼容图与冻结-sdr-导出) |
 | 场景显影与 DAG | 已准入的 Bayer ARW 可创建 v4 场景草稿。可编辑 Graph 已有串行、Parallel、Layer、组、连接草案、监看、模板和批量候选。本阶段检查器有曝光、强度和混合等参数。 | 九类调色、画布工具及来源绑定资产仍需逐项接入。组内监看的实际后端可从预览帧回执核对。20／200 张验过候选事务，主要样本是同一 RAW 的多目标身份。异源整批成片、实际窗口指针操作及 VoiceOver 未签收。 [038 原生图](../038-node-dag-workflow/validation.md#原生可编辑-graph) · [候选批次](../038-node-dag-workflow/validation.md#原生模板与可恢复批量) |
 | HDR 显示与输出 | 固定 ACES 2 输出，浮点 `CAMetalLayer`，有限的示波器和诊断，032 的 SDR JPEG／PNG 和全尺寸 10 位 Rec.2020/PQ AVIF。已有两张固定 ARW 的 PQ 进程中断、恢复和独立回读证据。 | 实际屏幕余量的数值测试、绘制完成和文件回读分别验证不同环节。签名包已完成 HDR↔SDR 跨屏。亮度变化、比较、FIT／1:1、真实客户端观片和多目标／卷恢复仍需独立验收。 [037 验收](../037-color-film-hdr/validation.md) · [EDR 数值测试](../../Tests/RAWMasterImagingTests/DevelopmentSceneEDRCrossScreenTests.swift) |
-| Rust 场景执行 | 顶层、组内和最终图可在 Rust Metal 上执行。预览帧、示波器结果和 032 队列的已准备／已交付条目分别保存本次求值的回执。 | 9504×6336 实片已用产品预算验证，历史 61.4 MP 合成探针使用 6 GiB。继续逐项量化兼容算子、模型与编码的实际工作集。 [60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [039 性能与边界](../039-rust-scene-backend/validation.md) |
+| Rust 场景执行 | 顶层、组内和最终图可在 Rust Metal 上执行。预览帧、示波器结果和 032 队列的已准备／已交付条目分别保存本次求值的回执。 | 9504×6336 实片已用产品预算验证。强制 Rust 暴露并修复了零权重分支和长链多分配一幅纹理的问题。继续逐项量化兼容算子、模型及编码的实际工作集。 [60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [039 性能与边界](../039-rust-scene-backend/validation.md) |
 | 确定性模型 | v4 配方支持图文档 v2，冻结模型阶段、参数、算法标识及顺序。无模型的旧图继续使用图文档 v1。预览、示波器和冻结交付读同一份模型程序。 | PhotoVGG7、PhotoUpconv7、Vision 和可选 EfficientViT 各有独立资源要求。缺资源和超出全图模型预算须给出明确原因。不同模型的大图作用尺度和额外算子按实测逐项放行。 [配方](../../Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift) · [场景模型](../../Sources/RAWMasterCore/DevelopmentSceneModelV1.swift) |
 
 ### 为什么迁移和验收没有闭合
 
 1. **迁移按算子和探针计进度，产品链路仍分开。** 035 的点配方解决旧 V3 像素等价和跨端重放，039 执行的是新的 AP1 场景图。旧配方中的解码白平衡、滤镜插值、几何与空间算子绑定既有顺序。即使曝光可替换，完整 V3 组合也不会自动改用 Rust。已验证的纹理借用只覆盖部分配方，跨边界物化和有限值校验仍会吞掉收益。迁移单位改为「来源 × 算子链 × 查看或交付意图 × 后端」的实际产品路径。
 2. **大图瓶颈出在完整中间纹理。** 旧版在 FIT 之前就申请超过 976 MiB 的整幅 AP1 与标志图。新入口上传一次 Bayer，在原始坐标计算所需区域；大图交付在每个区域完成图求值和输出变换。本次保留 440 MiB 解码预算、640 MiB 预览图预算和 1.5 GiB 交付图预算。编码器、模型工作区及传统显影的全图归约仍须单独量化。[60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [036 原生窗口](../036-render-pipeline-performance/validation.md#画布接线后的出厂窗口)
-3. **安装包入口和端到端验收没有绑定。** `b238c0ab` 修复 Finder 启动的默认入口。对应 JPEG 用例断言模式条和只读 Graph 按钮；实拍暗房测试原先从控制器创建草稿。实际签名包的旧确认弹窗中，创建和取消均禁用，用户到不了可编辑图。确认现由工作表承载，原生回归从 HDR 按钮确认进入。FlashRaw 运行库不可用、原片无法解码及机型不准入分别处理。日常 CI 会跳过依赖固定原片、进程恢复或报告变量的用例。发布性能工作流仍需加入同一签名包的 HDR、Graph、PQ 和实屏清单。[Release 修复](../038-node-dag-workflow/validation.md#release-默认入口修复) · [确认工作表](../037-color-film-hdr/spec.md#原生场景查看的阶段走查) · [CI](../../.github/workflows/ci.yml) · [发布性能工作流](../../.github/workflows/image-release-performance.yml)
+3. **安装包入口和端到端验收没有绑定。** `b238c0ab` 修复 Finder 启动的默认入口。对应 JPEG 用例断言模式条和只读 Graph 按钮；实拍暗房测试原先从控制器创建草稿。实际签名包的旧确认弹窗中，创建和取消均禁用，用户到不了可编辑图。随后一版用工作表修复了无法进入的问题。现行签名包从「色彩外观」一键创建或恢复当前照片的 HDR 调整，并以同一份活动图直接进入 032。FlashRaw 运行库不可用、原片无法解码及机型不准入分别处理。日常 CI 会跳过依赖固定原片、进程恢复或报告变量的用例。发布性能工作流仍需加入同一签名包的 HDR、Graph、PQ 和实屏清单。[Release 修复](../038-node-dag-workflow/validation.md#release-默认入口修复) · [当前签名包入口与交付](../025-editing-workspace/appearance-acceptance.md) · [CI](../../.github/workflows/ci.yml) · [发布性能工作流](../../.github/workflows/image-release-performance.yml)
 
 ## 统一的颜色和执行边界
 
