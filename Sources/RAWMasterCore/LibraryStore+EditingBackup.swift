@@ -195,6 +195,10 @@ extension LibraryStore {
       guard version.id == row[0], versions[version.id] == nil else { throw EditingError.incompleteBackup }
       try version.recipe.validate(); versions[version.id] = version
       if version.artifact != nil {
+        if version.configuration["virtualCopyArchiveSource"] != nil {
+          _ = try archivedOwner(of: version)
+          continue  // The immutable owner has its own entry and publication in this same snapshot.
+        }
         guard let publication = try rows("SELECT data FROM archive_publications WHERE version_id=?", [version.id]).first else { throw EditingError.incompleteBackup }
         let receipt = try decode(publication[0], ArchivePublicationReceipt.self)
         guard receipt.version == version else { throw EditingError.incompleteBackup }

@@ -131,6 +131,7 @@
   <link rel="stylesheet" href="workspace-selection.css">
   <link rel="stylesheet" href="workspace-studio.css">
   <link rel="stylesheet" href="../../docs/ui/prototype/keyboard-focus.css">
+  <link rel="stylesheet" href="../../docs/ui/prototype/workbench-controls.css">
 </head>
 <body>
 <main class="app">
@@ -336,16 +337,16 @@
   ];
   const formats = {jpeg:['jpg',8],tiff:['tiff',16],png:['png',16]};
   const folderNames = {pictures:'图片 / RAWMaster Exports',client:'桌面 / 客户交付'};
+  let mode = 'render';
   const selection = new WorkspaceSelection(photos, {
     getFocus: () => focus, setFocus: index => { focus = index; }, refresh,
-    imageURL, status: statusText, available: photo => inputAvailable(photo,mode)
+    imageURL, status: statusText, originalMode: () => mode === 'original', available: photo => inputAvailable(photo,mode)
   });
   const included = selection.included;
   const demoFiles = {pictures:new Set(['DSC_0712-0002.jpg']),client:new Set()};
   const viewDate = new Date();
   const exportDate = [viewDate.getFullYear(),String(viewDate.getMonth()+1).padStart(2,'0'),String(viewDate.getDate()).padStart(2,'0')].join('');
   let focus = 0;
-  let mode = 'render';
   let job = null;
   let timer = null;
   let layout = ExportLayout.style();
@@ -437,7 +438,7 @@
     let composition=null;
     if (mode === 'render') {
       const [ext,bits] = target === 'hdr' ? ['avif',10] : target === 'sdr' ? formats.jpeg : formats[settings.format];
-      const values = {name:photo.name.replace(/\.[^.]+$/,''),index:String(sequence).padStart(4,'0'),date:exportDate,captureDate:photo.date};
+      const values = {name:photo.name.replace(/\.[^.]+$/,'') + (photo.copyName ? '-' + (photo.copyName.split(/[/\\:\p{Cc}]+/u).filter(Boolean).join('-') || '副本') : ''),index:String(sequence).padStart(4,'0'),date:exportDate,captureDate:photo.date};
       const stem = settings.template.replace(/\{(name|index|date|captureDate)\}/g,(_,key)=>values[key]).trim();
       name = stem + '.' + ext;
       baseName = name;
@@ -491,11 +492,18 @@
       const used = new Set(occupied);
       plannedByIndex = new Map();
       planCounts = {ready:0,missing:0,skipped:0,blocked:0};
+      const originals = new Map();
       plannedRows = selection.ordered.flatMap((index,offset) => {
         const photo = photos[index], version = photo.versions[photo.choice];
+        const source = selection.sourceKey(index);
+        if (mode === 'original' && originals.has(source)) {
+          plannedByIndex.set(index, originals.get(source));
+          return [];
+        }
         const targets = target === 'legacy' ? ['legacy'] : RMSceneOutput.files(target,version,fallback);
         const rows = (targets.length ? targets : ['unavailable']).map(t => itemSpec(photo,index,offset + 1,used,settings,t));
         plannedByIndex.set(index,rows);
+        if (mode === 'original') originals.set(source,rows);
         for (const row of rows) {
           if (row.state === '待执行') planCounts.ready++;
           else if (row.state === '待找回') planCounts.missing++;
@@ -546,7 +554,8 @@
     if (byId('photo').getAttribute('src')!==imageURL(photo)) byId('photo').src=imageURL(photo);
     byId('photo').alt=photo.scene+'的示例照片';
     byId('selected').textContent = included.size.toLocaleString('zh-CN') + ' / ' + selection.total.toLocaleString('zh-CN');
-    byId('focus-name').textContent = photo.name;
+    if (!render && selection.inputCount < included.size) byId('selected').textContent += ' · ' + selection.inputCount + ' 份原件';
+    byId('focus-name').textContent = photo.copyName ? photo.name + ' · ' + photo.copyName : photo.name;
     byId('preview-kind').textContent = !render || !inputAvailable(photo,mode) ? '资料库缩略图'
       : validateSettings() ? '资料库缩略图 · 设置待修正' : '成品构图预览';
     const printVisible=render && !pqSelected() && layout.mark!=='off';
@@ -610,7 +619,7 @@
         const name = document.createElement('strong'); name.textContent = row.name;
         const info = document.createElement('small');
         const imprint = row.composition && job.settings?.layout.mark !== 'off' ? imprintSummary(job.settings.layout,row.composition.lines) : null;
-        info.textContent = [photoBatch ? row.sourceName : null,job.mode === 'render' ? row.version?.label : null,row.facts,row.metadata,imprint].filter(Boolean).join(' · ');
+        info.textContent = [photoBatch ? row.sourceName : null,row.copyName,job.mode === 'render' ? row.version?.label : null,row.facts,row.metadata,imprint].filter(Boolean).join(' · ');
         group.append(name,info);
         const status = document.createElement('span'); status.className = 'row-state';
         status.append(document.createElement('span'));
@@ -735,7 +744,7 @@
   }
   function switchMode(value) {
     if (mode===value) return;
-    mode=value; byId('preset').value='custom'; presetStatus(''); refresh();
+    mode=value; byId('preset').value='custom'; presetStatus(''); selection.filterRows(); refresh();
   }
   byId('render').onclick = () => switchMode('render');
   byId('original').onclick = () => switchMode('original');

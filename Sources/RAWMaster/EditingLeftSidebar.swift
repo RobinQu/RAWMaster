@@ -10,8 +10,7 @@ struct EditingLeftSidebar: View {
     @State private var snapshotsExpanded = true
     @State private var historyExpanded = false
     @State private var lensName: String?
-    @State private var renamingSnapshot: DevelopmentSnapshot?
-    @State private var snapshotName = ""
+    @State private var renamingSnapshot: EditingController.SnapshotRenameRequest?
     @FocusState private var resultsMenuFocused: Bool
     @FocusState private var focusedSnapshot: DevelopmentSnapshot.ID?
 
@@ -45,10 +44,8 @@ struct EditingLeftSidebar: View {
                onDismiss: { if !editing.quickPromptPresented { resultsMenuFocused = true } }) {
             EditingSavedResultsSheet(editing: editing)
         }
-        .alert("重命名快照", isPresented: Binding(get: { renamingSnapshot != nil }, set: { if !$0 { renamingSnapshot = nil } })) {
-            TextField("快照名称", text: $snapshotName)
-            Button("取消") { renamingSnapshot = nil }
-            Button("存储") { renameSnapshot() }.disabled(snapshotName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        .sheet(item: $renamingSnapshot) { request in
+            EditingSnapshotRenameSheet(request: request, editing: editing) { renamingSnapshot = nil }
         }
     }
 
@@ -58,7 +55,7 @@ struct EditingLeftSidebar: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, assetID: work.source.assetID, scroller: proxy,
+                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, assetID: work.presentationID, scroller: proxy,
                             catalog: presetCatalog, sectionExpanded: $filtersExpanded)
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
@@ -88,7 +85,7 @@ struct EditingLeftSidebar: View {
                 LazyVStack(spacing: 0) {
                     ScenePresetDirectory(catalog: presetCatalog, sectionExpanded: $filtersExpanded,
                                          favoriteLooks: editing.favoriteDevelopmentFilters) { error in
-                        editing.postNotice("无法读取滤镜目录。\(error.localizedDescription)", kind: .error, for: work.source.assetID)
+                        editing.postNotice("无法读取滤镜目录。\(error.localizedDescription)", kind: .error, for: work.presentationID)
                     }
                     Divider()
                     let ticket = editing.sceneTicket
@@ -106,10 +103,15 @@ struct EditingLeftSidebar: View {
                                     }
                                     .buttonStyle(.plain).accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
                                     Menu {
-                                        Button("重命名…") { snapshotName = snapshot.name; renamingSnapshot = snapshot }
+                                        Button("重命名…") { renamingSnapshot = editing.snapshotRenameRequest(for: snapshot) }
                                         Button("删除", role: .destructive) { editing.updateSceneSnapshot(snapshot.id, name: nil, ticket: ticket) }
-                                    } label: { Image(systemName: "ellipsis").frame(width: 24, height: 24) }
-                                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize().accessibilityLabel("快照操作")
+                                    } label: {
+                                        snapshotMenuLabel(snapshot)
+                                    }
+                                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                                    .help("快照操作 · " + snapshot.name)
+                                    .accessibilityLabel("快照操作 · " + snapshot.name)
+                                    .accessibilityIdentifier("editing.snapshot.menu." + snapshot.id.uuidString)
                                 }.padding(.horizontal, 12)
                             }
                         }
@@ -227,15 +229,23 @@ struct EditingLeftSidebar: View {
             .accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
 
             Menu {
-                Button("重命名…") { snapshotName = snapshot.name; renamingSnapshot = snapshot }
+                Button("重命名…") { renamingSnapshot = editing.snapshotRenameRequest(for: snapshot) }
                 Divider()
                 Button("删除", role: .destructive) { deleteSnapshot(snapshot, session: session, context: context) }
             } label: {
-                Image(systemName: "ellipsis").frame(width: 24, height: 24)
+                snapshotMenuLabel(snapshot)
             }
             .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-            .accessibilityLabel("快照操作")
+            .help("快照操作 · " + snapshot.name)
+            .accessibilityLabel("快照操作 · " + snapshot.name)
+            .accessibilityIdentifier("editing.snapshot.menu." + snapshot.id.uuidString)
         }
+    }
+
+    private func snapshotMenuLabel(_ snapshot: DevelopmentSnapshot) -> some View {
+        let name = "快照操作 · " + snapshot.name
+        return Image(nsImage: NSImage(systemSymbolName: "ellipsis", accessibilityDescription: name) ?? NSImage())
+            .frame(width: 24, height: 24).accessibilityLabel(name)
     }
 
     private func history(session: EditingDevelopmentSession, context: EditingInteractionContext) -> some View {
@@ -296,19 +306,8 @@ struct EditingLeftSidebar: View {
 
     private func createSnapshot(context: EditingInteractionContext) {
         do { _ = try editing.developmentSession.createSnapshot(context: context) }
+        catch let error as DevelopmentSnapshotError { editing.message = error.localizedDescription }
         catch { editing.message = "无法创建快照，请完成当前调整后重试。" }
-    }
-    private func renameSnapshot() {
-        guard let snapshot = renamingSnapshot else { return }
-        if snapshot.recipe.sceneGraph != nil, let ticket = editing.sceneTicket {
-            editing.updateSceneSnapshot(snapshot.id, name: snapshotName, ticket: ticket)
-            renamingSnapshot = nil
-            return
-        }
-        guard let context = editing.developmentContext else { renamingSnapshot = nil; return }
-        do { try editing.developmentSession.renameSnapshot(id: snapshot.id, name: snapshotName, context: context) }
-        catch { editing.message = "无法重命名快照，请重试。" }
-        renamingSnapshot = nil
     }
     private func deleteSnapshot(_ snapshot: DevelopmentSnapshot, session: EditingDevelopmentSession,
                                 context: EditingInteractionContext) {
@@ -331,6 +330,106 @@ struct EditingLeftSidebar: View {
     private func scrollToCurrent(session: EditingDevelopmentSession, proxy: ScrollViewProxy) {
         guard let current = session.historyItems.first(where: { $0.isCurrent }) else { return }
         DispatchQueue.main.async { proxy.scrollTo(current.id, anchor: .center) }
+    }
+}
+
+struct EditingSnapshotRenameSheet: View {
+    let request: EditingController.SnapshotRenameRequest
+    let editing: EditingController
+    let close: () -> Void
+    @State private var input: SnapshotRenameInput
+    @State private var issue: String?
+
+    init(request: EditingController.SnapshotRenameRequest, editing: EditingController, close: @escaping () -> Void) {
+        self.request = request
+        self.editing = editing
+        self.close = close
+        _input = State(initialValue: SnapshotRenameInput(name: request.initialName))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppDesign.Spacing.group) {
+            Text("重命名快照").font(.headline)
+            SnapshotRenameTextField(input: input, submit: save, cancel: close).frame(height: 24)
+                .accessibilityIdentifier("editing.snapshot.rename.name")
+            if let issue {
+                Text(issue).foregroundStyle(AppPalette.warning).fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("editing.snapshot.rename.issue")
+            }
+            HStack {
+                Spacer()
+                Button("取消", action: close).keyboardShortcut(.cancelAction)
+                    .accessibilityIdentifier("editing.snapshot.rename.cancel")
+                Button("存储", action: save).keyboardShortcut(.defaultAction)
+                    .accessibilityIdentifier("editing.snapshot.rename.confirm")
+            }
+        }
+        .padding(AppDesign.Spacing.section).frame(width: 360).fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func save() {
+        guard let field = input.field else { return }
+        do {
+            try editing.renameSnapshot(request, to: field.currentEditor()?.string ?? field.stringValue)
+            close()
+        } catch {
+            issue = error.localizedDescription
+            field.window?.makeFirstResponder(field)
+        }
+    }
+}
+
+@MainActor private final class SnapshotRenameInput {
+    let initialName: String
+    weak var field: NSTextField?
+    init(name: String) { initialName = name }
+}
+
+private struct SnapshotRenameTextField: NSViewRepresentable {
+    let input: SnapshotRenameInput
+    let submit: () -> Void
+    let cancel: () -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+    func makeNSView(context: Context) -> NSTextField {
+        let field = Field(string: input.initialName)
+        field.placeholderString = "快照名称"
+        field.setAccessibilityElement(true)
+        field.setAccessibilityIdentifier("editing.snapshot.rename.name")
+        field.setAccessibilityLabel("快照名称")
+        field.delegate = context.coordinator
+        input.field = field
+        return field
+    }
+    func updateNSView(_ field: NSTextField, context: Context) { context.coordinator.owner = self }
+
+    private final class Field: NSTextField {
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard window != nil else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, let window else { return }
+                window.makeFirstResponder(self); selectText(nil)
+            }
+        }
+
+        override func setAccessibilityValue(_ accessibilityValue: Any?) {
+            super.setAccessibilityValue(accessibilityValue)
+            guard let name = accessibilityValue as? String else { return }
+            stringValue = name
+            currentEditor()?.string = name
+        }
+    }
+
+    @MainActor final class Coordinator: NSObject, NSTextFieldDelegate {
+        var owner: SnapshotRenameTextField
+        init(_ owner: SnapshotRenameTextField) { self.owner = owner }
+        func control(_ control: NSControl, textView: NSTextView, doCommandBy command: Selector) -> Bool {
+            guard !textView.hasMarkedText() else { return false }
+            if command == #selector(NSResponder.insertNewline(_:)) { owner.submit(); return true }
+            if command == #selector(NSResponder.cancelOperation(_:)) { owner.cancel(); return true }
+            return false
+        }
     }
 }
 

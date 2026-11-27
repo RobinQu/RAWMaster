@@ -11,13 +11,14 @@ for (const job of Studio.data.jobs) {
 
 function handoffDelivery(ids, source, { version, mode = 'render', companions = false } = {}) {
   const items = [];
-  for (const id of ids) {
+  const unique = mode === 'original' ? [...new Set(ids.map(Studio.physicalID))] : ids;
+  for (const id of unique) {
     const item = Studio.exportItem(id, id === Studio.data.work ? version : undefined);
     items.push(item);
     if (companions && Studio.asset(id).pair) {
       items.push({
         ...item,
-        id: id + '@jpeg',
+        id: id + '@jpeg', physicalID: Studio.physicalID(id) + '@jpeg',
         name: item.name.replace(/\.[^.]+$/, '.JPG'),
         versions: item.versions.filter((v) => v.id === 'original'),
       });
@@ -78,11 +79,11 @@ actions['original-review'] = (kind) => {
         ? Studio.asset(id).decision === 'keep' && Studio.asset(id).triage !== 'sequence'
         : selected.has(id)),
   );
-  S.copyIDs = ids;
-  const pairs = ids.filter((id) => Studio.asset(id).pair).length;
+  S.copyIDs = [...new Set(ids.map(Studio.physicalID))];
+  const pairs = S.copyIDs.filter((id) => Studio.asset(id).pair).length;
   dialog(
     kind === 'picks' ? '交付当前范围内的精选' : '复制所选原文件',
-    `<p>${ids.length} 次拍摄 · ${pairs} 对已确认的 RAW + JPEG</p>` +
+    `<p>${S.copyIDs.length} 次拍摄 · ${pairs} 对已确认的 RAW + JPEG</p>` +
       (pairs ? check('包含已确认的 JPEG 伴随文件', 'copyPairs', true) : ''),
     btn('取消', 'close') + btn('进入原件交付', 'copy-handoff', kind, { disabled: !ids.length }),
   );

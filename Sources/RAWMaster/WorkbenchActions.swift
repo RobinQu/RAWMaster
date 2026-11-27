@@ -185,21 +185,21 @@ extension AppModel {
     /// scopes may open that same admitted work without changing the user's browsing context.
     var canOpenNativeEditing: Bool {
         guard mode == .single, editing != nil, let asset = focusedAsset, asset.importState == .ready,
-              let admission = editingAdmissions[asset.id], admission.projectID == asset.projectID,
+              let admission = editingAdmissions[asset.physicalAssetID], admission.projectID == asset.projectID,
               editingProjectIDs.contains(asset.projectID) else { return false }
         switch scope {
         case .all, .session: break
         case .project: guard scopeID == asset.projectID else { return false }
         case .group:
             guard let group = editingGroups[scopeID], group.projectID == asset.projectID,
-                  group.assetIDs.contains(asset.id) else { return false }
+                  group.assetIDs.contains(asset.physicalAssetID) else { return false }
         default: return false
         }
         return asset.availability == .available || editing?.hasSavedWork(assetID: asset.id, admissionFingerprint: admission.fingerprint) == true
     }
     func synchronizeNativeEditingContext() {
         guard let editing, editing.isPresented || editing.asset != nil else { return }
-        if canOpenNativeEditing { editing.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint }) }
+        if canOpenNativeEditing { editing.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.physicalAssetID]?.fingerprint }) }
         else { editing.leaveBrowsingContext() }
     }
     func returnFromNativeEditing() {
@@ -208,18 +208,18 @@ extension AppModel {
     var isNativeEditing: Bool { canOpenNativeEditing && editing?.isPresented == true }
     func openNativeEditing() {
         guard canOpenNativeEditing else { return }
-        editing?.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint }); editing?.isPresented = true
+        editing?.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.physicalAssetID]?.fingerprint }); editing?.isPresented = true
     }
     func openSavedResultExport(_ version: EditingVersion) {
-        guard canExport, focusedID == version.source.assetID, let editing,
-              editing.beginSavedResultExport(version) else { return }
+        guard canExport, let asset = focusedAsset, version.source.assetID == asset.physicalAssetID,
+              let editing, editing.work?.presentationID == asset.id, editing.beginSavedResultExport(version) else { return }
         editing.closeSavedResults()
         requestedWorkbenchExportMode = .render
-        prepareLibraryExport(.photo(id: version.source.assetID))
+        prepareLibraryExport(.photo(id: asset.id))
     }
     func openRenderedPhotoExport(context: WorkbenchExportContext? = nil) {
         guard canExport, canOpenNativeEditing, let asset = focusedAsset,
-              let admission = editingAdmissions[asset.id], let editing,
+              let admission = editingAdmissions[asset.physicalAssetID], let editing,
               editing.beginWorkbenchExport(asset: asset, admissionFingerprint: admission.fingerprint) else { return }
         requestedWorkbenchExportMode = .render
         prepareLibraryExport(context ?? .photo(id: asset.id))

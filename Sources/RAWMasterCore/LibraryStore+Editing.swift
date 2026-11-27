@@ -8,6 +8,7 @@ private struct LiveDevelopmentStateCommand: Codable {
   let recipe: DevelopmentRecipe
   var presetAdoptions: [DevelopmentPresetAdoption]?
   var alternateAppearance: DevelopmentAppearanceAlternate?
+  var expectedAdoptionRevision: Int?
 }
 
 extension LibraryStore {
@@ -145,16 +146,19 @@ extension LibraryStore {
   /// The optimistic revision prevents an older asynchronous gesture from overwriting a newer one.
   public func saveLiveDevelopmentState(workID: String, recipe: DevelopmentRecipe, parentVersionID: String,
                                        expectedRevision: Int, commandID: String = UUID().uuidString, presetAdoptions: [DevelopmentPresetAdoption]? = nil,
-                                       alternateAppearance: DevelopmentAppearanceAlternate? = nil) throws -> PhotoWork {
+                                       alternateAppearance: DevelopmentAppearanceAlternate? = nil,
+                                       expectedAdoptionRevision: Int? = nil) throws -> PhotoWork {
     try transaction {
       let fingerprint = try EditingFingerprint.of(LiveDevelopmentStateCommand(workID: workID,
-        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe, presetAdoptions: presetAdoptions, alternateAppearance: alternateAppearance))
+        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe, presetAdoptions: presetAdoptions, alternateAppearance: alternateAppearance,
+        expectedAdoptionRevision: expectedAdoptionRevision))
       if let existing = try commandResult(id: commandID, fingerprint: fingerprint,
           action: "saveLiveDevelopment", type: PhotoWork.self) { return existing }
       var work = try photoWork(id: workID)
       let parent = try editingVersion(id: parentVersionID)
       guard parent.workID == workID, parent.source.hasSameIdentity(as: work.source),
-            (work.liveRevision ?? 0) == expectedRevision else { throw EditingError.staleAdoption }
+            (work.liveRevision ?? 0) == expectedRevision,
+            expectedAdoptionRevision == nil || expectedAdoptionRevision == work.adoptionRevision else { throw EditingError.staleAdoption }
       try recipe.validate()
       if recipe.sceneGraph != nil, presetAdoptions != nil { throw EditingError.invalidRecipe }
       try validateSceneRecipeSource(recipe, source: work.source); try validateAdmission(work.source)
@@ -165,6 +169,7 @@ extension LibraryStore {
               alternate.sceneGraph == nil || alternateAppearance.presetAdoptions == nil else { throw EditingError.invalidRecipe }
         try validateSceneRecipeSource(alternate, source: work.source)
       }
+      work.renditionSelection = .live
       work.liveAlternateAppearance = alternateAppearance
       work.liveRecipe = recipe; work.liveParentVersionID = parentVersionID
       work.livePresetAdoptions = presetAdoptions
@@ -175,13 +180,18 @@ extension LibraryStore {
     }
   }
   public func loadEditingVersions(workID: String) throws -> [EditingVersion] {
-    try locked { try rows("SELECT data FROM editing_versions WHERE work_id=? ORDER BY rowid", [workID]).map { try decode($0[0], EditingVersion.self) } }
+    try locked { try rows("SELECT data FROM editing_versions WHERE work_id=? ORDER BY rowid", [workID]).map { try checkedStoredEditingVersion($0[0]) } }
   }
   public func editingVersion(id: String) throws -> EditingVersion {
     try locked {
       guard let row = try rows("SELECT data FROM editing_versions WHERE id=?", [id]).first else { throw EditingError.missingVersion }
-      return try decode(row[0], EditingVersion.self)
+      return try checkedStoredEditingVersion(row[0])
     }
+  }
+  private func checkedStoredEditingVersion(_ data: String) throws -> EditingVersion {
+    let version = try decode(data, EditingVersion.self)
+    if version.configuration["virtualCopyArchiveSource"] != nil { _ = try archivedOwner(of: version) }
+    return version
   }
   /// Resolve only a stored immutable version; an unrelated live draft cannot enter the delivery ticket.
   package func freezeSceneDelivery(versionID: String, format: DevelopmentSceneDeliveryV1.Format) throws -> DevelopmentSceneDeliveryV1 {
@@ -220,7 +230,7 @@ extension LibraryStore {
     }
   }
 
-  private func validateSceneRecipeSource(_ recipe: DevelopmentRecipe, source: EditingSourceSnapshot) throws {
+  func validateSceneRecipeSource(_ recipe: DevelopmentRecipe, source: EditingSourceSnapshot) throws {
     guard recipe.sceneGraph == nil || source.sourceLocation.pathExtension.lowercased() == "arw" else { throw EditingError.invalidSource }
     // This is the catalogue boundary; the scene RAW decoder must independently confirm calibration and geometry.
   }
@@ -239,7 +249,7 @@ extension LibraryStore {
     if let artifact = version.artifact { try artifact.validate() }
     if version.kind == .ai || version.kind == .external { guard version.artifact != nil else { throw EditingError.invalidArtifact } }
   }
-  private func insertVersion(_ version: EditingVersion) throws {
+  func insertVersion(_ version: EditingVersion) throws {
     try statement("INSERT INTO editing_versions VALUES(?,?,?,?)", [version.id, version.workID, version.parentVersionID ?? "", try json(version)])
     try statement("INSERT INTO editing_dispositions VALUES(?,?)", [version.id, VersionDisposition.candidate.rawValue])
   }
@@ -267,15 +277,18 @@ extension LibraryStore {
       try validateAdmission(work.source)
       if version.artifact == nil { try validateEditingSource(version.source) }
       else {
-        let publication = try publicationForVersion(version.id)
+        let owner = version.configuration["virtualCopyArchiveSource"] == nil ? version : try archivedOwner(of: version)
+        if work.strictDocumentary == true && owner.kind == .ai { throw EditingError.strictDocumentary }
+        let publication = try publicationForVersion(owner.id)
         try editingArchive().validate(publication)
-        if let jobID = publication.jobID, let request = try processingJob(id: jobID).request.quickPrompt {
+        if owner.id == version.id, let jobID = publication.jobID, let request = try processingJob(id: jobID).request.quickPrompt {
           let job = try processingJob(id: jobID), parent = try editingVersion(id: job.request.inputVersionID)
           guard job.attempts.contains(where: { $0.resultVersionID == versionID }),
             try versionDisposition(versionID: versionID) != .discarded,
             request.matches(work, parent: parent, recipe: job.request.recipe) else { throw EditingError.staleAdoption }
         }
       }
+      work.renditionSelection = .adopted
       work.adoptedVersionID = versionID; work.adoptionRevision += 1
       try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
       try statement("UPDATE editing_dispositions SET disposition=? WHERE version_id=?", [VersionDisposition.retained.rawValue, versionID])
@@ -305,6 +318,9 @@ extension LibraryStore {
       let job = try processingJob(id: jobID)
       guard let previous = job.request.quickPrompt, previous.adoptionRevision == expectedRevision - 1,
             try editingVersion(id: previous.adoptedVersionID).workID == workID else { throw EditingError.staleAdoption }
+      if work.renditionSelection != .live {
+        work.renditionSelection = previous.usesLiveDraft ? .live : .adopted
+      }
       work.adoptedVersionID = previous.adoptedVersionID; work.adoptionRevision += 1
       try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
       return work

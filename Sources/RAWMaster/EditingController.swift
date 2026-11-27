@@ -121,20 +121,24 @@ import RAWMasterLibrary
     private var sceneRequestID = UUID()
     private var sceneSampling: DevelopmentScenePreviewV1.Sampling = .fit(maximumEdge: 1440)
     @Published private(set) var savedResultsSelection: String?
-    @Published private var sceneSnapshotsByParent: [String: [DevelopmentSnapshot]] = [:]
+    @Published private var currentSceneSnapshots: [DevelopmentSnapshot] = []
     private struct AppearanceState {
         let recipe: DevelopmentRecipe
         let alternate: DevelopmentAppearanceAlternate?
         let restored: DevelopmentAppearanceAlternate?
     }
-    private var sceneHistory: [(before: AppearanceState, after: AppearanceState)] = []
-    private var sceneRedo: [(before: AppearanceState, after: AppearanceState)] = []
+    private typealias AppearanceChange = (before: AppearanceState, after: AppearanceState)
+    private var sceneHistory: [AppearanceChange] = []
+    private var sceneRedo: [AppearanceChange] = []
+    private var suspendedAppearanceHistories: [(workID: String, parent: String, undo: [AppearanceChange], redo: [AppearanceChange])] = []
     private var appearanceState: AppearanceState {
         .init(recipe: recipe, alternate: alternateAppearance, restored: restoredAppearance)
     }
     var compatibilityAppearance: DevelopmentRecipe? { recipe.sceneGraph == nil ? recipe : alternateAppearance?.recipe }
     @Published private(set) var savedRecipe = DevelopmentRecipe()
-    @Published private(set) var draftParentID: String?
+    @Published private(set) var draftParentID: String? {
+        didSet { if oldValue != draftParentID { reloadNamedSnapshots() } }
+    }
     @Published private(set) var preview: NSImage?
     @Published private(set) var previewDimensions = ""
     @Published private(set) var sourceReady = false {
@@ -279,6 +283,11 @@ import RAWMasterLibrary
     }
     var photoNotices: [EditingWorkspaceNotice] { activity.notices.filter { $0.assetID == asset?.id } }
 
+    private func presentationID(ofWork id: String) -> String {
+        if let work, work.id == id { return work.presentationID }
+        return (try? store.photoWork(id: id).presentationID) ?? id
+    }
+
     func postNotice(_ text: String, kind: EditingWorkspaceNotice.Kind = .information,
                     action: EditingWorkspaceNotice.Action? = nil, for requestedAssetID: String? = nil) {
         let owner = requestedAssetID ?? asset?.id
@@ -287,7 +296,14 @@ import RAWMasterLibrary
         guard let id = owner, !text.isEmpty else { return }
         if let last = activity.notices.last, last.assetID == id, last.kind == kind, last.text == text,
            last.action == action, Date().timeIntervalSince(last.date) < 0.35 { return }
-        let photoName = isCurrent ? asset?.filename : (try? store.catalogFiles(for: [id]).first?.location.lastPathComponent)
+        let photoName: String?
+        if isCurrent {
+            photoName = asset?.displayName
+        } else if let copy = try? store.photoWork(id: id), copy.virtualCopyID == id {
+            photoName = try? store.virtualCopies(projectID: copy.source.projectID).first(where: { $0.id == id })?.name
+        } else {
+            photoName = try? store.catalogFiles(for: [id]).first?.location.lastPathComponent
+        }
         let notice = EditingWorkspaceNotice(assetID: id, photoName: photoName,
             kind: kind, text: text, action: action)
         activity.add(notice)
@@ -410,6 +426,7 @@ import RAWMasterLibrary
     private var tasks: [String: Task<Void, Never>] = [:]
     private var operations: [UUID: Task<Void, Never>] = [:]
     private var pendingRetryJobs = Set<String>()
+    private var pendingSaveResumptions = Set<String>()
     private var reconcilingJobs = Set<String>()
     private var exportOperations: [UUID: Task<RenderedPhoto, Error>] = [:]
     private var exportTasks: [String: Task<RenderedPhoto, Error>] = [:]
@@ -422,15 +439,28 @@ import RAWMasterLibrary
     private var liveStateTasks: [ObjectIdentifier: Task<Void, Never>] = [:]
     private var liveRecipeGeneration: UInt64 = 0
     private final class QueuedLiveState {
-        let recipeGeneration: UInt64, parent: String, expectedRevision: Int
+        let presentationID: String, recipeGeneration: UInt64, parent: String, expectedRevision: Int, adoptionRevision: Int
         var adoptions: [DevelopmentPresetAdoption]?
         var started = false
-        init(recipeGeneration:UInt64, parent:String, expectedRevision:Int, adoptions:[DevelopmentPresetAdoption]?) {
+        init(presentationID: String, recipeGeneration:UInt64, parent:String, expectedRevision:Int, adoptionRevision: Int, adoptions:[DevelopmentPresetAdoption]?) {
+            self.presentationID = presentationID
             self.recipeGeneration = recipeGeneration; self.parent = parent
-            self.expectedRevision = expectedRevision; self.adoptions = adoptions
+            self.expectedRevision = expectedRevision; self.adoptionRevision = adoptionRevision; self.adoptions = adoptions
         }
     }
     private var liveStateWrites: [String: QueuedLiveState] = [:]
+    var didPersistRendition: ((PhotoWork) -> Void)?
+    private var failedRenditionWrites: [String: (workID: String, error: Error)] = [:]
+
+    func awaitPendingRenditionWrites(for presentationID: String) async throws {
+        while let queued = liveStateWrites.values.first(where: { $0.presentationID == presentationID }),
+              let task = liveStateTasks[ObjectIdentifier(queued)] {
+            try Task.checkCancellation()
+            await task.value
+        }
+        try Task.checkCancellation()
+        if let failure = failedRenditionWrites[presentationID] { throw failure.error }
+    }
     // Injection seams retain the real persistence/orchestration paths in controller tests.
     var providerOverride: (any AIEditingProvider)?
     var generationPreparationHook: (@Sendable () async throws -> Void)?
@@ -507,8 +537,8 @@ import RAWMasterLibrary
             let database = store
             if let existing = try? await Task.detached(operation: { try database.loadPhotoWorks() }).value {
                 guard !shuttingDown, !Task.isCancelled else { return }
-                savedWorkAssetIDs.formUnion(existing.map { $0.source.assetID })
-                for work in existing { savedAdmissionFingerprints[work.source.assetID, default: []].insert(work.source.admissionFingerprint) }
+                savedWorkAssetIDs.formUnion(existing.map(\.presentationID))
+                for work in existing { savedAdmissionFingerprints[work.presentationID, default: []].insert(work.source.admissionFingerprint) }
             }
             await reloadProfiles()
             guard !shuttingDown, !Task.isCancelled else { return }
@@ -546,11 +576,11 @@ import RAWMasterLibrary
     }
 
     var exportVersion: EditingVersion? {
-        guard var version = versions.first(where: { $0.id == exportVersionID }) else { return nil }
+        guard let version = versions.first(where: { $0.id == exportVersionID }) else { return nil }
         if isDisplayingDevelopmentDraft, version.id == draftParentID {
             if recipe.sceneGraph != nil { return try? version.freezingSceneAppearance(recipe) }
-            if version.recipe != recipe { version.artifact = nil }
-            version.recipe = recipe
+            guard let work else { return nil }
+            return version.freezingDevelopmentDraft(recipe, presets: presetAdoptions(for: recipe, work: work, parent: version.id))
         }
         return version
     }
@@ -575,20 +605,34 @@ import RAWMasterLibrary
     }
     func focus(_ newAsset: AssetRecord?, admissionFingerprint: String? = nil) {
         guard !shuttingDown else { return }
-        guard asset?.id != newAsset?.id || asset?.resolvedURL != newAsset?.resolvedURL || asset?.availability != newAsset?.availability || focusedAdmissionFingerprint != admissionFingerprint else { return }
+        guard asset?.id != newAsset?.id || asset?.physicalAssetID != newAsset?.physicalAssetID ||
+              asset?.resolvedURL != newAsset?.resolvedURL || asset?.availability != newAsset?.availability ||
+              asset?.contentHash != newAsset?.contentHash || asset?.fileSize != newAsset?.fileSize ||
+              focusedAdmissionFingerprint != admissionFingerprint else {
+            if asset?.virtualCopyName != newAsset?.virtualCopyName { asset = newAsset }
+            return
+        }
         closeQuickPrompt(restoreComparison: false)
         suspendDevelopmentInteraction()
         rememberDevelopmentBranch()
         if pendingExportAssetID != newAsset?.id { pendingExportAssetID = nil }
         if asset?.id != newAsset?.id { showExport = false; exportVersionID = nil }
-        if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
+        if let id = work?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
         let priorSceneSource = work?.source
         resetSceneViewing()
-        if let priorSceneSource {
+        if let priorSceneSource, !(newAsset?.physicalAssetID == priorSceneSource.assetID &&
+            newAsset?.resolvedURL == priorSceneSource.sourceLocation && newAsset?.availability == .available &&
+            (newAsset?.contentHash == nil || newAsset?.contentHash?.lowercased() == priorSceneSource.contentSHA256)) {
             let service = scenePreview
             Task { await service.releaseSource(matching: priorSceneSource) }
         }
+        if let work, let parent = draftParentID, !sceneHistory.isEmpty || !sceneRedo.isEmpty {
+            suspendedAppearanceHistories.removeAll { $0.workID == work.id }
+            suspendedAppearanceHistories.append((work.id, parent, sceneHistory, sceneRedo))
+            if suspendedAppearanceHistories.count > 8 { suspendedAppearanceHistories.removeFirst() }
+        }
         sceneHistory.removeAll(); sceneRedo.removeAll()
+        lastQuickPromptNotice = nil
         focusGeneration = UUID(); let generation = focusGeneration
         focusTask?.cancel()
         sourceRevalidationTask?.cancel(); previews.reset(); previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
@@ -610,8 +654,8 @@ import RAWMasterLibrary
             do {
                 let worker = Task.detached(priority: .userInitiated) { () -> (PhotoWork, [EditingVersion], [String: VersionDisposition], Bool) in
                     focusHook?(newAsset.id)
-                    let existing = try database.loadPhotoWorks(assetID: newAsset.id).filter { admissionFingerprint == nil || $0.source.admissionFingerprint == admissionFingerprint }
-                    let source = newAsset.availability == .available ? (try? database.captureEditingSourceSnapshot(assetID: newAsset.id, cancel: { try Task.checkCancellation() })) : nil
+                    let existing = try database.editingWorks(for: newAsset).filter { admissionFingerprint == nil || $0.source.admissionFingerprint == admissionFingerprint }
+                    let source = newAsset.availability == .available ? (try? database.captureEditingSourceSnapshot(assetID: newAsset.physicalAssetID, cancel: { try Task.checkCancellation() })) : nil
                     try Task.checkCancellation()
                     if let admissionFingerprint, let source, source.admissionFingerprint != admissionFingerprint { throw EditingError.staleSource }
                     let work: PhotoWork
@@ -619,6 +663,7 @@ import RAWMasterLibrary
                         if let saved = existing.first(where: { $0.source.hasSameIdentity(as: source) }) {
                             work = saved
                         } else {
+                            guard newAsset.virtualCopySourceID == nil else { throw EditingError.staleSource }
                             let decoder = try DevelopmentRAWSourcePolicy.decoderForNewWork(at: source.sourceLocation)
                             try Task.checkCancellation()
                             work = try database.createPhotoWork(source: source, rawDecoder: decoder)
@@ -626,6 +671,9 @@ import RAWMasterLibrary
                     }
                     else if let saved = existing.max(by: { $0.createdAt < $1.createdAt }) { work = saved }
                     else { throw EditingError.invalidSource }
+                    guard work.presentationID == newAsset.id, work.source.assetID == newAsset.physicalAssetID else {
+                        throw EditingError.invalidSource
+                    }
                     let versions = try database.loadEditingVersions(workID: work.id)
                     var dispositions: [String: VersionDisposition] = [:]
                     for version in versions { dispositions[version.id] = try database.versionDisposition(versionID: version.id) }
@@ -643,20 +691,35 @@ import RAWMasterLibrary
                 let viewableParent = persistedParent.flatMap { id in
                     sourceReady || loaded.1.contains(where: { $0.id == id && $0.artifact != nil }) ? id : nil
                 }
-                if let adopted = loaded.1.first(where: { $0.id == loaded.0.adoptedVersionID }),
-                   adopted.configuration["quickPromptRawOutputSHA256"] != nil {
-                    stage = .versions; selectedVersionID = adopted.id
-                } else { selectedVersionID = viewableParent ?? loaded.0.adoptedVersionID }
+                guard let adopted = loaded.1.first(where: { $0.id == loaded.0.adoptedVersionID }) else {
+                    throw EditingError.missingVersion
+                }
+                let pending = liveStateWrites[loaded.0.id]
+                let showsLive = loaded.0.usesLiveRendition(over: adopted) || pending?.adoptionRevision == loaded.0.adoptionRevision
+                let showsArchived = !showsLive && adopted.artifact != nil
+                if showsArchived { stage = .versions }
+                selectedVersionID = showsLive ? (viewableParent ?? adopted.id) : adopted.id
+
+                // An archived result stays visible while the raw draft remains available to Return to Current Edit.
+                let preservesLiveDraft = showsLive || showsArchived
                 let rawBase = developmentBase(for: selectedVersion)
-                let base = loaded.0.liveRecipe ?? rawBase?.recipe ?? .init()
-                if let draft = drafts[newAsset.id], loaded.1.contains(where: { $0.id == draft.2 }) {
+                if preservesLiveDraft, let draft = drafts[loaded.0.id], loaded.1.contains(where: { $0.id == draft.2 }) {
                     recipe = draft.0; savedRecipe = draft.1; draftParentID = draft.2; alternateAppearance = draft.3
                 } else {
+                    let retained = preservesLiveDraft ? loaded.0.liveRecipe : nil
+                    let base = retained ?? rawBase?.recipe ?? .init()
                     recipe = base; savedRecipe = base
-                    alternateAppearance = loaded.0.liveAlternateAppearance
-                    draftParentID = persistedParent ?? rawBase?.id ?? loaded.0.originalVersionID
+                    alternateAppearance = retained == nil ? nil : loaded.0.liveAlternateAppearance
+                    draftParentID = (retained == nil ? nil : persistedParent) ?? rawBase?.id ?? loaded.0.originalVersionID
                 }
                 developmentBranchID = rememberedDevelopmentBranches[loaded.0.id] ?? .init()
+                if let index = suspendedAppearanceHistories.firstIndex(where: { $0.workID == loaded.0.id }) {
+                    let previous = suspendedAppearanceHistories.remove(at: index)
+                    if previous.parent == draftParentID { sceneHistory = previous.undo; sceneRedo = previous.redo }
+                }
+                if let failure = failedRenditionWrites[newAsset.id], failure.workID != loaded.0.id {
+                    failedRenditionWrites.removeValue(forKey: newAsset.id)
+                }
                 sceneGraphState.reconcile(recipe.sceneGraph)
                 loading = false; requestPreview()
                 if pendingExportAssetID == newAsset.id { pendingExportAssetID = nil; openExport() }
@@ -709,7 +772,7 @@ import RAWMasterLibrary
                     event: .init(context: context, control: .init(group: nil, name: control))) }
             catch { try? session.invalidate(context: context, reason: .sourceInvalidated) }
         }
-        if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
+        if let id = work?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
         scheduleLiveStatePersistence()
         let input = suppliedInput ?? EditingPreviewInput.capture(control: control, phase: previewInteracting ? "change" : "discrete", nativeEvent: nativeEvent, gestureID: previewGestureID)
         if previewInteracting { lastPreviewAdjustmentInput = input }
@@ -736,18 +799,18 @@ import RAWMasterLibrary
     }
     private func scheduleLiveStatePersistence(work current:PhotoWork, parent:String) {
         guard !shuttingDown, sourceReady else { return }
-        let workID = current.id, assetID = current.source.assetID
+        let workID = current.id, presentationID = current.presentationID
         let frozen = recipe, alternate = alternateAppearance, expectedRevision = current.liveRevision ?? 0
         let adoptions = presetAdoptions(for: frozen, work: current, parent: parent)
         // The recipe commits synchronously before the session publishes its adopted preset
         // history. Both notifications belong to exactly the same pending database write.
         if let queued = liveStateWrites[workID], !queued.started, queued.recipeGeneration == liveRecipeGeneration,
-           queued.parent == parent, queued.expectedRevision == expectedRevision {
+           queued.parent == parent, queued.expectedRevision == expectedRevision, queued.adoptionRevision == current.adoptionRevision {
             queued.adoptions = adoptions
             return
         }
         if let previous = liveStateWrites[workID] { liveStateTasks[ObjectIdentifier(previous)]?.cancel() }
-        let queued = QueuedLiveState(recipeGeneration:liveRecipeGeneration, parent:parent, expectedRevision:expectedRevision, adoptions:adoptions)
+        let queued = QueuedLiveState(presentationID: presentationID, recipeGeneration:liveRecipeGeneration, parent:parent, expectedRevision:expectedRevision, adoptionRevision: current.adoptionRevision, adoptions:adoptions)
         liveStateWrites[workID] = queued
         let database = store, writeID = ObjectIdentifier(queued)
         let beforeCAS = liveStateCASWillBeginHook
@@ -774,7 +837,8 @@ import RAWMasterLibrary
                         updated = try await Task.detached(priority: .utility) {
                             if let beforeCAS { await beforeCAS(workID,frozen) }
                             return try database.saveLiveDevelopmentState(workID: workID, recipe: frozen,
-                                parentVersionID: parent, expectedRevision: expected, presetAdoptions: adoptions, alternateAppearance: alternate)
+                                parentVersionID: parent, expectedRevision: expected, presetAdoptions: adoptions, alternateAppearance: alternate,
+                                expectedAdoptionRevision: current.adoptionRevision)
                         }.value
                         break
                     } catch EditingError.staleAdoption {
@@ -783,29 +847,35 @@ import RAWMasterLibrary
                         try requireOwnership()
                         guard attempt < 2 else { throw EditingError.staleAdoption }
                         revision = try await Task.detached(priority: .utility) {
-                            try database.photoWork(id: workID).liveRevision ?? 0
+                            let newest = try database.photoWork(id: workID)
+                            guard newest.adoptionRevision == current.adoptionRevision else { throw EditingError.staleAdoption }
+                            return newest.liveRevision ?? 0
                         }.value
                         try requireOwnership()
                     }
                 }
                 guard let updated else { throw EditingError.staleAdoption }
                 guard let self, self.liveStateWrites[workID] === queued else { return }
-                if var memory = self.drafts[assetID] {
+                self.failedRenditionWrites.removeValue(forKey: presentationID)
+                self.didPersistRendition?(updated)
+                if var memory = self.drafts[workID] {
                     memory.1 = memory.0 == frozen ? frozen : memory.1
-                    memory.2 = parent; self.drafts[assetID] = memory
+                    memory.2 = parent; self.drafts[workID] = memory
                 }
                 if self.work?.id == workID {
                     self.work = updated
                     if self.recipe == frozen {
                         self.savedRecipe = frozen
-                        self.drafts[assetID] = (frozen, frozen, parent, alternate)
+                        self.drafts[workID] = (frozen, frozen, parent, alternate)
                     }
                 }
             } catch is CancellationError {
                 // A superseded task may already have committed its frozen metadata. The newest task
                 // resolves the optimistic revision and remains the only publication to the UI.
             } catch {
-                guard let self, self.liveStateWrites[workID] === queued, self.work?.id == workID else { return }
+                guard let self, self.liveStateWrites[workID] === queued else { return }
+                self.failedRenditionWrites[presentationID] = (workID, error)
+                guard self.work?.id == workID else { return }
                 self.message = "调整已在当前会话生效，但自动保存失败；继续调整会重试。"
             }
         }
@@ -962,7 +1032,7 @@ import RAWMasterLibrary
                 alternateAppearance = nil; restoredAppearance = nil
             }
             recipe = version.recipe; savedRecipe = version.recipe; draftParentID = version.id
-            if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
+            if let id = work?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
             scheduleLiveStatePersistence()
         }
         sceneGraphState.reconcile(recipe.sceneGraph)
@@ -1167,7 +1237,7 @@ import RAWMasterLibrary
         sourceRevalidationTask = Task {
             defer { if generation == focusGeneration { revalidatingSource = false } }
             do {
-                let worker = Task.detached { try database.captureEditingSourceSnapshot(assetID: asset.id, cancel: { try Task.checkCancellation() }) }
+                let worker = Task.detached { try database.captureEditingSourceSnapshot(assetID: asset.physicalAssetID, cancel: { try Task.checkCancellation() }) }
                 let source = try await withTaskCancellationHandler(operation: { try await worker.value }, onCancel: { worker.cancel() })
                 guard !Task.isCancelled, generation == focusGeneration else { return }
                 guard source.hasSameIdentity(as: current.source) else { throw EditingError.staleSource }
@@ -1235,7 +1305,7 @@ import RAWMasterLibrary
             do {
                 try Task.checkCancellation()
                 let version = try await renderAndArchive(work: current, parent: parent, recipe: frozen, adoptions: adoptions)
-                postNotice("已保存初修候选。采用后才会成为当前版本。", for: current.source.assetID)
+                postNotice("已保存初修候选。采用后才会成为当前版本。", for: current.presentationID)
                 guard focusGeneration == generation, work?.id == current.id else { return }
                 await refreshWork()
                 guard focusGeneration == generation, let refreshed = work, refreshed.id == current.id else { return }
@@ -1243,14 +1313,14 @@ import RAWMasterLibrary
                       context == nil || developmentSessionStorage?.context == context,
                       saveTicket == nil || developmentSessionStorage?.acceptsSaveCompletion(saveTicket!) == true else { return }
                 selectedVersionID = version.id; savedRecipe = frozen
-                drafts[current.source.assetID] = (recipe, frozen, version.id, alternateAppearance); draftParentID = version.id
+                drafts[current.id] = (recipe, frozen, version.id, alternateAppearance); draftParentID = version.id
                 // The immutable candidate contains the frozen Save input. The live draft
                 // may already include later edits; reopen those on the newly saved parent.
                 scheduleLiveStatePersistence(work:refreshed,parent:version.id)
                 if returnAfterSaving { leaveBrowsingContext() }
             } catch {
                 if !shuttingDown, !(error is CancellationError) {
-                    postNotice("保存失败：\(error.localizedDescription)", kind: .error, for: current.source.assetID)
+                    postNotice("保存失败：\(error.localizedDescription)", kind: .error, for: current.presentationID)
                 }
             }
         }
@@ -1341,35 +1411,48 @@ import RAWMasterLibrary
             guard work?.id == id else { return }
             work = snapshot.0; versions = snapshot.1; dispositions = snapshot.2
             resolveCurrentLocation()
-        } catch { postNotice(error.localizedDescription, kind: .error, for: current.source.assetID) }
+        } catch { postNotice(error.localizedDescription, kind: .error, for: current.presentationID) }
     }
     private func resolveCurrentLocation() {
-        guard let asset, asset.availability == .available, asset.id == work?.source.assetID else { return }
+        guard let asset, asset.availability == .available, asset.id == work?.presentationID, asset.physicalAssetID == work?.source.assetID else { return }
         work?.source.sourceLocation = asset.resolvedURL
         versions = versions.map { version in
             var resolved = version; resolved.source.sourceLocation = asset.resolvedURL; return resolved
         }
     }
     func adopt(_ version: EditingVersion) {
-        guard !shuttingDown, let current = work else { return }
+        guard !shuttingDown, let current = work, current.id == version.workID else { return }
         if version.configuration["quickPromptRawOutputSHA256"] != nil {
             if let job = quickPromptJob(for: version) { adoptQuickPromptVersion(version, job: job, fromReview: false) }
             else { postNotice("生成记录尚未就绪，请稍后核对。") }
             return
         }
+        let focus = focusGeneration
         startOperation { [self] in
             do {
+                try await awaitPendingRenditionWrites(for: current.presentationID)
                 try Task.checkCancellation()
                 let database = store
-                _ = try await Task.detached { try database.adoptEditingVersion(workID: current.id, versionID: version.id, expectedRevision: current.adoptionRevision) }.value
-                await refreshWork(); postNotice("已采用此结果。", for: current.source.assetID)
-            } catch { await refreshWork(); postNotice("采用未完成。当前采用可能已变更，请核对后重试。", kind: .error, for: current.source.assetID) }
+                let adopted = try await Task.detached {
+                    try database.adoptEditingVersion(workID: current.id, versionID: version.id, expectedRevision: current.adoptionRevision)
+                }.value
+                didPersistRendition?(adopted)
+                postNotice("已采用此结果。", for: current.presentationID)
+                guard focusGeneration == focus else { return }
+                await refreshWork()
+                guard focusGeneration == focus else { return }
+                stage = .versions; selectedVersionID = version.id; requestPreview()
+            } catch {
+                if focusGeneration == focus { await refreshWork() }
+                postNotice("采用未完成。当前采用可能已变更，请核对后重试。", kind: .error, for: current.presentationID)
+            }
         }
     }
+
     func disposition(_ version: EditingVersion, _ value: VersionDisposition) {
         startOperation { [self] in
             do { try Task.checkCancellation(); let database = store; try await Task.detached { try database.setVersionDisposition(versionID: version.id, disposition: value) }.value; await refreshWork() }
-            catch { postNotice("无法更新候选：\(error.localizedDescription)", kind: .error, for: version.source.assetID) }
+            catch { postNotice("无法更新候选：\(error.localizedDescription)", kind: .error, for: presentationID(ofWork: version.workID)) }
         }
     }
     func associateExternalResult(parentID: String? = nil) {
@@ -1388,8 +1471,8 @@ import RAWMasterLibrary
                 let saved = try await publish(file: url, version: version)
                 await refreshWork()
                 if self.work?.id == work.id, savedResultsSelection != nil { savedResultsSelection = saved.id }
-                postNotice("已关联外部编辑结果。", for: work.source.assetID)
-            } catch { postNotice("无法关联结果：\(error.localizedDescription)", kind: .error, for: work.source.assetID) }
+                postNotice("已关联外部编辑结果。", for: work.presentationID)
+            } catch { postNotice("无法关联结果：\(error.localizedDescription)", kind: .error, for: work.presentationID) }
         }
     }
     func prepareExport(asset: AssetRecord?, admissionFingerprint: String? = nil) {
@@ -1413,7 +1496,8 @@ import RAWMasterLibrary
         isPresented = true
         focus(asset, admissionFingerprint: admissionFingerprint)
         if let work {
-            guard selectVersionForExport(), let version = exportVersion else { return false }
+            guard work.presentationID == asset.id, work.source.assetID == asset.physicalAssetID,
+                  selectVersionForExport(), let version = exportVersion else { return false }
             workbenchExport = (asset.id, Task { (work, version) })
         } else {
             guard loading, let focusTask else { return false }
@@ -1422,7 +1506,7 @@ import RAWMasterLibrary
                 await focusTask.value
                 try Task.checkCancellation()
                 guard let self, self.focusGeneration == generation,
-                      let work = self.work, work.source.assetID == asset.id,
+                      let work = self.work, work.presentationID == asset.id, work.source.assetID == asset.physicalAssetID,
                       work.source.admissionFingerprint == admissionFingerprint else { throw EditingError.staleSource }
                 guard self.selectVersionForExport(), let version = self.exportVersion else {
                     throw LibraryError.invalid(self.message ?? "当前版本尚未准备好导出。")
@@ -1687,7 +1771,7 @@ import RAWMasterLibrary
         let draft = quickPromptDraft, frozenRecipe = usesLiveDraft ? recipe : parent.recipe
         let focusID = focusGeneration, recipeGeneration = liveRecipeGeneration
         let liveWrite = liveStateWrites[current.id].flatMap { liveStateTasks[ObjectIdentifier($0)] }
-        let photoName = asset?.filename ?? "当前照片"
+        let photoName = asset?.displayName ?? "当前照片"
         let preparationID = UUID(); generationPreparationID = preparationID
         quickPromptPreparing = true; quickPromptNotice = nil
         generationPreparationTask = Task {
@@ -1760,8 +1844,8 @@ import RAWMasterLibrary
         let operation = startOperation { [self] in
             defer { prepared.cleanUp(); quickPromptPreparing = false; quickPromptEnqueueOperation = nil }
             do { try await enqueueQuickPrompt(prepared) }
-            catch is CancellationError { postPromptNotice("已停止准备，尚未提交。", kind: .information, for: prepared.request.source.assetID) }
-            catch { postPromptNotice("未提交。请检查作品状态并重新核对。", kind: .error, for: prepared.request.source.assetID) }
+            catch is CancellationError { postPromptNotice("已停止准备，尚未提交。", kind: .information, for: presentationID(ofWork: prepared.request.workID)) }
+            catch { postPromptNotice("未提交。请检查作品状态并重新核对。", kind: .error, for: presentationID(ofWork: prepared.request.workID)) }
         }
         quickPromptEnqueueOperation = operation
         if operation == nil { prepared.cleanUp(); quickPromptPreparing = false }
@@ -1789,8 +1873,8 @@ import RAWMasterLibrary
                 _ = try await Task.detached { try database.setStrictDocumentary(workID: work.id, enabled: enabled) }.value
                 if self.work?.id == work.id { dismissQuickPromptConfirmation(); await refreshWork() }
             } catch EditingError.illegalTransition {
-                postPromptNotice("请等待本张任务结束，或先停止任务。", kind: .information, for: work.source.assetID)
-            } catch { postPromptNotice("无法更改纪实策略。请先恢复到原片或初修版本。", kind: .error, for: work.source.assetID) }
+                postPromptNotice("请等待本张任务结束，或先停止任务。", kind: .information, for: work.presentationID)
+            } catch { postPromptNotice("无法更改纪实策略。请先恢复到原片或初修版本。", kind: .error, for: work.presentationID) }
         }
     }
 
@@ -1832,7 +1916,7 @@ import RAWMasterLibrary
                 guard quickPromptPresented, focusGeneration == focus, quickPromptReviewToken == ticket else { return }
                 quickPromptNotice = nil
                 quickPromptReview = .init(job: job, version: version, before: images.0, after: images.1)
-            } catch { postPromptNotice("候选或冻结基线无法读取。请在制作任务中核对。", kind: .error, for: job.request.source.assetID) }
+            } catch { postPromptNotice("候选或冻结基线无法读取。请在制作任务中核对。", kind: .error, for: presentationID(ofWork: job.request.workID)) }
         }
     }
 
@@ -1866,7 +1950,7 @@ import RAWMasterLibrary
         guard !shuttingDown, !saving, let work else { return }
         finishDevelopmentNumberInput()
         guard matchesQuickPromptBaseline(job, candidate: version), developmentSessionStorage?.activeGesture == nil else {
-            postPromptNotice("采用未完成，请核对原版本及草稿。", kind: .error, for: work.source.assetID)
+            postPromptNotice("采用未完成，请核对原版本及草稿。", kind: .error, for: work.presentationID)
             return
         }
         saving = true; quickPromptAdopting = true
@@ -1879,10 +1963,11 @@ import RAWMasterLibrary
                 try Task.checkCancellation()
                 guard focusGeneration == focus, matchesQuickPromptBaseline(job, candidate: version) else { throw EditingError.staleAdoption }
                 let database = store
-                _ = try await Task.detached {
+                let adopted = try await Task.detached {
                     try database.adoptEditingVersion(workID: work.id, versionID: version.id, expectedRevision: work.adoptionRevision)
                 }.value
-                postNotice("已应用创作版本。可撤销版本采用。", for: work.source.assetID)
+                didPersistRendition?(adopted)
+                postNotice("已应用创作版本。可撤销版本采用。", for: work.presentationID)
                 guard focusGeneration == focus else { return }
                 await refreshWork()
                 guard focusGeneration == focus else { return }
@@ -1890,7 +1975,7 @@ import RAWMasterLibrary
                 stage = .versions; selectedVersionID = version.id; requestPreview()
             } catch {
                 if focusGeneration == focus { await refreshWork() }
-                postPromptNotice("采用未完成，请核对原版本及草稿。", kind: .error, for: work.source.assetID)
+                postPromptNotice("采用未完成，请核对原版本及草稿。", kind: .error, for: work.presentationID)
             }
         }
         if operation == nil { saving = false; quickPromptAdopting = false }
@@ -1910,17 +1995,19 @@ import RAWMasterLibrary
                 let restored = try await Task.detached {
                     try database.undoQuickPromptAdoption(workID: work.id, versionID: version.id, expectedRevision: work.adoptionRevision)
                 }.value
-                postNotice("已撤销快速 Prompt 版本采用。", for: work.source.assetID)
+                didPersistRendition?(restored)
+                postNotice("已撤销快速 Prompt 版本采用。", for: work.presentationID)
                 guard focusGeneration == focus else { return }
                 await refreshWork()
                 guard focusGeneration == focus else { return }
-                if versions.first(where: { $0.id == restored.adoptedVersionID })?.kind == .ai {
+                if let adopted = versions.first(where: { $0.id == restored.adoptedVersionID }),
+                   !restored.usesLiveRendition(over: adopted), adopted.artifact != nil {
                     stage = .versions; selectedVersionID = restored.adoptedVersionID; requestPreview()
                 } else {
                     stage = .development; selectedVersionID = draftParentID ?? restored.adoptedVersionID
                     beginDevelopmentInterface(); requestPreview()
                 }
-            } catch { postNotice("当前采用的结果已变更，请到「快照 → 更多 → 已有编辑结果」核对。", kind: .error, for: work.source.assetID) }
+            } catch { postNotice("当前采用的结果已变更，请到「快照 → 更多 → 已有编辑结果」核对。", kind: .error, for: work.presentationID) }
         }
     }
 
@@ -1969,7 +2056,7 @@ import RAWMasterLibrary
                     return
                 }
                 run(job)
-            } catch { if !shuttingDown { postNotice(error is CancellationError ? "输入准备已取消，尚未提交生成。" : "无法开始生成：\(error.localizedDescription)", kind: error is CancellationError ? .information : .error, for: current.source.assetID) } }
+            } catch { if !shuttingDown { postNotice(error is CancellationError ? "输入准备已取消，尚未提交生成。" : "无法开始生成：\(error.localizedDescription)", kind: error is CancellationError ? .information : .error, for: current.presentationID) } }
         }
     }
     private func transition(_ job: ProcessingJob, to state: ProcessingJobState, remoteID: String? = nil, joined: Bool = false, error: String? = nil) async throws -> ProcessingJob {
@@ -2027,7 +2114,7 @@ import RAWMasterLibrary
                     _ = try? await transition(current, to: unknown ? .outcomeUnknown : .failed, joined: joined, error: Self.safeError(error))
                 }
                 postNotice(returnedBytes ? "已收到生成结果，但保存未完成。请在制作任务中恢复保存，不会重新生成。" : "生成未完成，请在制作任务中查看或核对结果。",
-                           kind: .error, for: job.request.source.assetID)
+                           kind: .error, for: presentationID(ofWork: job.request.workID))
             }
             await refreshJobs(); await refreshWork()
         }
@@ -2067,8 +2154,21 @@ import RAWMasterLibrary
         }.value
     }
     func resumeSaving(_ job: ProcessingJob, attemptID: String? = nil) {
-        guard !shuttingDown, tasks[job.id] == nil else { return }
+        guard !shuttingDown else { return }
         let targetID = attemptID ?? job.currentAttempt.id
+        if let worker = tasks[job.id] {
+            // The catalog can show the received bytes before the worker finishes its final refresh.
+            guard pendingSaveResumptions.insert(targetID).inserted else { return }
+            startOperation { [self] in
+                await worker.value
+                pendingSaveResumptions.remove(targetID)
+                guard !shuttingDown, !Task.isCancelled, let latest = try? store.processingJob(id: job.id),
+                      let attempt = latest.attempts.first(where: { $0.id == targetID }), attempt.resultVersionID == nil,
+                      attempt.receivedOutput != nil || attempt.pendingReceivedOutput != nil || unrecordedOutputs[targetID] != nil else { return }
+                resumeSaving(latest, attemptID: targetID)
+            }
+            return
+        }
         tasks[job.id] = Task {
             var saved = false
             defer {
@@ -2094,7 +2194,7 @@ import RAWMasterLibrary
                 }
                 try await archiveOutput(output, job: publicationJob); saved = true
             } catch {
-                postNotice("恢复保存未完成。结果仍保留，请检查可用空间后重试保存。", kind: .error, for: job.request.source.assetID)
+                postNotice("恢复保存未完成。结果仍保留，请检查可用空间后重试保存。", kind: .error, for: presentationID(ofWork: job.request.workID))
                 if let current = try? store.processingJob(id: job.id), current.currentAttempt.id == targetID, !current.state.isTerminal {
                     _ = try? await transition(current, to: .outcomeUnknown, joined: true, error: "结果保存待恢复")
                 }
@@ -2131,7 +2231,7 @@ import RAWMasterLibrary
         let version = EditingVersion(workID: job.request.workID, parentVersionID: job.request.inputVersionID, kind: .ai,
             source: job.request.source, recipe: job.request.recipe, artifact: material.artifact, configuration: configuration)
         _ = try await publish(file: material.fileURL, version: version, job: job)
-        postNotice("生成结果已保存为候选，请检查后采用。", for: job.request.source.assetID)
+        postNotice("生成结果已保存为候选，请检查后采用。", for: presentationID(ofWork: job.request.workID))
     }
     nonisolated private static func safeError(_ error: Error) -> String {
         // Credentials and request headers never enter UI diagnostics.
@@ -2186,7 +2286,7 @@ import RAWMasterLibrary
             } catch {
                 if let createdRetry, shuttingDown || Task.isCancelled {
                     await cancelUnsubmitted(createdRetry)
-                } else if !shuttingDown { postNotice("无法重试。请先确认此前任务已停止并核对结果。", kind: .error, for: job.request.source.assetID) }
+                } else if !shuttingDown { postNotice("无法重试。请先确认此前任务已停止并核对结果。", kind: .error, for: presentationID(ofWork: job.request.workID)) }
             }
         }
     }
@@ -2350,6 +2450,15 @@ import RAWMasterLibrary
                 defer { self.writingDevelopmentSession = false }
                 self.setRecipe(control: "photos." + event.control.name, input: event.nativeInput) { $0 = candidate }
             })
+        session.snapshotCatalog = { [weak self] context, edit in
+            guard let self, let work = self.work, work.id == context.workID,
+                  work.source.admissionFingerprint == context.admissionFingerprint,
+                  self.developmentBranchID == context.draftBranchID,
+                  let parent = self.draftParentID else { throw EditingDevelopmentSessionError.staleInteraction }
+            let scope = DevelopmentSnapshotScope(workID: work.id, parentVersionID: parent, appearance: .compatibility)
+            if let edit { return try self.store.updateDevelopmentSnapshots(in: scope, edit) }
+            return try self.store.developmentSnapshots(in: scope)
+        }
         session.invalidateAnalysis = { [weak self] id in
             guard let self else { return }
             self.developmentDehazeInput.analysisRevoked(id)
@@ -4530,7 +4639,7 @@ extension EditingController {
         recipe = next
         if sceneGraphState.generation != state.generation { sceneGraphState = state }
         if viewing != sceneGraphState.viewing { sceneFrame = nil }
-        if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
+        if let id = work?.id { drafts[id] = (recipe, savedRecipe, draftParentID, alternateAppearance) }
         scheduleLiveStatePersistence()
         requestPreview()
     }
@@ -4805,48 +4914,95 @@ extension EditingController {
 
     func returnToCurrentEdit() {
         guard sourceReady, let work else { return }
+        let wasViewingSavedResult = stage != .development
         stage = .development
         selectedVersionID = draftParentID ?? work.originalVersionID
+        if wasViewingSavedResult { scheduleLiveStatePersistence() }
         beginDevelopmentInterface()
         requestPreview()
     }
 
     func beginSavedResultExport(_ version: EditingVersion) -> Bool {
-        guard !shuttingDown, let work, work.id == version.workID,
+        guard !shuttingDown, let work, let asset, work.id == version.workID,
+              work.presentationID == asset.id, work.source.assetID == asset.physicalAssetID,
               let saved = versions.first(where: { $0.id == version.id }),
               dispositions[saved.id] != .discarded, sourceReady || saved.artifact != nil else { return false }
         guard saved.configuration["quickPromptRawOutputSHA256"] == nil || work.strictDocumentary != true else { return false }
         closeWorkbenchExport()
-        workbenchExport = (work.source.assetID, Task { (work, saved) })
+        workbenchExport = (work.presentationID, Task { (work, saved) })
         return true
     }
 
-    // Parent version IDs are globally unique and bind a snapshot to the admitted source and edit branch.
-    var sceneSnapshots: [DevelopmentSnapshot] {
-        guard let parent = draftParentID, recipe.sceneGraph != nil else { return [] }
-        return sceneSnapshotsByParent[parent] ?? []
+    private var sceneSnapshotScope: DevelopmentSnapshotScope? {
+        guard let work, let parent = draftParentID else { return nil }
+        return .init(workID: work.id, parentVersionID: parent, appearance: .hdr)
+    }
+
+    private func reloadNamedSnapshots() {
+        currentSceneSnapshots = []
+        guard let scope = sceneSnapshotScope else { return }
+        do {
+            currentSceneSnapshots = try store.developmentSnapshots(in: scope)
+            if let session = developmentSessionStorage, let context = session.context, context.workID == scope.workID {
+                try session.reloadSnapshots(context: context)
+            }
+        } catch { message = "读取命名快照失败。\(error.localizedDescription)" }
+    }
+
+    var sceneSnapshots: [DevelopmentSnapshot] { recipe.sceneGraph == nil ? [] : currentSceneSnapshots }
+
+    fileprivate struct SnapshotPresentation: Equatable {
+        let assetID: String
+        let scope: DevelopmentSnapshotScope
+        let focus: UUID
+        let branch: EditingDraftBranchID
+    }
+
+    struct SnapshotRenameRequest: Identifiable {
+        let id: UUID
+        let initialName: String
+        fileprivate let presentation: SnapshotPresentation
+    }
+
+    private var snapshotPresentation: SnapshotPresentation? {
+        guard let ticket = sceneTicket, let work, let asset, asset.id == work.presentationID,
+              let parent = draftParentID else { return nil }
+        let scope = DevelopmentSnapshotScope(workID: work.id, parentVersionID: parent,
+            appearance: recipe.sceneGraph == nil ? .compatibility : .hdr)
+        return .init(assetID: asset.id, scope: scope, focus: ticket.focus, branch: ticket.branch)
+    }
+
+    func snapshotRenameRequest(for snapshot: DevelopmentSnapshot) -> SnapshotRenameRequest? {
+        guard let presentation = snapshotPresentation else { return nil }
+        let rows = presentation.scope.appearance == .hdr ? currentSceneSnapshots :
+            developmentPresentationContext.map { developmentSession.snapshots(in: $0) } ?? []
+        guard let selected = rows.first(where: { $0.id == snapshot.id }) else { return nil }
+        return .init(id: selected.id, initialName: selected.name, presentation: presentation)
+    }
+
+    func renameSnapshot(_ request: SnapshotRenameRequest, to name: String) throws {
+        guard request.presentation == snapshotPresentation else { throw DevelopmentSnapshotError.changedContext }
+        let scope = request.presentation.scope
+        let context = developmentPresentationContext
+        guard scope.appearance == .hdr || context != nil else { throw DevelopmentSnapshotError.changedContext }
+        let rows = try store.updateDevelopmentSnapshots(in: scope, .rename(request.id, name))
+        if scope.appearance == .hdr { currentSceneSnapshots = rows }
+        else if let context { developmentSession.displayPersistedSnapshots(rows, in: context) }
     }
 
     func createSceneSnapshot(ticket: SceneTicket) {
-        guard ticket == sceneTicket, sceneGraphTicket != nil, let parent = draftParentID else { return }
-        var items = sceneSnapshots
-        let snapshot = DevelopmentSnapshot(name: "快照 \(items.count + 1)", recipe: recipe)
-        if items.count >= 32 { items.removeFirst() }
-        items.append(snapshot)
-        sceneSnapshotsByParent[parent] = items
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let scope = sceneSnapshotScope else { return }
+        do {
+            currentSceneSnapshots = try store.updateDevelopmentSnapshots(in: scope,
+                .create(id: UUID(), name: nil, createdAt: .now, recipe: recipe, adoptions: nil))
+        } catch { message = "无法保存命名快照。\(error.localizedDescription)" }
     }
 
     func updateSceneSnapshot(_ id: UUID, name: String?, ticket: SceneTicket) {
-        guard ticket == sceneTicket, sceneGraphTicket != nil, let parent = draftParentID,
-              var items = sceneSnapshotsByParent[parent], let index = items.firstIndex(where: { $0.id == id }) else { return }
-        if let name {
-            let title = name.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !title.isEmpty else { return }
-            items[index].name = String(title.prefix(60))
-        } else {
-            items.remove(at: index)
-        }
-        sceneSnapshotsByParent[parent] = items
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let scope = sceneSnapshotScope else { return }
+        let edit: DevelopmentSnapshotEdit = name.map { .rename(id, $0) } ?? .delete(id)
+        do { currentSceneSnapshots = try store.updateDevelopmentSnapshots(in: scope, edit) }
+        catch { message = "无法更新命名快照。\(error.localizedDescription)" }
     }
 
     func restoreSceneSnapshot(_ id: UUID, ticket: SceneTicket) {
@@ -4854,4 +5010,8 @@ extension EditingController {
               let snapshot = sceneSnapshots.first(where: { $0.id == id }) else { return }
         applySceneCommit(snapshot.recipe)
     }
+}
+
+extension AssetRecord {
+    var editingDisplayName: String { virtualCopyName.map { filename + " · " + $0 } ?? filename }
 }

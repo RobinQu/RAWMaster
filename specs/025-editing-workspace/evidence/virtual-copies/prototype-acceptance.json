@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-27",
+  "scope": "Interactive HTML, simulated handoff and receipts. Native files and immutable exports have separate linked evidence.",
+  "base": "20a8d4c2e4086e1175c6a5ab384f08aac965e7e3",
+  "system": "27.0.1",
+  "browser": "158.0.8127.37",
+  "runner": "agent-browser 0.26.0",
+  "copyWalkthrough": {
+    "entry": "docs/ui/prototype/index.html?sceneNativeReview=1",
+    "command": "python3 scripts/check-virtual-copies-prototype.py",
+    "passed": 12,
+    "scenarios": [
+      "原片建立独立 SDR 和 HDR 命名快照",
+      "照片右键、名称验证和取消",
+      "重开和切换恢复本份快照，恢复可撤销",
+      "同源多选共享文件元数据，修改标签只列出一张照片",
+      "032 两份成片与一份原件，分别冻结并提交",
+      "冻结回执在继续编辑后维持身份与名称",
+      "窄窗移除确认、键盘取消与撤销",
+      "离线副本指向同一原片，重连一次同时恢复",
+      "只勾副本也能交付唯一同源原件",
+      "每份呈现的每个色彩分支独立保留 32 个快照",
+      "重命名快照保留错误输入，Esc 退出，过期目标不会更改其他快照",
+      "本地显影归档可继续调整，外部归档随副本交付"
+    ]
+  },
+  "workbenchRegression": {
+    "passed": 60,
+    "command": "python3 scripts/check-ui-prototype.py",
+    "focusedRuns": {
+      "grid-export-only": 4,
+      "hdr-only": 4,
+      "pq-queue-only": 3,
+      "appearance-only": 8,
+      "workflow-batch-only": 2
+    }
+  },
+  "export032Standalone": {
+    "passed": 11,
+    "checks": [
+      "1,200 candidates remain selected and visibly blocked",
+      "DOM rows are virtualized",
+      "Limit message and trim are visible",
+      "201 selection leaves every ID and blocks rendering",
+      "Original copy enforces the same limit",
+      "Manifest-only enforces the same limit",
+      "Trim explicitly preserves the first 200",
+      "200 photos plus one generated manifest",
+      "The result list stays bounded",
+      "Three photos are available as a separate preview fixture",
+      "Preset bar and output folder remain separate"
+    ],
+    "rowsFor1200": 10
+  },
+  "screenshots": [
+    {
+      "file": "01-library-copies.webp",
+      "width": 1440,
+      "height": 900,
+      "sha256": "9a8813249476659d68d00f67ddd1bbca9c6636375de61323ddc9aa9d555e9101"
+    },
+    {
+      "file": "02-export-copies.webp",
+      "width": 1440,
+      "height": 900,
+      "sha256": "ce833103dec0a17a6c30b405144cd37cea82740f65c3e543832e5c94dab74254"
+    },
+    {
+      "file": "03-compact-library.webp",
+      "width": 390,
+      "height": 844,
+      "sha256": "caf72a5b81d7a58312037d7d0f9421b69c974a406f2d1c87e2185158a8a732ed"
+    },
+    {
+      "file": "04-compact-export.webp",
+      "width": 390,
+      "height": 844,
+      "sha256": "f21031c3aeeeab476e7f445c2eedc09e84d0dc8507b9e0c0402fc0eb6c0becfb"
+    }
+  ]
+}

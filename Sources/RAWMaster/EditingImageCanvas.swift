@@ -229,11 +229,11 @@ struct EditingImageCanvas: View {
         if let offset = navigationPreviewOffset, let asset = navigationAsset(offset) {
             VStack(spacing: 5) {
                 ThumbnailView(asset: asset).frame(width: 152, height: 96).background(AppPalette.thumbnailWell).clipped()
-                Text(asset.filename).font(.caption2).lineLimit(1).truncationMode(.middle).frame(maxWidth: 152)
+                Text(asset.displayName).font(.caption2).lineLimit(1).truncationMode(.middle).frame(maxWidth: 152)
             }
             .padding(7).floatingSelectionSurface()
             .transition(.opacity.combined(with: .scale(scale: 0.96)))
-            .accessibilityLabel((offset < 0 ? "上一张：" : "下一张：") + asset.filename)
+            .accessibilityLabel((offset < 0 ? "上一张：" : "下一张：") + asset.editingDisplayName)
             .accessibilityIdentifier(offset < 0 ? "editing.previousPreview" : "editing.nextPreview")
         }
     }

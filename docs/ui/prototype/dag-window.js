@@ -80,7 +80,7 @@ function dagFloatingWindow() {
       else if (dagTransform().framing!=='manual') dagFrameGraph();
     });
   }
-  return `<section id="dag-floating-window" class="dag-floating" role="dialog" aria-modal="false" aria-label="工作流 Graph 悬浮窗口" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">${dagCanvas()}${dagWindowHandles('dag-view','photo')}</section>`;
+  return `<section id="dag-floating-window" class="dag-floating" role="dialog" aria-modal="false" aria-label="工作流 Graph 悬浮窗口 · ${h(Studio.displayName(Studio.data.work))}" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">${dagCanvas()}${dagWindowHandles('dag-view','photo')}</section>`;
 }
 // Review the native compatibility slice in the same workbench without seeding a graph recipe.
 const compatibilityGraphMode = new URLSearchParams(location.search).get('compatibilityGraph') === '1';
@@ -113,7 +113,7 @@ function compatibilityGraphWindow() {
     return '';
   }
   const w = compatibilityGraphFrame();
-  return `<section class="dag-floating dag-compat" role="dialog" aria-modal="false" aria-label="只读兼容图" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">
+  return `<section class="dag-floating dag-compat" role="dialog" aria-modal="false" aria-label="只读兼容图 · ${h(Studio.displayName(Studio.data.work))}" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">
     <div class="dag-compat-canvas" tabindex="0" aria-label="照片来源到最终输出" aria-description="只读兼容图，使用现有显影配方"><div class="dag-compat-nodes" style="zoom:${w.scale}"><div><b>照片来源</b><small>固定输入</small></div><span aria-hidden="true">→</span><div><b>兼容显影</b><small>沿用现有配方</small></div><span aria-hidden="true">→</span><div><b>最终输出</b><small>预览与交付不变</small></div></div></div>
     <div class="dag-zoom-controls" aria-label="Graph 缩放">${btn('−','compatibility-zoom','out')}${btn(Math.round(100 * w.scale) + '%','compatibility-zoom','fit',{title:'复位缩放'})}${btn('＋','compatibility-zoom','in')}</div>
     ${dagWindowHandles('compatibility-graph-toggle')}</section>`;

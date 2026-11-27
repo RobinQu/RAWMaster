@@ -18,6 +18,8 @@ struct LibrarySnapshot: Sendable {
     let tagCommands: [TagCommand]
     let tagVocabulary: [String]
     let groups: [CaptureGroup]
+    let renditionPreviewRevisions: [String: String]
+    let virtualCopies: [LibraryVirtualCopy]
     let assets: [AssetRecord]
     let relocationHistory: [RelocationSession]
     let groupHistory: [GroupCommandRecord]
@@ -38,7 +40,7 @@ struct LibrarySnapshot: Sendable {
                 assetColorLabels: try store.loadColorLabels(), colorLabelCommands: try store.loadColorLabelCommands(),
                 reviewRecords: try store.loadReviewRecords(), tagCommands: try store.loadTagCommands(),
                 tagVocabulary: try store.tagVocabulary(), groups: try store.loadGroups(),
-                assets: AssetBrowserOrder.sorted(try store.loadAssets(), sessions: sessions),
+                renditionPreviewRevisions: try store.renditionPreviewRevisions(), virtualCopies: try store.virtualCopies(), assets: AssetBrowserOrder.sorted(try store.loadAssets(), sessions: sessions),
                 relocationHistory: try store.loadRelocationSessions(), groupHistory: try store.loadGroupCommands(limit: 50),
                 groupingSessionID: groupingSessionID, groupingRun: groupingRun, groupingCommand: groupingCommand)
         }

@@ -494,6 +494,44 @@ impl Inventory {
                 let owner = text(&v["source"], "assetID")?;
                 self.original_hashes
                     .insert(text(&v["source"], "contentSHA256")?.to_lowercase());
+                if let Some(basis) = v["configuration"]["virtualCopyArchiveSource"].as_str() {
+                    let (stored, copy): (String, String) = db.query_row(
+                        "SELECT b.data,w.data FROM editing_versions b JOIN archive_publications p ON p.version_id=b.id
+                         JOIN editing_works w ON w.id=?2 WHERE b.id=?1",
+                        rusqlite::params![basis,work], |row| Ok((row.get(0)?,row.get(1)?)))?;
+                    let origin: Value = serde_json::from_str(&stored)?;
+                    let rendition: Value = serde_json::from_str(&copy)?;
+                    let same_source = [
+                        "assetID",
+                        "projectID",
+                        "byteCount",
+                        "contentSHA256",
+                        "admissionFingerprint",
+                    ]
+                    .iter()
+                    .all(|key| {
+                        let value = &v["source"][*key];
+                        !value.is_null()
+                            && &origin["source"][*key] == value
+                            && &rendition["source"][*key] == value
+                    });
+                    let matches_development = v["kind"] == "development"
+                        && origin["kind"] == "development"
+                        && v["recipe"]["sceneGraph"].is_null()
+                        && v["recipe"] == origin["recipe"]
+                        && v["presetAdoptions"] == origin["presetAdoptions"];
+                    if rendition["id"] != work
+                        || rendition["virtualCopyID"] != work
+                        || rendition["originalVersionID"] != v["parentVersionID"]
+                        || (v["kind"] != "external" && !matches_development)
+                        || !origin["configuration"]["virtualCopyArchiveSource"].is_null()
+                        || origin["artifact"] != v["artifact"]
+                        || !same_source
+                    {
+                        return Err("invalid virtual copy archived result".into());
+                    }
+                    continue;
+                }
                 let rec: String = db.query_row(
                     "SELECT data FROM archive_publications WHERE version_id=?",
                     [&id],

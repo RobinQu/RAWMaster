@@ -53,6 +53,8 @@ struct Item<'a> {
     ordinal: usize,
     #[serde(rename = "assetID")]
     asset_id: &'a str,
+    #[serde(rename = "presentationID")]
+    presentation_id: Option<&'a str>,
     stem: &'a str,
     #[serde(borrow)]
     work: Work<'a>,
@@ -65,6 +67,8 @@ struct Item<'a> {
 #[derive(Deserialize)]
 struct Work<'a> {
     id: &'a str,
+    #[serde(rename = "virtualCopyID")]
+    virtual_copy_id: Option<&'a str>,
     #[serde(borrow)]
     source: Source<'a>,
 }
@@ -221,12 +225,19 @@ impl Frozen {
 }
 
 fn validate_inline(items: &[Value]) -> Result<()> {
-    let mut assets = HashSet::with_capacity(items.len());
+    let mut presentations = HashSet::with_capacity(items.len());
     for (i, raw) in items.iter().enumerate() {
         let item = Item::deserialize(raw)?;
         let source = &item.work.source;
+        let presentation = item.presentation_id.unwrap_or(item.asset_id);
         if item.ordinal != i + 1
-            || !assets.insert(item.asset_id)
+            || !presentations.insert(presentation)
+            || !identifier(presentation)
+            || presentation != item.work.virtual_copy_id.unwrap_or(source.asset_id)
+            || item
+                .work
+                .virtual_copy_id
+                .is_some_and(|copy| copy != item.work.id || copy == source.asset_id)
             || !identifier(item.asset_id)
             || !literal_stem(item.stem)
             || !identifier(item.work.id)

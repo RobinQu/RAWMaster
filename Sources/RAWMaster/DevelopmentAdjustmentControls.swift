@@ -99,12 +99,13 @@ struct DevelopmentNumberField: View {
     var fractionDigits = 1
     var disabled = false
     var integrated = false
+    var requiresInteger = false
     @State private var invalid = false
     var body: some View {
         DevelopmentNumberInput(title: title, value: $value, range: range, fractionDigits: fractionDigits,
-            disabled: disabled, integrated: integrated, invalidChanged: { invalid = $0 })
+            disabled: disabled, integrated: integrated, requiresInteger: requiresInteger, invalidChanged: { invalid = $0 })
             .disabled(disabled).accessibilityLabel(title)
-            .help((invalid ? "请输入 \(format(range.lowerBound)) 至 \(format(range.upperBound)) 的有限数值。" : title + "；") + DevelopmentNumericText.guidance)
+            .help((invalid ? "请输入 \(format(range.lowerBound)) 至 \(format(range.upperBound)) 的\(requiresInteger ? "整数" : "有限数值")。" : title + "；") + DevelopmentNumericText.guidance)
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(invalid ? Color.red : .clear))
             .onChange(of: disabled) { _, value in if value { invalid = false } }
     }

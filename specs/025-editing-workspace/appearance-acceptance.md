@@ -10,6 +10,6 @@
 | 弹出后台窗口并返回取样完成的 SDR 照片，在 HDR 下切换直方图与矢量示波器 | SDR 绘图区同一区域前后的 RGB 字节摘要相同。原生异步测试记录采样请求数，失焦和重获焦点会保留现有结果，像素编辑造成的过期测量不能替换新图。分别读取两幅图的 AX 绘图边界，高度均为 96 pt。[矢量示波器](evidence/appearance-activity/release-vectorscope.webp) |
 | 在编辑中直接导出全尺寸 SDR JPEG、再核对和导出 PQ AVIF，重开库和文件 | 两个批次指向同一份冻结 HDR 输入。当前采用的仍是原片，候选数为零。核对库内清单、图执行回执、成片字节 SHA-256 之后，独立解码两张 9504 × 6336 成片。JPEG 为 8 位 sRGB，AVIF 为 10 位、全范围 Rec.2020/PQ。直接导出和 032 批处理分别覆盖发布中断后的回执恢复。[逐项指标](evidence/appearance-activity/release-acceptance.json) |
 
-实拍文件的 SHA-256 为 `7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89`。界面截图用于核对布局；EDR 状态和实际色彩信号分别读取 Metal drawable 与成片编码。绝对亮度校准、其它传感器准入和旧显影算子的完整迁移仍按各自的产品验收推进。[联合验收](../035-portable-processing-cores/roadmap.md) · [虚拟副本评估](virtual-copies.md)
+实拍文件的 SHA-256 为 `7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89`。界面截图用于核对布局；EDR 状态和实际色彩信号分别读取 Metal drawable 与成片编码。绝对亮度校准、其它传感器准入和旧显影算子的完整迁移仍按各自的产品验收推进。[联合验收](../035-portable-processing-cores/roadmap.md) · [虚拟副本与命名快照](virtual-copies.md)
 
 同源原生回归共 191 项，190 项通过，0 项失败。局部修复的空格平移／文本输入优先级用例单独重跑时，WindowServer 也未将 XCTest 宿主置于前台，该项记录为跳过。此次窗口失焦、回焦、关闭通知、切换两种示波器和返回调色均另在实际签名应用中验证。浏览器工作台 60 项和本轮 8 项专项全部通过。

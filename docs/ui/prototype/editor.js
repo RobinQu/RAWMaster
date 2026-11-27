@@ -216,7 +216,7 @@ function presetList() {
       ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
       ${filterDirectory(recipe)}</div>` : ''}</section>
     <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2><div class="snapshot-actions">${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}<details class="snapshot-menu results-menu"><summary aria-label="更多快照操作">${icon('ellipsis',15)}</summary><div>${btn('已有编辑结果…','open-versions')}</div></details></div></div>
-      <div class="snapshot-list">${e.snapshots.map((x, i) => `<div class="preset-item">
+      <div class="snapshot-list">${e.snapshots.map((x, i) => snapshotBranch(x) !== (SceneEditor.hdr() ? 'hdr' : 'sdr') ? '' : `<div class="preset-item">
         ${btn(x.name, 'restore-snap', i, { icon: 'photo', cls: 'sidebar-row' })}
         <details class="snapshot-menu"><summary aria-label="管理快照 ${h(x.name)}">${icon('menu', 14)}</summary><div>
         ${btn('重命名…', 'rename-snap', i)}${btn('删除', 'delete-snap', i)}</div></details></div>`).join('') || '<p class="muted">尚无快照</p>'}</div></section>
@@ -617,7 +617,7 @@ function editorView() {
     sceneControls + (sceneTool ? `<p class="control-hint">${h(sceneTool)}</p><fieldset class="scene-tool-controls" disabled>${inspector}</fieldset>` : inspector) +
     '</div></aside></div>';
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
-      <strong>${h(Studio.asset(id).name)}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
+      <strong>${h(Studio.displayName(id))}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
 </header>
     <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${compatibilityGraphMode ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
@@ -663,6 +663,7 @@ actions.adopt = (id) => {
     if (!applyQuickVersion(id)) return;
   } else currentEdit().adopted = id;
   S.versionView = id;
+  currentEdit().adoptionBaseline = JSON.stringify(currentEdit().recipe);
   Studio.save();
   render();
   savedResultsSheet();
@@ -1217,16 +1218,21 @@ actions['preset-command'] = () => {
   render();
   notify('已加入预设目录');
 };
-actions.snapshot = () =>
-  dialog(
-    '存储快照',
-    field('名称', 'snapshotName', '快照 ' + (currentEdit().snapshots.length + 1)),
-    btn('取消', 'close') + btn('存储', 'save-snap'),
-  );
+function snapshotBranch(snapshot) {
+  return snapshot.branch ?? (snapshot.recipe.sceneOutput?.intent === 'hdr' ? 'hdr' : 'sdr');
+}
+const snapshotBranchCount = () => currentEdit().snapshots.filter(s => snapshotBranch(s) === (SceneEditor.hdr() ? 'hdr' : 'sdr')).length;
+const snapshotLimit = '此分支已有 32 个命名快照。删除一个后可以继续保存。';
+actions.snapshot = () => {
+  if (snapshotBranchCount() >= 32) return notifyEditor(snapshotLimit,'error');
+  dialog('存储快照', field('名称','snapshotName','快照 ' + (snapshotBranchCount() + 1)),
+    btn('取消','close') + btn('存储','save-snap'));
+};
 actions['save-snap'] = () => {
+  if (snapshotBranchCount() >= 32) {closeSheet(); return notifyEditor(snapshotLimit,'error');}
   const name = value('snapshotName').trim();
   if (!name) return;
-  currentEdit().snapshots.push({ name, recipe: structuredClone(currentEdit().recipe) });
+  currentEdit().snapshots.push({ id:Studio.uid(), name, branch: SceneEditor.hdr() ? 'hdr' : 'sdr', recipe: structuredClone(currentEdit().recipe) });
   Studio.save();
   closeSheet();
   render();
@@ -1235,16 +1241,48 @@ actions['restore-snap'] = (i) => {
   Studio.setRecipe(Studio.data.work, '恢复快照', currentEdit().snapshots[i].recipe);
   render();
 };
-actions['rename-snap'] = (i) =>
-  dialog('重命名快照', field('名称', 'snapshotName', currentEdit().snapshots[i].name),
-    btn('取消', 'close') + btn('存储', 'save-snap-name', i));
-actions['save-snap-name'] = (i) => {
+actions['rename-snap'] = (index) => {
+  const snapshot = currentEdit().snapshots[index];
+  if (!snapshot) return;
+  if (!snapshot.id) { snapshot.id = Studio.uid(); Studio.save(); }
+  const form = '<div data-snapshot-rename data-photo="' + h(Studio.data.work) + '" data-branch="' + snapshotBranch(snapshot)
+    + '" data-base="' + h(currentEdit().base ?? currentEdit().adopted) + '" data-snapshot="' + h(snapshot.id) + '">' + field('名称','snapshotName',snapshot.name)
+    + '<p id="snapshot-name-error" class="form-error" role="alert"></p></div>';
+  dialog('重命名快照', form, btn('取消','close') + btn('存储','save-snap-name'));
+  const input = sheet.querySelector('[name=snapshotName]');
+  input.setAttribute('aria-describedby','snapshot-name-error');
+  input.focus();
+  input.select();
+  input.addEventListener('keydown', event => {
+    if (event.isComposing) return;
+    if (event.key === 'Enter') { event.preventDefault(); actions['save-snap-name'](); }
+    else if (event.key === 'Escape') { event.preventDefault(); closeSheet(); }
+  });
+};
+actions['save-snap-name'] = () => {
+  const form = sheet.querySelector('[data-snapshot-rename]');
+  if (!sheet.open || !form) return;
+  const request = form.dataset;
   const name = value('snapshotName').trim();
-  if (!name) return;
-  currentEdit().snapshots[i].name = name;
+  const sameContext = S.page === 'edit' && Studio.data.work === request.photo && (currentEdit().base ?? currentEdit().adopted) === request.base
+    && (SceneEditor.hdr() ? 'hdr' : 'sdr') === request.branch;
+  const index = sameContext ? currentEdit().snapshots.findIndex(s => s.id === request.snapshot && snapshotBranch(s) === request.branch) : -1;
+  const length = [...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(name)].length;
+  const issue = !sameContext ? '当前照片或调色分支已改变。请取消并重新选择快照。'
+    : index < 0 ? '这份快照已被删除。请取消并返回快照列表。'
+    : length < 1 || length > 60 ? '请输入 1 到 60 个字符的快照名称。' : '';
+  const input = form.querySelector('[name=snapshotName]');
+  if (issue) {
+    form.querySelector('[role=alert]').textContent = issue;
+    input.setAttribute('aria-invalid','true');
+    input.focus();
+    return;
+  }
+  currentEdit().snapshots[index].name = name;
   Studio.save();
   closeSheet();
   render();
+  requestAnimationFrame(() => document.querySelector('[data-act=restore-snap][data-val="' + index + '"]')?.focus({preventScroll:true}));
 };
 actions['delete-snap'] = (i) => {
   currentEdit().snapshots.splice(Number(i), 1);

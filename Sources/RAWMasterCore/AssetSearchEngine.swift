@@ -18,7 +18,7 @@ public enum AssetSearchEngine {
     let camera = query.camera.map(cameraKey).flatMap { $0.isEmpty ? nil : $0 }
     let wantedTags = Set(try TagText.normalized(query.tags).map(TagText.key))
     var result = assets.filter { asset in
-      if !filename.isEmpty && !folded(asset.filename).contains(filename) { return false }
+      if !filename.isEmpty && !folded(asset.filename).contains(filename) && !folded(asset.displayName).contains(filename) { return false }
       if let camera, asset.camera.map(cameraKey) != camera { return false }
       if let start = query.capturedFrom, asset.capturedAt.map({ $0 >= start }) != true { return false }
       if let end = query.capturedBefore, asset.capturedAt.map({ $0 < end }) != true { return false }
@@ -26,14 +26,14 @@ public enum AssetSearchEngine {
       if let high = query.maximumRating, asset.rating > high { return false }
       if let decision = query.decision, asset.decision != decision { return false }
       if let availability = query.availability, asset.availability != availability { return false }
-      if let label = query.colorLabel, colorLabels[asset.id] != label { return false }
+      if let label = query.colorLabel, colorLabels[asset.physicalAssetID] != label { return false }
       switch query.review {
       case .all: break
-      case .reviewed: if !reviewedIDs.contains(asset.id) { return false }
-      case .unreviewed: if reviewedIDs.contains(asset.id) { return false }
+      case .reviewed: if !reviewedIDs.contains(asset.physicalAssetID) { return false }
+      case .unreviewed: if reviewedIDs.contains(asset.physicalAssetID) { return false }
       }
       if !wantedTags.isEmpty {
-        let actual = Set((tags[asset.id] ?? []).map(TagText.key))
+        let actual = Set((tags[asset.physicalAssetID] ?? []).map(TagText.key))
         if query.tagMatch == .all && !wantedTags.isSubset(of: actual) { return false }
         if query.tagMatch == .any && wantedTags.isDisjoint(with: actual) { return false }
       }

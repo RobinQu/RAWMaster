@@ -232,7 +232,7 @@ function withPhoto(id) {
   S.canvasMenu = '';
 }
 function validWork(id) {
-  return Studio.admitted().includes(id);
+  return Studio.admitted().includes(Studio.physicalID(id));
 }
 function canEditPhoto(id) {
   if (!validWork(id)) return false;

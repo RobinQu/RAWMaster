@@ -11,6 +11,7 @@ import SwiftUI
         let enabled: Bool
         let write: (Double) -> Void
         let invalid: (Bool) -> Void
+        var requiresInteger = false
     }
     enum ReturnAction: Equatable { case passThrough, consumed, invalid, finish(UUID) }
     private struct Edit {
@@ -45,7 +46,8 @@ import SwiftUI
         let number: Double?
         if text == format { number = nil }
         else {
-            guard let parsed = DevelopmentNumericText.parse(text, range: current.presentation.range) else {
+            guard let parsed = DevelopmentNumericText.parse(text, range: current.presentation.range),
+                  !current.presentation.requiresInteger || parsed.rounded() == parsed else {
                 current.presentation.invalid(true); return .invalid
             }
             number = parsed
@@ -109,6 +111,7 @@ struct DevelopmentNumberInput: NSViewRepresentable {
     let fractionDigits: Int
     let disabled: Bool
     var integrated = false
+    var requiresInteger = false
     let invalidChanged: (Bool) -> Void
     @Environment(\.developmentNumberInputOwner) private var inputOwner
     @Environment(\.isEnabled) private var environmentEnabled
@@ -117,7 +120,7 @@ struct DevelopmentNumberInput: NSViewRepresentable {
     private var presentation: DevelopmentNumberEditSession.Presentation {
         let binding = _value
         return .init(value: value, range: range, digits: fractionDigits, enabled: !disabled && environmentEnabled,
-            write: { binding.wrappedValue = $0 }, invalid: invalidChanged)
+            write: { binding.wrappedValue = $0 }, invalid: invalidChanged, requiresInteger: requiresInteger)
     }
     func makeCoordinator() -> Coordinator { Coordinator(presentation, owner: inputOwner) }
     func makeNSView(context: Context) -> NSTextField {

@@ -34,11 +34,75 @@ fn compact(l: &Library, mut inline: Value) -> Result<Value> {
         let reference = stage(l, &body_for(item))?;
         let mut source = item["version"]["source"].clone();
         source.as_object_mut().unwrap().remove("sourceLocation");
+        let presentation = item.get("presentationID").cloned();
         *item = json!({"ordinal":item["ordinal"],"assetID":item["assetID"],"stem":item["stem"],
             "workID":item["work"]["id"],"versionID":item["version"]["id"],
             "source":source,"body":reference});
+        if let Some(presentation) = presentation {
+            item["presentationID"] = presentation;
+        }
     }
     Ok(inline)
+}
+
+#[test]
+fn original_and_virtual_copy_of_one_source_freeze_separately_in_both_manifests() -> Result<()> {
+    let library = fixture()?;
+    for schema in [1, 2] {
+        let mut manifest = descriptor(&library, 0xc0 + schema)?;
+        let mut copy = manifest["items"][0].clone();
+        copy["ordinal"] = json!(2);
+        copy["presentationID"] = json!("black-and-white");
+        copy["stem"] = json!("Café.v1-BW");
+        copy["work"]["id"] = json!("black-and-white");
+        copy["work"]["virtualCopyID"] = json!("black-and-white");
+        copy["version"]["id"] = json!("version-copy");
+        copy["version"]["workID"] = json!("black-and-white");
+        copy["version"]["recipe"] = json!({"saturation":-1.0});
+        manifest["items"].as_array_mut().unwrap().push(copy);
+        let manifest = if schema == 1 {
+            manifest
+        } else {
+            compact(&library, manifest)?
+        };
+
+        for substitute in [None, Some("a"), Some("unrelated-copy")] {
+            let mut bad = manifest.clone();
+            if let Some(id) = substitute {
+                bad["items"][1]["presentationID"] = json!(id);
+            } else {
+                bad["items"][1]
+                    .as_object_mut()
+                    .unwrap()
+                    .remove("presentationID");
+            }
+            assert!(
+                register(&library.path, &bad).is_err(),
+                "schema {schema}, identity {substitute:?}"
+            );
+        }
+        assert!(register(&library.path, &manifest)?["token"].is_string());
+        let stored = batch(
+            &library.path,
+            json!({"action":"load","batchID":manifest["batchID"]}),
+        )?;
+        assert_eq!(
+            stored["manifest"]["items"][0]["assetID"],
+            stored["manifest"]["items"][1]["assetID"]
+        );
+        assert_eq!(
+            stored["manifest"]["items"][1]["presentationID"],
+            "black-and-white"
+        );
+        let version = if schema == 1 {
+            stored["manifest"]["items"][1]["version"].clone()
+        } else {
+            load_item(&library, &manifest, 2)?["body"]["version"].clone()
+        };
+        assert_eq!(version["id"], "version-copy");
+        assert_eq!(version["recipe"]["saturation"], -1.0);
+    }
+    Ok(())
 }
 
 fn registry_counts(l: &Library) -> Result<(i64, i64)> {

@@ -275,6 +275,12 @@ fn projected_selection(
             "w.work_id IN(SELECT value FROM json_each({param}))"
         ));
     }
+    anchor.push("coalesce(json_extract(w.metadata_json,'$.rawmasterCopyRemoved'),0)=0".into());
+    if r.native_renditions {
+        anchor.push("f.asset_id IS NOT NULL AND (w.work_id='file:'||f.file_id OR (w.kind='virtual' AND EXISTS(
+            SELECT 1 FROM editing_works ew WHERE ew.id=w.work_id AND ew.asset_id=f.asset_id AND ew.project_id=f.project_id
+            AND json_extract(ew.data,'$.virtualCopyID')=w.work_id)))".into());
+    }
     if r.level != "work" {
         anchor.push("f.file_id IS NOT NULL".into());
     }
@@ -312,6 +318,14 @@ fn projected_selection(
                 "1".into()
             } else {
                 anchor.join(" AND ")
+            },
+        )
+        .replace(
+            "__NAME_FOR_SEARCH__",
+            if r.native_renditions {
+                "filename||char(31)||display_name"
+            } else {
+                "filename"
             },
         )
         .replace("__FILE_EFFECTIVE__", file)
@@ -482,6 +496,9 @@ fn order(r: &Request) -> Vec<&'static str> {
             "relative_path",
         ]);
     }
+    if r.native_renditions {
+        keys.extend(["coalesce(asset_ord,0)", "(kind='virtual')", "rendition_ord"]);
+    }
     keys.extend([
         "work_id",
         "coalesce(asset_id,'')",
@@ -596,6 +613,11 @@ pub(crate) fn page(db: &Connection, raw: &Value) -> Result<Value> {
         let asset = if aid.is_some() {
             let mut a: Value = serde_json::from_str(&x.get::<_, String>(15)?)?;
             a["projectID"] = json!(project);
+            if r.native_renditions && x.get::<_, String>(3)? == "virtual" {
+                a["virtualCopySourceID"] = json!(aid);
+                a["virtualCopyName"] = json!(x.get::<_, String>(9)?);
+                a["id"] = json!(x.get::<_, String>(2)?);
+            }
             if let Some(rating) = meta.get("rating").and_then(Value::as_i64) {
                 a["rating"] = json!(rating);
             }
@@ -621,10 +643,15 @@ pub(crate) fn page(db: &Connection, raw: &Value) -> Result<Value> {
     if !display_ids.is_empty() {
         let mut mb = Bindings(b.0.clone());
         let selected = mb.add(serde_json::to_string(&display_ids)?);
-        let mut stmt=db.prepare(&format!("{cte} SELECT display_id,work_id,asset_id,source_file_id,capture_id,project_id FROM hits WHERE display_id IN (SELECT value FROM json_each({selected})) ORDER BY {sort}"))?;
+        let mut stmt=db.prepare(&format!("{cte} SELECT display_id,work_id,asset_id,source_file_id,capture_id,project_id,kind FROM hits WHERE display_id IN (SELECT value FROM json_each({selected})) ORDER BY {sort}"))?;
         let mut rs = stmt.query(params_from_iter(&mb.0))?;
         while let Some(row) = rs.next()? {
-            map.entry(row.get(0)?).or_default().push(json!({"workID":row.get::<_,String>(1)?,"assetID":row.get::<_,Option<String>>(2)?,
+            let identity = if r.native_renditions && row.get::<_, String>(6)? == "virtual" {
+                row.get::<_, Option<String>>(1)?
+            } else {
+                row.get(2)?
+            };
+            map.entry(row.get(0)?).or_default().push(json!({"workID":row.get::<_,String>(1)?,"assetID":identity,
             "fileID":row.get::<_,Option<String>>(3)?,"captureID":row.get::<_,Option<String>>(4)?,"projectID":row.get::<_,String>(5)?}));
         }
     }
@@ -643,8 +670,13 @@ pub(crate) fn page(db: &Connection, raw: &Value) -> Result<Value> {
     if r.include_ordered_ids {
         let mut ids = Vec::new();
         let mut seen = BTreeSet::new();
+        let identity = if r.native_renditions {
+            "CASE WHEN kind='virtual' THEN work_id ELSE asset_id END"
+        } else {
+            "asset_id"
+        };
         let mut s = db.prepare(&format!(
-            "{cte} SELECT asset_id FROM hits WHERE asset_id IS NOT NULL ORDER BY {sort}"
+            "{cte} SELECT {identity} FROM hits WHERE asset_id IS NOT NULL ORDER BY {sort}"
         ))?;
         for a in s.query_map(params_from_iter(&b.0), |r| r.get::<_, String>(0))? {
             let a = a?;

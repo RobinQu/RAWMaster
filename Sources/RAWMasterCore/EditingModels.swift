@@ -250,6 +250,15 @@ public struct EditingVersion: Codable, Equatable, Sendable, Identifiable {
     self.id = id; self.workID = workID; self.parentVersionID = parentVersionID; self.kind = kind
     self.source = source; self.recipe = recipe; self.artifact = artifact; self.configuration = configuration; self.createdAt = createdAt
   }
+  package func freezingDevelopmentDraft(_ draft: DevelopmentRecipe, presets: [DevelopmentPresetAdoption]?) -> Self {
+    guard kind == .original || kind == .development else { return self }
+    var frozen = self
+    if recipe != draft { frozen.artifact = nil }
+    if recipe != draft || presetAdoptions != presets { frozen.configuration.removeValue(forKey: "virtualCopyArchiveSource") }
+    frozen.recipe = draft
+    frozen.presetAdoptions = presets
+    return frozen
+  }
 }
 /// Companion to the live editing draft. Immutable versions and render fingerprints contain only their active recipe.
 public struct DevelopmentAppearanceAlternate: Codable, Equatable, Sendable {
@@ -262,11 +271,22 @@ public struct DevelopmentAppearanceAlternate: Codable, Equatable, Sendable {
 }
 
 public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
+  public var virtualCopyID: String?
+  public var presentationID: String { virtualCopyID ?? source.assetID }
   public var id: String
   public var source: EditingSourceSnapshot
   public var originalVersionID: String
   public var adoptedVersionID: String
   public var adoptionRevision: Int
+  public enum RenditionSelection: String, Codable, Sendable { case live, adopted }
+  public var renditionSelection: RenditionSelection?
+
+  public func usesLiveRendition(over adopted: EditingVersion) -> Bool {
+    guard adopted.workID == id, adopted.id == adoptedVersionID, liveRecipe != nil, liveParentVersionID != nil else { return false }
+    if let renditionSelection { return renditionSelection == .live }
+    // Earlier catalogs recorded the two versions but not the last explicit presentation choice.
+    return adopted.artifact == nil || liveParentVersionID == adopted.id
+  }
   /// The live recipe is separate from immutable candidates. Missing fields in older JSON mean no live edit.
   public var liveRecipe: DevelopmentRecipe?
   public var liveParentVersionID: String?

@@ -42,7 +42,7 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             XCTAssertGreaterThan(color.visibleSamples, 0)
             XCTAssertNotEqual(color.red, color.blue)
             let originalContext = try XCTUnwrap(editor.developmentContext)
-            let originalSnapshot = try editor.developmentSession.createSnapshot(context: originalContext)
+            let originalSnapshot = try editor.developmentSession.createSnapshot(name: "雪地彩色", context: originalContext)
             try await enterHDR()
             editor.leaveSceneDraft(ticket: try XCTUnwrap(editor.sceneTicket), monochrome: false)
             try await wait { editor.developmentContext != nil }
@@ -77,6 +77,10 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             let afterFocus = try XCTUnwrap(editor.sceneScopes.report)
             XCTAssertEqual(afterFocus.samples.withUnsafeBufferPointer { $0.baseAddress }, firstBuffer)
             let hdr = editor.recipe
+            editor.createSceneSnapshot(ticket: try XCTUnwrap(editor.sceneTicket))
+            let sceneSnapshotID = try XCTUnwrap(editor.sceneSnapshots.first?.id)
+            let sceneRename = try XCTUnwrap(editor.snapshotRenameRequest(for: try XCTUnwrap(editor.sceneSnapshots.first)))
+            try editor.renameSnapshot(sceneRename, to: "雪地高光")
             XCTAssertEqual(report.targetPlot.chroma.reduce(0, +), UInt32(report.samples.count))
             XCTAssertEqual(report.derivativePlot.chroma.reduce(0, +), UInt32(report.samples.count))
             XCTAssertNotEqual(report.targetPlot.chroma, report.derivativePlot.chroma)
@@ -101,14 +105,29 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             let workID = try XCTUnwrap(editor.work?.id)
             try await wait { (try? store.photoWork(id: workID).liveAlternateAppearance?.recipe) == sdr }
             await editor.shutdown()
-            editor = try EditingController(store: store, libraryURL: db, defaults: defaults)
+            editor = try EditingController(store: LibraryStore(databaseURL: db), libraryURL: db, defaults: defaults)
             try await open()
             XCTAssertEqual(editor.recipe, hdr)
+            XCTAssertEqual(editor.sceneSnapshots.map(\.id), [sceneSnapshotID])
+            XCTAssertEqual(editor.sceneSnapshots.first?.name, "雪地高光")
+            XCTAssertEqual(editor.sceneSnapshots.first?.recipe, hdr)
+            editor.setSceneHighlightLimit(1, ticket: try XCTUnwrap(editor.sceneTicket))
+            let wider = editor.recipe
+            editor.restoreSceneSnapshot(sceneSnapshotID, ticket: try XCTUnwrap(editor.sceneTicket))
+            XCTAssertEqual(editor.recipe, hdr)
+            XCTAssertTrue(editor.stepSceneHistory(redo: false))
+            XCTAssertEqual(editor.recipe, wider)
+            XCTAssertTrue(editor.stepSceneHistory(redo: true))
+            XCTAssertEqual(editor.recipe, hdr)
+            editor.updateSceneSnapshot(sceneSnapshotID, name: nil, ticket: try XCTUnwrap(editor.sceneTicket))
             editor.leaveSceneDraft(ticket: try XCTUnwrap(editor.sceneTicket), monochrome: true)
             var mono = sdr; mono.adjustmentsV3?.blackAndWhite.enabled = true
             XCTAssertEqual(editor.recipe, mono)
             editor.beginDevelopmentInterface()
             try await wait { editor.developmentHistogram != nil && editor.previews.primary.frameRecipe == mono }
+            let monoContext = try XCTUnwrap(editor.developmentContext)
+            XCTAssertEqual(editor.developmentSession.snapshots.map(\.id), [originalSnapshot.id])
+            let bwSnapshot = try editor.developmentSession.createSnapshot(name: "雪地黑白", context: monoContext)
             let monochrome = try XCTUnwrap(editor.developmentHistogram)
             XCTAssertEqual(monochrome.red, monochrome.green)
             XCTAssertEqual(monochrome.green, monochrome.blue)
@@ -123,11 +142,20 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
                 return work.liveRecipe == sdr && work.liveAlternateAppearance?.recipe == hdr
             }
             await editor.shutdown()
-            editor = try EditingController(store: store, libraryURL: db, defaults: defaults)
+            editor = try EditingController(store: LibraryStore(databaseURL: db), libraryURL: db, defaults: defaults)
             try await open()
+            XCTAssertEqual(editor.recipe, sdr)
+            editor.beginDevelopmentInterface()
+            try await wait { editor.developmentContext != nil }
+            let finalContext = try XCTUnwrap(editor.developmentContext)
+            XCTAssertEqual(editor.developmentSession.snapshots.map(\.name), ["雪地彩色", "雪地黑白"])
+            try editor.developmentSession.restoreSnapshot(id: bwSnapshot.id, context: finalContext)
+            XCTAssertEqual(editor.recipe, mono)
+            try editor.developmentSession.undo(context: finalContext)
             XCTAssertEqual(editor.recipe, sdr)
             try await enterHDR()
             XCTAssertEqual(editor.recipe, hdr)
+            XCTAssertTrue(editor.sceneSnapshots.isEmpty)
             XCTAssertEqual(editor.versions.count, 1)
         } catch { await editor.shutdown(); throw error }
         await editor.shutdown()

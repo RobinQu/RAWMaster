@@ -118,6 +118,7 @@ struct WorkbenchView: View {
     private var workflowSheets: some View {
         toolbarSurface
         .modifier(EditingWorkflowPresentation(editing: model.editing))
+        .sheet(item: $model.virtualCopyRequest) { VirtualCopySheet(request: $0).environmentObject(model) }
         .sheet(item: $model.libraryPanel, onDismiss: { model.reload() }) { CatalogWorkspacePanel(panel: $0).environmentObject(model) }
         .sheet(isPresented: $model.showImport) { ImportSheet() }
         .sheet(isPresented: $model.showExport) { ExportSheet() }
@@ -223,7 +224,7 @@ struct WorkbenchView: View {
                         Image(systemName: "chevron.right").font(.system(size: 8)).foregroundStyle(.tertiary)
                     }
                     Spacer(minLength: 0)
-                }.font(.caption).buttonStyle(.borderless).padding(.top, model.scope == .session ? 8 : 0)
+                }.font(.caption).buttonStyle(AppFlatButtonStyle()).padding(.top, model.scope == .session ? 8 : 0)
             }
             if model.scope == .session, let session = model.sessions.first(where: { $0.id == model.scopeID }) {
                 SessionWorkflowHeader(session: session)
@@ -237,9 +238,8 @@ struct WorkbenchView: View {
                         .disabled(!model.canComposeTimelapse()).accessibilityIdentifier("timelapse.open")
                 }
                 if model.isTriageScope || model.isHistoryScope {
-                    Picker("初筛范围", selection: $model.triageFilter) {
-                        ForEach(AppModel.TriageFilter.allCases, id: \.self) { Text($0.title).tag($0) }
-                    }.labelsHidden().frame(width: 118)
+                    AppMenu(title: "初筛范围", selection: $model.triageFilter, options: AppModel.TriageFilter.allCases, label: { $0.title })
+                        .frame(width: 118)
                 } else if model.scope != .group {
                     Menu {
                         Picker("排序", selection: $model.reviewSort) {
@@ -248,11 +248,10 @@ struct WorkbenchView: View {
                     } label: { Image(systemName: "arrow.up.arrow.down") }
                         .menuStyle(.borderlessButton).frame(width: 26).help("排序：" + model.reviewSort.title).accessibilityLabel("排序")
                 }
-                Picker("浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) })) {
-                    Image(systemName: "square.grid.2x2").tag(AppModel.BrowserMode.grid)
-                    Image(systemName: "rectangle").tag(AppModel.BrowserMode.single)
-                    Image(systemName: "rectangle.split.2x1").tag(AppModel.BrowserMode.compare)
-                }.pickerStyle(.segmented).labelsHidden().accessibilityLabel("浏览").frame(width: 120).help("网格 G · 单张 E · 比较 C")
+                AppTabs(title: "浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) }),
+                        options: [.grid, .single, .compare], label: {
+                    switch $0 { case .grid: "网格"; case .single: "单张"; case .compare: "比较" }
+                }).frame(width: 120).help("网格 G · 单张 E · 比较 C")
             }.frame(height: 26)
             HStack(spacing: 8) {
                 Text(headerCounts).font(.caption2).foregroundStyle(.secondary).fixedSize()
@@ -294,7 +293,7 @@ struct WorkbenchView: View {
             Text(model.isBusy ? "照片登记后将逐步出现在工作台。" : "接入原片目录，比较细节，留下值得保留的照片。")
                 .foregroundStyle(.secondary).multilineTextAlignment(.center)
             if !model.isBusy {
-                Button { model.openImport() } label: { Label("接入素材…", systemImage: "plus") }.buttonStyle(.borderedProminent).controlSize(.large)
+                Button { model.openImport() } label: { Label("接入素材…", systemImage: "plus") }.buttonStyle(AppFlatButtonStyle())
                 Text("支持原地引用或复制导入，也可以拖入文件夹").font(.caption).foregroundStyle(.secondary)
             }
         }.frame(maxWidth: .infinity, maxHeight: .infinity).padding(40)
@@ -312,13 +311,16 @@ struct WorkbenchView: View {
             Spacer(minLength: 2)
             Button { model.undo() } label: { Image(systemName: "arrow.uturn.backward") }.disabled(model.undoCount == 0).help("撤销上一步操作 ⌘Z")
             Menu {
+                VirtualCopyMenuItems(asset: model.actionAssetIDs.count == 1 ? model.focusedAsset : nil)
                 GroupSelectionActionButton()
                 Toggle("决定后自动前进", isOn: $model.autoAdvance)
                 Button("刷新文件可用性") { model.refreshAvailability() }
             } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).frame(width: 24)
+                .accessibilityLabel("更多照片操作")
+                .accessibilityIdentifier("library.selection.more")
         }
         .disabled(model.actionAssetIDs.isEmpty)
-        .buttonStyle(.borderless)
+        .buttonStyle(AppFlatButtonStyle())
         .padding(.horizontal, 16).padding(.vertical, 11)
         .background(.regularMaterial)
     }
@@ -420,9 +422,15 @@ struct BrowserView: View {
         VStack(spacing: 0) {
             if model.mode == .single && !model.isNativeEditing { PairPreviewControls() }
             switch model.mode {
-            case .grid: grid.overlay(alignment: .bottom) {
-                if model.selectedIDs.count > 1 && !model.isTriageScope && !model.isHistoryScope { GridSelectionActionBar().padding(14) }
-            }
+            case .grid:
+                grid.safeAreaInset(edge: .bottom, spacing: 0) {
+                    if model.selectedIDs.count == 1, model.scope == .project || model.scope == .all,
+                       let asset = model.selectedAssets.first {
+                        singlePhotoActions(asset)
+                    }
+                }.overlay(alignment: .bottom) {
+                    if model.selectedIDs.count > 1 && !model.isTriageScope && !model.isHistoryScope { GridSelectionActionBar().padding(14) }
+                }
             case .single:
                 if model.isNativeEditing, let editing = model.editing { EditingImageCanvas(editing: editing) }
                 else if let asset = model.focusedAsset { ImagePanel(asset: model.previewAsset(for: asset), actualPixels: model.actualPixels, sharedTransform: nil) }
@@ -439,6 +447,34 @@ struct BrowserView: View {
                 }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 16).padding(.vertical, 9)
             }
         }.background(canvasColor)
+    }
+    private func singlePhotoActions(_ asset: AssetRecord) -> some View {
+        HStack(spacing: AppDesign.Spacing.group) {
+            Text("已选 1 张").font(.caption).foregroundStyle(.secondary)
+            Button { model.decide(.keep) } label: { Label("保留", systemImage: "flag.fill") }
+            Button { model.decide(.reject) } label: { Label("排除", systemImage: "xmark") }
+            Menu("更多…") {
+                VirtualCopyMenuItems(asset: asset)
+            }.help("更多照片操作")
+                .accessibilityLabel("更多照片操作")
+                .accessibilityIdentifier("library.selection.more")
+            Spacer(minLength: AppDesign.Spacing.inline)
+            Button {
+                if model.focusedID != asset.id { model.select(asset) }
+                model.activateWorkflow(.edit)
+            } label: { Label("编辑照片", systemImage: "slider.horizontal.3") }
+                .disabled(model.editingAdmissions[asset.physicalAssetID] == nil)
+            Button { model.openSelectionExport() } label: { Label("导出", systemImage: "square.and.arrow.up") }
+                .disabled(!model.canExport)
+        }
+        .buttonStyle(AppFlatButtonStyle())
+        .controlSize(.small)
+        .padding(.horizontal, AppDesign.Spacing.section)
+        .padding(.vertical, AppDesign.Spacing.inline)
+        .background(AppPalette.panel)
+        .overlay(alignment: .top) { Divider() }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("所选照片操作")
     }
     private var grid: some View {
         let layout = model.sequenceBrowserLayout
@@ -507,23 +543,25 @@ struct GridSelectionActionBar: View {
                 Spacer(minLength: 0)
                 Button { model.selectedIDs = []; model.focusedID = nil } label: { Image(systemName: "xmark.circle.fill") }
                     .help("取消选择").accessibilityLabel("取消选择")
-            }.buttonStyle(.borderless)
+            }.buttonStyle(AppFlatButtonStyle())
             Divider()
             HStack(spacing: 8) {
                 Button { model.setMode(.compare) } label: { Label("对比", systemImage: "rectangle.split.2x1") }
                 Button { model.confirmSelectedPair() } label: { Label("关联 RAW+JPG", systemImage: "link") }
                     .disabled(!model.canLinkSelectedPair).help("选择同一导入会话内的一个 RAW 文件和一个 JPG 文件")
                 GroupSelectionActionButton()
-                if EditingController.sceneReviewEnabled, model.workbenchExportStore != nil {
-                    Menu("更多") {
+                Menu("更多") {
+                    VirtualCopyMenuItems(asset: model.selectedIDs.count == 1 ? model.focusedAsset : nil)
+                    if EditingController.sceneReviewEnabled, model.workbenchExportStore != nil {
+                        Divider()
                         Button("批量工作流…") { openWorkflow(results: false) }.disabled(model.actionAssetIDs.count < 2 || model.actionAssetIDs.count > 201)
                         Button("最近工作流批次与撤销…") { openWorkflow(results: true) }
-                    }.accessibilityIdentifier("library.selection.sceneWorkflow")
-                }
+                    }
+                }.accessibilityIdentifier("library.selection.sceneWorkflow")
                 Spacer(minLength: 0)
                 Button { model.openSelectionExport() } label: { Label("批量导出", systemImage: "square.and.arrow.up") }
-                    .buttonStyle(.borderedProminent).disabled(!model.canExport)
-            }.buttonStyle(.bordered).controlSize(.small)
+                    .buttonStyle(AppFlatButtonStyle()).disabled(!model.canExport)
+            }.buttonStyle(AppFlatButtonStyle()).controlSize(.small)
         }.padding(12).frame(maxWidth: 700)
             .floatingSelectionSurface()
             .accessibilityElement(children: .contain).accessibilityLabel("所选照片操作")
@@ -559,7 +597,9 @@ struct AssetCard: View {
                 } else if asset.decision != .undecided { Image(systemName: asset.decision.symbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(asset.decision == .keep ? AppPalette.keep : AppPalette.warning).padding(6).background(AppPalette.overlay, in: Circle()).padding(5) }
             }
             HStack(spacing: 4) {
-                Text(asset.filename).lineLimit(1).truncationMode(.middle)
+                if compact, asset.virtualCopyName != nil { Image(systemName: "square.on.square").accessibilityHidden(true) }
+                Text(compact ? asset.exportPresentationName : asset.filename).lineLimit(1).truncationMode(.middle)
+                    .help(asset.exportPresentationName)
                 ColorLabelBadge(assetID: asset.id)
                 Spacer(minLength: 1)
                 if triageDisposition == nil && asset.rating > 0 {
@@ -570,7 +610,9 @@ struct AssetCard: View {
             }.font(.system(size: compact ? 9 : 11)).foregroundStyle(selected ? .primary : .secondary).padding(.horizontal, compact ? 4 : 8)
             if !compact {
                 HStack {
-                    Text(asset.camera ?? asset.importState.title).lineLimit(1)
+                    if let copyName = asset.virtualCopyName {
+                        Label(copyName, systemImage: "square.on.square").lineLimit(1)
+                    } else { Text(asset.camera ?? asset.importState.title).lineLimit(1) }
                     Spacer()
                     if asset.error != nil || asset.availability != .available { Image(systemName: "exclamationmark.triangle").foregroundStyle(AppPalette.warning) }
                     if asset.groupID != nil { Image(systemName: "square.stack") }
@@ -581,7 +623,7 @@ struct AssetCard: View {
             .modifier(AssetCardOutline(selected: selected, visible: showsCardOutline))
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(triageDisposition.map { "\(asset.filename)，初筛处置：\($0.title)" } ?? "\(asset.filename)，\(asset.decision.title)，\(asset.rating) 星")
+            .accessibilityLabel(triageDisposition.map { "\(asset.filename)，初筛处置：\($0.title)" } ?? "\(asset.exportPresentationName)，\(asset.decision.title)，\(asset.rating) 星")
     }
 }
 
@@ -617,9 +659,10 @@ struct ThumbnailView: View {
                     .overlay { if let gridCard { model.paintMark(gridCard, photo: true) } } }
             else if failed { Image(systemName: "photo.badge.exclamationmark").foregroundStyle(.secondary) }
             else { ProgressView().controlSize(.small) }
-        }.task(id: asset.currentPath + asset.importState.rawValue + asset.availability.rawValue) {
+        }.task(id: model.renditionPreviewKey(for: asset)) {
+            image = nil
             failed = false
-            do { let loaded = try await ImageEngines.browsing.preview(for: asset, maxPixel: 600); guard !Task.isCancelled else { return }; image = loaded }
+            do { let loaded = try await model.libraryRenditionPreview(asset, maxPixel: 600); guard !Task.isCancelled else { return }; image = loaded }
             catch { if !Task.isCancelled { failed = true } }
         }
     }
@@ -650,10 +693,10 @@ struct ImagePanel: View {
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             HStack(spacing: 7) {
-                Text(asset.filename).font(.caption).lineLimit(1).truncationMode(.middle)
+                Text(asset.exportPresentationName).font(.caption).lineLimit(1).truncationMode(.middle)
                 Spacer(minLength: 4)
                 if loading { ProgressView().controlSize(.mini) }
-                Text(detailReady ? (isRAW ? "RAW 原始分辨率 · 基础渲染" : "原始分辨率 · 文件图像") : (needsDetail ? "预览 · 正在请求原始细节" : "内嵌 / 文件预览"))
+                Text(model.renditionPreviewRevisions[asset.id] != nil ? (detailReady ? "当前外观 · 原始分辨率" : "当前外观 · 预览") : detailReady ? (isRAW ? "RAW 原始分辨率 · 基础渲染" : "原始分辨率 · 文件图像") : (needsDetail ? "预览 · 正在请求原始细节" : "内嵌 / 文件预览"))
                     .font(.system(size: 9)).foregroundStyle(detailReady ? AppPalette.accent : .secondary).lineLimit(1)
             }.padding(.horizontal, 12).padding(.vertical, 8).background(AppPalette.overlay)
         }.background(AppPalette.thumbnailWell)
@@ -681,17 +724,17 @@ struct ImagePanel: View {
                     .font(.caption).foregroundStyle(AppPalette.warning).padding(9).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 6)).padding(12)
             }
         }
-        .task(id: asset.id + asset.currentPath + (needsDetail ? ".detail" : ".preview") + asset.importState.rawValue + asset.availability.rawValue) {
+        .task(id: model.renditionPreviewKey(for: asset) + (needsDetail ? ".detail" : ".preview")) {
             loading = true; error = nil; detailReady = false
             if loadedAssetID != asset.id { image = nil; loadedAssetID = asset.id }
             do {
                 do {
-                    let preview = try await loader.preview(asset, 2400)
+                    let preview = try await model.libraryRenditionPreview(asset, maxPixel: 2400, loader: loader)
                     guard !Task.isCancelled else { return }
                     image = preview
                 } catch { if !needsDetail { throw error } }
                 if needsDetail {
-                    let detail = try await loader.detail(asset)
+                    let detail = try await model.libraryRenditionPreview(asset, maxPixel: 0, loader: loader)
                     guard !Task.isCancelled else { return }
                     image = detail; detailReady = true
                 }
@@ -787,7 +830,7 @@ struct InspectorView: View {
                         .disabled(model.isTriageScope || model.actionAssetIDs.isEmpty)
                 }
                 if let asset = model.focusedAsset {
-                    Text(asset.filename).font(.system(size: 14, weight: .medium)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    Text(asset.exportPresentationName).font(.system(size: 14, weight: .medium)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                     if model.isTriageScope || model.isHistoryScope {
                         section("初筛处置") {
                             Label(model.disposition(of: asset.id).title, systemImage: model.disposition(of: asset.id).symbol).font(.caption)
@@ -881,7 +924,7 @@ struct InspectorView: View {
                         if asset.currentPath != asset.sourcePath { Text("导入时来源：\(asset.sourcePath)").font(.system(size: 10)).foregroundStyle(.tertiary).textSelection(.enabled).fixedSize(horizontal: false, vertical: true) }
                     }
                 } else { Text("选择照片查看拍摄信息与决定。 ").font(.caption).foregroundStyle(.secondary) }
-            }.padding(18)
+            }.buttonStyle(AppFlatButtonStyle()).padding(18)
         }.background(panelColor)
     }
     private func info(_ key: String, _ value: String) -> some View {

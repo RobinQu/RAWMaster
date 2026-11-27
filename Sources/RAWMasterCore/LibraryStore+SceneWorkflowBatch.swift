@@ -173,7 +173,7 @@ extension LibraryStore {
     }
 
     private func sceneWorkflowOwner(_ source: EditingSourceSnapshot) throws -> PhotoWork? {
-        try loadPhotoWorks(projectID: source.projectID, assetID: source.assetID).last { $0.source.hasSameIdentity(as: source) }
+        try loadPhotoWorks(projectID: source.projectID, assetID: source.assetID).last { $0.virtualCopyID == nil && $0.source.hasSameIdentity(as: source) }
     }
     private static func workflowBatchKey(_ id: UUID) -> String { workflowBatchAction + "/" + id.uuidString }
     private static func workflowItemKey(_ id: UUID, _ asset: String) -> String { workflowItemAction + "/" + id.uuidString + "/" + asset }

@@ -39,6 +39,11 @@ final class ExportWorkspaceInteractionTests: XCTestCase {
         XCTAssertTrue(retained.contains("4"))
         XCTAssertFalse(retained.contains("3"))
         XCTAssertFalse(retained.contains("204"))
+        let copies = ["203": "202", "1": "202"]
+        let originals = ExportWorkspaceSelection.keepingFirst(200, checked: state.checked, order: order, physicalIDs: copies)
+        XCTAssertTrue(originals.isSuperset(of: ["203", "202", "3", "1"]))
+        XCTAssertFalse(originals.contains("2"))
+        XCTAssertEqual(Set(originals.map { copies[$0] ?? $0 }).count, 200)
     }
 
     func testRepeatedImportAndLastSettingsHaveIndependentLocalRecords() throws {

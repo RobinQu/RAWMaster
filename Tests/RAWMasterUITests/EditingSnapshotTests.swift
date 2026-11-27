@@ -71,4 +71,45 @@ final class EditingSnapshotTests: XCTestCase {
         XCTAssertTrue(session.snapshots.isEmpty)
         await editing.shutdown()
     }
+
+    @MainActor func testRenameKeepsItsSelectedRowAndBranchWhileTheWindowYieldsFocus() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let editor = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
+        do {
+            let other = try LibraryStore(databaseURL: fixture.library)
+            editor.isPresented = true
+            editor.focus(fixture.assets[0]); editor.beginDevelopmentInterface()
+            try await wait { editor.developmentContext != nil }
+            let context = try XCTUnwrap(editor.developmentContext)
+            let scope = DevelopmentSnapshotScope(workID: context.workID, parentVersionID: try XCTUnwrap(editor.draftParentID), appearance: .compatibility)
+            let first = try editor.developmentSession.createSnapshot(context: context)
+            let second = try editor.developmentSession.createSnapshot(context: context)
+            let request = try XCTUnwrap(editor.snapshotRenameRequest(for: second))
+            editor.suspendDevelopmentFocus()
+            XCTAssertNil(editor.developmentContext)
+            for invalid in ["   ", String(repeating: "雪", count: 61)] {
+                XCTAssertThrowsError(try editor.renameSnapshot(request, to: invalid)) { error in
+                    guard case DevelopmentSnapshotError.invalidName = error else { return XCTFail("Unexpected error \(error)") }
+                }
+            }
+            let fullName = String(repeating: "雪", count: 60)
+            try editor.renameSnapshot(request, to: fullName)
+            XCTAssertEqual(try other.developmentSnapshots(in: scope).last?.name, fullName)
+            try editor.renameSnapshot(request, to: " 雪景彩色 ")
+            XCTAssertEqual(try other.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景彩色"])
+            XCTAssertEqual(editor.developmentSession.snapshots(in: try XCTUnwrap(editor.developmentPresentationContext)).last?.name, "雪景彩色")
+            _ = try other.updateDevelopmentSnapshots(in: scope, .delete(second.id))
+            XCTAssertThrowsError(try editor.renameSnapshot(request, to: "已删除")) { error in
+                guard case DevelopmentSnapshotError.missing = error else { return XCTFail("Unexpected error \(error)") }
+            }
+            let stale = try XCTUnwrap(editor.snapshotRenameRequest(for: first))
+            editor.focus(fixture.assets[1]); editor.beginDevelopmentInterface()
+            try await wait { editor.developmentContext?.workID != nil && editor.developmentContext?.workID != context.workID }
+            XCTAssertThrowsError(try editor.renameSnapshot(stale, to: "其他照片")) { error in
+                guard case DevelopmentSnapshotError.changedContext = error else { return XCTFail("Unexpected error \(error)") }
+            }
+            XCTAssertEqual(try other.developmentSnapshots(in: scope).map(\.name), [first.name])
+        } catch { await editor.shutdown(); throw error }
+        await editor.shutdown()
+    }
 }

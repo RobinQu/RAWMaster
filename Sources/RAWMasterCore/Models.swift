@@ -29,6 +29,11 @@ public struct AssetRecord: Codable, Sendable, Identifiable {
   public var effectiveManagedPath: String?
   public var relativePath: String
   public var filename: String
+  /// Only populated on a library rendition projected from its physical asset.
+  public var virtualCopySourceID: String?
+  public var virtualCopyName: String?
+  public var physicalAssetID: String { virtualCopySourceID ?? id }
+  public var displayName: String { virtualCopyName ?? filename }
   public var fileSize: Int64
   public var capturedAt: Date?
   public var camera: String?

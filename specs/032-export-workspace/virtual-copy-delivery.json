@@ -1,0 +1,124 @@
+{
+  "date": "2026-11-27",
+  "fixture": "24 MP Sony snow.ARW",
+  "runner": "Native macOS SwiftPM Debug, FlashRaw and Metal",
+  "sdr": {
+    "batchID": "4ae012c9-a3de-459e-ad0d-ab588b8e5ed9",
+    "files": [
+      {
+        "fileSHA256": "7b3413484679e93d604a3bafdd8950d66d1294ecd011d974146968378675c1f5",
+        "height": 512,
+        "meanChroma8": 34.4560546875,
+        "name": "snow.jpg",
+        "sRGB64pxSHA256": "102426c5be353133fa4ee00089bc8d245315ebd0bc915a6eaa9e8e9def69c50f",
+        "width": 341,
+        "byteCount": 27486,
+        "matchedFirstDelivery": true
+      },
+      {
+        "fileSHA256": "89285c6cef1ad6db84d0ce1778ae2b12580b55d8dfc006b3810937310eb545b8",
+        "height": 512,
+        "meanChroma8": 0,
+        "name": "snow-黑白.jpg",
+        "sRGB64pxSHA256": "334a9da7e22bb7dc133f558410bac2fe6c0f6803d6b9c2d280ebf8327896fcdf",
+        "width": 341,
+        "byteCount": 25007,
+        "matchedFirstDelivery": true
+      }
+    ],
+    "freezingProcess": 50315,
+    "generation": 2,
+    "oneSourceRelinkForBoth": true,
+    "originalCopies": 1,
+    "physicalSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+    "physicalSource": "snow.ARW",
+    "presentationIDs": [
+      "16219EBB-3350-48EE-AF88-2252B24268CC",
+      "BF0BABB6-0C84-4EFE-BC53-EF50CC071E05"
+    ],
+    "renderSeconds": {
+      "pair": 0.269258975982666,
+      "resumePair": 0.51214599609375,
+      "single": 0.27034199237823486
+    },
+    "resumingProcess": 56660,
+    "versionIDs": [
+      "5C01E48B-0FBE-4E8D-B38C-88A182DAF86A",
+      "8D8D15BB-A171-4E49-BCD6-5E76EE7BF624"
+    ],
+    "workIDs": [
+      "84B5BE75-52D8-4B7D-A8CE-D5E207623A69",
+      "BF0BABB6-0C84-4EFE-BC53-EF50CC071E05"
+    ]
+  },
+  "pq": {
+    "batchID": "4d2697c2-b14d-45e2-8865-ac16128af71c",
+    "staleReviewRejected": true,
+    "container": "AVIF tiled image",
+    "items": [
+      {
+        "filename": "snow.avif",
+        "presentationID": "374F5212-2369-4E69-BCA9-05B5DEF4AE58",
+        "assetID": "374F5212-2369-4E69-BCA9-05B5DEF4AE58",
+        "workID": "7F35566E-68C9-4951-8F56-160A5437AF2E",
+        "versionID": "4746988D-12CD-8BF7-BB85-2EFA2DB3FBCC",
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "width": 4000,
+        "height": 6000,
+        "byteCount": 4632692,
+        "fileSHA256": "ad854cc6ef07a7fb80354d819882e544362b98c74a91ce68b6192e6943daf10e",
+        "codec_name": "av1",
+        "pix_fmt": "yuv420p10le",
+        "color_range": "pc",
+        "color_space": "bt709",
+        "color_transfer": "smpte2084",
+        "color_primaries": "bt2020",
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 6,
+          "nodes": 6,
+          "dispatches": 6,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1097728000,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 32.850708
+        }
+      },
+      {
+        "filename": "snow-低曝光.avif",
+        "presentationID": "4C685DAE-4557-4C8F-BE35-2FDA081CAF02",
+        "assetID": "374F5212-2369-4E69-BCA9-05B5DEF4AE58",
+        "workID": "4C685DAE-4557-4C8F-BE35-2FDA081CAF02",
+        "versionID": "615491E7-8F3E-8A80-9780-0B95109A59A1",
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "width": 4000,
+        "height": 6000,
+        "byteCount": 2260328,
+        "fileSHA256": "a84ee73987fad35f38ab419a25d51dccfaf72cbe9b3f49140c8fcb883114f188",
+        "codec_name": "av1",
+        "pix_fmt": "yuv420p10le",
+        "color_range": "pc",
+        "color_space": "bt709",
+        "color_transfer": "smpte2084",
+        "color_primaries": "bt2020",
+        "sceneExecution": {
+          "backend": "rust",
+          "tiles": 6,
+          "nodes": 6,
+          "dispatches": 6,
+          "coverageCacheHits": 0,
+          "nodeCacheHits": 0,
+          "peakBytes": 1097728000,
+          "budgetBytes": 1610612736,
+          "cpuMilliseconds": 50.523166
+        }
+      }
+    ]
+  },
+  "regressions": {
+    "rustWorkbenchQueue": 22,
+    "nativeEditingAndExport": 11,
+    "freshProcessContinuation": 1
+  }
+}

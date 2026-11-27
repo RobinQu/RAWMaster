@@ -17,7 +17,7 @@ struct WorkbenchDeliveryManifest: Codable, Sendable {
         let submittedAt: Date
         let filenames: [String]
     }
-    struct Source: Codable, Sendable {
+    struct Source: Codable, Equatable, Sendable {
         let projectID: String
         let assetID: String
         let contentSHA256: String
@@ -35,6 +35,8 @@ struct WorkbenchDeliveryManifest: Codable, Sendable {
     struct Item: Codable, Sendable {
         let ordinal: Int
         let assetID: String
+        let presentationID: String?
+        var selectionID: String { presentationID ?? assetID }
         let stem: String
         let workID: String
         let versionID: String
@@ -132,6 +134,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
             work.liveParentVersionID = nil
             work.liveRevision = nil
             work.livePresetAdoptions = nil
+            work.liveAlternateAppearance = nil
             self.work = work
             self.version = version
             schema = 1
@@ -147,6 +150,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
         struct Item: Codable, Sendable {
             let ordinal: Int
             let assetID: String
+            let presentationID: String?
             let stem: String
             let work: PhotoWork
             let version: EditingVersion
@@ -164,7 +168,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
         var summary: WorkbenchDeliveryManifest {
             .init(schema: schema, batchID: batchID, libraryID: libraryID, destination: destination, sourceContext: sourceContext,
                 namingTemplate: namingTemplate, collision: collision, configuration: nil, items: items.map {
-                    .init(ordinal: $0.ordinal, assetID: $0.assetID, stem: $0.stem, workID: $0.work.id, versionID: $0.version.id,
+                    .init(ordinal: $0.ordinal, assetID: $0.assetID, presentationID: $0.presentationID, stem: $0.stem, workID: $0.work.id, versionID: $0.version.id,
                         source: .init($0.version.source), body: nil)
                 })
         }
@@ -251,6 +255,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
     func register(batchID: String, libraryID: String, destination: WorkbenchDeliveryManifest.Destination,
                   context: WorkbenchDeliveryManifest.Context, naming: String, collision: String, stems: [String],
                   configuration: PhotoBatchExportConfiguration, frozen: [(PhotoWork, EditingVersion)]) async throws -> (WorkbenchDeliveryManifest, Lease) {
+        guard stems.count == frozen.count, context.filenames.count == frozen.count else { throw WorkbenchDeliveryIssue.invalidReceipt }
         let smallInputs = frozen.allSatisfy { _, version in
             version.recipe == DevelopmentRecipe() && version.artifact == nil && version.presetAdoptions == nil && version.configuration.isEmpty
         }
@@ -260,7 +265,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
                 items: zip(stems, frozen).enumerated().map { index, value in
                     let (stem, (work, version)) = value
                     let input = FrozenInput(work: work, version: version)
-                    return .init(ordinal: index + 1, assetID: version.source.assetID, stem: stem, work: input.work, version: version)
+                    return .init(ordinal: index + 1, assetID: version.source.assetID, presentationID: work.virtualCopyID, stem: stem, work: input.work, version: version)
                 })
             let reply: CatalogJSON? = try await ProcessingAdmission.shared.withPermit(.export,
                 resources: .init(cpu: 1, io: 1, memoryBytes: 8 << 20)) {
@@ -295,7 +300,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
                 let stem = stems[index]
                 group.addTask {
                     let body = try await stageBody(FrozenInput(work: work, version: version), at: scratch.appending(path: "item-\(index).json"))
-                    return WorkbenchDeliveryManifest.Item(ordinal: index + 1, assetID: version.source.assetID,
+                    return WorkbenchDeliveryManifest.Item(ordinal: index + 1, assetID: version.source.assetID, presentationID: work.virtualCopyID,
                         stem: stem, workID: work.id, versionID: version.id, source: .init(version.source), body: body)
                 }
             }

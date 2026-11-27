@@ -5,6 +5,96 @@ import XCTest
 @testable import RAWMaster
 
 final class EditingLayoutInteractionTests: XCTestCase {
+    @MainActor func testSnapshotRenameSheetEditsItsSelectedFieldAndOnlyDismissesOnSuccessOrCancel() async throws {
+        _ = NSApplication.shared
+        let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let previous = NSApp.accessibilityAttributeValue(ax)
+        NSApp.accessibilitySetValue(true, forAttribute: ax)
+        defer { NSApp.accessibilitySetValue(previous, forAttribute: ax) }
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let editor = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
+        let window = NSWindow(contentRect: .init(x: -6_000, y: 0, width: 520, height: 780),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.orderOut(nil); window.contentView = nil; window.close() }
+        func element(_ identifier: String) -> NSObject? {
+            accessibleElements(window).first { axValue($0, "accessibilityIdentifier") as? String == identifier }
+        }
+        func enter(_ value: String) throws {
+            let field = try XCTUnwrap(element("editing.snapshot.rename.name"))
+            let setter = NSSelectorFromString("setAccessibilityValue:")
+            XCTAssertTrue(field.responds(to: setter))
+            field.perform(setter, with: value as NSString)
+            XCTAssertEqual(axValue(field, "accessibilityValue") as? String, value)
+        }
+        func type(_ value: String, then command: Selector) throws {
+            func editableField(_ view: NSView) -> NSTextField? {
+                if let field = view as? NSTextField, field.isEditable { return field }
+                return view.subviews.lazy.compactMap(editableField).first
+            }
+            let field = try XCTUnwrap(window.contentView.flatMap(editableField))
+            XCTAssertTrue(window.makeFirstResponder(field))
+            let input = try XCTUnwrap(window.fieldEditor(true, for: field) as? NSTextView)
+            input.selectAll(nil); input.insertText(value, replacementRange: input.selectedRange())
+            input.doCommand(by: command)
+        }
+        do {
+            editor.isPresented = true; editor.focus(fixture.assets[0]); editor.beginDevelopmentInterface()
+            try await wait { editor.developmentContext != nil }
+            let context = try XCTUnwrap(editor.developmentContext)
+            let first = try editor.developmentSession.createSnapshot(context: context)
+            let second = try editor.developmentSession.createSnapshot(context: context)
+            let scope = DevelopmentSnapshotScope(workID: context.workID, parentVersionID: try XCTUnwrap(editor.draftParentID), appearance: .compatibility)
+            let reader = try LibraryStore(databaseURL: fixture.library)
+            let menuID = "editing.snapshot.menu." + second.id.uuidString
+            let rail = NSHostingView(rootView: EditingLeftSidebar(editing: editor).frame(width: 310, height: 1000))
+            rail.sizingOptions = []; window.contentView = rail
+            window.orderBack(nil)
+            try await wait { element("editing.leftRail.filters") != nil }
+            try press(try XCTUnwrap(element("editing.leftRail.filters")))
+            try await wait { element(menuID) != nil }
+            let menu = try XCTUnwrap(element(menuID))
+            let names = ["accessibilityLabel", "accessibilityTitle", "accessibilityHelp"].compactMap { axValue(menu, $0) as? String }
+            XCTAssertTrue(names.contains("快照操作 · " + second.name), "Snapshot menu exposed \(names)")
+            print("snapshot rename AX menu label \(axValue(menu, "accessibilityLabel") as? String ?? "")")
+            let request = try XCTUnwrap(editor.snapshotRenameRequest(for: second))
+            var dismissals = 0
+            func showForm() {
+                window.contentView = NSHostingView(rootView: EditingSnapshotRenameSheet(request: request, editing: editor) { dismissals += 1 })
+            }
+            showForm()
+            try await wait { element("editing.snapshot.rename.name") != nil }
+            editor.suspendDevelopmentFocus()
+            try enter(String(repeating: "雪", count: 61))
+            try press(try XCTUnwrap(element("editing.snapshot.rename.confirm")))
+            try await wait { dismissals > 0 || element("editing.snapshot.rename.issue") != nil }
+            XCTAssertEqual(dismissals, 0)
+            XCTAssertNotNil(element("editing.snapshot.rename.issue"))
+            XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, second.name])
+            try enter("雪景彩色")
+            try press(try XCTUnwrap(element("editing.snapshot.rename.confirm")))
+            try await wait { dismissals == 1 }
+            XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景彩色"])
+            showForm()
+            try await wait { element("editing.snapshot.rename.cancel") != nil }
+            try enter("取消改名")
+            try press(try XCTUnwrap(element("editing.snapshot.rename.cancel")))
+            try await wait { dismissals == 2 }
+            XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景彩色"])
+            showForm()
+            try await wait { element("editing.snapshot.rename.name") != nil }
+            try type("雪景暖色", then: #selector(NSResponder.insertNewline(_:)))
+            try await wait { dismissals == 3 }
+            XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景暖色"])
+            showForm()
+            try await wait { element("editing.snapshot.rename.name") != nil }
+            try type("放弃输入", then: #selector(NSResponder.cancelOperation(_:)))
+            try await wait { dismissals == 4 }
+            XCTAssertEqual(try reader.developmentSnapshots(in: scope).map(\.name), [first.name, "雪景暖色"])
+        } catch { await editor.shutdown(); throw error }
+        await editor.shutdown()
+    }
+
     @MainActor private func wait(_ condition: () -> Bool, file: StaticString = #filePath, line: UInt = #line) async throws {
         for _ in 0..<500 {
             if condition() { return }
@@ -36,6 +126,78 @@ final class EditingLayoutInteractionTests: XCTestCase {
             pending += ((axValue(node, "accessibilityChildren") as? [Any]) ?? []).compactMap { $0 as? NSObject }
         }
         return result
+    }
+
+    @MainActor func testProjectGridExposesSinglePhotoMenuAndKeepsItsBatchActions() async throws {
+        _ = NSApplication.shared
+        let enhanced = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let previous = NSApp.accessibilityAttributeValue(enhanced)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+        defer { NSApp.accessibilitySetValue(previous, forAttribute: enhanced) }
+        let fixture = try EditingWorkflowTests.Fixture(photoCount: 1)
+        defer { fixture.clean() }
+        let first = fixture.assets[0]
+        let copy = try fixture.store.createVirtualCopy(of: first, name: "银盐选片")
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.selectScope(.project, id: first.projectID)
+        model.setMode(.grid)
+        model.selectedIDs = []
+        model.focusedID = nil
+        let host = NSHostingView(rootView: BrowserView().environmentObject(model).frame(width: 720, height: 520))
+        let window = NSWindow(contentRect: .init(x: 0, y: 0, width: 720, height: 520),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.contentView = host
+        window.orderFront(nil)
+        defer { window.orderOut(nil); window.contentView = nil; window.close() }
+        func element(_ id: String) -> NSObject? {
+            host.layoutSubtreeIfNeeded()
+            return accessibleElements(window).first { axValue($0, "accessibilityIdentifier") as? String == id }
+        }
+        func click(_ id: String, modifiers: NSEvent.ModifierFlags = []) throws {
+            let card = try XCTUnwrap(element("library.asset." + id))
+            let bounds = try XCTUnwrap(card.value(forKey: "accessibilityFrame") as? NSValue).rectValue
+            let position = window.convertPoint(fromScreen: .init(x: bounds.midX, y: bounds.midY))
+            for type in [NSEvent.EventType.leftMouseDown, .leftMouseUp] {
+                let event = try XCTUnwrap(NSEvent.mouseEvent(with: type, location: position, modifierFlags: modifiers,
+                    timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+                    eventNumber: 101, clickCount: 1, pressure: 1))
+                window.sendEvent(event)
+            }
+        }
+        try await wait { element("library.asset." + first.id) != nil && element("library.asset." + copy.id) != nil }
+        XCTAssertNil(element("library.selection.more"))
+        try click(first.id)
+        try await wait { element("library.selection.more") != nil }
+        let menu = try XCTUnwrap(element("library.selection.more"))
+        let names = ["accessibilityLabel", "accessibilityTitle", "accessibilityDescription", "accessibilityHelp"].compactMap { axValue(menu, $0) as? String }
+        XCTAssertTrue(names.contains("更多照片操作"), "Menu names: \(names)")
+        XCTAssertNil(element("library.selection.sceneWorkflow"))
+        try click(copy.id, modifiers: .command)
+        try await wait { element("library.selection.sceneWorkflow") != nil && element("library.selection.more") == nil }
+        XCTAssertEqual(model.focusedID, copy.id)
+        let expected = Set([first.id, copy.id])
+        XCTAssertEqual(model.selectedIDs, expected)
+        try await wait {
+            guard let saved = try? fixture.store.loadProjectReviewState(projectID: first.projectID) else { return false }
+            return Set(saved.selectedAssetIDs) == expected && saved.focusedAssetID == copy.id
+        }
+        try click(copy.id, modifiers: .command)
+        try await wait { element("library.selection.more") != nil && model.selectedIDs == [first.id] }
+        let copyCard = try XCTUnwrap(element("library.asset." + copy.id))
+        let actions = try XCTUnwrap(axValue(copyCard, "accessibilityCustomActions") as? [NSAccessibilityCustomAction])
+        let add = try XCTUnwrap(actions.first { $0.name == "加入选片" })
+        XCTAssertTrue(try XCTUnwrap(add.handler)())
+        XCTAssertEqual(model.selectedIDs, expected)
+        try click(first.id)
+        let key = try XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: .shift,
+            timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+            characters: "\u{F703}", charactersIgnoringModifiers: "\u{F703}", isARepeat: false, keyCode: 124))
+        XCTAssertTrue(model.handleKey(key))
+        XCTAssertEqual(model.selectedIDs, expected)
+        model.selectScope(.all)
+        model.selectScope(.project, id: first.projectID)
+        try await wait { model.selectedIDs == expected && model.focusedID == copy.id }
     }
 
     @MainActor func testEditingLayoutUsesCanvasNavigationWithoutFilmstrip() async throws {

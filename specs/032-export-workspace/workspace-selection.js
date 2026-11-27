@@ -40,18 +40,26 @@ class WorkspaceSelection {
   }
 
   get overLimit() {
-    return this.included.size > WorkspaceSelection.limit;
+    return this.inputCount > WorkspaceSelection.limit;
+  }
+
+  sourceKey(index) { return this.photos[index].physicalID ?? this.photos[index].id ?? index; }
+
+  get inputCount() {
+    return this.actions.originalMode() ? new Set([...this.included].map(i=>this.sourceKey(i))).size : this.included.size;
   }
 
   // Larger synthetic sets reuse three thumbnails and edit-version fixtures. Each item keeps
   // its own online state and chosen version. Previously submitted indexes remain addressable.
   useSample(size) {
     if (![3,1200,201].includes(size)) return;
+    const fixtures = this.photos.slice(0,3);
     for (let i = this.photos.length; i < size; i++) {
-      const base = this.photos[i % 3];
+      const base = fixtures[i % fixtures.length];
       const suffix = base.name.split('.').pop();
       const sampleName = 'RIVER_' + String(i + 1).padStart(4,'0') + '.' + suffix;
-      this.photos.push({...base, name:sampleName, choice:0, online:i % 19 !== 0});
+      this.photos.push({...base, id:'sample-' + i, physicalID:'sample-' + i,
+        name:sampleName, copyName:'', choice:0, online:i % 19 !== 0});
     }
     this.total = size;
     this.included.clear();
@@ -79,7 +87,7 @@ class WorkspaceSelection {
       if (filter === 'checked' && !checked || filter === 'offline' && photo.online) continue;
       const jpeg = /\.jpe?g$/i.test(photo.name);
       if (filter === 'raw' && jpeg || filter === 'jpeg' && !jpeg) continue;
-      if (needle && !(photo.name + ' ' + photo.scene + ' ' + photo.date).toLocaleLowerCase().includes(needle)) continue;
+      if (needle && !(photo.name + ' ' + (photo.copyName || '') + ' ' + photo.scene + ' ' + photo.date).toLocaleLowerCase().includes(needle)) continue;
       this.positions.set(index,this.matches.length);
       this.matches.push(index);
       if (checked) checkedMatches++;
@@ -99,7 +107,7 @@ class WorkspaceSelection {
       '筛选结果 ' + this.matches.length.toLocaleString('zh-CN') + ' 张 · 已选 ' + checkedMatches.toLocaleString('zh-CN') + ' 张';
     document.getElementById('selection-limit').hidden = !this.overLimit;
     if (this.overLimit) document.getElementById('limit-count').textContent =
-      '单批最多 200 张，当前多选了 ' + (this.included.size - WorkspaceSelection.limit).toLocaleString('zh-CN') + ' 张。';
+      '单批最多 200 张，当前多选了 ' + (this.inputCount - WorkspaceSelection.limit).toLocaleString('zh-CN') + ' 张。';
   }
 
   changed() {
@@ -119,7 +127,12 @@ class WorkspaceSelection {
 
   keepFirstBatch() {
     if (!this.overLimit) return;
-    for (const index of this.ordered.slice(WorkspaceSelection.limit)) this.included.delete(index);
+    const retained = new Set();
+    for (const index of this.ordered) {
+      const key = this.actions.originalMode() ? this.sourceKey(index) : index;
+      if (retained.size < WorkspaceSelection.limit) retained.add(key);
+      if (!retained.has(key)) this.included.delete(index);
+    }
     this.changed();
   }
 
@@ -171,6 +184,8 @@ class WorkspaceSelection {
     const [title,subtitle] = copy.children;
     const url = this.actions.imageURL(photo);
     if (img.getAttribute('src') !== url) img.src = url;
+    const look = this.actions.originalMode() ? null : photo.versions[photo.choice].look;
+    img.style.filter = look ? RMPhotos.filter(look) : '';
     const chosen = index === this.actions.getFocus();
     row.dataset.index = index;
     row.style.top = position * WorkspaceSelection.rowHeight + 'px';
@@ -178,10 +193,12 @@ class WorkspaceSelection {
     row.setAttribute('aria-setsize',String(this.matches.length));
     row.classList.toggle('chosen',chosen);
     check.checked = this.included.has(index);
-    check.setAttribute('aria-label','列入交付 ' + photo.name);
+    const displayName = photo.copyName ? photo.name + ' · ' + photo.copyName : photo.name;
+    check.setAttribute('aria-label','列入交付 ' + displayName);
     check.tabIndex = button.tabIndex = index === this.tabRow ? 0 : -1;
     button.setAttribute('aria-pressed',String(chosen));
-    if (title.textContent !== photo.name) title.textContent = photo.name;
+    if (title.textContent !== displayName) title.textContent = displayName;
+    button.title = displayName;
     const status = this.actions.status(photo);
     if (subtitle.textContent !== status) subtitle.textContent = status;
     subtitle.classList.toggle('warn',!this.actions.available(photo));

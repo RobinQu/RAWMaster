@@ -84,7 +84,7 @@ struct EditingSceneModeStrip: View {
         .popover(isPresented: $outputOpen, arrowEdge: .bottom) {
             VStack(alignment: .leading, spacing: 8) {
                 Text("色彩与输出").font(.headline)
-                Text(editing.asset?.filename ?? "当前照片")
+                Text(editing.asset?.editingDisplayName ?? "当前照片")
                 if current == .hdr {
                     Text("场景线性 AP1 · ACES 2")
                     Text("HDR 目标：Rec.2020 PQ，1000 nits")

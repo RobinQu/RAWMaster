@@ -48,6 +48,8 @@ pub(super) struct Request {
     pub include_descendants: bool,
     #[serde(default)]
     pub collapse_stacks: bool,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub native_renditions: bool,
     #[serde(default = "file")]
     pub level: String,
     #[serde(default = "original")]

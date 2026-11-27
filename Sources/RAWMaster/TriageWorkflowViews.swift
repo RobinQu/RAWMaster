@@ -372,6 +372,14 @@ struct WorkflowAssetTile: View {
                       showsCardOutline: showsCardOutline)
                 .overlay(CardInputLayer(onPress: { model.select(asset, modifiers: $0) }, onDoubleClick: { model.select(asset); model.setMode(.single) }))
                 .accessibilityAddTraits(.isButton).accessibilityAction { model.select(asset) }
+                .accessibilityActions {
+                    if model.mode == .grid {
+                        Button(model.selectedIDs.contains(asset.id) ? "移出选片" : "加入选片") {
+                            model.select(asset, modifiers: .command)
+                        }
+                    }
+                }
+                .accessibilityIdentifier("library.asset." + asset.id)
             if let pair = model.pair(for: asset.id) {
                 HStack(spacing: 3) {
                     Text(!model.pairIsEntirelyVisible(pair) ? "伴随文件未纳入 · 单文件" : (model.pairHasConflict(pair) ? "RAW+JPEG · 决定冲突" : "RAW+JPEG")).lineLimit(1)

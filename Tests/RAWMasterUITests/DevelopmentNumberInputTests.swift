@@ -3,6 +3,19 @@ import XCTest
 @testable import RAWMaster
 
 final class DevelopmentNumberInputTests: XCTestCase {
+    @MainActor func testExportPixelFieldAcceptsOnlyWholeNumbersInsideItsRange() throws {
+        var writes: [Double] = []
+        let session = DevelopmentNumberEditSession(.init(value: 2048, range: 64...100_000, digits: 0, enabled: true,
+            write: { writes.append($0) }, invalid: { _ in }, requiresInteger: true))
+        let token = try XCTUnwrap(session.begin())
+        for invalid in ["1", "100001", "2048.5"] {
+            XCTAssertEqual(session.submit(invalid, markedText: false, token: token), .invalid)
+        }
+        XCTAssertTrue(writes.isEmpty)
+        XCTAssertEqual(session.submit("64", markedText: false, token: token), .finish(token))
+        XCTAssertEqual(writes, [64])
+    }
+
     @MainActor private func presentation(_ value: Double = 0, enabled: Bool = true,
                                         write: @escaping (Double) -> Void,
                                         invalid: @escaping (Bool) -> Void = { _ in }) -> DevelopmentNumberEditSession.Presentation {

@@ -102,6 +102,8 @@ const RMPhotos = (() => {
         result.push({
           ...p,
           id: item.id,
+          physicalID: typeof item.physicalID === 'string' ? item.physicalID : item.id,
+          copyName: typeof item.copyName === 'string' ? item.copyName.slice(0,1024) : '',
           name: typeof item.name === 'string' ? item.name.slice(0, 100) : p.name,
           date: p.date.replaceAll('-', ''),
           online: item.online === true,

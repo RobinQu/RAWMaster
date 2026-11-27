@@ -52,6 +52,10 @@ final class AppModel: ObservableObject {
     @Published var showPairReview = false
     private var qualityTask: Task<Void, Never>?
     private var qualityGeneration: UUID?
+    @Published var virtualCopyRequest: VirtualCopyRequest?
+    private(set) var libraryCopies: [LibraryVirtualCopy] = []
+    @Published private(set) var renditionPreviewRevisions = [String: String]()
+    let renditionThumbnails = NSCache<NSString, NSImage>()
     private var admittedIDCache = Set<String>()
     private var sequenceOnlyIDCache = Set<String>()
     private var assetByID: [String: AssetRecord] = [:]
@@ -66,7 +70,7 @@ final class AppModel: ObservableObject {
                 result[admission.assetID] = (admission.projectID, fingerprint)
             }
         }
-        if let id = editing?.asset?.id, old[id]?.fingerprint != editingAdmissions[id]?.fingerprint {
+        if let id = editing?.asset?.physicalAssetID, old[id]?.fingerprint != editingAdmissions[id]?.fingerprint {
             // Re-admission creates a new immutable source identity, even for the same physical photo.
             editing?.leaveBrowsingContext()
         }
@@ -194,7 +198,7 @@ final class AppModel: ObservableObject {
     private var relocator: RelocationService?
     private var relocationGeneration: UUID?
     private var lastRelocationRefresh = Date.distantPast
-    enum UndoEntry { case selection([SelectionChange]); case group(commandID: String); case triage(commandID: String); case tags(commandID: String); case colors(commandID: String) }
+    enum UndoEntry { case virtualCopy(LibraryVirtualCopy, previousRevision: Int64, name: String?, removed: Bool?, focus: String); case selection([SelectionChange]); case group(commandID: String); case triage(commandID: String); case tags(commandID: String); case colors(commandID: String) }
     private var undoStack: [UndoEntry] = []
     private var undoRequestIDs: [String: String] = [:]
     @Published var groupPreview: GroupCommandPreview?
@@ -322,6 +326,10 @@ final class AppModel: ObservableObject {
         do {
             editing = try EditingController(store: store, libraryURL: libraryURL, defaults: defaults,
                 previewBackend: backend ?? SharedEditingPreviewBackend(), applicationServices: services, preparedArchive: archive, activity: activity)
+            renditionThumbnails.totalCostLimit = 64 * 1024 * 1024
+            editing?.didPersistRendition = { [weak self] work in
+                self?.renditionPreviewRevisions[work.presentationID] = "\(work.id)/\(work.liveRevision ?? 0)/\(work.adoptionRevision)"
+            }
             editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         } catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
     }
@@ -334,15 +342,15 @@ final class AppModel: ObservableObject {
         if isPagedGrid { return assets }
         switch scope {
         case .imports, .sequences: return []
-        case .all: return assets.filter { admittedIDCache.contains($0.id) }
-        case .project: return assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.id) }
+        case .all: return assets.filter { admittedIDCache.contains($0.physicalAssetID) }
+        case .project: return assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.physicalAssetID) }
         case .session:
             if let group = activeTriageGroup { return group.assetIDs.compactMap { assetByID[$0] } }
             return cachedTriageSessionAssets
         case .group:
             guard let group = groups.first(where: { $0.id == scopeID }) else { return [] }
             let lookup = Dictionary(uniqueKeysWithValues: assets.map { ($0.id, $0) })
-            return group.assetIDs.compactMap { lookup[$0] }.filter { admittedIDCache.contains($0.id) }
+            return nativeRenditions(in: group.assetIDs.compactMap { lookup[$0] }.filter { admittedIDCache.contains($0.id) })
         }
     }
     var filteredAssets: [AssetRecord] {
@@ -399,11 +407,14 @@ final class AppModel: ObservableObject {
     var isBusy: Bool { job != nil || qualityAnalysisRunning || timelapseIsRunning }
     var keptCount: Int {
         if isPagedGrid, let overview { return scope == .project ? overview.projects.first { $0.project.id == scopeID }?.kept ?? 0 : overview.kept }
-        return scopedAssets.filter { $0.decision == .keep }.count
+        return Set(scopedAssets.filter { $0.decision == .keep }.map(\.physicalAssetID)).count
     }
-    func isSequenceOnly(_ id: String) -> Bool { sequenceOnlyIDCache.contains(id) }
+    func isSequenceOnly(_ id: String) -> Bool { sequenceOnlyIDCache.contains(physicalID(id)) }
     var canExport: Bool { !showTimelapse && !isTriageScope && !isHistoryScope && !scopedAssets.isEmpty && !isBusy }
-    var selectedSize: Int64 { selectedAssets.reduce(0) { $0 + $1.fileSize } }
+    var selectedSize: Int64 {
+        var seen = Set<String>()
+        return selectedAssets.reduce(0) { $0 + (seen.insert($1.physicalAssetID).inserted ? $1.fileSize : 0) }
+    }
 
     func reload() {
         snapshotEpoch &+= 1
@@ -437,7 +448,11 @@ final class AppModel: ObservableObject {
         evidenceByAsset = Dictionary(uniqueKeysWithValues: qualityEvidence.map { ($0.assetID, $0) })
         pairByAsset = [:]
         for pair in capturePairs { for id in pair.assetIDs { pairByAsset[id] = pair } }
-        groups = snapshot.groups; assets = snapshot.assets
+        renditionPreviewRevisions = snapshot.renditionPreviewRevisions
+        libraryCopies = snapshot.virtualCopies
+        groups = snapshot.groups
+        let showsCopies = scope == .all || scope == .project || scope == .group
+        assets = showsCopies ? nativeRenditions(in: snapshot.assets) : snapshot.assets
         assetByID = Dictionary(uniqueKeysWithValues: assets.map { ($0.id, $0) })
         relocationHistory = snapshot.relocationHistory; groupHistory = snapshot.groupHistory
         if scope == .session, scopeID == snapshot.groupingSessionID {
@@ -664,6 +679,16 @@ final class AppModel: ObservableObject {
         if mode != .grid { closeSearchControls() }
         saveBrowse()
     }
+    /// Import, review and tagging commands operate on files. Rendition identity is retained for the grid guard and undo focus.
+    private func physicalID(_ id: String) -> String {
+        assetByID[id]?.physicalAssetID ?? libraryCopies.first(where: { $0.id == id })?.sourceID ?? id
+    }
+
+    private func physicalIDs(_ ids: [String]) -> [String] {
+        var seen = Set<String>()
+        return ids.map(physicalID).filter { seen.insert($0).inserted }
+    }
+
     func canDecideAsset(id: String) -> Bool { !isCatalog && !isBusy && !isHistoryScope && scopedAssets.contains { $0.id == id } }
     /// Candidate actions address one physical file and preserve the comparison selection.
     func decideAsset(id: String, decision: Decision? = nil, rating: Int? = nil) {
@@ -675,7 +700,7 @@ final class AppModel: ObservableObject {
                 let command = try store.updateTriage(ids: [id], disposition: decision == .keep ? .passed : (decision == .reject ? .excluded : .pending))
                 undoStack.append(.triage(commandID: command.id))
             } else {
-                let changes = try store.updateSelection(ids: [id], decision: decision, rating: rating, markReviewed: true)
+                let changes = try store.updateSelection(ids: [physicalID(id)], decision: decision, rating: rating, markReviewed: true)
                 if !changes.isEmpty { undoStack.append(.selection(changes)) }
             }
             undoCount = undoStack.count
@@ -683,14 +708,14 @@ final class AppModel: ObservableObject {
             reconcileVisibleSelection(preserveFocus: true); errorMessage = nil; saveBrowse()
         } catch { errorMessage = "保存照片决定失败：\(error.localizedDescription)" }
     }
-    func colorLabel(for assetID: String) -> PhotoColorLabel? { assetColorLabels[assetID] }
+    func colorLabel(for assetID: String) -> PhotoColorLabel? { assetColorLabels[physicalID(assetID)] }
     func setColorLabel(_ label: PhotoColorLabel?, assetIDs: [String]) {
         guard !isCatalog, !isBusy, !isHistoryScope, let store else { return }
         let allowed = Set(scopedAssets.map(\.id)).union(frozenSelection?.assetIDs ?? []), wanted = Set(assetIDs)
         guard !wanted.isEmpty, wanted.isSubset(of: allowed) else { return }
         let selection = selectedIDs, focus = focusedID
         do {
-            if let command = try withCheckedSelection(store, ids: Array(wanted), { try store.setColorLabel(ids: Array(wanted), label: label) }) { undoStack.append(.colors(commandID: command.id)) }
+            if let command = try withCheckedSelection(store, ids: Array(wanted), { try store.setColorLabel(ids: physicalIDs(Array(wanted)), label: label) }) { undoStack.append(.colors(commandID: command.id)) }
             undoCount = undoStack.count
             reload(); selectedIDs = selection; focusedID = focus
             reconcileVisibleSelection(preserveFocus: true); errorMessage = nil; saveBrowse()
@@ -716,7 +741,7 @@ final class AppModel: ObservableObject {
             let shouldAdvance = autoAdvance && selectedIDs.count == 1
             let previousOrder = browserAssets.map(\.id), previousFocus = focusedID
             let ids = actionAssetIDs
-            let changes = try withCheckedSelection(store) { try store.updateSelection(ids: ids, decision: decision, rating: rating, markReviewed: true) }
+            let changes = try withCheckedSelection(store) { try store.updateSelection(ids: physicalIDs(ids), decision: decision, rating: rating, markReviewed: true) }
             if !changes.isEmpty { undoStack.append(.selection(changes)); undoCount = undoStack.count }
             reload()
             if shouldAdvance { advanceAfterMutation(previousOrder: previousOrder, previousFocus: previousFocus) }
@@ -728,6 +753,16 @@ final class AppModel: ObservableObject {
         guard !isCatalog, let entry = undoStack.last, let store else { return }
         do {
             switch entry {
+            case .virtualCopy(let copy, let previousRevision, let name, let removed, let focus):
+                let restored = try store.updateVirtualCopy(copy, name: name, removed: removed)
+                if let index = undoStack.dropLast().lastIndex(where: {
+                    if case .virtualCopy(let entry, _, _, _, _) = $0 { return entry.id == copy.id }
+                    return false
+                }), case .virtualCopy(let previous, let base, let label, let hidden, let target) = undoStack[index],
+                   previous.revision == previousRevision {
+                    undoStack[index] = .virtualCopy(restored, previousRevision: base, name: label, removed: hidden, focus: target)
+                }
+                selectAfterVirtualCopy(focus)
             case .triage(let commandID): try store.undoTriage(commandID: commandID); reload()
             case .colors(let commandID): try store.undoColorLabel(commandID: commandID); reload(); reconcileVisibleSelection(preserveFocus: true)
             case .tags(let commandID): try store.undoTagMutation(commandID: commandID); reload(); reconcileVisibleSelection()
@@ -745,7 +780,7 @@ final class AppModel: ObservableObject {
     }
     func refreshAvailability() {
         guard !isCatalog, let store else { return }
-        let ids = scopedAssets.map(\.id)
+        let ids = Array(Set(scopedAssets.map(\.physicalAssetID)))
         Task {
             do { try await Task.detached(priority: .utility) { try store.refreshAvailability(ids: ids) }.value; reload() }
             catch { errorMessage = "文件核验失败：\(error.localizedDescription)" }
@@ -852,27 +887,22 @@ final class AppModel: ObservableObject {
     func export(ids: [String], destination: String, formats: ExportFormats = .allOriginals, exactAssetIDs: [String]? = nil,
                 csvLayout: ExportCSVLayout = .legacy) {
         guard canExport, let exporter else { return }
-        let eligibleIDs = (isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : (supportsProjectSearch ? filteredAssets : scopedAssets)).map(\.id)
-        let exact = exactAssetIDs.map(Set.init)
-        let manifestIDs = eligibleIDs.filter { exact?.contains($0) ?? true }
-        guard Set(ids).count <= Self.maximumWorkbenchExportCount, (exact?.count ?? manifestIDs.count) <= Self.maximumWorkbenchExportCount else {
+        let source: (requested: [String], manifest: [String])
+        do { source = try originalExportMembers(ids, exact: exactAssetIDs) }
+        catch { errorMessage = error.localizedDescription; return }
+        guard source.requested.count <= Self.maximumWorkbenchExportCount, source.manifest.count <= Self.maximumWorkbenchExportCount else {
             errorMessage = "每批最多可交付 \(Self.maximumWorkbenchExportCount) 张照片，请缩小选片范围。"
-            return
-        }
-        if let exact, Set(manifestIDs) != exact {
-            errorMessage = "导出选片范围已变化，请重新选择照片。"
             return
         }
         if isPagedGrid, let exportCatalogScope, let store {
             do { _ = try store.catalogAssets(for: exportCatalogScope) }
             catch { errorMessage = error.localizedDescription; return }
         }
-        let allowedAssetIDs = manifestIDs
         showExport = false; errorMessage = nil
-        progress = TaskProgress(title: "交付精选原片", completed: 0, total: ids.count, message: "准备目标目录与清单…", isRunning: true)
+        progress = TaskProgress(title: "交付精选原片", completed: 0, total: source.requested.count, message: "准备目标目录与清单…", isRunning: true)
         job = Task { [self] in
             do {
-                exportReport = try await exporter.exportAssets(ids: ids, destination: URL(fileURLWithPath: destination), manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs, csvLayout: csvLayout, progress: { [weak self] value in Task { @MainActor in self?.progress = value } })
+                exportReport = try await exporter.exportAssets(ids: source.requested, destination: URL(fileURLWithPath: destination), manifestIDs: source.manifest, formats: formats, allowedAssetIDs: source.manifest, csvLayout: csvLayout, progress: { [weak self] value in Task { @MainActor in self?.progress = value } })
                 showExportReport = true
             } catch { errorMessage = "导出未完成：\(error.localizedDescription)" }
             job = nil
@@ -1300,7 +1330,7 @@ extension AppModel {
     var scopeCaptureCount: Int {
         if isPagedGrid, let overview { return scope == .project ? overview.projects.first { $0.project.id == scopeID }?.captures ?? 0 : overview.captures }
         var seen = Set<String>()
-        for asset in scopedAssets { seen.insert(pair(for: asset.id)?.id ?? asset.id) }
+        for asset in scopedAssets { seen.insert(pair(for: asset.physicalAssetID)?.id ?? asset.physicalAssetID) }
         return seen.count
     }
     var actionAssetIDs: [String] {
@@ -1355,7 +1385,7 @@ extension AppModel {
         return count == selectedIDs.count ? "已选 \(count) 个文件" : "已选组合 · 操作 \(count) 个文件"
     }
     func previewAsset(for asset: AssetRecord) -> AssetRecord {
-        guard let pair = pair(for: asset.id), collapses(pair) else { return asset }
+        guard renditionPreviewRevisions[asset.id] == nil, let pair = pair(for: asset.id), collapses(pair) else { return asset }
         let wanted = (actualPixels || rawPreviewPairIDs.contains(pair.id)) ? pair.rawAssetID : pair.jpegAssetID
         if let preferred = assetByID[wanted], preferred.availability == .available { return preferred }
         return pair.assetIDs.compactMap { assetByID[$0] }.first(where: { $0.availability == .available }) ?? asset
@@ -1494,9 +1524,26 @@ extension AppModel {
     }
     func exportSelection(ids: [String], formats: ExportFormats, exactAssetIDs: [String]? = nil) -> ExportSelection? {
         guard !isCatalog, let store else { return nil }
-        let exact = exactAssetIDs.map(Set.init)
-        let allowed = (isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : (supportsProjectSearch ? filteredAssets : scopedAssets)).map(\.id).filter { exact?.contains($0) ?? true }
-        return try? store.exportSelection(ids: ids, formats: formats, allowedAssetIDs: allowed)
+        guard let source = try? originalExportMembers(ids, exact: exactAssetIDs) else { return nil }
+        return try? store.exportSelection(ids: source.requested, formats: formats, allowedAssetIDs: source.manifest)
+    }
+
+    private func originalExportMembers(_ ids: [String], exact: [String]?) throws -> (requested: [String], manifest: [String]) {
+        let scope = isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : (supportsProjectSearch ? filteredAssets : scopedAssets)
+        let exact = exact.map(Set.init)
+        let rows = scope.filter { exact?.contains($0.id) ?? true }
+        let eligible = Set(rows.map(\.id))
+        guard (exact == nil || exact == eligible), Set(ids).isSubset(of: eligible) else {
+            throw LibraryError.invalid("导出选片范围已变化，请重新选择照片。")
+        }
+        let requested = Set(ids)
+        var selectedSources = Set<String>(), manifestSources = Set<String>()
+        var selected: [String] = [], manifest: [String] = []
+        for row in rows {
+            if manifestSources.insert(row.physicalAssetID).inserted { manifest.append(row.physicalAssetID) }
+            if requested.contains(row.id), selectedSources.insert(row.physicalAssetID).inserted { selected.append(row.physicalAssetID) }
+        }
+        return (selected, manifest)
     }
     func startQualityAnalysis(sessionID: String? = nil) {
         let id = sessionID ?? scopeID
@@ -1695,7 +1742,7 @@ extension AppModel {
         return supportsProjectSearch && !query.isEmpty
     }
     var hasSearchConditions: Bool { supportsProjectSearch && !effectiveSearchQuery.isEmpty }
-    var matchedCaptureCount: Int { if isPagedGrid { return catalogGrid?.totalCaptures ?? 0 }; return Set(filteredAssets.map { pair(for: $0.id)?.id ?? $0.id }).count }
+    var matchedCaptureCount: Int { if isPagedGrid { return catalogGrid?.totalCaptures ?? 0 }; return Set(filteredAssets.map { pair(for: $0.physicalAssetID)?.id ?? $0.physicalAssetID }).count }
     var availableSearchCameras: [String] {
         var seen = Set<String>()
         var values: [String] = []
@@ -1792,14 +1839,14 @@ extension AppModel {
     private static func filter(for decision: Decision?) -> Filter {
         switch decision { case .keep?: return .keep; case .reject?: return .reject; case .undecided?: return .undecided; case nil: return .all }
     }
-    func isReviewed(_ id: String) -> Bool { reviewedIDCache.contains(id) }
+    func isReviewed(_ id: String) -> Bool { reviewedIDCache.contains(physicalID(id)) }
     func markSelectedReviewed(_ reviewed: Bool) {
         guard !isCatalog, !isTriageScope, !isHistoryScope, !actionAssetIDs.isEmpty, let store else { return }
         do {
             let previousOrder = browserAssets.map(\.id), previousFocus = focusedID
             let advance = autoAdvance && selectedIDs.count == 1
             let ids = actionAssetIDs
-            try withCheckedSelection(store) { try store.markReviewed(ids: ids, reviewed: reviewed) }
+            try withCheckedSelection(store) { try store.markReviewed(ids: physicalIDs(ids), reviewed: reviewed) }
             reload()
             if advance { advanceAfterMutation(previousOrder: previousOrder, previousFocus: previousFocus) }
             else { reconcileVisibleSelection() }
@@ -1810,7 +1857,7 @@ extension AppModel {
         guard scope == .project else { projectProgress = nil; return }
         let members: Set<String>
         if isPagedGrid, let store { members = (try? store.catalogProjectAssetIDs(scopeID)) ?? [] }
-        else { members = Set(assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.id) }.map(\.id)) }
+        else { members = Set(assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.physicalAssetID) }.map(\.physicalAssetID)) }
         projectProgress = ReviewProgress.calculate(assetIDs: members, reviewedIDs: reviewedIDCache, pairs: capturePairs, sequenceOnlyIDs: sequenceOnlyIDCache)
     }
     private func makeProjectReviewState() -> ProjectReviewState? {
@@ -1898,7 +1945,7 @@ extension AppModel {
         var counts: [String: Int] = [:], labels: [String: String] = [:]
         for id in ids {
             var seen = Set<String>()
-            for tag in assetTags[id] ?? [] {
+            for tag in assetTags[physicalID(id)] ?? [] {
                 let key = TagText.key(tag)
                 labels[key] = labels[key] ?? tag
                 if seen.insert(key).inserted { counts[key, default: 0] += 1 }
@@ -1931,18 +1978,18 @@ extension AppModel {
     func prepareTagMutation(text: String, mode: TagMutationMode, showSheet: Bool = true) {
         guard !isCatalog, !isTriageScope, !isHistoryScope, !actionAssetIDs.isEmpty, let store else { return }
         do {
-            let preview = try store.previewTagMutation(ids: actionAssetIDs, mode: mode, tags: Self.tagTokens(text))
+            let preview = try store.previewTagMutation(ids: physicalIDs(actionAssetIDs), mode: mode, tags: Self.tagTokens(text))
             tagPreview = preview; tagPreviewScope = searchScopeKey; tagPreviewQuery = effectiveSearchQuery
             showTagPreview = showSheet; errorMessage = nil
         } catch { tagPreview = nil; errorMessage = "无法预览标签操作：\(error.localizedDescription)" }
     }
     @discardableResult func applyTagMutation() -> Bool {
         guard !isCatalog, let preview = tagPreview, !isTriageScope, !isHistoryScope, let store else { return false }
-        guard tagPreviewScope == searchScopeKey, tagPreviewQuery == effectiveSearchQuery, Set(preview.assetIDs) == Set(actionAssetIDs) else {
+        guard tagPreviewScope == searchScopeKey, tagPreviewQuery == effectiveSearchQuery, Set(preview.assetIDs) == Set(physicalIDs(actionAssetIDs)) else {
             errorMessage = "当前范围或所选文件已变化，请重新预览标签操作。"; return false
         }
         do {
-            let command = try withCheckedSelection(store, ids: preview.assetIDs) { try store.commitTagMutation(preview) }
+            let command = try withCheckedSelection(store) { try store.commitTagMutation(preview) }
             if !preview.changedAssetIDs.isEmpty { undoStack.append(.tags(commandID: command.id)); undoCount = undoStack.count }
             tagPreview = nil; showTagPreview = false
             reload(); reconcileVisibleSelection(); saveBrowse(); errorMessage = nil
@@ -2130,6 +2177,8 @@ extension AppModel {
     private func refreshCatalogSidebar(_ store: LibraryStore) throws {
         let summary = try LibraryEngine.shared().request("overview", at: libraryURL, payload: LibraryEmpty(), as: LibraryOverview.self)
         overview = summary
+        libraryCopies = try store.virtualCopies(projectID: scope == .project ? scopeID : nil)
+        renditionPreviewRevisions = try store.renditionPreviewRevisions(projectID: scope == .project ? scopeID : nil)
         projects = summary.projects.map(\.project)
         try store.withReadSnapshot {
             sessions = try store.loadSessions()
@@ -2150,10 +2199,30 @@ extension AppModel {
         }
     }
 
+    private func nativeRenditions(in originals: [AssetRecord]) -> [AssetRecord] {
+        guard !libraryCopies.isEmpty else { return originals }
+        let copies = Dictionary(grouping: libraryCopies, by: \.sourceID)
+        return originals.flatMap { source in [source] + (copies[source.id] ?? []).map { $0.projecting(source) } }
+    }
+
+    private func selectAfterVirtualCopy(_ identity: String) {
+        selectedIDs = [identity]; focusedID = identity; frozenSelection = nil
+        reload()
+        if !isPagedGrid { saveBrowse() }
+        navigationReveal = NavigationReveal(assetID: identity)
+    }
+
+    func finishVirtualCopyChange(_ changed: LibraryVirtualCopy, undoName: String?, undoRemoved: Bool?, undoFocus: String, focus: String) {
+        undoStack.append(.virtualCopy(changed, previousRevision: changed.revision - 1, name: undoName, removed: undoRemoved, focus: undoFocus))
+        undoCount = undoStack.count
+        selectAfterVirtualCopy(focus)
+    }
+
     private func submitCatalogPage(force: Bool = false) {
         guard isPagedGrid, let grid = catalogGrid else { return }
-        let request = CatalogGridRequest(query: effectiveSearchQuery, sort: reviewSort.rawValue,
+        var request = CatalogGridRequest(query: effectiveSearchQuery, sort: reviewSort.rawValue,
                                          projectID: scope == .project ? scopeID : nil)
+        if !libraryCopies.isEmpty { request.level = "work"; request.nativeRenditions = true }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
         let key = try? encoder.encode(request)
@@ -2226,9 +2295,9 @@ extension AppModel {
     }
     var scopeFileCount: Int {
         if isPagedGrid, let overview { return scope == .project ? projectFileCount(scopeID) : overview.files }
-        return scopedAssets.count
+        return Set(scopedAssets.map(\.physicalAssetID)).count
     }
-    var matchedFileCount: Int { isPagedGrid ? catalogGrid?.totalFiles ?? 0 : filteredAssets.count }
+    var matchedFileCount: Int { isPagedGrid ? catalogGrid?.totalFiles ?? 0 : Set(filteredAssets.map(\.physicalAssetID)).count }
     func projectFileCount(_ id: String) -> Int {
         if isPagedGrid { return overview?.projects.first { $0.project.id == id }?.files ?? 0 }
         return publishedAssets.filter { $0.projectID == id }.count

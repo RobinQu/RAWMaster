@@ -64,7 +64,7 @@ function changeMode(mode) {
     dialog(
       '比较照片',
       `<p>选择 2–4 张照片并排查看。</p><div class="choice-grid">${Studio.visible(S.scope)
-        .map((id) => check(Studio.asset(id).name, 'cmp-' + id, b.selected.includes(id)))
+        .map((id) => check(Studio.displayName(id), 'cmp-' + id, b.selected.includes(id)))
         .join('')}</div><p id="compare-error" role="status"></p>`,
       btn('取消', 'close') + btn('开始比较', 'compare-chosen', '', { cls: 'primary' }),
     );
@@ -76,7 +76,7 @@ function changeMode(mode) {
   render();
 }
 function histogram(id) {
-  const channels = RMHistogram[Studio.asset(id).source || id];
+  const channels = RMHistogram[Studio.fixtureID(id)];
   if (!channels) return '';
   return `<figure class="histogram" aria-label="示例 JPEG 的 RGB 直方图"><figcaption>直方图 <small>RGB</small></figcaption><svg viewBox="0 0 160 49" preserveAspectRatio="none" role="img" aria-label="红绿蓝三通道分布"><path d="M40 2v45m40-45v45m40-45v45" stroke="#455057" stroke-dasharray="2 3"/>${channels.map((points, i) => `<path d="M0 48 ${points.map((n, j) => `L${(j * 160) / (points.length - 1)} ${47 - n}`).join(' ')} L160 48Z" fill="${['#e68c7f', '#81bc98', '#79aeea'][i]}" opacity=".62" style="mix-blend-mode:screen"/>`).join('')}</svg></figure>`;
 }
@@ -98,7 +98,7 @@ function filmstrip(ids, focus) {
   }
   const photo = (id) => {
     const asset = Studio.asset(id);
-    return `<button class="filmstrip-photo${id === focus ? ' chosen' : ''}" data-act="photo" data-val="${h(id)}" aria-label="${h(asset.name)}${asset.online ? '' : '，离线'}" aria-pressed="${id === focus}">${pic(id)}<span>${h(asset.name)}</span></button>`;
+    return `<button class="filmstrip-photo${id === focus ? ' chosen' : ''}" data-act="photo" data-val="${h(id)}" aria-label="${h(Studio.displayName(id))}${asset.online ? '' : '，离线'}" aria-pressed="${id === focus}">${libraryPhoto(id)}<span>${h(Studio.displayName(id))}</span></button>`;
   };
   return `<div class="filmstrip" aria-label="胶片带">${runs.map(({ group, ids }) => {
     if (!group) return ids.map(photo).join('');
@@ -113,16 +113,21 @@ actions['filmstrip-group'] = (id) => {
   if (!S.filmstripCollapsed.delete(id)) S.filmstripCollapsed.add(id);
   render();
 };
+function libraryPhoto(id, cls = '') {
+  const recipe = Studio.activeArchive(id)?.recipe || Studio.data.edits[id]?.recipe;
+  const look = recipe ? RMPhotos.filter(RMPhotos.displayLook(RMSceneOutput.sdrPreview(recipe))) : '';
+  return pic(id, cls, look ? 'style="filter:' + h(look) + '"' : '');
+}
 function card(id, b) {
   const a = Studio.asset(id),
     p = Studio.photo(id),
     selected = b.selected.includes(id),
     decision = isTriage() ? a.triage : a.decision;
-  return `<button class="photo-card ${selected ? 'selected' : ''}" data-act="photo" data-val="${id}" aria-pressed="${selected}" aria-label="${h(a.name + '，' + p.scene)}">
-    <span class="thumb">${pic(id, p.w < p.h || (p.series === 'woods' && p.frame === 5) ? 'portrait' : '')}<span class="format">${a.pair ? 'RAW + JPEG' : a.name.toUpperCase().endsWith('.JPG') ? 'JPEG' : 'RAW'}</span>
+  return `<button class="photo-card ${selected ? 'selected' : ''}" data-act="photo" data-val="${id}" aria-pressed="${selected}" aria-label="${h(Studio.displayName(id) + '，' + p.scene)}">
+    <span class="thumb">${libraryPhoto(id, p.w < p.h || (p.series === 'woods' && p.frame === 5) ? 'portrait' : '')}<span class="format">${a.pair ? 'RAW + JPEG' : a.name.toUpperCase().endsWith('.JPG') ? 'JPEG' : 'RAW'}</span>
     ${!a.online ? '<span class="offline">离线</span>' : ''}${selected ? `<span class="tick">${icon('check', 12)}</span>` : ''}</span>
     <span class="card-line"><b>${h(a.name)}</b>${decision === 'keep' ? icon('flag', 13) : decision === 'reject' ? '<span class="reject">×</span>' : ''}</span>
-    <span class="card-line meta"><span>${h(p.exif.focal)} · ${h(p.clock.slice(0, 5))}</span><span class="stars">${a.stars ? '★'.repeat(a.stars) : ''}</span></span></button>`;
+    <span class="card-line meta"><span class="photo-secondary">${Studio.copy(id) ? icon("layers",12) + h(Studio.copy(id).name) : h(p.exif.focal) + " · " + h(p.clock.slice(0,5))}</span><span class="stars">${a.stars ? '★'.repeat(a.stars) : ''}</span></span></button>`;
 }
 function filterForm(b) {
   const fields =
@@ -181,7 +186,7 @@ function inspector(id) {
   ).join('');
   const groups = Studio.catalog().groups.filter((g) => g.ids.includes(id));
   return `<div class="inspector-title"><h2>照片信息</h2>${btn('收起照片信息', 'inspector', '', { only: true, icon: 'side', cls: 'icon-btn' })}</div>
-    ${histogram(id)}<h3 class="filename">${h(a.name)}</h3><p class="muted">${h(p.scene)} · ${a.online ? '原片在线' : '原片离线'}</p>
+    ${histogram(id)}<h3 class="filename">${h(Studio.displayName(id))}</h3><p class="muted">${h(p.scene)} · ${a.online ? '原片在线' : '原片离线'}</p>
     <div class="ins-block"><h4>拍摄参数</h4><div class="four-readouts"><strong>${h(p.exif.aperture)}</strong><strong>${h(p.exif.shutter)}</strong><strong>${h(p.exif.iso)}</strong><strong>${h(p.exif.focal)}</strong></div>
     <dl>${fact('相机', p.exif.camera)}${fact('拍摄日期', p.date)}${fact('原片尺寸', p.w + ' × ' + p.h)}</dl></div>
     <div class="ins-block"><h4>${stage ? '初筛处置' : '审阅'}</h4><dl>${fact('决定', { none: '未决定', pending: '待初筛', keep: stage ? '通过' : '保留', reject: '排除', sequence: '仅序列' }[stage ? a.triage : a.decision])}</dl>
@@ -247,9 +252,9 @@ function libraryView() {
     );
   else if (viewing === 'grid') content = `<div class="contact-grid">${gridCards(ids, b, info)}</div>`;
   else if (viewing === 'single')
-    content = `<div class="loupe ${S.zoom ? 'zoomed' : ''}">${pic(focus)}${btn(S.zoom ? '适合窗口' : '100% · Z', 'zoom', '', { cls: 'canvas-zoom' })}</div>${filmstrip(ids, focus)}`;
+    content = `<div class="loupe ${S.zoom ? 'zoomed' : ''}">${libraryPhoto(focus)}${btn(S.zoom ? '适合窗口' : '100% · Z', 'zoom', '', { cls: 'canvas-zoom' })}</div>${filmstrip(ids, focus)}`;
   else
-    content = `<div class="comparison">${b.selected.map((id) => `<figure>${pic(id)}<figcaption><strong>${h(Studio.asset(id).name)}</strong><small>${h(Studio.photo(id).exif.shutter)} · ${h(Studio.photo(id).exif.iso)}</small></figcaption></figure>`).join('')}</div>`;
+    content = `<div class="comparison">${b.selected.map((id) => `<figure>${libraryPhoto(id)}<figcaption><strong>${h(Studio.displayName(id))}</strong><small>${h(Studio.photo(id).exif.shutter)} · ${h(Studio.photo(id).exif.iso)}</small></figcaption></figure>`).join('')}</div>`;
   const stage = isTriage(),
     history = isHistory(),
     g = info.group;
@@ -365,9 +370,12 @@ actions['clear-filters'] = () => {
   render();
 };
 actions['remove-filter'] = (key) => setFilter(key, filterDefaults[key]);
+function selectedPhysicalIDs() {
+  return [...new Set(activeIDs().map(Studio.physicalID))];
+}
 actions.decide = (d) => {
   if (isHistory()) return;
-  const ids = activeIDs(),
+  const ids = selectedPhysicalIDs(),
     stage = isTriage();
   mutate(stage ? '已更新初筛处置' : '已更新项目决定', () =>
     ids.forEach((id) => {
@@ -382,7 +390,7 @@ actions.decide = (d) => {
 };
 actions.rate = (v) => {
   if (isTriage() || isHistory()) return;
-  const ids = activeIDs();
+  const ids = selectedPhysicalIDs();
   mutate('已更新星级', () =>
     ids.forEach((id) => {
       Studio.asset(id).stars = Number(v);
@@ -391,7 +399,7 @@ actions.rate = (v) => {
   );
 };
 changes.colorLabel = (el) => {
-  const ids = activeIDs();
+  const ids = selectedPhysicalIDs();
   mutate('已更新颜色标签', () =>
     ids.forEach((id) => {
       Studio.asset(id).label = el.value;
@@ -401,7 +409,7 @@ changes.colorLabel = (el) => {
 actions['selection-menu'] = () =>
   dialog(
     '选片操作',
-    `<div class="menu-list">${btn('清除决定', 'menu-decision', 'none')}${isTriage() ? btn('仅用于序列', 'menu-decision', 'sequence') : btn('标记为已审 / 未审', 'review-toggle') + btn('批量编辑标签…', 'tags') + btn('组织所选作品…', 'goto-close', 'tools/organization') + btn('新建拍摄组…', 'new-group') + btn('复制所选原文件…', 'original-review', 'selection') + btn('交付精选…', 'original-review', 'picks') + btn('批量工作流…', 'dag-batch-menu', '', { icon:'layers', disabled:activeIDs().filter(validWork).length<2, title:activeIDs().filter(validWork).length<2?'批量工作流：请至少选中两张照片':'批量工作流…' }) + (Studio.data.dagBatches?.length ? btn('最近工作流批次与撤销…', 'dag-batch-results', Studio.data.dagBatches.at(-1).id, { icon:'clock' }) : '')}${btn('操作记录与撤销…', 'library-log')}</div>`,
+    `<div class="menu-list">${VirtualCopies.menu(activeIDs())}${btn('清除决定', 'menu-decision', 'none')}${isTriage() ? btn('仅用于序列', 'menu-decision', 'sequence') : btn('标记为已审 / 未审', 'review-toggle') + btn('批量编辑标签…', 'tags') + btn('组织所选作品…', 'goto-close', 'tools/organization') + btn('新建拍摄组…', 'new-group') + btn('复制所选原文件…', 'original-review', 'selection') + btn('交付精选…', 'original-review', 'picks') + btn('批量工作流…', 'dag-batch-menu', '', { icon:'layers', disabled:activeIDs().filter(validWork).length<2, title:activeIDs().filter(validWork).length<2?'批量工作流：请至少选中两张照片':'批量工作流…' }) + (Studio.data.dagBatches?.length ? btn('最近工作流批次与撤销…', 'dag-batch-results', Studio.data.dagBatches.at(-1).id, { icon:'clock' }) : '')}${btn('操作记录与撤销…', 'library-log')}</div>`,
   );
 actions['goto-close'] = (v) => {
   closeSheet();
@@ -412,13 +420,13 @@ actions['menu-decision'] = (v) => {
   actions.decide(v);
 };
 actions['review-toggle'] = () => {
-  const ids = activeIDs(),
+  const ids = selectedPhysicalIDs(),
     to = !ids.every((id) => Studio.asset(id).reviewed);
   closeSheet();
   mutate('已更新审阅状态', () => ids.forEach((id) => (Studio.asset(id).reviewed = to)));
 };
 actions.tags = () => {
-  const ids = activeIDs();
+  const ids = selectedPhysicalIDs();
   dialog(
     '批量编辑标签',
     `<p>${ids.length} 张照片</p>${select('操作', 'tagOp', ['追加', '移除', '替换'], '追加')}${field('标签（用逗号分隔）', 'tagText')}<div id="tag-review"></div>`,
@@ -439,14 +447,14 @@ function rewrittenTags(id) {
       : [...new Set([...old, ...tags])];
 }
 function previewTags() {
-  const list = activeIDs();
+  const list = selectedPhysicalIDs();
   $('#tag-review').innerHTML =
     `<h4>逐张预览</h4><dl>${list.map((id) => fact(Studio.asset(id).name, (Studio.asset(id).tags.join('、') || '无') + ' → ' + (rewrittenTags(id).join('、') || '无'))).join('')}</dl>`;
 }
 inputs.tagText = previewTags;
 changes.tagOp = previewTags;
 actions['apply-tags'] = () => {
-  const updates = activeIDs().map((id) => [id, rewrittenTags(id)]);
+  const updates = selectedPhysicalIDs().map((id) => [id, rewrittenTags(id)]);
   closeSheet();
   mutate('已应用标签', () => updates.forEach(([id, tags]) => (Studio.asset(id).tags = tags)));
 };
@@ -458,9 +466,12 @@ actions['library-log'] = () =>
     btn('完成', 'close') + btn('撤销最近操作', 'undo-lib', '', { disabled: !Studio.data.history.length }),
   );
 actions['undo-lib'] = () => {
+  const restore = Studio.data.history[0]?.copyUndoFocus;
   const label = Studio.undo();
+  if (restore && validWork(restore)) VirtualCopies.selectOnly(restore);
   if (sheet.open) closeSheet();
   render();
+  if (restore) VirtualCopies.focusPhoto(restore);
   if (label) notify('已撤销 · ' + label);
 };
 actions.files = (id) => {

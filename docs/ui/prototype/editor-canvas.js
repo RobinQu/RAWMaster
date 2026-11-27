@@ -19,8 +19,8 @@ function neighbors() {
   return { previous: i > 0 ? ids[i - 1] : null, next: i >= 0 ? ids[i + 1] : null };
 }
 function navButton(direction, name, glyph, id) {
-  return `<span class="nav-target">${btn(name, 'canvas-nav', direction, { icon: glyph, only: true, disabled: !id, title: id ? name : name + '（已到范围边界）' })}
-    ${id ? `<span class="neighbor-preview" aria-hidden="true">${pic(id)}<span>${h(Studio.asset(id).name)}</span></span>` : ''}</span>`;
+  return `<span class="nav-target">${btn(name, 'canvas-nav', direction, { icon: glyph, only: true, disabled: !id, title: id ? name + ' · ' + Studio.displayName(id) : name + '（已到范围边界）' })}
+    ${id ? `<span class="neighbor-preview" aria-hidden="true">${libraryPhoto(id)}<span>${h(Studio.displayName(id))}</span></span>` : ''}</span>`;
 }
 function dock() {
   if (S.canvasTool) return canvasToolDock();

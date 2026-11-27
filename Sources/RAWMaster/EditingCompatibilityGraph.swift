@@ -270,7 +270,7 @@ struct EditingCompatibilityGraphToolbar: View {
     }
 
     private var reason: String? {
-        guard editing.work?.source.assetID == editing.asset?.id, !editing.loading else { return "正在读取照片" }
+        guard editing.work?.presentationID == editing.asset?.id, !editing.loading else { return "正在读取照片" }
         guard editing.sourceReady, !editing.sourceNeedsRevalidation else { return "原片不可用，请先接回或验证原片" }
         guard !canvasToolActive else {
             return "请先完成或取消画布工具"
@@ -280,7 +280,7 @@ struct EditingCompatibilityGraphToolbar: View {
 
     private var availableWorkID: String? {
         guard editing.isPresented, !editing.loading, editing.sourceReady, !editing.sourceNeedsRevalidation,
-              editing.work?.source.assetID == editing.asset?.id else { return nil }
+              editing.work?.presentationID == editing.asset?.id else { return nil }
         return editing.work?.id
     }
     var body: some View {
@@ -312,7 +312,7 @@ struct EditingCompatibilityGraphToolbar: View {
         let version = EditingVersion(id: editing.draftParentID ?? work.originalVersionID, workID: id,
             parentVersionID: nil, kind: .development, source: work.source, recipe: editing.recipe)
         guard let graph = try? DevelopmentCompatibilityGraphV1(version) else { return }
-        presenter.show(graph, photoName: editing.asset?.filename ?? "当前照片") {
+        presenter.show(graph, photoName: editing.asset?.editingDisplayName ?? "当前照片") {
             graphFocused = true
             graphAccessibilityFocused = true
         }

@@ -4,6 +4,29 @@ import ImageIO
 import RAWMasterCore
 
 extension RenderExportService {
+    /// Requested only by the library's 1:1 viewer. Scene delivery supplies the full, color-managed SDR derivative.
+    public func fullResolutionPreview(work: PhotoWork, version: EditingVersion, archive: EditingArchive) async throws -> CGImage {
+        guard version.workID == work.id, version.source.hasSameIdentity(as: work.source) else { throw EditingError.invalidSource }
+        if version.recipe.sceneGraph != nil {
+            let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false)
+            defer { try? FileManager.default.removeItem(at: folder) }
+            let url = folder.appendingPathComponent("preview.png")
+            _ = try await export(work: work, version: version, archive: archive, destination: url, format: .png16)
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                  let image = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary) else {
+                throw DevelopmentError.unreadable
+            }
+            return image
+        }
+        if let artifact = version.artifact {
+            return try await preview(work: work, version: version, archive: archive, maxPixel: max(artifact.pixelWidth, artifact.pixelHeight)).image
+        }
+        let frame = try await DevelopmentService().preview(source: work.source, recipe: version.recipe, maxPixel: 0)
+        guard let image = frame.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { throw DevelopmentError.unreadable }
+        return image
+    }
+
     public func preview(work: PhotoWork, version: EditingVersion, archive: EditingArchive, maxPixel: Int) async throws -> (image: CGImage, metadata: PhotoExportMetadata) {
         guard maxPixel > 0, version.workID == work.id, version.source.hasSameIdentity(as: work.source) else {
             throw EditingError.invalidSource

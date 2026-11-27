@@ -39,13 +39,24 @@ pub fn resolve(db: &Connection, body: &Value) -> Result<Value> {
     let mut seen = BTreeSet::new();
     let mut st = db.prepare_cached(
         "SELECT EXISTS(SELECT 1 FROM lc_scopes s JOIN assets a ON a.id=s.asset_id
-        WHERE s.asset_id=?1 AND (?2 IS NULL OR s.project_id=?2))",
+        WHERE s.asset_id=?1 AND (?2 IS NULL OR s.project_id=?2)
+        )",
     )?;
     for id in &scope.asset_ids {
-        if !seen.insert(id)
-            || !st.query_row(params![id, scope.project_id], |r| r.get::<_, bool>(0))?
-        {
-            return Err("The frozen selection contains a repeated or ineligible member".into());
+        if !seen.insert(id) {
+            return Err("The frozen selection contains a repeated member".into());
+        }
+        if st.query_row(params![id, scope.project_id], |r| r.get::<_, bool>(0))? {
+            continue;
+        }
+        let eligible: bool = db.query_row(
+            "SELECT EXISTS(SELECT 1 FROM lc_org_works w JOIN editing_works e ON e.id=w.work_id
+             JOIN lc_scopes s ON s.asset_id=e.asset_id AND s.project_id=e.project_id
+             WHERE w.work_id=?1 AND w.kind='virtual' AND json_extract(e.data,'$.virtualCopyID')=w.work_id
+             AND coalesce(json_extract(w.metadata_json,'$.rawmasterCopyRemoved'),0)=0
+             AND (?2 IS NULL OR e.project_id=?2))",params![id,scope.project_id], |r| r.get(0))?;
+        if !eligible {
+            return Err("The frozen selection contains an ineligible member".into());
         }
     }
     Ok(json!({"count": seen.len(), "watermark": cutoff, "libraryID": library}))

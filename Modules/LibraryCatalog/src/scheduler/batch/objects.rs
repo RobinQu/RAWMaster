@@ -72,6 +72,8 @@ struct Item {
     ordinal: usize,
     #[serde(rename = "assetID")]
     asset_id: String,
+    #[serde(rename = "presentationID")]
+    presentation_id: Option<String>,
     stem: String,
     #[serde(rename = "workID")]
     work_id: String,
@@ -79,6 +81,12 @@ struct Item {
     version_id: String,
     source: Source,
     body: Reference,
+}
+
+impl Item {
+    fn presentation(&self) -> &str {
+        self.presentation_id.as_deref().unwrap_or(&self.asset_id)
+    }
 }
 
 pub(super) struct Set {
@@ -98,11 +106,12 @@ impl Set {
             items: Vec::<Item>::deserialize(items)?,
         };
         set.configuration.check()?;
-        let mut assets = HashSet::new();
+        let mut presentations = HashSet::new();
         for (i, item) in set.items.iter().enumerate() {
             item.body.check()?;
             if item.ordinal != i + 1
-                || !assets.insert(&item.asset_id)
+                || !presentations.insert(item.presentation())
+                || !identifier(item.presentation())
                 || !identifier(&item.asset_id)
                 || !literal_stem(&item.stem)
                 || !identifier(&item.work_id)
@@ -216,6 +225,8 @@ fn settings<'de, D: serde::Deserializer<'de>>(
 #[derive(Deserialize)]
 struct Work {
     id: String,
+    #[serde(rename = "virtualCopyID")]
+    virtual_copy_id: Option<String>,
     source: Source,
 }
 #[derive(Deserialize)]
@@ -239,6 +250,7 @@ enum Identity {
     Configuration(Option<&'static str>),
     Item {
         work: String,
+        virtual_copy_id: Option<String>,
         version: String,
         source: Source,
     },
@@ -259,11 +271,17 @@ impl ItemBody {
             || self.role != Role::Item
             || self.work.id != self.version.work_id
             || self.work.source != self.version.source
+            || self
+                .work
+                .virtual_copy_id
+                .as_ref()
+                .is_some_and(|copy| copy != &self.work.id || copy == &self.work.source.asset)
         {
             return Err("workbench body contains unrelated work or version".into());
         }
         Ok(Identity::Item {
             work: self.work.id,
+            virtual_copy_id: self.work.virtual_copy_id,
             version: self.version.id,
             source: self.work.source,
         })
@@ -276,11 +294,18 @@ impl Identity {
             (
                 Identity::Item {
                     work,
+                    virtual_copy_id,
                     version,
                     source,
                 },
                 Expected::Item(i),
-            ) if work == &i.work_id && version == &i.version_id && source == &i.source => Ok(()),
+            ) if work == &i.work_id
+                && version == &i.version_id
+                && source == &i.source
+                && virtual_copy_id.as_deref().unwrap_or(&source.asset) == i.presentation() =>
+            {
+                Ok(())
+            }
             _ => Err(
                 "workbench resource differs from its frozen role, work, version or source".into(),
             ),

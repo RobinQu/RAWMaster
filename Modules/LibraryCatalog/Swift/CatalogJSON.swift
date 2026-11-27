@@ -44,6 +44,7 @@ public struct CatalogGridRequest<Query: Encodable & Sendable>: Encodable, Sendab
     public var groupID: String?
     public var collectionID: String?
     public var level: String
+    public var nativeRenditions: Bool?
     public var sort: String
     public var query: Query
     public var predicate: CatalogJSON?

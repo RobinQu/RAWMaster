@@ -18,8 +18,15 @@ struct ExportWorkspaceSelection {
         if focusedID.map(incoming.contains) != true { focusedID = order.first }
     }
 
-    static func keepingFirst(_ limit: Int, checked: Set<String>, order: [String]) -> Set<String> {
-        Set(order.lazy.filter(checked.contains).prefix(limit))
+    static func keepingFirst(_ limit: Int, checked: Set<String>, order: [String], physicalIDs: [String: String] = [:]) -> Set<String> {
+        var sources = Set<String>()
+        var retained = Set<String>()
+        for id in order where checked.contains(id) {
+            let source = physicalIDs[id] ?? id
+            if sources.count < limit { sources.insert(source) }
+            if sources.contains(source) { retained.insert(id) }
+        }
+        return retained
     }
 }
 
@@ -37,7 +44,7 @@ enum ExportChecklistFilter: String, CaseIterable {
             case .raw: CaptureFileFormat.isRAW(asset.filename)
             case .jpeg: CaptureFileFormat.isJPEG(asset.filename)
             }
-            return matches && (term.isEmpty || asset.filename.localizedCaseInsensitiveContains(term) ||
+            return matches && (term.isEmpty || asset.exportPresentationName.localizedCaseInsensitiveContains(term) ||
                                  asset.projectName.localizedCaseInsensitiveContains(term))
         }
     }
@@ -46,6 +53,7 @@ enum ExportChecklistFilter: String, CaseIterable {
 struct ExportAssetChecklist: View {
     let assets: [AssetRecord]
     let limit: Int
+    var originalMode = false
     @Binding var checked: Set<String>
     @Binding var focused: String?
     @State private var query = ""
@@ -54,20 +62,21 @@ struct ExportAssetChecklist: View {
 
     var body: some View {
         let rows = filter.rows(in: assets, query: query, checked: checked)
+        let selectedCount = originalMode ? Set(assets.lazy.filter { checked.contains($0.id) }.map(\.physicalAssetID)).count : checked.count
         let filtering = filter != .all || !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("本次照片").font(.headline)
+                Text("本次照片").font(AppDesign.Typography.sectionTitle)
                 Spacer()
                 Text("\(checked.count) / \(assets.count)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
             }.padding([.horizontal, .top], 13)
-            TextField("搜索文件名或项目", text: $query)
+            TextField("搜索文件名、副本名或项目", text: $query)
                 .textFieldStyle(.roundedBorder).padding(.horizontal, 12).padding(.top, 10)
                 .accessibilityIdentifier("export.workspace.search")
             HStack {
-                Picker("选片筛选", selection: $filter) {
-                    ForEach(ExportChecklistFilter.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-                }.labelsHidden().accessibilityIdentifier("export.workspace.filter")
+                AppMenu(title: "选片筛选", selection: $filter, options: ExportChecklistFilter.allCases, label: { $0.rawValue })
+                    .frame(minHeight: AppDesign.Metric.rowHeight)
+                    .accessibilityIdentifier("export.workspace.filter")
                 Spacer()
                 if filtering { Text("\(rows.count) 项").font(.caption).foregroundStyle(.secondary) }
             }.padding(.horizontal, 12).padding(.vertical, 7)
@@ -76,12 +85,13 @@ struct ExportAssetChecklist: View {
                     .disabled(rows.isEmpty)
                 Button("清除勾选") { checked.subtract(rows.map(\.id)) }.disabled(checked.isEmpty || rows.isEmpty)
             }
-            .font(.caption).buttonStyle(.link).padding(.horizontal, 13).padding(.bottom, 10)
-            if checked.count > limit {
+            .buttonStyle(AppFlatButtonStyle()).padding(.horizontal, 13).padding(.bottom, 10)
+            if selectedCount > limit {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("每批最多 \(limit) 张，当前多选了 \(checked.count - limit) 张。").font(.caption)
+                    Text("每批最多 \(limit) 张，当前多选了 \(selectedCount - limit) 张。").font(.caption)
                     Button("保留前 \(limit) 张已选照片") {
-                        checked = ExportWorkspaceSelection.keepingFirst(limit, checked: checked, order: assets.map(\.id))
+                        let sources = originalMode ? Dictionary(uniqueKeysWithValues: assets.map { ($0.id, $0.physicalAssetID) }) : [:]
+                        checked = ExportWorkspaceSelection.keepingFirst(limit, checked: checked, order: assets.map(\.id), physicalIDs: sources)
                     }.buttonStyle(.link).font(.caption)
                         .accessibilityIdentifier("export.workspace.limit")
                 }.padding(.horizontal, 13).padding(.bottom, 9)
@@ -93,7 +103,7 @@ struct ExportAssetChecklist: View {
             } else {
                 List(rows, selection: $focused) { asset in
                     HStack(spacing: 7) {
-                        Toggle("选择 \(asset.filename)", isOn: Binding(
+                        Toggle(isOn: Binding(
                             get: { checked.contains(asset.id) },
                             set: { value in
                                 if NSEvent.modifierFlags.contains(.shift), let anchor = rangeAnchor,
@@ -105,20 +115,22 @@ struct ExportAssetChecklist: View {
                                 }
                                 rangeAnchor = asset.id
                             }
-                        )).toggleStyle(.checkbox).labelsHidden()
+                        )) { EmptyView() }
+                            .toggleStyle(AppFlatCheckboxStyle())
+                            .accessibilityLabel("选择 \(asset.exportPresentationName)")
                         Button {
                             focused = asset.id
                         } label: {
                             HStack(spacing: 7) {
-                                ExportListThumbnail(asset: asset)
+                                ExportListThumbnail(asset: asset, original: originalMode)
                                 VStack(alignment: .leading, spacing: 3) {
-                                    Text(asset.filename).lineLimit(1).truncationMode(.middle)
+                                    Text(asset.exportPresentationName).font(AppDesign.Typography.rowTitle).lineLimit(1).truncationMode(.middle)
                                     Text(asset.availability == .missing ? "原片离线" : (asset.availability == .changed ? "原片已变更" : asset.projectName))
                                         .font(.caption2).lineLimit(1).foregroundStyle(.secondary)
                                 }
                                 Spacer(minLength: 0)
                             }.contentShape(Rectangle())
-                        }.buttonStyle(.plain).accessibilityLabel("预览 \(asset.filename)")
+                        }.buttonStyle(.plain).accessibilityLabel("预览 \(asset.exportPresentationName)")
                     }
                     .tag(asset.id)
                     .accessibilityIdentifier("export.workspace.asset." + asset.id)
@@ -135,7 +147,9 @@ struct ExportAssetChecklist: View {
 }
 
 private struct ExportListThumbnail: View {
+    @EnvironmentObject var model: AppModel
     let asset: AssetRecord
+    let original: Bool
     @State private var photo: NSImage?
     var body: some View {
         ZStack {
@@ -146,10 +160,11 @@ private struct ExportListThumbnail: View {
                 Image(systemName: "photo").foregroundStyle(.secondary)
             }
         }.frame(width: 40, height: 34).clipShape(RoundedRectangle(cornerRadius: 3))
-            .task(id: asset.resolvedURL) {
+            .task(id: model.renditionPreviewKey(for: asset) + (original ? "/raw" : "/rendition")) {
                 photo = nil
-                guard asset.availability == .available else { return }
-                let image = try? await ImagePipeline.shared.preview(at: asset.resolvedURL, maxPixel: 96)
+                let image: NSImage?
+                if original { image = try? await ImageEngines.browsing.preview(for: asset, maxPixel: 96) }
+                else { image = try? await model.libraryRenditionPreview(asset, maxPixel: 96) }
                 if !Task.isCancelled { photo = image }
             }
     }

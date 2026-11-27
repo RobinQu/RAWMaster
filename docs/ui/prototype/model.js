@@ -14,7 +14,10 @@ const defaultFlux = () => ({
 
 const Studio = (() => {
   const key = 'rawmaster.ui.workbench.v1';
-  const photo = (id) => RMPhotos.photos[data?.catalog?.records[id]?.source || id];
+  const copy = id => data?.catalog?.virtualCopies?.[id];
+  const physicalID = id => copy(id)?.source ?? id;
+  const fixtureID = id => data?.catalog?.records[physicalID(id)]?.source || physicalID(id);
+  const photo = id => RMPhotos.photos[fixtureID(id)];
   const initial = Object.keys(RMPhotos.photos).slice(0, 12);
   const freshRecipe = () => ({
     ev: 0,
@@ -106,7 +109,8 @@ const Studio = (() => {
     } catch {}
   }
   const catalog = () => data.catalog;
-  const asset = (id) => catalog().records[id];
+  const asset = id => catalog().records[physicalID(id)];
+  const displayName = id => copy(id) ? asset(id).name + ' · ' + copy(id).name : asset(id)?.name;
   const project = (id) => catalog().projects.find((p) => p.id === id);
   const group = (id) => catalog().groups.find((g) => g.id === id);
   const session = (id) => catalog().sessions.find((g) => g.id === id);
@@ -138,6 +142,43 @@ const Studio = (() => {
       saved: JSON.stringify(freshRecipe()),
     });
   }
+  function copiesOf(id) {
+    return Object.values(catalog().virtualCopies || {}).filter(item => item.source === physicalID(id));
+  }
+  function copyNameIssue(id, name, except) {
+    const label = name.trim(), length = [...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(label)].length;
+    if (!length || length > 128 || /\p{Cc}/u.test(label)) return '请输入 1 到 128 个字符的副本名称。';
+    if (copiesOf(id).some(item => item.id !== except && item.name.localeCompare(label,undefined,{sensitivity:'accent'})===0))
+      return '这张照片已使用此副本名称。';
+    return '';
+  }
+  function createCopy(id, name) {
+    const key = 'copy-' + uid(), original = edit(id);
+    change('创建虚拟副本', c => {
+      (c.virtualCopies ??= {})[key] = {id:key, source:physicalID(id), name:name.trim()};
+      const branch = edit(key);
+      branch.recipe = structuredClone(original.recipe);
+      branch.saved = JSON.stringify(branch.recipe);
+      branch.appearanceDrafts = structuredClone(original.appearanceDrafts ?? {});
+      const adopted = activeArchive(id);
+      if (adopted) {
+        const inherited = {...structuredClone(adopted),id:uid(), originVersionID:adopted.id};
+        if (['初修','工作流'].includes(adopted.kind ?? adopted.name.split(' ')[0])) {
+          branch.recipe = structuredClone(adopted.recipe);
+          branch.saved = JSON.stringify(branch.recipe);
+        }
+        branch.adoptionBaseline = JSON.stringify(branch.recipe);
+        branch.versions.push(inherited);
+        branch.adopted = branch.base = inherited.id;
+      }
+    });
+    return key;
+  }
+  function activeArchive(id) {
+    const e = data.edits[id];
+    if (!e || e.adopted === 'original' || JSON.stringify(e.recipe) !== (e.adoptionBaseline ?? e.saved)) return null;
+    return e.versions.find(version => version.id === e.adopted && !version.discarded) ?? null;
+  }
   function setRecipe(id, label, next) {
     const e = edit(id);
     if (JSON.stringify(e.recipe) === JSON.stringify(next)) return;
@@ -159,7 +200,9 @@ const Studio = (() => {
       const reverse = { label: step.label, value: e.recipe };
       if (Object.hasOwn(step, 'adopted')) {
         reverse.adopted = e.adopted;
+        reverse.adoptionBaseline = e.adoptionBaseline;
         e.adopted = step.adopted;
+        e.adoptionBaseline = step.adoptionBaseline;
       }
       to.unshift(reverse);
       e.recipe = step.value;
@@ -175,6 +218,8 @@ const Studio = (() => {
     e.past.length = Math.min(40, e.past.length);
     e.future = [];
     e.adopted = version;
+    e.past[0].adoptionBaseline = e.adoptionBaseline;
+    e.adoptionBaseline = JSON.stringify(e.recipe);
     save();
     return true;
   }
@@ -191,6 +236,7 @@ const Studio = (() => {
     const e = edit(id);
     const version = {
       id: uid(),
+      kind,
       name: `${kind} ${e.versions.length + 1}`,
       recipe: structuredClone(recipe),
       parent,
@@ -265,12 +311,15 @@ const Studio = (() => {
   }
   function visible(scope) {
     const b = browser(scope);
-    const ids = scopeInfo(scope).ids.filter((id) => {
+    const sourceIDs = scopeInfo(scope).ids;
+    const presentations = scope === 'all' || scope.startsWith('project/') || scope === 'picks'
+      ? sourceIDs.flatMap(id => [id, ...copiesOf(id).map(item=>item.id)]) : sourceIDs;
+    const ids = presentations.filter((id) => {
       const a = asset(id),
         p = photo(id);
       return (
         (!b.query ||
-          [a.name, p.scene, ...a.tags].join(' ').toLowerCase().includes(b.query.trim().toLowerCase())) &&
+          [displayName(id), p.scene, ...a.tags].join(' ').toLowerCase().includes(b.query.trim().toLowerCase())) &&
         a.stars >= b.minStars &&
         (b.availability === 'all' || a.online === (b.availability === 'online')) &&
         (b.camera === 'all' || p.exif.camera === b.camera) &&
@@ -281,7 +330,7 @@ const Studio = (() => {
       );
     });
     if (b.sort === '星级优先') ids.sort((a, b) => asset(b).stars - asset(a).stars);
-    if (b.sort === '文件名') ids.sort((a, b) => asset(a).name.localeCompare(asset(b).name));
+    if (b.sort === '文件名') ids.sort((a, b) => displayName(a).localeCompare(displayName(b)));
     return ids;
   }
   function reconcile(scope) {
@@ -311,18 +360,21 @@ const Studio = (() => {
           h: v.h,
           archive: true,
           look: RMPhotos.displayLook(RMSceneOutput.sdrPreview(v.recipe)),
-          sceneOutput: RMSceneOutput.eligible(a.source || id, v.recipe.sceneOutput),
+          sceneOutput: RMSceneOutput.eligible(fixtureID(id), v.recipe.sceneOutput),
         })),
     ];
+    if (preferred == null && !activeArchive(id) && (copy(id) || e.recipe.sceneOutput || dirty(id))) preferred = 'draft';
     if (preferred === 'draft') {
       versions.unshift({id:'draft-' + uid(), label:'当前编辑', ...editedDimensions(p, e.recipe), archive:false,
         recipe:structuredClone(e.recipe),look:RMPhotos.displayLook(RMSceneOutput.sdrPreview(e.recipe)),
-        sceneOutput:RMSceneOutput.eligible(a.source || id,e.recipe.sceneOutput)});
+        sceneOutput:RMSceneOutput.eligible(fixtureID(id),e.recipe.sceneOutput)});
     }
     const first = preferred === 'draft' ? versions[0] : versions.find((v) => v.id === (preferred ?? e.adopted)) ?? original;
     return {
       id,
-      source: a.source || id,
+      source: fixtureID(id),
+      physicalID: physicalID(id),
+      copyName: copy(id)?.name,
       name: a.name,
       online: a.online,
       versions: [first, ...versions.filter((v) => v !== first)],
@@ -337,7 +389,8 @@ const Studio = (() => {
       return data;
     },
     emptyRecords: () => Object.fromEntries(Object.keys(RMPhotos.photos).map(id => [id, record(id, 100)])),
-    photo,
+    photo, activeArchive,
+    copy, copiesOf, physicalID, fixtureID, displayName, copyNameIssue, createCopy,
     asset,
     project,
     group,

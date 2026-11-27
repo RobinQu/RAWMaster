@@ -1,6 +1,6 @@
 WITH RECURSIVE
 origins AS (
- SELECT w.work_id,w.kind,w.name,w.rating AS work_rating,w.active_version_id,v.base_work_id,v.source_file_id,v.source_folder_id,
+ SELECT w.work_id,w.rowid AS rendition_ord,w.kind,w.name,w.rating AS work_rating,w.active_version_id,v.base_work_id,v.source_file_id,v.source_folder_id,
     coalesce(f.project_id,v.work_project_id,'') AS project_id,f.capture_id,f.asset_id,a.session_id,a.rowid AS asset_ord,s.rowid AS session_ord,
     coalesce(a.data,'{}') AS record,base.metadata_json AS base_meta,w.metadata_json AS work_meta,
     coalesce(t.data,'[]') AS legacy_tags,json_extract(l.data,'$.label') AS legacy_label,
@@ -32,7 +32,7 @@ display AS MATERIALIZED (
 ),
 documents AS (
  SELECT d.*,0 AS gen,source_file_id AS file_id,coalesce(json_extract(meta,'$.relativePath'),filename) AS relative_path,
-   rm_org_fold(filename) AS name_key,rm_org_fold(display_name) AS work_name,
+   rm_org_fold(__NAME_FOR_SEARCH__) AS name_key,rm_org_fold(display_name) AS work_name,
    json_extract(meta,'$.camera') AS camera,rm_org_fold(trim(json_extract(meta,'$.camera'))) AS camera_key,
    rm_org_number(json_extract(meta,'$.capturedAt')) AS captured,
    coalesce(rm_org_number(json_extract(meta,'$.rating')),0) AS rating,

@@ -26,7 +26,7 @@ const SceneEditor = (() => {
     if (!views.has(key)) views.set(key, { screen: 'sdr', preview: 'target', scope: 'output', overlays: new Set(), sample: false });
     return views.get(key);
   }
-  const reason = () => Studio.asset(id()).online ? RMSceneOutput.fixtureReason(Studio.asset(id()).source || id()) : '原片已离线；可查看现存预览，接回原片后才可重算 HDR。';
+  const reason = () => Studio.asset(id()).online ? RMSceneOutput.fixtureReason(Studio.fixtureID(id())) : '原片已离线；可查看现存预览，接回原片后才可重算 HDR。';
   const fallback = () => !(view().preview === 'target' && view().screen === 'hdr');
   const appearance = () => fallback() ? 'HDR · SDR 派生预览' : 'HDR · 目标预览（屏幕余量有限）';
   const hdr = () => !!config();
@@ -147,7 +147,7 @@ const SceneEditor = (() => {
     entrySelector = '.scene-entry';
     const c = config(), why = reason(), readOnly = !!(blocked() || why);
     const disabled = readOnly ? 'disabled' : '';
-    dialog('色彩与输出', `<div class="scene-sheet"><p>原型模拟 · ${h(Studio.asset(id()).name)} · ${versions() ? '版本查看' : '当前编辑草稿'}。</p>
+    dialog('色彩与输出', `<div class="scene-sheet"><p>原型模拟 · ${h(Studio.displayName(id()))} · ${versions() ? '版本查看' : '当前编辑草稿'}。</p>
       <p>色彩模式：<strong>${h(modes[mode()])}</strong> · ${c ? why ? '当前不可重算 HDR' : '场景参考（样本）' : 'SDR 彩色与黑白共用 SDR 输出'}</p>
       ${why ? `<p class="warn">${h(why)}</p>` : ''}
       ${c ? `<p>标准 ACES 2 · ${h(RMSceneOutput.targets.hdr.signal)}。其他成像路线和目标未放行；屏幕 ICC 不改变成片目标。</p>

@@ -48,8 +48,19 @@ extension LibraryStore {
   public func catalogAssets(for selection: CatalogFrozenSelection) throws -> [AssetRecord] {
     try withReadSnapshot {
       guard try catalogTransaction("resolveSelection", selection) != .null else { throw CatalogSelectionError.changed }
-      return try rows("SELECT a.data FROM json_each(?) chosen JOIN assets a ON a.id=chosen.value ORDER BY chosen.key",
-                      [try json(selection.assetIDs)]).map { try decode($0[0], AssetRecord.self) }
+      let data = try rows("""
+        SELECT a.data,w.work_id,w.name FROM json_each(?) chosen
+        LEFT JOIN lc_org_works w ON w.work_id=chosen.value AND w.kind='virtual'
+        LEFT JOIN editing_works e ON e.id=w.work_id AND json_extract(e.data,'$.virtualCopyID')=w.work_id
+        JOIN assets a ON a.id=coalesce(e.asset_id,chosen.value) ORDER BY chosen.key
+        """, [try json(selection.assetIDs)])
+      return try data.map { row in
+        var asset = try decode(row[0], AssetRecord.self)
+        if !row[1].isEmpty {
+          asset.virtualCopySourceID = asset.id; asset.id = row[1]; asset.virtualCopyName = row[2]
+        }
+        return asset
+      }
     }
   }
 

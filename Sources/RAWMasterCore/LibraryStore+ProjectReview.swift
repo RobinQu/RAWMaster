@@ -52,9 +52,10 @@ extension LibraryStore {
       let current = try loadProjectReviewState(projectID: state.projectID)
       guard state.revision == (current?.revision ?? 0) else { throw LibraryError.invalid("项目浏览状态已由其他窗口修改，请重新载入") }
       let admitted = Set(try loadAdmissions().filter { $0.projectID == state.projectID }.map(\.assetID))
+      let visible = admitted.union(try virtualCopies(projectID: state.projectID).filter { admitted.contains($0.sourceID) }.map(\.id))
       var next = state
-      next.focusedAssetID = state.focusedAssetID.flatMap { admitted.contains($0) ? $0 : nil }
-      next.selectedAssetIDs = Array(Set(state.selectedAssetIDs)).filter { admitted.contains($0) }.sorted()
+      next.focusedAssetID = state.focusedAssetID.flatMap { visible.contains($0) ? $0 : nil }
+      next.selectedAssetIDs = Array(Set(state.selectedAssetIDs)).filter(visible.contains).sorted()
       let pairIDs = Set(try loadCapturePairs().filter { Set($0.assetIDs).isSubset(of: admitted) }.map(\.id))
       next.expandedPairIDs = Array(Set(state.expandedPairIDs).intersection(pairIDs)).sorted()
       next.rawPreviewPairIDs = Array(Set(state.rawPreviewPairIDs).intersection(pairIDs)).sorted()

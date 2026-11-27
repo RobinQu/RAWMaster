@@ -56,6 +56,9 @@ const PhotoDelivery = (() => {
       row.asset = assetKey(photo);
       row.version = structuredClone(row.version);
       row.sourceName = photo.name;
+      row.physicalID = photo.physicalID || row.asset;
+      row.presentationID = row.asset;
+      if (photo.copyName) row.copyName = photo.copyName;
       row.versionID = row.version.id ?? String(photo.choice);
       row.ordinal = i + 1;
       row.online = photo.online;

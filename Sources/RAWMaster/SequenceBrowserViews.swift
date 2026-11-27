@@ -300,6 +300,7 @@ struct BrowserAssetContextMenu: View {
     let asset: AssetRecord
     var body: some View {
         Button("单张查看") { model.select(asset); model.setMode(.single) }
+        VirtualCopyMenuItems(asset: asset)
         if !model.isHistoryScope {
             if model.isTriageScope {
                 Button("初筛通过") { model.select(asset); model.setTriage(.passed) }

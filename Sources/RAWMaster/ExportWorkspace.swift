@@ -65,7 +65,7 @@ struct ExportWorkspace: View {
         let inspected = assets.first { $0.id == selection.focusedID }
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                ExportAssetChecklist(assets: assets, limit: AppModel.maximumWorkbenchExportCount,
+                ExportAssetChecklist(assets: assets, limit: AppModel.maximumWorkbenchExportCount, originalMode: values.mode == "original",
                                      checked: $selection.checked, focused: $selection.focusedID)
                     .frame(minWidth: 195, idealWidth: 220, maxWidth: 250)
                 Divider()
@@ -114,7 +114,7 @@ struct ExportWorkspace: View {
             }
         }
         .onChange(of: assets.map(\.id), initial: true) { _, ids in selection.synchronize(ids) }
-        .task(id: PreviewKey(id: inspected?.id, path: inspected?.resolvedURL.path, mode: values.mode)) {
+        .task(id: PreviewKey(id: inspected?.id, path: inspected.map { model.renditionPreviewKey(for: $0) }, mode: values.mode)) {
             await loadPreview(inspected)
         }
         .sheet(isPresented: $showingDeliveryDetails, onDismiss: { deliveryDetailsFocused = true }) {
@@ -147,7 +147,7 @@ struct ExportWorkspace: View {
 
     private var presetsBar: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Text("导出预设").font(.headline)
+            Text("导出预设").font(AppDesign.Typography.sectionTitle)
             HStack(spacing: 8) {
                 Menu {
                     Button("上次设置") { if let lastPreset { apply(lastPreset) } }.disabled(lastPreset == nil)
@@ -175,14 +175,14 @@ struct ExportWorkspace: View {
                     .fixedSize().accessibilityLabel("导入或分享预设")
                 Spacer(minLength: 0)
             }
-        }.padding(.horizontal, 16).padding(.vertical, 12)
+        }.buttonStyle(AppFlatButtonStyle()).padding(.horizontal, 16).padding(.vertical, 12)
     }
 
     @ViewBuilder private func inspection(_ asset: AssetRecord?) -> some View {
         if let asset {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text(asset.filename).font(.headline).lineLimit(1).truncationMode(.middle)
+                    Text(asset.exportPresentationName).font(AppDesign.Typography.sectionTitle).lineLimit(1).truncationMode(.middle)
                     Spacer()
                     Text(values.mode == "render" ? (values.pqDelivery ? "SDR 代理 · 不代表 HDR 亮度" : "成片预览") : "原件预览")
                         .font(.caption).foregroundStyle(.secondary)
@@ -221,6 +221,8 @@ struct ExportWorkspace: View {
 
     private func footer(_ assets: [AssetRecord]) -> some View {
         let delivery = model.workbenchPhotoDelivery
+        let original = values.mode == "original"
+        let selectedCount = original ? Set(assets.lazy.filter { checked.contains($0.id) }.map(\.physicalAssetID)).count : checked.count
         let displayedDirectory = running ? (delivery?.directory ?? directory) : directory
         return HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
@@ -251,19 +253,22 @@ struct ExportWorkspace: View {
                         NSWorkspace.shared.activateFileViewerSelecting(results)
                     }.font(.caption).buttonStyle(.link)
                 }
-                if checked.count > AppModel.maximumWorkbenchExportCount {
+                if selectedCount > AppModel.maximumWorkbenchExportCount {
                     Text("超出单批上限").font(.caption).foregroundStyle(AppPalette.warning)
                 }
-                let original = values.mode == "original"
+                if original, checked.count > selectedCount {
+                    Text("\(checked.count) 份呈现 · \(selectedCount) 个原件").font(AppDesign.Typography.hint).foregroundStyle(.secondary)
+                }
                 let label = original ? (values.copyMode == "manifest" ? "导出所选清单" : "交付原件")
                     : values.pqDelivery ? (pqReviewRequest == nil ? "核对 HDR 成片" : "正在核对 HDR") : "导出成片"
-                Button("\(label)（\(checked.count)）") { submit(assets) }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(checked.isEmpty || checked.count > AppModel.maximumWorkbenchExportCount || model.isBusy || pqReviewRequest != nil)
+                Button("\(label)（\(selectedCount)）") { submit(assets) }
+                    .buttonStyle(AppFlatButtonStyle())
+                    .background(AppPalette.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: AppDesign.Radius.control))
+                    .disabled(checked.isEmpty || selectedCount > AppModel.maximumWorkbenchExportCount || model.isBusy || pqReviewRequest != nil)
                     .focused($submitFocused)
                     .accessibilityIdentifier("export.workspace.confirm")
             }
-        }.padding(.horizontal, 16).padding(.vertical, 12)
+        }.buttonStyle(AppFlatButtonStyle()).padding(.horizontal, 16).padding(.vertical, 12)
     }
 
     private struct PreviewKey: Equatable { let id: String?; let path: String?; let mode: String }
@@ -389,8 +394,10 @@ struct ExportWorkspace: View {
     }
 
     private func submit(_ assets: [AssetRecord]) {
-        let ids = assets.filter { checked.contains($0.id) }.map(\.id)
-        guard !running, !ids.isEmpty, ids.count <= AppModel.maximumWorkbenchExportCount else { return }
+        let selected = assets.filter { checked.contains($0.id) }
+        let count = values.mode == "original" ? Set(selected.map(\.physicalAssetID)).count : selected.count
+        guard !running, count > 0, count <= AppModel.maximumWorkbenchExportCount else { return }
+        let ids = selected.map(\.id)
         message = nil
         if values.mode == "original" {
             let copy = values.copyMode != "manifest"

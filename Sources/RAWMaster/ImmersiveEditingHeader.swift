@@ -17,7 +17,7 @@ struct ImmersiveEditingHeader: View {
                 .help("返回资料库 · Esc；调整自动生效并计入历史")
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(editing.asset?.filename ?? "照片编辑")
+                    Text(editing.asset?.editingDisplayName ?? "照片编辑")
                         .font(.system(size: 12, weight: .semibold))
                         .lineLimit(1)
                         .truncationMode(.middle)
