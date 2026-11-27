@@ -167,6 +167,17 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
     XCTAssertEqual(roundTrip.stages.map(\.kind), [.denoise, .superResolution, .segmentation])
   }
 
+  func testLegacyAdjustmentsDeriveOnlySceneCompatibleStages() throws {
+    var adjustments = DevelopmentAdjustmentsV3()
+    adjustments.aiDenoise = .init(model: .photoVGG7Chroma, amount: 30)
+    adjustments.superResolution = .photoUpconv7
+    let program = try XCTUnwrap(try DevelopmentSceneModelProgramV1.derived(from: adjustments))
+    XCTAssertEqual(program.stages.map(\.kind), [.denoise, .superResolution])
+    adjustments.superResolution = nil
+    adjustments.aiDenoise = .init(model: .appleRAW9, amount: 30)
+    XCTAssertNil(try DevelopmentSceneModelProgramV1.derived(from: adjustments))
+  }
+
   func testModelPrefixRequiresFullFrameAndAProvider() throws {
     let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
     let image = try upload(Array(repeating: .init(0.2, 0.4, 0.6, 1), count: 16), width: 4, device: device)

@@ -66,9 +66,9 @@ final class DevelopmentSceneColorV1Tests: XCTestCase {
         XCTAssertEqual($0 as? Color.Failure, .invalidScale)
       }
     }
-    XCTAssertThrowsError(try Color.makeTransform(from: .working, to: .linearRec709)) {
-      XCTAssertEqual($0 as? Color.Failure, .unsupportedConversion)
-    }
+    let inverse = try Color.makeTransform(from: .working, to: .linearRec709)
+    let neutral = try inverse.apply(.init(1, 1, 1, 1))
+    for channel in 0..<3 { XCTAssertEqual(neutral[channel], 1, accuracy: 2e-6) }
   }
 
   func testMetalAgainstIndependentOCIOVectorsAndRoundTrip() throws {
