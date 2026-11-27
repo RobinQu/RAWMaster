@@ -143,11 +143,23 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
     guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else {
       throw XCTSkip("Set RAWMASTER_SCENE_DELIVERY_SNOW_ARW to the fixed, authorized 037 snow fixture")
     }
+    try await verifyFrozenGraph(path: path, hash: Self.snowSHA256, name: "snow", width: 4000, height: 6000)
+  }
+
+  func testOptIn60MPFrozenGraphExportsFullPQAndSDRWithinBudget() async throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_60MP_ARW"] else {
+      throw XCTSkip("Supply the authorized 60 MP DSC05995 ARW")
+    }
+    try await verifyFrozenGraph(path: path, hash: "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+      name: "DSC05995", width: 9504, height: 6336)
+  }
+
+  private func verifyFrozenGraph(path: String, hash: String, name: String, width: Int, height: Int) async throws {
     typealias Graph = DevelopmentSceneGraphV1
     let root = try tempDirectory(), database = root.appendingPathComponent("library.sqlite")
     let sourceURL = URL(fileURLWithPath: path)
     let sourceHash = try FileSafety.hash(sourceURL), count = try FileSafety.stat(sourceURL).size
-    XCTAssertEqual(sourceHash, Self.snowSHA256)
+    XCTAssertEqual(sourceHash, hash)
     var store = try LibraryStore(databaseURL: database)
     let project = ProjectRecord(name: "Scene graph acceptance")
     try store.saveProject(project)
@@ -183,18 +195,36 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
     XCTAssertEqual(try EditingFingerprint.of(store.editingVersion(id: base.id).recipe), baseJSON)
     let decoded = try JSONDecoder().decode(Delivery.self, from: JSONEncoder().encode(frozen))
     XCTAssertEqual(decoded, frozen)
-    let target = root.appendingPathComponent("snow-scene-graph.avif")
-    let rendition = root.appendingPathComponent("snow-scene-graph.jpg")
+    let target = root.appendingPathComponent(name + "-scene-graph.avif")
+    let rendition = root.appendingPathComponent(name + "-scene-graph.jpg")
+    let start = DispatchTime.now().uptimeNanoseconds
     let files = try await Service.exportTogether([.init(decoded, to: target), .init(try decoded.rendition(.jpeg8), to: rendition)])
     let hdr = try files[0].get(), sdr = try files[1].get()
     XCTAssertEqual(hdr.workflowSHA256, sdr.workflowSHA256)
     XCTAssertEqual(hdr.artifact.sha256, try RenderFiles.hash(target))
-    XCTAssertEqual(hdr.artifact.pixelHeight, 6000)
+    XCTAssertEqual(hdr.versionID, sdr.versionID)
     XCTAssertEqual(hdr.artifact.bitDepth, 10)
     XCTAssertNotNil(sdr.artifact.iccProfileSHA256)
-    XCTAssertEqual(sdr.artifact.pixelWidth, 4000)
+    let receipts = try [hdr, sdr].map { receipt in
+      XCTAssertEqual(receipt.artifact.pixelWidth, width); XCTAssertEqual(receipt.artifact.pixelHeight, height)
+      let execution = try XCTUnwrap(receipt.execution)
+      XCTAssertEqual(execution.backend, .rust); XCTAssertNil(execution.fallbackReason)
+      XCTAssertGreaterThan(execution.dispatches, 0)
+      XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
+      if width == 9504 { XCTAssertGreaterThan(execution.tiles, 1) }
+      return execution
+    }
     XCTAssertEqual(try FileSafety.hash(sourceURL), sourceHash)
     try retainEvidence(target); try retainEvidence(rendition)
+    if let directory = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_EVIDENCE"] {
+      let url = URL(fileURLWithPath: directory).appendingPathComponent(name + "-scene-graph.json")
+      let report: [String: Any] = ["sha256": hash, "versionID": hdr.versionID.uuidString, "workflowSHA256": hdr.workflowSHA256,
+        "workflowNodes": graph.graph.nodes.count, "size": [width, height], "artifactSHA256": [hdr.artifact.sha256, sdr.artifact.sha256],
+        "artifactBytes": [hdr.artifact.byteCount, sdr.artifact.byteCount], "targets": [hdr.target.rawValue, sdr.target.rawValue],
+        "execution": try JSONSerialization.jsonObject(with: JSONEncoder().encode(receipts)),
+        "elapsedMs": Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6]
+      try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]).write(to: url, options: .withoutOverwriting)
+    }
   }
 
   private func retainEvidence(_ file: URL) throws {

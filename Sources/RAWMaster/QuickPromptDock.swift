@@ -15,9 +15,6 @@ struct QuickPromptDock<CanvasControls: View>: View {
     let width: CGFloat
     @ViewBuilder let canvasControls: () -> CanvasControls
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    @Environment(\.colorSchemeContrast) private var contrast
-    @Namespace private var glass
     @FocusState private var inputFocused: Bool
     @FocusState private var entryFocused: Bool
     @State private var selection: TextSelection?
@@ -28,7 +25,7 @@ struct QuickPromptDock<CanvasControls: View>: View {
     let inspectPixels: () -> Void
 
     var body: some View {
-        surface.background { material.accessibilityHidden(true) }
+        surface.floatingSelectionSurface(cornerRadius: editing.quickPromptPresented ? 19 : 13)
             .accessibilityElement(children: .contain)
             .animation(reduceMotion ? nil : .smooth(duration: 0.25, extraBounce: 0), value: editing.quickPromptPresented)
             .onChange(of: editing.quickPromptPresented) { _, opened in
@@ -50,17 +47,6 @@ struct QuickPromptDock<CanvasControls: View>: View {
                 Button("取消", role: .cancel) { acknowledgedJob = nil }
                 Button("回到提示词") { editing.acknowledgeQuickPromptOutcome(job); acknowledgedJob = nil }
             } message: { _ in Text("上一尝试可能已经出图或计费。保留原任务供核对。新云端尝试仍需确认发送。") }
-    }
-
-    @ViewBuilder private var material: some View {
-        if #available(macOS 26.0, *), !reduceTransparency, contrast != .increased {
-            GlassEffectContainer(spacing: 0) {
-                Color.clear.glassEffect(.regular, in: .rect(cornerRadius: editing.quickPromptPresented ? 19 : 13))
-                    .glassEffectID("darkroom-toolbar", in: glass)
-            }
-        } else {
-            Color.clear.floatingSelectionSurface()
-        }
     }
 
     private var compactActions: Bool { QuickPromptDockLayout.compactActions(width: width) }
@@ -86,6 +72,7 @@ struct QuickPromptDock<CanvasControls: View>: View {
                             .frame(height: 32).padding(.horizontal, 4)
                     }
                     .focused($entryFocused)
+                    .background(entryFocused ? AppDesign.fill(.hover) : .clear, in: .rect(cornerRadius: AppDesign.Radius.control))
                     .disabled(!editing.canOpenQuickPrompt)
                     .help(editing.canOpenQuickPrompt ? "快速 Prompt" : "请先结束当前画布操作")
                     .accessibilityLabel("快速 Prompt")
@@ -150,8 +137,13 @@ struct QuickPromptDock<CanvasControls: View>: View {
             .background(AppPalette.panel.opacity(0.62), in: RoundedRectangle(cornerRadius: 9))
             .overlay {
                 RoundedRectangle(cornerRadius: 9)
-                    .strokeBorder(inputFocused ? AppPalette.accent : AppPalette.boundary)
+                    .strokeBorder(AppPalette.boundary)
                     .allowsHitTesting(false)
+            }
+            .overlay(alignment: .bottom) {
+                if inputFocused {
+                    Capsule().fill(.secondary).frame(height: 2).padding(.horizontal, 7).allowsHitTesting(false)
+                }
             }
 
             if compactActions {
@@ -308,8 +300,6 @@ struct QuickPromptDock<CanvasControls: View>: View {
                 Spacer(minLength: 0)
                 Button("审阅候选") { showCandidate = true; editing.reviewQuickPrompt(job) }
                     .accessibilityIdentifier("editing.quickPrompt.review")
-            } else if let notice = editing.quickPromptNotice {
-                Text(notice)
             } else if let issue = editing.quickPromptSubmissionIssue {
                 Text(issue)
             } else if let job = editing.quickPromptJob, job.state == .failed || job.state == .cancelled {

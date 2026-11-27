@@ -235,6 +235,7 @@ private struct CatalogSearchField: NSViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(text: $text, focusRequest: focusRequest) }
     func makeNSView(context: Context) -> NSSearchField {
         let field = NSSearchField()
+        field.suppressStandardFocusRing()
         field.delegate = context.coordinator; field.target = context.coordinator; field.action = #selector(Coordinator.changed(_:))
         field.sendsSearchStringImmediately = true; field.sendsWholeSearchString = false
         return field

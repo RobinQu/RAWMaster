@@ -151,10 +151,7 @@
   opacity: 0;
   cursor: pointer;
 }
-.quick-model:focus-within {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.quick-model:focus-within { box-shadow: inset 0 -2px var(--focus-ink); }
 .quick-dock button.quick-primary {
   min-height: 32px;
   padding: 6px 11px;

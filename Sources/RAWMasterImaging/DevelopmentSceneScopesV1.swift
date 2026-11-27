@@ -41,12 +41,14 @@ package struct DevelopmentSceneScopesV1: Sendable {
   package let samples: [Sample]
   package let plots: [Stage: Plot]
   package let canMeasureSensor, canMeasureTarget, canMeasureScreen: Bool
+  package let execution: DevelopmentSceneExecutionReceiptV1?
 
   package func forMonitor(_ monitor: SceneScopesMonitorV1?) -> Self {
     .init(size: size, samples: samples.map { row in
       .init(sceneRGB: row.sceneRGB, targetRGB: row.targetRGB, derivativeRGB: row.derivativeRGB, sensorBits: row.sensorBits,
             targetExceeded: row.targetExceeded, monitorMaximum: monitor?.maximum(row.targetRGB))
-    }, plots: plots, canMeasureSensor: canMeasureSensor, canMeasureTarget: canMeasureTarget, canMeasureScreen: monitor != nil)
+    }, plots: plots, canMeasureSensor: canMeasureSensor, canMeasureTarget: canMeasureTarget,
+       canMeasureScreen: monitor != nil, execution: execution)
   }
 
   package func sample(at unit: CGPoint) -> Sample? {
@@ -122,7 +124,8 @@ final class SceneScopesAnalyzerV1 {
   }
 
   func analyze(scene: MTLTexture, target: MTLTexture, derivative: MTLTexture, preGamut: MTLTexture?,
-               sourceSensor: MTLTexture?, monitor: SceneScopesMonitorV1?) throws -> DevelopmentSceneScopesV1 {
+               sourceSensor: MTLTexture?, monitor: SceneScopesMonitorV1?,
+               execution: DevelopmentSceneExecutionReceiptV1? = nil) throws -> DevelopmentSceneScopesV1 {
     try Task.checkCancellation()
     let w = scene.width, h = scene.height
     guard (1...256).contains(w), (1...256).contains(h), [scene,target,derivative,preGamut ?? target].allSatisfy({
@@ -158,7 +161,8 @@ final class SceneScopesAnalyzerV1 {
       return (stage, DevelopmentSceneScopesV1.Plot(bins:bins,minimum:low,maximum:high))
     })
     return .init(size:.init(w,h), samples:samples, plots:plots,
-                 canMeasureSensor:sourceSensor != nil, canMeasureTarget:preGamut != nil, canMeasureScreen:monitor != nil)
+                 canMeasureSensor:sourceSensor != nil, canMeasureTarget:preGamut != nil, canMeasureScreen:monitor != nil,
+                 execution:execution)
   }
 
   private static let shader = #"""

@@ -73,16 +73,16 @@ function canvasToolCommitMask() {
 function canvasToolFinish(cancel = false) {
   const s = S.canvasTool; if (!s) return;
   if (!cancel) {
-    const invalid = $('.canvas-tool-dock input:invalid'); if (invalid) { invalid.focus(); return notify('请修正无效数值后再完成'); }
+    const invalid = $('.canvas-tool-dock input:invalid'); if (invalid) { invalid.focus(); return notify('请修正无效数值后再完成', 'error'); }
     if (s.kind === 'crop' && canvasCropError()) return notify(canvasCropError());
     if (s.kind === 'mask' && !s.legacy && s.mask.low != null && s.mask.high != null && s.mask.low > s.mask.high) return notify('范围下限不能大于上限');
     if (s.kind === 'remove' && s.draft.repairs?.some(r => r.kind === '仿制' && !r.source)) return notify('请为仿制选择取样位置');
     if (s.photo !== Studio.data.work || JSON.stringify(Studio.edit(s.photo).recipe) !== JSON.stringify(s.before)) return notify('照片修订已改变，请取消后重新开始；不会覆盖后来编辑');
     if (s.kind === 'remove' && s.removeState !== 'ready') return notify('请先完成填充预览、重试，或取消');
     if (s.kind === 'mask' && !s.legacy) {
-      if (s.mask.missing) return notify('蒙版素材缺失，请先重建或取消');
+      if (s.mask.missing) return notify('蒙版素材缺失，请先重建或取消', 'error');
     }
-    if (s.draft.dag && dagError(s.draft.dag)) return notify(dagError(s.draft.dag));
+    if (s.draft.dag && dagError(s.draft.dag)) return notify(dagError(s.draft.dag), 'error');
     if (JSON.stringify(s.draft) !== JSON.stringify(s.before)) Studio.setRecipe(s.photo, '完成 ' + { crop: 'Crop', mask: 'Mask', remove: 'Remove' }[s.kind], s.draft);
   }
   const kind = s.kind;

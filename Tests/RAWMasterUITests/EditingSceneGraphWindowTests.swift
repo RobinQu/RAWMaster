@@ -64,6 +64,9 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             try await press("editing.scene.graph.toggle", within: window)
             try await wait("nonmodal hover window") { editing.sceneGraphState.open && window.childWindows?.contains(where: { $0.title == "工作流 Graph" }) == true }
             let graphWindow = try XCTUnwrap(window.childWindows?.first(where: { $0.title == "工作流 Graph" }))
+            XCTAssertFalse(graphWindow.styleMask.contains(.titled))
+            XCTAssertTrue(graphWindow.canBecomeKey)
+            XCTAssertEqual(graphWindow.contentLayoutRect.size, graphWindow.frame.size)
             XCTAssertTrue(window.isVisible); XCTAssertTrue(graphWindow.isVisible); XCTAssertNil(window.attachedSheet)
             XCTAssertEqual(editing.recipe, initialRecipe); XCTAssertEqual(editing.sceneFrame?.id, originalFrame)
             XCTAssertGreaterThanOrEqual(graphWindow.frame.width, 520)

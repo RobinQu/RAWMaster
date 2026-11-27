@@ -1,6 +1,6 @@
 # 037 · 色彩管理、胶片与 HDR 摄影工作流
 
-截至 `main@b238c0ab`，Release 默认显示 HDR 模式。已准入 Bayer ARW 可以创建场景草稿、编辑和监看 DAG、保存重开。032 已接固定目标的 SDR JPEG／PNG 与全尺寸 10 位 PQ AVIF。完整显示、输入和交付矩阵仍待签收。UI-01～UI-09 描述目标交互，各阶段实际支持范围见[实现与验收](validation.md)和[放行计划](plan.md)。胶片资源沿用 [031](../031-preset-browser/spec.md) 的版本与资格。[035–039 联合方案](../035-portable-processing-cores/roadmap.md)
+Release 默认显示 HDR 模式。已准入 Bayer ARW 可以创建场景草稿、编辑和监看 DAG、保存重开。032 已接固定目标的 SDR JPEG／PNG 与全尺寸 10 位 PQ AVIF。完整显示、输入和交付矩阵仍待签收。UI-01～UI-09 描述目标交互，各阶段实际支持范围见[实现与验收](validation.md)和[放行计划](plan.md)。胶片资源沿用 [031](../031-preset-browser/spec.md) 的版本与资格。[035–039 联合方案](../035-portable-processing-cores/roadmap.md)
 
 ## 用户入口与状态归属
 
@@ -36,7 +36,7 @@
 
 [打开评审工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1) → 河谷拍摄「岸边的水鸟」→ 编辑 → 基础 → HDR。确认工作表显示当前照片，说明场景图重新从原片解码以及旧 SDR 曝光、蒙版、外观和已存版本的处理。「取消」或 Escape 保持当前草稿并返回 HDR 入口；Tab 可以到达「取消」与「创建 HDR 草稿」，确认后才开始解码。确认只作用本张，撤销恢复此前草稿。不同照片的查看请求、监看状态与错误必须隔离。已保存版本只读。使用「预览 SDR 派生」或「按 HDR 目标查看」只改变观看。退回 SDR 或 B&W 使用同样的确认工作表，可撤销。
 
-当前阶段支持曝光、SDR 派生曝光和下节示波器诊断。主图给出查看分支、屏幕余量不足或呈现失败原因，并提供重试。来源离线、运行库缺失和校准不支持需要独立判定，当前入口有合并提示的问题。比较、完整场景模型回放、胶片和额外成像目标仍在放行清单。原生 HDR 模式随 Release 默认显示。`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 可在诊断时隐藏入口。[走查与原生证据](validation.md#原生场景查看与显影阶段) · [准入缺口](plan.md#当前实现与验收边界)
+当前阶段支持曝光、SDR 派生曝光和下节示波器诊断。主图给出查看分支、屏幕余量不足或呈现失败原因，并提供重试。画布分别提示原片离线或变化、解码运行库缺失、校准不支持、取景预算及全图模型预算；每条消息可单独关闭。60 MP Bayer 的 FIT、偏心 1∶1 和全图示波器使用同一校准源。比较、更多模型／胶片与成像目标分项验收。[编辑器消息](../025-editing-workspace/editor-rails.md) · [实拍记录](evidence/real-60mp-bayer-budget.json)原生 HDR 模式随 Release 默认显示。`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 可在诊断时隐藏入口。[走查与原生证据](validation.md#原生场景查看与显影阶段) · [准入缺口](plan.md#当前实现与验收边界)
 
 [解码运行库失败走查](../../docs/ui/prototype/index.html?sceneNativeReview=1&sceneRawRuntime=unavailable)模拟合格原片无法加载 HDR 解码运行库。选择水鸟，确认「创建 HDR 草稿」后，主图提示检查 RAWMaster 安装并重试，焦点回到 HDR 入口。草稿和历史仍是确认前的内容。关闭提示可继续原片，恢复正常运行库后按同一路径重试。离线和不支持的原片继续提供各自的原因。
 

@@ -43,6 +43,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
     private let reader: LibraryPageReader
     private var request: CatalogGridRequest<Query>?
     private var nextCursor: CatalogJSON?
+    private var restoredSelection: CatalogFrozenSelection?
     public private(set) var epoch: UInt64 = 0
     private var task: Task<Void, Never>?
 
@@ -51,8 +52,13 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         reader = LibraryPageReader(database: database, index: cache)
     }
 
-    public func replace(with query: CatalogGridRequest<Query>, startedAt: UInt64? = nil) {
-        start(query, startedAt: startedAt)
+    public func replace(with query: CatalogGridRequest<Query>, startedAt: UInt64? = nil, retaining ids: Set<String> = []) {
+        start(query, startedAt: startedAt, retaining: ids)
+    }
+
+    public func takeRestoredSelection() -> CatalogFrozenSelection? {
+        defer { restoredSelection = nil }
+        return restoredSelection
     }
 
     public func refresh() {
@@ -67,7 +73,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         isLoading = false
     }
 
-    private func start(_ query: CatalogGridRequest<Query>, startedAt: UInt64? = nil) {
+    private func start(_ query: CatalogGridRequest<Query>, startedAt: UInt64? = nil, retaining ids: Set<String> = []) {
         cancel()
         var first = query
         first.cursor = nil
@@ -82,10 +88,11 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         nextCursor = nil
         generation = nil
         watermark = nil
+        restoredSelection = nil
         errorDescription = nil
         let now = DispatchTime.now().uptimeNanoseconds
         firstPageStartedAt = min(startedAt ?? now, now)
-        submit(first, appending: false)
+        submit(first, appending: false, retaining: ids)
         displayedRevision &+= 1
     }
 
@@ -95,13 +102,26 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         submit(query, appending: true)
     }
 
-    private func submit(_ query: CatalogGridRequest<Query>, appending: Bool) {
+    private func submit(_ query: CatalogGridRequest<Query>, appending: Bool, retaining ids: Set<String> = []) {
         let expected = epoch
         isLoading = true
         task = Task { [weak self, reader] in
             do {
-                let page = try await reader.read(query, as: Asset.self)
+                var page = try await reader.read(query, as: Asset.self)
                 guard let self, epoch == expected, !Task.isCancelled else { return }
+                if !ids.isEmpty, page.status == "ok" {
+                    var order = page.items?.flatMap(\.matchedAssetIDs) ?? []
+                    if !ids.isSubset(of: order), page.nextCursor != nil {
+                        var all = query
+                        all.includeOrderedIDs = true
+                        page = try await reader.read(all, as: Asset.self)
+                        guard epoch == expected, !Task.isCancelled else { return }
+                        guard let members = page.orderedAssetIDs else { throw CatalogSelectionError.changed }
+                        order = members
+                    }
+                    restoredSelection = CatalogFrozenSelection(libraryID: page.libraryID, watermark: page.watermark,
+                        projectID: query.projectID, assetIDs: order.filter(ids.contains))
+                }
                 if page.status == "staleCursor" {
                     if appending { refresh() } else { fail("查询修订已过期，请刷新。") }
                     return
@@ -180,6 +200,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
 
     public func displaySelectionPage(_ page: CatalogGridPage<Asset>) {
         cancel()
+        restoredSelection = nil
         apply(page, appending: false)
     }
 

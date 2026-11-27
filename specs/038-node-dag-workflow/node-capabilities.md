@@ -59,7 +59,7 @@ REA 父证据：`ev_7c17d442fa302e9af5fb180580cf26b25bf0f0552b4e3613ec4285bb87c5
 
 `MX`（`[868600,873450)`）注册串行前/后/末尾、Parallel、Layer、Outside、忽略、复位、上一/下一、分组/解组、删除、复制/粘贴/属性粘贴、临时输出、命名、整理、适合全图、悬浮/全屏、组路径、组模板、整图模板与批量应用。RAWMaster 保留统一图命令，并把 Graph 改为与主图同时存在的非模态 Liquid Glass 悬浮面板。
 
-本轮复用上述注册表的 `nodes.toggleSelected`、`nodes.fullScreen`、`nodes.autoLayout` 与节点/图命令分层；没有把完整注册表铺在检查器菜单里。RAWMaster 将节点列表与添加/整理/更多操作合并成一个下拉，右侧常驻「忽略该节点」及 Graph 开关。高级组、连接、模板和整图命令折叠保留。520×392 的最小外框及 240px 画布高度是 RAWMaster 的原型取值，不归因于 LightFlow。
+本轮复用上述注册表的 `nodes.toggleSelected`、`nodes.fullScreen`、`nodes.autoLayout` 与节点及图命令分层。RAWMaster 将节点列表与添加、整理和更多操作合并成一个下拉，右侧常驻「忽略该节点」及 Graph 开关。高级组、连接、模板和整图命令折叠保留。当前普通和只读兼容图由画布填满独立浮窗，移动、缩放窗口和关闭控件位于角落，矮窗仍可查看节点。[现行原型与原生窗口](../025-editing-workspace/editor-rails.md)
 
 端口使用索引边 `{from,to,index}`，mixer 有多个输入及一个待接空槽；普通节点为单输入。`HO` / `tg`（`[267900,269520)`）拒绝自连、回路、反向终端，并整理输入索引。RAWMaster 以命名 base/layer 槽表达基底与有序图层，不能把颜色混色参数域误计为图 mixer。
 

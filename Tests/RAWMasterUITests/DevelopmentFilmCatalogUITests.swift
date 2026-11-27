@@ -22,11 +22,10 @@ import RAWMasterCore
         for (query, look) in [("gold", DevelopmentPhotoFilterV3.spektraGold200UltraEndura),
                               ("Provia", .spektraProvia100F), ("500T", .spektraVision500T2383)] {
             let folders = DevelopmentPresetDirectory.folders(records: [], favorites: [], looks: films,
-                favoriteLooks: [look], query: query)
+                favoriteLooks: [look], query: query, favoritesOnly: true)
             let directory = try XCTUnwrap(folders.first { $0.id == "film" })
-            let favorites = try XCTUnwrap(folders.first { $0.id == "favorites" })
+            XCTAssertEqual(folders.map(\.id), ["film"])
             XCTAssertEqual(directory.rows.map(\.id), ["classic." + look.rawValue])
-            XCTAssertEqual(favorites.rows.map(\.id), directory.rows.map(\.id))
         }
         let empty = DevelopmentPresetDirectory.folders(records: [], favorites: [], looks: films,
             favoriteLooks: [], query: "没有这样的胶片")
@@ -92,7 +91,7 @@ import RAWMasterCore
             return nil
         }
         func textField(_ view: NSView) -> NSTextField? {
-            if let field = view as? NSTextField, field.isEditable { return field }
+            if let field = view as? NSTextField, field.placeholderString == "搜索名称或组" { return field }
             return view.subviews.lazy.compactMap { textField($0) }.first
         }
         try await eventually("Film origin and search must be reachable") {
@@ -140,21 +139,18 @@ import RAWMasterCore
                 host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
                 let bitmap = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
                 host.cacheDisplay(in: host.bounds, to: bitmap)
-                let capture = try XCTUnwrap(NSBitmapImageRep(bitmapDataPlanes: nil,
-                    pixelsWide: bitmap.pixelsWide, pixelsHigh: bitmap.pixelsHigh, bitsPerSample: 8,
-                    samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB,
-                    bytesPerRow: 0, bitsPerPixel: 0))
-                let graphics = try XCTUnwrap(NSGraphicsContext(bitmapImageRep: capture))
-                NSGraphicsContext.saveGraphicsState()
-                NSGraphicsContext.current = graphics
+                let bounds = CGRect(x: 0, y: 0, width: bitmap.pixelsWide, height: bitmap.pixelsHigh)
+                let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+                let context = try XCTUnwrap(CGContext(data: nil, width: bitmap.pixelsWide, height: bitmap.pixelsHigh,
+                    bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace,
+                    bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue))
+                // The cached hosting view has transparent pixels where the window supplies material.
                 window.effectiveAppearance.performAsCurrentDrawingAppearance {
-                    // A view-cache image excludes its window's background; retain the actual appearance.
-                    window.backgroundColor.setFill()
-                    let rect = NSRect(x: 0, y: 0, width: CGFloat(bitmap.pixelsWide), height: CGFloat(bitmap.pixelsHigh))
-                    NSBezierPath(rect: rect).fill()
-                    bitmap.draw(in: rect)
+                    context.setFillColor(NSColor.windowBackgroundColor.cgColor)
+                    context.fill(bounds)
                 }
-                NSGraphicsContext.restoreGraphicsState()
+                context.draw(try XCTUnwrap(bitmap.cgImage), in: bounds)
+                let capture = NSBitmapImageRep(cgImage: try XCTUnwrap(context.makeImage()))
                 let data = try XCTUnwrap(capture.representation(using: .png, properties: [:]))
                 try data.write(to: output.appending(path: name + ".png"), options: .atomic)
             }

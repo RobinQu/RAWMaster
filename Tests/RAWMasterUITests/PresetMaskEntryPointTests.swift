@@ -34,7 +34,7 @@ import RAWMasterCore
     }
 
     private func textField(in view: NSView) -> NSTextField? {
-        if let input = view as? NSTextField, input.isEditable { return input }
+        if let input = view as? NSTextField, input.placeholderString == "搜索名称或组" { return input }
         return view.subviews.lazy.compactMap { self.textField(in: $0) }.first
     }
 
@@ -286,21 +286,115 @@ import RAWMasterCore
         await editing.shutdown(finishPreviews: false)
     }
 
+    func testUnreadablePresetCatalogReportsToItsPhotoAndPreservesExistingNotices() async throws {
+        _ = NSApplication.shared
+        let fixture = try EditingWorkflowTests.Fixture()
+        defer { fixture.clean() }
+        let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: PhotosDevelopmentBackend())
+        let first = fixture.assets[0], second = fixture.assets[1]
+        app.selectScope(.project, id: first.projectID)
+        app.select(first); app.setMode(.single); app.openNativeEditing()
+        let editing = try XCTUnwrap(app.editing)
+        try await eventually("The editing context should be ready before loading the catalog") {
+            if editing.work != nil, editing.developmentContext == nil { editing.beginDevelopmentInterface() }
+            return editing.developmentContext != nil
+        }
+        editing.postNotice("保留已有消息", for: first.id)
+        let path = fixture.root.appendingPathComponent("unreadable-catalog")
+        try Data().write(to: path)
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 350, height: 650),
+            styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.contentView = NSHostingView(rootView: EditingLeftSidebar(editing: editing, presetCatalog: .init(root: path)))
+        defer { window.orderOut(nil); window.close() }
+        window.orderBack(nil)
+        try await eventually("Unreadable catalog should post a per-photo error without opening an alert") {
+            editing.photoNotices.contains { $0.text.hasPrefix("无法读取滤镜目录") && $0.kind == .error && $0.assetID == first.id }
+        }
+        let failure = try XCTUnwrap(editing.photoNotices.first { $0.kind == .error && $0.text.hasPrefix("无法读取滤镜目录") })
+        XCTAssertNil(window.attachedSheet)
+        window.contentView = nil
+        editing.focus(second)
+        XCTAssertFalse(editing.photoNotices.contains(failure))
+        editing.focus(first)
+        XCTAssertTrue(editing.photoNotices.contains(failure))
+        editing.dismissNotice(failure.id)
+        XCTAssertTrue(editing.photoNotices.contains { $0.text == "保留已有消息" })
+        await editing.shutdown(finishPreviews: false)
+    }
+
+    func testScenePresetDirectorySupportsSearchAndKeepsSDRControlsReadOnly() async throws {
+        _ = NSApplication.shared
+        let fixture = try EditingWorkflowTests.Fixture()
+        defer { fixture.clean() }
+        let catalog = DevelopmentPresetCatalog(root: fixture.root.appendingPathComponent("hdr-directory"))
+        var patch = DevelopmentPresetPatch()
+        patch.exposure = 0.4
+        let imported = try catalog.create(name: "自定义天空", group: "个人", patch: patch)
+        let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let old = NSApp.accessibilityAttributeValue(ax)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+        defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+        let host = NSHostingView(rootView: ScrollView {
+            ScenePresetDirectory(catalog: catalog, sectionExpanded: .constant(true), favoriteLooks: [.vivid]) {
+                XCTFail("Failed to read the fixture catalog: \($0)")
+            }
+        })
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 360, height: 650),
+            styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        window.contentView = host; window.makeKeyAndOrderFront(nil)
+        defer { window.orderOut(nil); window.close() }
+        try await eventually("The HDR directory should expose four browsable categories") {
+            ["adaptive","classic","film","imported"].allSatisfy { self.element("editing.presets.folder." + $0, in: window) != nil }
+        }
+        let field = try XCTUnwrap(textField(in: host))
+        try search(imported.name, field: field, window: window)
+        try await eventually("Search should narrow the HDR tree to the matching source folder") {
+            self.element("editing.presets.folder.imported", in: window) != nil && self.element("editing.presets.folder.film", in: window) == nil
+        }
+        XCTAssertNil(element("editing.preset." + imported.id, in: window))
+        XCTAssertNil(element("editing.filters.amount", in: window))
+        XCTAssertNil(element("editing.presets.adoptFull", in: window))
+        XCTAssertEqual(try catalog.snapshot().records, [imported])
+    }
+
+    func testAllScopedAdobeRowsHaveChineseDisplayLabelsAndKeepTheirOriginalNames() throws {
+        struct Manifest: Decodable {
+            struct Entry: Decodable { let id, name, sourceRoot, sourceRelativePath: String }
+            let entries: [Entry]
+        }
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let file = root.appendingPathComponent("specs/031-preset-browser/contracts/migration-manifest-v1.json")
+        let entries = try JSONDecoder().decode(Manifest.self, from: Data(contentsOf: file)).entries.filter { $0.sourceRoot == "systemCameraRawSettings" }
+        XCTAssertEqual(entries.count, 53)
+        for entry in entries {
+            let row = DevelopmentPresetRecord(id: entry.id, name: entry.name, group: "Adaptive", kind: .imported,
+                patch: DevelopmentPresetPatch(), metadata: ["origin": "adobeBuiltin", "relativePath": entry.sourceRelativePath])
+            XCTAssertNotNil(DevelopmentPresetDirectory.displayName(row).range(of: "[\u{4e00}-\u{9fff}]", options: .regularExpression), entry.sourceRelativePath)
+            XCTAssertEqual(row.name, entry.name)
+            XCTAssertEqual(DevelopmentPresetBrowserItem.record(row).id, entry.id)
+        }
+    }
+
     func testDirectoryKeepsSourceAdaptiveGroupsAheadOfImportedFolders() {
         var patch = DevelopmentPresetPatch()
         patch.exposure = 0.5
-        let sky = DevelopmentPresetRecord(id: "sky", name: "Azure", group: "Mixed", kind: .imported, patch: patch,
-            metadata: ["origin": "adobeBuiltin", "relativePath": "Premium/Adaptive - Sky/Azure.xmp"])
+        let sky = DevelopmentPresetRecord(id: "sky", name: "Adaptive Sky - Sunrise", group: "Mixed", kind: .imported, patch: patch,
+            metadata: ["origin": "adobeBuiltin", "relativePath": "Premium/Adaptive - Sky/Sunrise.xmp"])
         let portrait = DevelopmentPresetRecord(id: "portrait", name: "Warm", group: "Mixed", kind: .imported, patch: patch,
             metadata: ["origin": "adobeBuiltin", "relativePath": "Premium/Adaptive - Portrait/Warm.xmp"])
-        let user = DevelopmentPresetRecord(id: "user", name: "Tone", group: "Personal", kind: .imported, patch: patch)
+        let user = DevelopmentPresetRecord(id: "user", name: "Adaptive Sky - Sunrise", group: "Personal", kind: .imported, patch: patch)
         let folders = DevelopmentPresetDirectory.folders(records: [sky, portrait, user], favorites: [],
             looks: [.original, .spektraPortra400Endura], favoriteLooks: [], query: "")
-        XCTAssertEqual(Array(folders.prefix(3).map(\.id)), ["adaptive", "film", "imported"])
-        XCTAssertEqual(folders.first?.children.map(\.name), ["Portrait", "Sky"])
+        XCTAssertEqual(folders.map(\.name), ["自适应滤镜", "基础滤镜", "胶片模拟", "用户导入滤镜"])
+        XCTAssertEqual(folders.first?.children.map(\.name), ["人像", "天空"])
+        XCTAssertEqual(DevelopmentPresetDirectory.displayName(sky), "日出")
+        XCTAssertEqual(DevelopmentPresetDirectory.displayName(user), "Adaptive Sky - Sunrise")
+        XCTAssertEqual(folders.first?.children.map(\.id), ["adaptive.Portrait", "adaptive.Sky"])
         XCTAssertEqual(folders.first(where: { $0.id == "imported" })?.children.map(\.name), ["Personal"])
         let search = DevelopmentPresetDirectory.folders(records: [sky, portrait, user], favorites: [],
-            looks: [], favoriteLooks: [], query: "Sky")
+            looks: [], favoriteLooks: [], query: "日出")
         XCTAssertEqual(search.first?.children.flatMap(\.rows).map(\.id), ["sky"])
     }
 

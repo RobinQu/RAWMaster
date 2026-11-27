@@ -51,7 +51,7 @@ RAWMASTER_DESIGN_GALLERY_OUTPUT=specs/039-design-system/evidence swift test --fi
 | 勾选 | `aria-checked` 由 true 切到 false，方框、对勾与标签同步 |
 | 分段 | 「波形」切为选中，下划线移动，其余取消；聚焦标签后方向键左右切换 |
 | 分组头 | 折叠后正文隐藏，箭头状态同步 |
-| 键盘 | 从数字框按 Tab 进入下一滑杆，`:focus-visible` 为真，1.5pt 强调色焦点环与刻度可见 |
+| 键盘 | 从数字框按 Tab 进入下一滑杆，`:focus-visible` 为真，刻度可见。首次画廊截图使用当时的强调色焦点环。现行工作台使用中性下划线、控件底色、刻度或文本插入点。[现行键盘走查](../025-editing-workspace/editor-rails.md) |
 | 深色 | 设置 → 通用 → 深色后返回，墨色、填充、边框与照片检查器一致 |
 | 390 × 844 | 原则卡与控件改为单列；参数行标题与数值不重叠；工具导航横向滚动（既有工作台行为） |
 

@@ -119,24 +119,33 @@ package struct DevelopmentSceneGraphV1: Codable, Equatable, Sendable {
     }
   }
 
-  private let schemaVersion = 1
+  private let schemaVersion: Int
   package let graph: Scope
   package let output: DevelopmentSceneOutputStateV1.Version
+  package let models: DevelopmentSceneModelProgramV1?
 
-  package init(graph: Scope, output: DevelopmentSceneOutputStateV1.Version) throws {
+  package init(graph: Scope, output: DevelopmentSceneOutputStateV1.Version, models: DevelopmentSceneModelProgramV1? = nil) throws {
     var all: Set<UUID> = []
     try Self.validate(graph, depth: 1, all: &all)
+    try models?.validate()
+    self.models = models?.stages.isEmpty == false ? models : nil
+    schemaVersion = self.models == nil ? 1 : 2
     self.graph = graph; self.output = output
   }
 
   package init(from decoder: Decoder) throws {
-    let data = try GraphFields(decoder, ["schemaVersion", "graph", "output"])
-    guard try data.value("schemaVersion", Int.self) == 1 else { throw Failure.unsupportedSchema }
-    try self.init(graph: data.value("graph"), output: data.value("output"))
+    let keys = try decoder.container(keyedBy: RecipeCodingKey.self)
+    let version = try keys.decode(Int.self, forKey: .init("schemaVersion"))
+    guard version == 1 || version == 2 else { throw Failure.unsupportedSchema }
+    let fields = ["schemaVersion", "graph", "output"]
+    let data = try GraphFields(decoder, version == 2 ? fields + ["models"] : fields)
+    let models: DevelopmentSceneModelProgramV1? = version == 2 ? try data.value("models") : nil
+    if version == 2, models?.stages.isEmpty != false { throw Failure.invalidParameter }
+    try self.init(graph: data.value("graph"), output: data.value("output"), models: models)
   }
 
   /// Replace the whole validated value so failed mutations leave the committed graph untouched.
-  package func replacingGraph(_ graph: Scope) throws -> Self { try Self(graph: graph, output: output) }
+  package func replacingGraph(_ graph: Scope) throws -> Self { try Self(graph: graph, output: output, models: models) }
 
   /// Outside clones the coverage dependencies, then inverts the copy. The new corrector is neutral.
   package func addingOutside(of corrector: UUID, before successor: UUID? = nil,

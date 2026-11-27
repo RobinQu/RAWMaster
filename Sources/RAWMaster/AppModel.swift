@@ -548,7 +548,10 @@ final class AppModel: ObservableObject {
             rebuildSearchResults()
             if let first = browserAssets.first { selectedIDs = [first.id]; focusedID = first.id }
         }
-        if isCatalog || (changingScope && scope == .project && (leavingComparison || mode == .compare)) { mode = .grid }
+        if isCatalog || (changingScope && scope == .project && (leavingComparison || mode == .compare)) {
+            mode = .grid
+            if isPagedGrid { submitCatalogPage() }
+        }
         refreshProjectProgress()
         actualPixels = false
         isRestoringReviewState = false
@@ -571,6 +574,12 @@ final class AppModel: ObservableObject {
         } else if modifiers.contains(.command) {
             if selectedIDs.contains(asset.id) { selectedIDs.remove(asset.id) } else { selectedIDs.insert(asset.id) }
         } else { selectedIDs = [asset.id] }
+        if isPagedGrid, let grid = catalogGrid, let prior = frozenSelection {
+            let mounted = grid.cards.flatMap(\.matchedAssetIDs)
+            let mountedIDs = Set(mounted)
+            let offPage = prior.assetIDs.filter { selectedIDs.contains($0) && !mountedIDs.contains($0) }
+            frozenSelection = offPage.isEmpty ? nil : prior.replacingMembers(mounted.filter(selectedIDs.contains) + offPage)
+        }
         focusedID = asset.id
         synchronizeNativeEditingContext()
         if mode == .compare && selectedIDs.count > 4 { selectedIDs = Set(selectedAssets.suffix(4).map(\.id)) }
@@ -631,6 +640,10 @@ final class AppModel: ObservableObject {
     }
     func setMode(_ mode: BrowserMode) {
         guard !isCatalog else { self.mode = .grid; return }
+        let previous = self.mode
+        // Comparison needs the complete filtered result to resolve selected files on later pages.
+        let leavingPagedGrid = isPagedGrid && mode != .grid
+        if leavingPagedGrid { self.mode = mode; reload() }
         if mode == .compare && selectedIDs.count < 2 {
             let items = browserAssets
             let index = items.firstIndex { $0.id == focusedID } ?? 0
@@ -644,9 +657,8 @@ final class AppModel: ObservableObject {
             if !selectedIDs.contains(focusedID ?? "") { focusedID = eligible.first?.id }
         }
         if mode == .compare { showComparisonSidebar = false }
-        let previous = self.mode
         self.mode = mode
-        if catalogGrid != nil && previous != mode { reload() }
+        if catalogGrid != nil && previous != mode && !leavingPagedGrid { reload() }
         if mode != .grid { closeSearchControls() }
         saveBrowse()
     }
@@ -1801,9 +1813,10 @@ extension AppModel {
     }
     private func makeProjectReviewState() -> ProjectReviewState? {
         guard scope == .project, projects.contains(where: { $0.id == scopeID }) else { return nil }
-        let eligible = Set(filteredAssets.map(\.id))
+        if isPagedGrid, catalogGrid?.watermark == nil { return nil }
+        let eligible = Set(filteredAssets.map(\.id)).union(isPagedGrid ? frozenSelection?.assetIDs ?? [] : [])
         let selected = selectedIDs.intersection(eligible)
-        let focus = focusedID.flatMap { eligible.contains($0) ? $0 : nil }
+        let focus = focusedID.flatMap { eligible.contains($0) || (isPagedGrid && assetByID[$0] != nil) ? $0 : nil }
         let validPairIDs = Set(capturePairs.filter { $0.assetIDs.allSatisfy { eligible.contains($0) } }.map(\.id))
         return ProjectReviewState(projectID: scopeID, revision: projectStateRevisions[scopeID] ?? 0, query: effectiveSearchQuery,
             sort: reviewSort, mode: mode == .compare && selected.count < 2 ? "grid" : mode.rawValue,
@@ -1845,6 +1858,13 @@ extension AppModel {
                 searchQuery = state.query; filter = Self.filter(for: state.query.decision); reviewSort = state.sort
                 mode = BrowserMode(rawValue: state.mode) ?? .grid
                 expandedPairIDs = Set(state.expandedPairIDs); rawPreviewPairIDs = Set(state.rawPreviewPairIDs); syncCompare = state.syncCompare
+                if isPagedGrid {
+                    selectedIDs = Set(state.selectedAssetIDs)
+                    focusedID = state.focusedAssetID
+                    submitCatalogPage(force: true)
+                    return
+                }
+                if catalogGrid != nil && !fullSnapshotLoaded { reload() }
                 rebuildSearchResults()
                 let eligible = Set(filteredAssets.map(\.id))
                 selectedIDs = Set(state.selectedAssetIDs).intersection(eligible)
@@ -2140,7 +2160,9 @@ extension AppModel {
         frozenSelection = nil
         fullSnapshotLoaded = false
         assets = []
-        grid.replace(with: request, startedAt: firstGridStart)
+        var retained = selectedIDs
+        if let focusedID { retained.insert(focusedID) }
+        grid.replace(with: request, startedAt: firstGridStart, retaining: retained)
         firstGridStart = nil
     }
 
@@ -2151,7 +2173,29 @@ extension AppModel {
             errorMessage = error
             return
         }
+        // The data source also publishes an empty loading state. Only committed pages can
+        // reconcile a saved selection against this query.
+        guard grid.watermark != nil else { return }
+        let priorFocus = focusedAsset
         assets = grid.cards.map(\.asset)
+        if let restored = grid.takeRestoredSelection() {
+            let members = Set(restored.assetIDs)
+            let retained = restored.assetIDs.filter(selectedIDs.contains)
+            selectedIDs = Set(retained)
+            let nextFocus = focusedID.flatMap { members.contains($0) ? $0 : nil } ?? retained.first ?? assets.first?.id
+            if let id = nextFocus, assetByID[id] == nil {
+                assetByID[id] = try? store?.catalogAssets(for: restored.replacingMembers([id])).first
+            }
+            focusedID = nextFocus
+            if selectedIDs.isEmpty, let nextFocus { selectedIDs = [nextFocus] }
+            if !selectedIDs.isSubset(of: assets.map(\.id)) {
+                frozenSelection = restored.replacingMembers(restored.assetIDs.filter(selectedIDs.contains))
+            }
+            return
+        }
+        if let priorFocus, assetByID[priorFocus.id] == nil, frozenSelection?.assetIDs.contains(priorFocus.id) == true {
+            assetByID[priorFocus.id] = priorFocus
+        }
         if let id = focusedID, assetByID[id] != nil { return }
         if let first = assets.first {
             focusedID = first.id

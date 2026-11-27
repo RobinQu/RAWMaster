@@ -25,19 +25,41 @@ final class EditingCompatibilityGraphTests: XCTestCase {
         let panel = try XCTUnwrap(presenter.panel)
         XCTAssertTrue(panel.isVisible && owner.isVisible)
         XCTAssertTrue(panel.parent === owner)
+        XCTAssertFalse(panel.styleMask.contains(.titled))
+        XCTAssertTrue(panel.canBecomeKey)
+        XCTAssertEqual(panel.title, "只读兼容图")
+        XCTAssertEqual(panel.contentLayoutRect.size, panel.frame.size)
         XCTAssertNil(owner.attachedSheet)
         XCTAssertEqual(owner.frame, ownerFrame)
         XCTAssertEqual(presenter.openWorkID, version.workID)
         let expanded = panel.frame
         XCTAssertGreaterThanOrEqual(expanded.height, 392)
         XCTAssertGreaterThanOrEqual(expanded.width, 520)
+        panel.contentView?.layoutSubtreeIfNeeded()
+        let controls = graphHandles(in: try XCTUnwrap(panel.contentView))
+        let resize = try XCTUnwrap(controls.first { $0.kind == .resize })
+        XCTAssertTrue(resize.accessibilityPerformPress())
+        XCTAssertTrue(panel.firstResponder === resize)
+        try sendKey(123, characters: "\u{f702}", to: panel)
+        XCTAssertEqual(panel.frame.width, expanded.width - 16)
+        presenter.resetPosition()
         presenter.toggleFold()
         XCTAssertLessThan(panel.frame.height, 90)
         presenter.toggleFold()
         XCTAssertEqual(panel.frame, expanded)
+        let short = NSRect(x: expanded.minX, y: expanded.maxY - 256, width: expanded.width, height: 256)
+        panel.setFrame(short, display: true)
+        XCTAssertEqual(panel.frame.height, 256)
+        XCTAssertEqual(panel.contentLayoutRect.height, 256)
+        presenter.setCanvasToolActive(true)
+        XCTAssertFalse(panel.isVisible)
+        XCTAssertEqual(presenter.openWorkID, version.workID)
+        presenter.setCanvasToolActive(false)
+        XCTAssertTrue(panel.isVisible)
+        XCTAssertEqual(panel.frame, short)
         presenter.resetPosition()
         if let visible = panel.screen?.visibleFrame { XCTAssertTrue(visible.contains(panel.frame)) }
-        panel.cancelOperation(nil)
+        try sendKey(53, characters: "\u{1b}", to: panel)
         XCTAssertEqual(restored, 1)
         XCTAssertNil(presenter.openWorkID)
         XCTAssertTrue(owner.childWindows?.isEmpty ?? true)
@@ -101,7 +123,28 @@ final class EditingCompatibilityGraphTests: XCTestCase {
             XCTAssertNil(window.attachedSheet)
             XCTAssertTrue(window.isVisible && panel.isVisible)
             XCTAssertNotNil(element(in: panel, selector: "accessibilityLabel", equals: "关闭 Graph"))
-            panel.cancelOperation(nil)
+            let controls = graphHandles(in: try XCTUnwrap(panel.contentView))
+            XCTAssertEqual(Set(controls.compactMap { $0.cell?.accessibilityIdentifier() }),
+                           ["scene.graph.window.move", "scene.graph.window.resize"])
+            editing.postNotice("已保存候选")
+            editing.postNotice("原片读取失败", kind: .error)
+            func closeNotice(_ label: String) -> NSObject? {
+                element(in: window, selector: "accessibilityLabel", equals: label)
+            }
+            try await wait { closeNotice("关闭信息通知") != nil && closeNotice("关闭错误通知") != nil }
+            if let path = ProcessInfo.processInfo.environment["RAWMASTER_EDITOR_NOTICE_CAPTURE"] {
+                window.displayIfNeeded()
+                let image = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+                host.cacheDisplay(in: host.bounds, to: image)
+                try XCTUnwrap(image.representation(using: .png, properties: [:])).write(to: URL(fileURLWithPath: path))
+            }
+            try press(try XCTUnwrap(closeNotice("关闭信息通知")))
+            try await wait { closeNotice("关闭信息通知") == nil && closeNotice("关闭错误通知") != nil }
+            try press(try XCTUnwrap(closeNotice("关闭错误通知")))
+            try await wait { editing.photoNotices.isEmpty }
+            XCTAssertTrue(panel.isVisible)
+            XCTAssertEqual(editing.asset?.id, asset.id)
+            try sendKey(53, characters: "\u{1b}", to: panel)
             try await wait { window.childWindows?.contains(where: { $0.title == "只读兼容图" }) != true }
             XCTAssertEqual(editing.recipe, before)
             XCTAssertEqual(editing.selectedVersionID, version)
@@ -178,6 +221,17 @@ final class EditingCompatibilityGraphTests: XCTestCase {
         }
     }
     private enum Failure: Error { case timedOut }
+
+    @MainActor private func graphHandles(in view: NSView) -> [GraphCanvasWindowHandle.Handle] {
+        (view as? GraphCanvasWindowHandle.Handle).map { [$0] } ?? view.subviews.flatMap { graphHandles(in: $0) }
+    }
+
+    @MainActor private func sendKey(_ code: UInt16, characters: String, to window: NSWindow) throws {
+        let event = try XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [],
+            timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+            characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code))
+        window.sendEvent(event)
+    }
 
     @MainActor private func element(in root: NSObject, selector: String, equals expected: String) -> NSObject? {
         let children = NSSelectorFromString("accessibilityChildren"), field = NSSelectorFromString(selector)

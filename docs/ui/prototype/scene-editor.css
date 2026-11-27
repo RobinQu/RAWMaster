@@ -7,9 +7,15 @@
 .scene-modes button[aria-pressed='true'] { border-bottom-color: var(--accent); color: var(--accent); font-weight: 650; }
 .scene-mode-row .scene-entry { flex: 0 0 30px; width: 30px; height: 30px; padding: 5px; }
 .scene-mode-bar { margin-bottom: 10px; padding: 0 0 8px; }
-.scene-warning { z-index: 5; flex: none; display: flex; align-items: center; gap: 8px; margin-bottom: 5px; padding: 5px 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font-size: 12px; }
-.scene-warning span { flex: 1; }
-.scene-warning .icon { flex: none; }
+.edit-center { position: relative; }
+.editor-notices { position: absolute; z-index: 12; top: 8px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 16px); max-height: 42%; overflow: auto; display: grid; gap: 4px; }
+.editor-notices:empty { display: none; }
+.editor-toast { display: flex; align-items: center; gap: 7px; padding: 4px 5px 4px 10px; border-radius: 8px; color: #f1f3f3; background: #283236f5; border: 1px solid #657175; box-shadow: 0 2px 6px #0003; font-size: 12px; }
+.editor-toast.error { background: #402e27f5; border-color: #95705a; color: #ffeadc; }
+.editor-toast > .icon { flex: none; }
+.editor-toast span { flex: 1; overflow-wrap: anywhere; }
+.editor-toast button { min-height: 26px; padding: 4px; flex: none; background: transparent; color: inherit; border: none; }
+
 .scene-chart { display: block; width: 100%; background: var(--inset); border-radius: 6px; }
 .scene-chart text { font-size: 8px; fill: var(--text); }
 .scene-chart path { fill: none; stroke: var(--line); }
@@ -27,6 +33,7 @@
 .scene-trim-fields { padding-top: 8px; }
 @media (max-width: 520px) { .scene-badge { display: none; } }
 .scene-hud { position: absolute; z-index: 4; inset: 12px 12px auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; pointer-events: none; }
+.edit-center:has(.editor-toast) .scene-hud { top: auto; bottom: 65px; }
 .scene-hud > span, .scene-hud > .row { background: var(--panel); color: var(--text); padding: 4px 8px; border-radius: 6px; }
 .scene-hud button { pointer-events: auto; }
 .scene-hud > .row, .scene-diagnostics { flex-wrap: wrap; }

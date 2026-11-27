@@ -118,11 +118,14 @@ class DevelopmentEditingControl: NSControl {
     var redoAction: (() -> Void)?
     var cancelAction: (() -> Void)?
     private(set) var interacting = false
+    override init(frame: NSRect) { super.init(frame: frame); suppressStandardFocusRing() }
+    required init?(coder: NSCoder) { super.init(coder: coder); suppressStandardFocusRing() }
     override var acceptsFirstResponder: Bool { true }
     func beginInteraction() { guard !interacting else { return }; interacting = true; interaction?(true, true) }
     func endInteraction(nativeEvent: Bool = true) { guard interacting else { return }; interacting = false; interaction?(false, nativeEvent) }
     func cancelTracking() { endInteraction(nativeEvent: false) }
-    override func resignFirstResponder() -> Bool { cancelTracking(); return super.resignFirstResponder() }
+    override func becomeFirstResponder() -> Bool { needsDisplay = true; return super.becomeFirstResponder() }
+    override func resignFirstResponder() -> Bool { cancelTracking(); needsDisplay = true; return super.resignFirstResponder() }
     override func viewWillMove(toWindow newWindow: NSWindow?) { if newWindow !== window { cancelTracking() }; super.viewWillMove(toWindow: newWindow) }
     override func cancelOperation(_ sender: Any?) { cancelAction?(); endInteraction() }
     func consumesUndo(_ event: NSEvent) -> Bool {
@@ -137,13 +140,14 @@ class DevelopmentEditingControl: NSControl {
         if event.keyCode == 53 { cancelOperation(nil); window?.makeFirstResponder(nil); return }
         // No photo actions are forwarded from a custom editing control.
     }
-    override func drawFocusRingMask() {
-        guard bounds.width > 4, bounds.height > 4 else { return }
-        NSBezierPath(roundedRect: bounds.insetBy(dx: 2, dy: 2), xRadius: 5, yRadius: 5).fill()
-    }
+    override func drawFocusRingMask() {}
     override var focusRingMaskBounds: NSRect { bounds }
     func drawEditingFocus() {
-        if bounds.width > 4, bounds.height > 4, window?.firstResponder === self { NSColor.keyboardFocusIndicatorColor.setStroke(); let ring = NSBezierPath(roundedRect: bounds.insetBy(dx: 2, dy: 2), xRadius: 5, yRadius: 5); ring.lineWidth = 2; ring.stroke() }
+        guard bounds.width > 8, bounds.height > 4, window?.firstResponder === self else { return }
+        let width = min(24, bounds.width - 8)
+        let y = isFlipped ? bounds.maxY - 3 : bounds.minY + 2
+        NSColor.secondaryLabelColor.setFill()
+        NSRect(x: bounds.midX - width / 2, y: y, width: width, height: 1).fill()
     }
 }
 

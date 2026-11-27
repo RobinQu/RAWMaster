@@ -38,6 +38,21 @@ final class DevelopmentControlsTests: XCTestCase {
         }
     }
 
+    @MainActor func testEditingControlsKeepKeyboardFocusWithoutAppKitBlueRing() {
+        _ = NSApplication.shared
+        let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 230, height: 140),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        for control in [DevelopmentCurveControl(frame: .zero), DevelopmentGradingControl(frame: .zero)] as [DevelopmentEditingControl] {
+            window.contentView = control
+            XCTAssertTrue(window.makeFirstResponder(control))
+            XCTAssertTrue(window.firstResponder === control)
+            XCTAssertEqual(control.focusRingType, .none)
+            XCTAssertTrue(control.isAccessibilityElement())
+        }
+    }
+
     @MainActor func testLegacyProjectionAndNoOpResetNeverPromoteOrSchedulePixels() async throws {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
         let editing = try EditingController(store: f.store, libraryURL: f.library, defaults: f.defaults)

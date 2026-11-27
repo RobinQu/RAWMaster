@@ -45,18 +45,7 @@ const SceneEditor = (() => {
         ${Object.entries(modes).map(([key,label]) => btn(label,'scene-mode',key,{title:details[key],pressed:current === key})).join('')}
       </div>${btn('色彩与输出','scene-open','',{icon:'sliders',only:true,cls:'icon-btn scene-entry'})}</div></section>`;
   }
-  function warning() {
-    const text = S.sceneWarning?.id === id() && S.sceneWarning.text;
-    return text ? `<div class="scene-warning" role="alert">${icon('pulse',14)}<span>${h(text)}</span>${btn('关闭色彩提示','scene-dismiss','',{icon:'close',only:true})}</div>` : '';
-  }
-  function warn(text) {
-    S.sceneWarning = {id:id(), text};
-    render();
-  }
-  actions['scene-dismiss'] = () => {
-    delete S.sceneWarning; render();
-    ($('.scene-modes [aria-pressed=true]') || $('.canvas-panel'))?.focus({preventScroll:true});
-  };
+  const warn = text => notifyEditor(text, 'error');
   function chart(cfg, v) {
     const screen = v.screen === 'hdr' ? 2 : 0, screenX = 104 + screen * 30;
     const limitX = 104 + cfg.limitEV * 30;
@@ -86,7 +75,10 @@ const SceneEditor = (() => {
   function hud() {
     if (!hdr()) return '';
     const v = view();
-    if (nativeReview && (v.failed || missingRuntime && !reason())) return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(missingRuntime ? runtimeMessage : '预览失败')} · 模拟</span><div class="row">${btn('重试 HDR 预览','scene-review-retry')}</div></div>`;
+    if (nativeReview && missingRuntime && !reason() && !v.runtimeNotified) {
+      const photo = id(); v.runtimeNotified = true;
+      queueMicrotask(() => notifyEditor(runtimeMessage, 'error', photo));
+    }
     return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(appearance())} · 模拟${v.preview === 'target' && v.screen === 'sdr' ? ' · 屏幕无 HDR 余量' : ''}</span>
       <div class="row">${btn('按 HDR 目标查看','scene-view','target',{pressed:v.preview === 'target'})}${btn('预览 SDR 派生','scene-view','sdr',{pressed:v.preview === 'sdr'})}</div>
       ${reason() ? '' : [...v.overlays].map(k => `<span class="scene-legend ${k}">${h(diagnostics[k][1])}</span>`).join('')}</div>`;
@@ -166,7 +158,6 @@ const SceneEditor = (() => {
     if (!Object.hasOwn(modes,key) || key === mode()) return;
     const unavailable = blocked() || (key === 'hdr' ? reason() : '');
     if (unavailable) return warn(unavailable);
-    delete S.sceneWarning;
     focusMode(key);
     if (key !== 'hdr') {
       if (!hdr()) return switchSDR(key);
@@ -208,9 +199,20 @@ const SceneEditor = (() => {
     view().draftBefore = structuredClone(edit().recipe);
     view().failed = false;
     commit('创建 HDR 草稿', RMSceneOutput.clean({intent:'hdr'}), {...Studio.freshRecipe(), colorMode:'hdr'});
+    notifyEditor('已从原片建立 HDR 草稿。');
   };
-  actions['scene-review-fail'] = () => { if (nativeReview && hdr()) { view().failed = true; if (sheet.open) closeSheet(); render(); $('.scene-hud button')?.focus(); } };
-  actions['scene-review-retry'] = () => { view().failed = false; render(); $('.scene-hud button')?.focus(); };
+  actions['scene-review-fail'] = () => {
+    if (!nativeReview || !hdr()) return;
+    view().failed = true; resolveEditorRetry('scene-review-retry');
+    if (sheet.open) closeSheet();
+    render();
+    notifyEditor('HDR 预览失败，已保留上次画面。', 'error', id(), 'scene-review-retry');
+  };
+  actions['scene-review-retry'] = () => {
+    if (!view().failed) return;
+    view().failed = false; resolveEditorRetry('scene-review-retry'); render(); notifyEditor('已重新生成 HDR 预览。');
+    $('.scene-hud button')?.focus({preventScroll:true});
+  };
   actions['scene-review-exposure'] = () => {
     const field = $('[name=sceneGraphExposure]');
     if (!hdr() || blocked() || reason() || !field.reportValidity()) return;
@@ -350,5 +352,5 @@ const SceneEditor = (() => {
     return ['smart','agent','detail','effects','grading','hdr','mixer','slice','warp','lens'].includes(S.tool)
       ? '此工具尚未验证 HDR 母版运算；当前版本不可应用，也不会改用 SDR 代理。' : '';
   }
-  return { modeBar, badge, hud, scope, film, preview, config, hdr, overlayMarkup, toolNote, warning, rendition, nativeReview, reviewInspector, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
+  return { modeBar, badge, hud, scope, film, preview, config, hdr, overlayMarkup, toolNote, rendition, nativeReview, reviewInspector, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
 })();

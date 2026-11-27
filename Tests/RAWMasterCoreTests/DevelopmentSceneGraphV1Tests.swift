@@ -6,6 +6,24 @@ final class DevelopmentSceneGraphV1Tests: XCTestCase {
   typealias Graph = DevelopmentSceneGraphV1
   typealias Node = Graph.Node
 
+  func testFrozenModelStagesSurviveGraphEditsTemplatesAndRecipeReopen() throws {
+    let stage = DevelopmentSceneModelStageV1.denoise(amount: 41)
+    let models = try DevelopmentSceneModelProgramV1(stages: [stage, .segmentation(.subject)])
+    let node = grade()
+    let graph = try Graph(graph: .init(nodes: [node], output: .node(node.id)), output: output(), models: models)
+    let edited = try graph.replacingGraph(graph.graph).remapped()
+    XCTAssertEqual(edited.models, models)
+    let bytes = try JSONEncoder().encode(DevelopmentRecipe(sceneGraph: edited))
+    XCTAssertEqual(try DevelopmentRecipe.decodeJSON(bytes).sceneGraph?.models, models)
+    let sameNodes = try Graph(graph: edited.graph, output: edited.output)
+    XCTAssertNotEqual(try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: sameNodes)),
+                      try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: edited)))
+    var fields = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(edited)) as? [String: Any])
+    XCTAssertEqual(fields["schemaVersion"] as? Int, 2)
+    fields["schemaVersion"] = 1
+    XCTAssertThrowsError(try JSONDecoder().decode(Graph.self, from: JSONSerialization.data(withJSONObject: fields)))
+  }
+
   func testNestedScopeMaskDependenciesAndRecipeRoundTripRemapAsOneValue() throws {
     let mask = Node(name: "Gradient", operation: .linearCoverage(start: .zero, end: .init(1, 0)))
     let corrector = grade(mask: mask.id)

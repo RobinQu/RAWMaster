@@ -5,7 +5,6 @@ struct PhotosRawDetailsControl: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
     let context: EditingInteractionContext
-    @State private var errorText: String?
 
     var body: some View {
         if let facts = editing.developmentSourceFacts {
@@ -19,8 +18,7 @@ struct PhotosRawDetailsControl: View {
                         try session.apply(.setRawDetails(on ? capability : nil), event: .init(context: context,
                             control: .init(group: nil, name: "RAW 细节"),
                             nativeInput: .capture(control: "detail.rawDetails", phase: "discrete", nativeEvent: true)))
-                        errorText = nil
-                    } catch { errorText = error.localizedDescription }
+                    } catch { if session.context == context { editing.message = error.localizedDescription } }
                 }))
                 .disabled(session.parameters.rawDetails == nil && (capability == nil || legacyGrain || neural))
                 .accessibilityIdentifier("photos.detail.rawDetails")
@@ -32,7 +30,6 @@ struct PhotosRawDetailsControl: View {
                     Text(legacyGrain ? "旧版黑白颗粒使用原始解码方式。" : "需要受支持的 Bayer 或 X-Trans 马赛克 RAW。")
                         .photosInspectorParagraph().foregroundStyle(.secondary)
                 }
-                if let errorText { Text(errorText).photosInspectorParagraph().foregroundStyle(AppPalette.warning) }
             }
         }
     }

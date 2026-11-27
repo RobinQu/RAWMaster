@@ -28,6 +28,7 @@ struct DevelopmentPresetEditorRequest: Identifiable {
 struct DevelopmentPresetEditor: View {
     let request: DevelopmentPresetEditorRequest
     let catalog: DevelopmentPresetCatalog
+    let onError: (Error) -> Void
     let saved: (DevelopmentPresetRecord) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var name: String
@@ -38,9 +39,11 @@ struct DevelopmentPresetEditor: View {
     @State private var errorText: String?
     @State private var saving = false
 
-    init(request: DevelopmentPresetEditorRequest, catalog: DevelopmentPresetCatalog, saved: @escaping (DevelopmentPresetRecord) -> Void) {
+    init(request: DevelopmentPresetEditorRequest, catalog: DevelopmentPresetCatalog, onError: @escaping (Error) -> Void,
+         saved: @escaping (DevelopmentPresetRecord) -> Void) {
         self.request = request
         self.catalog = catalog
+        self.onError = onError
         self.saved = saved
         let old = request.mode.original
         let initialName: String
@@ -154,7 +157,16 @@ struct DevelopmentPresetEditor: View {
                 }.value
                 saved(record)
                 dismiss()
-            } catch { errorText = error.localizedDescription; saving = false }
+            } catch {
+                saving = false
+                switch error as? DevelopmentPresetError {
+                case .invalid, .semanticMask, .nonReusableMask, .needsPreparation, .differentSource:
+                    errorText = error.localizedDescription
+                default:
+                    onError(error)
+                    dismiss()
+                }
+            }
         }
     }
 }

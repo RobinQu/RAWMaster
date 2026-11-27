@@ -1,6 +1,6 @@
 # 036 · 渲染 Pipeline 与编辑 DAG 的性能水位
 
-截至 `main@b238c0ab`，旧 V3 已接入 FIT 视口定稿、按显示倍率取样与原图窗口，符合条件的单带 texture／clarity 已用固定输出瓦片。场景预览走独立的 AP1 F32 服务，先解整幅（输出上限 440 MiB），再采长边 1440 的 FIT 或受预算约束的原图 ROI。两个路径按各自的性能口径记录。[实测记录](validation.md) · [联合验收口径](../035-portable-processing-cores/roadmap.md#证据与测量口径) · [参考实现取证](../../docs/research/gpu-pipeline-references.md)
+旧 V3 已接入 FIT 视口定稿、按显示倍率取样与原图窗口，符合条件的单带 texture／clarity 已用固定输出瓦片。场景预览保留已校准的 16 位 Bayer 数据，FIT、1:1 原图坐标取景和示波器各按自己需要的像素生成 AP1。实拍 9504×6336 在 440 MiB 解码预算内通过了这三条路径。无模型前缀的大图交付按区求值 DAG 和输出变换，单一成片目标共享整幅终端纹理。[实测记录](validation.md) · [60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [联合验收口径](../035-portable-processing-cores/roadmap.md#证据与测量口径)
 
 ## 问题
 

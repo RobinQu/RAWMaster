@@ -21,7 +21,7 @@
 .style-tile {position:relative;min-width:0!important;display:flex!important;flex-direction:column;align-items:stretch;gap:0!important;cursor:pointer;border-radius:5px;border:1px solid var(--line);background:var(--bg);overflow:hidden}
 .style-tile input {position:absolute;width:1px;height:1px;opacity:0}
 .style-tile:has(input:checked) {border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--active)}
-.style-tile:has(input:focus-visible) {outline:2px solid var(--accent);outline-offset:2px}
+.style-tile:has(input:focus-visible) {box-shadow: inset 0 -2px var(--focus-ink)}
 .style-tile:has(input:checked)::after {content:"✓";position:absolute;right:3px;top:3px;background:var(--accent);color:var(--button);font:bold 11px/14px system-ui;width:14px;height:14px;border-radius:50%;text-align:center}
 .style-tile canvas {display:block;width:100%;height:auto;background:#262827}
 .style-tile .style-name {padding:3px 2px;color:var(--text);font:550 11px/1.5 -apple-system,system-ui,sans-serif;text-align:center}

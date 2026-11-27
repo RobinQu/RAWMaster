@@ -11,6 +11,60 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
   typealias Stage = DevelopmentSceneModelStageV1
   typealias Program = DevelopmentSceneModelProgramV1
 
+  func testNativeModelPrefixFeedsFITOffCentreROIAndScopesAtTheSameScale() throws {
+    typealias RAW = DevelopmentSceneRAWV1
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice()), decoder = try RAW(device: device)
+    let calibration = try RAW.Calibration(xyzToCamera: [1,0,0,0,1,0,0,0,1], whiteBalance: .one)
+    let sensor = try RAW.Sensor(width: 8, height: 6, orientation: 1, active: .init(0,0,8,6), crop: .init(0,0,8,6),
+      colors: .init(0,1,1,2), black: .init(repeating: 100), white: .init(repeating: 800), calibration: calibration)
+    let values = (0..<48).map { UInt16(($0 * 139) % 807) }
+    let mosaic = try decoder.upload(values.withUnsafeBytes { Data($0) }, sensor: sensor)
+    let seg = Stage.segmentation(), program = try Program(stages: [.denoise(amount: 40), .superResolution(), seg])
+    let mask = Node(name: "Native model", operation: .externalCoverage(id: seg.id))
+    let grade = Node(name: "Exposure", operation: .corrector(image: .input, mask: mask.id, exposureEV: 1,
+      curve: [], strength: 1, enabled: true))
+    let graph = try workflow([mask, grade], final: grade)
+    let provider = try TestSceneModelProvider(device: device), renderer = try Renderer(device: device)
+    let prefix = try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: decoder, provider: provider,
+      budget: 8 * 1024 * 1024)
+    let ref = try DevelopmentSceneModelPipelineV1.run(program, image: decoder.develop(mosaic, sampling: .native(nil)).image,
+      geometry: .init(width: 8, height: 6), maximumBytes: 8 * 1024 * 1024, provider: TestSceneModelProvider(device: device))
+    let rgb = try read(ref.image), alpha = try read(XCTUnwrap(ref.masks[seg.id])).map(\.x)
+    let roi = MTLRegionMake2D(3, 2, 6, 4)
+    for (request, w, h, x0, y0, cellW, cellH) in [
+      (RAW.Sampling.fit(width: 4, height: 3), 4, 3, 0, 0, 4, 4),
+      (.native(roi), 6, 4, 3, 2, 1, 1),
+      (.fit(width: 2, height: 2), 2, 2, 0, 0, 8, 6)
+    ] {
+      let (input, masks, _) = try prefix.sample(request)
+      let geometry = x0 == 0 ? Renderer.Geometry(width: w, height: h) : .init(width: 16, height: 12)
+      let view = try renderer.preparePreviewInput(input.image, geometry: geometry, graph: graph, view: .init(), masks: masks, sourceRevision: 0)
+      let actual = try read(view.image.texture)
+      let scopes: DevelopmentSceneScopesV1?
+      if w == 2 {
+        scopes = try SceneScopesAnalyzerV1(device: device).analyze(scene: view.image.texture,
+          target: renderer.renderPreview(view, output: graph.output, target: .hdr2020).texture,
+          derivative: renderer.renderPreview(view, output: graph.output, target: .sdr709).texture,
+          preGamut: nil, sourceSensor: input.sensorSaturation, monitor: nil)
+      } else { scopes = nil }
+      for y in 0..<h { for x in 0..<w {
+        var color = SIMD4<Float>.zero, coverage: Float = 0
+        for j in 0..<cellH { for i in 0..<cellW {
+          let k = (y0 + y*cellH + j)*16 + x0 + x*cellW + i
+          color += rgb[k]; coverage += alpha[k]
+        } }
+        let area = Float(cellW*cellH), expected = color / area * (1 + coverage / area)
+        for lane in 0..<3 {
+          XCTAssertEqual(actual[y*w+x][lane], expected[lane], accuracy: 2e-5)
+          if let scopes { XCTAssertEqual(scopes.samples[y*w+x].sceneRGB[lane], expected[lane], accuracy: 2e-5) }
+        }
+      } }
+    }
+    XCTAssertEqual(provider.inputSizes,[.init(8,6),.init(8,6),.init(16,12)])
+    XCTAssertThrowsError(try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: decoder, provider: provider, budget: 1024))
+    XCTAssertEqual(provider.calls.count, 3)
+  }
+
   func testDenoiseAndSuperResolutionRunBeforeTheSceneGraph() throws {
     let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
     let samples: [SIMD4<Float>] = (0..<32).map { index in
@@ -220,16 +274,21 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
   }
 
   private func read(_ texture: MTLTexture) throws -> [SIMD4<Float>] {
-    let size = texture.width * texture.height * 16
+    let stride = texture.pixelFormat == .r32Float ? 4 : 16
+    let size = texture.width * texture.height * stride
     let buffer = try XCTUnwrap(texture.device.makeBuffer(length: size, options: .storageModeShared))
     let queue = try XCTUnwrap(texture.device.makeCommandQueue())
     let command = try XCTUnwrap(queue.makeCommandBuffer())
     let encoder = try XCTUnwrap(command.makeBlitCommandEncoder())
     encoder.copy(from: texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(),
       sourceSize: .init(width: texture.width, height: texture.height, depth: 1), to: buffer,
-      destinationOffset: 0, destinationBytesPerRow: texture.width * 16, destinationBytesPerImage: size)
+      destinationOffset: 0, destinationBytesPerRow: texture.width * stride, destinationBytesPerImage: size)
     encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
     XCTAssertEqual(command.status, .completed)
+    if stride == 4 {
+      let values = UnsafeBufferPointer(start: buffer.contents().assumingMemoryBound(to: Float.self), count: size / stride)
+      return values.map { .init($0, 0, 0, 1) }
+    }
     return Array(UnsafeBufferPointer(start: buffer.contents().assumingMemoryBound(to: SIMD4<Float>.self),
       count: size / 16))
   }
@@ -243,6 +302,7 @@ private final class TestSceneModelProvider: DevelopmentSceneModelProvider {
   private let queue: MTLCommandQueue
   private let denoise, superResolution, segmentation: MTLComputePipelineState
   private(set) var calls: [DevelopmentSceneModelStageV1.Kind] = []
+  private(set) var inputSizes: [SIMD2<Int>] = []
 
   init(device: MTLDevice) throws {
     self.device = device
@@ -263,6 +323,7 @@ private final class TestSceneModelProvider: DevelopmentSceneModelProvider {
               check: () throws -> Void) throws -> MTLTexture {
     try check()
     calls.append(stage.kind)
+    inputSizes.append(.init(input.width, input.height))
     let multiplier = stage.scale
     let coverage = stage.kind == .segmentation
     let descriptor = MTLTextureDescriptor.texture2DDescriptor(

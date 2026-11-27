@@ -102,6 +102,7 @@ struct WorkflowTabs: View {
                             }
                         }
                         .contentShape(Capsule())
+                        .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
                 }
                 .buttonStyle(.plain)
                 .disabled(workflow == .edit && !model.isNativeEditing && !model.canOpenNativeEditing && model.focusedAsset == nil

@@ -16,13 +16,7 @@ struct PhotosCropPanel: View {
             .padding(.horizontal, 16).padding(.vertical, 13)
             Divider()
             ScrollView {
-                VStack(spacing: 0) {
-                    PhotosGeometryControls(editing: editing, session: session, context: context)
-                    if let message = editing.message {
-                        Text(message).font(.caption).foregroundStyle(AppPalette.warning)
-                            .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 12)
-                    }
-                }.padding(16)
+                PhotosGeometryControls(editing: editing, session: session, context: context).padding(16)
             }
             Divider()
             HStack(spacing: 12) {

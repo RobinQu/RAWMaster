@@ -107,7 +107,9 @@ import RAWMasterLibrary
     }
     @Published private(set) var sceneGraphState = EditingSceneGraphState()
     @Published private(set) var sceneFrame: DevelopmentScenePreviewFrameV1?
-    @Published private(set) var scenePreviewError: String?
+    @Published private(set) var scenePreviewError: String? {
+        didSet { if let scenePreviewError { postNotice(scenePreviewError, kind: .error, action: .scenePreview) } }
+    }
     @Published private(set) var scenePreviewBusy = false
     @Published private(set) var sceneStarting = false
     @Published var sceneModeConfirmation: EditingSceneModeChange?
@@ -239,7 +241,31 @@ import RAWMasterLibrary
         let targeted: TargetedPending?
         let curveTargeted: TargetedCurvePending?
     }
-    @Published var message: String?
+    @Published private var lastMessage: String?
+    @Published private(set) var notices: [EditingWorkspaceNotice] = []
+    var message: String? {
+        get { lastMessage }
+        set {
+            if let newValue { postNotice(newValue, kind: .error) }
+            else { lastMessage = nil }
+        }
+    }
+    var photoNotices: [EditingWorkspaceNotice] { notices.filter { $0.assetID == asset?.id } }
+
+    func postNotice(_ text: String, kind: EditingWorkspaceNotice.Kind = .information,
+                    action: EditingWorkspaceNotice.Action? = nil, for requestedAssetID: String? = nil) {
+        let owner = requestedAssetID ?? asset?.id
+        let isCurrent = owner == asset?.id
+        if isCurrent { lastMessage = text }
+        guard let id = owner, !text.isEmpty,
+              !notices.contains(where: { $0.assetID == id && $0.text == text && $0.kind == kind && $0.action == action }) else { return }
+        notices.append(.init(assetID: id, kind: kind, text: text, action: action))
+        if isCurrent, isPresented, let app = NSApp, app.isActive {
+            NSAccessibility.post(element: app, notification: .announcementRequested,
+                userInfo: [.announcement: text, .priority: (kind == .error ? NSAccessibilityPriorityLevel.high : .medium).rawValue])
+        }
+    }
+    func dismissNotice(_ id: UUID) { notices.removeAll { $0.id == id } }
     @Published var prompt = "自然增强照片，保留主体、构图与真实细节。"
     @Published var quickPromptDraft = QuickPromptDraft()
     @Published private(set) var quickPromptPresented = false
@@ -247,7 +273,18 @@ import RAWMasterLibrary
     @Published private(set) var quickPromptPreparing = false
     @Published private(set) var quickPromptPending: QuickPromptPrepared?
     @Published private(set) var quickPromptReview: QuickPromptReview?
-    @Published var quickPromptNotice: String?
+    @Published private var lastQuickPromptNotice: String?
+    var quickPromptNotice: String? {
+        get { lastQuickPromptNotice }
+        set {
+            if let newValue { postPromptNotice(newValue, kind: .error) }
+            else { lastQuickPromptNotice = nil }
+        }
+    }
+    private func postPromptNotice(_ text: String, kind: EditingWorkspaceNotice.Kind) {
+        lastQuickPromptNotice = text
+        postNotice(text, kind: kind)
+    }
     @Published private(set) var quickPromptCloudOnline: Bool?
     private var quickPromptDrafts: [String: QuickPromptDraft] = [:]
     private var quickPromptPriorComparison: EditingComparisonState?
@@ -430,6 +467,9 @@ import RAWMasterLibrary
         }
         previews.primary.onChange = { [weak self] in self?.updatePreviewPresentation() }
         previews.comparison.onChange = { [weak self] in self?.objectWillChange.send() }
+        previews.primary.onFailure = { [weak self] in self?.postNotice($0, kind: .error, action: .preview) }
+        previews.comparison.onFailure = { [weak self] in self?.postNotice("参考预览：" + $0, kind: .error, action: .preview) }
+        sceneScopes.onFailure = { [weak self] in self?.postNotice($0, kind: .error, action: .scopes) }
         previews.primary.onInvalidation = { [weak self] in self?.previewSourceInvalidated() }
         previews.comparison.onInvalidation = { [weak self] in self?.previewSourceInvalidated() }
         startupTask = Task {
@@ -565,7 +605,7 @@ import RAWMasterLibrary
                 quickPromptDraft = quickPromptDrafts[loaded.0.id] ?? .init()
                 savedWorkAssetIDs.insert(newAsset.id)
                 savedAdmissionFingerprints[newAsset.id, default: []].insert(loaded.0.source.admissionFingerprint)
-                if !sourceReady { stage = .versions; message = "原片当前不可用。已归档版本仍可查看、比较、采用和导出。" }
+                if !sourceReady { stage = .versions; postNotice("原片当前不可用。已归档版本仍可查看、比较、采用和导出。") }
                 resolveCurrentLocation()
                 let persistedParent = loaded.0.liveParentVersionID.flatMap { id in loaded.1.contains(where: { $0.id == id }) ? id : nil }
                 let viewableParent = persistedParent.flatMap { id in
@@ -624,7 +664,7 @@ import RAWMasterLibrary
            candidate.adjustmentsV3?.advancedDetail.preparedDehaze == nil,
            candidate.adjustmentsV3?.advancedDetail.dehaze.enabled == false,
            candidate.adjustmentsV3?.advancedDetail.dehaze.amount != 0 {
-            message = "前面的调整已变化，去朦胧已暂停；数量已保留，可重新准备后应用。"
+            postNotice("前面的调整已变化，去朦胧已暂停；数量已保留，可重新准备后应用。")
         } else if candidate.adjustmentsV3?.advancedDetail.preparedDehaze != nil,
                   candidate.adjustmentsV3?.advancedDetail.dehaze.enabled == true,
                   message?.hasPrefix("前面的调整已变化，去朦胧已暂停") == true {
@@ -876,7 +916,7 @@ import RAWMasterLibrary
                   developmentBranchID == originalBranch else { return }
             if let context = developmentSessionStorage?.context {
                 do { try developmentSessionStorage?.prepareForBranchReplacement(context: context) }
-                catch { message = "已结束此前调整，请重新检查草稿。" }
+                catch { postNotice("已结束此前调整，请重新检查草稿。") }
             }
             cancelDevelopmentBackgroundWork()
             developmentBranchID = .init()
@@ -902,7 +942,7 @@ import RAWMasterLibrary
     func continueFrom(_ version: EditingVersion) {
         // AI/external pixels are immutable rendered branches. Initial development is source-RAW only.
         guard version.artifact == nil || version.kind == .development else {
-            selectedVersionID = version.id; stage = .ai; message = "已选择此版本作为下一次 AI 编辑的输入。"; requestPreview(); return
+            selectedVersionID = version.id; stage = .ai; postNotice("已选择此版本作为下一次 AI 编辑的输入。"); requestPreview(); return
         }
         stage = .development; selectVersion(version, continueEditing: true)
     }
@@ -1122,7 +1162,7 @@ import RAWMasterLibrary
         guard !shuttingDown, sourceReady, let current = work, !saving else { return }
         if let sceneSaveBlockReason { message = sceneSaveBlockReason; return }
         developmentLocalInput.cancelCollection()
-        guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else { message = "请等待这笔调整完成后再保存。"; return }
+        guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else { postNotice("请等待这笔调整完成后再保存。"); return }
         saveDevelopment(work: current, recipe: recipe, parent: draftParentID ?? current.adoptedVersionID,
                         generation: focusGeneration, openExportAfterSaving: false, returnAfterSaving: returnAfterSaving)
     }
@@ -1167,7 +1207,7 @@ import RAWMasterLibrary
                 // The immutable candidate contains the frozen Save input. The live draft
                 // may already include later edits; reopen those on the newly saved parent.
                 scheduleLiveStatePersistence(work:refreshed,parent:version.id)
-                message = "已保存初修候选。采用后才会成为当前版本。"
+                postNotice("已保存初修候选。采用后才会成为当前版本。")
                 if returnAfterSaving { leaveBrowsingContext() }
                 else if openExportAfterSaving { exportVersionID = version.id; showExport = true }
             } catch {
@@ -1273,7 +1313,7 @@ import RAWMasterLibrary
         guard !shuttingDown, let current = work else { return }
         if version.configuration["quickPromptRawOutputSHA256"] != nil {
             if let job = quickPromptJob(for: version) { adoptQuickPromptVersion(version, job: job, fromReview: false) }
-            else { message = "生成记录尚未就绪，请稍后核对。" }
+            else { postNotice("生成记录尚未就绪，请稍后核对。") }
             return
         }
         startOperation { [self] in
@@ -1281,14 +1321,14 @@ import RAWMasterLibrary
                 try Task.checkCancellation()
                 let database = store
                 _ = try await Task.detached { try database.adoptEditingVersion(workID: current.id, versionID: version.id, expectedRevision: current.adoptionRevision) }.value
-                await refreshWork(); message = "已采用此版本。原片与其他版本仍保留。"
-            } catch { await refreshWork(); message = "采用未完成。当前采用可能已变更，请核对后重试。" }
+                await refreshWork(); postNotice("已采用此版本。原片与其他版本仍保留。", for: current.source.assetID)
+            } catch { await refreshWork(); postNotice("采用未完成。当前采用可能已变更，请核对后重试。", kind: .error, for: current.source.assetID) }
         }
     }
     func disposition(_ version: EditingVersion, _ value: VersionDisposition) {
         startOperation { [self] in
             do { try Task.checkCancellation(); let database = store; try await Task.detached { try database.setVersionDisposition(versionID: version.id, disposition: value) }.value; await refreshWork() }
-            catch { message = "无法更新候选：\(error.localizedDescription)" }
+            catch { postNotice("无法更新候选：\(error.localizedDescription)", kind: .error, for: version.source.assetID) }
         }
     }
     func associateExternalResult() {
@@ -1305,7 +1345,7 @@ import RAWMasterLibrary
                 let version = EditingVersion(workID: work.id, parentVersionID: parent, kind: .external, source: work.source, artifact: artifact, configuration: ["filename": url.lastPathComponent])
                 let saved = try await publish(file: url, version: version)
                 await refreshWork(); if self.work?.id == work.id { selectedVersionID = saved.id; stage = .versions; requestPreview() }
-            } catch { message = "无法关联结果：\(error.localizedDescription)" }
+            } catch { postNotice("无法关联结果：\(error.localizedDescription)", kind: .error, for: work.source.assetID) }
         }
     }
     func prepareExport(asset: AssetRecord?, admissionFingerprint: String? = nil) {
@@ -1321,7 +1361,7 @@ import RAWMasterLibrary
     /// Focus may still be loading. Both consumers await the same selection without opening a sheet.
     func beginWorkbenchExport(asset: AssetRecord, admissionFingerprint: String) -> Bool {
         if asset.id == self.asset?.id, sceneGraphState.connection != nil {
-            message = "先应用或取消 Graph 连接草稿。"; return false
+            postNotice("先应用或取消 Graph 连接草稿。"); return false
         }
         closeWorkbenchExport()
         pendingExportAssetID = nil
@@ -1369,17 +1409,24 @@ import RAWMasterLibrary
 
     private func selectVersionForExport() -> Bool {
         guard !shuttingDown, let originalWork = work?.id else { return false }
-        if sceneGraphState.connection != nil { message = "先应用或取消 Graph 连接草稿。"; return false }
+        if sceneGraphState.connection != nil { postNotice("先应用或取消 Graph 连接草稿。"); return false }
         let originalFocus = focusGeneration, originalBranch = developmentBranchID
         finishDevelopmentNumberInput()
         guard focusGeneration == originalFocus, work?.id == originalWork,
               developmentBranchID == originalBranch, !shuttingDown, let work else { return false }
         if isDisplayingDevelopmentDraft {
-            if recipe.sceneGraph != nil, displayedSavedVersion == nil {
-                message = "请先保存当前 HDR 草稿为候选，再导出这个版本。"; return false
-            }
             guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else {
-                message = "请等待这笔调整完成后再导出。"; return false
+                postNotice("请等待这笔调整完成后再导出。"); return false
+            }
+            if recipe.sceneGraph != nil {
+                // A reopened edit may still be loading the selection while its saved parent is
+                // already known. Freeze only that immutable candidate when its recipe matches.
+                guard let parent = versions.first(where: { $0.id == draftParentID && $0.kind == .development }),
+                      parent.recipe == recipe else {
+                    postNotice("请先保存当前 HDR 草稿为候选，再导出这个版本。"); return false
+                }
+                exportVersionID = parent.id
+                return true
             }
             exportVersionID = draftParentID ?? selectedVersionID ?? work.originalVersionID
         } else {
@@ -1392,7 +1439,7 @@ import RAWMasterLibrary
         guard let intent = draftExportIntent, intent.focusGeneration == focusGeneration,
               intent.work.id == work?.id, !shuttingDown, !saving, sourceReady else { cancelDraftExport(); return }
         guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else {
-            cancelDraftExport(); message = "请等待这笔调整完成后再保存并导出草稿。"; return
+            cancelDraftExport(); postNotice("请等待这笔调整完成后再保存并导出草稿。"); return
         }
         cancelDraftExport()
         saveDevelopment(work: intent.work, recipe: intent.recipe, parent: intent.parentID,
@@ -1578,7 +1625,7 @@ import RAWMasterLibrary
     }
 
     func openQuickPrompt() {
-        guard visibleSceneGraph == nil else { message = "此 HDR 阶段尚不支持快速 Prompt。"; return }
+        guard visibleSceneGraph == nil else { postNotice("此 HDR 阶段尚不支持快速 Prompt。"); return }
         guard canOpenQuickPrompt, !quickPromptPresented else { return }
         finishDevelopmentNumberInput()
         cancelDevelopmentFilterHover(); cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
@@ -1673,7 +1720,7 @@ import RAWMasterLibrary
                 else { try await enqueueQuickPrompt(prepared) }
             } catch {
                 if focusGeneration == focusID && quickPromptPresented {
-                    quickPromptNotice = error is CancellationError ? "已停止准备。" : "无法准备输入。请检查照片、构图及选区。"
+                    postPromptNotice(error is CancellationError ? "已停止准备。" : "无法准备输入。请检查照片、构图及选区。", kind: error is CancellationError ? .information : .error)
                 }
             }
         }
@@ -1686,14 +1733,14 @@ import RAWMasterLibrary
               work?.liveRevision == snapshot.liveRevision, work?.adoptionRevision == snapshot.adoptionRevision,
               work?.strictDocumentary != true, !snapshot.usesLiveDraft || prepared.request.recipe == recipe,
               (snapshot.usesLiveDraft ? draftParentID : selectedVersionID) == prepared.request.inputVersionID else {
-            dismissQuickPromptConfirmation(); quickPromptNotice = "输入已变更，请重新核对。"; return
+            dismissQuickPromptConfirmation(); postPromptNotice("输入已变更，请重新核对。", kind: .information); return
         }
         quickPromptPending = nil
         quickPromptPreparing = true
         let operation = startOperation { [self] in
             defer { prepared.cleanUp(); quickPromptPreparing = false; quickPromptEnqueueOperation = nil }
             do { try await enqueueQuickPrompt(prepared) }
-            catch is CancellationError { quickPromptNotice = "已停止准备，尚未提交。" }
+            catch is CancellationError { postPromptNotice("已停止准备，尚未提交。", kind: .information) }
             catch { quickPromptNotice = "未提交。请检查作品状态并重新核对。" }
         }
         quickPromptEnqueueOperation = operation
@@ -1722,7 +1769,7 @@ import RAWMasterLibrary
                 _ = try await Task.detached { try database.setStrictDocumentary(workID: work.id, enabled: enabled) }.value
                 if self.work?.id == work.id { dismissQuickPromptConfirmation(); await refreshWork() }
             } catch EditingError.illegalTransition {
-                quickPromptNotice = "请等待本张任务结束，或先停止任务。"
+                postPromptNotice("请等待本张任务结束，或先停止任务。", kind: .information)
             } catch { quickPromptNotice = "无法更改纪实策略。请先恢复到原片或初修版本。" }
         }
     }
@@ -1821,7 +1868,7 @@ import RAWMasterLibrary
                 guard focusGeneration == focus else { return }
                 if fromReview { closeQuickPrompt(restoreComparison: false) }
                 stage = .versions; selectedVersionID = version.id; requestPreview()
-                message = "已应用创作版本。可撤销版本采用。"
+                postNotice("已应用创作版本。可撤销版本采用。")
             } catch {
                 if focusGeneration == focus {
                     await refreshWork(); quickPromptNotice = "采用未完成，请核对原版本及草稿。"; message = quickPromptNotice
@@ -1854,8 +1901,8 @@ import RAWMasterLibrary
                     stage = .development; selectedVersionID = draftParentID ?? restored.adoptedVersionID
                     beginDevelopmentInterface(); requestPreview()
                 }
-                message = "已撤销快速 Prompt 版本采用。"
-            } catch { message = "当前采用版本已变更，请在版本列表核对。" }
+                postNotice("已撤销快速 Prompt 版本采用。")
+            } catch { postNotice("当前采用版本已变更，请在版本列表核对。", kind: .error, for: work.source.assetID) }
         }
     }
 
@@ -1904,7 +1951,7 @@ import RAWMasterLibrary
                     return
                 }
                 run(job)
-            } catch { if !shuttingDown { message = error is CancellationError ? "输入准备已取消，尚未提交生成。" : "无法开始生成：\(error.localizedDescription)" } }
+            } catch { if !shuttingDown { postNotice(error is CancellationError ? "输入准备已取消，尚未提交生成。" : "无法开始生成：\(error.localizedDescription)", kind: error is CancellationError ? .information : .error, for: current.source.assetID) } }
         }
     }
     private func transition(_ job: ProcessingJob, to state: ProcessingJobState, remoteID: String? = nil, joined: Bool = false, error: String? = nil) async throws -> ProcessingJob {
@@ -1961,7 +2008,8 @@ import RAWMasterLibrary
                     } else if error is CancellationError { unknown = current.currentAttempt.submissionIntentAt != nil }
                     _ = try? await transition(current, to: unknown ? .outcomeUnknown : .failed, joined: joined, error: Self.safeError(error))
                 }
-                message = returnedBytes ? "已收到生成结果，但保存未完成。请在制作任务中恢复保存，不会重新生成。" : "生成未完成，请在制作任务中查看或核对结果。"
+                postNotice(returnedBytes ? "已收到生成结果，但保存未完成。请在制作任务中恢复保存，不会重新生成。" : "生成未完成，请在制作任务中查看或核对结果。",
+                           kind: .error, for: job.request.source.assetID)
             }
             await refreshJobs(); await refreshWork()
         }
@@ -2028,7 +2076,7 @@ import RAWMasterLibrary
                 }
                 try await archiveOutput(output, job: publicationJob); saved = true
             } catch {
-                message = "恢复保存未完成。结果仍保留，请检查可用空间后重试保存。"
+                postNotice("恢复保存未完成。结果仍保留，请检查可用空间后重试保存。", kind: .error, for: job.request.source.assetID)
                 if let current = try? store.processingJob(id: job.id), current.currentAttempt.id == targetID, !current.state.isTerminal {
                     _ = try? await transition(current, to: .outcomeUnknown, joined: true, error: "结果保存待恢复")
                 }
@@ -2065,7 +2113,7 @@ import RAWMasterLibrary
         let version = EditingVersion(workID: job.request.workID, parentVersionID: job.request.inputVersionID, kind: .ai,
             source: job.request.source, recipe: job.request.recipe, artifact: material.artifact, configuration: configuration)
         _ = try await publish(file: material.fileURL, version: version, job: job)
-        message = "生成结果已保存为候选，请检查后采用。"
+        postNotice("生成结果已保存为候选，请检查后采用。", for: job.request.source.assetID)
     }
     nonisolated private static func safeError(_ error: Error) -> String {
         // Credentials and request headers never enter UI diagnostics.
@@ -2098,7 +2146,7 @@ import RAWMasterLibrary
     func retry(_ job: ProcessingJob, allowUnknown: Bool = false) {
         guard !shuttingDown, !pendingRetryJobs.contains(job.id) else { return }
         guard !canResumeSaving(job) else { resumeSaving(job); return }
-        if job.request.quickPrompt != nil { message = "请从该照片的 Prompt 工具条重新提交并核对输入。"; return }
+        if job.request.quickPrompt != nil { postNotice("请从该照片的 Prompt 工具条重新提交并核对输入。"); return }
         pendingRetryJobs.insert(job.id)
         startOperation { [self] in
             defer { pendingRetryJobs.remove(job.id) }
@@ -2120,7 +2168,7 @@ import RAWMasterLibrary
             } catch {
                 if let createdRetry, shuttingDown || Task.isCancelled {
                     await cancelUnsubmitted(createdRetry)
-                } else if !shuttingDown { message = "无法重试。请先确认此前任务已停止并核对结果。" }
+                } else if !shuttingDown { postNotice("无法重试。请先确认此前任务已停止并核对结果。", kind: .error, for: job.request.source.assetID) }
             }
         }
     }
@@ -2165,7 +2213,7 @@ import RAWMasterLibrary
                         try await Task.detached {
                             try database.acknowledgeQuickPromptOutcome(id: unresolved.id, attemptID: unresolved.currentAttempt.id)
                         }.value
-                        if job.request.workID == work?.id { quickPromptNotice = "原尝试仍待核对。可单独准备下一张候选。" }
+                        if job.request.workID == work?.id { postPromptNotice("原尝试仍待核对。可单独准备下一张候选。", kind: .information) }
                     }
                 }
             } catch { _ = try? await transition(job, to: .outcomeUnknown, error: "暂时无法核对") }
@@ -2472,7 +2520,7 @@ import RAWMasterLibrary
         _ = try developmentDehazeProjection(context: context)
         if enabled, developmentDehazeStatus != .ready {
             let amount = developmentSession.parameters.advancedDetail.dehaze.amount
-            guard amount != 0 else { message = "选择非零数量后，将准备并应用去朦胧。"; return }
+            guard amount != 0 else { postNotice("选择非零数量后，将准备并应用去朦胧。"); return }
             try developmentDehazeInput.commit(amount, context: context); return
         }
         try developmentSession.apply(.setEnabled(.dehaze, enabled), event: .init(context: context, control: .init(group: .dehaze, name: "启用去朦胧")))
@@ -2529,7 +2577,7 @@ import RAWMasterLibrary
         defer { cancelDevelopmentBackgroundWork(preserveThumbnails: preserveThumbnails) }
         guard let session = developmentSessionStorage, let context = session.context else { return }
         do { try session.suspend(context: context, disposition: disposition) }
-        catch { message = "此前调整已结束，请检查当前草稿。" }
+        catch { postNotice("此前调整已结束，请检查当前草稿。") }
     }
     private func invalidateDevelopmentInteraction(reason: EditingInteractionInvalidationReason) {
         suspendedDevelopmentContext = nil
@@ -3050,7 +3098,7 @@ import RAWMasterLibrary
               previews.primary.currentSourceGeneration == context.sourceGeneration,
               let decoder = facts.localDecoderContractFingerprint else { return }
         guard developmentSession.activeGesture == nil, !developmentDehazeInput.hasPendingInput else {
-            message = "请先完成或取消当前调整，再自动修正红眼。"; return
+            postNotice("请先完成或取消当前调整，再自动修正红眼。"); return
         }
         do {
             try developmentSession.validateInteraction(context)
@@ -3301,7 +3349,7 @@ import RAWMasterLibrary
             developmentTargetedColor=nil;developmentTargetedColorReady=false
             developmentTargetedCurve=nil;developmentTargetedCurveReady=false
             let picker = EditingDevelopmentPicker(id: UUID(), context: context, recipeFingerprint: try EditingFingerprint.of(recipe), kind: kind)
-            guard developmentPickerFrame(for: picker) != nil else { message = "请等待当前预览完成后再取样。"; return }
+            guard developmentPickerFrame(for: picker) != nil else { postNotice("请等待当前预览完成后再取样。"); return }
             developmentPicker = picker
         } catch { message = "无法开始取样，请检查当前草稿。" }
     }
@@ -3776,7 +3824,7 @@ import RAWMasterLibrary
         guard let token = developmentSummaryEnding else { return }
         developmentSummaryEnding = nil
         guard developmentContext == token.context, developmentSession.activeGesture == token else { return }
-        do { try developmentSession.endGesture(token, .commit) } catch { message = "调整已结束，请检查当前草稿。" }
+        do { try developmentSession.endGesture(token, .commit) } catch { postNotice("调整已结束，请检查当前草稿。") }
     }
     private func requestDevelopmentHistogramIfNeeded() {
         guard !shuttingDown, !developmentSavePreviewSuspended, stage == .development, sourceReady, !previewInteracting,
@@ -3918,7 +3966,7 @@ import RAWMasterLibrary
               facts.sourceGeneration == context.sourceGeneration,
               previews.primary.currentSourceGeneration == context.sourceGeneration else { return }
         guard developmentSession.activeGesture == nil, !previewInteracting, !developmentDehazeInput.hasPendingInput else {
-            message = "请先完成或取消当前调整，再自动拉直与裁切。"; return
+            postNotice("请先完成或取消当前调整，再自动拉直与裁切。"); return
         }
         requestDevelopmentAnalysis(.cropAutomatic, title: "自动拉直与裁切", context: context, nativeEvent: true)
     }
@@ -4329,13 +4377,15 @@ extension EditingController {
             exposureEV: 0, curve: [], strength: 1, enabled: true))
         do {
             let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
-            let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [grade], output: .node(grade.id)), output: .init(sdrTrim: trim))
+            let models = try recipe.adjustmentsV3.flatMap(DevelopmentSceneModelProgramV1.derived(from:))
+            let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [grade], output: .node(grade.id)),
+                output: .init(sdrTrim: trim), models: models)
             sceneStarting = true; message = nil
             let service = scenePreview
             sceneStart = Task { [weak self] in
                 var result: Result<DevelopmentScenePreviewFrameV1, Error>
                 do { result = .success(try await service.render(source: source, graph: graph, view: .init(),
-                    target: .sdr709, sampling: .fit(maximumEdge: 1440))) }
+                    target: .sdr709, sampling: .fit(maximumEdge: 1440), models: graph.models)) }
                 catch { result = .failure(error) }
                 guard let self, !Task.isCancelled else { return }
                 self.sceneStarting = false; self.sceneStart = nil
@@ -4343,8 +4393,9 @@ extension EditingController {
                 switch result {
                 case .success:
                     self.applySceneCommit(.init(sceneGraph: graph))
+                    self.postNotice("已进入 HDR 编辑模式。")
                 case .failure(let error):
-                    self.message = error.localizedDescription
+                    self.postNotice(error.localizedDescription, kind: .error, action: .enterScene)
                 }
             }
         } catch { message = error.localizedDescription }
@@ -4376,7 +4427,10 @@ extension EditingController {
             var result = try base.promotingToV3()
             if result.adjustmentsV3?.blackAndWhite.enabled != monochrome { result.adjustmentsV3?.blackAndWhite.enabled = monochrome }
             try result.validate()
-            if recipe.sceneGraph != nil { applySceneCommit(result) }
+            if recipe.sceneGraph != nil {
+                applySceneCommit(result)
+                postNotice(monochrome ? "已切换到黑白编辑模式。" : "已切换到彩色编辑模式。")
+            }
             else { setRecipe(control: "色彩模式") { $0 = result } }
         } catch { message = error.localizedDescription }
     }
@@ -4398,7 +4452,7 @@ extension EditingController {
             let current = graph.output.sdrTrim
             let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: value,
                 mapping: current.mapping, highlightCompression: current.highlightCompression, film: current.film)
-            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: .init(route: graph.output.route, sdrTrim: trim))
+            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: .init(route: graph.output.route, sdrTrim: trim), models: graph.models)
             let oldTarget = sceneTarget
             sceneRequestedHDR = false
             if next != graph { applySceneCommit(.init(sceneGraph: next)) }
@@ -4496,14 +4550,11 @@ extension EditingController {
         let id = UUID(), focus = focusGeneration, version = selectedVersionID
         sceneRequestID = id; scenePreviewError = nil; scenePreviewBusy = true
         let source = work.source, sampling = sceneSampling, target = sceneTarget, service = scenePreview
-        let models = recipe.adjustmentsV3.flatMap {
-          try? DevelopmentSceneModelProgramV1.derived(from: $0)
-        } ?? nil
         let viewing = stage == .development ? sceneGraphState.viewing : .init()
         sceneTask = Task { [weak self] in
             do {
                 let frame = try await service.render(source: source, graph: graph, view: viewing,
-                  target: target, sampling: sampling, models: models)
+                  target: target, sampling: sampling, models: graph.models)
                 guard let self, !Task.isCancelled, self.sceneRequestID == id, self.focusGeneration == focus,
                       self.selectedVersionID == version, self.sceneTarget == target, self.visibleSceneGraph == graph else { return }
                 self.sceneFrame = frame; self.scenePreviewBusy = false; self.sceneTask = nil

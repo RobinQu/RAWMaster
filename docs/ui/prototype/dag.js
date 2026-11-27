@@ -1,5 +1,6 @@
 'use strict';
 const nativeBatchReview = new URLSearchParams(location.search).get('batchNativeReview') === '1';
+const failedDagPhotos = new Set();
 const nativeGraphReview = new URLSearchParams(location.search).get('graphNativeReview') === '1';
 
 // Recipe graphs own edit state; viewport and selection remain outside pixel history.
@@ -176,7 +177,7 @@ function dagCommit(label, mutate, refresh = true) {
   const root = structuredClone(currentEdit().recipe.dag), graph = dagCurrent(root);
   mutate(graph, root);
   const error = dagError(root);
-  if (error) { notify(error); return false; }
+  if (error) { notify(error, 'error'); return false; }
   Studio.setRecipe(Studio.data.work, label, dagProject(root));
   dagView(); if (refresh) render(); return true;
 }
@@ -192,10 +193,9 @@ function dagSelect(id, multiple = false, focus = '[data-dag-node="' + id + '"]')
 }
 function dagLeavePhoto() {
   if (dagEnabled()) dagClearPreview();
-  delete S.sceneWarning;
   S.canvasTool = null;
   S.dagConnectionDraft = null; S.dagWireFrom = null; S.dagMaskSession = null;
-  S.dagCropSession = null; S.dagRenderFailed = false; dagPointer = null;
+  S.dagCropSession = null; S.dagRenderFailed = failedDagPhotos.has(Studio.data.work); dagPointer = null;
 }
 function dagBlocked(n) { return !n || dagView().selection.length !== 1 || S.dagConnectionDraft; }
 function dagStateText(n) {
@@ -338,10 +338,10 @@ function dagCanvas() {
       ${n.mask ? `<button class="dag-mask-chip" data-act="dag-mask-select" data-val="${h(n.id)}">${icon('mask', 12)}${h(n.mask.kind)}${n.mask.missing ? ' · 缺失' : n.mask.enabled === false ? ' · 停用' : ''}</button>` : ''}</div>`;
   }).join('');
   const crumbs = [btn('照片工作流', 'dag-path', '0'), ...v.path.map((id, i) => btn('› ' + dagAllNodes(currentEdit().recipe.dag).find(x => x.node.id === id)?.node.name, 'dag-path', i + 1))].join('');
-  return `<section class="dag-workspace" aria-label="节点 Graph"><div class="dag-topline"><div class="dag-breadcrumb">${crumbs}</div>${dagToolbarCommands(v, g, tr)}</div>
+  return `<section class="dag-workspace" aria-label="节点 Graph"><div class="dag-topline">${v.path.length ? `<div class="dag-breadcrumb">${crumbs}</div>` : ''}${dagToolbarCommands(v, g, tr)}</div>
     <div class="dag-viewport" tabindex="0" aria-label="Graph 画布" data-dag-viewport><div class="dag-stage" style="transform:translate(${tr.x}px,${tr.y}px) scale(${tr.scale})"><svg class="dag-wires" width="5000" height="3000">${wires}</svg>${cards}</div><div class="dag-marquee" hidden></div>
       ${v.monitor ? `<div class="dag-monitor">${pic(Studio.data.work, '', 'style="filter:' + dagPhotoFilter() + '"')}<small>${h(dagPreviewState().solo ? 'Solo · 不用于导出' : dagPreviewState().bypass ? '调色旁路 · 不用于导出' : v.target ? '中间结果 · 不用于导出' : '最终结果（示意）')}</small></div>` : ''}</div>
-    <div class="dag-status" role="status" title="${h(S.dagConnectionDraft ? '连接草稿：'+(error || '有效，应用后进入历史') : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放')}">${S.dagWireFrom ? '连接中：请选择输入端口；Escape 取消' : S.dagConnectionDraft ? error ? '连接草稿无效：' + h(error) : '连接草稿有效 · 应用后进入历史' : v.edge ? '已选连线 · 添加将插入此边' : v.selection.length > 1 ? '已选 ' + v.selection.length + ' 个节点 · 数值不广播' : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放'}</div>
+    <div class="dag-status" ${S.dagWireFrom || S.dagConnectionDraft || v.edge || v.selection.length > 1 ? '' : 'hidden'} role="status" title="${h(S.dagConnectionDraft ? '连接草稿：'+(error || '有效，应用后进入历史') : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放')}">${S.dagWireFrom ? '连接中：请选择输入端口；Escape 取消' : S.dagConnectionDraft ? error ? '连接草稿无效：' + h(error) : '连接草稿有效 · 应用后进入历史' : v.edge ? '已选连线 · 添加将插入此边' : v.selection.length > 1 ? '已选 ' + v.selection.length + ' 个节点 · 数值不广播' : '拖节点移动位置；空白拖动框选；Space／中键平移；捏合或 Ctrl+滚轮缩放'}</div>
     ${S.dagConnectionDraft ? `<div class="dag-draft-actions">${btn('应用连接', 'dag-connect-apply', '', { cls: 'primary', disabled: !!error })}${btn('取消连接草稿', 'dag-connect-cancel')}</div>` : ''}
     <div class="dag-zoom-controls" aria-label="Graph 缩放">${btn('−', 'dag-zoom', 'out')}${btn(Math.round(tr.scale * 100) + '%', 'dag-readable', '', {title:dagZoomLabel(tr.scale)})}${btn('＋', 'dag-zoom', 'in')}</div></section>`;
 }
@@ -381,7 +381,7 @@ function dagPhotoCanvas(r, id) {
   const hasWorkflow = dagAllNodes(currentEdit().recipe.dag).filter(({node}) => ['grade','mix','group'].includes(node.kind)).length > 1;
   const failed = S.dagRenderFailed;
   const message = failed ? '预览失败 · 保留上次画面（模拟）' : solo ? `Solo：${solo.name} · 不用于导出` : preview.bypass ? '调色已旁路 · 仅查看，不用于导出' : target ? `中间预览：${target.name} · 不用于导出` : '最终结果';
-  const prefix = failed || temporary || hasWorkflow && v.mode === 'graph' ? `<div class="dag-photo-status${failed ? ' failed' : temporary ? ' intermediate' : ''}">${icon(failed ? 'pulse' : temporary ? 'eye' : 'layers', 14)}<span role="status">${h(message)}</span>${failed ? btn('重试预览','dag-retry') : ''}${temporary ? btn('返回最终结果','dag-preview-final') : ''}</div>` : '';
+  const prefix = !failed && (temporary || hasWorkflow && v.mode === 'graph') ? `<div class="dag-photo-status${failed ? ' failed' : temporary ? ' intermediate' : ''}">${icon(failed ? 'pulse' : temporary ? 'eye' : 'layers', 14)}<span role="status">${h(message)}</span>${failed ? btn('重试预览','dag-retry') : ''}${temporary ? btn('返回最终结果','dag-preview-final') : ''}</div>` : '';
   let content = canvasContent(recipe, id);
   const s = S.canvasTool, mask = s?.kind === 'mask' && !s.legacy ? s.mask : null;
   if (mask && s.overlay !== false) content = content.replace('</div></div>', `<span class="dag-mask-overlay" style="left:${mask.x}%;top:${mask.y}%;width:${mask.width}%;height:${mask.height}%;opacity:${(mask.opacity ?? 100) / 170}" aria-label="${h(mask.kind)}覆盖示意"></span></div></div>`);
@@ -393,7 +393,7 @@ actions['dag-view'] = mode => {
   dagEnsure(); if (mode !== 'graph') { dagClearPreview(); if (nativeGraphReview) S.dagConnectionDraft = null; }
   S.graphOpen = mode === 'graph'; dagView().mode = mode; S.canvasMenu = ''; S.dagWireFrom = null;
   if (!S.canvasTool && ['smart', 'agent', 'versions'].includes(S.tool)) { go('edit/basic'); }
-  dagRenderFocus(mode === 'graph' ? '[data-dag-viewport]' : '[name=dagNode]');
+  dagRenderFocus(mode === 'graph' ? '[data-dag-viewport]' : '[data-act=dag-view-toggle]');
 };
 actions['dag-focus-photo'] = () => { const image = $('.edit-image'); if (image) { image.tabIndex = 0; image.focus({preventScroll:true}); } };
 changes.dagNode = el => dagSelect(el.value);
@@ -716,8 +716,12 @@ actions['dag-mask-rebuild'] = () => { if (!Studio.asset(Studio.data.work).online
 actions['dag-crop-start'] = () => { S.dagCropSession = { recipe: structuredClone(currentEdit().recipe), mode: dagView().mode }; dagView().mode = 'photo'; render(); };
 actions['dag-crop-finish'] = () => { dagView().mode = S.dagCropSession.mode; S.dagCropSession = null; render(); };
 actions['dag-crop-cancel'] = () => { const old = S.dagCropSession; if (!old) return; Studio.setRecipe(Studio.data.work, '取消几何编辑', old.recipe); dagView().mode = old.mode; S.dagCropSession = null; render(); };
-actions['dag-failure'] = () => { S.dagRenderFailed = true; dagView().mode = 'photo'; render(); };
-actions['dag-retry'] = () => { S.dagRenderFailed = false; render(); notify('模拟重试完成'); };
+actions['dag-failure'] = () => {
+  failedDagPhotos.add(Studio.data.work); resolveEditorRetry('dag-retry');
+  S.dagRenderFailed = true; dagView().mode = 'photo'; render();
+  notifyEditor('工作流预览失败，已保留上次画面。', 'error', Studio.data.work, 'dag-retry');
+};
+actions['dag-retry'] = () => { if (!failedDagPhotos.delete(Studio.data.work)) return; resolveEditorRetry('dag-retry'); S.dagRenderFailed = false; render(); notify('模拟重试完成'); };
 actions['dag-template-save'] = kind => {
   dagEnsure(); if (kind === 'group' && dagNode()?.kind !== 'group') return notify('先将合法片段成组');
   S.dagTemplateKind = kind;
@@ -757,7 +761,7 @@ actions['dag-template-apply'] = () => {
     if (applied) { closeSheet(); dagView().edge = null; dagSelect(added.id); }
     return;
   }
-  const result = dagApplyTemplate(currentEdit().recipe, t, base); if (dagError(result.dag)) return notify(dagError(result.dag));
+  const result = dagApplyTemplate(currentEdit().recipe, t, base); if (dagError(result.dag)) return notify(dagError(result.dag), 'error');
   Studio.setRecipe(Studio.data.work, '应用工作流：' + t.name, result); closeSheet(); dagView(); render();
 };
 actions['dag-batch-menu'] = () => {
@@ -941,7 +945,7 @@ for (const name of ['save-version', 'open-versions', 'export']) {
   const original = actions[name];
   actions[name] = (...args) => {
     if (S.dagConnectionDraft || S.dagMaskSession) return notify('先完成或取消当前连接／蒙版草稿');
-    if (dagEnabled() && name !== 'open-versions' && dagAllNodes(currentEdit().recipe.dag).some(({ node }) => node.mask?.missing)) return notify('蒙版素材缺失：请重建后再保存或导出');
+    if (dagEnabled() && name !== 'open-versions' && dagAllNodes(currentEdit().recipe.dag).some(({ node }) => node.mask?.missing)) return notify('缺少蒙版素材，请重建后再保存或导出。', 'error');
     return original(...args);
   };
 }

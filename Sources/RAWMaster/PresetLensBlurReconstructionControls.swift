@@ -16,11 +16,11 @@ struct PresetLensBlurReconstructionControls: View {
     let catalog: DevelopmentPresetCatalog
     let record: DevelopmentPresetRecord
     let ticket: Ticket
+    let assetID: String
 
     @State private var assessment: PresetLensBlurAssessment?
     @State private var prepared: DevelopmentPresetRecord?
     @State private var task: Task<Void, Never>?
-    @State private var message = ""
 
     private var isCurrent: Bool {
         editing.developmentContext == ticket.context && session.context == ticket.context && session.revision == ticket.revision
@@ -50,8 +50,9 @@ struct PresetLensBlurReconstructionControls: View {
                             guard isCurrent, editing.hoveredPresetID == prepared.id, editing.filterHoverFrame != nil else { return }
                             do {
                                 try session.adoptPreset(prepared, context: ticket.context, revision: ticket.revision)
+                                editing.postNotice("已采用本张散景近似。", for: assetID)
                                 cancel()
-                            } catch { message = error.localizedDescription }
+                            } catch { editing.postNotice("未能采用散景。\(error.localizedDescription)", kind: .error, for: assetID) }
                         }
                         .accessibilityIdentifier("editing.presets.adoptDepth")
                         .disabled(!isCurrent || editing.hoveredPresetID != prepared.id || editing.filterHoverFrame == nil)
@@ -65,7 +66,6 @@ struct PresetLensBlurReconstructionControls: View {
                 if task != nil || prepared != nil { Button("取消") { cancel() } }
             case nil: EmptyView()
             }
-            if !message.isEmpty { Text(message).font(.caption2).foregroundStyle(.secondary) }
         }
         .controlSize(.small)
         .task {
@@ -75,7 +75,9 @@ struct PresetLensBlurReconstructionControls: View {
                     try DevelopmentPresetExchange.lensBlurAssessment(for: row, catalog: store)
                 }.value
                 if !Task.isCancelled { assessment = value }
-            } catch { if !Task.isCancelled { message = error.localizedDescription } }
+            } catch {
+                if !Task.isCancelled { editing.postNotice("无法读取散景预设。\(error.localizedDescription)", kind: .error, for: assetID) }
+            }
         }
         .onChange(of: isCurrent) { _, current in if !current { cancel() } }
         .onDisappear { cancel() }
@@ -86,7 +88,6 @@ struct PresetLensBlurReconstructionControls: View {
         editing.cancelPresetHover()
         let baseline = session.recipe, seed = session.parameters.effects?.lensBlur
         let depth = editing.sceneDepthEngine, subjects = editing.subjectAnalysis
-        message = ""
         task = Task { @MainActor in
             defer { if !Task.isCancelled { task = nil } }
             do {
@@ -98,7 +99,10 @@ struct PresetLensBlurReconstructionControls: View {
                 guard isCurrent, editing.work?.source == source else { return }
                 prepared = try plan.prepare(record: record, baseline: baseline, sourceID: source.contentSHA256, scene: scene,
                     focus: focus.map { .init(x: $0.focusX, y: $0.focusY) }, focusRange: focus?.focusRange)
-            } catch { if !Task.isCancelled && isCurrent { message = "本张散景未准备好。\(error.localizedDescription)" } }
+                editing.postNotice("已准备本张散景，可在主图中试看。", for: assetID)
+            } catch {
+                if !Task.isCancelled { editing.postNotice("本张散景未准备好。\(error.localizedDescription)", kind: .error, for: assetID) }
+            }
         }
     }
 

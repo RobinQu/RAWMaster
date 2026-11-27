@@ -178,7 +178,7 @@ exiftool -ImageWidth -ImageHeight -BitsPerSample -BitDepth -ProfileDescription \
 
 [评审工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1)先验交互，原生在 Release 默认进入；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 可临时隐藏做诊断。浏览器三项阶段走查通过：资料库选片、确认／取消、曝光及撤销、SDR 回退、预览失败重试、390px 浅深色、离线、方向键仅移焦。[浏览器输出](evidence/scene-native-browser.log) · [桌面](evidence/native-scene-review/scene-review-fit.png) · [390px 浅色](evidence/native-scene-review/scene-review-390-light.png) · [390px 深色](evidence/native-scene-review/scene-review-390-dark.png)。默认完整 HDR 原型仍独立运行：`python3 scripts/check-ui-prototype.py --hdr-only` 四项通过。模拟像素不作 EDR 证据。
 
-[预览服务](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift)从捕获的真实 ARW 校验内容，在单源预算内保留已校准 AP1 F32 输入；同一 FIT 或实际像素 ROI 只改变图与末端。图与临时监看进入输入键，HDR／SDR 保持独立后缀；派生曝光不使 HDR 或 RAW 失效。当前 FIT 是 F32 降采样后求值，不假称等于全尺寸再缩小；实际窗口在已校准源纹理中裁出，再用全源坐标计算覆盖。原片改动、过期或取消请求不得发布成新帧。
+原生预览先验证捕获的 ARW 内容、方向、裁切和相机校准，再保留一张未平衡的 16 位 Bayer 纹理。FIT 在原图坐标逐像素显影为有符号 AP1 F32，按覆盖面积求平均后执行图。1:1 直接在请求窗口显影，以整幅尺寸和原点计算覆盖。HDR 与 SDR 保留各自的显示后缀。切换原片会释放已取样的图像和示波器栅格，过期或取消的任务无法发布画面。[预览服务](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift) · [Bayer 显影](../../Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift)
 
 [暗房 AppKit 画布](../../Sources/RAWMaster/EditingSceneCanvas.swift)取同一画布变换和 FIT 安全边界，显示采用独立的 `rgba16Float` Metal layer、扩展线性 Rec.2020 或扩展线性 sRGB；系统根据明确色彩空间管理屏幕转换。没有把 PQ 文件码值交给浮点画布，也没有把主图读回 RGBA8。屏幕当前余量不足走 SDR 派生；此处只有单屏阶段测试，不是实测亮度或跨屏通过。已保存版本保留场景配方作为像素权威，不用 SDR 代理取代。原生走查使用、创建和另存行为见 [测试](../../Tests/RAWMasterUITests/EditingSceneDarkroomTests.swift)；完整工具、跨屏和目标端见下节。
 
@@ -199,6 +199,30 @@ RAWMASTER_SCENE_DARKROOM_REPORT="$evidence/fit.json" \
 ```
 
 原生可编辑 Graph 接线后按原雪景与 FIT 门槛复验，修复数值输入重建引起的延迟，并将呈现 drawable 限于可见照片区域。最终 **22.07/23.30 ms**（p50/p95）；不缩减取样质量或放宽门槛。节点监看缓存与原始性能回退保留在 [038 阶段证据](../038-node-dag-workflow/validation.md#原生可编辑-graph)，不当作跨屏或完整 UI 放行。
+
+### 真实 60 MP Bayer 的预览和示波器预算
+
+Sony ILCE-7RM5 的授权 DSC05995.ARW 有 9728×6656 个传感器位置，成像裁切为 9504×6336。用 `main@1e5a1ceb` 的 Release 解码器读取同一 SHA 后，打开 FIT 报 `surfaceBudget`。当时在读取取景请求前，就为全图 AP1 F32 加传感器饱和标志估算 1,023,694,848 字节，超过 440 MiB。新路径一次保留 16 位 mosaic。960×640 FIT 连同 mosaic 和标志实占 144,179,200 字节，在 (5940, 1584) 的 1188×792 原寸窗口实占 150,405,120 字节。后者在有符号 AP1 和处理后 HDR 两处都与独立原生对照逐像素一致。[Release 实片数据](evidence/real-60mp-bayer-budget.json)
+
+M4 Max 上第一次显示 FIT 用时 436.68 ms，第一次切至该窗口用时 2.36 ms，首次计算全图示波器用时 135.58 ms。+4 EV 的 HDR FIT 峰值是参考白的 8.695 倍。192×128 栅格记录 104 个传感器饱和格点，最终图有当次 Rust 回执，旁路返回直通回执。各预热 5 次再取 30 个样本，60 MP 示波器 p95 为 5.98 ms，24 MP 雪景为 11.79 ms。切回雪景得到 4000×6000 原图尺寸，累计原片采集为两次。完整回归进程中复跑，服务初次 FIT 为 120.25 ms，60 MP／24 MP 的暖态示波器 p95 分别为 1.22／1.44 ms。上述时延止于预览服务返回。八种方向和非整数缩放的面积平均另以独立双精度参考核对。60 MP 整幅 AP1 的最小／最大分量为 −0.002659／2.599685，88 个像素含负分量，433,446 个像素含超白分量。两张 24 MP 实片也保留了负值和超白，雪景 AP1 极值为 −0.119 和 2.415。[原生取样与回归](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift) · [Bayer 数值对照](../../Tests/RAWMasterImagingTests/DevelopmentSceneRAWV1Tests.swift)
+
+场景模型先按原图尺寸运行。尺度回归用确定性 Metal 测试提供器，去噪、2× 超分和分割的输入依次为 8×6、8×6 和 16×12。FIT 和示波器对结果及遮罩按面积取样，偏移的 1:1 窗口在原寸输出取像素并按完整遮罩坐标执行 DAG。三个视图与独立的全图模型结果和逐格参考值一致，切换视图不会重新推理。640 MiB 的模型预览图面预算覆盖 mosaic、传感器标志、模型输出和取样。固定 24 MP 雪景加全图去噪时，这三条路径均返回全尺寸模型超预算。五个 Release 测试类共 28 项，正常环境通过 27 项，禁用 FlashRaw 的单独进程验证了余下一项。[模型尺度与覆盖对照](../../Tests/RAWMasterImagingTests/DevelopmentSceneModelPipelineV1Tests.swift) · [预览与示波器](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift)
+
+从仓库根目录提供固定的 24 MP、60 MP ARW 和 FlashRaw 0.3.1。报告路径必须是新文件。
+
+```sh
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+export RAWMASTER_SCENE_60MP_ARW="$PWD/output/validation/020-development-controls/final-fit-burst/attempt1/DSC05995-authorized-copy.ARW"
+export RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/037-038-product-3g3KH4/photos/snow.ARW"
+RAWMASTER_SCENE_60MP_PREVIEW_REPORT="$PWD/output/real-60mp-preview.json" \
+  swift test -c release -Xswiftc -enable-testing --filter testOptInReal60MPPreviewBudgetAndReturnTo24MP
+```
+
+### 原尺寸分块交付
+
+同一授权 60 MP 原片的已保存候选包含渐变蒙版、曝光校正和图层。测试写入另一份实时草稿，重新打开目录，再冻结原候选并同时请求 PQ AVIF 和 SDR JPEG。每个目标按原图坐标分 35 块执行，共 105 次 Rust 派发。每块在同一校准 mosaic 取数，按整图几何计算蒙版并写入最终 F32 纹理。两个目标共享原片与冻结配方，分别逐块计算各自的输出。每份 Rust 回执覆盖本次 DAG 执行。Bayer 显影、ACES 目标变换与文件编码仍由宿主调用对应的 Metal 或成像组件。图面预算维持 1,536 MiB。计入输出、传感器、设备对齐和图内表面，两次峰值上界均为 1,297,711,104 字节。含编码器的测试进程峰值 footprint 是 3,221,670,504 字节。[执行回执、预算与文件摘要](evidence/real-60mp-bayer-budget.json) · [分块执行](../../Sources/RAWMasterImaging/DevelopmentSceneTiledDeliveryV1.swift)
+
+dav1d 完整解码出 9504×6336 的单帧 10 位全范围 Rec.2020/PQ AVIF，CICP 为 9/16/1。FFmpeg 完整解码同尺寸 JPEG，ExifTool 读出 8 位及嵌入的 sRGB ICC。测试另用旋转裁切、局部蒙版和 SDR 曝光在 12 个瓦片逐像素核对两种目标与整图。实拍交付复现时，将 `RAWMASTER_SCENE_DELIVERY_EVIDENCE` 设为新的空目录，再运行 `swift test -c release -Xswiftc -enable-testing --filter testOptIn60MPFrozenGraphExportsFullPQAndSDRWithinBudget`。[冻结与重开回归](../../Tests/RAWMasterImagingTests/DevelopmentSceneDeliveryServiceV1Tests.swift)
 
 ### HDR 示波器与诊断
 

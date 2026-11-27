@@ -1,0 +1,469 @@
+{
+  "date": "2026-11-27",
+  "os": "Version 27.0.1 (Build 26A434)",
+  "device": "Apple M4 Max",
+  "baseline": {
+    "localMain": "1e5a1ceb",
+    "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "result": "DevelopmentSceneRAWV1.Failure.surfaceBudget",
+    "maximumOutputBytes": 461373440,
+    "requestedNativeAP1AndFlagsBytes": 1023694848,
+    "entry": "decode(capturedARW, maximumOutputBytes:) before viewport sampling"
+  },
+  "releasePreview60MP": {
+    "acquisitions": 2,
+    "coldFitMs": 120.246834,
+    "developmentBudgetBytes": 461373440,
+    "device": "Apple M4 Max",
+    "fileBytes": 70914048,
+    "firstNativeROIMs": 2.3925,
+    "firstScopesMs": 62.724792,
+    "fit": [
+      960,
+      640
+    ],
+    "hdrFitMaximum": 8.695225715637207,
+    "metalAllocations": {
+      "fullAP1AndSaturationBytes": 1024917504,
+      "fullMaxAP1": 2.599684953689575,
+      "fullMinAP1": -0.0026588921900838614,
+      "mosaicAndFitBytes": 144179200,
+      "mosaicAndROIBytes": 150405120,
+      "negativePixels": 88,
+      "residentMosaicBytes": 133693440,
+      "roiMaxAP1": 0.37148600816726685,
+      "roiMinAP1": 0.12948165833950043,
+      "superwhitePixels": 433446
+    },
+    "native": [
+      9504,
+      6336
+    ],
+    "nativeROI": [
+      5940,
+      1584,
+      1188,
+      792
+    ],
+    "return24MP": [
+      4000,
+      6000
+    ],
+    "scopeBackend": "rust",
+    "scopeDispatches": 1,
+    "scopeSamples": 24576,
+    "sensorMarked": 104,
+    "sha256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "warmScopesMs": [
+      1.052583,
+      0.801625,
+      1.018167,
+      0.784416,
+      1.075833,
+      1.013083,
+      1.2155,
+      0.811417,
+      1.052834,
+      0.812959,
+      1.005083,
+      0.797875,
+      0.94925,
+      0.882334,
+      1.064625,
+      0.949208,
+      1.026125,
+      0.872542,
+      1.007875,
+      0.766709,
+      1.253667,
+      0.830917,
+      0.978209,
+      0.792292,
+      1.068083,
+      0.827875,
+      1.032958,
+      0.821958,
+      0.991584,
+      0.853333
+    ],
+    "warmScopesP95Ms": 1.2155
+  },
+  "releaseScopes24MP": {
+    "firstScopeSeconds": 0.018610333,
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p50Ms": 1.128354,
+    "p95Ms": 1.436125,
+    "scope": "resident RAW; 192px full-photo scopes, graph + HDR before gamut + HDR + SDR + readback; no UI or debounce",
+    "sensorMarked": 32,
+    "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+    "targetMarked": 367,
+    "targetSamples": 24576,
+    "warmSamplesMs": [
+      1.038625,
+      1.183,
+      0.974125,
+      1.337791,
+      0.96575,
+      1.1305,
+      0.924167,
+      1.137625,
+      0.969583,
+      1.240334,
+      0.953917,
+      1.165792,
+      0.998166,
+      1.260125,
+      0.874958,
+      1.126208,
+      0.964292,
+      1.163416,
+      0.920709,
+      1.310208,
+      1.064167,
+      1.436125,
+      0.958375,
+      1.277958,
+      0.92125,
+      1.138542,
+      0.956458,
+      1.4995,
+      1.144458,
+      1.1655
+    ]
+  },
+  "releaseRaw24MP": {
+    "device": "Apple M4 Max",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "samples": [
+      {
+        "legacyMs": [
+          33.125166,
+          27.988,
+          32.487292,
+          33.152916,
+          28.12075,
+          27.977708,
+          26.504125,
+          26.359209,
+          30.309958,
+          34.482792
+        ],
+        "name": "person",
+        "sceneMs": [
+          29.461416,
+          24.549375,
+          27.059792,
+          23.7645,
+          24.232291,
+          30.026625,
+          30.294708,
+          26.163917,
+          25.99725,
+          23.431959
+        ],
+        "sourceSHA256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8",
+        "stats": {
+          "aboveOnePixels": 26,
+          "aboveOneWithoutSensorSaturation": 19,
+          "dimensions": [
+            4000,
+            6000
+          ],
+          "maxRGB": 1.3696316480636597,
+          "minRGB": -0.010652802884578705,
+          "nativeRoiEqual": true,
+          "negativePixels": 161277,
+          "sensorSaturationPixels": 10
+        }
+      },
+      {
+        "legacyMs": [
+          28.531833,
+          34.086792,
+          26.479917,
+          28.076958,
+          31.025209,
+          32.817541,
+          26.796541,
+          26.493834,
+          28.806042,
+          31.097375
+        ],
+        "name": "snow",
+        "sceneMs": [
+          24.105791,
+          35.485125,
+          26.565917,
+          24.9615,
+          27.58075,
+          30.845667,
+          29.878,
+          24.310584,
+          25.052583,
+          29.178416
+        ],
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "stats": {
+          "aboveOnePixels": 152886,
+          "aboveOneWithoutSensorSaturation": 124304,
+          "dimensions": [
+            4000,
+            6000
+          ],
+          "maxRGB": 2.414945363998413,
+          "minRGB": -0.11898932605981827,
+          "nativeRoiEqual": true,
+          "negativePixels": 7902,
+          "sensorSaturationPixels": 28811
+        }
+      }
+    ]
+  },
+  "releaseFrozen60MP": {
+    "artifactBytes": [
+      10868524,
+      7910249
+    ],
+    "artifactSHA256": [
+      "a5d51bb3dae1fe39bf4643edd8efe9e41b184aba6f240ef07b37cdce11e2e2b0",
+      "6f8b1bd60e87c04270c752c1b07fd436b8b227519a60349ea8e318e6bce6522d"
+    ],
+    "elapsedMs": 2005.577875,
+    "execution": [
+      {
+        "backend": "rust",
+        "budgetBytes": 1610612736,
+        "coverageCacheHits": 0,
+        "cpuMilliseconds": 69.907751,
+        "dispatches": 105,
+        "nodeCacheHits": 0,
+        "nodes": 105,
+        "peakBytes": 1297711104,
+        "tiles": 35
+      },
+      {
+        "backend": "rust",
+        "budgetBytes": 1610612736,
+        "coverageCacheHits": 0,
+        "cpuMilliseconds": 69.60824699999998,
+        "dispatches": 105,
+        "nodeCacheHits": 0,
+        "nodes": 105,
+        "peakBytes": 1297711104,
+        "tiles": 35
+      }
+    ],
+    "sha256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "size": [
+      9504,
+      6336
+    ],
+    "targets": [
+      "hdr2020",
+      "sdr709"
+    ],
+    "versionID": "47CA84C8-E3F2-497E-AC9A-DA79F2D9D264",
+    "workflowNodes": 3,
+    "workflowSHA256": "d9161f180592bd65be4ed0647508ede42deff4719203f261060ae0aa2e0dfcd7",
+    "scope": "Frozen local candidate, reopened catalog, independent live draft, full target textures and encoding. Graph peak is a conservative bound including mosaic, full destination, Metal alignment, tile graph and ACES output.",
+    "maximumResidentSetBytes": 2123628544,
+    "peakProcessFootprintBytes": 3221670504,
+    "externalReadback": {
+      "avifDav1d": [
+        "Decoding with codec 'dav1d' (16 worker threads), please wait...",
+        "Image decoded: DSC05995-scene-graph.avif",
+        " * Resolution     : 9504x6336",
+        " * Bit Depth      : 10",
+        " * Format         : YUV420",
+        " * Chroma Sam. Pos: 0",
+        " * Alpha          : Absent",
+        " * Range          : Full",
+        " * Color Primaries: 9",
+        " * Transfer Char. : 16",
+        " * Matrix Coeffs. : 1",
+        " * ICC Profile    : Absent",
+        " * XMP Metadata   : Absent",
+        " * Exif Metadata  : Absent",
+        " * Transformations:",
+        "    * irot (Rotation)      : 0",
+        " * Progressive    : Unavailable",
+        " * CLLI           : 1000, 64",
+        " * Gain map       : Absent",
+        " * 1 timescales per second, 1.00 seconds (1 timescales), 1 frame",
+        " * Frame:",
+        "   * Decoded frame [0] [pts 0.00 (0 timescales)] [duration 1.00 (1 timescales)] [9504x6336]"
+      ],
+      "jpegFFmpeg": [
+        "#format: frame checksums",
+        "#version: 2",
+        "#hash: MD5",
+        "#software: Lavf62.12.102",
+        "#tb 0: 1/25",
+        "#media_type 0: video",
+        "#codec_id 0: rawvideo",
+        "#dimensions 0: 9504x6336",
+        "#sar 0: 1/1",
+        "#stream#, dts,        pts, duration,     size, hash",
+        "0,          0,          0,        1, 90326016, 13927644ed830b084589487c0659dce0"
+      ],
+      "jpegExifTool": {
+        "width": 9504,
+        "height": 6336,
+        "bitsPerSample": 8,
+        "iccProfileDescription": "sRGB built-in"
+      }
+    }
+  },
+  "initialReleasePreview60MP": {
+    "acquisitions": 2,
+    "coldFitMs": 436.681167,
+    "developmentBudgetBytes": 461373440,
+    "device": "Apple M4 Max",
+    "fileBytes": 70914048,
+    "firstNativeROIMs": 2.358917,
+    "firstScopesMs": 135.579875,
+    "fit": [
+      960,
+      640
+    ],
+    "hdrFitMaximum": 8.695225715637207,
+    "metalAllocations": {
+      "fullAP1AndSaturationBytes": 1024917504,
+      "mosaicAndFitBytes": 144179200,
+      "mosaicAndROIBytes": 150405120,
+      "residentMosaicBytes": 133693440,
+      "roiMaxAP1": 0.37148600816726685,
+      "roiMinAP1": 0.12948165833950043
+    },
+    "native": [
+      9504,
+      6336
+    ],
+    "nativeROI": [
+      5940,
+      1584,
+      1188,
+      792
+    ],
+    "return24MP": [
+      4000,
+      6000
+    ],
+    "scopeBackend": "rust",
+    "scopeDispatches": 1,
+    "scopeSamples": 24576,
+    "sensorMarked": 104,
+    "sha256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "warmScopesMs": [
+      1.185416,
+      1.014042,
+      1.280292,
+      0.988416,
+      1.117834,
+      1.030375,
+      1.183166,
+      0.924708,
+      1.107833,
+      0.965875,
+      1.141708,
+      1.003583,
+      1.195708,
+      0.971417,
+      1.247708,
+      0.851875,
+      1.187834,
+      1.392333,
+      1.700375,
+      1.003333,
+      2.050833,
+      1.483125,
+      3.662292,
+      0.968458,
+      2.792166,
+      3.046125,
+      5.983375,
+      2.953917,
+      9.020125,
+      0.931667
+    ],
+    "warmScopesP95Ms": 5.983375
+  },
+  "initialReleaseScopes24MP": {
+    "firstScopeSeconds": 0.049269791,
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p50Ms": 3.2112084999999997,
+    "p95Ms": 11.794666,
+    "scope": "resident RAW; 192px full-photo scopes, graph + HDR before gamut + HDR + SDR + readback; no UI or debounce",
+    "sensorMarked": 32,
+    "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+    "targetMarked": 367,
+    "targetSamples": 24576,
+    "warmSamplesMs": [
+      11.152,
+      2.12075,
+      3.307625,
+      2.907042,
+      2.514166,
+      9.072625,
+      2.082666,
+      7.403208,
+      2.59825,
+      2.814625,
+      2.034,
+      4.0465,
+      2.233875,
+      3.618584,
+      12.574541,
+      3.922333,
+      3.043625,
+      3.8295,
+      3.222834,
+      2.984875,
+      2.94325,
+      5.409375,
+      2.525416,
+      5.443375,
+      1.986834,
+      11.794666,
+      3.203,
+      2.822,
+      4.035416,
+      3.219417
+    ]
+  },
+  "releaseValidation": {
+    "passedUniqueTests": 28,
+    "regularEnvironment": {
+      "executed": 28,
+      "passed": 27,
+      "skipped": 1,
+      "failed": 0
+    },
+    "disabledFlashRawEnvironment": {
+      "rerunSkipped": 1,
+      "passed": 1
+    },
+    "modelPrefixOracle": {
+      "nativeStageInputDimensions": [
+        [
+          8,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          16,
+          12
+        ]
+      ],
+      "checks": [
+        "area FIT with downsampled segmentation coverage",
+        "offset native ROI with full-coordinate coverage",
+        "full-photo scope grid against independent native model result",
+        "same 24MP model budget rejection for FIT, ROI and scopes"
+      ]
+    }
+  }
+}

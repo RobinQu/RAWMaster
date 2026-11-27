@@ -60,7 +60,9 @@ final class DevelopmentSceneGraphRendererV1 {
   private var swiftDispatches = 0
   private(set) var lastReceipt: DevelopmentSceneExecutionReceiptV1?
 
-  init(device: MTLDevice, surfaceBudget: Int = 1_536 * 1024 * 1024, backend: RustSceneGraphRenderer.Mode = RustSceneGraphRenderer.mode) throws {
+  static let defaultSurfaceBudget = 1_536 * 1024 * 1024
+
+  init(device: MTLDevice, surfaceBudget: Int = DevelopmentSceneGraphRendererV1.defaultSurfaceBudget, backend: RustSceneGraphRenderer.Mode = RustSceneGraphRenderer.mode) throws {
     let options = MTLCompileOptions(); options.mathMode = .safe
     let library = try device.makeLibrary(source: Self.shader, options: options)
     guard let color = library.makeFunction(name: "rmDagColorV1"), let coverage = library.makeFunction(name: "rmDagCoverageV1"),
@@ -120,9 +122,15 @@ final class DevelopmentSceneGraphRendererV1 {
                       sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> PreviewScene {
     lastReceipt = nil
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
-    let selected = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: view,
-      externalCoverages: prepared.masks, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision,
-      tileEdge: tileEdge)
+    return try preparePreviewInput(prepared.image, geometry: prepared.geometry, graph: graph, view: view,
+      masks: prepared.masks, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision, tileEdge: tileEdge)
+  }
+
+  func preparePreviewInput(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
+                           masks: [UUID: MTLTexture], sourceRevision: UInt64, tileEdge: Int? = nil) throws -> PreviewScene {
+    lastReceipt = nil
+    let selected = try execute(image, geometry: geometry, graph: graph, view: view,
+      externalCoverages: masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
     guard selected.domain == .image else { throw Failure.invalidImage }
     return PreviewScene(surface: selected)
   }

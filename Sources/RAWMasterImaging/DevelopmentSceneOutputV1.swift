@@ -40,6 +40,10 @@ final class DevelopmentSceneOutputV1 {
     fileprivate init(texture: MTLTexture, target: Target, origin: SIMD2<Int>) {
       self.texture=texture; self.target=target; self.origin=origin
     }
+    /// The compositor copies already transformed, typed tiles into this full-size texture.
+    init(assembled texture: MTLTexture, like tile: Self) {
+      self.init(texture: texture, target: tile.target, origin: .zero)
+    }
   }
 
   enum Failure: Error, Equatable { case invalidResource, invalidInput, invalidPixel }

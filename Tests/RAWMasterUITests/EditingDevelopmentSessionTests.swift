@@ -764,8 +764,11 @@ extension EditingDevelopmentSessionTests {
         func flattened(_ folders: [DevelopmentPresetFolder]) -> [DevelopmentPresetBrowserItem] {
             folders.flatMap { $0.rows + flattened($0.children) }
         }
-        XCTAssertEqual(all.map(\.id), ["adaptive", "film", "imported", "classic", "favorites"])
-        XCTAssertEqual(all.first(where: { $0.id == "favorites" })?.rows.map(\.id), ["classic.vivid", "0", "1"])
+        XCTAssertEqual(all.map(\.id), ["adaptive", "classic", "film", "imported"])
+        let favoriteFolders = DevelopmentPresetDirectory.folders(records: rows, favorites: ["0", "1", "1074"],
+            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "", favoritesOnly: true)
+        XCTAssertEqual(Set(flattened(favoriteFolders).map(\.id)), ["classic.vivid", "0", "1"])
+        XCTAssertEqual(favoriteFolders.map(\.id), ["classic", "imported"])
         XCTAssertEqual(all.first(where: { $0.id == "classic" })?.rows.count, 10)
         let films = DevelopmentPhotoFilterV3.allCases.filter(\.isSpektrafilm)
         XCTAssertEqual(films.count, 9)

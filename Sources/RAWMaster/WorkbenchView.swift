@@ -918,8 +918,15 @@ struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
+            NotificationCenter.default.removeObserver(self, name: NSWindow.didBecomeKeyNotification, object: nil)
+            if let window {
+                NotificationCenter.default.addObserver(self, selector: #selector(windowBecameKey(_:)),
+                    name: NSWindow.didBecomeKeyNotification, object: window)
+            }
             apply()
         }
+
+        @objc private func windowBecameKey(_ notification: Notification) { apply() }
 
         func apply() {
             WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: contextTitle, darkEditing: darkEditing)

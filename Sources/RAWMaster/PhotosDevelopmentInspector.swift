@@ -26,9 +26,8 @@ struct PhotosDevelopmentInspector: View {
                         Label("调整工具已暂停", systemImage: "pause.circle").foregroundStyle(.secondary)
                         Button("恢复调整工具") { editing.beginDevelopmentInterface() }
                     } else { ProgressView("读取照片调整信息…").controlSize(.small) }
-                    if let message = editing.message {
-                        Text(message).font(.caption).foregroundStyle(AppPalette.warning)
-                        if !editing.sourceNeedsRevalidation { Button("重试读取调整") { editing.beginDevelopmentInterface() } }
+                    if editing.message != nil, !editing.sourceNeedsRevalidation {
+                        Button("重试读取调整") { editing.beginDevelopmentInterface() }
                     }
                     Spacer(minLength: 0)
                 }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
@@ -139,13 +138,7 @@ private struct PhotosDevelopmentContent: View {
                             Divider()
                         }
                         ScrollView {
-                            VStack(spacing: 0) {
-                                destinationContent
-                                if let message = editing.message {
-                                    Text(message).font(.caption).foregroundStyle(AppPalette.warning).textSelection(.enabled)
-                                        .frame(maxWidth: .infinity, alignment: .leading).padding(16)
-                                }
-                            }
+                            destinationContent
                         }
                         .coordinateSpace(name: "photos.inspector.scroll")
                         .background(GeometryReader { geometry in
@@ -218,7 +211,7 @@ private struct PhotosDevelopmentContent: View {
                                 .offset(x: 11, y: 11).accessibilityLabel("已调整")
                         }
                     }
-                    .background(destination == item ? AppPalette.accent.opacity(0.18) : Color.clear,
+                    .background(destination == item ? AppPalette.accent.opacity(0.18) : focusedTool == item ? AppDesign.fill(.hover) : Color.clear,
                         in: RoundedRectangle(cornerRadius: 7))
                     .foregroundStyle(destination == item ? AppPalette.accent : .secondary)
                     .contentShape(Rectangle())

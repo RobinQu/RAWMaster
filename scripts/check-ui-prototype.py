@@ -17,13 +17,21 @@ ENTRY = "docs/ui/prototype/index.html"
 EXPORT = "specs/032-export-workspace/prototype.html"
 
 
+class WorkbenchHTTPServer(ThreadingHTTPServer):
+    # Chrome opens parallel resource connections while the previous workbench page is tearing down.
+    request_queue_size = 64
+
+
 class QuietHandler(SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
     def log_message(self, *_):
         pass
 
 
 def main():
     parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--editor-rails-only", action="store_true", help="Exercise the glass rails, filter tree, canvas notices and titleless Graph.")
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
     parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
     parser.add_argument("--compatibility-only", action="store_true", help="Run the Spec 038 read-only compatibility graph walkthrough.")
@@ -86,18 +94,109 @@ def main():
         try:
             output = browser("eval", "(async()=>{" + helpers + js + ";return 'PASS';})()")
         except RuntimeError as error:
-            state = browser("eval", "({url:location.href, route:document.body.dataset.route, title:document.title, message:document.body.innerText.slice(0,160), heading:document.querySelector('h1')?.textContent, canvasTool:typeof S!=='undefined'&&S.canvasTool?{kind:S.canvasTool.kind,legacy:S.canvasTool.legacy,revisionMatches:JSON.stringify(Studio.edit(S.canvasTool.photo).recipe)===JSON.stringify(S.canvasTool.before),notice:document.querySelector('#notice')?.textContent,invalid:Array.from(document.querySelectorAll('.canvas-tool-dock input:invalid')).map(el=>({name:el.name,key:el.dataset.key,value:el.value,min:el.min,max:el.max,step:el.step}))}:null, dialog:document.querySelector('dialog[open]')?.innerText, filters:document.querySelector('.chips')?.innerText, exportState:{heading:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job-title')?.textContent,open:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.open,result:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.innerText.slice(-1600)}})")
-            raise AssertionError(f"{title}\n{state}\n{browser('errors')}\n{error}") from error
+            state = browser("eval", "({url:location.href, route:document.body.dataset.route, scripts:performance.getEntriesByType('resource').filter(r=>r.initiatorType==='script' && r.responseStatus!==200).map(r=>[r.name.split('/').pop(),r.responseStatus]), title:document.title, message:document.body.innerText.slice(0,160), heading:document.querySelector('h1')?.textContent, canvasTool:typeof S!=='undefined'&&S.canvasTool?{kind:S.canvasTool.kind,legacy:S.canvasTool.legacy,revisionMatches:JSON.stringify(Studio.edit(S.canvasTool.photo).recipe)===JSON.stringify(S.canvasTool.before),notice:document.querySelector('#notice')?.textContent,invalid:Array.from(document.querySelectorAll('.canvas-tool-dock input:invalid')).map(el=>({name:el.name,key:el.dataset.key,value:el.value,min:el.min,max:el.max,step:el.step}))}:null, dialog:document.querySelector('dialog[open]')?.innerText, filters:document.querySelector('.chips')?.innerText, exportState:{heading:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job-title')?.textContent,open:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.open,result:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.innerText.slice(-1600)}})")
+            raise AssertionError(f"{title}\n{state}\n{browser('errors','--json')}\n{error}") from error
         if "PASS" not in output:
             raise AssertionError(title + ": " + output)
         print("✓", title, flush=True)
 
     handler = partial(QuietHandler, directory=str(ROOT))
-    with ThreadingHTTPServer(("127.0.0.1", 0), handler) as server:
+    with WorkbenchHTTPServer(("127.0.0.1", 0), handler) as server:
         host = "http://127.0.0.1:" + str(server.server_port) + "/"
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.editor_rails_only:
+                evidence = os.environ.get("RAWMASTER_UI_RAILS_EVIDENCE")
+                def capture(name):
+                    if evidence:
+                        path = Path(evidence)
+                        path.mkdir(parents=True, exist_ok=True)
+                        browser("screenshot", str(path / name))
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&graphNativeReview=1")
+                browser("set", "viewport", "1440", "900")
+                scenario("网格真实选取两张，重开保留范围", """
+                  await page('.photo-card');act('photo','r1');
+                  el('.photo-card[data-val=b1]').dispatchEvent(new MouseEvent('click',{bubbles:true,metaKey:true}));
+                  assert(activeIDs().join()==='r1,b1'&&activeBrowser().focus==='b1','user picked two photos');
+                """)
+                browser("reload")
+                scenario("冷启动选区、独立面板、目录和键盘", """
+                  await page('.photo-card');assert(activeIDs().join()==='r1,b1'&&activeBrowser().focus==='b1'&&all('.photo-card.selected').length===2,'restored ordered picks and current photo');
+                  act('workflow','edit');await page('.inspector-rail');act('edit-tool','basic');await page('.scene-mode-bar');
+                  const boxes=all('.raw-summary,.edit-library-panel,.dag-scope-head,.edit-inspector').map(x=>x.getBoundingClientRect());
+                  assert(boxes.length===4&&Math.abs(boxes[0].width-boxes[1].width)<1&&Math.abs(boxes[2].width-boxes[3].width)<1&&boxes[1].top-boxes[0].bottom===8&&boxes[3].top-boxes[2].bottom===8,'independent stacked equal-width glass panels');
+                  assert(el('.raw-summary').innerText.includes('Sony')&&el('.film-strength').nextElementSibling.matches('.preset-search')&&el('.preset-search').nextElementSibling.matches('.preset-directory'));
+                  const roots=()=>all('.preset-directory > details > summary > span').map(x=>x.textContent);
+                  assert(roots().join('/')==='自适应滤镜/基础滤镜/胶片模拟/用户导入滤镜','four ordered roots');
+                  assert(all('.preset-directory > details').every(x=>getComputedStyle(x).borderTopWidth==='0px'),'no dividers');
+                  const q=el('[name=presetQuery]');q.focus();set('[name=presetQuery]','暖光');
+                  assert(roots().join()==='自适应滤镜'&&el('.preset-directory').innerText.includes('主体'),'search translated groups and names');
+                  set('[name=presetQuery]','未命名无匹配');assert(el('.preset-directory').innerText.includes('没有匹配'));
+                  set('[name=presetQuery]','');assert(roots().length===4,'clear restores roots');
+                  tap('summary',el('.filter-options'));act('preset-import',null,el('.filter-options'));
+                  act('preset-read-failure',null,modal());assert(!el('#sheet').open&&el('.editor-toast.error')?.textContent.includes('读取预设'),'failed import returns to the photo with the reason');
+                  act('editor-notice-dismiss',null,el('.editor-toast.error'));
+                  const panes=all('.raw-summary,.edit-library-panel,.dag-scope-head,.edit-inspector');
+                  window.dispatchEvent(new Event('blur'));assert(panes.every(x=>getComputedStyle(x).backdropFilter==='none'));
+                  window.dispatchEvent(new Event('focus'));assert(panes.every(x=>getComputedStyle(x).backdropFilter.includes('blur')),'glass returns on every panel');
+                  act('quick-open');await page('[name=quickPrompt]');el('[name=quickPrompt]').focus();
+                  assert(document.activeElement.name==='quickPrompt'&&getComputedStyle(document.activeElement).outlineStyle==='none','editable Prompt without blue ring');
+                  set('[name=quickPrompt]','保留远处水面的颜色');act('quick-close');await page('.scene-mode-bar');
+                  act('scene-mode','hdr');act('close',null,modal());assert(!SceneEditor.hdr(),'cancel leaves SDR');
+                  act('scene-mode','hdr');act('scene-review-start',null,modal());assert(SceneEditor.hdr()&&el('.editor-toast.info'));
+                  act('scene-open');act('scene-review-fail',null,modal());
+                  assert(all('.editor-toast').map(x=>x.classList.contains('error')?'error':'info').slice(-2).join()==='info,error'&&el('.editor-toast.error [role=alert]')&&el('.editor-toast.info [role=status]'),'individual severities in arrival order');
+                  assert(el('.editor-notices').getBoundingClientRect().top-el('.edit-center').getBoundingClientRect().top===8,'notices anchored above photo');
+                """)
+                capture("rails-and-notices.png")
+                browser("wait", "3100")
+                scenario("消息持续、分张关闭、纯画布 Graph", """
+                  assert(el('.editor-toast.info')&&el('.editor-toast.error'),'no timeout');
+                  act('edit-tool','tones',el('.inspector-rail'));assert(el('.editor-toast.error'),'survives inspector render');
+                  act('workflow','library');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.edit-page');
+                  assert(!el('.editor-toast'),'no other photo message');act('workflow','library');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.edit-page');
+                  assert(el('.editor-toast.error')&&el('.editor-toast.info'),'messages restored for original photo');
+                  act('editor-notice-dismiss',null,el('.editor-toast.info'));assert(el('.editor-toast.error')&&!el('.editor-toast.info'));
+                  act('scene-review-retry',null,el('.editor-toast.error'));assert(el('.editor-toast.info')&&SceneEditor.hdr(),'successful HDR retry');
+                  for (const row of all('.editor-toast')) act('editor-notice-dismiss',null,row);
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('dag-view-toggle');await page('.dag-viewport');
+                  assert(!el('.dag-floating header')&&document.activeElement===el('.dag-viewport'),'canvas receives initial focus');
+                  const panel=el('.dag-floating').getBoundingClientRect(),vp=el('.dag-viewport').getBoundingClientRect();
+                  assert(Math.abs(panel.width-vp.width)<=3&&Math.abs(panel.height-vp.height)<=3,'graph fills window without title row');
+                  const before=JSON.stringify(currentEdit().recipe);
+                  const left=panel.left;key(el('[data-dag-window-drag]'),'ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().left===left-20,'move without dragging a node');
+                  key(el('[data-dag-window-resize]'),'ArrowLeft');assert(el('.dag-floating').getBoundingClientRect().width===panel.width-20,'keyboard resize');
+                  act('dag-fit');assert(before===JSON.stringify(currentEdit().recipe),'presentation leaves graph intact');
+                """)
+                capture("graph-canvas.png")
+                browser("set", "viewport", "900", "360")
+                scenario("矮窗的图与 Esc 焦点", """
+                  await wait(()=>el('.dag-floating').getBoundingClientRect().bottom<=innerHeight);
+                  assert(el('.dag-viewport').offsetHeight>=238&&el('.dag-viewport').checkVisibility(),'short window keeps full canvas');
+                  el('.dag-viewport').focus();key(document.activeElement,'Escape');
+                  assert(!el('.dag-floating')&&document.activeElement===el('[data-act=dag-view-toggle]'),'Esc returns to Graph');
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
+                """)
+                browser("set", "viewport", "390", "844")
+                browser("open", host + ENTRY + "?compatibilityGraph=1")
+                scenario("窄窗深色下的兼容画布", """
+                  await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.dag-scope-head');
+                  act('compatibility-graph-toggle',null,el('.dag-scope-head'));await page('.dag-compat');
+                  const panel=el('.dag-compat').getBoundingClientRect(),vp=el('.dag-compat-canvas').getBoundingClientRect();
+                  assert(!el('.dag-compat header')&&panel.left>=0&&panel.right<=innerWidth&&Math.abs(vp.height-panel.height)<=3);
+                  assert(document.documentElement.dataset.theme==='dark'&&document.activeElement===el('.dag-compat-canvas'));
+                  key(el('.dag-compat-canvas'),'+');assert(compatibilityGraphFrame().scale>1,'zoom');
+                  key(el('.dag-compat-canvas'),'0');assert(compatibilityGraphFrame().scale===1,'restore');
+                """)
+                capture("compatibility-390-dark.png")
+                browser("press", "Escape")
+                scenario("兼容图回到原选片", """
+                  assert(!el('.dag-compat')&&document.activeElement===el('.dag-scope-head [data-act=compatibility-graph-toggle]'));
+                  assert(Studio.data.work==='r1'&&!Studio.edit('r1').recipe.dag);
+                """)
+                check_browser_errors()
+                return
             if args.grid_export_only:
                 browser(*options, "open", host + ENTRY + "?pqReview=1")
                 for theme, width in [("light", "1280"), ("dark", "390")]:
@@ -301,10 +400,10 @@ def main():
                   const draft=Studio.edit('b1'), old=JSON.stringify(draft.recipe), count=draft.past.length;
                   act('scene-mode','hdr');act('scene-review-start',null,modal());
                   const mode=el('.scene-modes [data-val=hdr]');
-                  assert(el('.scene-warning').textContent.includes('HDR 原片解码运行库不可用'),'runtime reason');
+                  assert(el('.editor-toast.error').textContent.includes('HDR 原片解码运行库不可用'),'runtime reason');
                   assert(!modal().open&&JSON.stringify(draft.recipe)===old&&draft.past.length===count,'no draft or history');
                   assert(document.activeElement===mode,'returns focus to HDR');
-                  act('scene-dismiss');assert(!el('.scene-warning'),'dismiss keeps photo in the editor');
+                  act('editor-notice-dismiss',null,el('.editor-toast.error'));assert(!el('.editor-toast.error'),'dismiss keeps photo in the editor');
                   act('scene-mode','hdr');act('close',null,modal());assert(JSON.stringify(draft.recipe)===old,'can cancel again');
                 """)
                 browser("open", host + ENTRY + "?sceneNativeReview=1")
@@ -325,8 +424,8 @@ def main():
                   act('edit-step','undo');assert(e.recipe.sceneOutput&&e.recipe.ev===0,'undo exposure only');
                   act('edit-step','undo');assert(JSON.stringify(e.recipe)===old,'undo HDR restores exact SDR');
                   act('scene-mode','hdr');act('scene-review-start',null,modal());act('scene-open');
-                  act('scene-review-fail',null,modal());assert(el('.scene-hud').innerText.includes('预览失败'),'visible failure');
-                  act('scene-review-retry');assert(!el('.scene-hud').innerText.includes('预览失败'),'retry returns to same HDR draft');
+                  act('scene-review-fail',null,modal());assert(el('.editor-toast.error').innerText.includes('预览失败'),'visible failure');
+                  act('scene-review-retry');assert(!el('.editor-toast [data-act=scene-review-retry]')&&SceneEditor.hdr(),'retry returns to same HDR draft');
                 """)
                 scene_evidence = os.environ.get("RAWMASTER_UI_SCENE_EVIDENCE")
                 if scene_evidence:
@@ -341,7 +440,7 @@ def main():
                       act('scene-view','target',el('.scene-hud'));
                       assert(el('.scene-hud').innerText.includes('屏幕无 HDR 余量'),'fallback explicit');
                       const e=Studio.edit('b1'), hdr=JSON.stringify(e.recipe);Studio.asset('b1').online=false;render();
-                      act('scene-mode','sdr');assert(el('.scene-warning').innerText.includes('离线')&&JSON.stringify(e.recipe)===hdr,'offline is fail closed');
+                      act('scene-mode','sdr');assert(all('.editor-toast.error').some(row=>row.innerText.includes('离线'))&&JSON.stringify(e.recipe)===hdr,'offline is fail closed');
                       Studio.asset('b1').online=true;render();
                       const button=el('[data-act=scene-mode][data-val=hdr]');button.focus();key(button,'ArrowLeft');
                       assert(document.activeElement.dataset.val==='sdr'&&JSON.stringify(e.recipe)===hdr,'arrow moves focus only');
@@ -365,9 +464,9 @@ def main():
                   assert(document.documentElement.dataset.theme==='dark'&&el('.dag-compat').getBoundingClientRect().left>innerWidth/2,'desktop Graph opens to the side so the main photo remains visible');
                   assert(all('.dag-compat-canvas b').map(x=>x.textContent).join()==='照片来源,兼容显影,最终输出','matches the native stage order');
                   assert(el('[data-act=compatibility-ignore]').disabled&&!el('.dag-compat [data-dag-node]'),'read-only graph has no editing commands');
-                  act('compatibility-graph-fold');assert(!el('.dag-compat-canvas'),'collapsed');
-                  act('compatibility-graph-fold');assert(el('.dag-compat-canvas'),'expanded');
-                  act('compatibility-graph-reset');
+                  assert(!el('.dag-compat header')&&document.activeElement===el('.dag-compat-canvas'),'titleless canvas receives focus');
+                  act('compatibility-zoom','in');assert(compatibilityGraphFrame().scale>1,'zoom');
+                  act('compatibility-zoom','fit');
                   assert(JSON.stringify(edit.recipe)===before&&edit.past.length===history&&!edit.recipe.dag,'presentation does not seed a recipe or history');
                 """)
                 compatibility_evidence = os.environ.get("RAWMASTER_UI_DAG_EVIDENCE")
@@ -400,9 +499,9 @@ def main():
                 if compatibility_evidence:
                     browser("screenshot", str(Path(compatibility_evidence) / "compatibility-390-light.png"))
                 browser("set", "viewport", "900", "360")
-                scenario("Node DAG 兼容评审：短窗标题与原片离线", """
-                  await wait(()=>el('.dag-compat.minimized')?.checkVisibility());
-                  assert(!el('.dag-compat-canvas')&&el('.dag-compat small').textContent.includes('增高窗口'),'short window explains why only the title is visible');
+                scenario("Node DAG 兼容评审：短窗画布与原片离线", """
+                  await wait(()=>el('.dag-compat').getBoundingClientRect().bottom<=innerHeight);
+                  assert(el('.dag-compat-canvas').checkVisibility()&&!el('.dag-window-head'),'short window preserves the canvas');
                   el('.dag-compat [data-act=compatibility-graph-toggle]').click();
                   Studio.asset('r1').online=false;render();
                   assert(!el('.dag-compat')&&el('[data-act=compatibility-graph-toggle]').disabled&&el('.dag-scope-head small').textContent.includes('离线'),'offline source has a reason');
@@ -418,8 +517,8 @@ def main():
                   await page('.photo-card');
                   act('workflow','edit'); await page('.inspector-rail'); act('edit-tool','basic'); await page('.scene-mode-bar');
                   act('scene-mode','hdr');
-                  assert(!el('#scene-mode-reason')&&el('.edit-center .scene-warning').textContent.includes('场景校准')&&!Studio.edit('r1').recipe.sceneOutput,'unqualified HDR is explained on canvas only');
-                  act('scene-dismiss'); assert(!el('.scene-warning'),'warning dismisses');
+                  assert(!el('#scene-mode-reason')&&el('.edit-center .editor-toast.error').textContent.includes('场景校准')&&!Studio.edit('r1').recipe.sceneOutput,'unqualified HDR is explained on canvas only');
+                  act('editor-notice-dismiss',null,el('.editor-toast.error')); assert(!el('.editor-toast.error'),'warning dismisses');
                   act('goto','library/project/river'); await page('.photo-card');
                   act('photo','b1'); act('workflow','edit'); await page('.inspector-rail');
                   act('edit-tool','basic'); await page('.scene-mode-bar');
@@ -517,7 +616,8 @@ def main():
                   assert(graphBar.nextElementSibling===panel&&modeBar.parentElement.id==='adjustment-panel'&&modeBar.compareDocumentPosition(el('.scene-scopes'))&Node.DOCUMENT_POSITION_FOLLOWING,'mode section inside Basic before scopes');
                   act('edit-tool','tones');await page('#adjustment-panel');assert(!el('.scene-mode-bar'),'mode section is not repeated in Curves');
                   act('edit-tool','basic');await page('.scene-mode-bar');
-                  assert(el('.dag-scope-head').getBoundingClientRect().bottom<el('.edit-inspector').getBoundingClientRect().top&&getComputedStyle(el('.scene-mode-bar')).borderBottomWidth==='1px','gap and separator');
+                  const gap=el('.edit-inspector').getBoundingClientRect().top-el('.dag-scope-head').getBoundingClientRect().bottom, border=getComputedStyle(el('.scene-mode-bar')).borderBottomWidth;
+                  assert(gap>0&&border==='1px','gap='+gap+' border='+border);
                   assert(!el('.edit-head [data-act=scene-open]'),'no duplicate settings');
                   act('dag-view-toggle');await page('.dag-floating');
                   act('dag-picker');
@@ -664,7 +764,7 @@ def main():
             scenario("暗房布局、智能预设与胶片采用", """
               await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.smart-panel');
               assert(!el('.edit-head .switch,.edit-left .switch,.edit-inspector .tool-palette,.agent-panel'),'single darkroom');
-              const headings=all('.edit-left > section[aria-labelledby]').map(section=>el('#'+section.getAttribute('aria-labelledby'),section));
+              const headings=all('.edit-library-panel > section[aria-labelledby]').map(section=>el('#'+section.getAttribute('aria-labelledby'),section));
               assert(headings.map(n=>n.textContent).join('/')==='滤镜/快照/历史'&&headings[0].offsetTop<headings[1].offsetTop&&headings[1].offsetTop<headings[2].offsetTop,'stacked left sections');
               const rail=el('.inspector-rail').getBoundingClientRect(),pane=el('.inspector-content').getBoundingClientRect();
               assert(rail.width<51&&rail.right<=pane.left+1&&all('.rail-tool').every(b=>!b.textContent.trim()&&b.getAttribute('aria-label')&&!b.title),'vertical icon rail with accessible labels and no system tooltips');
@@ -675,8 +775,8 @@ def main():
               assert(all('[name=matchReference] option',modal()).length===3,'scope contains just this group');set('[name=matchReference]','d2',modal());
               assert(!el('[name=matchTarget][value=d2]',modal()),'reference protected');act('close',null,modal());
               const neutral=el('.developed').style.filter;
-              assert(all('.preset-directory > details > summary > span').slice(0,3).map(x=>x.textContent).join('|')==='Adaptive|胶片模拟|Imported'&&!el('.preset-folder img'),'three primary folders without thumbnails');
-              assert(all('[data-folder=adaptive] > .preset-children > details > summary > span').map(x=>x.textContent).join('|')==='Sky|Subject','preserve source folders');
+              assert(all('.preset-directory > details > summary > span').map(x=>x.textContent).join('|')==='自适应滤镜|基础滤镜|胶片模拟|用户导入滤镜'&&!el('.preset-folder img'),'four ordered folders without thumbnails');
+              assert(all('[data-folder=adaptive] > .preset-children > details > summary > span').map(x=>x.textContent).join('|')==='人像|天空|主体|风景|模糊背景','localized source folders');
               assert(all('[data-act=film-stock]').length===9&&el('[data-folder=film]').textContent.includes('Spektrafilm 官方模型 · SDR 色彩外观'),'nine official SDR film endpoints');
               for(const stock of ['gold','portrait800','ektar','provia','ektachrome','tungsten']){
                 set('[name=presetQuery]',stock==='tungsten'?'500T':RMPhotos.filmStocks[stock].name);
@@ -694,7 +794,7 @@ def main():
               set('[name=presetQuery]','无匹配输入');assert(el('.preset-directory').textContent.includes('没有匹配'),'search empty');
               set('[name=presetQuery]','');
               tap('summary',filterMenu());act('preset-manage','export',filterMenu());assert(value('presetOperation')==='导出原生预设','Export opens its own dialog');act('close',null,modal());
-              act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .subject'),'current-photo mask review');act('close',null,modal());
+              tap('[data-folder="adaptive.主体"] > summary');act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .subject'),'current-photo mask review');act('close',null,modal());
               let film=el('[data-act=film-stock][data-val=cinema]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
               key(film,'Escape');assert(el('.developed').style.filter===neutral&&el('.look-preview').hidden,'Escape restores applied image');
               key(film,'ArrowUp');assert(document.activeElement.dataset.val==='chrome','film keys stay in the folder');
@@ -1275,10 +1375,10 @@ def main():
             browser("tab", workbench["tabId"])
             scenario("Node DAG 九域作用域、图事务与显示状态", """
               await hash('library/project/river');act('photo','r1');act('workflow','edit');
-              await page('.dag-scope-head');assert(!el('.edit-left .dag-library,.edit-left [data-act^=dag-]')&&all('.edit-left > section').map(n=>el('#'+n.getAttribute('aria-labelledby'),n).textContent).join('/')==='滤镜/快照/历史','darkroom left sidebar has only filters, snapshots and history');act('dag-view-toggle');await page('.dag-workspace');
+              await page('.dag-scope-head');assert(!el('.edit-left .dag-library,.edit-left [data-act^=dag-]')&&all('.edit-library-panel > section').map(n=>el('#'+n.getAttribute('aria-labelledby'),n).textContent).join('/')==='滤镜/快照/历史','the library panel groups filters, snapshots and history');act('dag-view-toggle');await page('.dag-workspace');
               assert(dagTransform().scale===1&&!el('.dag-photo-status'),'one editable node opens at readable size without a routine status chip');
               menuAction('dag-preview');assert(el('.dag-photo-status').innerText.includes('不用于导出')&&el('[data-act=dag-preview-final]'),'explicit node output still warns with one editable node');act('dag-preview-final');assert(!el('.dag-photo-status'),'return to final hides routine single-node status');
-              pickNode('output');act('dag-failure');assert(el('.dag-photo-status.failed [data-act=dag-retry]'),'a failure still offers retry with one editable node');act('dag-retry');assert(!el('.dag-photo-status'),'successful retry restores quiet single-node state');pickNode('grade');
+              pickNode('output');act('dag-failure');assert(el('.editor-toast.error [data-act=dag-retry]'),'a failure still offers retry with one editable node');act('dag-retry');assert(!el('.dag-photo-status'),'successful retry restores quiet single-node state');pickNode('grade');
               act('dag-fit');
               const nodes=()=>currentEdit().recipe.dag.nodes;
               const graph=()=>currentEdit().recipe.dag;
@@ -1316,7 +1416,7 @@ def main():
               assert(Studio.data.work===qa.photo&&JSON.stringify(graph())===rootBefore,'graph fixture and photo persist across scenario boundaries');
               pickNode(branch);act('edit-tool','masks');maskType('径向渐变');
               act('canvas-tool-done');assert(!nodes().find(n=>n.id===branch).mask&&JSON.stringify(graph())===rootBefore,'opening or choosing the current mask tool does not create an empty mask');act('edit-tool','masks');
-              assert(S.canvasTool?.kind==='mask'&&el('.developed')&&el('.dag-floating.minimized'),'Mask expands on the photo and temporarily collapses Graph');
+              assert(S.canvasTool?.kind==='mask'&&el('.developed')&&!el('.dag-floating')&&dagView().mode==='graph','Mask temporarily clears the photo canvas');
               assert(el('[name=dagNode]').disabled,'picker disables switching during a photo tool');changes.dagNode({value:'grade'});assert(dagView().active===branch&&dagView().selection.join()===branch&&S.canvasTool?.owner===branch,'pending photo tool refuses even a late scope change');act('canvas-tool-cancel');
               assert(dagView().mode==='graph'&&!nodes().find(n=>n.id===branch).mask,'mask cancel returns to Graph');
               act('edit-tool','masks');maskType('主体');act('canvas-tool-done');
@@ -1377,9 +1477,9 @@ def main():
               act('dag-readable');act('dag-zoom','in');const manual={...dagTransform()};act('dag-view-toggle');act('dag-view-toggle');await wait(()=>el('.dag-stage'));assert(JSON.stringify(dagTransform())===JSON.stringify(manual),'reopening respects a deliberate manual zoom');act('dag-readable');
               assert(S.editZoom===view.zoom&&el('.canvas-fit').scrollLeft===view.left&&el('.canvas-fit').scrollTop===view.top&&el('.edit-image').getBoundingClientRect().width===imageBox.width,'Graph reopening preserves photo zoom, pan and geometry');
               const resize=el('.dag-window-resize');resize.focus();key(resize,'ArrowRight');
-              act('dag-window-minimize');assert(el('.dag-floating.minimized'),'minimize');act('dag-window-minimize');
+              act('dag-view-toggle');assert(!el('.dag-floating'),'closed');act('dag-view-toggle');
               assert(JSON.stringify(graph())===base&&history()===past&&Studio.data.work===photo,'window resize and collapse create no pixel history');
-              act('canvas-crop');assert(el('.canvas-crop-box')&&el('.dag-floating.minimized'),'crop range and unobstructed collapsed Graph');
+              act('canvas-crop');assert(el('.canvas-crop-box')&&!el('.dag-floating')&&dagView().mode==='graph','crop range and unobstructed photo');
               const cropDraft=JSON.stringify(S.canvasTool.draft),film=el('[data-act=film-stock]');assert(film,'film fixture exists');film.closest('details').open=true;act('film-stock',film.dataset.val);assert(JSON.stringify(S.canvasTool.draft)===cropDraft&&JSON.stringify(graph())===base,'photo-level look cannot leak into a Crop draft');
               set('[name=canvasCropwidth]',70);set('[name=canvasCropheight]',60);set('[name=canvasCropx]',10);act('canvas-turn');
               assert(history()===past&&JSON.stringify(graph())===base,'Crop only changes draft');act('canvas-tool-cancel');assert(history()===past&&JSON.stringify(graph())===base,'Crop cancel discards draft');
@@ -1445,17 +1545,18 @@ def main():
               assert(!menu.matches(':popover-open')&&document.activeElement===el('[data-dag-node=grade]'),'right-click menu Escape returns focus');
             """)
             browser("set", "viewport", "900", "360")
-            scenario("Node DAG 短窗保留可关闭标题条", """
+            scenario("Node DAG 短窗保留可操作的画布", """
               assert(document.visibilityState==='visible','the active workbench must receive viewport changes');
-              await wait(()=>el('.dag-floating.minimized')?.checkVisibility());
-              assert(innerWidth===900&&innerHeight===360&&dagWindowShort()&&!el('.dag-viewport')&&el('.dag-window-head').textContent.includes('增高窗口'),'short window explains why the graph cannot expand');
-              const box=el('.dag-floating').getBoundingClientRect();assert(box.top>=0&&box.bottom<=innerHeight&&el('[data-act=dag-window-minimize]').disabled,'title controls stay reachable without squeezing the canvas');
+              await wait(()=>el('.dag-floating').getBoundingClientRect().bottom<=innerHeight);
+              const box=el('.dag-floating').getBoundingClientRect();
+              assert(innerWidth===900&&innerHeight===360&&el('.dag-viewport').offsetHeight>=238&&!el('.dag-window-head'),'short window shows the canvas');
+              assert(box.top>=0&&box.bottom<=innerHeight&&el('.graph-window-actions [data-act=dag-view]').checkVisibility(),'close button remains reachable');
             """)
             dag_evidence = os.environ.get("RAWMASTER_UI_DAG_EVIDENCE")
             if dag_evidence and not editing_only:
                 Path(dag_evidence).mkdir(parents=True, exist_ok=True)
                 browser("screenshot", str(Path(dag_evidence) / "graph-short-window.png"))
-            browser("click", ".dag-window-head [data-act=dag-view][data-val=photo]")
+            browser("click", ".graph-window-actions [data-act=dag-view][data-val=photo]")
             scenario("Node DAG 短窗真实关闭", """
               assert(!el('.dag-floating')&&el('.developed')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='false','short-window close removes the floating panel and leaves the primary photo in place');
             """)
@@ -1498,7 +1599,7 @@ def main():
                   const floating=el('.dag-floating'),windowBox=floating.getBoundingClientRect();
                   assert(getComputedStyle(floating).position==='fixed'&&floating.getAttribute('aria-modal')==='false'&&el('.edit-center .developed').checkVisibility(),'non-modal floating Graph keeps primary photo visible');
                   assert(windowBox.left>=0&&windowBox.right<=innerWidth&&windowBox.top>=0&&windowBox.bottom<=innerHeight,'floating window remains reachable within viewport');
-                  const viewport=el('.dag-viewport').getBoundingClientRect(),cards=all('.dag-card').map(card=>card.getBoundingClientRect());assert(viewport.height>=240&&viewport.width>=Math.min(480,innerWidth-26)&&windowBox.height>=392&&windowBox.width>=Math.min(520,innerWidth-24),'minimum applies to actual graph viewport, not just the outer window');const row=all('.dag-picker-row > button').map(button=>button.getBoundingClientRect());assert(row.length===3&&row.every(rect=>Math.abs(rect.top-row[0].top)<1)&&row[0].right<=row[1].left&&row[1].right<=row[2].left,'selector, ignore and Graph stay on one line');assert(cards.length===dagCurrent().nodes.length&&cards.every(card=>card.left>=viewport.left-1&&card.right<=viewport.right+1&&card.top>=viewport.top-1&&card.bottom<=viewport.bottom+1),'FIT contains all actual node cards, not just the floating window');
+                  const viewport=el('.dag-viewport').getBoundingClientRect(),cards=all('.dag-card').map(card=>card.getBoundingClientRect());assert(viewport.height>=240&&viewport.width>=Math.min(480,innerWidth-26)&&windowBox.height>=240&&windowBox.width>=Math.min(520,innerWidth-24),'minimum applies to actual graph viewport, not just the outer window');const row=all('.dag-picker-row > button').map(button=>button.getBoundingClientRect());assert(row.length===3&&row.every(rect=>Math.abs(rect.top-row[0].top)<1)&&row[0].right<=row[1].left&&row[1].right<=row[2].left,'selector, ignore and Graph stay on one line');assert(cards.length===dagCurrent().nodes.length&&cards.every(card=>card.left>=viewport.left-1&&card.right<=viewport.right+1&&card.top>=viewport.top-1&&card.bottom<=viewport.bottom+1),'FIT contains all actual node cards, not just the floating window');
                   const midX=(Math.min(...cards.map(c=>c.left))+Math.max(...cards.map(c=>c.right)))/2,midY=(Math.min(...cards.map(c=>c.top))+Math.max(...cards.map(c=>c.bottom)))/2;
                   assert(Math.abs(midX-(viewport.left+viewport.right)/2)<1&&Math.abs(midY-(viewport.top+viewport.bottom)/2)<1,'explicit fit centers the actual node bounds');
                   act('dag-readable');const focused=el('.dag-card.active').getBoundingClientRect();assert(dagTransform().scale===1&&focused.left>=viewport.left&&focused.right<=viewport.right&&focused.top>=viewport.top&&focused.bottom<=viewport.bottom,'readable framing keeps the current node on-screen even if the whole graph cannot fit');act('dag-fit');

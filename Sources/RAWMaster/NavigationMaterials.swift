@@ -13,21 +13,31 @@ enum FloatingControlSurfacePolicy: Equatable {
 
 struct ResolvedFloatingControlSurface: ViewModifier {
     let policy: FloatingControlSurfacePolicy
-    @ViewBuilder func body(content: Content) -> some View {
+    var cornerRadius: CGFloat = 12
+    @Environment(\.controlActiveState) private var windowActivity
+
+    func body(content: Content) -> some View {
+        content.background { background.allowsHitTesting(false).accessibilityHidden(true) }
+    }
+
+    @ViewBuilder private var background: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius)
         switch policy {
         case .opaque:
-            content.background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.primary.opacity(0.45), lineWidth: 1))
+            shape.fill(AppPalette.panel)
+                .overlay(shape.strokeBorder(.primary.opacity(0.45), lineWidth: 1))
         case .glass:
-            if #available(macOS 26.0, *) { content.glassEffect(.regular, in: .rect(cornerRadius: 12)) }
-            else { material(content) }
+            if #available(macOS 26.0, *) {
+                // Rebind only the compositor surface when returning from another app, sheet or Graph.
+                Color.clear.glassEffect(.regular, in: shape).id(windowActivity == .key)
+            } else { material }
         case .material:
-            material(content)
+            material
         }
     }
-    private func material(_ content: Content) -> some View {
-        content.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(AppPalette.boundary, lineWidth: 1))
+    private var material: some View {
+        RoundedRectangle(cornerRadius: cornerRadius).fill(.regularMaterial)
+            .overlay(RoundedRectangle(cornerRadius: cornerRadius).strokeBorder(AppPalette.boundary, lineWidth: 1))
             .shadow(color: .black.opacity(0.12), radius: 10, y: 3)
     }
 }
@@ -35,12 +45,14 @@ struct ResolvedFloatingControlSurface: ViewModifier {
 /// Read actual preferences at the control surface. Photo pixels and metadata keep
 /// their opaque content backgrounds independently of this navigation material.
 private struct FloatingSelectionSurface: ViewModifier {
+    let cornerRadius: CGFloat
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
     private var supportsGlass: Bool { if #available(macOS 26.0, *) { true } else { false } }
     func body(content: Content) -> some View {
         content.modifier(ResolvedFloatingControlSurface(policy: .resolve(
-            reduceTransparency: reduceTransparency, increasedContrast: contrast == .increased, supportsGlass: supportsGlass)))
+            reduceTransparency: reduceTransparency, increasedContrast: contrast == .increased, supportsGlass: supportsGlass),
+            cornerRadius: cornerRadius))
     }
 }
 struct NativeSidebarMaterial: NSViewRepresentable {
@@ -52,5 +64,7 @@ struct NativeSidebarMaterial: NSViewRepresentable {
     func updateNSView(_ view: NSVisualEffectView, context: Context) {}
 }
 extension View {
-    func floatingSelectionSurface() -> some View { modifier(FloatingSelectionSurface()) }
+    func floatingSelectionSurface(cornerRadius: CGFloat = 12) -> some View {
+        modifier(FloatingSelectionSurface(cornerRadius: cornerRadius))
+    }
 }

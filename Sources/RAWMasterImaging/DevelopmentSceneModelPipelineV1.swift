@@ -28,6 +28,23 @@ enum DevelopmentSceneModelPipelineV1 {
     let masks: [UUID: MTLTexture]
   }
 
+  static func surfaceBytes(_ format: MTLPixelFormat, width: Int, height: Int, device: MTLDevice) -> Int {
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format, width: width, height: height, mipmapped: false)
+    descriptor.storageMode = .private; descriptor.usage = [.shaderRead, .shaderWrite]
+    return device.heapTextureSizeAndAlign(descriptor: descriptor).size
+  }
+
+  static func checkBudget(_ program: DevelopmentSceneModelProgramV1, width: Int, height: Int, device: MTLDevice,
+                          maximumBytes: Int) throws {
+    var w = width, h = height, bytes = surfaceBytes(.rgba32Float, width: width, height: height, device: device)
+    for stage in program.stages {
+      w *= stage.scale; h *= stage.scale
+      guard w <= 16_384, h <= 16_384 else { throw Failure.surfaceBudget }
+      bytes += surfaceBytes(stage.kind == .segmentation ? .r32Float : .rgba32Float, width: w, height: h, device: device)
+      guard bytes <= maximumBytes else { throw Failure.surfaceBudget }
+    }
+  }
+
   static func run(_ program: DevelopmentSceneModelProgramV1,
                   image: DevelopmentSceneGraphRendererV1.Image,
                   geometry: DevelopmentSceneGraphRendererV1.Geometry,
@@ -43,7 +60,9 @@ enum DevelopmentSceneModelPipelineV1 {
           image.texture.height == geometry.height,
           image.texture.pixelFormat == .rgba32Float else { throw Failure.invalidImage }
     guard let provider else { throw Failure.unsupportedProvider }
+    try checkBudget(program, width: geometry.width, height: geometry.height, device: image.texture.device, maximumBytes: maximumBytes)
     var used = image.texture.allocatedSize
+    guard used <= maximumBytes else { throw Failure.surfaceBudget }
     var width = image.texture.width, height = image.texture.height
     var current = image.texture
     var masks: [UUID: MTLTexture] = [:]
@@ -51,6 +70,7 @@ enum DevelopmentSceneModelPipelineV1 {
       try Task.checkCancellation()
       try check()
       guard provider.supports(stage) else { throw Failure.unsupportedStage }
+      let expectedWidth = width * stage.scale, expectedHeight = height * stage.scale
       let output = try provider.render(stage, input: current, check: check)
       try Task.checkCancellation()
       guard output.device === image.texture.device else { throw Failure.invalidTexture }
@@ -60,8 +80,6 @@ enum DevelopmentSceneModelPipelineV1 {
         }
         masks[stage.id] = output
       } else {
-        let expectedWidth = stage.kind == .superResolution ? width * 2 : width
-        let expectedHeight = stage.kind == .superResolution ? height * 2 : height
         guard output.pixelFormat == .rgba32Float, output.width == expectedWidth, output.height == expectedHeight else {
           throw Failure.invalidTexture
         }

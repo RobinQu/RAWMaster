@@ -47,6 +47,16 @@ final class DevelopmentSceneRAWV1 {
     let sensorSaturation: MTLTexture
   }
 
+  struct Mosaic {
+    let sensor: Sensor
+    let texture: MTLTexture
+  }
+
+  enum Sampling {
+    case native(MTLRegion?)
+    case fit(width: Int, height: Int)
+  }
+
   private struct Parameters {
     let active, crop, colors, output: SIMD4<UInt32>
     let black, white, red, green, blue: SIMD4<Float>
@@ -54,23 +64,27 @@ final class DevelopmentSceneRAWV1 {
   private let device: MTLDevice
   private let queue: MTLCommandQueue
   private let pipeline: MTLComputePipelineState
+  private let fitPipeline: MTLComputePipelineState
 
   init(device: MTLDevice) throws {
     guard let queue = device.makeCommandQueue() else { throw Color.Failure.metalUnavailable }
     let options = MTLCompileOptions()
     options.mathMode = .safe
     let library = try device.makeLibrary(source: Self.kernel, options: options)
-    guard let function = library.makeFunction(name: "rmSceneBayerV1") else { throw Color.Failure.metalUnavailable }
+    guard let function = library.makeFunction(name: "rmSceneBayerV1"),
+          let fit = library.makeFunction(name: "rmSceneBayerFitV1") else { throw Color.Failure.metalUnavailable }
     self.pipeline = try device.makeComputePipelineState(function: function)
+    self.fitPipeline = try device.makeComputePipelineState(function: fit)
     self.device=device; self.queue=queue
   }
 
-  func decode(_ url: URL, region: MTLRegion? = nil, maximumOutputBytes: Int? = nil) throws -> Result {
+  func prepare(_ url: URL) throws -> Mosaic {
     let (frame, sensor) = try Self.sensorFrame(url)
-    if let maximumOutputBytes, region == nil, Int(sensor.size.x) * Int(sensor.size.y) > maximumOutputBytes / 17 {
-      throw Failure.surfaceBudget
-    }
-    return try develop(try frame.data(), sensor: sensor, region: region)
+    return try upload(frame.data(), sensor: sensor)
+  }
+
+  func decode(_ url: URL, region: MTLRegion? = nil) throws -> Result {
+    try develop(prepare(url), sampling: .native(region))
   }
 
   private static func sensorFrame(_ url: URL) throws -> (FlashRawFrame, Sensor) {
@@ -106,42 +120,63 @@ final class DevelopmentSceneRAWV1 {
     try autoreleasepool { _ = try sensorFrame(url) }
   }
 
-  func develop(_ mosaic: Data, sensor: Sensor, region: MTLRegion? = nil) throws -> Result {
+  func upload(_ mosaic: Data, sensor: Sensor) throws -> Mosaic {
     try Task.checkCancellation()
     guard mosaic.count == sensor.width * sensor.height * MemoryLayout<UInt16>.stride else { throw Calibration.Failure.invalidMosaic }
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r16Uint, width: sensor.width, height: sensor.height, mipmapped: false)
+    descriptor.storageMode = .shared; descriptor.usage = .shaderRead
+    guard let raw = device.makeTexture(descriptor: descriptor) else { throw Color.Failure.metalUnavailable }
+    mosaic.withUnsafeBytes { bytes in
+      raw.replace(region: MTLRegionMake2D(0, 0, sensor.width, sensor.height), mipmapLevel: 0,
+        withBytes: bytes.baseAddress!, bytesPerRow: sensor.width * MemoryLayout<UInt16>.stride)
+    }
+    try Task.checkCancellation()
+    return Mosaic(sensor: sensor, texture: raw)
+  }
+
+  func develop(_ raw: Mosaic, sampling: Sampling, maximumBytes: Int = .max) throws -> Result {
+    try Task.checkCancellation()
+    let sensor = raw.sensor
     let fullWidth=Int(sensor.size.x), fullHeight=Int(sensor.size.y)
-    let rect = region ?? MTLRegionMake2D(0, 0, fullWidth, fullHeight)
+    let rect: MTLRegion
+    let selected: MTLComputePipelineState
+    switch sampling {
+    case .native(let region):
+      rect = region ?? MTLRegionMake2D(0, 0, fullWidth, fullHeight)
+      selected = pipeline
+    case .fit(let width, let height):
+      rect = MTLRegionMake2D(0, 0, width, height)
+      selected = width == fullWidth && height == fullHeight ? pipeline : fitPipeline
+    }
     let (x,y,width,height) = (rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
     guard rect.origin.z == 0, rect.size.depth == 1, x >= 0, y >= 0, width > 0, height > 0,
           width <= fullWidth, height <= fullHeight, x <= fullWidth-width, y <= fullHeight-height else {
       throw Calibration.Failure.invalidGeometry
     }
 
-    func texture(_ format: MTLPixelFormat, _ width: Int, _ height: Int, source: Bool = false) -> MTLTexture? {
+    func output(_ format: MTLPixelFormat) -> MTLTextureDescriptor {
       let descriptor=MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format, width: width, height: height, mipmapped: false)
-      descriptor.storageMode=source ? .shared : .private
-      descriptor.usage=source ? .shaderRead : [.shaderRead,.shaderWrite]
-      return device.makeTexture(descriptor: descriptor)
+      descriptor.storageMode = .private; descriptor.usage = [.shaderRead, .shaderWrite]
+      return descriptor
     }
-    guard let raw = texture(.r16Uint,sensor.width,sensor.height,source:true),
-          let rgb = texture(.rgba32Float,width,height), let saturation = texture(.r8Uint,width,height),
+    let colorDescriptor = output(.rgba32Float), saturationDescriptor = output(.r8Uint)
+    let bytes = raw.texture.allocatedSize + device.heapTextureSizeAndAlign(descriptor: colorDescriptor).size
+      + device.heapTextureSizeAndAlign(descriptor: saturationDescriptor).size
+    guard bytes <= maximumBytes else { throw Failure.surfaceBudget }
+    guard let rgb = device.makeTexture(descriptor: colorDescriptor), let saturation = device.makeTexture(descriptor: saturationDescriptor),
           let command = queue.makeCommandBuffer(), let encoder = command.makeComputeCommandEncoder() else {
       throw Color.Failure.metalUnavailable
-    }
-    mosaic.withUnsafeBytes { bytes in
-      raw.replace(region: MTLRegionMake2D(0,0,sensor.width,sensor.height), mipmapLevel: 0,
-        withBytes: bytes.baseAddress!, bytesPerRow: sensor.width * MemoryLayout<UInt16>.stride)
     }
     let rows=sensor.calibration.rows
     var params=Parameters(active:sensor.active,crop:sensor.crop,colors:sensor.colors,
       output:.init(UInt32(x),UInt32(y),UInt32(sensor.orientation),0),black:sensor.black,white:sensor.white,
       red:rows.0,green:rows.1,blue:rows.2)
-    encoder.setComputePipelineState(pipeline)
-    encoder.setTexture(raw,index:0); encoder.setTexture(rgb,index:1); encoder.setTexture(saturation,index:2)
+    encoder.setComputePipelineState(selected)
+    encoder.setTexture(raw.texture,index:0); encoder.setTexture(rgb,index:1); encoder.setTexture(saturation,index:2)
     encoder.setBytes(&params,length:MemoryLayout<Parameters>.stride,index:0)
-    let lanes=pipeline.threadExecutionWidth
+    let lanes=selected.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:width,height:height,depth:1),
-      threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
+      threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,selected.maxTotalThreadsPerThreadgroup/lanes),depth:1))
     encoder.endEncoding()
     command.commit(); command.waitUntilCompleted()
     guard command.status == .completed else { throw command.error ?? Color.Failure.gpuExecutionFailed }
@@ -161,11 +196,9 @@ uint2 bayer_sensor_pixel(uint2 pos, uint2 size, uint orientation) {
       case 8: return uint2(w-y,x); default: return pos;
     }
 }
-kernel void rmSceneBayerV1(texture2d<uint, access::read> raw [[texture(0)]],
-                            texture2d<float, access::write> rgb [[texture(1)]],
-                            texture2d<uint, access::write> saturation [[texture(2)]],
-                            constant Params& p [[buffer(0)]], uint2 xy [[thread_position_in_grid]]) {
-    uint2 center = bayer_sensor_pixel(xy + p.output.xy, p.crop.zw, p.output.z) + p.crop.xy;
+struct BayerPixel { float3 ap1; uint saturated; };
+BayerPixel bayer_pixel(texture2d<uint, access::read> raw, constant Params& p, uint2 xy) {
+    uint2 center = bayer_sensor_pixel(xy, p.crop.zw, p.output.z) + p.crop.xy;
     uint ownPhase = ((center.y & 1) << 1) | (center.x & 1);
     uint ownColor = p.colors[ownPhase];
     float3 sum = 0;
@@ -184,8 +217,43 @@ kernel void rmSceneBayerV1(texture2d<uint, access::read> raw [[texture(0)]],
     }
     float3 camera = sum / float3(count);
     float3 ap1 = float3(dot(p.red.xyz,camera),dot(p.green.xyz,camera),dot(p.blue.xyz,camera));
-    rgb.write(float4(ap1,1),xy);
-    saturation.write(uint4(saturated,0,0,0),xy);
+    return {ap1,saturated};
+}
+kernel void rmSceneBayerV1(texture2d<uint, access::read> raw [[texture(0)]],
+                            texture2d<float, access::write> rgb [[texture(1)]],
+                            texture2d<uint, access::write> saturation [[texture(2)]],
+                            constant Params& p [[buffer(0)]], uint2 xy [[thread_position_in_grid]]) {
+    BayerPixel pixel = bayer_pixel(raw,p,xy+p.output.xy);
+    rgb.write(float4(pixel.ap1,1),xy);
+    saturation.write(uint4(pixel.saturated,0,0,0),xy);
+}
+// Integrate precisely the covered native pixels in signed AP1. The sensor overlay is a
+// point measurement at the grid cell's center, independently of its area-averaged color.
+kernel void rmSceneBayerFitV1(texture2d<uint, access::read> raw [[texture(0)]],
+                               texture2d<float, access::write> rgb [[texture(1)]],
+                               texture2d<uint, access::write> saturation [[texture(2)]],
+                               constant Params& p [[buffer(0)]], uint2 xy [[thread_position_in_grid]]) {
+    uint2 full = p.output.z < 5 ? p.crop.zw : p.crop.wz;
+    float2 size = float2(rgb.get_width(),rgb.get_height()), scale = float2(full)/size;
+    float2 low = float2(xy)*scale, high = min(float2(xy+1)*scale,float2(full));
+    uint2 first = uint2(floor(low)), limit = uint2(ceil(high));
+    uint2 center = min(uint2((float2(xy)+0.5f)*float2(full)/size),full-1);
+    float3 sum = 0;
+    float area = 0;
+    uint bits = 0;
+    for (uint y=first.y; y<limit.y; ++y) {
+        float wy=min(float(y+1),high.y)-max(float(y),low.y);
+        for (uint x=first.x; x<limit.x; ++x) {
+            uint2 at=uint2(x,y);
+            BayerPixel pixel=bayer_pixel(raw,p,at);
+            float w=wy*(min(float(x+1),high.x)-max(float(x),low.x));
+            sum+=pixel.ap1*w;
+            area+=w;
+            if (all(at==center)) bits=pixel.saturated;
+        }
+    }
+    rgb.write(float4(sum/area,1),xy);
+    saturation.write(uint4(bits,0,0,0),xy);
 }
 """#
 }

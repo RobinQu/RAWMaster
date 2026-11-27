@@ -20,14 +20,19 @@ struct EditingLeftSidebar: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text("照片工具").font(.system(size: 12, weight: .semibold))
-                Spacer()
+        VStack(spacing: EditingLayout.panelSpacing) {
+            LeftRailSection(title: "RAW 摘要", symbol: "doc.text.magnifyingglass", expanded: $summaryExpanded) {
+                rawSummary
             }
-            .padding(.horizontal, 14).padding(.top, 14).padding(.bottom, 10)
-            Divider()
+            .frame(maxWidth: .infinity)
+            .floatingSelectionSurface()
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("editing.rail.summary")
             content
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .floatingSelectionSurface()
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("editing.rail.tools")
         }
         .frame(width: EditingLayout.sidebarWidth)
         .frame(maxHeight: .infinity)
@@ -43,16 +48,12 @@ struct EditingLeftSidebar: View {
     }
 
     @ViewBuilder private var content: some View {
-        if let context = editing.developmentPresentationContext {
+        if let context = editing.developmentPresentationContext, let work = editing.work {
             let session = editing.developmentSession
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        LeftRailSection(title: "RAW 摘要", symbol: "doc.text.magnifyingglass", expanded: $summaryExpanded) {
-                            rawSummary
-                        }
-                        Divider().opacity(0.65)
-                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy,
+                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, assetID: work.source.assetID, scroller: proxy,
                             catalog: presetCatalog, sectionExpanded: $filtersExpanded)
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
@@ -77,10 +78,28 @@ struct EditingLeftSidebar: View {
                 }
             }
             .disabled(editing.developmentContext == nil)
+        } else if editing.visibleSceneGraph != nil, let work = editing.work {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ScenePresetDirectory(catalog: presetCatalog, sectionExpanded: $filtersExpanded,
+                                         favoriteLooks: editing.favoriteDevelopmentFilters) { error in
+                        editing.postNotice("无法读取滤镜目录。\(error.localizedDescription)", kind: .error, for: work.source.assetID)
+                    }
+                    Divider()
+                    LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded) {
+                        Text("在右下角保存 HDR 候选，可从作品版本返回。")
+                            .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14).padding(.bottom, 12)
+                    }
+                    Divider()
+                    LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
+                        Text("在当前节点面板撤销或重做 HDR 调整。")
+                            .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14).padding(.bottom, 12)
+                    }
+                }
+            }
         } else {
             VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                Label("保留当前工具状态", systemImage: "checkmark.circle")
-                    .font(.caption).foregroundStyle(.secondary)
+                Label("滤镜、快照与历史", systemImage: "slider.horizontal.3").font(.caption)
                 Text("照片恢复后会继续显示滤镜、快照和操作历史。")
                     .photosInspectorParagraph().foregroundStyle(.secondary)
             }

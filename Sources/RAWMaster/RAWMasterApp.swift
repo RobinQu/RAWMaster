@@ -21,6 +21,7 @@ struct RAWMasterApp: App {
         WindowGroup("RAWMaster") {
             workbenchRoot.id(ObjectIdentifier(model))
                 .modifier(ApplicationSettingsRouting(model: model))
+                .workbenchFocusAppearance()
                 .preferredColorScheme(appearance.preference.preferredColorScheme)
                 .environment(\.resolvedAppAppearance, appearance.resolved)
                 .focusedSceneValue(\.workbenchModel, model)
@@ -113,17 +114,17 @@ struct RAWMasterApp: App {
                 } else {
                     Text("打开一张照片进行调整以查看示波器。").foregroundStyle(.secondary)
                 }
-            }.frame(minWidth: 240, minHeight: 180)
+            }.frame(minWidth: 240, minHeight: 180).workbenchFocusAppearance()
         }
         .windowLevel(.floating)
         .windowResizability(.contentMinSize)
         .defaultSize(width: 360, height: 280)
         Window("图像性能监控", id: "image-performance-monitor") {
-            PerformanceMonitorWindow()
+            PerformanceMonitorWindow().workbenchFocusAppearance()
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 980, height: 700)
-        Settings { RAWMasterSettingsView(appearance: appearance, model: model) }
+        Settings { RAWMasterSettingsView(appearance: appearance, model: model).workbenchFocusAppearance() }
     }
 }
 

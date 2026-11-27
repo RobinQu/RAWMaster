@@ -3,12 +3,13 @@ import Foundation
 /// What one scene render actually did. The Rust backend fills every counter from its completion
 /// receipt; the Swift reference reports its own dispatch count and budget peak so fallbacks remain
 /// diagnosable.
-package struct DevelopmentSceneExecutionReceiptV1: Equatable, Sendable {
-  package enum Backend: String, Sendable {
+package struct DevelopmentSceneExecutionReceiptV1: Codable, Equatable, Sendable {
+  package enum Backend: String, Codable, Sendable {
     case rust
     case swift
     case swiftFallback
     case passthrough
+    case mixed
   }
 
   package let backend: Backend

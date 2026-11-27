@@ -29,12 +29,14 @@ import RAWMasterImaging
     }
 
     func start(_ ticket: Ticket, source: DevelopmentLocalEditSourceBinding, existingLayerCount: Int,
-               isCurrent: @escaping () -> Bool, generate: @escaping Generate) {
+               isCurrent: @escaping () -> Bool, onResult: ((String, EditingWorkspaceNotice.Kind) -> Void)? = nil,
+               generate: @escaping Generate) {
         cancel()
         guard isCurrent(), let intents = ticket.record.patch.semanticMasks else { return }
         self.ticket = ticket
         guard existingLayerCount + intents.count <= DevelopmentMaskLayerV3.maximumLayers else {
             status = "已达到每张照片的蒙版图层上限。"
+            onResult?(status, .error)
             return
         }
         let token = UUID()
@@ -61,6 +63,7 @@ import RAWMasterImaging
                     if case DevelopmentMaskError.absent = error {
                         self.status = intent.target.title + " · 本张未找到目标，已跳过预设。"
                     } else { self.status = intent.target.title + " · " + error.localizedDescription }
+                    onResult?(self.status, .error)
                     return
                 }
             }
@@ -69,6 +72,7 @@ import RAWMasterImaging
             self.busy = false
             self.status = "已准备 " + layers.map(\.name).joined(separator: "、")
             if !changed.isEmpty { self.status += " · 当前模型版本已变更：" + changed.sorted().joined(separator: "、") }
+            onResult?(self.status, .information)
         }
     }
 

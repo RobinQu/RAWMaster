@@ -25,7 +25,7 @@ package actor DevelopmentScenePreviewV1 {
     case pixels(window: CGRect)
   }
   package enum Failure: LocalizedError, Equatable {
-    case unsupportedSource, unavailableSource, decoderUnavailable, invalidViewport, resourceBudget
+    case unsupportedSource, unavailableSource, decoderUnavailable, invalidViewport, resourceBudget, fullResolutionModelBudget
     package var errorDescription: String? {
       switch self {
       case .unsupportedSource: return "此原片未通过 HDR 场景校准准入。"
@@ -33,6 +33,7 @@ package actor DevelopmentScenePreviewV1 {
       case .decoderUnavailable: return "HDR 原片解码运行库不可用。请检查 RAWMaster 安装后重试。"
       case .invalidViewport: return "当前取景超出场景预览范围。"
       case .resourceBudget: return "此原片或取景超过场景预览的资源预算。"
+      case .fullResolutionModelBudget: return "此版本的全尺寸场景模型超过预览资源预算。"
       }
     }
   }
@@ -43,18 +44,12 @@ package actor DevelopmentScenePreviewV1 {
     let device: MTLDevice
     let decoder: DevelopmentSceneRAWV1
     let graph: DevelopmentSceneGraphRendererV1
-    let queue: MTLCommandQueue
-    let downsample: MTLComputePipelineState
     let modelProvider: DevelopmentSceneProductionModelProvider?
     init() throws {
-      guard let device = MTLCreateSystemDefaultDevice(), let queue = device.makeCommandQueue() else {
+      guard let device = MTLCreateSystemDefaultDevice() else {
         throw DevelopmentSceneColorV1.Failure.metalUnavailable
       }
-      self.device = device; self.queue = queue
-      let options = MTLCompileOptions(); options.mathMode = .safe
-      let library = try device.makeLibrary(source: DevelopmentScenePreviewV1.fitShader, options: options)
-      guard let kernel = library.makeFunction(name: "rmSceneFitV1") else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
-      downsample = try device.makeComputePipelineState(function: kernel)
+      self.device = device
       decoder = try DevelopmentSceneRAWV1(device: device)
       graph = try DevelopmentSceneGraphRendererV1(device: device, surfaceBudget: 640 * 1024 * 1024)
       modelProvider = try? DevelopmentSceneProductionModelProvider(device: device)
@@ -63,13 +58,15 @@ package actor DevelopmentScenePreviewV1 {
   private struct Upstream {
     let source: EditingSourceSnapshot
     let stamp: PreviewFileStamp
-    let raw: DevelopmentSceneRAWV1.Result
+    let raw: DevelopmentSceneRAWV1.Mosaic
   }
   private struct Input {
     let sampling: Sampling
-    let image: DevelopmentSceneMetalV1.Image
+    let raw: DevelopmentSceneRAWV1.Result
     let geometry: DevelopmentSceneGraphRendererV1.Geometry
     let region: CGRect?
+    let masks: [UUID: MTLTexture]
+    let modelSampleBytes: Int
   }
   private struct Selection {
     let scope: DevelopmentSceneGraphV1.Scope
@@ -90,6 +87,8 @@ package actor DevelopmentScenePreviewV1 {
   private var context: Context?
   private var upstream: Upstream?
   private var input: Input?
+  private var scopeGrid: Input?
+  private var modelPrefix: DevelopmentSceneModelPreviewV1?
   private var selection: Selection?
   private var suffixes: [Suffix] = [] // LRU; bounded by count and actual Metal allocation
   private var counts = Counts()
@@ -107,7 +106,7 @@ package actor DevelopmentScenePreviewV1 {
       sampling: Sampling, models: DevelopmentSceneModelProgramV1? = nil) async throws -> DevelopmentScenePreviewFrameV1 {
     try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, io: 1)) {
       try await self.perform(source: source, graph: graph, view: view, target: target,
-        sampling: sampling, models: models)
+        sampling: sampling, models: models ?? graph.models)
     }
   }
 
@@ -116,11 +115,12 @@ package actor DevelopmentScenePreviewV1 {
                        models: DevelopmentSceneModelProgramV1? = nil) throws -> DevelopmentScenePreviewFrameV1 {
     return try autoreleasepool {
       let (ctx, upstream) = try open(source)
-      let stamp = upstream.stamp, raw = upstream.raw.image
+      let stamp = upstream.stamp, raw = upstream.raw
       defer { discardIfChanged(source, stamp: stamp) }
+      try configureModels(models, mosaic: raw, context: ctx)
       if input?.sampling != sampling {
         input = nil; clearSelection()
-        input = try sampled(raw, at: sampling, context: ctx)
+        input = try sampled(raw, at: sampling, context: ctx, otherSampleBytes: scopeGrid?.modelSampleBytes ?? 0)
       }
       guard let input else { throw Failure.invalidViewport }
       if selection?.scope != graph.graph || selection?.models != models { clearSelection() }
@@ -134,8 +134,8 @@ package actor DevelopmentScenePreviewV1 {
       }
       if selection?.view != view {
         selection = nil
-        let result = try ctx.graph.preparePreview(input.image, geometry: input.geometry, graph: graph,
-          view: view, models: models, provider: ctx.modelProvider, sourceRevision: revision)
+        let result = try ctx.graph.preparePreviewInput(input.raw.image, geometry: input.geometry, graph: graph,
+          view: view, masks: input.masks, sourceRevision: modelPrefix == nil ? revision : 0)
         selection = Selection(scope: graph.graph, view: view, scene: result, models: models, execution: ctx.graph.lastReceipt)
         counts.graph += 1
       }
@@ -144,16 +144,18 @@ package actor DevelopmentScenePreviewV1 {
       let display = try ctx.graph.renderPreview(selection.scene, output: graph.output, target: target)
       try ensureCurrent(source, stamp: stamp)
       let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: display.texture, target: target,
-        nativeSize: CGSize(width: raw.texture.width, height: raw.texture.height), window: input.region, execution: selection.execution)
+        nativeSize: CGSize(width: modelPrefix?.native.width ?? Int(raw.sensor.size.x), height: modelPrefix?.native.height ?? Int(raw.sensor.size.y)),
+        window: input.region, execution: selection.execution)
       cache(.init(view: view, route: graph.output.route, trim: trim, frame: frame))
       counts.display += 1
       return frame
     }
   }
 
-  package nonisolated func analyze(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View) async throws -> DevelopmentSceneScopesV1 {
+  package nonisolated func analyze(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
+                                   models: DevelopmentSceneModelProgramV1? = nil) async throws -> DevelopmentSceneScopesV1 {
     try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, io: 1)) {
-      try await self.performAnalysis(source: source, graph: graph, view: view)
+      try await self.performAnalysis(source: source, graph: graph, view: view, models: models ?? graph.models)
     }
   }
 
@@ -173,13 +175,20 @@ package actor DevelopmentScenePreviewV1 {
     return value == 0 ? 1 : value
   }
 
-  private func performAnalysis(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View) throws -> DevelopmentSceneScopesV1 {
+  private func performAnalysis(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
+                               models: DevelopmentSceneModelProgramV1?) throws -> DevelopmentSceneScopesV1 {
     return try autoreleasepool {
       let (ctx, upstream) = try open(source)
       defer { discardIfChanged(source, stamp: upstream.stamp) }
+      try configureModels(models, mosaic: upstream.raw, context: ctx)
       // A fixed full-photo grid: neither panning nor output/monitor selection changes the statistics' source region.
-      let grid = try sampled(upstream.raw.image, at: .fit(maximumEdge: 192), context: ctx)
-      let preview = try ctx.graph.preparePreview(grid.image, geometry: grid.geometry, graph: graph, view: view)
+      let grid = try scopeGrid ?? sampled(upstream.raw, at: .fit(maximumEdge: 192), context: ctx,
+        otherSampleBytes: input?.modelSampleBytes ?? 0)
+      scopeGrid = grid
+      let revision = modelPrefix == nil ? Self.sourceRevision(stamp: upstream.stamp, sampling: grid.sampling) : 0
+      let preview = try ctx.graph.preparePreviewInput(grid.raw.image, geometry: grid.geometry, graph: graph, view: view,
+        masks: grid.masks, sourceRevision: revision)
+      let execution = ctx.graph.lastReceipt
       let target = try ctx.graph.renderPreview(preview, output: graph.output, target: .hdr2020)
       let sdr = try ctx.graph.renderPreview(preview, output: graph.output, target: .sdr709)
       let preGamut: MTLTexture?
@@ -191,7 +200,7 @@ package actor DevelopmentScenePreviewV1 {
       let analyzer = try scopeAnalyzer ?? SceneScopesAnalyzerV1(device: ctx.device)
       scopeAnalyzer = analyzer
       let report = try analyzer.analyze(scene: preview.image.texture, target: target.texture, derivative: sdr.texture,
-        preGamut: preGamut, sourceSensor: upstream.raw.sensorSaturation, monitor: nil)
+        preGamut: preGamut, sourceSensor: grid.raw.sensorSaturation, monitor: nil, execution: execution)
       try ensureCurrent(source, stamp: upstream.stamp)
       return report
     }
@@ -214,13 +223,12 @@ package actor DevelopmentScenePreviewV1 {
     catch is CancellationError { throw CancellationError() }
     catch { throw Failure.unavailableSource }
     defer { try? FileManager.default.removeItem(at: capture.url.deletingLastPathComponent()) }
-    let raw: DevelopmentSceneRAWV1.Result
+    let raw: DevelopmentSceneRAWV1.Mosaic
     do {
       raw = try capture.withCurrent(at: capture.url) {
-        try ctx.decoder.decode(capture.url, maximumOutputBytes: 440 * 1024 * 1024)
+        try ctx.decoder.prepare(capture.url)
       }
-    } catch DevelopmentSceneRAWV1.Failure.surfaceBudget { throw Failure.resourceBudget }
-    catch FlashRawError.unavailable { throw Failure.decoderUnavailable }
+    } catch FlashRawError.unavailable { throw Failure.decoderUnavailable }
     catch is CancellationError { throw CancellationError() }
     catch { throw Failure.unsupportedSource }
     try ensureCurrent(source, stamp: stamp)
@@ -246,79 +254,52 @@ package actor DevelopmentScenePreviewV1 {
     suffixes.append(suffix)
   }
   private func clearSelection() { selection = nil; suffixes.removeAll() }
-  private func clearSource() { clearSelection(); input = nil; upstream = nil }
+  private func clearSource() { clearSelection(); input = nil; scopeGrid = nil; modelPrefix = nil; upstream = nil }
 
-  private func sampled(_ raw: DevelopmentSceneMetalV1.Image, at sampling: Sampling, context ctx: Context) throws -> Input {
-    let source = raw.texture, width = source.width, height = source.height
-    let full = DevelopmentSceneGraphRendererV1.Geometry(width: width, height: height)
-    let region: CGRect?, origin: SIMD2<Int>, w: Int, h: Int
+  private func configureModels(_ models: DevelopmentSceneModelProgramV1?, mosaic: DevelopmentSceneRAWV1.Mosaic, context: Context) throws {
+    let program = models?.stages.isEmpty == false ? models : nil
+    guard modelPrefix?.program != program else { return }
+    clearSelection(); input = nil; scopeGrid = nil; modelPrefix = nil
+    guard let program else { return }
+    do {
+      modelPrefix = try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: context.decoder,
+        provider: context.modelProvider, budget: 640 * 1024 * 1024)
+    } catch DevelopmentSceneRAWV1.Failure.surfaceBudget { throw Failure.fullResolutionModelBudget }
+    catch DevelopmentSceneModelPipelineV1.Failure.surfaceBudget { throw Failure.fullResolutionModelBudget }
+  }
+
+  private func sampled(_ raw: DevelopmentSceneRAWV1.Mosaic, at sampling: Sampling, context ctx: Context, otherSampleBytes: Int) throws -> Input {
+    let width = modelPrefix?.native.width ?? Int(raw.sensor.size.x), height = modelPrefix?.native.height ?? Int(raw.sensor.size.y)
+    let region: CGRect?, request: DevelopmentSceneRAWV1.Sampling, geometry: DevelopmentSceneGraphRendererV1.Geometry
     switch sampling {
     case .fit(let maxEdge):
       guard (64...2400).contains(maxEdge) else { throw Failure.invalidViewport }
       let scale = min(1, Double(maxEdge) / Double(max(width, height)))
-      w = max(1, Int((Double(width) * scale).rounded())); h = max(1, Int((Double(height) * scale).rounded()))
-      origin = .zero; region = nil
+      let w = max(1, Int((Double(width) * scale).rounded())), h = max(1, Int((Double(height) * scale).rounded()))
+      request = .fit(width: w, height: h); region = nil
+      geometry = .init(width: w, height: h)
     case .pixels(let window):
       guard [window.origin.x, window.origin.y, window.size.width, window.size.height].allSatisfy(\.isFinite),
             window.size.width > 0, window.size.height > 0, window.minX >= 0, window.minY >= 0, window.maxX <= 1, window.maxY <= 1 else {
         throw Failure.invalidViewport
       }
       let x = Int(floor(window.minX * Double(width))), y = Int(floor(window.minY * Double(height)))
-      w = Int(ceil(window.maxX * Double(width))) - x; h = Int(ceil(window.maxY * Double(height))) - y
+      let w = Int(ceil(window.maxX * Double(width))) - x, h = Int(ceil(window.maxY * Double(height))) - y
       guard w > 0, h > 0, w * h <= 10_000_000 else { throw Failure.resourceBudget }
-      origin = .init(x, y); region = .init(x: Double(x) / Double(width), y: Double(y) / Double(height),
+      request = .native(MTLRegionMake2D(x, y, w, h))
+      geometry = .init(width: width, height: height)
+      region = .init(x: Double(x) / Double(width), y: Double(y) / Double(height),
                                          width: Double(w) / Double(width), height: Double(h) / Double(height))
     }
-    if w == width, h == height, origin == .zero { return Input(sampling: sampling, image: raw, geometry: full, region: region) }
-    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: w, height: h, mipmapped: false)
-    descriptor.storageMode = .private; descriptor.usage = [.shaderRead, .shaderWrite]
-    guard let texture = ctx.device.makeTexture(descriptor: descriptor), let cmd = ctx.queue.makeCommandBuffer() else {
-      throw DevelopmentSceneColorV1.Failure.metalUnavailable
-    }
-    if region == nil {
-      guard let encoder = cmd.makeComputeCommandEncoder() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
-      encoder.setComputePipelineState(ctx.downsample)
-      encoder.setTexture(source, index: 0); encoder.setTexture(texture, index: 1)
-      let lanes = ctx.downsample.threadExecutionWidth
-      encoder.dispatchThreads(.init(width: w, height: h, depth: 1),
-        threadsPerThreadgroup: .init(width: lanes, height: min(8, ctx.downsample.maxTotalThreadsPerThreadgroup / lanes), depth: 1))
-      encoder.endEncoding()
-    } else {
-      guard let blit = cmd.makeBlitCommandEncoder() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
-      blit.copy(from: source, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(x: origin.x, y: origin.y, z: 0),
-        sourceSize: .init(width: w, height: h, depth: 1), to: texture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init())
-      blit.endEncoding()
-    }
-    cmd.commit(); cmd.waitUntilCompleted()
-    guard cmd.status == .completed else { throw cmd.error ?? DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
-    try Task.checkCancellation()
-    let geometry = region == nil ? DevelopmentSceneGraphRendererV1.Geometry(width: w, height: h) : full
-    return Input(sampling: sampling, image: .init(texture: texture, port: .working, origin: origin), geometry: geometry, region: region)
-  }
-
-  // Positive, area-weighted resampling of premultiplied F32. Alpha uses a convex average;
-  // guard round-off from causing the graph to reject an otherwise opaque source.
-  private static let fitShader = #"""
-  #include <metal_stdlib>
-  using namespace metal;
-  kernel void rmSceneFitV1(texture2d<float,access::read> source [[texture(0)]],
-      texture2d<float,access::write> target [[texture(1)]], uint2 xy [[thread_position_in_grid]]) {
-    uint2 sourceSize=uint2(source.get_width(),source.get_height());
-    float2 scale=float2(sourceSize)/float2(target.get_width(),target.get_height());
-    float2 low=float2(xy)*scale, high=min(float2(xy+1)*scale,float2(sourceSize));
-    uint2 first=uint2(floor(low)), limit=uint2(ceil(high));
-    float4 sum=0; float area=0;
-    for (uint y=first.y; y<limit.y; ++y) {
-      float wy=min(float(y+1),high.y)-max(float(y),low.y);
-      for (uint x=first.x; x<limit.x; ++x) {
-        float w=wy*(min(float(x+1),high.x)-max(float(x),low.x));
-        sum+=source.read(uint2(x,y))*w;
-        area+=w;
+    do {
+      if let modelPrefix {
+        let (result, masks, bytes) = try modelPrefix.sample(request, otherSampleBytes: otherSampleBytes)
+        return Input(sampling: sampling, raw: result, geometry: geometry, region: region, masks: masks, modelSampleBytes: bytes)
       }
-    }
-    float4 p=sum/area;
-    target.write(float4(p.rgb, clamp(p.a,0.0f,1.0f)),xy);
+      let result = try ctx.decoder.develop(raw, sampling: request, maximumBytes: 440 * 1024 * 1024)
+      return Input(sampling: sampling, raw: result, geometry: geometry, region: region, masks: [:], modelSampleBytes: 0)
+    } catch DevelopmentSceneRAWV1.Failure.surfaceBudget {
+      throw Failure.resourceBudget
+    } catch DevelopmentSceneModelPipelineV1.Failure.surfaceBudget { throw Failure.fullResolutionModelBudget }
   }
-  """#
-
 }

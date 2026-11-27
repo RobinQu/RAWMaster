@@ -12,6 +12,41 @@ struct NativeEditingInspector: View {
     @State private var exactCropExpanded = false
     @State private var confirmedSceneMode: EditingSceneModeChange?
     var body: some View {
+        VStack(spacing: EditingLayout.panelSpacing) {
+            if editing.stage == .development, editing.work != nil, !editing.loading {
+                Group {
+                    if editing.recipe.sceneGraph != nil {
+                        EditingSceneGraphToolbar(editing: editing)
+                    } else if EditingCompatibilityGraphPanel.isEnabled {
+                        EditingCompatibilityGraphToolbar(editing: editing)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .floatingSelectionSurface()
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("editing.rail.nodes")
+            }
+            inspector
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .floatingSelectionSurface()
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("editing.rail.parameters")
+        }
+        .environment(\.developmentNumberInputOwner, editing.developmentNumberInputOwner)
+        // The compatibility adjustment context is suspended while this sheet has the key window.
+        .sheet(item: $editing.sceneModeConfirmation, onDismiss: {
+            if let change = confirmedSceneMode, editing.sceneTicket == change.ticket {
+                editing.sceneModeFocusRequest = change.mode
+            }
+            confirmedSceneMode = nil
+        }) { change in
+            EditingSceneModeConfirmation(editing: editing, change: change)
+                .onAppear { confirmedSceneMode = change }
+        }
+        .onChange(of: editing.stage) { _, _ in editing.previewContextChanged() }
+    }
+
+    private var inspector: some View {
         VStack(spacing: 0) {
             if editing.stage != .development {
                 VStack(alignment: .leading, spacing: 10) {
@@ -30,10 +65,6 @@ struct NativeEditingInspector: View {
                 if let graph = editing.recipe.sceneGraph {
                     EditingSceneInspector(editing: editing, graph: graph)
                 } else {
-                    if EditingCompatibilityGraphPanel.isEnabled {
-                        EditingCompatibilityGraphToolbar(editing: editing)
-                        Divider()
-                    }
                     PhotosDevelopmentInspector(editing: editing)
                 }
             } else {
@@ -53,10 +84,6 @@ struct NativeEditingInspector: View {
                             case .versions: versions
                             }
                         }
-                        if let message = editing.message {
-                            Text(message).font(.caption).foregroundStyle(AppPalette.warning).textSelection(.enabled)
-                                .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("editing.message")
-                        }
                     }.font(.system(size: 12)).padding(14).frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
@@ -65,19 +92,6 @@ struct NativeEditingInspector: View {
                 bottomActions.padding(14)
             }
         }
-        .background(Color.clear)
-        .environment(\.developmentNumberInputOwner, editing.developmentNumberInputOwner)
-        // The compatibility adjustment context is suspended while this sheet has the key window.
-        .sheet(item: $editing.sceneModeConfirmation, onDismiss: {
-            if let change = confirmedSceneMode, editing.sceneTicket == change.ticket {
-                editing.sceneModeFocusRequest = change.mode
-            }
-            confirmedSceneMode = nil
-        }) { change in
-            EditingSceneModeConfirmation(editing: editing, change: change)
-                .onAppear { confirmedSceneMode = change }
-        }
-        .onChange(of: editing.stage) { _, _ in editing.previewContextChanged() }
     }
     private var development: some View {
         VStack(alignment: .leading, spacing: 16) {

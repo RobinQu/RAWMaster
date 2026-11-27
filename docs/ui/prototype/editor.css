@@ -38,26 +38,41 @@
   padding: 12px;
   background: var(--ground);
 }
-.edit-left,
+.raw-summary,
+.edit-library-panel,
 .edit-inspector,
 .dag-scope-head {
   min-width: 0;
   min-height: 0;
-  background: var(--panel);
+  background: color-mix(in srgb, var(--panel) 84%, transparent);
+  backdrop-filter: blur(22px) saturate(140%);
   border: 1px solid var(--line);
   border-radius: 11px;
   box-shadow: 0 4px 15px #0002;
 }
 .edit-left {
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  min-width: 0;
 }
+.raw-summary { padding: 9px 15px; flex: none; }
+.raw-summary summary { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; cursor: pointer; list-style: none; }
+.raw-summary[open] summary > .icon:first-child { transform: rotate(90deg); }
+.edit-left .raw-summary p { margin: 5px 0 0 17px; color: var(--muted); }
+.edit-library-panel { flex: 1; min-height: 0; overflow: auto; }
+@media (prefers-reduced-transparency: reduce) {
+  .raw-summary, .edit-library-panel, .edit-inspector, .dag-scope-head { background: var(--panel); backdrop-filter: none; }
+}
+:root[data-window-active=false] :is(.raw-summary, .edit-library-panel, .edit-inspector, .dag-scope-head) { background: var(--panel); backdrop-filter: none; }
 .edit-left[inert] {
   opacity: 0.62;
 }
-.edit-left > section {
+.edit-library-panel > section {
   padding: 12px 15px 15px;
 }
-.edit-left > section + section {
+.edit-library-panel > section + section {
   border-top: 1px solid var(--line);
 }
 .edit-left h2,
@@ -154,10 +169,7 @@
   align-items: center;
   justify-content: space-between;
 }
-.preset-directory > .preset-folder {
-  padding: 6px 0;
-  border-top: 1px solid var(--line);
-}
+.preset-directory > .preset-folder { padding: 3px 0; }
 .preset-children {
   padding-left: 10px;
 }
@@ -814,7 +826,6 @@ body[data-route^='edit/'] .toast {
 .manual-inspector input[type=checkbox]:not([role=switch]):checked::after, .editing-scopes input[type=checkbox]:checked::after {
   content: ''; width: 7px; height: 4px; border-left: 1.5px solid var(--accent); border-bottom: 1.5px solid var(--accent); transform: translateY(-1px) rotate(-45deg);
 }
-.manual-inspector input[type=checkbox]:focus-visible, .editing-scopes input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .manual-inspector .check { font-size: 12px; min-height: 26px; gap: 7px; margin: 0; }
 .manual-inspector .check:has(:disabled) { opacity: .45; }
 .detail-options { display: grid; gap: var(--inspector-group-gap); padding: 12px 0; }

@@ -2,6 +2,7 @@ import CoreImage
 import CryptoKit
 import Foundation
 import Metal
+import RAWMasterCore
 import XCTest
 @testable import RAWMasterImaging
 
@@ -47,7 +48,8 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
     for orientation in 1...8 {
       let sensor = try RAW.Sensor(width:width,height:height,orientation:orientation,active:.init(1,1,6,4),crop:.init(2,2,4,3),
         colors:.init(0,1,1,2),black:.init(100,105,110,115),white:.init(repeating:220),calibration:calibration)
-      let output = try renderer.develop(mosaic,sensor:sensor)
+      let raw = try renderer.upload(mosaic, sensor: sensor)
+      let output = try renderer.develop(raw, sampling: .native(nil))
       XCTAssertEqual(output.image.port,.working)
       XCTAssertEqual(output.image.texture.width,orientation < 5 ? 4 : 3)
       let values: [SIMD4<Float>] = try read(output.image.texture)
@@ -72,11 +74,29 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
       XCTAssertEqual(values,permutation.map { upright[$0] })
       XCTAssertEqual(bits,permutation.map { masks[$0] })
       let region=MTLRegionMake2D(1,1,2,2)
-      let roi=try renderer.develop(mosaic,sensor:sensor,region:region)
+      let roi=try renderer.develop(raw, sampling: .native(region))
       let roiValues: [SIMD4<Float>] = try read(roi.image.texture)
       let row=output.image.texture.width
       XCTAssertEqual(roiValues,[values[row+1],values[row+2],values[2*row+1],values[2*row+2]])
       XCTAssertEqual(roi.image.origin,.init(1,1))
+      let fitWidth = 2, fitHeight = 2
+      let fit = try renderer.develop(raw, sampling: .fit(width: fitWidth, height: fitHeight))
+      let fitValues: [SIMD4<Float>] = try read(fit.image.texture)
+      let fitBits: [UInt8] = try read(fit.sensorSaturation)
+      for y in 0..<fitHeight { for x in 0..<fitWidth {
+        let scaledX = Double(row) / Double(fitWidth), scaledY = Double(output.image.texture.height) / Double(fitHeight)
+        let left = Double(x) * scaledX, top = Double(y) * scaledY
+        let right = Double(x+1) * scaledX, bottom = Double(y+1) * scaledY
+        var mean = SIMD4<Double>.zero
+        for sy in Int(floor(top))..<Int(ceil(bottom)) { for sx in Int(floor(left))..<Int(ceil(right)) {
+          let w = (min(right,Double(sx+1)) - max(left,Double(sx))) * (min(bottom,Double(sy+1)) - max(top,Double(sy)))
+          mean += SIMD4<Double>(values[sy*row+sx]) * w
+        } }
+        mean /= scaledX * scaledY
+        let i = y*fitWidth+x
+        for lane in 0..<4 { XCTAssertEqual(Double(fitValues[i][lane]), mean[lane], accuracy: 2e-6) }
+        XCTAssertEqual(fitBits[i],bits[Int((top+bottom)/2)*row+Int((left+right)/2)])
+      } }
     }
   }
 
@@ -92,6 +112,40 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
       XCTAssertThrowsError(try renderer.decode(URL(fileURLWithPath:"/unused/sensor.\(format)"))) {
         XCTAssertEqual($0 as? Calibration.Failure,.unqualifiedSource)
       }
+    }
+  }
+
+  func testTiledDeliveryMatchesFullHDRAndSDRThroughMaskAndTrim() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice()), decoder = try RAW(device: device)
+    let width = 109, height = 73, calibration = try Calibration(xyzToCamera: identity, whiteBalance: .one)
+    let sensor = try RAW.Sensor(width: width, height: height, orientation: 6, active: .init(0, 0, 109, 73), crop: .init(2, 1, 105, 71),
+      colors: .init(0, 1, 1, 2), black: .init(repeating: 100), white: .init(repeating: 900), calibration: calibration)
+    let values = (0..<(width*height)).map { UInt16(($0 * 139) % 1107) }
+    let mosaic = try decoder.upload(values.withUnsafeBytes { Data($0) }, sensor: sensor)
+    let mask = DevelopmentSceneGraphV1.Node(name: "Gradient", operation: .linearCoverage(start: .init(0.22, 0.33), end: .init(0.87, 0.82)))
+    let grade = DevelopmentSceneGraphV1.Node(name: "Light", operation: .corrector(image: .input, mask: mask.id, exposureEV: 2,
+      curve: [], strength: 1, enabled: true))
+    let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [mask, grade], output: .node(grade.id)),
+      output: .init(sdrTrim: .init(exposureEV: -1, mapping: .balanced, highlightCompression: 0)))
+    let tiled = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, maximumTileEdge: 32)
+    let renderer = try DevelopmentSceneGraphRendererV1(device: device)
+    let master = try renderer.prepareFinal(decoder.develop(mosaic, sampling: .native(nil)).image,
+      geometry: .init(width: 71, height: 105), graph: graph)
+    for target: DevelopmentSceneOutputStateV1.Target in [.hdr2020, .sdr709] {
+      let (display, execution) = try tiled.render(target)
+      let reference = try renderer.renderDelivery(master, target: target)
+      let large: [SIMD4<Float>] = try read(display.texture), small: [SIMD4<Float>] = try read(reference.texture)
+      XCTAssertEqual(large, small)
+      let receipt = try XCTUnwrap(execution)
+      XCTAssertEqual(receipt.backend, .rust); XCTAssertEqual(receipt.tiles, 12)
+      XCTAssertGreaterThanOrEqual(receipt.dispatches, receipt.tiles * 2)
+      XCTAssertLessThanOrEqual(receipt.peakBytes, receipt.budgetBytes)
+    }
+    let tooSmall = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, surfaceBudget: 64)
+    XCTAssertThrowsError(try tooSmall.render(.hdr2020)) { XCTAssertEqual($0 as? DevelopmentSceneGraphRendererV1.Failure, .surfaceBudget) }
+    let models = try DevelopmentSceneModelProgramV1(stages: [.denoise(amount: 20)])
+    XCTAssertThrowsError(try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, models: models)) {
+      XCTAssertEqual($0 as? DevelopmentSceneModelPipelineV1.Failure, .surfaceBudget)
     }
   }
 

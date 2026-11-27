@@ -5,6 +5,7 @@ import SwiftUI
 /// Free zoom still uses the full-bleed canvas and may deliberately extend beneath the chrome.
 enum EditingLayout {
     static let sidebarWidth: CGFloat = 304
+    static let panelSpacing: CGFloat = 8
     static let outerPadding: CGFloat = 12
     static let topInset: CGFloat = 24
     static let bottomInset: CGFloat = 88
@@ -24,11 +25,9 @@ struct EditingWorkspace: View {
             BrowserView()
             HStack(alignment: .top, spacing: 0) {
                 EditingLeftSidebar(editing: editing)
-                    .floatingSelectionSurface()
                 Spacer(minLength: 0)
                 NativeEditingInspector(editing: editing)
                     .frame(width: EditingLayout.sidebarWidth)
-                    .floatingSelectionSurface()
             }
             .padding(.horizontal, EditingLayout.outerPadding)
             .padding(.top, 12)

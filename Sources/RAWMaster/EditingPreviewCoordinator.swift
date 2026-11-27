@@ -201,7 +201,9 @@ enum EditingPreviewPromptDispatch {
     @Published private(set) var frame: EditingPreviewBitmap?
     private(set) var fitFallback: EditingPreviewBitmap?
     @Published private(set) var rendering = false
-    @Published private(set) var error: String?
+    @Published private(set) var error: String? {
+        didSet { if let error, error != oldValue { onFailure?(error) } }
+    }
     @Published private(set) var sourceInvalidated = false
     let consumerID = PreviewConsumerID()
     let role: PreviewConsumerRole
@@ -314,6 +316,7 @@ enum EditingPreviewPromptDispatch {
     private(set) var framePresentationID: String?
     private(set) var frameSourceKey: String?
     var onChange: (() -> Void)?
+    var onFailure: ((String) -> Void)?
     var onInvalidation: (() -> Void)?
     var diagnosticSink: ((EditingPreviewDiagnosticEvent) -> Void)?
     private var diagnosticLedger = EditingPreviewTerminalLedger()

@@ -191,7 +191,7 @@ extension AppModel {
                 let check = try await queue.acknowledge(batchID: id, ordinal: item.ordinal, directory: access.url)
                 if check.status == "conflict" {
                     items.append(.init(ordinal: item.ordinal, state: item.state, filename: item.filename, sha256: item.sha256,
-                        reason: WorkbenchDeliveryIssue.conflictingPrepared.rawValue))
+                        reason: WorkbenchDeliveryIssue.conflictingPrepared.rawValue, sceneExecution: item.sceneExecution))
                 } else {
                     items.append(check.item)
                     advanced = advanced || check.item.state == .delivered
@@ -730,35 +730,37 @@ extension AppModel {
 
                             do {
                                 let exportStarted = DispatchTime.now().uptimeNanoseconds
-                                _ = try await exporter.export(work: work, version: version, archive: archive, directory: directory,
-                                    filename: stem, configuration: configuration, protectedURLs: protected, execution: execution,
-                                    preparePublication: { stage, _ in
-                                        attempt.beginPreparation()
-                                        checkpoint?(item.ordinal, .beforePrepare)
-                                        let prepareStarted = DispatchTime.now().uptimeNanoseconds
-                                        let ticket = try await queue.prepare(lease, directory: directory, stage: stage, suffix: suffix)
-                                        ExportTiming.shared.add("prepare",
-                                            Double(DispatchTime.now().uptimeNanoseconds - prepareStarted) / 1_000_000)
-                                        if ticket.status == "destinationExists" { throw DevelopmentError.outputExists }
-                                        guard ticket.item.state == .prepared else { throw WorkbenchDeliveryIssue.invalidReceipt }
-                                        checkpoint?(item.ordinal, .prepared)
-                                        return {
-                                            let publishStarted = DispatchTime.now().uptimeNanoseconds
-                                            do {
-                                                let reply = try queue.publish(lease, directory: directory)
-                                                ExportTiming.shared.add("publish",
-                                                    Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
-                                                // Publish now delivers in the same transaction, so the
-                                                // separate acknowledgement round trip is unnecessary.
-                                                try Self.requirePublished(reply)
-                                            } catch {
-                                                ExportTiming.shared.add("publish",
-                                                    Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
-                                                throw error
-                                            }
-                                            checkpoint?(item.ordinal, .published)
+                                var deliveryExecution = execution
+                                deliveryExecution.prepareWithExecution = { stage, _, receipt in
+                                    attempt.beginPreparation()
+                                    checkpoint?(item.ordinal, .beforePrepare)
+                                    let prepareStarted = DispatchTime.now().uptimeNanoseconds
+                                    let ticket = try await queue.prepare(lease, directory: directory, stage: stage, suffix: suffix, sceneExecution: receipt)
+                                    ExportTiming.shared.add("prepare",
+                                        Double(DispatchTime.now().uptimeNanoseconds - prepareStarted) / 1_000_000)
+                                    if ticket.status == "destinationExists" { throw DevelopmentError.outputExists }
+                                    guard ticket.item.state == .prepared else { throw WorkbenchDeliveryIssue.invalidReceipt }
+                                    checkpoint?(item.ordinal, .prepared)
+                                    return {
+                                        let publishStarted = DispatchTime.now().uptimeNanoseconds
+                                        do {
+                                            let reply = try queue.publish(lease, directory: directory)
+                                            ExportTiming.shared.add("publish",
+                                                Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
+                                            // Publish now delivers in the same transaction, so the
+                                            // separate acknowledgement round trip is unnecessary.
+                                            try Self.requirePublished(reply)
+                                        } catch {
+                                            ExportTiming.shared.add("publish",
+                                                Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
+                                            throw error
                                         }
-                                    })
+                                        checkpoint?(item.ordinal, .published)
+                                    }
+                                }
+                                _ = try await exporter.export(work: work, version: version, archive: archive, directory: directory,
+                                    filename: stem, configuration: configuration, protectedURLs: protected, execution: deliveryExecution,
+                                    preparePublication: nil)
                                 ExportTiming.shared.add("export",
                                     Double(DispatchTime.now().uptimeNanoseconds - exportStarted) / 1_000_000)
                                 ExportTiming.shared.item()

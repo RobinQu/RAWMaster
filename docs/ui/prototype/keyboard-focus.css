@@ -1,0 +1,14 @@
+/* Shared by the workbench and the standalone export workspace. */
+:root { --focus-ink: light-dark(#515456,#d8dadb); }
+:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px var(--focus-ink);
+}
+:is(button, a, summary):focus-visible {
+  text-decoration: underline;
+  text-underline-offset: .18em;
+}
+:where(textarea, input):focus-visible { caret-color: currentColor; }
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+}

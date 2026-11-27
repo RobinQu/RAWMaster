@@ -11,10 +11,11 @@ struct PresetExchangeControls: View {
   let onApplySubset: (DevelopmentPresetRecord) -> Void
   let onPrepareSemantic: (DevelopmentPresetRecord) -> Void
   let onImportNative: () -> Void
+  let postNotice: (String, EditingWorkspaceNotice.Kind) -> Void
   var compact = false
   var additionalActions: AnyView? = nil
 
-  private enum Page { case loading, review, details, sourceFields, projection, original, undo, message }
+  private enum Page { case loading, review, details, sourceFields, projection, original, undo }
   @State private var page = Page.loading
   @State private var open = false
   @State private var keepingConflicts = false
@@ -46,9 +47,9 @@ struct PresetExchangeControls: View {
           let snapshot = try catalog.importHistory()
           history = snapshot
           pendingBatch = snapshot.committed.last
-          if snapshot.committed.isEmpty && snapshot.unsequenced.isEmpty { show("没有可撤销的导入批次") }
+          if snapshot.committed.isEmpty && snapshot.unsequenced.isEmpty { postNotice("没有可撤销的导入批次。", .information) }
           else { present(.undo) }
-        } catch { show(error.localizedDescription) }
+        } catch { report(error) }
       }
       Divider()
       if let selected, selected.sourceSHA256 != nil {
@@ -128,7 +129,7 @@ struct PresetExchangeControls: View {
             Button("我有导出权限，选择位置…") {
               do { save(try DevelopmentPresetExchange.originalXMP(for: reviewed, catalog: catalog, confirmedRights: true),
                         name: reviewed.name + ".xmp", ext: "xmp") }
-              catch { show(error.localizedDescription) }
+              catch { report(error) }
             }
           }
         case .undo:
@@ -152,10 +153,13 @@ struct PresetExchangeControls: View {
           Text(pendingBatch ?? "").font(.caption).textSelection(.enabled)
           Button("撤销本批目录引用") {
             guard let pendingBatch else { return }
-            do { try catalog.removeImportBatch(pendingBatch); onChange(); show("已撤销本批目录引用") }
-            catch { show(error.localizedDescription) }
+            do {
+              try catalog.removeImportBatch(pendingBatch)
+              onChange()
+              open = false
+              postNotice("已撤销本批目录引用。", .information)
+            } catch { report(error) }
           }.disabled(pendingBatch == nil)
-        case .message: Text(message).textSelection(.enabled)
         }
         Divider()
         HStack {
@@ -173,7 +177,6 @@ struct PresetExchangeControls: View {
     VStack(alignment: .leading, spacing: 9) {
       Text(committed ? "导入结果" : "导入预检").font(.headline)
       Text("\(stage.records.count) 份独立 XMP · \(stage.visibleCount) 项可浏览 · \(stage.records.count - stage.visibleCount) 项内部依赖或 sidecar")
-      if committed { Text(message).font(.callout) }
       ScrollView {
         LazyVStack(alignment: .leading, spacing: 6) {
           ForEach(stage.items) { item in
@@ -191,7 +194,7 @@ struct PresetExchangeControls: View {
             save(try stage.reportData(inserted: committed ? insertedIDs : nil, keepingConflicts: keepingConflicts),
                  name: "RAWMaster 预设报告.json", ext: "json", closeAfterSave: false)
           }
-          catch { show(error.localizedDescription) }
+          catch { report(error) }
         }
         Spacer()
         if !committed {
@@ -200,7 +203,8 @@ struct PresetExchangeControls: View {
             writing = true
             run("正在写入并校验内容…", operation: { try stage.commit(to: store, keepingConflicts: keep) }) { inserted in
               committed = true; insertedIDs = Set(inserted)
-              message = "目录新增 \(inserted.count) 项"; page = .review; onChange()
+              page = .review; onChange()
+              postNotice("已完成预设导入，目录新增 \(inserted.count) 项。", .information)
             }
           }.disabled(stage.records.isEmpty || (!keepingConflicts && stage.items.allSatisfy { ![.ready, .duplicate].contains($0.status) }))
         }
@@ -289,7 +293,7 @@ struct PresetExchangeControls: View {
         semanticAction = { prepare(local) }
       } else { semanticAction = nil }
       present(.details)
-    } catch { show(error.localizedDescription) }
+    } catch { report(error) }
   }
 
   private func chooseFiles() {
@@ -307,13 +311,19 @@ struct PresetExchangeControls: View {
 
   private func prepare(_ operation: @escaping @Sendable () throws -> PresetExchangeStage) {
     stage = nil; committed = false; keepingConflicts = false
-    run("正在读取并预检 XMP…", operation: operation) { result in stage = result; page = .review }
+    run("正在读取并预检 XMP…", operation: operation) { result in
+      stage = result
+      page = .review
+      if result.records.isEmpty, let failed = result.items.first(where: { $0.status == .rejected || $0.status == .missing }) {
+        postNotice("未能导入「\(failed.path)」。\(failed.detail)", .error)
+      }
+    }
   }
 
   private func run<T: Sendable>(_ title: String, operation: @escaping @Sendable () throws -> T,
                                 complete: @escaping @MainActor (T) -> Void) {
     task?.cancel()
-    let token = UUID()
+    let token = UUID(), returnPage = open ? page : nil
     request = token; message = title; present(.loading)
     task = Task { @MainActor in
       let worker = Task.detached(priority: .userInitiated, operation: operation)
@@ -323,14 +333,16 @@ struct PresetExchangeControls: View {
         writing = false; complete(value)
       } catch {
         guard request == token, !Task.isCancelled else { return }
-        writing = false; show(error.localizedDescription)
+        writing = false
+        if let returnPage { page = returnPage } else { open = false }
+        report(error)
       }
     }
   }
 
   private func makeProjection(name: String, make: () throws -> PresetXMPExport) {
     do { projection = try make(); filename = name; present(.projection) }
-    catch { show(error.localizedDescription) }
+    catch { report(error) }
   }
 
   private func save(_ data: Data, name: String, ext: String, closeAfterSave: Bool = true) {
@@ -338,11 +350,17 @@ struct PresetExchangeControls: View {
     panel.allowedContentTypes = [UTType(filenameExtension: ext) ?? .data]
     panel.nameFieldStringValue = name.replacingOccurrences(of: "/", with: "-")
     guard panel.runModal() == .OK, let url = panel.url else { return }
-    do { try data.write(to: url, options: .atomic); if closeAfterSave { open = false } }
-    catch { show(error.localizedDescription) }
+    do {
+      try data.write(to: url, options: .atomic)
+      if closeAfterSave { open = false }
+      postNotice("已导出「\(url.lastPathComponent)」。", .information)
+    } catch { report(error) }
   }
 
-  private func cancel() { request = UUID(); task?.cancel(); task = nil; writing = false }
+  private func cancel() {
+    guard !writing else { return }
+    request = UUID(); task?.cancel(); task = nil
+  }
   private func present(_ next: Page) { page = next; open = true }
-  private func show(_ text: String) { message = text; present(.message) }
+  private func report(_ error: Error) { postNotice("预设操作未完成。\(error.localizedDescription)", .error) }
 }

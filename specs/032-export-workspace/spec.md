@@ -29,7 +29,7 @@
 
 2026-11-27 的签名 Release 在同一实拍库副本上复验。旧包因选片后写入的九条项目浏览状态将网格修订 117 判作过期。新包在同一份数据上核对两个文件，返回修订 126。实际从项目网格选中人像与雪景，底栏进入 032，分别发布两份 10 位全范围 Rec.2020/PQ AVIF、两份质量 90% 及两份质量 95% 的 sRGB JPEG。六份均为 4000×6000、首次尝试成功。对齐上一签名包的质量和冻结版本后，四份对应文件的 SHA-256 逐项相同。返回网格仍选中这两张，焦点在雪景。[签名包、冻结版本、解码、运行回执和文件摘要](grid-delivery-20261127.json)
 
-另记录一项独立的冷启动问题。资料库副本已保存两张 ARW，焦点在雪景。完全退出后重新打开项目，分页网格只选中首页第一张 JPEG。恢复逻辑在首页数据到齐前将已存选区与当前卡片取交集。后续应在首个有效查询完成后按项目和筛选复核已存 ID，并覆盖跨页选片与加载期间用户改选的情况。[项目选区恢复](../../Sources/RAWMaster/AppModel.swift)
+项目网格冷启动等待当前查询返回，再恢复保存的选区和焦点。选区超出第一页时，按同一查询的文件顺序和目录修订检查跨页成员；已移出筛选或被删除的文件会从选区剔除。只有有资格的文件进入 032。加载期间快速换项目或查询会使旧请求失效。[分页恢复与导出回归](../../Tests/RAWMasterUITests/WorkbenchActionTests.swift) · [签名包冷启动与成片回执](../025-editing-workspace/evidence/editor-rails/release-acceptance.json)
 
 浏览器执行 `python3 scripts/check-ui-prototype.py --grid-export-only`，覆盖浅色桌面、深色窄窗、照片退出筛选、重试和焦点恢复。原生分页用例另验证标签变更后的重新查询、冻结前再次冲突时任务数和文件数均为零，以及取消后留在原工作区。[分页入口回归](../../Tests/RAWMasterUITests/WorkbenchActionTests.swift) · [目录修订区间回归](../../Modules/LibraryCatalog/tests/query_pages.rs)
 

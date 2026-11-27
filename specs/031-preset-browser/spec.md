@@ -2,7 +2,7 @@
 
 2026-11-22 · macOS 编辑工作区 · 承接 028 的 M2/M3。目录已与 Camera Raw 基础编辑及本地 AI 蒙版集成。版本、性能对照、原尺寸输出和待验项目有独立记录。[集成验收](integration-validation.md) · [功能范围与迁移支持](feature-validation.md)
 
-摄影师能在左栏文字目录找到Adaptive、Spektrafilm 胶片模拟和个人导入预设，在主图试看并采用，再把自己的做法保存给下一张。迁入的 Adobe 条目显示当前照片可用的字段、分析需求和依赖。个人 Lightroom／Camera Raw 预设可通过 XMP 或 ZIP 手工导入。[既有滤镜与性能契约](../028-filter-experience/spec.md) · [目录与 XMP 调研](../../docs/research/lightroom-preset-browser-plan.md)
+摄影师能在左栏文字目录找到自适应滤镜、基础滤镜、Spektrafilm 胶片模拟和个人导入预设，在主图试看并采用，再把自己的做法保存给下一张。迁入的 Adobe 条目显示当前照片可用的字段、分析需求和依赖。个人 Lightroom／Camera Raw 预设可通过 XMP 或 ZIP 手工导入。[既有滤镜与性能契约](../028-filter-experience/spec.md) · [目录与 XMP 调研](../../docs/research/lightroom-preset-browser-plan.md)
 
 场景生成卡由右栏管理。保存为个人预设时记录场景目标、保护语义、参考用途及经核验的风格包版本。应用到另一张图重新准备范围并显式生成；本片的像素补丁留在自己的历史中。031 的外观预览与 XMP 迁移沿现有快速路径执行。[生成卡、风格包与采用合同](../030-ai-retouching/generative-editing.md)
 
@@ -17,7 +17,11 @@
 
 ## 界面与操作
 
-- 左栏从上至下排列滤镜目录、快照及历史。标题下保留搜索与滤镜强度；标题右侧依次放复位、圆形启停和统一的 `…`。末端菜单合并保存当前设置、导入、交换和选中个人条目的管理操作，不设独立 `+`。本轮位置见 [038 走查](../038-node-dag-workflow/validation.md#可读-graph-与暗房减项)。启停／复位仅作用于当前基础与胶片滤镜；折叠不改变设置，且结束临时预览和候选准备。左栏控件与说明使用右侧检查器的平面外观和 4／7／12 点间距，普通说明完整换行；取消回到原照片、检索和所选条目。见[标题区与聚焦走查](../021-photos-editor/validation.md#无聚焦边框与滤镜标题区)。目录依次显示带分隔线的 Adaptive、胶片模拟（Film）和 Imported，基础滤镜及收藏可继续在下方访问。Adaptive 沿用 Lightroom 的 Blur Background、Landscape、Portrait、Sky、Subject 与 Profiles 子组；导入目录保留文件记录的原组名。收藏引用原条目。所有行显示文字，支持搜索、折叠、键盘遍历及 VoiceOver。文件夹、星标和菜单有独立操作。
+- 在编辑工作台导入、导出或保存预设，目录读取失败，或用户主动准备语义选区与散景时，操作结果显示在发起照片的主图顶部。写入与分析期间可查看进度；XMP 预检和结果保留逐项明细，表单保留名称等字段校验，删除个人预设仍需确认。从资料库返回该照片，可逐条关闭结果。[实际入口与走查](../025-editing-workspace/editor-rails.md)
+- 左上是独立的 RAW 摘要。左下的滤镜、快照、历史共用一块面板。滤镜强度在搜索框上方，搜索框紧邻同一棵文字目录。四根依次是「自适应滤镜」「基础滤镜」「胶片模拟」「用户导入滤镜」，根之间用留白。搜索右侧的星标只显示收藏，保留每个条目的原目录和 ID。
+- 自适应预设按人像、天空、主体、风景、模糊背景分组，迁入的自适应颜色和黑白配置文件另在「配置文件」。经过来源确认的 Adobe 条目使用 Lightroom 简中名称。原名和本地名称都可搜索，导入和导出保留原字段。用户预设及自定义组保留作者命名。HDR 草稿支持在原生侧栏浏览该目录，采用兼容滤镜及调节其强度需要 SDR 编辑。[走查与名称来源](../025-editing-workspace/editor-rails.md)
+- 滤镜标题右侧提供复位、圆形启停和管理操作。交换沿用原有导入、保存和导出入口。启停与复位作用于当前基础与胶片滤镜，折叠结束临时预览和候选准备并保留设置。检查器使用 4／7／12 点间距，说明完整换行。折叠、星标、菜单均保有独立焦点，取消后返回原照片、检索与所选条目。[标题区与焦点走查](../021-photos-editor/validation.md#无聚焦边框与滤镜标题区)
+
 - 「胶片模拟」提供九款 Spektrafilm 官方模型外观：Portra 400／Portra Endura、Velvia 100、VISION3 250D／2383，以及 Gold 200／Ultra Endura、Portra 800／Supra Endura、Ektar 100／Portra Endura、Provia 100F、Ektachrome 100 和 VISION3 500T／2383。目录注明「官方模型 · SDR 色彩外观」。使用固定模型烘焙的 64³ 色表，不冒充社区作者调好的 P800 Vintage 或 Clean 系列，也不包含颗粒、光晕或 HDR 成像。鼠标悬停或键盘聚焦时在当前照片、当前版本的主图临时试看，移开或 Escape 还原。点击或回车采用后可调强度、撤销、移除胶片、存快照或版本；曝光、裁切与蒙版保留。撤销后只标记配方中实际采用的一款，不把上次浏览项也标为已采用。关闭目录、换片或退出编辑返回原选片上下文。浏览目录时滤镜缩略图请求为 0。[可操作原型](../../docs/ui/prototype/index.html#edit/development) · [九款目录与走查](film-catalog-validation.md) · [原生实现与验收](directory-delivery.md)
 - 社区作者 Look 与官方 stock 模型分开。bazdesh 的 P800 Vintage、Clean 和 Velveetia 包含实际显影、耦合剂、印相与扫描调参；当前没有确认允许一般 App 内置分发的独立许可，旧 experimental JSON 也没有固定引擎提交。本次不打包这些作者资产。来源、修正版与限制见[社区候选](film-catalog-validation.md#社区作者候选与许可边界)。HDR 主干、显示与输出的目标设计见 [037](../037-color-film-hdr/spec.md)，不是这九款 SDR 色表的新增能力。
 - 名称优先用文件中的本地化名称，组缺失则归入 Imported。按组、排序名及显示名稳定排列，重名保留来源和独立身份。依赖详情能找到隐藏 Look，搜索结果和收藏不将它们提升为独立可套用的风格。

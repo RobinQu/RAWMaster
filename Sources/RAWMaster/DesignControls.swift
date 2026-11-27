@@ -20,6 +20,7 @@ struct AppIconButton: View {
                 .foregroundStyle(isSelected ? AppPalette.accent : AppDesign.Ink.primary(scheme))
                 .frame(width: AppDesign.Metric.iconButtonSize, height: AppDesign.Metric.iconButtonSize)
                 .background(fill, in: RoundedRectangle(cornerRadius: AppDesign.Radius.control))
+                .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

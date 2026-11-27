@@ -45,6 +45,8 @@ package struct PreparedPhotoDestinationConflict: Error {}
 public struct BatchPhotoExecution: Sendable {
     public let retainStageForRecovery: Bool
     public let bufferedThumbnail: Bool
+    /// The durable queue attaches the measured scene execution to the same ticket as the encoded bytes.
+    package var prepareWithExecution: (@Sendable (URL, URL, DevelopmentSceneExecutionReceiptV1?) async throws -> BatchPhotoCommit)?
 
     public init(retainStageForRecovery: Bool = false, bufferedThumbnail: Bool = false) {
         self.retainStageForRecovery = retainStageForRecovery
@@ -129,12 +131,12 @@ public actor PhotoBatchRenderExporter {
         let stage = temporary.appendingPathComponent("pixels").appendingPathExtension(configuration.format.filenameExtension)
         if configuration.format == .avif10 {
             let ticket = try DevelopmentSceneDeliveryV1(work: work, version: version, format: .avif10)
-            try await renderingTask(lane: .export, resources: .init(cpu: 1, gpu: 1, io: 1, memoryBytes: 2 << 30)) {
+            let sceneExecution = try await renderingTask(lane: .export, resources: .init(cpu: 1, gpu: 1, io: 1, memoryBytes: 2 << 30)) {
                 try DevelopmentSceneDeliveryServiceV1.encodePQForBatch(ticket, to: stage)
             }
             return try await publishBatchPayload(stage, final: final, protected: protected, execution: execution,
                 preparePublication: preparePublication, retainPreparedStage: &retainPreparedStage,
-                verify: { try RenderFiles.verify(version.source) })
+                sceneExecution: sceneExecution, verify: { try RenderFiles.verify(version.source) })
         }
         let look = configuration.layout.resolvedAppearance
         let needsMetadata = look.mark == "exif" || look.mark == "both" || configuration.metadataPolicy != .none
@@ -142,6 +144,7 @@ public actor PhotoBatchRenderExporter {
         let artifactURL = try version.artifact.map { try archive.artifactURL($0) }
 
         let raster: DeliveryRaster
+        var sceneExecution: DevelopmentSceneExecutionReceiptV1?
         let metadataURL: URL
         let verify: @Sendable () throws -> Void
         var stagingCapture: URL?
@@ -154,12 +157,12 @@ public actor PhotoBatchRenderExporter {
             _ = try DevelopmentSceneDeliveryV1(work: work, version: version, format: format)
             verify = { try RenderFiles.verify(version.source) }
             metadataURL = version.source.sourceLocation
-            raster = try await renderingTask(lane: .export) {
+            (raster, sceneExecution) = try await renderingTask(lane: .export) {
                 let capture = try RenderFiles.verifiedPreviewCapture(version.source)
                 defer { try? FileManager.default.removeItem(at: capture.url.deletingLastPathComponent()) }
                 return try capture.withCurrent(at: capture.url) {
-                    let image = try DevelopmentSceneDeliveryServiceV1.renderSDRForComposition(capture: capture.url, graph: graph)
-                    return try Self.rasterize(image, source: capture.url, configuration: configuration)
+                    let (image, receipt) = try DevelopmentSceneDeliveryServiceV1.renderSDRForComposition(capture: capture.url, graph: graph)
+                    return (try Self.rasterize(image, source: capture.url, configuration: configuration), receipt)
                 }
             }
             if needsMetadata {
@@ -265,20 +268,23 @@ public actor PhotoBatchRenderExporter {
             }
         }
         return try await publishBatchPayload(payload, final: final, protected: protected, execution: execution,
-            preparePublication: preparePublication, retainPreparedStage: &retainPreparedStage, verify: verify)
+            preparePublication: preparePublication, retainPreparedStage: &retainPreparedStage, sceneExecution: sceneExecution, verify: verify)
     }
 
     private func publishBatchPayload(_ payload: URL, final: URL, protected: [URL], execution: BatchPhotoExecution,
                                      preparePublication: BatchPhotoPublication?, retainPreparedStage: inout Bool,
+                                     sceneExecution: DevelopmentSceneExecutionReceiptV1?,
                                      verify: @escaping @Sendable () throws -> Void) async throws -> URL {
         try Task.checkCancellation()
         if execution.retainStageForRecovery {
             // The callback can commit a ticket before reporting failure; retain it for reconciliation.
-            retainPreparedStage = preparePublication != nil
+            retainPreparedStage = execution.prepareWithExecution != nil || preparePublication != nil
         }
         let commit: BatchPhotoCommit?
         do {
-            commit = try await preparePublication?(payload, final)
+            if let prepare = execution.prepareWithExecution {
+                commit = try await prepare(payload, final, sceneExecution)
+            } else { commit = try await preparePublication?(payload, final) }
         } catch DevelopmentError.outputExists {
             // This is the preflight conflict before a ticket exists.
             retainPreparedStage = false

@@ -9,6 +9,104 @@ import XCTest
 @testable import RAWMasterImaging
 
 final class EditingSceneDarkroomTests: XCTestCase {
+    @MainActor func testWorkspaceNoticesStayWithThePhotoUntilIndividuallyDismissed() async throws {
+        let fixture = try ProjectReviewUITests.Fixture(); defer { fixture.clean() }
+        _ = try await fixture.populate("Notices")
+        let assets = try fixture.store.loadAssets()
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        let editing = try XCTUnwrap(model.editing)
+        editing.focus(assets[0])
+        editing.postNotice("已完成")
+        editing.message = "无法应用"
+        editing.message = "无法应用"
+        editing.message = nil
+        XCTAssertEqual(editing.photoNotices.map(\.kind), [.information, .error])
+        let info = editing.photoNotices[0], error = editing.photoNotices[1]
+        editing.focus(assets[1])
+        editing.postNotice("后台结果已归档", for: assets[0].id)
+        XCTAssertTrue(editing.photoNotices.isEmpty)
+        XCTAssertNil(editing.message)
+        editing.focus(assets[0])
+        let completed = try XCTUnwrap(editing.photoNotices.last)
+        XCTAssertEqual(editing.photoNotices, [info, error, completed])
+        editing.dismissNotice(completed.id)
+        editing.dismissNotice(info.id)
+        XCTAssertEqual(editing.photoNotices, [error])
+        editing.dismissNotice(error.id)
+        XCTAssertTrue(editing.photoNotices.isEmpty)
+        await editing.shutdown()
+    }
+
+    @MainActor func testOptIn60MPEditorAndPublishedBatchReceipts() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
+        let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { URL(fileURLWithPath: $0) }
+        let directory = retained ?? FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { if retained == nil { try? FileManager.default.removeItem(at: directory) } }
+        let db = directory.appendingPathComponent("library.sqlite")
+        let asset = try NativePresentedCanvasTests.register(source: URL(fileURLWithPath: path), library: db)
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "editor-" + asset.id))
+        defer { defaults.removePersistentDomain(forName: "editor-" + asset.id) }
+        let model = AppModel(libraryURL: db, defaults: defaults)
+        let editing = try XCTUnwrap(model.editing)
+        do {
+            model.selectScope(.project, id: asset.projectID)
+            model.select(asset); model.setMode(.single)
+            model.openNativeEditing()
+            try await wait("60 MP source") { editing.sourceReady && !editing.loading }
+            XCTAssertEqual(editing.work?.source.contentSHA256, "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89")
+            editing.enterSceneDraft(ticket: try XCTUnwrap(editing.sceneTicket))
+            try await wait("60 MP scene") { editing.sceneFrame != nil || (!editing.sceneStarting && editing.message != nil) }
+            try await wait("60 MP rendered preview") { editing.sceneFrame?.execution != nil }
+            XCTAssertTrue(editing.photoNotices.contains { $0.kind == .information })
+            XCTAssertFalse(editing.photoNotices.contains { $0.kind == .error }, editing.message ?? "")
+            let node = try XCTUnwrap(editing.recipe.sceneGraph?.graph.nodes.first?.id)
+            editing.setSceneExposure(0.5, node: node, ticket: try XCTUnwrap(editing.sceneTicket))
+            try await wait("60 MP exposure dispatch") {
+                !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
+            }
+            editing.setSceneScopesOpen(true)
+            try await wait("60 MP scope receipt") { editing.sceneScopes.report?.execution != nil }
+            editing.setSceneScopesOpen(false)
+            let recipe = editing.recipe
+            editing.saveDevelopment()
+            try await wait("60 MP candidate") { !editing.saving && editing.versions.contains { $0.recipe == recipe } }
+            let candidate = try XCTUnwrap(editing.versions.first { $0.recipe == recipe })
+            editing.adopt(candidate)
+            try await wait("60 MP adopted") { editing.work?.adoptedVersionID == candidate.id }
+            model.activateWorkflow(.export)
+            for format in [PhotoRenderFormat.avif10, .jpeg8] {
+                let review = format == .avif10 ? try await model.reviewWorkbenchPQ([asset]) : nil
+                if let review {
+                    XCTAssertNil(review.lines.first?.reason, "Saved parent \(String(describing: editing.draftParentID)); selected \(String(describing: editing.selectedVersionID))")
+                }
+                model.submitWorkbenchPhotoDelivery(directory: directory.appendingPathComponent("delivery"), naming: "{name}",
+                    configuration: .init(format: format, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: review)
+                let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
+                await model.workbenchPhotoDeliveryTask?.value
+                let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
+                let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
+                let queue = WorkbenchDeliveryCatalog(database: db)
+                let receipt = try await queue.receipt(batchID: id.uuidString.lowercased())
+                let item = try XCTUnwrap(receipt.items.items.first)
+                let execution = try XCTUnwrap(item.sceneExecution)
+                XCTAssertEqual(item.sha256, try FileSafety.hash(file))
+                XCTAssertEqual(item.state, .delivered)
+                XCTAssertGreaterThan(execution.tiles, 1)
+                XCTAssertGreaterThan(execution.dispatches, 0)
+                XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
+                let input = try await queue.input(batchID: id.uuidString.lowercased(), ordinal: 1)
+                XCTAssertEqual(input.version.id, candidate.id)
+                let image = try XCTUnwrap(CGImageSourceCreateWithURL(file as CFURL, nil))
+                let facts = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any])
+                XCTAssertEqual(facts[kCGImagePropertyPixelWidth] as? Int, 9504)
+                XCTAssertEqual(facts[kCGImagePropertyPixelHeight] as? Int, 6336)
+            }
+            await editing.shutdown()
+        } catch { await editing.shutdown(); throw error }
+    }
+
     @MainActor func testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame() async throws {
         guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else { throw XCTSkip("Use fixed snow.ARW") }
         _ = NSApplication.shared

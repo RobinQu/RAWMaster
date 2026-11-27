@@ -31,7 +31,7 @@ struct DevelopmentPresetFolder: Identifiable {
 enum DevelopmentPresetDirectory {
     static func folders(records: [DevelopmentPresetRecord], favorites: Set<String>,
                         looks: [DevelopmentPhotoFilterV3], favoriteLooks: Set<DevelopmentPhotoFilterV3>,
-                        query: String) -> [DevelopmentPresetFolder] {
+                        query: String, favoritesOnly: Bool = false) -> [DevelopmentPresetFolder] {
         let term = query.trimmingCharacters(in: .whitespacesAndNewlines)
         func matches(_ text: String) -> Bool {
             term.isEmpty || text.range(of: term, options: [.diacriticInsensitive, .caseInsensitive]) != nil
@@ -42,19 +42,30 @@ enum DevelopmentPresetDirectory {
             let displayOrder = lhs.name.localizedStandardCompare(rhs.name)
             return displayOrder == .orderedSame ? lhs.id < rhs.id : displayOrder == .orderedAscending
         }
-        let classic = looks.filter { !$0.isSpektrafilm }.map(DevelopmentPresetBrowserItem.classic)
+        let availableLooks = looks.filter { !favoritesOnly || favoriteLooks.contains($0) }
+        let classic = availableLooks.filter { !$0.isSpektrafilm }.map(DevelopmentPresetBrowserItem.classic)
             .filter { matches($0.name) || matches("基础滤镜 Basic Filters") }
-        let films = looks.filter(\.isSpektrafilm).map(DevelopmentPresetBrowserItem.classic)
+        let films = availableLooks.filter(\.isSpektrafilm).map(DevelopmentPresetBrowserItem.classic)
             .filter { matches($0.name) || matches("胶片模拟 Film Spektrafilm") }
         let visible = records.filter { record in
-            guard record.isBrowsable else { return false }
-            let group = isAdaptive(record) ? "Adaptive " + adaptiveGroup(record) : "Imported " + record.group
-            return [displayName(record), group, record.metadata["sortName"] ?? ""].contains(where: matches)
+            guard record.isBrowsable, !favoritesOnly || favorites.contains(record.id) else { return false }
+            let category: String
+            if isAdaptive(record) {
+                let group = adaptiveGroup(record)
+                category = "自适应滤镜 Adaptive " + groupLabel(group) + " " + group
+            } else { category = "用户导入滤镜 Imported" }
+            return [displayName(record), record.name, record.group, category, record.metadata["sortName"] ?? ""].contains(where: matches)
         }
         let adaptive = visible.filter(isAdaptive)
-        let adaptiveGroups = Dictionary(grouping: adaptive, by: adaptiveGroup).map { name, rows in
-            DevelopmentPresetFolder(id: "adaptive." + name, name: name, rows: rows.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted))
-        }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        let groupOrder = ["adaptive.Portrait", "adaptive.Sky", "adaptive.Subject", "adaptive.Landscape", "adaptive.Blur Background", "adaptive.Profiles"]
+        let adaptiveGroups = Dictionary(grouping: adaptive, by: adaptiveGroup).map { group, rows in
+            DevelopmentPresetFolder(id: "adaptive." + group, name: groupLabel(group),
+                rows: rows.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted))
+        }.sorted {
+            let lhs = groupOrder.firstIndex(of: $0.id) ?? groupOrder.count
+            let rhs = groupOrder.firstIndex(of: $1.id) ?? groupOrder.count
+            return lhs == rhs ? $0.id < $1.id : lhs < rhs
+        }
         let imported = visible.filter { !isAdaptive($0) }
         let grouped = Dictionary(grouping: imported) { $0.kind.rawValue + "." + $0.group }
         let importedGroups = grouped.map { id, rows in
@@ -64,27 +75,28 @@ enum DevelopmentPresetDirectory {
             let order = $0.name.localizedStandardCompare($1.name)
             return order == .orderedSame ? $0.id < $1.id : order == .orderedAscending
         }
-        let favoriteRows = (classic + films).filter {
-            if case .classic(let look) = $0 { return favoriteLooks.contains(look) }
-            return false
-        } + visible.filter { favorites.contains($0.id) }.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted)
-
-        var result: [DevelopmentPresetFolder] = []
-        if term.isEmpty || !adaptive.isEmpty { result.append(.init(id: "adaptive", name: "Adaptive", children: adaptiveGroups)) }
-        if term.isEmpty || !films.isEmpty { result.append(.init(id: "film", name: "胶片模拟", rows: films)) }
-        if term.isEmpty || !imported.isEmpty { result.append(.init(id: "imported", name: "Imported", children: importedGroups)) }
-        if !classic.isEmpty { result.append(.init(id: "classic", name: "基础滤镜", rows: classic)) }
-        if !favoriteRows.isEmpty { result.append(.init(id: "favorites", name: "收藏", rows: favoriteRows)) }
-        return result
+        let roots: [DevelopmentPresetFolder] = [
+            .init(id: "adaptive", name: "自适应滤镜", children: adaptiveGroups),
+            .init(id: "classic", name: "基础滤镜", rows: classic),
+            .init(id: "film", name: "胶片模拟", rows: films),
+            .init(id: "imported", name: "用户导入滤镜", children: importedGroups),
+        ]
+        return term.isEmpty && !favoritesOnly ? roots : roots.filter { $0.count > 0 }
     }
 
     static func displayName(_ record: DevelopmentPresetRecord) -> String {
-        guard isAdaptive(record), record.name.hasPrefix("Adobe ") else { return record.name }
-        return String(record.name.dropFirst("Adobe ".count))
+        guard isAdaptive(record) else { return record.name }
+        if let path = record.metadata["relativePath"] {
+            let stem = URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent
+            if let label = adaptiveNames[stem] { return label }
+        }
+        let name = record.name.hasPrefix("Adobe ") ? String(record.name.dropFirst(6)) : record.name
+        let short = name.components(separatedBy: " - ").last ?? name
+        return adaptiveNames[name] ?? adaptiveNames[short] ?? name
     }
 
     private static func isAdaptive(_ record: DevelopmentPresetRecord) -> Bool {
-        record.metadata["origin"] == "adobeBuiltin"
+        record.kind != .user && record.metadata["origin"] == "adobeBuiltin"
     }
 
     private static func adaptiveGroup(_ record: DevelopmentPresetRecord) -> String {
@@ -96,7 +108,226 @@ enum DevelopmentPresetDirectory {
         var group = record.group
         if group.hasPrefix("Adobe ") { group.removeFirst("Adobe ".count) }
         if group.hasPrefix(prefix) { group.removeFirst(prefix.count) }
+        else if group.hasPrefix("Adaptive: ") { group.removeFirst("Adaptive: ".count) }
         return group == "Adaptive" || group == "Imported" ? "其他" : group
+    }
+
+    private static func groupLabel(_ group: String) -> String {
+        switch group {
+        case "Portrait": "人像"
+        case "Sky": "天空"
+        case "Subject": "主体"
+        case "Landscape": "风景"
+        case "Blur Background": "模糊背景"
+        case "Profiles": "配置文件"
+        default: group
+        }
+    }
+
+    // Lightroom Classic zh_CN labels. Only the presentation of verified Adobe records is localized.
+    private static let adaptiveNames = [
+        "Adaptive B&W": "自适应黑白",
+        "Adaptive Color": "自适应颜色",
+        "Autumn01": "秋天 01",
+        "Autumn02": "秋天 02",
+        "Balance Contrast": "平衡对比度",
+        "Blue Drama": "蓝色戏剧",
+        "Blue Hour": "蓝色时刻",
+        "Blue Pop": "蓝色增强",
+        "Bubble": "气泡",
+        "Bubble Swirl": "泡泡漩涡",
+        "Circle": "圆形",
+        "Circle Swirl": "圆圈漩涡",
+        "Cool Soft": "柔冷色",
+        "Dark Drama": "暗色戏剧",
+        "Darken Beard": "加深胡子",
+        "Darken Eyebrows": "加深眉毛",
+        "Enhance Clothes": "增强衣服",
+        "Enhance Eyes": "增强眼部效果",
+        "Enhance Portrait": "增强人像",
+        "Geometric": "几何",
+        "Geometric Swirl": "几何漩涡",
+        "Glamour Portrait": "魅力人像",
+        "Glow": "发光",
+        "Golden Hour": "黄金时刻",
+        "Gritty Portrait": "坚毅人像",
+        "Light": "亮",
+        "Neon Tropics": "霓虹灯热带",
+        "Oval": "椭圆形",
+        "Oval Swirl": "椭圆形漩涡",
+        "Polished Portrait": "精美人像",
+        "Pop": "流行",
+        "Reset Blur": "重置模糊",
+        "Ring": "环形",
+        "Ring Swirl": "环形漩涡",
+        "Smooth Face": "平滑面部皮肤",
+        "Smooth Facial Skin": "平滑面部皮肤",
+        "Smooth Hair": "顺滑头发",
+        "Soft": "柔和",
+        "Spring01": "春季 01",
+        "Spring02": "春季 02",
+        "Storm Clouds": "暴风云",
+        "Strong": "浑厚",
+        "Subtle": "细微",
+        "Summer01": "夏季 01",
+        "Summer02": "夏季 02",
+        "Sunrise": "日出",
+        "Sunset": "夕阳余晖",
+        "Texture Hair": "纹理头发",
+        "Vibrant": "鲜亮",
+        "Warm Light": "暖光",
+        "Warm Pop": "暖色流行",
+        "Whiten Teeth": "美白牙齿",
+        "Winter01": "冬天 01",
+        "Winter02": "冬天 02",
+    ]
+}
+
+private struct PresetBrowserSearch: View {
+    @Binding var query: String
+    @Binding var favoritesOnly: Bool
+
+    var body: some View {
+        HStack(spacing: 6) {
+            HStack(spacing: 5) {
+                Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                TextField("搜索名称或组", text: $query).textFieldStyle(.plain)
+                    .accessibilityLabel("搜索预设或配置文件").accessibilityIdentifier("editing.presets.search")
+            }
+            .padding(6).background(.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+            Button { favoritesOnly.toggle() } label: {
+                Image(systemName: favoritesOnly ? "star.fill" : "star")
+                    .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+            }
+                .buttonStyle(.plain)
+                .accessibilityLabel("仅显示收藏").accessibilityValue(favoritesOnly ? "开启" : "关闭")
+                .accessibilityIdentifier("editing.presets.favoritesOnly").help("仅显示收藏")
+        }
+        .font(AppDesign.Typography.controlLabel)
+    }
+}
+
+private struct PresetDirectoryTree<Row: View>: View {
+    let folders: [DevelopmentPresetFolder]
+    let isExpanded: (String) -> Bool
+    let toggle: (String) -> Void
+    @ViewBuilder let row: (DevelopmentPresetBrowserItem, DevelopmentPresetFolder) -> Row
+
+    var body: some View {
+        if folders.isEmpty {
+            Text("没有匹配的条目").font(.caption).foregroundStyle(.secondary)
+        }
+        LazyVStack(alignment: .leading, spacing: 2) {
+            ForEach(folders) { folder in
+                folderHeader(folder)
+                if isExpanded(folder.id) {
+                    if folder.id == "film" {
+                        Text("Spektrafilm 官方模型 · SDR 色彩外观")
+                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
+                            .accessibilityIdentifier("editing.presets.film.scope")
+                    }
+                    if folder.count == 0 {
+                        Text(emptyMessage(for: folder.id))
+                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
+                    }
+                    ForEach(folder.children) { child in
+                        folderHeader(child).padding(.leading, 13)
+                        if isExpanded(child.id) {
+                            ForEach(child.rows) { item in row(item, child) }
+                                .padding(.leading, 13)
+                        }
+                    }
+                    ForEach(folder.rows) { item in row(item, folder) }
+                }
+            }
+        }
+    }
+
+    private func folderHeader(_ folder: DevelopmentPresetFolder) -> some View {
+        Button { toggle(folder.id) } label: {
+            HStack(spacing: 5) {
+                let open = isExpanded(folder.id)
+                Image(systemName: open ? "chevron.down" : "chevron.right")
+                    .font(.system(size: 8)).frame(width: 9)
+                Image(systemName: open ? "folder.fill" : "folder").foregroundStyle(.secondary)
+                Text(folder.name).lineLimit(1)
+                Spacer(minLength: 0)
+                Text(String(folder.count)).foregroundStyle(.secondary).monospacedDigit()
+            }
+            .frame(minHeight: 23)
+            .contentShape(Rectangle()).overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+        }
+        .buttonStyle(.plain).font(.system(size: 11, weight: .semibold))
+        .accessibilityLabel(folder.name + "文件夹")
+        .accessibilityValue(isExpanded(folder.id) ? "已展开" : "已折叠")
+        .accessibilityIdentifier("editing.presets.folder." + folder.id)
+    }
+    private func emptyMessage(for folder: String) -> String {
+        switch folder {
+        case "adaptive": return "尚无自适应滤镜"
+        case "film": return "当前照片不支持胶片模拟"
+        case "classic": return "当前照片不支持基础滤镜"
+        default: return "尚无导入预设"
+        }
+    }
+
+}
+
+/// The scene graph and the compatibility recipe have different operators. Browsing a preset
+/// in an HDR draft must never start an SDR hover render or mutate the compatibility session.
+struct ScenePresetDirectory: View {
+    let catalog: DevelopmentPresetCatalog
+    @Binding var sectionExpanded: Bool
+    let favoriteLooks: Set<DevelopmentPhotoFilterV3>
+    let onLoadError: (Error) -> Void
+    @State private var folders: [DevelopmentPresetFolder] = []
+    @State private var records: [DevelopmentPresetRecord] = []
+    @State private var favorites: Set<String> = []
+    @State private var query = ""
+    @State private var favoritesOnly = false
+    @State private var expanded: Set<String> = ["adaptive"]
+    @State private var searchCollapsed: Set<String> = []
+    @State private var reload = 0
+
+    var body: some View {
+        let searching = !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: $sectionExpanded,
+            headingIdentifier: "editing.leftRail.filters") {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+                Text("HDR 草稿可浏览收藏与目录。滤镜强度和外观采用需要 SDR 编辑。")
+                    .photosInspectorParagraph().foregroundStyle(.secondary)
+                PresetBrowserSearch(query: $query, favoritesOnly: $favoritesOnly)
+                PresetDirectoryTree(folders: folders,
+                    isExpanded: { searching ? !searchCollapsed.contains($0) : expanded.contains($0) },
+                    toggle: { id in
+                        if searching {
+                            if !searchCollapsed.insert(id).inserted { searchCollapsed.remove(id) }
+                        } else if !expanded.insert(id).inserted { expanded.remove(id) }
+                    }) { item, _ in
+                    Text(item.name).font(.system(size: 11)).foregroundStyle(.secondary)
+                        .padding(.leading, 12).accessibilityHint("此滤镜适用于 SDR 编辑")
+                }
+            }
+            .padding(.horizontal, 12).padding(.bottom, 12)
+        }
+        .onChange(of: query) { _, _ in searchCollapsed = []; rebuild() }
+        .onChange(of: favoritesOnly) { _, _ in rebuild() }
+        .onChange(of: favoriteLooks) { _, _ in rebuild() }
+        .onReceive(NotificationCenter.default.publisher(for: DevelopmentPresetCatalog.didChange).receive(on: RunLoop.main)) { _ in reload += 1 }
+        .task(id: reload) {
+            let store = catalog
+            do {
+                let snapshot = try await Task.detached(priority: .userInitiated) { try store.snapshot() }.value
+                guard !Task.isCancelled else { return }
+                records = snapshot.records; favorites = snapshot.favorites; rebuild()
+            } catch {
+                if !Task.isCancelled { onLoadError(error); rebuild() }
+            }
+        }
+    }
+    private func rebuild() {
+        folders = DevelopmentPresetDirectory.folders(records: records, favorites: favorites,
+            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: favoriteLooks, query: query, favoritesOnly: favoritesOnly)
     }
 }
 
@@ -104,14 +335,16 @@ struct DevelopmentPresetBrowser: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
     let context: EditingInteractionContext
+    let assetID: String
     let scroller: ScrollViewProxy
     var catalog: DevelopmentPresetCatalog = .shared
     var sectionExpanded: Binding<Bool> = .constant(true)
     @State private var query = ""
+    @State private var favoritesOnly = false
     @State private var records: [DevelopmentPresetRecord] = []
     @State private var favoriteIDs: Set<String> = []
     @State private var folders: [DevelopmentPresetFolder] = []
-    @State private var expanded: Set<String> = ["favorites", "adaptive", "film", "user.个人预设"]
+    @State private var expanded: Set<String> = ["adaptive", "film", "user.个人预设"]
     @State private var searchCollapsed: Set<String> = []
     @State private var reload = 0
     @State private var selectedID: String?
@@ -123,7 +356,6 @@ struct DevelopmentPresetBrowser: View {
     @StateObject private var hoverPreparation = DevelopmentPresetMaskPreparation()
     @State private var editor: DevelopmentPresetEditorRequest?
     @State private var deleting: DevelopmentPresetRecord?
-    @State private var errorMessage: String?
     @FocusState private var focusRow: String?
 
     private var selected: DevelopmentPresetRecord? { records.first { $0.id == selectedID } }
@@ -147,29 +379,33 @@ struct DevelopmentPresetBrowser: View {
                 }
                 if let id = selectedID, !id.hasPrefix("classic."), !records.contains(where: { $0.id == id }) { selectedID = nil }
                 rebuild()
-            } catch { if !Task.isCancelled { report(error) } }
+            } catch { if !Task.isCancelled { postNotice("无法读取滤镜目录。\(error.localizedDescription)", .error) } }
         }
         .sheet(item: $editor) { request in
-            DevelopmentPresetEditor(request: request, catalog: catalog) { saved in
-                selectedID = saved.id
-                expanded.formUnion(["imported", saved.kind.rawValue + "." + saved.group])
-                reload += 1
+            DevelopmentPresetEditor(request: request, catalog: catalog, onError: report) { saved in
+                postNotice("已保存预设「\(saved.name)」。")
+                if editing.developmentContext == context {
+                    selectedID = saved.id
+                    expanded.formUnion(["imported", saved.kind.rawValue + "." + saved.group])
+                    reload += 1
+                }
             }
         }
         .alert("删除个人预设？", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
             Button("取消", role: .cancel) { deleting = nil }
             Button("删除", role: .destructive) {
-                if let record = deleting { let store = catalog; write { try store.delete(record) } }
+                if let record = deleting {
+                    let store = catalog
+                    write(success: "已删除预设「\(record.name)」。") { try store.delete(record) }
+                }
                 deleting = nil
             }
         } message: { Text(deleting?.name ?? "") }
-        .alert("预设操作未完成", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
-            Button("好") { errorMessage = nil }
-        } message: { Text(errorMessage ?? "") }
     }
 
     private var monitored: some View {
         content
+        .onChange(of: favoritesOnly) { _, _ in rebuild() }
         .onChange(of: query) { _, _ in searchCollapsed = []; rebuild() }
         .onChange(of: editing.availableDevelopmentFilters) { _, _ in rebuild() }
         .onChange(of: editing.favoriteDevelopmentFilters) { _, _ in rebuild() }
@@ -218,10 +454,10 @@ struct DevelopmentPresetBrowser: View {
             accessory: AnyView(headerActions(revision))) {
             VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                 VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                    searchControl
                     amountControl
+                    PresetBrowserSearch(query: $query, favoritesOnly: $favoritesOnly)
+                    directory(revision)
                 }
-                directory(revision)
                 VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
                     selectedDetails(revision)
                 }.id("editing.presets.details")
@@ -235,20 +471,11 @@ struct DevelopmentPresetBrowser: View {
         }
     }
 
-    private var searchControl: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-            TextField("搜索名称或组", text: $query).textFieldStyle(.plain)
-                .accessibilityLabel("搜索预设或配置文件").accessibilityIdentifier("editing.presets.search")
-        }
-        .font(AppDesign.Typography.controlLabel).padding(6)
-        .background(.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
-    }
-
     private func headerActions(_ revision: UUID) -> some View {
         HStack(spacing: 4) {
             Button { openEditor(.create) } label: {
                 Image(systemName: "plus").font(.system(size: 12)).frame(width: 26, height: 28).contentShape(Rectangle())
+                    .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
             }
             .buttonStyle(.plain).help("保存当前设置为滤镜").accessibilityLabel("保存当前设置为滤镜")
             .accessibilityIdentifier("editing.presets.create")
@@ -267,47 +494,14 @@ struct DevelopmentPresetBrowser: View {
     }
 
     @ViewBuilder private func directory(_ renderedRevision: UUID) -> some View {
-        if folders.isEmpty {
-            Text("没有匹配的条目").font(.caption).foregroundStyle(.secondary)
-        }
-        LazyVStack(alignment: .leading, spacing: 2) {
-            ForEach(folders) { folder in
-                Divider().padding(.vertical, 4)
-                folderHeader(folder)
-                if isExpanded(folder.id) {
-                    if folder.id == "film" {
-                        Text("Spektrafilm 官方模型 · SDR 色彩外观")
-                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
-                            .accessibilityIdentifier("editing.presets.film.scope")
-                    }
-                    if folder.count == 0 {
-                        Text(emptyMessage(for: folder.id))
-                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
-                    }
-                    ForEach(folder.children) { child in
-                        folderHeader(child).padding(.leading, 13)
-                        if isExpanded(child.id) {
-                            ForEach(child.rows) { item in row(item, in: child, revision: renderedRevision) }
-                                .padding(.leading, 13)
-                        }
-                    }
-                    ForEach(folder.rows) { item in row(item, in: folder, revision: renderedRevision) }
-                }
-            }
+        PresetDirectoryTree(folders: folders, isExpanded: isExpanded, toggle: toggleFolder) { item, folder in
+            row(item, in: folder, revision: renderedRevision)
         }
         .onChange(of: focusRow) { previous, next in
             if let previous { endRowPreview(previous) }
             guard let next, let item = visibleRows.first(where: { $0.key == next })?.item else { return }
             scroller.scrollTo(next)
             preview(item, key: next)
-        }
-    }
-
-    private func emptyMessage(for folder: String) -> String {
-        switch folder {
-        case "adaptive": return "尚无 Adaptive 预设"
-        case "film": return "当前照片不支持胶片模拟"
-        default: return "尚无导入预设"
         }
     }
 
@@ -331,7 +525,7 @@ struct DevelopmentPresetBrowser: View {
                 let ticket = PresetLensBlurReconstructionControls.Ticket(id: selected.id, version: selected.version,
                     context: context, revision: renderedRevision)
                 PresetLensBlurReconstructionControls(editing: editing, session: session, catalog: catalog,
-                    record: selected, ticket: ticket).id(ticket)
+                    record: selected, ticket: ticket, assetID: assetID).id(ticket)
             }
         }
         if let selected {
@@ -380,7 +574,7 @@ struct DevelopmentPresetBrowser: View {
             }, onPrepareSemantic: { record in
                 selectedID = record.id
                 startMasks(record, revision: renderedRevision)
-            }, onImportNative: importNative, compact: true,
+            }, onImportNative: importNative, postNotice: postNotice, compact: true,
             additionalActions: selected?.kind == .user ? AnyView(managementActions) : nil).id(context.historyKey)
     }
 
@@ -388,35 +582,17 @@ struct DevelopmentPresetBrowser: View {
         fullOperation?.cancel()
         endRowPreview()
         folders = DevelopmentPresetDirectory.folders(records: records, favorites: favoriteIDs,
-            looks: editing.availableDevelopmentFilters, favoriteLooks: editing.favoriteDevelopmentFilters, query: query)
+            looks: editing.availableDevelopmentFilters, favoriteLooks: editing.favoriteDevelopmentFilters, query: query, favoritesOnly: favoritesOnly)
         if let focusRow, !visibleRows.contains(where: { $0.key == focusRow }) { self.focusRow = nil }
     }
     private var searching: Bool { !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     private func isExpanded(_ id: String) -> Bool { searching ? !searchCollapsed.contains(id) : expanded.contains(id) }
 
-    private func folderHeader(_ folder: DevelopmentPresetFolder) -> some View {
-        Button {
-            if searching {
-                if !searchCollapsed.insert(folder.id).inserted { searchCollapsed.remove(folder.id) }
-            } else if !expanded.insert(folder.id).inserted { expanded.remove(folder.id) }
-            endRowPreview()
-        } label: {
-            HStack(spacing: 5) {
-                let open = isExpanded(folder.id)
-                Image(systemName: open ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 8)).frame(width: 9)
-                Image(systemName: open ? "folder.fill" : "folder").foregroundStyle(.secondary)
-                Text(folder.name).lineLimit(1)
-                Spacer(minLength: 0)
-                Text(String(folder.count)).foregroundStyle(.secondary).monospacedDigit()
-            }
-            .frame(minHeight: 23)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain).font(.system(size: 11, weight: .semibold))
-        .accessibilityLabel(folder.name + "文件夹")
-        .accessibilityValue(isExpanded(folder.id) ? "已展开" : "已折叠")
-        .accessibilityIdentifier("editing.presets.folder." + folder.id)
+    private func toggleFolder(_ id: String) {
+        if searching {
+            if !searchCollapsed.insert(id).inserted { searchCollapsed.remove(id) }
+        } else if !expanded.insert(id).inserted { expanded.remove(id) }
+        endRowPreview()
     }
     private var classicAmount: some View {
         PhotosRecipeValueRow(session: session, context: context, title: "滤镜强度", control: "filter.intensity",
@@ -491,6 +667,7 @@ struct DevelopmentPresetBrowser: View {
                     if inside { preview(item, key: key) }
                     else { endRowPreview(key) }
                 }
+                .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
             }.buttonStyle(.plain).focused($focusRow, equals: key)
                 .accessibilityLabel(item.name).accessibilityHint(hint)
                 .accessibilityIdentifier(identifier).accessibilityAddTraits(active ? .isSelected : [])
@@ -508,7 +685,9 @@ struct DevelopmentPresetBrowser: View {
                     endRowPreview()
                     editing.cancelPresetHover()
                     DispatchQueue.main.async { scroller.scrollTo("editing.presets.details", anchor: .bottom) }
-                } label: { Image(systemName: "info.circle") }
+                } label: {
+                    Image(systemName: "info.circle").overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+                }
                     .buttonStyle(.plain).foregroundStyle(.secondary).help(detail).accessibilityLabel("查看" + item.name + "详情")
             }
             if item.id != "classic.original" {
@@ -517,7 +696,10 @@ struct DevelopmentPresetBrowser: View {
                     case .classic(let look): editing.toggleDevelopmentFilterFavorite(look)
                     case .record(let record): let store = catalog; write { try store.toggleFavorite(record.id) }
                     }
-                } label: { Image(systemName: favorite ? "star.fill" : "star") }
+                } label: {
+                    Image(systemName: favorite ? "star.fill" : "star")
+                        .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+                }
                     .buttonStyle(.plain).foregroundStyle(favorite ? Color.accentColor : .secondary)
                     .accessibilityLabel((favorite ? "取消收藏" : "收藏") + item.name)
                     .accessibilityIdentifier(item.id.hasPrefix("classic.") ? "editing.filter.favorite." + String(item.id.dropFirst(8)) : "editing.preset.favorite." + item.id)
@@ -586,7 +768,7 @@ struct DevelopmentPresetBrowser: View {
         let ticket = DevelopmentPresetMaskPreparation.Ticket(record: record, context: context, revision: revision)
         let current = preparation.ticket == ticket
         VStack(alignment: .leading, spacing: 5) {
-            if current, !preparation.status.isEmpty {
+            if current, preparation.busy, !preparation.status.isEmpty {
                 Text(preparation.status).font(.caption2).foregroundStyle(.secondary)
             } else {
                 Text((record.patch.semanticMasks ?? []).map { $0.target.title }.joined(separator: "、") + " · 逐片识别")
@@ -610,6 +792,7 @@ struct DevelopmentPresetBrowser: View {
                         do {
                             editing.cancelPresetHover()
                             try session.adoptPreset(record, context: context, revision: ticket.revision, preparedMasks: layers)
+                            postNotice("已采用「\(DevelopmentPresetDirectory.displayName(record))」的选区调整。")
                             preparation.cancel()
                         } catch { report(error) }
                     }.accessibilityIdentifier("editing.presets.adoptMasks")
@@ -634,7 +817,10 @@ struct DevelopmentPresetBrowser: View {
                 let hydrated = try await Task.detached(priority: .userInitiated) { try store.materialize(record) }.value
                 guard !Task.isCancelled, ctx == editing.developmentContext, session.revision == revision, selectedID == record.id else { return }
                 if preview { editing.previewDevelopmentPreset(hydrated, context: ctx, explicit: true) }
-                else { try session.adoptPreset(hydrated, context: ctx, revision: revision) }
+                else {
+                    try session.adoptPreset(hydrated, context: ctx, revision: revision)
+                    postNotice("已采用「\(DevelopmentPresetDirectory.displayName(record))」的完整配方。")
+                }
             } catch { if !Task.isCancelled { report(error) } }
         }
     }
@@ -658,21 +844,28 @@ struct DevelopmentPresetBrowser: View {
         guard canPreview(ticket), let source = session.source, let capture = editing.work?.source.sourceLocation,
               editing.sourceIssueForPreset(ticket.record, context: ticket.context) == nil else { return false }
         owner.start(ticket, source: source, existingLayerCount: session.parameters.masks.count,
-            isCurrent: { canPreview(ticket) }, generate: { target in
+            isCurrent: { canPreview(ticket) }, onResult: owner === preparation ? postNotice : nil, generate: { target in
                 let mask = try await editing.developmentMaskInput.presetCandidate(capture: capture, source: source, target: target)
                 return try await Task.detached(priority: .userInitiated) { try mask.layer() }.value
             })
         return true
     }
 
-    private func report(_ error: Error) { errorMessage = error.localizedDescription }
+    private func postNotice(_ text: String, _ kind: EditingWorkspaceNotice.Kind = .information) {
+        editing.postNotice(text, kind: kind, for: assetID)
+    }
+    private func report(_ error: Error) { postNotice("预设操作未完成。\(error.localizedDescription)", .error) }
     private func openEditor(_ mode: DevelopmentPresetEditorRequest.Mode) {
         editing.cancelPresetHover()
         editor = .init(mode: mode, recipe: session.recipe, sourceID: context.sourceContentID)
     }
-    private func write(_ operation: @escaping @Sendable () throws -> Void) {
+    private func write(success: String? = nil, _ operation: @escaping @Sendable () throws -> Void) {
         Task {
-            do { try await Task.detached(priority: .userInitiated, operation: operation).value; reload += 1 }
+            do {
+                try await Task.detached(priority: .userInitiated, operation: operation).value
+                if let success { postNotice(success) }
+                if editing.developmentContext == context { reload += 1 }
+            }
             catch { report(error) }
         }
     }
@@ -686,6 +879,8 @@ struct DevelopmentPresetBrowser: View {
         Task {
             do {
                 let row = try await Task.detached(priority: .userInitiated) { try store.importNative(DevelopmentPresetCatalog.data(at: url)) }.value
+                postNotice("已导入预设「\(row.name)」。")
+                guard editing.developmentContext == context else { return }
                 selectedID = row.id
                 expanded.formUnion(["imported", row.kind.rawValue + "." + row.group])
                 reload += 1
@@ -698,6 +893,6 @@ struct DevelopmentPresetBrowser: View {
         panel.allowedContentTypes = [.json]
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let store = catalog
-        write { try store.nativeData(for: row).write(to: url, options: .atomic) }
+        write(success: "已导出「\(url.lastPathComponent)」。") { try store.nativeData(for: row).write(to: url, options: .atomic) }
     }
 }

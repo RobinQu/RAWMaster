@@ -6,6 +6,8 @@
 
 ## 证据
 
+- [2026-11-27 编辑侧栏、画布通知和两类 Graph 的浏览器与原生走查](editor-rails.md#2026-11-27-走查)。
+
 - 完整功能报告与实现清单：[acceptance-20261121.md](acceptance-20261121.md)。
 - 最终 Debug 日志：`output/tools/diagnostics/editing-workspace-full-tests-final-complete.log`；1,594 项、67 条件跳过、0 失败。
 - 性能报告：`output/performance/editing-workspace-flashraw-20261121/editing-interaction-performance.json`。

@@ -68,10 +68,9 @@ struct EditingSceneGraphToolbar: View {
             graphFocused = true; graphAccessibilityFocused = true
         }, onClose: { [weak editing] in editing?.showSceneGraph(false) }, onEscape: { [weak editing] in
             editing?.dismissSceneGraphLayer() ?? false
-        }) { [weak presenter, weak editing] collapsed, short in
+        }) { [weak editing, framing] in
             guard let editing else { return AnyView(EmptyView()) }
-            return AnyView(EditingSceneGraphWindow(editing: editing, framing: framing, collapsed: collapsed, short: short,
-                fold: { presenter?.toggleFold() }, reset: { presenter?.resetPosition() }, close: { presenter?.close() }))
+            return AnyView(EditingSceneGraphWindow(editing: editing, framing: framing))
         }
         if presenter.panel == nil { editing.showSceneGraph(false) }
     }
@@ -94,47 +93,35 @@ private struct EditingSceneGraphWindow: View {
     typealias Graph = DevelopmentSceneGraphV1
     @ObservedObject var editing: EditingController
     @ObservedObject var framing: SceneGraphFraming
-    let collapsed, short: Bool
-    let fold, reset, close: () -> Void
     @State private var templateTicket: EditingController.SceneGraphTicket?
     @State private var templatesOpen = false
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
-        VStack(alignment: .leading, spacing: collapsed ? 0 : 5) {
-            HStack(spacing: 5) {
-                Text(short ? "当前屏幕高度不足，无法展开" : editing.asset?.filename ?? "当前照片")
-                    .font(.caption).lineLimit(1).truncationMode(.middle)
-                Spacer()
-                AppIconButton(systemName: collapsed ? "plus" : "minus", label: collapsed ? "展开 Graph" : "收起 Graph",
-                              isEnabled: !short, action: fold)
-                AppIconButton(systemName: "arrow.counterclockwise", label: "复位窗体", action: reset)
-                AppIconButton(systemName: "xmark", label: "关闭 Graph", action: close)
-            }
-            if !collapsed, let scope = editing.sceneGraphScope {
-                header
-                SceneGraphViewport(editing: editing, framing: framing, scope: scope)
-                    .frame(minHeight: 240, maxHeight: .infinity)
-                if let draft = editing.sceneGraphState.connection { connectionControls(draft, scope: scope) }
-                else { status }
-            }
-        }
-        .padding(collapsed ? 6 : 10).frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background {
-            if #available(macOS 26.0, *), !reduceTransparency { Color.clear.glassEffect(.regular, in: .rect(cornerRadius: 12)) }
-            else { Color(nsColor: .windowBackgroundColor) }
+        if let scope = editing.sceneGraphScope {
+            SceneGraphViewport(editing: editing, framing: framing, scope: scope)
+                .overlay(alignment: .topLeading) {
+                    graphCommands
+                        .padding(5).background(.regularMaterial, in: .rect(cornerRadius: AppDesign.Radius.container))
+                        .padding(.trailing, 74).padding(6)
+                }
+                .overlay(alignment: .bottomLeading) {
+                    if let draft = editing.sceneGraphState.connection {
+                        connectionControls(draft, scope: scope)
+                            .padding(6).background(.regularMaterial, in: .rect(cornerRadius: AppDesign.Radius.container))
+                            .padding(.trailing, 40).padding(6)
+                    }
+                }
         }
     }
 
-    private var header: some View {
+    private var graphCommands: some View {
         let path = editing.sceneGraphState.path, ticket = editing.sceneGraphTicket
         return HStack(spacing: 7) {
             if !path.isEmpty {
                 Button("上一级") { if let ticket { editing.moveSceneGraphPath(Array(path.dropLast()), ticket: ticket) } }
                     .accessibilityIdentifier("scene.graph.group.back")
             }
-            Text(path.isEmpty ? "照片工作流" : "组内 · 第 \(path.count) 层").lineLimit(1).font(.caption)
-            Spacer()
+            if !path.isEmpty { Text("第 \(path.count) 层").lineLimit(1).font(.caption) }
             Menu("添加") { addCommands(editing, ticket: ticket) }.disabled(ticket == nil)
             Menu("更多") {
                 nodeCommands(editing, ticket: ticket)
@@ -143,16 +130,11 @@ private struct EditingSceneGraphWindow: View {
             }.disabled(ticket == nil)
             Button("100%") { framing.update(path, .init(mode: .readable)) }
             Button("适合全图") { framing.update(path, .init(mode: .fit)) }.accessibilityIdentifier("scene.graph.fit")
-        }.controlSize(.small)
+        }.controlSize(.small).fixedSize(horizontal: true, vertical: false)
          .popover(isPresented: $templatesOpen) {
              if let templateTicket { SceneWorkflowTemplatePopover(editing: editing, ticket: templateTicket) }
          }
     }
-    private var status: some View {
-        Text(editing.message ?? (editing.sceneGraphState.edge != nil ? "已选连线 · 添加只作用于此边" : "选择节点查看参数；按住 ⌘ 多选，拖动空白区域平移。"))
-            .font(.caption2).foregroundStyle(.secondary).lineLimit(2)
-    }
-
     private func connectionControls(_ draft: EditingSceneGraphState.Connection, scope: Graph.Scope) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(draft.reason ?? "连接草稿 · 主图仍显示已提交结果")

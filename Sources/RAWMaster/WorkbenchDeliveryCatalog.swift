@@ -73,6 +73,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
         let filename: String?
         let sha256: String?
         let reason: String?
+        let sceneExecution: DevelopmentSceneExecutionReceiptV1?
         var id: Int { ordinal }
         var finished: Bool { state == .delivered || state == .skipped }
     }
@@ -428,11 +429,12 @@ struct WorkbenchDeliveryCatalog: Sendable {
         return try await call("claimItem", fields).decoded(ItemReply.self)
     }
 
-    func prepare(_ lease: ItemLease, directory: URL, stage: URL, suffix: Int) async throws -> ItemReply {
+    func prepare(_ lease: ItemLease, directory: URL, stage: URL, suffix: Int, sceneExecution: DevelopmentSceneExecutionReceiptV1? = nil) async throws -> ItemReply {
         var fields = lease.fields
         fields["directory"] = .string(directory.path)
         fields["stage"] = .string(stage.deletingLastPathComponent().lastPathComponent + "/" + stage.lastPathComponent)
         fields["suffix"] = .integer(Int64(suffix))
+        if let sceneExecution { fields["sceneExecution"] = try .encoding(sceneExecution) }
         return try await call("prepareItem", fields, fileIO: true).decoded(ItemReply.self)
     }
 

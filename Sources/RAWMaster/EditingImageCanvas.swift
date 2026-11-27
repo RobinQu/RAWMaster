@@ -20,6 +20,7 @@ struct EditingImageCanvas: View {
     @State private var navigationPreviewOffset: Int?
     @State private var beforeAfterSplit = 0.5
     @State private var canvasWidth: CGFloat = 1100
+    @FocusState private var fitFocused: Bool
     @State private var quickPromptShowCandidate = true
     @State private var quickPromptReviewTransform = ImageTransform()
     @State private var quickPromptDetail: QuickPromptDetail?
@@ -53,6 +54,21 @@ struct EditingImageCanvas: View {
         currentPane
         .background(editing.darkroomBackground.color)
         .onGeometryChange(for: CGFloat.self) { geometry in geometry.size.width } action: { canvasWidth = $0 }
+        .overlay(alignment: .top) {
+            GeometryReader { geometry in
+                VStack(spacing: 4) {
+                    if !editing.photoNotices.isEmpty {
+                        EditingNoticeOverlay(editing: editing) { fitFocused = true }
+                            .frame(maxHeight: geometry.size.height * 0.38, alignment: .top)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if editing.visibleSceneGraph != nil { sceneViewingControls }
+                }
+                .frame(width: min(520, max(100, geometry.size.width - EditingLayout.fitInsets.left - EditingLayout.fitInsets.right)))
+                .frame(maxWidth: .infinity, alignment: .top)
+                .padding(.top, 8)
+            }
+        }
         .overlay(alignment: .bottom) {
             QuickPromptDock(editing: editing, width: dockWidth, canvasControls: { canvasControls },
                 showCandidate: $quickPromptShowCandidate, inspectPixels: inspectQuickPromptEdge)
@@ -109,6 +125,7 @@ struct EditingImageCanvas: View {
                 .help("放大 · +").accessibilityLabel("放大").accessibilityIdentifier("editing.zoomIn")
             Button { editing.requestCanvasCommand(.fit) } label: { Text("FIT").font(.system(size: 10, weight: .semibold)).frame(width: 30, height: 26) }
                 .help("适合可用画面 · 0 / ⌘0").accessibilityLabel("适合可用画面").accessibilityIdentifier("editing.fit")
+                .focused($fitFocused)
             Button {
                 if let context = editing.developmentContext { editing.toggleDevelopmentCrop(context: context) }
             } label: {
@@ -490,25 +507,16 @@ struct EditingImageCanvas: View {
                     beforeAfterOverlay
                     if editing.quickPromptReview != nil {
                         if quickPromptDetailLoading { ProgressView("读取原尺寸边缘…").controlSize(.small) }
-                    } else if let error = editing.previews.primary.error {
-                        VStack(spacing: 8) {
-                            Text(error).font(.caption).foregroundStyle(AppPalette.warning)
-                            if !editing.sourceNeedsRevalidation { Button("重试预览") { editing.retryPreview() } }
-                        }.padding(20)
                     } else if editing.previews.primary.rendering && (editing.preview != nil || editing.previews.primary.fitFallback != nil) {
                         VStack { HStack { Spacer(); ProgressView("计算中…").controlSize(.small).font(.caption).padding(10).background(AppPalette.overlay) }; Spacer() }
                     }
-                    if editing.preview == nil && editing.previews.primary.error == nil {
+                    if editing.preview == nil && editing.previews.primary.error == nil && editing.message == nil {
                         if editing.loading { ProgressView("准备显影…").font(.caption) }
-                        else { Text(editing.message ?? "正在渲染预览…").font(.caption).foregroundStyle(.secondary).padding(20) }
+                        else { Text("正在渲染预览…").font(.caption).foregroundStyle(.secondary).padding(20) }
                     }
                     if editing.comparing && editing.comparisonPreviewFrame == nil && editing.previews.comparison.error == nil {
                         ProgressView("正在生成参考预览…").controlSize(.small).font(.caption)
                             .padding(10).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
-                    }
-                    if editing.comparing, let error = editing.previews.comparison.error {
-                        Text("参考预览：" + error).font(.caption).foregroundStyle(AppPalette.warning)
-                            .padding(12).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
                     }
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -518,33 +526,30 @@ struct EditingImageCanvas: View {
     private var scenePane: some View {
         EditingSceneScopesCanvas(editing: editing, scopes: editing.sceneScopes, transform: $transform)
             .accessibilityIdentifier("editing.scene.canvas")
-            .overlay(alignment: .top) {
-                VStack(spacing: 6) {
-                    if let monitor = editing.sceneGraphMonitorText {
-                        HStack {
-                            Text(monitor).font(.caption).accessibilityIdentifier("editing.scene.graph.monitor")
-                            Button("返回最终结果") { editing.stopSceneGraphMonitor() }.controlSize(.small)
-                        }
-                    }
-                    if let error = editing.scenePreviewError {
-                        Text(error).font(.caption)
-                        if editing.sourceReady { Button("重试 HDR 预览") { editing.requestPreview() }.accessibilityIdentifier("editing.scene.retry") }
-                    } else {
-                        Text(editing.sceneTarget == .hdr2020
-                            ? "HDR 目标预览 · 屏幕余量 \(editing.sceneHeadroom, specifier: "%.2f")×"
-                            : editing.sceneRequestedHDR ? "HDR · SDR 派生预览（屏幕无 HDR 余量）" : "HDR · SDR 派生预览")
-                            .font(.caption).accessibilityIdentifier("editing.scene.viewState")
-                        HStack(spacing: 6) {
-                            Button("按 HDR 目标查看") { editing.setSceneViewingHDR(true) }.disabled(editing.sceneRequestedHDR)
-                            Button("预览 SDR 派生") { editing.setSceneViewingHDR(false) }.disabled(!editing.sceneRequestedHDR)
-                            Button("1:1") { transform.physicalMagnification = 1 }.accessibilityLabel("实际像素")
-                        }.controlSize(.small)
-                        if editing.scenePreviewBusy { ProgressView().controlSize(.small).accessibilityLabel("正在准备场景预览") }
-                    }
-                }.padding(8)
-                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 9))
-                 .padding(.top, 4)
+    }
+
+    private var sceneViewingControls: some View {
+        VStack(spacing: 6) {
+            if let monitor = editing.sceneGraphMonitorText {
+                HStack {
+                    Text(monitor).font(.caption).accessibilityIdentifier("editing.scene.graph.monitor")
+                    Button("返回最终结果") { editing.stopSceneGraphMonitor() }.controlSize(.small)
+                }
             }
+            if editing.scenePreviewError == nil {
+                Text(editing.sceneTarget == .hdr2020
+                    ? "HDR 目标预览 · 屏幕余量 \(editing.sceneHeadroom, specifier: "%.2f")×"
+                    : editing.sceneRequestedHDR ? "HDR · SDR 派生预览（屏幕无 HDR 余量）" : "HDR · SDR 派生预览")
+                    .font(.caption).accessibilityIdentifier("editing.scene.viewState")
+                HStack(spacing: 6) {
+                    Button("按 HDR 目标查看") { editing.setSceneViewingHDR(true) }.disabled(editing.sceneRequestedHDR)
+                    Button("预览 SDR 派生") { editing.setSceneViewingHDR(false) }.disabled(!editing.sceneRequestedHDR)
+                    Button("1:1") { transform.physicalMagnification = 1 }.accessibilityLabel("实际像素")
+                }.controlSize(.small)
+                if editing.scenePreviewBusy { ProgressView().controlSize(.small).accessibilityLabel("正在准备场景预览") }
+            }
+        }.padding(8)
+         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 9))
     }
 
     private func quickPromptReviewCanvas(_ review: QuickPromptReview) -> some View {

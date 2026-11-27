@@ -17,13 +17,13 @@
 
 - `RMSceneProgram` 通过版本化 C ABI 接收 038 图的运行文档。Rust 独立检查节点、深度、层数、依赖、参数、端口与最终根，与 Swift 使用同一组有效／无效文档作一致性测试。[解析器](../../Modules/ImageEdit/src/scene.rs) · [C ABI](../../Modules/ImageEdit/include/rawmaster_image_scene.h)
 - Rust 将可达图编码进一个 command buffer，再等待一次完成。ROI 使用源域尺寸和原点。当前瓦片从完整源图及覆盖纹理裁入工作区，瓦片结果写回完整输出。单次提交与瓦片执行都仍受内存带宽和全幅表面限制。程序缓存按拓扑复用。节点键含源修订、操作、依赖、几何与尺寸，解析覆盖可跨源复用。来源变化、已完成 fence 和取消代际决定缓存可否交付。[Metal 执行](../../Modules/ImageEdit/src/scene/metal_exec.rs)
-- 场景预览的整幅 AP1 和饱和图解码输出上限为 440 MiB，图预算为 640 MiB，交付图默认 1.5 GiB。回执报告 backend、tiles、evaluated nodes、dispatches、cache hits、peak bytes、budget、CPU 时间及回退原因。原片、跨图程序缓存、模型内部工作区、DRT、drawable 和编码还需统一计量。61.4 MP 合成图使用 6 GiB 测试预算。真实 60 MP 在预览会先撞解码上限，在交付时需要解除图的全幅输入输出约束。[预览预算](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift) · [RAW 解码](../../Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift) · [60 MP 测试](../../Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift)
+- 解码预算 440 MiB，预览图预算 640 MiB，交付图预算 1.5 GiB。已验证的 16 位 Bayer 按显示尺寸或原片区域产生 AP1 与饱和标志。大图无模型交付按原始坐标逐区执行 DAG 和 DRT，一次仅保留一个完整目标。每张成片的队列票据与文件摘要同时提交实际后端、分块、派发、缓存与峰值。旧票据缺少该字段时保持未知。系统编码器与模型内部内存另行计量。[60 MP 实片与产品预算](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [成片执行](../../Sources/RAWMasterImaging/DevelopmentSceneTiledDeliveryV1.swift)
 
 ## 模型与资源
 
 确定性模型程序最多四个阶段，顺序是全色度去噪、可选一次 2× 超分、分割。PhotoVGG7 和 PhotoUpconv7 的适配器通过 Rec.709 模型域接入。主体／人物来自 Vision，风景遮罩依赖已核验的 EfficientViT 包。阶段的输入范围和有符号／超白还原须在实拍 HDR 上验算。分割只产与来源几何对齐的覆盖。`externalCoverage(id:)` 使用模型阶段 ID。生成式处理由现有候选流程登记。[模型程序](../../Sources/RAWMasterCore/DevelopmentSceneModelV1.swift) · [设备适配器](../../Sources/RAWMasterImaging/DevelopmentSceneProductionModelProvider.swift)
 
-现有接线可在组件中跑通，但 v4 持久配方排斥 `adjustmentsV3`，正常场景草稿从此字段派生模型时得不到模型程序。示波器和冻结交付调用也未携带模型。预览现按模型程序变更清理后缀，执行带模型前缀的图时禁用依赖源像素的跨请求节点缓存。产品开放前应通过同一版本化场景文档和冻结票据保存阶段及资源引用。FIT、ROI、示波器及导出共用已声明的全图模型作用尺度。按来源、模型、权重、分析 View、输入及几何保留可复用结果。模板重绑到目标原片时核对全部覆盖引用。缺模型或权重不符在预检拒绝。[配方](../../Sources/RAWMasterCore/EditingModels.swift) · [预览与示波器](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift) · [冻结成片](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift)
+已保存的场景候选通过图文档 v2 保存阶段顺序、模型标识、参数与覆盖引用。新建 HDR 草稿在兼容调整仍可读取时冻结支持的阶段，示波器和交付使用冻结图。图文档 v1 保持既有编码和指纹。监看和临时选择只属于当前视图。超出全图模型预算的成片返回资源错误，后续按算子验证带邻域的分块推理和覆盖一致性。[配方](../../Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift) · [模型程序](../../Sources/RAWMasterCore/DevelopmentSceneModelV1.swift) · [冻结成片](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift)
 
 ## 迁移顺序
 

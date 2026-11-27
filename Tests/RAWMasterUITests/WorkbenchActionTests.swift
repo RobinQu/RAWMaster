@@ -91,6 +91,47 @@ final class WorkbenchActionTests: XCTestCase {
         XCTAssertEqual(model.workbenchExportContext, .project)
     }
 
+    @MainActor func testColdPagedProjectRestoresOffPageSelectionAndFocusBeforeExport() async throws {
+        let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
+        let names = (0..<66).map { String(format: "shot-%03d.jpg", $0) }
+        let project = try await f.populate("Reopen", filenames: names).projectID
+        let files = try f.store.loadAssets().sorted { $0.filename < $1.filename }
+        let expected = [files[1].id, files[64].id]
+        let saved = try f.store.saveProjectReviewState(.init(projectID: project, sort: .original, mode: "grid",
+            focusedAssetID: expected[1], selectedAssetIDs: expected + ["removed"]))
+        f.defaults.set("project", forKey: "browse.scope")
+        f.defaults.set(project, forKey: "browse.id")
+        let model = AppModel(libraryURL: f.library, defaults: f.defaults, usesPagedLibrary: true)
+        model.saveBrowse(); model.flushProjectReviewState()
+        XCTAssertEqual(try f.store.loadProjectReviewState(projectID: project)?.revision, saved.revision)
+        let deadline = Date().addingTimeInterval(15)
+        while model.catalogGrid?.watermark == nil && Date() < deadline { try await Task.sleep(for: .milliseconds(15)) }
+        XCTAssertEqual(model.browserAssets.count, 60)
+        XCTAssertEqual(model.selectedIDs, Set(expected))
+        XCTAssertEqual(model.focusedAsset?.id, expected[1])
+        model.openSelectionExport()
+        await model.pendingGridExport?.value
+        XCTAssertEqual(Set(model.workbenchExportCandidates.map(\.id)), Set(expected))
+        model.saveBrowse(); model.flushProjectReviewState()
+        XCTAssertEqual(Set(try XCTUnwrap(f.store.loadProjectReviewState(projectID: project)).selectedAssetIDs), Set(expected))
+        model.activateWorkflow(.library)
+        model.setMode(.compare)
+        XCTAssertEqual(Set(model.compareAssets.map(\.id)), Set(expected))
+        model.saveBrowse(); model.flushProjectReviewState()
+        let reopened = AppModel(libraryURL: f.library, defaults: f.defaults, usesPagedLibrary: true)
+        XCTAssertEqual(reopened.mode, .compare)
+        XCTAssertEqual(Set(reopened.compareAssets.map(\.id)), Set(expected))
+        XCTAssertEqual(reopened.focusedAsset?.id, expected[1])
+        var focusOnly = try XCTUnwrap(f.store.loadProjectReviewState(projectID: project))
+        focusOnly.mode = "grid"; focusOnly.selectedAssetIDs = []
+        _ = try f.store.saveProjectReviewState(focusOnly)
+        let gridAgain = AppModel(libraryURL: f.library, defaults: f.defaults, usesPagedLibrary: true)
+        let focusDeadline = Date().addingTimeInterval(10)
+        while gridAgain.catalogGrid?.watermark == nil && Date() < focusDeadline { try await Task.sleep(for: .milliseconds(15)) }
+        XCTAssertEqual(gridAgain.actionAssetIDs, [expected[1]])
+        XCTAssertEqual(gridAgain.focusedAsset?.id, expected[1])
+    }
+
     @MainActor func testPagedGridHandoffSurvivesBrowseSavesAndRechecksMaterialChanges() async throws {
         let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
         let project = try await f.populate("GridExport").projectID

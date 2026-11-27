@@ -73,6 +73,8 @@ final class DevelopmentSceneScopesV1Tests: XCTestCase {
     let first = request.duration(to:.now)
     XCTAssertEqual(report.size,.init(128,192))
     XCTAssertTrue(report.canMeasureSensor); XCTAssertTrue(report.canMeasureTarget); XCTAssertFalse(report.canMeasureScreen)
+    XCTAssertEqual(report.execution?.backend, .rust)
+    XCTAssertEqual(report.forMonitor(nil).execution, report.execution)
     XCTAssertGreaterThan(report.plots[.target]?.maximum ?? 0,1)
     XCTAssertLessThanOrEqual(report.plots[.derivative]?.maximum ?? .infinity,1)
     let reused = try await service.render(source:source,graph:graph,view:.init(),target:.sdr709,sampling:.fit(maximumEdge:960))

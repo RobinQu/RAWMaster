@@ -13,6 +13,7 @@ import RAWMasterImaging
     @Published private(set) var report: Report?
     @Published private(set) var busy = false
     @Published private(set) var failure: String?
+    var onFailure: ((String) -> Void)?
     @Published private(set) var picking = false
     @Published private(set) var point: CGPoint?
     @Published private(set) var overlays = Set<Report.Overlay>()
@@ -40,7 +41,7 @@ import RAWMasterImaging
             do {
                 // Continuous exposure changes should not enqueue every intermediate histogram.
                 try await Task.sleep(for: .milliseconds(180))
-                let result = try await service.analyze(source: source, graph: graph, view: view)
+                let result = try await service.analyze(source: source, graph: graph, view: view, models: graph.models)
                 guard !Task.isCancelled, let self, self.generation == id else { return }
                 self.native = result
                 self.report = self.monitor == nil ? result : result.forMonitor(self.monitor)
@@ -49,6 +50,7 @@ import RAWMasterImaging
                 guard !Task.isCancelled, let self, self.generation == id else { return }
                 self.busy = false; self.worker = nil
                 self.failure = error.localizedDescription
+                self.onFailure?(error.localizedDescription)
             }
         }
     }
@@ -118,7 +120,7 @@ struct EditingSceneScopesInspector: View {
                         .foregroundStyle(.secondary)
                 } else if state.busy { ProgressView("正在分析 HDR…").controlSize(.small) }
                 else {
-                    Text(!editing.sourceReady ? "原片不可用，暂无诊断。" : state.failure ?? "暂无诊断。")
+                    Text(!editing.sourceReady ? "原片不可用，暂无诊断。" : "暂无诊断。")
                     if editing.sourceReady { Button("重试诊断") { editing.retrySceneScopes() }.buttonStyle(.borderless) }
                 }
             }.font(.caption).padding(.top, 6)

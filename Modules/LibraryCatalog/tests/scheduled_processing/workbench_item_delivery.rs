@@ -198,11 +198,13 @@ fn actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and
     let mut r = Run::new("skip", 2)?;
     let lease = r.claim(1, 90000)?;
     let stage = r.stage()?;
-    let prepare = r.prepare(&lease, &stage, 1);
-    // The first response carries only the public ordinal, SHA, size and selected basename.
+    let mut prepare = r.prepare(&lease, &stage, 1);
+    let execution = json!({"backend":"rust","tiles":3,"nodes":2,"dispatches":6,"coverageCacheHits":0,
+        "nodeCacheHits":1,"peakBytes":1024,"budgetBytes":8192,"cpuMilliseconds":0.4});
+    prepare["sceneExecution"] = execution.clone();
     let digest = hex::encode(Sha256::digest(DATA));
     let expected = json!({"ordinal":1,"state":"prepared","attempt":1,"generation":1,"filename":r.path(1,1).file_name().unwrap().to_str(),
-        "sha256":digest,"byteCount":DATA.len(),"reason":null});
+        "sha256":digest,"byteCount":DATA.len(),"reason":null,"sceneExecution":execution});
     crash_after(&r, &prepare, "item", expected)?;
     assert_eq!(batch(&r.l.path, r.ack(1))?["status"], "missing");
     assert!(r.target.join(&stage).exists());
@@ -211,6 +213,8 @@ fn actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and
     r.resume()?;
     assert!(batch(&r.l.path, r.publish(&lease)).is_err());
     let fresh = r.claim(1, 90000)?;
+    assert!(batch(&r.l.path, r.prepare(&fresh, &stage, 1)).is_err());
+    assert_eq!(r.items()?["items"][0]["sceneExecution"], execution);
     crash_after(&r, &r.publish(&fresh), "status", json!("published"))?;
     assert_eq!(fs::read(r.path(1, 1))?, DATA);
     assert_eq!(r.items()?["items"][0]["state"], "prepared");

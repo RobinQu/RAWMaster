@@ -49,23 +49,29 @@ actions['dag-warper-clear']=()=>dagCommit('清除色彩网格控制点',g=>{cons
 function dagCapabilities(node = dagEnabled() ? dagNode() : {kind:'grade'}) {
   return node?.kind === 'grade' ? dagPanels : [{source:'input',mix:'mix',group:'group',geometry:'geometry',output:'output'}[node?.kind]].filter(Boolean);
 }
-const dagWindowMinimum = {width:520,canvasHeight:240,chromeHeight:152,draftHeight:44};
-function dagWindowShort() { return innerHeight < 72 + dagWindowMinimum.canvasHeight + dagWindowMinimum.chromeHeight + (S.dagConnectionDraft ? dagWindowMinimum.draftHeight : 0); }
 function dagWindowFrame(v = dagView()) {
+  const margin = 12, top = innerHeight >= 420 ? 60 : margin;
+  const maxWidth = Math.max(1, innerWidth - 2 * margin), maxHeight = Math.max(1, innerHeight - top - margin);
   if (!v.window) {
-    const width=Math.min(760,innerWidth-24),height=Math.min(460,innerHeight-72);
-    v.window={x:(innerWidth-width)/2,y:60+(innerHeight-72-height)/2,width,height,minimized:false};
+    const width = Math.min(760, maxWidth), height = Math.min(460, maxHeight);
+    v.window = {x:(innerWidth-width)/2, y:top+(maxHeight-height)/2, width, height};
   }
-  const w=v.window,minHeight=dagWindowMinimum.canvasHeight+dagWindowMinimum.chromeHeight+(S.dagConnectionDraft?dagWindowMinimum.draftHeight:0),availableWidth=Math.max(1,innerWidth-24);
-  w.width=Math.max(Math.min(dagWindowMinimum.width,availableWidth),Math.min(w.width,availableWidth));
-  w.height=Math.max(minHeight,Math.min(w.height,innerHeight-72));
-  w.x=Math.max(12,Math.min(w.x,innerWidth-w.width-12)); w.y=Math.max(60,Math.min(w.y,innerHeight-(w.minimized||dagWindowShort()?48:w.height)-12));
+  const w = v.window;
+  w.width = Math.min(maxWidth, Math.max(520, w.width));
+  w.height = Math.min(maxHeight, Math.max(240, w.height));
+  w.x = Math.max(margin, Math.min(w.x, innerWidth-w.width-margin));
+  w.y = Math.max(top, Math.min(w.y, innerHeight-w.height-margin));
   return w;
 }
+function dagWindowHandles(close, value = '') {
+  return `<div class="graph-window-actions"><button type="button" class="dag-window-move" data-dag-window-drag aria-label="移动 Graph 窗口" title="拖动或用方向键移动窗口">${icon('move', 14)}</button>
+    ${btn('关闭 Graph', close, value, {icon:'close', only:true})}</div>
+    <button type="button" class="dag-window-resize" data-dag-window-resize aria-label="调整 Graph 窗口大小" title="拖动或用方向键调整窗口大小">◢</button>`;
+}
 function dagFloatingWindow() {
-  if (!dagEnabled() || dagView().mode !== 'graph' || S.tool === 'versions') return '';
-  const w=dagWindowFrame(), short=dagWindowShort(), collapsed=w.minimized || !!S.canvasTool || short;
-  if (!collapsed && !w.framePending) {
+  if (!dagEnabled() || dagView().mode !== 'graph' || S.tool === 'versions' || S.canvasTool) return '';
+  const w = dagWindowFrame();
+  if (!w.framePending) {
     const photo=Studio.data.work; w.framePending=true;
     queueMicrotask(()=>{
       delete w.framePending;
@@ -74,7 +80,7 @@ function dagFloatingWindow() {
       else if (dagTransform().framing!=='manual') dagFrameGraph();
     });
   }
-  return `<section id="dag-floating-window" class="dag-floating${collapsed?' minimized':''}" role="dialog" aria-modal="false" aria-label="工作流 Graph 悬浮窗口" style="left:${w.x}px;top:${S.canvasTool?Math.min(w.y,110):w.y}px;width:${w.width}px;height:${collapsed?48:w.height}px"><header class="dag-window-head" data-dag-window-drag><strong>${icon('layers')}工作流 Graph</strong><small title="${short?'窗口高度不足，请增高窗口后展开':'与主图实时联动 · 本地示例'}">${short?'增高窗口后展开':'与主图实时联动 · 本地示例'}</small>${btn(w.minimized?'展开 Graph':'收起 Graph','dag-window-minimize','',{icon:w.minimized?'plus':'minus',only:true,disabled:short||!!S.canvasTool,title:short?'窗口高度不足，请增高窗口后展开':S.canvasTool?'请先完成或取消画布工具':w.minimized?'展开 Graph':'收起 Graph'})}${btn('复位窗口位置','dag-window-reset','',{icon:'single',only:true})}${btn('关闭 Graph','dag-view','photo',{icon:'close',only:true})}</header>${collapsed?'':dagCanvas()+`<button class="dag-window-resize" data-dag-window-resize aria-label="调整 Graph 窗口大小" title="拖动或用方向键调整窗口">◢</button>`}</section>`;
+  return `<section id="dag-floating-window" class="dag-floating" role="dialog" aria-modal="false" aria-label="工作流 Graph 悬浮窗口" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">${dagCanvas()}${dagWindowHandles('dag-view','photo')}</section>`;
 }
 // Review the native compatibility slice in the same workbench without seeding a graph recipe.
 const compatibilityGraphMode = new URLSearchParams(location.search).get('compatibilityGraph') === '1';
@@ -97,7 +103,7 @@ function compatibilityGraphFrame() {
   const id = Studio.data.work;
   if (!compatibilityGraphFrames.has(id)) {
     const width=Math.min(640,innerWidth-24),height=392;
-    compatibilityGraphFrames.set(id, {window:{x:innerWidth-width-12,y:innerHeight-height-76,width,height,minimized:false}});
+    compatibilityGraphFrames.set(id, {window:{x:innerWidth-width-12,y:innerHeight-height-76,width,height,scale:1}});
   }
   return dagWindowFrame(compatibilityGraphFrames.get(id));
 }
@@ -106,11 +112,11 @@ function compatibilityGraphWindow() {
     compatibilityGraphPhoto = null;
     return '';
   }
-  const w = compatibilityGraphFrame(), short = dagWindowShort(), collapsed = w.minimized || short;
-  return `<section class="dag-floating dag-compat${collapsed?' minimized':''}" role="dialog" aria-modal="false" aria-label="只读兼容图" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${collapsed?48:w.height}px">
-    <header class="dag-window-head" data-dag-window-drag><strong>${icon('layers')}只读兼容图</strong><small>${short?'增高窗口后展开':h(Studio.asset(Studio.data.work).name)}</small>
-    ${btn(w.minimized?'展开 Graph':'收起 Graph','compatibility-graph-fold','',{icon:w.minimized?'plus':'minus',only:true,disabled:short})}${btn('复位窗口位置','compatibility-graph-reset','',{icon:'single',only:true})}${btn('关闭 Graph','compatibility-graph-toggle','',{icon:'close',only:true})}</header>
-    ${collapsed?'':`<div class="dag-compat-canvas" aria-label="照片来源到最终输出"><div><b>照片来源</b><small>固定输入</small></div><span aria-hidden="true">→</span><div><b>兼容显影</b><small>沿用现有配方</small></div><span aria-hidden="true">→</span><div><b>最终输出</b><small>预览与交付不变</small></div></div><p>不改变配方或产物。此图不支持拆线、忽略或单独监看。</p><button class="dag-window-resize" data-dag-window-resize aria-label="调整 Graph 窗口大小">◢</button>`}</section>`;
+  const w = compatibilityGraphFrame();
+  return `<section class="dag-floating dag-compat" role="dialog" aria-modal="false" aria-label="只读兼容图" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px">
+    <div class="dag-compat-canvas" tabindex="0" aria-label="照片来源到最终输出" aria-description="只读兼容图，使用现有显影配方"><div class="dag-compat-nodes" style="zoom:${w.scale}"><div><b>照片来源</b><small>固定输入</small></div><span aria-hidden="true">→</span><div><b>兼容显影</b><small>沿用现有配方</small></div><span aria-hidden="true">→</span><div><b>最终输出</b><small>预览与交付不变</small></div></div></div>
+    <div class="dag-zoom-controls" aria-label="Graph 缩放">${btn('−','compatibility-zoom','out')}${btn(Math.round(100 * w.scale) + '%','compatibility-zoom','fit',{title:'复位缩放'})}${btn('＋','compatibility-zoom','in')}</div>
+    ${dagWindowHandles('compatibility-graph-toggle')}</section>`;
 }
 actions['compatibility-graph-toggle'] = () => {
   if (compatibilityGraphPhoto === Studio.data.work) {
@@ -118,25 +124,22 @@ actions['compatibility-graph-toggle'] = () => {
     dagRenderFocus('.dag-scope-head [data-act=compatibility-graph-toggle]');
   } else if (!compatibilityGraphReason()) {
     compatibilityGraphPhoto = Studio.data.work;
-    dagRenderFocus('.dag-compat .dag-window-head button:last-child');
+    dagRenderFocus('.dag-compat-canvas');
   }
 };
-actions['compatibility-graph-fold'] = () => {
-  const w = compatibilityGraphFrame(); w.minimized = !w.minimized;
-  dagRenderFocus('.dag-compat .dag-window-head button:first-of-type');
-};
-actions['compatibility-graph-reset'] = () => {
+actions['compatibility-zoom'] = direction => {
   const w = compatibilityGraphFrame();
-  compatibilityGraphFrames.delete(Studio.data.work);
-  compatibilityGraphFrame().minimized = w.minimized;
-  dagRenderFocus('.dag-compat [data-act=compatibility-graph-reset]');
+  w.scale = direction === 'fit' ? 1 : Math.min(2, Math.max(.5, w.scale * (direction === 'in' ? 1.2 : 1/1.2)));
+  dagRenderFocus('.dag-compat-canvas');
 };
 window.addEventListener('hashchange', () => {
   if (!location.hash.startsWith('#edit/') || location.hash === '#edit/versions') compatibilityGraphPhoto = null;
 });
 document.addEventListener('keydown', event => {
-  if (!event.defaultPrevented && event.key === 'Escape' && event.target.closest('.dag-compat')) {
-    event.preventDefault(); actions['compatibility-graph-toggle']();
+  if (event.defaultPrevented || !event.target.closest('.dag-compat')) return;
+  if (event.key === 'Escape') { event.preventDefault(); actions['compatibility-graph-toggle'](); }
+  else if (event.target.matches('.dag-compat-canvas') && ['-', '+', '=', '0'].includes(event.key)) {
+    event.preventDefault(); actions['compatibility-zoom'](event.key === '0' ? 'fit' : event.key === '-' ? 'out' : 'in');
   }
 });
 let dagWindowResizeFrame;
@@ -144,26 +147,29 @@ window.addEventListener('resize',()=>{
   dagPickerClose();cancelAnimationFrame(dagWindowResizeFrame);
   dagWindowResizeFrame=requestAnimationFrame(()=>{if(S.page==='edit'&&(compatibilityGraphMode ? compatibilityGraphPhoto : dagEnabled()&&dagView().mode==='graph'))render();});
 });
-actions['dag-window-minimize']=()=>{if(S.canvasTool)return notify('请先完成或取消画布工具');if(dagWindowShort())return notify('窗口高度不足，请增高窗口后展开');const w=dagWindowFrame();w.minimized=!w.minimized;render();$('.dag-window-head button')?.focus({preventScroll:true});};
-actions['dag-window-reset']=()=>{if(S.canvasTool)return notify('请先完成或取消画布工具');delete dagView().window;dagRenderFocus('[data-act=dag-window-reset]');};
 let dagWindowPointer;
 document.addEventListener('pointerdown',event=>{
   const handle=event.target.closest('[data-dag-window-drag],[data-dag-window-resize]');
-  if(!handle||S.canvasTool||event.button!==0||event.target.closest('button:not(.dag-window-resize)'))return;
+  if(!handle||S.canvasTool||event.button!==0)return;
   const panel=handle.closest('.dag-floating'),frame=panel.classList.contains('dag-compat')?compatibilityGraphFrame:dagWindowFrame;dagWindowPointer={panel,frame,photo:Studio.data.work,resize:handle.hasAttribute('data-dag-window-resize'),x:event.clientX,y:event.clientY,origin:{...frame()}};
   handle.setPointerCapture(event.pointerId);event.preventDefault();
 });
 document.addEventListener('pointermove',event=>{
   const p=dagWindowPointer;if(!p)return;if(p.photo!==Studio.data.work||!p.panel.isConnected){dagWindowPointer=null;return;}const w=p.frame(),dx=event.clientX-p.x,dy=event.clientY-p.y;
   if(p.resize){w.width=p.origin.width+dx;w.height=p.origin.height+dy;}else{w.x=p.origin.x+dx;w.y=p.origin.y+dy;}
-  p.frame();Object.assign(p.panel.style,{left:w.x+'px',top:w.y+'px',width:w.width+'px',height:(w.minimized?48:w.height)+'px'});
+  p.frame();Object.assign(p.panel.style,{left:w.x+'px',top:w.y+'px',width:w.width+'px',height:w.height+'px'});
 });
 function dagWindowEnd(){const pointer=dagWindowPointer;if(!pointer)return;dagWindowPointer=null;if(pointer.panel.classList.contains('dag-compat'))return;if(pointer.resize&&pointer.panel.isConnected&&pointer.photo===Studio.data.work)dagFrameGraph();Studio.save();}
 document.addEventListener('pointerup',dagWindowEnd);document.addEventListener('pointercancel',dagWindowEnd);
 document.addEventListener('keydown',event=>{
-  if(!event.target.matches('.dag-window-resize')||!event.key.startsWith('Arrow'))return;
-  const frame=event.target.closest('.dag-compat')?compatibilityGraphFrame:dagWindowFrame,w=frame();if(event.key==='ArrowLeft')w.width-=20;if(event.key==='ArrowRight')w.width+=20;if(event.key==='ArrowUp')w.height-=20;if(event.key==='ArrowDown')w.height+=20;
-  event.preventDefault();frame();render();$('.dag-window-resize')?.focus({preventScroll:true});
+  const handle = event.target.closest('[data-dag-window-resize],[data-dag-window-drag]');
+  if (!handle || !event.key.startsWith('Arrow')) return;
+  const frame = handle.closest('.dag-compat') ? compatibilityGraphFrame : dagWindowFrame, w = frame();
+  const resize = handle.hasAttribute('data-dag-window-resize');
+  const dx = {ArrowLeft:-20, ArrowRight:20}[event.key] || 0, dy = {ArrowUp:-20, ArrowDown:20}[event.key] || 0;
+  if (resize) { w.width += dx; w.height += dy; }
+  else { w.x += dx; w.y += dy; }
+  event.preventDefault(); frame(); dagRenderFocus(resize ? '[data-dag-window-resize]' : '[data-dag-window-drag]');
 });
 changes.dagBlend=el=>dagCommit('图层混合方式',g=>g.nodes.find(n=>n.id===dagView().active).params['blend:'+el.dataset.slot]=el.value);
 changes.dagMixMode=el=>dagCommit('切换 Mixer 类型',g=>g.nodes.find(n=>n.id===dagView().active).params.mode=el.value);

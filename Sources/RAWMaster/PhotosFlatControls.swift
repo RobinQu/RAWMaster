@@ -13,6 +13,7 @@ struct PhotosFlatControlLabel<Content: View>: View {
     var pressed = false
     var stretches = false
     @Environment(\.isEnabled) private var enabled
+    @Environment(\.isFocused) private var focused
     @Environment(\.colorScheme) private var colorScheme
     @State private var hovering = false
 
@@ -23,7 +24,7 @@ struct PhotosFlatControlLabel<Content: View>: View {
             .padding(.horizontal, AppDesign.Spacing.inline)
             .frame(minWidth: AppDesign.Metric.rowHeight,
                 maxWidth: stretches ? .infinity : nil, minHeight: AppDesign.Metric.rowHeight)
-            .background(AppDesign.fill(pressed ? .pressed : hovering && enabled ? .hover : .rest),
+            .background(AppDesign.fill(pressed ? .pressed : (hovering || focused) && enabled ? .hover : .rest),
                 in: RoundedRectangle(cornerRadius: AppDesign.Radius.control))
             .opacity(enabled ? 1 : AppDesign.Ink.disabledAlpha)
             .contentShape(Rectangle())
@@ -65,12 +66,7 @@ private struct PhotosFlatCheckbox: View {
         }
         .buttonStyle(.plain).opacity(enabled ? 1 : AppDesign.Ink.disabledAlpha)
         .focused($focused)
-        .overlay(alignment: .leading) {
-            if focused {
-                RoundedRectangle(cornerRadius: 4).strokeBorder(AppPalette.accent, lineWidth: 1.5)
-                    .frame(width: 20, height: 20).offset(x: -3).allowsHitTesting(false)
-            }
-        }
+        .background(focused ? AppDesign.fill(.hover) : Color.clear, in: .rect(cornerRadius: AppDesign.Radius.control))
         .accessibilityAddTraits(.isToggle)
         .accessibilityValue(configuration.isOn ? "已勾选" : "未勾选")
     }
@@ -98,6 +94,7 @@ struct PhotosFlatMenu<Value: Hashable>: NSViewRepresentable {
 
     func makeNSView(context: Context) -> NSPopUpButton {
         let button = PhotosMenuButton(frame: .zero, pullsDown: false)
+        button.suppressStandardFocusRing()
         button.target = context.coordinator
         button.action = #selector(Coordinator.select(_:))
         return button
@@ -131,7 +128,6 @@ private final class PhotosMenuButton: NSPopUpButton {
     var ink: NSColor = .labelColor
     private var hoverArea: NSTrackingArea?
     private var hovering = false
-    override var focusRingMaskBounds: NSRect { bounds }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
@@ -144,12 +140,12 @@ private final class PhotosMenuButton: NSPopUpButton {
 
     override func mouseEntered(with event: NSEvent) { hovering = true; needsDisplay = true }
     override func mouseExited(with event: NSEvent) { hovering = false; needsDisplay = true }
-    override func drawFocusRingMask() { NSBezierPath(roundedRect: bounds, xRadius: AppDesign.Radius.control, yRadius: AppDesign.Radius.control).fill() }
 
     override func draw(_ dirtyRect: NSRect) {
         guard bounds.width > 24 else { return }
         let background = NSBezierPath(roundedRect: bounds, xRadius: AppDesign.Radius.control, yRadius: AppDesign.Radius.control)
-        NSColor(AppDesign.fill(!isEnabled ? .disabled : hovering ? .hover : .rest)).setFill()
+        let highlighted = hovering || window?.firstResponder === self
+        NSColor(AppDesign.fill(!isEnabled ? .disabled : highlighted ? .hover : .rest)).setFill()
         background.fill()
         let color = ink.withAlphaComponent(isEnabled ? 0.91 : AppDesign.Ink.disabledAlpha)
         let paragraph = NSMutableParagraphStyle()
@@ -196,6 +192,7 @@ struct PhotosFlatTabs<Value: Hashable>: View {
                         .contentShape(Rectangle())
                         .overlay(alignment: .bottom) {
                             if selection == value { Capsule().fill(AppPalette.accent).frame(height: 2).padding(.horizontal, 4) }
+                            else if focused == value { Capsule().fill(.secondary).frame(height: 2).padding(.horizontal, 4) }
                         }
                         .foregroundStyle(selection == value ? AppPalette.accent : photosAdjustmentTextColor(in: colorScheme))
                 }

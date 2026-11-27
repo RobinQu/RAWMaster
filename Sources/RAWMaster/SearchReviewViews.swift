@@ -41,6 +41,7 @@ struct ProjectToolbarSearchField: NSViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(model: model) }
     func makeNSView(context: Context) -> SearchField {
         let field = SearchField()
+        field.suppressStandardFocusRing()
         field.placeholderString = "搜索文件名 · 点击添加筛选条件"
         field.setAccessibilityLabel("搜索文件名")
         field.font = .systemFont(ofSize: NSFont.systemFontSize)

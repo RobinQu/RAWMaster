@@ -8,6 +8,9 @@ const h = (value) =>
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
   );
 const glyphs = {
+  info: 'M12 22a10 10 0 1 0 0-20 10 10 0 1 0 0 20M12 11v6m0-10v.4',
+  warning: 'M12 3 1.6 20h20.8L12 3zM12 9v5m0 3v.5',
+  move: 'M12 2v20M2 12h20M9 5l3-3 3 3m-6 14 3 3 3-3M5 9l-3 3 3 3m14-6 3 3-3 3',
   aperture: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M14 3l5 9m2 2H10m6 7-6-10m-6 7 6-10M2 10h11M8 3l6 10',
   library: 'M3 5h4v15H3z M10 5h3v15h-3z M15 6l3-1 4 14-3 1z',
   photo: 'M3 4h18v16H3z M3 16l5-5 4 4 3-3 6 6 M16 7v1',
@@ -135,8 +138,43 @@ const S = {
   selectedLayer: 0,
   compare: false,
 };
+const noticesByPhoto = new Map();
+function editorNoticeRow(notice) {
+  const error = notice.kind === 'error';
+  return `<div class="editor-toast ${error ? 'error' : 'info'}" data-notice-id="${notice.id}">${icon(error ? 'warning' : 'info', 16)}
+    <span role="${error ? 'alert' : 'status'}">${h(notice.message)}</span>
+    ${notice.retry ? btn('重试', notice.retry) : ''}${btn('关闭' + (error ? '错误' : '消息'), 'editor-notice-dismiss', notice.id, {icon:'close', only:true})}</div>`;
+}
+function editorNotices(photo) {
+  return `<section class="editor-notices" aria-label="当前照片的处理通知">${(noticesByPhoto.get(photo) || []).map(editorNoticeRow).join('')}</section>`;
+}
+function notifyEditor(message, kind = 'info', photo = Studio.data.work, retry = '') {
+  const notice = {id:Studio.uid(), message, kind, retry};
+  if (!noticesByPhoto.has(photo)) noticesByPhoto.set(photo, []);
+  noticesByPhoto.get(photo).push(notice);
+  if (S.page === 'edit' && Studio.data.work === photo)
+    $('.editor-notices')?.insertAdjacentHTML('beforeend', editorNoticeRow(notice));
+}
+function resolveEditorRetry(action, photo = Studio.data.work) {
+  for (const notice of noticesByPhoto.get(photo) || []) {
+    if (notice.retry === action) notice.retry = '';
+  }
+}
+actions['editor-notice-dismiss'] = (id, _, button) => {
+  const photo = Studio.data.work;
+  const row = button.closest('[data-notice-id]');
+  if (!row || !row.closest('.edit-page') || row.closest('.edit-page').dataset.photo !== photo) return;
+  const next = (row.nextElementSibling || row.previousElementSibling)?.querySelector('[data-act=editor-notice-dismiss]');
+  const hadFocus = row.contains(document.activeElement);
+  noticesByPhoto.set(photo, (noticesByPhoto.get(photo) || []).filter(item => item.id !== id));
+  row.remove();
+  if (hadFocus) (next || $('.scene-modes [aria-pressed=true]') || $('.edit-page [data-act=goto]'))?.focus({preventScroll:true});
+};
+window.addEventListener('blur', () => { document.documentElement.dataset.windowActive = 'false'; });
+window.addEventListener('focus', () => { document.documentElement.dataset.windowActive = 'true'; });
 let toastTimer;
-function notify(message) {
+function notify(message, kind = 'info') {
+  if (S.page === 'edit') return notifyEditor(message, kind);
   const n = $('#notice');
   n.textContent = message;
   n.classList.add('show');

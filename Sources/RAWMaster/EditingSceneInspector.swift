@@ -136,8 +136,6 @@ struct EditingSceneInspector: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            EditingSceneGraphToolbar(editing: editing)
-            Divider()
             EditingSceneModeStrip(editing: editing)
             Divider()
             ScrollView {
@@ -156,7 +154,6 @@ struct EditingSceneInspector: View {
                         Button("撤销") { editing.stepSceneHistory(redo: false) }.disabled(!editing.sceneCanUndo || editing.sceneGraphTicket == nil)
                         Button("重做") { editing.stepSceneHistory(redo: true) }.disabled(!editing.sceneCanRedo || editing.sceneGraphTicket == nil)
                     }
-                    if let message = editing.message { Text(message).font(.caption).foregroundStyle(AppPalette.warning) }
                 }.padding(14)
             }
             Divider()

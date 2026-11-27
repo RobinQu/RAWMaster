@@ -47,6 +47,33 @@ pub struct Request {
     stage: Option<String>,
     suffix: Option<u32>,
     reason: Option<String>,
+    scene_execution: Option<SceneExecution>,
+}
+
+#[derive(Clone, Deserialize, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct SceneExecution {
+    backend: SceneBackend,
+    tiles: u64,
+    nodes: u64,
+    dispatches: u64,
+    coverage_cache_hits: u64,
+    node_cache_hits: u64,
+    peak_bytes: u64,
+    budget_bytes: u64,
+    cpu_milliseconds: f64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fallback_reason: Option<String>,
+}
+
+#[derive(Clone, Deserialize, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+enum SceneBackend {
+    Rust,
+    Swift,
+    SwiftFallback,
+    Mixed,
+    Passthrough,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -181,6 +208,8 @@ struct Item {
     lease_until: Option<i64>,
     token_digest: Option<String>,
     ticket: Option<Ticket>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scene_execution: Option<SceneExecution>,
     skipped_name: Option<String>,
     reason: Option<String>,
 }
@@ -206,6 +235,7 @@ impl Item {
                 lease_until: None,
                 token_digest: None,
                 ticket: None,
+                scene_execution: None,
                 skipped_name: None,
                 reason: None,
             });
@@ -220,6 +250,7 @@ impl Item {
             || item.attempt > MAX_ATTEMPTS
             || item.generation > row.generation
             || matches!(item.state, State::Prepared | State::Delivered) != item.ticket.is_some()
+            || (item.scene_execution.is_some() && item.ticket.is_none())
             || (item.state == State::Skipped) != item.skipped_name.is_some()
             || item.lease_until.is_some() != item.token_digest.is_some()
             || item
@@ -270,9 +301,13 @@ impl Item {
         } else {
             self.state
         };
-        json!({"ordinal":self.ordinal,"state":state,"attempt":self.attempt,"generation":self.generation,
+        let mut reply = json!({"ordinal":self.ordinal,"state":state,"attempt":self.attempt,"generation":self.generation,
             "filename":self.ticket.as_ref().map(|t|&t.filename).or(self.skipped_name.as_ref()),"sha256":self.ticket.as_ref().map(|t|&t.sha256),
-            "byteCount":self.ticket.as_ref().map(|t|t.byte_count),"reason":self.reason})
+            "byteCount":self.ticket.as_ref().map(|t|t.byte_count),"reason":self.reason});
+        if let Some(execution) = &self.scene_execution {
+            reply["sceneExecution"] = json!(execution);
+        }
+        reply
     }
 }
 
@@ -706,7 +741,7 @@ impl Request {
                 stage.check(root)?;
                 if let Some(ticket) = &ctx.item.ticket {
                     ctx.require_reservation(&tx, root, &ticket.filename)?;
-                    if ticket != &stage.ticket {
+                    if ticket != &stage.ticket || ctx.item.scene_execution != self.scene_execution {
                         return Err("a prepared workbench item cannot be retargeted".into());
                     }
                 } else if root.occupied(&stage.ticket.filename)?
@@ -717,6 +752,7 @@ impl Request {
                     self.owners(&ctx, super::super::now_ms()?)?;
                     ctx.reserve(&tx, root, &stage.ticket.filename)?;
                     ctx.item.ticket = Some(stage.ticket.clone());
+                    ctx.item.scene_execution = self.scene_execution.clone();
                     ctx.item.state = State::Prepared;
                     ctx.item.save(&tx, &ctx.parent)?;
                 }

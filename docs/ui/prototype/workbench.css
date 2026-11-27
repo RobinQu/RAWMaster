@@ -105,15 +105,6 @@ button.icon-btn {
   padding: 6px;
   min-width: 31px;
 }
-button:focus-visible,
-a:focus-visible,
-select:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-summary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 input,
 textarea,
 select {
@@ -704,9 +695,7 @@ small {
   outline: none;
   flex: 1;
 }
-.search-box:focus-within {
-  outline: 2px solid var(--accent);
-}
+.search-box:focus-within { background: var(--inset); }
 .library-main > .search-box,
 .chips,
 .context-row {
