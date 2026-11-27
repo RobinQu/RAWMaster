@@ -7,10 +7,10 @@
 | 能力 | 证据 | 对本规格的作用 |
 | --- | --- | --- |
 | 可移植点配方图 | [ImageEdit/lib.rs](../../Modules/ImageEdit/src/lib.rs) · [graph.rs](../../Modules/ImageEdit/src/graph.rs) | 曝光、基础调色、曲线／色阶、滤镜、Color Grading、蒙版局部调色；legacy SDR worker 底座 |
-| 场景图执行器 | [039 Rust scene backend](../039-rust-scene-backend/spec.md) · [scene.rs](../../Modules/ImageEdit/src/scene.rs) · [scene_ffi.rs](../../Modules/ImageEdit/src/scene_ffi.rs) | 037／038 AP1 F32 场景图；**当前仅 macOS Metal**，Linux／Vulkan 未实现 |
+| 场景图执行器 | [039 Rust scene backend](../039-rust-scene-backend/spec.md) · [scene.rs](../../Modules/ImageEdit/src/scene.rs) · [scene_ffi.rs](../../Modules/ImageEdit/src/scene_ffi.rs) | 037／038 AP1 F32 场景图；tiled 60MP、source-revision 前缀缓存、completion receipt；**当前仅 macOS Metal**，Linux／Vulkan 未实现 |
 | C ABI | [rawmaster_image.h](../../Modules/ImageEdit/include/rawmaster_image.h) · [rawmaster_image_scene.h](../../Modules/ImageEdit/include/rawmaster_image_scene.h) | 点配方计划／渲染和场景图计划／渲染 |
 | 后端 | [Cargo.toml](../../Modules/ImageEdit/Cargo.toml) `wgpu` features `metal`、`vulkan`；CPU | 点配方图有 Linux Vulkan／CPU；scene 图仅 Metal |
-| 跨端验证 | [035 验收](../035-portable-processing-cores/acceptance.md) · [039 验证](../039-rust-scene-backend/validation.md) | 点配方 Linux CPU／软件 Vulkan；scene 图当前 macOS Metal 影子对照 |
+| 跨端验证 | [035 验收](../035-portable-processing-cores/acceptance.md) · [039 验证](../039-rust-scene-backend/validation.md) | 点配方 Linux CPU／软件 Vulkan；scene 图当前 macOS Metal 影子对照；60MP 为合成图，无真实 RAW 解码 |
 | 预览质量分级 | [DevelopmentPreviewModels.swift](../../Sources/RAWMasterImaging/DevelopmentPreviewModels.swift) | `interactive`／`settled`／`detail`；默认 2400 交互视口 |
 | 本地交互性能 | [028 规格](../028-filter-experience/spec.md) | 暖滤镜约 16–22ms；canonical 约 2s；不能把全分辨率当每帧 |
 | 显示代理边界 | [024 方案](../024-jpeg-display-proxy/plan.md) | JPEG 仅显示缓存，不是颜色敏感编辑输入；支持 `editProxy` 分层 |
@@ -28,7 +28,7 @@
 - 没有 **editProxy 契约**：分辨率、位深、色域、编码、缓存键、失效、存储预算未冻结。
 - 没有 **高质量代理生成**：当前 JPEG 显示代理不能作为颜色敏感编辑输入。
 - 没有 **Vulkan 图像 worker**：点配方图有 Vulkan feature 和验证，但没有 Server 队列／worker 产品化。
-- 没有 **Linux／Vulkan scene executor**：039 当前只实现 macOS Metal；Server HDR／DAG 不可执行。
+- 没有 **Linux／Vulkan scene executor**：039 当前只实现 macOS Metal；Server HDR／DAG 不可执行；tiling、前缀缓存和 receipt 也未在 Linux 验收。
 - 没有 **sceneProxy 契约**：AP1／HDR 代理格式、分辨率、存储预算未冻结。
 - 没有 **CUDA 生成式 worker**：Flux 等模型运行、许可、显存、结果登记未接入。
 - 没有 **能力清单／feature flag**：无法按服务器硬件开启／关闭图像模块。
@@ -39,7 +39,7 @@
 ## 3. 现有验证的边界
 
 - 点配方图的 Linux CPU／软件 Vulkan 验证覆盖已接入子集，不代表完整 V3、全部蒙版／AI／镜头／输出链。
-- 039 scene executor 的验证是 macOS Metal 影子对照，不是 Linux／Vulkan 或 60MP 产品验收。
+- 039 scene executor 的验证是 macOS Metal 影子对照；60MP 是 9600×6400 合成图，不是真实 RAW 解码、跨屏 EDR 或 Linux／Vulkan 产品验收。tiling、前缀缓存和 receipt 是 Server 作业可复现性的重要输入。
 - 038 的本地交互 16–22ms 是特定样本、特定滤镜、程序化提交到绘制返回；不是所有操作、所有硬件。
 - 024 的 JPEG 代理是显示缓存；本规格要求 `editProxy`／`sceneProxy`，不能直接复用其语义。
 - 035 的跨端像素差在部分状态接近或超过 `2e-6`；最终色彩门另立。

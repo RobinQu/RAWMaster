@@ -104,7 +104,7 @@ reserved
 
 | 表 | 关键字段 | 说明 |
 | --- | --- | --- |
-| `jobs` | `job_id`、`library_id`、`action`、`recipe_version`、`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`delivery_target`、`format`、`compatibility_route`、`template_id`、`batch_id`、`target_head`、`engine`、`model`、`state`、`created_at` | 与本地作业描述共用；场景图、旧 SDR 兼容路线、HDR／SDR 目标必须分开 |
+| `jobs` | `job_id`、`library_id`、`action`、`recipe_version`、`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`delivery_target`、`format`、`compatibility_route`、`template_id`、`batch_id`、`target_head`、`engine`、`model`、`state`、`execution_receipt`、`created_at` | 与本地作业描述共用；场景图、旧 SDR 兼容路线、HDR／SDR 目标必须分开；receipt 记录 tiling／cache／budget |
 | `job_inputs` | `job_id`、`ordinal`、`content_id`、`file_id`、`role`、`required` | 冻结输入 |
 | `job_attempts` | `job_id`、`attempt`、`worker_id`、`state`、`error` | 租约与重试 |
 | `job_outputs` | `job_id`、`output_id`、`object_key`、`work_id`、`state` | 唯一发布 |

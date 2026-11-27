@@ -71,7 +71,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 - **IMG-R13 · 能力清单。** Server 提供 `library_core`、`image_proxy`、`image_sdr_batch`、`image_scene_batch`、`model.prefix`、`generative`、后端、显存、scene backend、引擎／模型版本；客户端按能力显示入口。
 - **IMG-R14 · 资料库基线。** 无 GPU 的 Server 仍提供归档、取回、元数据备份恢复；图像模块关闭不影响资料库。
 - **IMG-R15 · 资源隔离。** 资料库 RPC／归档优先；图像批处理和生成式队列有独立 GPU／显存／并发配额，不能饿死基础服务。
-- **IMG-R16 · 版本绑定。** 每个作业记录 `rawmaster-image`、Vulkan／CPU 后端、RAW 解码器、色彩 profile、scene graph／output state／model program 摘要和资源；缺依赖不执行。
+- **IMG-R16 · 版本绑定与 receipt。** 每个作业记录 `rawmaster-image`、Vulkan／CPU 后端、RAW 解码器、色彩 profile、scene graph／output state／model program 摘要和资源；场景作业保存 tiling、节点／覆盖缓存命中、dispatches、峰值字节、预算和 CPU 时间的 execution receipt；缺依赖不执行。
 - **IMG-R17 · 场景后端门。** `image_scene_batch` 只有在 Linux／Vulkan（或明确 CPU）scene executor 通过 039 等价验收后才能开启；当前 039 仅 macOS Metal，不能把 040 的元数据保存能力当作 Server HDR／DAG 可用。
 - **IMG-R18 · 兼容路线。** 旧 SDR 兼容配方、兼容显影图和场景图是不同路线；Server 不自动迁移，必须按冻结的 `engineVersion`／`compatibility_route` 执行。
 - **IMG-R19 · 模型前缀。** `DevelopmentSceneModelV1` 的 denoise → superResolution? → segmentation* 是确定性、全图、有序前缀；Flux／Seedream 生成候选不属于该前缀，单独记录模型、输入和候选。
@@ -81,7 +81,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 - **IMG-R20 · 作业类型。** `proxy.generate`、`scene.proxy`、`scene.render.final`、`scene.render.batch`、`legacy.render.final`、`model.prefix`、`generative`；交互编辑不是作业类型。
 - **IMG-R21 · 冻结输入。** 作业冻结原件 `contentID`、场景图／旧配方、输出状态、SDR 派生、模型前缀、模板／批量身份、目标 head、引擎／模型和交付规格；输入变化即过期。
 - **IMG-R22 · 幂等提交。** 客户端 `jobID` 稳定；Server 按 `(libraryID, jobID)` 去重；同 ID 不同请求拒绝。
-- **IMG-R23 · 结果发布。** 输出先写 S3 暂存、校验、再登记派生资源／版本；同一作业只发布一次；HDR AVIF 与 SDR JPEG/PNG16 分别记录 target、format、位深、ICC／CICP。
+- **IMG-R23 · 结果发布。** 输出先写 S3 暂存、校验、再登记派生资源／版本；同一作业只发布一次；HDR AVIF 与 SDR JPEG/PNG16 分别记录 target、format、位深、ICC／CICP；场景输出附 execution receipt（tiles、cache hits、dispatches、budget、peak bytes、CPU time）。
 - **IMG-R24 · 候选采用。** 结果不自动改变当前采用版本；用户明确采用或导出；旧结果可回看；`SceneWorkflowBatch` 的候选／head 冲突保留。
 - **IMG-R25 · 取消与重试。** 取消协作式；未发布暂存可清理；重试沿用原输入；不确定结果先核对。
 - **IMG-R26 · 队列公平。** 每库配额、加权公平、优先级；一个库的大批任务不能占满所有 GPU；library lane 保留。
@@ -104,7 +104,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 - **IMG-R37 · HDR 交付。** HDR AVIF 10 位 Rec.2020／PQ、参考白 100 nits、目标峰值 1000 nits；SDR 派生使用独立参数和 JPEG8／PNG16；不能把 SDR 水印／元数据套到 PQ，也不能以屏幕能力决定交付。
 - **IMG-R38 · 跨后端容差。** CPU／Vulkan／Metal／039 Rust scene executor 差异按 037／035 门槛验收；显示码值差是否允许由色彩规格冻结。
 - **IMG-R39 · 生成式结果。** Flux 输出是新内容，不要求与本地同一编辑一致；仍需统一输出色彩、版本、来源和候选采用。
-- **IMG-R40 · 性能基线。** 记录 sceneProxy 取回／生成、视口交互、scene final、SDR 派生、HDR 编码、队列等待、结果下载、模型前缀和 Flux 推理；注明硬件、后端、分辨率、缓存和色彩目标。
+- **IMG-R40 · 性能基线。** 记录 sceneProxy 取回／生成、视口交互、scene final、SDR 派生、HDR 编码、队列等待、结果下载、模型前缀和 Flux 推理；注明硬件、后端、分辨率、tiling、缓存、receipt、色彩目标。60MP 合成图基线不能替代真实 RAW 或 Linux／Vulkan。
 - **IMG-R41 · 失败降级。** 缺 GPU／Vulkan／scene executor／模型／色彩门时明确禁用相应队列；本地编辑和资料库继续。
 
 ## 4. 交付阶段
@@ -115,7 +115,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 | Q1 · 代理无感 | displayProxy／editProxy／sceneProxy 预取、缓存、本地生成、离线 | 冷片／HDR 进入编辑无空白；1:1 用原件 |
 | Q2 · 客户端队列 | `CatalogTaskQueue` + `SceneWorkflowBatch` 扩展、优先级、去重、取消、重试、重启恢复 | 前台不受影响；批次不丢；取消无半成品 |
 | Q3 · Server 队列 | PostgreSQL 作业、能力匹配、scene／legacy lane、租约、发布 | 作业幂等、公平、重启恢复 |
-| Q4 · scene／HDR 批处理 | Linux scene executor（或明确关闭）、`scene.render.*`、模型前缀、HDR AVIF／SDR 派生 | 场景图／HDR 输出候选；色彩门通过；旧 SDR 不迁移 |
+| Q4 · scene／HDR 批处理 | Linux scene executor（或明确关闭）、tiling／前缀缓存／receipt、`scene.render.*`、模型前缀、HDR AVIF／SDR 派生 | 场景图／HDR 输出候选；色彩门通过；旧 SDR 不迁移；60MP 基线 |
 | Q5 · 生成式 | Flux/CUDA 队列、模型能力、结果候选 | 缺模型禁用；结果绑定；取消／重试 |
 | Q6 · 运维 | 10TB／10GbE、GPU 配额、监控、恢复、feature flags | 真实基线；未测能力不标完成 |
 

@@ -81,7 +81,8 @@
 - 输入 `content_id`／`file_id`／版本、按序输入；
 - `recipe_version`；场景图 `scene_graph`／hash、输出状态 `route`／`sdrTrim`、模型前缀 `model_program`；
 - `compatibility_route`（旧 SDR 兼容 vs 场景图）、`delivery_target`（`sdr709`／`hdr2020`）、`format`（`avif10`／`jpeg8`／`png16`）；
-- 模板／批量身份、目标 head、引擎／模型、能力请求、输出规格。
+- 模板／批量身份、目标 head、引擎／模型、能力请求、输出规格；
+- 场景执行 receipt：backend、tiles、evaluated nodes、dispatches、cache hits、peak bytes、budget、CPU time。
 
 服务端不得把旧 SDR 兼容配方自动迁移为场景图，也不得把 HDR 目标悄悄降为 SDR；不匹配返回 `FAILED_PRECONDITION`／`INVALID_ARGUMENT`。
 

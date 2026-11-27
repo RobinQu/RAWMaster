@@ -55,7 +55,7 @@
 6. **归档引用**：每个引用指向同库对象；每个对象至少一个引用或保留代次引用；无跨库引用。
 7. **配额**：`used_bytes` 等于该库唯一对象字节和；≤ `quota_bytes`。
 8. **上传意图**：没有未过期活动残留；状态合法；part 号不冲突。
-9. **作业**：输入／输出引用完整；`published` 唯一；运行中恢复后转 `reconcile`；`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`compatibility_route`、`delivery_target`、`format` 与输入版本一致。
+9. **作业**：输入／输出引用完整；`published` 唯一；运行中恢复后转 `reconcile`；`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`compatibility_route`、`delivery_target`、`format` 与输入版本一致；scene execution receipt 可读且与输出绑定。
 10. **快照**：`revision` 不超前；S3 快照对象存在；摘要匹配；场景工作流模板／批量候选身份随客户端快照保存。
 11. **outbox／审计**：事件 ID 唯一；可从当前状态重建。
 12. **S3 清单**：对象数／字节数一致；抽样 HEAD；恢复时全量 HEAD。

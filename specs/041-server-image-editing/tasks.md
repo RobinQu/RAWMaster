@@ -64,12 +64,12 @@
 
 ## Q4 · Linux scene executor 与 HDR／SDR 批处理
 
-- [ ] **IMG40 · scene executor 端口。** 039 当前 macOS Metal-only；为 Linux／Vulkan（或明确 CPU）实现同等 parser／executor／预算／输出；未完成时 `image_scene_batch` 关闭。
-- [ ] **IMG41 · scene worker。** 037／038 场景图、coverage、输出状态、SDR trim、模型前缀；S3 输入／输出。
+- [ ] **IMG40 · scene executor 端口。** 039 当前 macOS Metal-only；为 Linux／Vulkan（或明确 CPU）实现同等 parser／executor／tiling／前缀缓存／receipt／预算／输出；未完成时 `image_scene_batch` 关闭。
+- [ ] **IMG41 · scene worker。** 037／038 场景图、coverage、输出状态、SDR trim、模型前缀；S3 输入／输出；保存 execution receipt。
 - [ ] **IMG42 · scene.render.final。** 冻结 sceneGraph／outputState／modelProgram／target head；HDR AVIF 与 SDR 派生。
 - [ ] **IMG43 · scene.render.batch。** 模板／批量；候选／head；取消／重试／undo；旧 SDR 不迁移。
 - [ ] **IMG44 · 色彩门。** 与本地最终在冻结样本、目标、容差内一致；未过门只候选。
-- [ ] **IMG45 · HDR／SDR 交付。** AVIF 10 位 Rec.2020／PQ、JPEG8、PNG16；ICC／CICP；SDR 水印／元数据不套 PQ。
+- [ ] **IMG45 · HDR／SDR 交付。** AVIF 10 位 Rec.2020／PQ、JPEG8、PNG16；ICC／CICP；SDR 水印／元数据不套 PQ；60MP 合成图与真实 RAW 分开记录。
 - [ ] **IMG46 · 失败降级。** 缺 scene executor／Vulkan／色彩门时关闭；legacy SDR 与本地编辑继续。
 
 **Q4 出口。** Linux scene executor 与本地参考通过；scene／HDR 像素与色彩门通过；旧 SDR 不迁移；结果候选。
@@ -87,7 +87,7 @@
 
 ## Q6 · 规模与运维
 
-- [ ] **IMG60 · 10TB／10GbE。** sceneProxy、scene final、HDR 编码、Flux、队列等待、结果下载；真实基线。
+- [ ] **IMG60 · 10TB／10GbE。** sceneProxy、scene final（含 tiling／cache receipt）、HDR 编码、Flux、队列等待、结果下载；真实基线。
 - [ ] **IMG61 · 队列监控。** 深度、等待、失败、GPU／显存、scene backend；不伪造 ETA。
 - [ ] **IMG62 · 恢复演练。** Server／客户端重启、S3 5xx、队列满、取消竞态、批次 head。
 - [ ] **IMG63 · Feature flags。** `image_proxy`、`image_sdr_batch`、`image_scene_batch`、`model.prefix`、`generative`；按硬件／部署开启。

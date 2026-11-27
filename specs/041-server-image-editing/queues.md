@@ -190,11 +190,12 @@ jobs(
   started_at TIMESTAMPTZ,
   finished_at TIMESTAMPTZ,
   error TEXT,
-  result JSONB
+  result JSONB,
+  execution_receipt JSONB
 )
 job_attempts(job_id, attempt, worker_id, state, started_at, finished_at, error)
 job_inputs(job_id, ordinal, content_id, file_id, role, required)
-job_outputs(job_id, output_id, object_key, sha256, bytes, target, format, bit_depth, color_space, cicp, work_id, version_id, state)
+job_outputs(job_id, output_id, object_key, sha256, bytes, target, format, bit_depth, color_space, cicp, work_id, version_id, state, execution_receipt)
 job_events(job_id, sequence, kind, payload, created_at)
 worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 ```
@@ -245,7 +246,7 @@ worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 - 客户端按 `job_id` 更新本地镜像；重复事件幂等；旧 sequence 丢弃。
 - Server 状态权威；客户端不能把本地“完成”当 Server 已发布。
 - `published` 后客户端下载结果，校验，登记候选；下载失败可重试。
-- 结果事件包含 `inputHash`、`recipeHash`／`sceneGraphHash`、`outputStateHash`、`modelProgramHash`、`compatibilityRoute`、`deliveryTarget`、`format`、`engineVersion`、`outputHash`；客户端核对当前版本、目标 head 和输出目标。
+- 结果事件包含 `inputHash`、`recipeHash`／`sceneGraphHash`、`outputStateHash`、`modelProgramHash`、`compatibilityRoute`、`deliveryTarget`、`format`、`engineVersion`、`outputHash`、`executionReceipt`（tiles、cache hits、dispatches、budget、peak bytes、CPU time）；客户端核对当前版本、目标 head 和输出目标。
 
 ### 4.3 取消
 

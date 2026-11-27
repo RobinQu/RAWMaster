@@ -20,7 +20,7 @@
 - **没有实现。** 没有客户端队列、Server 队列、图像 worker、生成式 worker、代理生成。
 - **没有 editProxy／sceneProxy 实测。** 分辨率、位深、HDR 语义、色彩、存储预算、预取时延未测。
 - **没有队列实测。** 重启、离线、抢占、去重、取消、未知、公平、场景批次 head 未执行。
-- **没有 Linux／Vulkan scene executor。** 039 仅 macOS Metal；Server HDR／DAG 不能执行。
+- **没有 Linux／Vulkan scene executor。** 039 仅 macOS Metal；Server HDR／DAG 不能执行。tiling、前缀缓存和 receipt 只在 macOS 合成 60MP 上验证。
 - **没有 Vulkan Server 实测。** NVIDIA GPU、Vulkan ICD、显存、吞吐未测。
 - **没有 CUDA/Flux 实测。** 模型、许可、显存、质量未执行。
 - **没有色彩门。** Server scene final 与本地最终一致性未测；HDR AVIF／SDR 派生未在 Server 验证。
@@ -36,6 +36,7 @@
 5. 用真实 `rawmaster-image` + Vulkan 在 NVIDIA 上跑 legacy／scene 样本，记录吞吐、显存、精度。
 6. 用真实客户端 SQLite 跑队列重启、离线、抢占、取消、未知、场景批次 head。
 7. 用 037 色彩规格跑 scene final／HDR AVIF／SDR 派生对照；未过门只候选。
+8. 把 039 的 tiling、前缀缓存、execution receipt 带到 Linux／Vulkan；用真实 60MP RAW 复核，不用合成图代替。
 
 ## 4. 口径
 

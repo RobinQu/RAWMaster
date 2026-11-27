@@ -127,6 +127,8 @@ flowchart LR
 - 输入：S3 原件或冻结输入；RAW 解码、037 色彩管理、scene graph、coverage、模型前缀。
 - 输出：scene proxy／HDR／SDR；S3；PostgreSQL 收据。
 - 依赖：039 scene executor 的 Linux／Vulkan（或 CPU）端口；未实现前 worker 不接收 `scene.*`。
+- 039 已有 tiled 60MP 执行、source-revision 前缀缓存、analytic coverage 缓存和 completion receipt；Linux 端口必须保留同等语义。
+- 作业收据记录 backend、tiles、evaluated nodes、dispatches、cache hits、peak bytes、budget、CPU time；结果可复现性依赖这些字段。
 - 精度：CPU／Vulkan／Metal 差异按 037／035 门槛；未过门只候选。
 - 不能用 displayProxy 代替原件做 final；不能把旧 SDR 结果当场景输出。
 
@@ -195,13 +197,13 @@ flowchart LR
 | 场景图 | schema 4、输出状态、模板、批量 head、旧 SDR 兼容、无效图拒绝 |
 | 客户端队列 | `CatalogTaskQueue`／`SceneWorkflowBatch` 重启、离线、抢占、去重、取消、重试、未知 |
 | Server 队列 | 能力、lane、公平、租约、重启、取消、发布、过期 |
-| Scene worker | Linux Vulkan scene executor 像素／性能；未移植时关闭 |
+| Scene worker | Linux Vulkan scene executor 像素／性能；tiling、前缀缓存、receipt；未移植时关闭 |
 | Legacy worker | 旧 SDR 配方像素、导出、兼容图 |
 | HDR 交付 | AVIF 10 位 Rec.2020／PQ、SDR 派生 JPEG/PNG16、ICC／CICP、色彩门 |
 | 模型前缀 | denoise／superres／segmentation 顺序、身份、provider、预算 |
 | 生成式 | CUDA、模型、显存、许可、取消、结果 |
 | 协同 | 提交／观察／取消／重试／结果；断线；同 ID；批次 head |
-| 规模 | 10TB／10GbE、20 万对象、队列等待、sceneProxy、final、HDR 编码、Flux |
+| 规模 | 10TB／10GbE、20 万对象、队列等待、sceneProxy、final、HDR 编码、Flux；60MP 合成图只作起点 |
 
 ## 10. 阶段
 
@@ -222,6 +224,7 @@ flowchart LR
 | sceneProxy 存储／带宽爆炸 | 原生或 0.5×；按需；只对冷／远程生成；linearProxy 不默认全量 |
 | scene executor 仅 Metal | Q4 前 `image_scene_batch` 关闭；legacy SDR 独立；不混用 |
 | 场景图／旧 SDR 混淆 | 冻结 `compatibility_route`；不自动迁移；逐图测试 |
+| 60MP／大图内存 | 复用 039 tiling、预算、receipt；Server 另测真实 60MP RAW，不用合成图外推 |
 | HDR 色彩不一致 | 037 色彩门；AVIF／SDR 分别验证；未过门只候选 |
 | 本地交互被后台任务拖慢 | 前台抢占；资源类；暂停 prefetch |
 | 场景批次 head 冲突 | 复用 `SceneWorkflowBatch`；候选不自动采用；undo 检查 |
