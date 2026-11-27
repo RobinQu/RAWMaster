@@ -493,6 +493,9 @@ fn changes(source: &Connection, since: i64, tip: i64) -> Result<Changes> {
         // read snapshot. Their sequence still invalidates a cursor, but metadata
         // for thousands of offline works cannot invalidate the v7 file projection.
         let domain: String = row.get(2)?;
+        if domain == "project_review_states" {
+            continue;
+        }
         match row.get::<_, Option<String>>(1)? {
             Some(asset) => {
                 touched.insert(asset);

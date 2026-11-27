@@ -42,7 +42,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
     let nodes = [light, dark, parallel, multiply, layer, group]
     let graph = try workflow(nodes, final: group)
 
-    let swift = try Renderer(device: device)
+    let swift = try Renderer(device: device, backend: .swift)
     let rust = try rustRenderer(device)
     let expected = try read(swift.prepareFinal(raw, geometry: geometry, graph: graph).image.texture)
     let actual = try read(rust.prepareFinal(raw, geometry: geometry, graph: graph).image.texture)
@@ -53,7 +53,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
 
   func testRustShadowMatchesAllThirteenBlendModes() throws {
     let (device, _, raw, geometry, _) = try fixture(width: 12, height: 7)
-    let swift = try Renderer(device: device), rust = try rustRenderer(device)
+    let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
     let light = Node(name: "Light", operation: .corrector(image: .input, mask: nil, exposureEV: 1, curve: [], strength: 1, enabled: true))
     let dark = Node(name: "Dark", operation: .corrector(image: .input, mask: nil, exposureEV: -1, curve: [], strength: 1, enabled: true))
     for mode in Graph.Blend.allCases {
@@ -72,7 +72,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
     let light = Node(name: "Light", operation: .corrector(image: .input, mask: gradient.id, exposureEV: 2, curve: [], strength: 1, enabled: true))
     let dark = Node(name: "Dark", operation: .corrector(image: .node(light.id), mask: nil, exposureEV: -0.5, curve: [], strength: 1, enabled: true))
     let graph = try workflow([gradient, light, dark], final: dark)
-    let swift = try Renderer(device: device), rust = try rustRenderer(device)
+    let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
 
     for view in [Graph.View(), .init(target: .node(dark.id)), .init(target: .node(light.id)), .init(target: .bypass)] {
       let expected = try read(swift.preparePreview(raw, geometry: geometry, graph: graph, view: view).image.texture)
@@ -87,6 +87,51 @@ final class RustSceneGraphRendererTests: XCTestCase {
     let actual = try read(rust.prepareFinal(roiImage, geometry: geometry, graph: graph).image.texture)
     XCTAssertEqual(actual.count, expected.count)
     try compare(actual, expected, tolerance: 2e-5, message: "ROI with full-frame coverage")
+  }
+
+  func testNestedGroupMonitorsUseRequestedBackendAndKeepFrozenFinal() throws {
+    let (device, _, image, geometry, _) = try fixture(width: 24, height: 12)
+    func grade(_ name: String, _ image: Graph.Endpoint, ev: Float, mask: UUID? = nil) -> Node {
+      Node(name: name, operation: .corrector(image: image, mask: mask, exposureEV: ev, curve: [], strength: 1, enabled: true))
+    }
+    let sourceGrade = grade("Source", .input, ev: 0.5)
+    let outerGrade = grade("Outer prefix", .input, ev: 1)
+    let mask = Node(name: "Ramp", operation: .linearCoverage(start: .zero, end: .init(1, 1)))
+    let inside = grade("Inside", .input, ev: -1.5, mask: mask.id)
+    let tail = grade("Inside final", .node(inside.id), ev: 0.25)
+    let inner = Node(name: "Inner", operation: .group(image: .node(outerGrade.id),
+      graph: .init(nodes: [inside, mask, tail], output: .node(tail.id)), strength: 0.25, enabled: true))
+    let outer = Node(name: "Disabled outer", operation: .group(image: .node(sourceGrade.id),
+      graph: .init(nodes: [outerGrade, inner], output: .node(inner.id)), strength: 0.5, enabled: false))
+    let graph = try workflow([sourceGrade, outer], final: outer)
+    let path = [outer.id, inner.id]
+    let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
+    let final = try read(rust.prepareFinal(image, geometry: geometry, graph: graph, sourceRevision: 11).image.texture)
+    let region = try upload(Array(repeating: SIMD4<Float>(-0.2, 0.4, 1.7, 0.5), count: 7 * 5),
+      width: 7, origin: .init(4, 3), device: device)
+    for (revision, input) in [image, region].enumerated() {
+      for target in [Graph.View.Target.bypass, .node(inside.id), .final] {
+        let view = Graph.View(groupPath: path, target: target)
+        let expected = try swift.preparePreview(input, geometry: geometry, graph: graph, view: view)
+        let actual = try rust.preparePreview(input, geometry: geometry, graph: graph, view: view,
+          sourceRevision: UInt64(11 + revision))
+        XCTAssertEqual(swift.lastReceipt?.backend, .swift)
+        XCTAssertEqual(rust.lastReceipt?.backend, .rust)
+        let pixels = try read(actual.image.texture)
+        try compare(pixels, read(expected.image.texture), tolerance: 2e-5, message: "nested \(target)")
+        if revision == 0 { XCTAssertNotEqual(pixels, final) }
+      }
+    }
+    let restored = try rust.prepareFinal(image, geometry: geometry, graph: graph, sourceRevision: 11)
+    XCTAssertEqual(try read(restored.image.texture), final)
+    let bypass = try rust.preparePreview(image, geometry: geometry, graph: graph, view: .init(target: .bypass))
+    XCTAssertTrue(bypass.image.texture === image.texture)
+    XCTAssertEqual(rust.lastReceipt?.backend, .passthrough)
+    XCTAssertEqual(rust.lastReceipt?.dispatches, 0)
+    for view in [Graph.View(groupPath: path, target: .node(mask.id)), .init(groupPath: [inner.id])] {
+      XCTAssertThrowsError(try rust.preparePreview(image, geometry: geometry, graph: graph, view: view))
+      XCTAssertNil(rust.lastReceipt)
+    }
   }
 
   func testRustRejectsMalformedGraphsAndCoveragePreview() throws {
@@ -113,16 +158,11 @@ final class RustSceneGraphRendererTests: XCTestCase {
     ], enabled: true))
     let graph = try workflow([light, dark, mix], final: mix)
     let bytes = raw.texture.width * raw.texture.height * 16
-    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
-    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
-    defer {
-      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) } else { unsetenv("RAWMASTER_SCENE_BACKEND") }
-    }
-    let tight = try Renderer(device: device, surfaceBudget: bytes + bytes / 2)
+    let tight = try Renderer(device: device, surfaceBudget: bytes + bytes / 2, backend: .rust)
     XCTAssertThrowsError(try tight.prepareFinal(raw, geometry: geometry, graph: graph)) {
       XCTAssertEqual($0 as? Renderer.Failure, .surfaceBudget)
     }
-    let roomy = try Renderer(device: device, surfaceBudget: 32 * 1024 * 1024)
+    let roomy = try Renderer(device: device, surfaceBudget: 32 * 1024 * 1024, backend: .rust)
     _ = try roomy.prepareFinal(raw, geometry: geometry, graph: graph)
   }
 
@@ -145,7 +185,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
       .init(.node(dark.id), weight: 0.4, mode: .softLight)
     ], enabled: true))
     let graph = try workflow([gradient, light, dark, mix], final: mix)
-    let swift = try Renderer(device: device), rust = try rustRenderer(device)
+    let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
     let swiftMaster = try swift.prepareFinal(raw, geometry: geometry, graph: graph)
     let rustMaster = try rust.prepareFinal(raw, geometry: geometry, graph: graph)
     for target in [DevelopmentSceneOutputStateV1.Target.sdr709, .hdr2020] {
@@ -244,7 +284,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
     let mix = Node(name: "Zero", operation: .parallel(base: .input,
       layers: [.init(.node(brighter.id), weight: 0)], enabled: true))
     let graph = try workflow([brighter, mix], final: mix)
-    let renderer = try Renderer(device: device, surfaceBudget: raw.texture.allocatedSize)
+    let renderer = try Renderer(device: device, surfaceBudget: raw.texture.allocatedSize, backend: .auto)
     XCTAssertTrue(try renderer.prepareFinal(raw, geometry: geometry, graph: graph).image.texture === raw.texture)
     let receipt = try XCTUnwrap(renderer.lastReceipt)
     XCTAssertEqual(receipt.backend, .swiftFallback)
@@ -270,12 +310,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
     ], enabled: true))
     let graph = try workflow([gradient, radial, mask, light, dark, mix], final: mix)
     let budget = 6 * 1024 * 1024 * 1024
-    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
-    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
-    defer {
-      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) } else { unsetenv("RAWMASTER_SCENE_BACKEND") }
-    }
-    let renderer = try Renderer(device: device, surfaceBudget: budget)
+    let renderer = try Renderer(device: device, surfaceBudget: budget, backend: .rust)
     func timed(_ body: () throws -> Void) rethrows -> Double {
       let start = DispatchTime.now().uptimeNanoseconds
       try body()
@@ -340,7 +375,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
       .init(.node(light.id), weight: 0.65), .init(.node(dark.id), weight: 0.35)
     ], enabled: true))
     let graph = try workflow([gradient, radial, mask, light, dark, mix], final: mix)
-    let swift = try Renderer(device: device), rust = try rustRenderer(device)
+    let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
     func measure(_ renderer: Renderer) throws -> [Double] {
       for _ in 0..<3 { _ = try renderer.prepareFinal(raw, geometry: geometry, graph: graph) }
       return try (0..<15).map { _ in
@@ -372,13 +407,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
   // MARK: - Helpers
 
   private func rustRenderer(_ device: MTLDevice) throws -> Renderer {
-    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
-    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
-    defer {
-      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) }
-      else { unsetenv("RAWMASTER_SCENE_BACKEND") }
-    }
-    return try Renderer(device: device)
+    try Renderer(device: device, backend: .rust)
   }
 
   private func fixture(width: Int, height: Int) throws -> (MTLDevice, Renderer, Image, Renderer.Geometry, [SIMD4<Float>]) {

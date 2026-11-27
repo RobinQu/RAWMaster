@@ -32,11 +32,18 @@ function handoffDelivery(ids, source, { version, mode = 'render', companions = f
 }
 function showExport(preferred = null) {
   if (S.page === 'edit' && S.dagConnectionDraft) return notify('先完成或取消当前连接草稿');
+  const projectGrid = S.page === 'library' && (S.scope === 'all' || S.scope.startsWith('project/'));
   const editing = S.page === 'edit',
     focus = Studio.data.work,
-    set = new Set(activeIDs());
+    set = new Set(projectGrid ? Studio.browser(S.scope).selected : activeIDs());
   const visible = Studio.visible(S.scope).filter(validWork);
   const selected = visible.filter((id) => set.has(id));
+  if (projectGrid && selected.length !== set.size) {
+    render();
+    ($('.actionbar [data-act=export]:enabled') ?? $('.photo-card'))?.focus();
+    dialog('操作提示', '<p>选中的照片已不在当前范围内。请核对选片后重新导出。</p>', btn('好', 'close'));
+    return;
+  }
   const ids = editing && !selected.includes(focus) ? [focus] : selected;
   if (!ids.length) {
     const b = activeBrowser(),

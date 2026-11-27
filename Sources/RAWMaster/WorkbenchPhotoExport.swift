@@ -480,12 +480,7 @@ extension AppModel {
         guard (includedIDs?.count ?? candidates.count) <= Self.maximumWorkbenchExportCount else {
             throw LibraryError.invalid("每批最多可交付 \(Self.maximumWorkbenchExportCount) 张照片，请缩小选片范围。")
         }
-        #if canImport(RAWMasterLibrary)
         let catalog = submittedScope == nil ? (isPagedGrid ? exportCatalogScope : nil) : submittedScope?.catalog
-        if let frozen = catalog {
-            _ = try await Task.detached(priority: .userInitiated) { try store.catalogAssets(for: frozen) }.value
-        }
-        #endif
         let ids = includedIDs ?? Set(candidates.filter { $0.availability == .available }.map(\.id))
         try PhotoExportKernel.validatePhotoCount(ids.count)
         let selected = candidates.filter { ids.contains($0.id) }
@@ -511,7 +506,8 @@ extension AppModel {
         }
         let capture = Task.detached(priority: .userInitiated) { [current] in
             let saved = try store.withReadSnapshot {
-                try selection.map { item -> (PhotoWork, EditingVersion)? in
+                if let catalog { _ = try store.catalogAssets(for: catalog) }
+                return try selection.map { item -> (PhotoWork, EditingVersion)? in
                     try Task.checkCancellation()
                     if !workflowVersions.isEmpty {
                         guard let id = workflowVersions[item.asset.id] else { throw EditingError.missingVersion }

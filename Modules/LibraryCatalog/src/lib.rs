@@ -59,6 +59,11 @@ pub fn request(catalog: &Path, envelope: &Value) -> Result<Value> {
         Some("groupProcessing") => processing::execute(catalog, body),
         Some("lightroom") => lightroom::execute(catalog, body),
         Some("managedFiles") => managed_files::execute(catalog, body),
+        Some("resolveSelection") => {
+            let mut db = navigation::open_reader(catalog)?;
+            let snapshot = db.transaction()?;
+            selection::resolve(&snapshot, body)
+        }
         Some("overview") => navigation::overview(catalog),
         Some("package") => backup::execute(catalog, body),
         _ => Err("Unsupported catalog operation".into()),
@@ -182,6 +187,7 @@ pub fn transaction(db: &Connection, envelope: &Value) -> Result<Value> {
         }
         "migrationCheck" => migration::check(db, &envelope["request"]),
         "validateSelection" => selection::check(db, &envelope["request"]),
+        "resolveSelection" => selection::resolve(db, &envelope["request"]),
         "command" => authority::command(db, &envelope["request"]),
         _ => Err("Unsupported catalog transaction".into()),
     }

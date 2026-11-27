@@ -221,7 +221,7 @@ struct EditingSceneCanvas: NSViewRepresentable {
                        let currentDisplay = self.display, Self.displayID(currentWindow.screen) == currentDisplay.id {
                         if succeeded {
                             self.presentedFrameID = frame.id; active.isHidden = false
-                            InteractionTrace.shared.sceneDrawableCompleted(frame: frame.id, target: frame.target,
+                            InteractionTrace.shared.sceneDrawableCompleted(frame: frame,
                                 display: currentDisplay, windowNumber: currentWindow.windowNumber,
                                 pixelSize: key.size, edrEnabled: key.hdr, nativeWindow: frame.window != nil)
                         } else { active.isHidden = true; self.presentedFrameID = nil; self.failed?(); return }

@@ -10,6 +10,40 @@ struct Library {
     search: PathBuf,
     db: Connection,
 }
+
+#[test]
+fn frozen_selection_accepts_only_unbroken_browse_history_and_still_checks_members() {
+    let library = Library::basic();
+    let page = library.page(json!({"projectID":"p"}));
+    let scope = json!({"libraryID":page["libraryID"],"watermark":page["watermark"],
+        "projectID":"p","assetIDs":["b","a"]});
+    let resolve = |scope: &Value| {
+        rawmaster_library::request(
+            &library.catalog,
+            &json!({"operation":"resolveSelection","request":scope}),
+        )
+    };
+    let browse = "INSERT INTO lc_changes(asset_id,domain) VALUES('a','project_review_states')";
+    library.db.execute(browse, []).unwrap();
+    assert_eq!(resolve(&scope).unwrap()["count"], 2);
+    let mut invalid = scope.clone();
+    invalid["assetIDs"] = json!(["a", "a"]);
+    assert!(resolve(&invalid).is_err());
+    invalid["assetIDs"] = json!(["h"]);
+    assert!(resolve(&invalid).is_err());
+    invalid = scope.clone();
+    invalid["libraryID"] = json!("different");
+    assert!(resolve(&invalid).unwrap().is_null());
+    library.change(Some("b"));
+    let material = library.db.last_insert_rowid();
+    library.db.execute(browse, []).unwrap();
+    assert!(resolve(&scope).unwrap().is_null());
+    library
+        .db
+        .execute("DELETE FROM lc_changes WHERE seq=?", [material])
+        .unwrap();
+    assert!(resolve(&scope).unwrap().is_null());
+}
 impl Library {
     fn new() -> Self {
         let temporary = tempdir().unwrap();

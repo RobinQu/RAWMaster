@@ -444,7 +444,7 @@ public enum RAWMasterImageKernel {
                 cpuMilliseconds: raw.cpu_ms)
         }
 
-        public func render(input: any MTLTexture, output: any MTLTexture, view: SceneView = .final,
+        public func render(input: any MTLTexture, output: any MTLTexture, view: SceneView = .final, groupPath: [UUID] = [],
                            origin: SIMD2<Int> = .zero, geometry: SIMD2<Int>? = nil,
                            surfaceBudget: Int? = nil,
                            tileEdge: Int? = nil, sourceRevision: UInt64 = 0,
@@ -456,6 +456,7 @@ public enum RAWMasterImageKernel {
             case .node(let id): ["target": "node", "id": id]
             }
             payload["origin"] = [origin.x, origin.y]
+            if !groupPath.isEmpty { payload["groupPath"] = groupPath.map(\.uuidString) }
             if let geometry { payload["geometry"] = [geometry.x, geometry.y] }
             if let surfaceBudget { payload["surfaceBudget"] = surfaceBudget }
             if let tileEdge { payload["tileEdge"] = tileEdge }

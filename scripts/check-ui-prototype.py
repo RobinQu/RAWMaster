@@ -29,6 +29,7 @@ def main():
     parser.add_argument("--compatibility-only", action="store_true", help="Run the Spec 038 read-only compatibility graph walkthrough.")
     parser.add_argument("--scene-native-only", action="store_true", help="Walk through the Spec 037 native-review HDR slice.")
     parser.add_argument("--pq-queue-only", action="store_true", help="Walk through the native PQ queue preflight interaction in the workbench.")
+    parser.add_argument("--grid-export-only", action="store_true", help="Open 032 directly from the project grid and recover a changed selection.")
     parser.add_argument("--native-graph-only", action="store_true", help="Walk through the editable scene DAG native-review slice.")
     parser.add_argument("--workflow-batch-only", action="store_true", help="Walk the native-template/batch review entry in the workbench.")
     parser.add_argument("--scene-scopes-only", action="store_true", help="Walk through HDR scopes and diagnostics in the native-review prototype.")
@@ -97,6 +98,40 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.grid_export_only:
+                browser(*options, "open", host + ENTRY + "?pqReview=1")
+                for theme, width in [("light", "1280"), ("dark", "390")]:
+                    browser("set", "viewport", width, "844")
+                    scenario("032 网格直达、选区变更与重试 · " + theme, """
+                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
+                      await hash('library/project/river');await page('.photo-card');
+                      if(S.multi)act('multi');act('photo','b1');act('multi');act('photo','r1');
+                      const grid=()=>el('.actionbar [data-act=export]'), project=Studio.project('river');
+                      const ids=Studio.visible(S.scope).filter(id=>activeIDs().includes(id));
+                      assert(ids.length===2&&grid().textContent.includes('批量导出'));
+                      Studio.save();grid().click();await page('#export-frame[src]');
+                      assert(JSON.stringify(S.delivery.items.map(i=>i.id))===JSON.stringify(ids),'ordered physical selection');
+                      const doc=el('#export-frame').contentDocument;await wait(()=>el('#asset-list',doc));
+                      act('workflow','library');await page('.photo-card');
+                      assert(activeIDs().length===2&&activeBrowser().focus==='r1','return to selection and focus');
+                      const old=project.ids.slice();project.ids=old.filter(id=>id!=='r1');
+                      grid().focus();grid().click();assert(modal().open&&modal().innerText.includes('请核对选片'));
+                      assert(location.hash.includes('library')&&modal().getBoundingClientRect().right<=innerWidth);
+                      window.gridReviewIDs=old;
+                    """)
+                    browser("press", "Escape")
+                    scenario("032 核对余下照片并重新导出 · " + theme, """
+                      await wait(()=>!modal().open);
+                      const grid=()=>el('.actionbar [data-act=export]');
+                      assert(document.activeElement?.matches('.photo-card, .actionbar [data-act=export]'),'focus restored to grid');
+                      assert(activeIDs().join()==='b1','removed photo must not be replaced');
+                      grid().click();await page('#export-frame[src]');assert(S.delivery.items.map(i=>i.id).join()==='b1');
+                      Studio.project('river').ids=window.gridReviewIDs;act('workflow','library');await page('.photo-card');
+                      el('.photo-card[data-val=b1]').dispatchEvent(new MouseEvent('click',{bubbles:true,metaKey:true}));
+                      assert(!activeIDs().length&&grid().disabled,'empty selection cannot submit');
+                    """)
+                check_browser_errors()
+                return
             if args.scene_scopes_only:
                 browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&scopesNativeReview=1")
                 browser("set", "viewport", "1280", "800")

@@ -176,6 +176,7 @@ final class AppModel: ObservableObject {
     private var fullSnapshotLoaded = false
     var exportCatalogScope: CatalogFrozenSelection?
     var exportCatalogAssets: [AssetRecord] = []
+    var pendingGridExport: Task<Void, Never>?
     private(set) var frozenSelection: CatalogFrozenSelection?
     private(set) var overview: LibraryOverview?
     @Published var processingGroupID: String?
@@ -2156,6 +2157,17 @@ extension AppModel {
             focusedID = first.id
             if selectedIDs.isEmpty || frozenSelection == nil { selectedIDs = [first.id] }
         } else { focusedID = nil; selectedIDs = [] }
+    }
+
+    func showRefreshedExportGrid(_ page: CatalogGridPage<AssetRecord>, selection: CatalogFrozenSelection) {
+        let retained = selection.assetIDs.filter(selectedIDs.contains)
+        let priorFocus = focusedID
+        catalogGrid?.displaySelectionPage(page)
+        let mounted = Set(page.items?.flatMap(\.matchedAssetIDs) ?? [])
+        frozenSelection = mounted.isSuperset(of: retained) ? nil : selection.replacingMembers(retained)
+        selectedIDs = Set(retained)
+        focusedID = priorFocus.flatMap { selectedIDs.contains($0) ? $0 : nil } ?? retained.first
+        saveBrowse()
     }
 
     private func withCheckedSelection<T>(_ store: LibraryStore, ids: [String]? = nil, _ body: () throws -> T) throws -> T {

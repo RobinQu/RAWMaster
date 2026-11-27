@@ -14,7 +14,7 @@
 
 **复跑。** 使用 `scripts/build-app.sh release` 的正常打包和验签。用 `--library` 指向隔离目录，`--interaction-trace` 采集 `scene.drawable.completed`，按上述路径重新运行。原型默认 60 项通过，`--scene-native-only` 和 `--native-graph-only` 各四项通过，覆盖 Escape、运行库失败、连接封锁及 390px 浅色和深色。原生暗房、跨屏和兼容／可编辑 Graph 共七项通过。严格 Rust 与强制 Swift 各通过七项实拍预览、ROI 和交付组件测试。另复跑下文的 PQ 进程中断恢复，首份文件 inode 和第二份暂存摘要均保持。[038 原生闭环](../038-node-dag-workflow/validation.md#与-037-同包的首条-graph-闭环)
 
-**网格直达。** 本次在资料库网格直接点击「批量导出」时触发目录修订已变更，切换范围并重新选择后仍可复现。暗房入口保持这两张选片，分别完成 PQ 和 SDR。后续需在保留选片的情况下刷新网格快照，再校验本次版本和来源。[032 范围冻结代码](../../Sources/RAWMaster/WorkbenchActions.swift)
+**网格直达。** 本次在资料库网格直接点击「批量导出」时触发目录修订已变更，切换范围并重新选择后仍可复现。暗房入口保持这两张选片，分别完成 PQ 和 SDR。此记录对应上一包。修复后的网格直达、选择冲突及四份实拍文件见 [032 网格交付](../032-export-workspace/spec.md#资料库网格直接交付)。[032 范围冻结代码](../../Sources/RAWMaster/WorkbenchActions.swift)
 
 ## 集成原型走查
 

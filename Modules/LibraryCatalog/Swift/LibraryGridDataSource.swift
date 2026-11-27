@@ -19,6 +19,10 @@ private actor LibraryPageReader {
         return try LibraryEngine.shared().request("page", at: database, index: index, payload: query,
                                                   as: CatalogGridPage<A>.self)
     }
+
+    func isCurrent(_ selection: CatalogFrozenSelection) throws -> Bool {
+        try LibraryEngine.shared().request("resolveSelection", at: database, payload: selection, as: CatalogJSON.self) != .null
+    }
 }
 
 @MainActor
@@ -39,7 +43,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
     private let reader: LibraryPageReader
     private var request: CatalogGridRequest<Query>?
     private var nextCursor: CatalogJSON?
-    private var epoch: UInt64 = 0
+    public private(set) var epoch: UInt64 = 0
     private var task: Task<Void, Never>?
 
     public init(database: URL) {
@@ -102,28 +106,32 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
                     if appending { refresh() } else { fail("查询修订已过期，请刷新。") }
                     return
                 }
-                guard page.status == "ok", let items = page.items, let files = page.totalFiles,
-                      let captures = page.totalCaptures, let count = page.total else {
-                    fail("资料库返回了不完整的分页结果。")
-                    return
-                }
-                cards = appending ? cards + items : items
-                totalFiles = files
-                totalCaptures = captures
-                total = count
-                facets = page.facets
-                libraryID = page.libraryID
-                watermark = page.watermark
-                generation = page.generation
-                nextCursor = page.nextCursor
-                displayedRevision &+= 1
-                isLoading = false
-                errorDescription = nil
+                apply(page, appending: appending)
             } catch {
                 guard let self, epoch == expected, !Task.isCancelled else { return }
                 fail(error.localizedDescription)
             }
         }
+    }
+
+    private func apply(_ page: CatalogGridPage<Asset>, appending: Bool) {
+        guard page.status == "ok", let items = page.items, let files = page.totalFiles,
+              let captures = page.totalCaptures, let count = page.total else {
+            fail("资料库返回了不完整的分页结果。")
+            return
+        }
+        cards = appending ? cards + items : items
+        totalFiles = files
+        totalCaptures = captures
+        total = count
+        facets = page.facets
+        libraryID = page.libraryID
+        watermark = page.watermark
+        generation = page.generation
+        nextCursor = page.nextCursor
+        isLoading = false
+        errorDescription = nil
+        displayedRevision &+= 1
     }
 
     private func fail(_ message: String) {
@@ -154,19 +162,37 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         try await frozenSelection().assetIDs
     }
 
-    public func frozenSelection() async throws -> CatalogFrozenSelection {
-        guard var query = request, let generation, let watermark else {
+    public func readSelectionPage() async throws -> (page: CatalogGridPage<Asset>, selection: CatalogFrozenSelection) {
+        guard var query = request, let libraryID, watermark != nil else {
             throw LibraryEngineError("请等待资料库完成查询")
         }
         let expected = epoch
         query.cursor = nil
         query.includeOrderedIDs = true
         let page = try await reader.read(query, as: Asset.self)
-        guard expected == epoch, page.status == "ok", page.generation == generation, page.watermark == watermark,
-              let ids = page.orderedAssetIDs else {
-            throw LibraryEngineError("范围已变化，请刷新后重新选择")
+        guard expected == epoch, !Task.isCancelled else { throw CancellationError() }
+        guard page.libraryID == libraryID, page.status == "ok", page.items != nil, page.total != nil,
+              page.totalFiles != nil, page.totalCaptures != nil, let ids = page.orderedAssetIDs else {
+            throw LibraryEngineError("无法核对当前资料库选区，请重新打开项目。")
         }
-        return CatalogFrozenSelection(libraryID: page.libraryID, watermark: watermark, projectID: query.projectID, assetIDs: ids)
+        return (page, CatalogFrozenSelection(libraryID: libraryID, watermark: page.watermark, projectID: query.projectID, assetIDs: ids))
+    }
+
+    public func displaySelectionPage(_ page: CatalogGridPage<Asset>) {
+        cancel()
+        apply(page, appending: false)
+    }
+
+    public func frozenSelection() async throws -> CatalogFrozenSelection {
+        let displayed = try visibleSelection([])
+        let expected = epoch, displayedGeneration = generation
+        let (page, selection) = try await readSelectionPage()
+        guard page.generation == displayedGeneration else { throw CatalogSelectionError.changed }
+        if selection.watermark != displayed.watermark {
+            guard try await reader.isCurrent(displayed) else { throw CatalogSelectionError.changed }
+        }
+        guard expected == epoch, !Task.isCancelled else { throw CancellationError() }
+        return selection
     }
 }
 #endif

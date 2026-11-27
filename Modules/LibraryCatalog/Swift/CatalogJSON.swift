@@ -111,4 +111,13 @@ public struct CatalogFrozenSelection: Codable, Equatable, Sendable {
     public let watermark: Int64
     public let projectID: String?
     public let assetIDs: [String]
+
+    public func replacingMembers(_ ids: [String]) -> Self {
+        Self(libraryID: libraryID, watermark: watermark, projectID: projectID, assetIDs: ids)
+    }
+}
+
+public enum CatalogSelectionError: LocalizedError {
+    case changed
+    public var errorDescription: String? { "资料库内容已更新，请返回网格核对选片后重新导出。" }
 }

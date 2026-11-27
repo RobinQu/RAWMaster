@@ -1,17 +1,17 @@
 # 039 · Rust + Metal 场景执行器
 
-截至 `main@b238c0ab`，macOS 已对有资格的 038 场景图默认尝试 Rust。目标是由 `Modules/ImageEdit` 的 Rust 执行器负责新显影的算子语义、编译、Metal 资源与回执。持久图仍由 [038](../038-node-dag-workflow/spec.md) 定义，工作域及输出由 [037](../037-color-film-hdr/spec.md) 定义。Swift 保留平台呈现、文件授权和验证用参考执行，RAW、模型及编码通过平台适配器接入。[联合实施方案](../035-portable-processing-cores/roadmap.md) · [验证记录](validation.md)
+本轮在 `main@01c7a075` 上复核并补齐组内监看。macOS 已对有资格的 038 场景图默认尝试 Rust。目标是由 `Modules/ImageEdit` 的 Rust 执行器负责新显影的算子语义、编译、Metal 资源与回执。持久图仍由 [038](../038-node-dag-workflow/spec.md) 定义，工作域及输出由 [037](../037-color-film-hdr/spec.md) 定义。Swift 保留平台呈现、文件授权和验证用参考执行，RAW、模型及编码通过平台适配器接入。[联合实施方案](../035-portable-processing-cores/roadmap.md) · [验证记录](validation.md)
 
 ## 生产路径
 
 | 路径 | 当前状态 |
 | --- | --- |
-| 场景预览／冻结最终图 | 非组内请求默认尝试 Rust + Metal，输出为预乘 AP1 `RGBA32Float`，解析及外部覆盖为 `R32Float`。曝光／EV 曲线、强度和覆盖、Parallel、Layer 的 13 模式、Group 及解析遮罩已有执行。Swift 的 ACES 2、浮点 `CAMetalLayer` 和文件输出阶段消费场景纹理。 |
-| 组内查看／旁路 | 图中的 Group 可由 Rust 执行。带 `groupPath` 的监看目前走 Swift。顶层旁路及直接输入根可快速返回源纹理。组内、直通或无正式回执的请求需要分别统计。 |
+| 场景预览／冻结最终图 | 顶层和组内的图求值默认尝试 Rust + Metal，输出为预乘 AP1 `RGBA32Float`，解析及外部覆盖为 `R32Float`。曝光／EV 曲线、强度和覆盖、Parallel、Layer 的 13 模式、Group 及解析遮罩已有执行。Swift 的 ACES 2、浮点 `CAMetalLayer` 和文件输出阶段消费场景纹理。 |
+| 组内查看／旁路 | Rust 依次解析 `groupPath`，从每层组的实际图像输入求值。查看组内节点时按全强度进入该组，父图保存的开关、强度及最终根保持原值。组内可查看输入、图像节点或本组最终根。顶层旁路和直接输入根复用源纹理，回执为 `passthrough`，派发数为零。 |
 | 旧 V3 | `graph.rs` 的点配方与 Scene ABI 是两个执行入口。原产品的 Core Image／Metal V3 显影、RAW 域操作和多数空间算子仍在使用。035 的已验收点配方可独立重放，部分接线仅限 QA 模式。 |
 | 跨端 | Scene Metal executor 和 Scene C ABI 仅 macOS 提供。035 的点配方已测 Linux CPU 与软件 Vulkan。服务端按 041 逐项验收 Scene decode、执行、模型与成片后再申报能力。 |
 
-`RAWMASTER_SCENE_BACKEND` 省略时走自动选择，在执行错误时可尝试 Swift 参考。设 `rust` 时合格的顶层请求失败即报错，组内路径仍绕过 Rust。设 `swift`、`off` 或 `0` 时强制参考。验收同时核对请求资格和本次执行回执。修复后严格模式对未支持的请求给明确原因，自动模式只在等价能力存在时回退，并记录原失败。取消、过期和语义校验失败直接返回。[路由](../../Sources/RAWMasterImaging/DevelopmentSceneGraphRendererV1.swift) · [Swift 桥](../../Sources/RAWMasterImaging/RustSceneGraphRenderer.swift)
+`RAWMASTER_SCENE_BACKEND` 省略时走自动选择，在执行错误时可尝试 Swift 参考。设 `rust` 时顶层和组内都要求 Rust 执行及本次完成回执，失败直接返回。设 `swift`、`off` 或 `0` 时强制参考。验收同时核对请求资格和本次执行回执。每个渲染器在创建时确定模式。错误组路径和覆盖节点监看在求值前拒绝。浮点预览帧携带其图回执，诊断可关联实际呈现的帧 ID、后端、派发数、峰值和回退原因。[路由](../../Sources/RAWMasterImaging/DevelopmentSceneGraphRendererV1.swift) · [Swift 桥](../../Sources/RAWMasterImaging/RustSceneGraphRenderer.swift)
 
 ## 编译、瓦片和回执
 
@@ -23,7 +23,7 @@
 
 确定性模型程序最多四个阶段，顺序是全色度去噪、可选一次 2× 超分、分割。PhotoVGG7 和 PhotoUpconv7 的适配器通过 Rec.709 模型域接入。主体／人物来自 Vision，风景遮罩依赖已核验的 EfficientViT 包。阶段的输入范围和有符号／超白还原须在实拍 HDR 上验算。分割只产与来源几何对齐的覆盖。`externalCoverage(id:)` 使用模型阶段 ID。生成式处理由现有候选流程登记。[模型程序](../../Sources/RAWMasterCore/DevelopmentSceneModelV1.swift) · [设备适配器](../../Sources/RAWMasterImaging/DevelopmentSceneProductionModelProvider.swift)
 
-现有接线可在组件中跑通，但 v4 持久配方排斥 `adjustmentsV3`，正常场景草稿从此字段派生模型时得不到模型程序。示波器和冻结交付调用也未携带模型，预览后缀键和 Rust 源修订未包括模型身份。产品开放前应通过同一版本化场景文档和冻结票据保存阶段及资源引用。FIT、ROI、示波器及导出共用已声明的全图模型作用尺度。按来源、模型、权重、分析 View、输入及几何保留可复用结果。模板重绑到目标原片时核对全部覆盖引用。缺模型或权重不符在预检拒绝。[配方](../../Sources/RAWMasterCore/EditingModels.swift) · [预览与示波器](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift) · [冻结成片](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift)
+现有接线可在组件中跑通，但 v4 持久配方排斥 `adjustmentsV3`，正常场景草稿从此字段派生模型时得不到模型程序。示波器和冻结交付调用也未携带模型。预览现按模型程序变更清理后缀，执行带模型前缀的图时禁用依赖源像素的跨请求节点缓存。产品开放前应通过同一版本化场景文档和冻结票据保存阶段及资源引用。FIT、ROI、示波器及导出共用已声明的全图模型作用尺度。按来源、模型、权重、分析 View、输入及几何保留可复用结果。模板重绑到目标原片时核对全部覆盖引用。缺模型或权重不符在预检拒绝。[配方](../../Sources/RAWMasterCore/EditingModels.swift) · [预览与示波器](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift) · [冻结成片](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift)
 
 ## 迁移顺序
 

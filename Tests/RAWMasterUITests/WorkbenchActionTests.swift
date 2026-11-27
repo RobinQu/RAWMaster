@@ -1,6 +1,7 @@
 import AppKit
 import XCTest
 import RAWMasterCore
+import RAWMasterLibrary
 @testable import RAWMaster
 
 final class WorkbenchActionTests: XCTestCase {
@@ -88,6 +89,65 @@ final class WorkbenchActionTests: XCTestCase {
         XCTAssertEqual(Set(model.explicitExportAssets.map(\.id)), Set(ids))
         model.openProjectExport()
         XCTAssertEqual(model.workbenchExportContext, .project)
+    }
+
+    @MainActor func testPagedGridHandoffSurvivesBrowseSavesAndRechecksMaterialChanges() async throws {
+        let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
+        let project = try await f.populate("GridExport").projectID
+        let all = try f.store.loadAssets()
+        try f.store.setTags(ids: all.map(\.id), tags: ["deliver"])
+        let model = AppModel(libraryURL: f.library, defaults: f.defaults, usesPagedLibrary: true)
+        model.selectScope(.project, id: project)
+        model.searchQuery = ProjectSearchQuery(tags: ["deliver"])
+        let deadline = Date().addingTimeInterval(10)
+        while model.browserAssets.count != 3 && Date() < deadline { try await Task.sleep(for: .milliseconds(15)) }
+        let files = model.browserAssets
+        guard files.count == 3 else { return XCTFail(model.errorMessage ?? "The project did not load") }
+        model.select(files[0]); model.select(files[1], modifiers: .command)
+        let ids = model.actionAssetIDs
+        let grid = try XCTUnwrap(model.catalogGrid)
+        let shown = try grid.visibleSelection(ids)
+        model.flushProjectReviewState()
+        let whole = try await grid.frozenSelection()
+        XCTAssertGreaterThan(whole.watermark, shown.watermark)
+        XCTAssertEqual(Set(whole.assetIDs), Set(all.map(\.id)))
+        XCTAssertEqual(try f.store.catalogAssets(for: shown).map(\.id), ids)
+
+        // An unrelated real edit forces a fresh, filtered query at handoff.
+        try f.store.markReviewed(ids: [files[2].id], reviewed: true)
+        model.openSelectionExport()
+        await model.pendingGridExport?.value
+        XCTAssertTrue(model.exportWorkspacePresented, model.errorMessage ?? "")
+        XCTAssertEqual(model.workbenchExportCandidates.map(\.id), ids)
+        XCTAssertEqual(model.selectedIDs, Set(ids))
+        XCTAssertEqual(model.focusedID, files[1].id)
+        try f.store.setTags(ids: [files[1].id], tags: [])
+        let destination = f.root.appendingPathComponent("changed-scope")
+        do {
+            _ = try await model.exportWorkbenchPhotos(directory: destination, namingTemplate: "{name}",
+                configuration: .init(format: .jpeg8), includedIDs: Set(ids)) { _, _, _ in }
+            XCTFail("A changed scope must not be frozen")
+        } catch CatalogSelectionError.changed {}
+        XCTAssertFalse(FileManager.default.fileExists(atPath: destination.path))
+        let history = try await WorkbenchDeliveryCatalog(database: f.library).history()
+        XCTAssertTrue(history.isEmpty)
+        model.activateWorkflow(.library)
+        model.openSelectionExport()
+        await model.pendingGridExport?.value
+        XCTAssertFalse(model.exportWorkspacePresented)
+        XCTAssertEqual(model.selectedIDs, [files[0].id])
+        XCTAssertEqual(model.focusedID, files[0].id)
+        XCTAssertTrue(model.errorMessage?.contains("核对选片") == true)
+        model.errorMessage = nil
+        model.openSelectionExport()
+        await model.pendingGridExport?.value
+        XCTAssertEqual(model.workbenchExportCandidates.map(\.id), [files[0].id])
+        XCTAssertTrue(model.exportWorkspacePresented, model.errorMessage ?? "")
+        model.activateWorkflow(.library)
+        model.openSelectionExport()
+        model.activateWorkflow(.library)
+        await model.pendingGridExport?.value
+        XCTAssertFalse(model.exportWorkspacePresented, "A cancelled handoff must not reopen the workspace")
     }
 
     func testExternalEditorReceivesIndependentWritableBytesEvenFromSymlink() throws {

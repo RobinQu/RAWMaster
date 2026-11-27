@@ -221,7 +221,7 @@ function actionbar(b, info) {
         btn('排除', 'decide', 'reject', { disabled: !selected }) +
         btn('更多…', 'selection-menu', '', { disabled: !selected })
   }</div>
-      <div class="row end">${btn('编辑照片', 'edit', '', { disabled: !validWork(focus), icon: 'edit' })}${btn('导出', 'export', '', { cls: 'primary', icon: 'export', disabled: !b.selected.some(validWork) })}</div></footer>`;
+      <div class="row end">${btn('编辑照片', 'edit', '', { disabled: !validWork(focus), icon: 'edit' })}${btn('批量导出', 'export', '', { cls: 'primary', icon: 'export', disabled: !b.selected.some(validWork) })}</div></footer>`;
 }
 function libraryView() {
   const info = Studio.scopeInfo(S.scope),

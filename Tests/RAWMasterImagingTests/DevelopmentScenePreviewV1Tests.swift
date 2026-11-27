@@ -67,6 +67,7 @@ final class DevelopmentScenePreviewV1Tests: XCTestCase {
       try await service.render(source: source, graph: graph, view: .init(), target: target, sampling: sampling)
     }
     let hdr = try await render(.hdr2020, graph, fit)
+    XCTAssertGreaterThan(try XCTUnwrap(hdr.execution).dispatches, 0)
     XCTAssertEqual(hdr.nativeSize, .init(width: 4000, height: 6000))
     XCTAssertEqual(hdr.texture.width, 600); XCTAssertEqual(hdr.texture.height, 900)
     XCTAssertEqual(hdr.texture.pixelFormat, .rgba32Float)
@@ -95,10 +96,19 @@ final class DevelopmentScenePreviewV1Tests: XCTestCase {
     XCTAssertNotEqual(try pixels(bypass.texture), try pixels(roi.texture))
     let returnedFinal = try await render(.hdr2020, trimmed, native)
     XCTAssertEqual(returnedFinal.id, roi.id)
+    XCTAssertEqual(returnedFinal.execution, roi.execution)
+    XCTAssertEqual(bypass.execution?.backend, .passthrough)
+    XCTAssertEqual(bypass.execution?.dispatches, 0)
     let returnedBypass = try await service.render(source: source, graph: trimmed, view: .init(target: .bypass), target: .hdr2020, sampling: native)
     XCTAssertEqual(returnedBypass.id, bypass.id)
     observed = await service.observations()
     XCTAssertEqual([observed.raw, observed.graph, observed.display], [1, 3, 5], "monitor switching reuses correctly tagged suffixes")
+    let models = try DevelopmentSceneModelProgramV1(stages: [.denoise(amount: 20)])
+    do {
+      _ = try await service.render(source: source, graph: trimmed, view: .init(target: .bypass),
+        target: .hdr2020, sampling: native, models: models)
+      XCTFail("A model that requires the full image must not receive the old cached ROI frame")
+    } catch DevelopmentSceneGraphRendererV1.Failure.invalidImage {}
     let replacement = here.appendingPathComponent("other.ARW")
     try Data(count: count).write(to: replacement)
     _ = try FileManager.default.replaceItemAt(url, withItemAt: replacement)

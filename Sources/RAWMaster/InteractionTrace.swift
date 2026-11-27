@@ -80,13 +80,19 @@ final class InteractionTrace {
         destination = path.map { URL(fileURLWithPath: $0) }
     }
     var isEnabled: Bool { destination != nil }
-    func sceneDrawableCompleted(frame: UUID, target: DevelopmentSceneOutputStateV1.Target,
+    func sceneDrawableCompleted(frame: DevelopmentScenePreviewFrameV1,
                                 display: SceneDisplayEnvironment, windowNumber: Int, pixelSize: CGSize,
                                 edrEnabled: Bool, nativeWindow: Bool) {
         guard isEnabled else { return }
-        var fields: [String: Any] = ["frameID": frame.uuidString, "target": target.rawValue, "displayID": display.id,
+        var fields: [String: Any] = ["frameID": frame.id.uuidString, "target": frame.target.rawValue, "displayID": display.id,
             "windowNumber": windowNumber, "headroom": display.headroom, "potentialHeadroom": display.potentialHeadroom,
             "pixelWidth": pixelSize.width, "pixelHeight": pixelSize.height, "edrEnabled": edrEnabled, "nativeWindow": nativeWindow]
+        if let execution = frame.execution {
+            fields["graphBackend"] = execution.backend.rawValue
+            fields["graphDispatches"] = execution.dispatches
+            fields["graphPeakBytes"] = execution.peakBytes
+            fields["graphFallbackReason"] = execution.fallbackReason
+        }
         if let profile = display.colorProfile {
             fields["displayProfileSHA256"] = SHA256.hash(data: profile).map { String(format: "%02x", $0) }.joined()
         }

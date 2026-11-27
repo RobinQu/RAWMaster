@@ -49,17 +49,18 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
     let grade = Node(name: "Grade", operation: .corrector(image: .input, mask: gradient.id,
       exposureEV: 1, curve: [], strength: 1, enabled: true))
     let graph = try workflow([gradient, grade], final: grade)
-    let swift = try Renderer(device: device)
-    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
-    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
-    defer {
-      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) } else { unsetenv("RAWMASTER_SCENE_BACKEND") }
-    }
-    let rust = try Renderer(device: device)
+    let swift = try Renderer(device: device, backend: .swift)
+    let rust = try Renderer(device: device, backend: .rust)
     let expected = try read(swift.prepareFinal(image, geometry: geometry, graph: graph,
       models: program, provider: provider).image.texture)
     let actual = try read(rust.prepareFinal(image, geometry: geometry, graph: graph,
-      models: program, provider: provider).image.texture)
+      models: program, provider: provider, sourceRevision: 17).image.texture)
+    XCTAssertEqual(swift.lastReceipt?.backend, .swift)
+    XCTAssertEqual(rust.lastReceipt?.backend, .rust)
+    let weaker = try Program(stages: [.denoise(amount: 20)])
+    let changed = try read(rust.prepareFinal(image, geometry: geometry, graph: graph,
+      models: weaker, provider: provider, sourceRevision: 17).image.texture)
+    XCTAssertNotEqual(actual, changed, "Changing a model prefix must invalidate derived image nodes")
     XCTAssertEqual(actual.count, expected.count)
     for (found, reference) in zip(actual, expected) {
       XCTAssertEqual(found.x, reference.x, accuracy: 2e-5)
@@ -105,13 +106,8 @@ final class DevelopmentSceneModelPipelineV1Tests: XCTestCase {
     let grade = Node(name: "Masked exposure", operation: .corrector(image: .input, mask: mask.id,
       exposureEV: 1, curve: [], strength: 1, enabled: true))
     let graph = try workflow([mask, grade], final: grade)
-    let swift = try Renderer(device: device)
-    let previous = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]
-    setenv("RAWMASTER_SCENE_BACKEND", "rust", 1)
-    defer {
-      if let previous { setenv("RAWMASTER_SCENE_BACKEND", previous, 1) } else { unsetenv("RAWMASTER_SCENE_BACKEND") }
-    }
-    let rust = try Renderer(device: device)
+    let swift = try Renderer(device: device, backend: .swift)
+    let rust = try Renderer(device: device, backend: .rust)
     let swiftMaster = try swift.prepareFinal(image, geometry: geometry, graph: graph,
       models: program, provider: provider)
     let rustMaster = try rust.prepareFinal(image, geometry: geometry, graph: graph,

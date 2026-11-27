@@ -1,0 +1,330 @@
+{
+  "date": "2026-11-27",
+  "baseCommit": "01c7a075d38482147813041a11536e9f88eccb37",
+  "configuration": "macOS Release, local ad hoc signature",
+  "machine": "Apple M4 Max",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "cdhash": "aca6e1218affc35e73ae2467651bc1c399cf2c20",
+  "appSHA256": "69d464f3b9f1575966fe54780be4a093ceae54653ebfcda7bd5a34ea0de59df7",
+  "rustImageSHA256": "c2a540c0fbad2181306a9db68c32bc9b99c5ef085449220cb0799341eece096d",
+  "rustCatalogSHA256": "f98fd6168db38bd9325b4a2ae55d21a514734fc891ab834d347300803ae53baa",
+  "flashRawSHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "reproduction": {
+    "old": {
+      "displayed": 117,
+      "catalog": 126,
+      "interveningChanges": 9,
+      "domains": [
+        "project_review_states"
+      ],
+      "returnCode": 1,
+      "reply": {
+        "error": "The selected catalog revision has changed"
+      }
+    },
+    "fixed": {
+      "displayed": 117,
+      "catalog": 126,
+      "interveningChanges": 9,
+      "domains": [
+        "project_review_states"
+      ],
+      "returnCode": 0,
+      "reply": {
+        "count": 2,
+        "libraryID": "e78d9780-dda9-4593-8ab3-1659b2e36d75",
+        "watermark": 126
+      }
+    }
+  },
+  "entry": "project grid → select person.ARW and snow.ARW → 批量导出 → 032 → HDR 成片 or 全尺寸 JPEG",
+  "photos": {
+    "person": {
+      "sourceSHA256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8",
+      "versionID": "81F126F7-5DAB-4D14-87E5-9BA409682749",
+      "recipeSchema": 4,
+      "finalNodeID": "BCF45179-43CC-42A4-8B13-BA31FFCBE3FD",
+      "nodeExposureEV": [
+        0.75
+      ],
+      "frozenInputSHA256": "21139c78998fd39a72b622bd19e00ce43a069b41ab120f14cc5e24e31c6ccf04"
+    },
+    "snow": {
+      "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+      "versionID": "3D7A3210-3C1A-4F8C-804C-FDFC17920AF7",
+      "recipeSchema": 4,
+      "finalNodeID": "739E5B5D-FEAE-4D9F-9094-7FDF1B2FC510",
+      "nodeExposureEV": [
+        0,
+        1.5
+      ],
+      "frozenInputSHA256": "4db87a6d66859d5c957d3f1418451726426e3a00db92b342da2a81c80a84cafa"
+    }
+  },
+  "delivery": {
+    "avif10": {
+      "batchID": "04ae6726-d0bc-4fdf-82f3-9cc102be0428",
+      "manifestSHA256": "63cf029c7d6cd58c13c1af87492a20b2af4ce12da323b6be6332d0283f97d6dd",
+      "configurationSHA256": "b411352ae459319cdd53533bee889cbe2d834ea3a1ed681649a66bd24e7fcbf5",
+      "state": "done",
+      "outputs": {
+        "person": {
+          "filename": "person-0001.avif",
+          "sha256": "df4b31c264a3e5c8d01fc027f4069c0b8d53fe276b8d6ca63d4bbd368ba6f565",
+          "bytes": 4619064,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 10,
+            "range": "full",
+            "cicp": [
+              9,
+              16,
+              1
+            ]
+          },
+          "matchesPriorDarkroomFile": true
+        },
+        "snow": {
+          "filename": "snow-0002.avif",
+          "sha256": "b400d16229191fee2040c5bc7fbef85a9148c36a9e5570ce9318523f90d7f245",
+          "bytes": 6271414,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 10,
+            "range": "full",
+            "cicp": [
+              9,
+              16,
+              1
+            ]
+          },
+          "matchesPriorDarkroomFile": true
+        }
+      }
+    },
+    "jpeg8": {
+      "batchID": "bf655c59-26d1-46f0-8b0a-e11c7b65a366",
+      "manifestSHA256": "3831ad0c4c8524bafa186b3cc012d7c339d12000b074f39024e1238936a09838",
+      "configurationSHA256": "a1e8d7b7e098b60448cb491517a2f786be088de6734e7d80e6fad5030c528135",
+      "state": "done",
+      "jpegQuality": 0.9,
+      "outputs": {
+        "person": {
+          "filename": "person-0001.jpg",
+          "sha256": "7eba474b041198638f555bdf21d11c198a1c0b3bb847ddb60eecac220225c048",
+          "bytes": 1273824,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          },
+          "matchesPriorDarkroomFile": true
+        },
+        "snow": {
+          "filename": "snow-0002.jpg",
+          "sha256": "0d7c5f962e528e13b453974ef128b2c611b839535be929ca7a978569b4a923ce",
+          "bytes": 2408288,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          },
+          "matchesPriorDarkroomFile": true
+        }
+      }
+    },
+    "jpeg8-quality95": {
+      "batchID": "d1f7e12f-c4da-4cf2-82a4-730a9ce3cf66",
+      "manifestSHA256": "b95771084c21de1f6dd93f3d53e42ac06f133792c7710b8659843c16169f1335",
+      "configurationSHA256": "430194c29f1b6fd881b1144a0d4a02647148ebd3ee21c6af244a986ed452a89f",
+      "state": "done",
+      "jpegQuality": 0.95,
+      "outputs": {
+        "person": {
+          "filename": "person-0001.jpg",
+          "sha256": "9389a70f2139e7dfa5921f56355b13bce3fd759c26a1d5814aa5d7e3ba615bf0",
+          "bytes": 2165507,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          }
+        },
+        "snow": {
+          "filename": "snow-0002.jpg",
+          "sha256": "5125520d22865bb984bdb96577939623dae743b365e9dd4a07cb3b4c257edb92",
+          "bytes": 4057894,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          }
+        }
+      }
+    }
+  },
+  "drawable": {
+    "frameID": "F50538DE-D713-4551-9BF8-1C92F064B439",
+    "windowNumber": 57321,
+    "displayID": 1,
+    "target": "hdr2020",
+    "graphBackend": "rust",
+    "graphDispatches": 1,
+    "graphPeakBytes": 66355200,
+    "edrEnabled": true,
+    "pixelWidth": 1036,
+    "pixelHeight": 1552
+  },
+  "deliveryChecks": {
+    "allThreeBatchesDone": true,
+    "attemptsPerFile": 1,
+    "versionSourceAndFrozenRecipeVerified": true,
+    "independentDecoders": [
+      "avifdec",
+      "ImageMagick",
+      "sips ICC extraction"
+    ],
+    "priorReference": "../037-color-film-hdr/evidence/signed-release-20261127.json"
+  },
+  "checks": {
+    "browser": {
+      "workbench": 60,
+      "grid": 4,
+      "pq": 3
+    },
+    "rustCatalog": {
+      "passed": 99,
+      "ignored": 5
+    },
+    "rustSceneParser": 4,
+    "nativeReleaseCases": 35,
+    "nativeReleaseCasesRunSeparately": [
+      "missing FlashRaw runtime",
+      "960×640 graph budget",
+      "6 MP strict backend comparison",
+      "61.44 MP generated surface"
+    ],
+    "strictNestedGroupViews": [
+      "group input",
+      "image node",
+      "group final",
+      "ROI",
+      "root return",
+      "illegal group or coverage target"
+    ],
+    "relativePixelTolerance": 2e-05,
+    "pixelToleranceScaling": "max(1, abs(referenceChannel))",
+    "modelPrefixAndCacheReleaseCases": 8
+  },
+  "measurements": {
+    "sixMegapixel": {
+      "resolution": [
+        3000,
+        2000
+      ],
+      "rustP50": 13.248209,
+      "rustP95": 14.257208,
+      "swiftP50": 13.509459,
+      "swiftP95": 14.272583,
+      "rustMs": [
+        13.096334,
+        12.928375,
+        13.179375,
+        13.473333,
+        13.248209,
+        13.376625,
+        13.868417,
+        13.946708,
+        13.682125,
+        13.039709,
+        13.056958,
+        12.520792,
+        12.502625,
+        14.257208,
+        14.671417
+      ],
+      "swiftMs": [
+        12.756791,
+        13.832167,
+        13.566042,
+        12.7175,
+        13.163375,
+        13.463667,
+        13.509459,
+        12.709208,
+        13.238958,
+        14.545166,
+        14.049167,
+        14.272583,
+        13.870542,
+        13.5,
+        13.595792
+      ]
+    },
+    "generated61Megapixel": {
+      "budgetBytes": 6442450944,
+      "device": "Apple M4 Max",
+      "dispatches": 42,
+      "graphColdMs": 144.992417,
+      "graphWarmMs": 156.979458,
+      "hdrDeliveryMs": 37.572458,
+      "peakBytes": 5046796288,
+      "resolution": [
+        9600,
+        6400
+      ],
+      "scope": "six-node AP1 graph on a generated 60MP source; includes ACES SDR/HDR delivery",
+      "sdrDeliveryMs": 66.0085,
+      "tiles": 6,
+      "warmCoverageCacheHits": 0,
+      "warmDispatches": 42
+    },
+    "snowDrawable": {
+      "scope": "open floating Graph: warm interim Corrector and final grouped serial output monitor switching to joined SDR drawable",
+      "pixels": [
+        1200,
+        640
+      ],
+      "backingScale": 2,
+      "nodeP50Ms": 21.1399585,
+      "nodeP95Ms": 25.444375,
+      "finalP50Ms": 20.3445415,
+      "finalP95Ms": 23.5765
+    }
+  },
+  "installation": {
+    "location": "/Applications/RAWMaster.app",
+    "cdhash": "aca6e1218affc35e73ae2467651bc1c399cf2c20",
+    "readyWindowVerified": true,
+    "previousCDHash": "408ca1c6c67ff52b7b3d28ead7ad012d3159ef2a"
+  }
+}

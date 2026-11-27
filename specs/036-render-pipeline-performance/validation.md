@@ -2,6 +2,10 @@
 
 以下数字属于各次历史测量。`main@b238c0ab` 的 Release 回归重跑了原图取样和定稿运输用例，覆盖实拍 RAW 的 65% 可见区与固定瓦片像素。历史 50 态及 035 封存性能矩阵仍按各自口径保留。[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
+## 场景图与监看复验
+
+2026-11-27，在 M4 Max 上分别固定 Swift 与 Rust 后端测试 6 MP 图，p95 为 14.27 和 14.26 ms。原生雪景的组内监看到 SDR drawable 完成 p95 为 25.44 ms。61.44 MP 合成图在 6 GiB 组件预算内完成。真实 60 MP 的 RAW 解码、预览、导出和同进程峰值仍需按产品预算测量。[测量与原始样本](../032-export-workspace/grid-delivery-20261127.json) · [图输出与实拍证据](../039-rust-scene-backend/validation.md#组内监看与实际后端)
+
 ## 环境
 
 | 项 | 值 |

@@ -9,9 +9,12 @@ package struct DevelopmentScenePreviewFrameV1: @unchecked Sendable {
   package let texture: MTLTexture // immutable after a joined Metal command
   package let target: DevelopmentSceneOutputStateV1.Target
   package let nativeSize: CGSize
+  package let execution: DevelopmentSceneExecutionReceiptV1?
   /// Normalized top-left. Nil is a FIT proxy covering the complete image.
   package let window: CGRect?
-  package init(id: UUID, texture: MTLTexture, target: DevelopmentSceneOutputStateV1.Target, nativeSize: CGSize, window: CGRect?) {
+  package init(id: UUID, texture: MTLTexture, target: DevelopmentSceneOutputStateV1.Target, nativeSize: CGSize, window: CGRect?,
+               execution: DevelopmentSceneExecutionReceiptV1? = nil) {
+    self.execution = execution
     self.id = id; self.texture = texture; self.target = target; self.nativeSize = nativeSize; self.window = window
   }
 }
@@ -72,6 +75,8 @@ package actor DevelopmentScenePreviewV1 {
     let scope: DevelopmentSceneGraphV1.Scope
     let view: DevelopmentSceneGraphV1.View
     let scene: DevelopmentSceneGraphRendererV1.PreviewScene
+    let models: DevelopmentSceneModelProgramV1?
+    let execution: DevelopmentSceneExecutionReceiptV1?
   }
   private struct Suffix {
     let view: DevelopmentSceneGraphV1.View
@@ -118,7 +123,7 @@ package actor DevelopmentScenePreviewV1 {
         input = try sampled(raw, at: sampling, context: ctx)
       }
       guard let input else { throw Failure.invalidViewport }
-      if selection?.scope != graph.graph { clearSelection() }
+      if selection?.scope != graph.graph || selection?.models != models { clearSelection() }
       let revision = Self.sourceRevision(stamp: stamp, sampling: sampling)
       let trim = target == .sdr709 ? graph.output.sdrTrim : nil
       if let hit = suffixes.firstIndex(where: { $0.frame.target == target && $0.view == view && $0.route == graph.output.route && $0.trim == trim }) {
@@ -131,14 +136,15 @@ package actor DevelopmentScenePreviewV1 {
         selection = nil
         let result = try ctx.graph.preparePreview(input.image, geometry: input.geometry, graph: graph,
           view: view, models: models, provider: ctx.modelProvider, sourceRevision: revision)
-        selection = Selection(scope: graph.graph, view: view, scene: result); counts.graph += 1
+        selection = Selection(scope: graph.graph, view: view, scene: result, models: models, execution: ctx.graph.lastReceipt)
+        counts.graph += 1
       }
       guard let selection else { throw Failure.invalidViewport }
       suffixes.removeAll { $0.view == view && $0.frame.target == target }
       let display = try ctx.graph.renderPreview(selection.scene, output: graph.output, target: target)
       try ensureCurrent(source, stamp: stamp)
       let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: display.texture, target: target,
-        nativeSize: CGSize(width: raw.texture.width, height: raw.texture.height), window: input.region)
+        nativeSize: CGSize(width: raw.texture.width, height: raw.texture.height), window: input.region, execution: selection.execution)
       cache(.init(view: view, route: graph.output.route, trim: trim, frame: frame))
       counts.display += 1
       return frame

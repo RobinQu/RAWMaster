@@ -19,6 +19,8 @@
 | [智能检索](prototype/index.html#tools/discovery) / [照片检查器](prototype/index.html#tools/inspection) | 按示例场景查询、叠加围栏/人物筛选、命名人物簇、检查本机索引、跨库检索。单张或多图检查局部、写入人工结论、批改元数据 | [检索与检查器](../../specs/033-library-lifecycle/search.md) |
 | [资料库与备份](prototype/index.html#tools/package) / [迁入 Lightroom](prototype/index.html#tools/migration) | 创建/打开示例库、备份范围、增量前置条件、还原到另一份目录、整卷接回及索引维护。迁入预检、迁入集合、核对并绑定离线原片 | [目录与备份](../../specs/033-library-lifecycle/spec.md) · [Lightroom 迁入](../../specs/033-library-lifecycle/lightroom-migration.md) |
 
+[资料库网格](prototype/index.html#library/project/river)多选后用底栏「批量导出」进入 032。返回时保留选片与焦点。若某张照片已离开筛选范围，停留在网格核对余下照片，再次导出。[操作与回归证据](../../specs/032-export-workspace/spec.md#资料库网格直接交付)
+
 批量调色从 [照片列表](prototype/index.html#library/project/river) 多选至少两张，打开底栏「更多 → 批量工作流」。焦点照片提供源草稿，其余目标逐张预检，亦可选已存模板。最近批次的结果、取消、重试与撤销从同一菜单返回；20／200 张仅位于预检的「原型评审样本」。[走查](../../specs/038-node-dag-workflow/validation.md#紧凑画布工具与照片列表入口)
 
 ## 编辑与交付

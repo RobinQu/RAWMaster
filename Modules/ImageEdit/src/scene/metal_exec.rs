@@ -276,11 +276,62 @@ fn tile_ranges(width: u32, height: u32, edge: u32) -> Vec<(u32, u32, u32, u32)> 
     tiles
 }
 
-#[derive(Clone, Copy)]
-enum Target {
-    Final,
-    Node,
-    Bypass,
+/// A group monitor takes each enclosing group's input through its own child graph at
+/// full strength. The stored final output and the enclosing groups' bypass flags stay intact.
+fn monitor_graph<'a>(
+    root: &'a Scope,
+    view: &ViewSpec,
+) -> Result<(std::borrow::Cow<'a, Scope>, Endpoint), SceneError> {
+    fn endpoint(scope: &Scope, view: &ViewSpec) -> Result<Endpoint, SceneError> {
+        match view.target.as_str() {
+            "final" | "" => Ok(scope.output.clone()),
+            "bypass" => Ok(Endpoint::Input),
+            "node" => {
+                let id = view
+                    .id
+                    .as_ref()
+                    .ok_or_else(|| SceneError::Invalid("node view has no id".into()))?;
+                let node = scope
+                    .nodes
+                    .iter()
+                    .find(|n| &n.id == id)
+                    .ok_or_else(|| SceneError::Invalid(format!("unknown scene node {id}")))?;
+                if node.operation.is_coverage() {
+                    return Err(SceneError::Invalid(format!(
+                        "coverage node {id} is not previewable"
+                    )));
+                }
+                Ok(Endpoint::Node(id.clone()))
+            }
+            other => Err(SceneError::Invalid(format!(
+                "unknown scene view target {other}"
+            ))),
+        }
+    }
+    if view.group_path.is_empty() {
+        return Ok((std::borrow::Cow::Borrowed(root), endpoint(root, view)?));
+    }
+    let mut projected = root.clone();
+    let mut scope = &mut projected;
+    for id in &view.group_path {
+        let node = scope.nodes.iter_mut().find(|n| &n.id == id);
+        let Some(Operation::Group {
+            graph,
+            enabled,
+            strength,
+            ..
+        }) = node.map(|n| &mut n.operation)
+        else {
+            return Err(SceneError::Invalid(format!("unknown scene group {id}")));
+        };
+        scope.output = Endpoint::Node(id.clone());
+        *enabled = true;
+        *strength = 1.0;
+        scope = graph;
+    }
+    scope.output = endpoint(scope, view)?;
+    let output = projected.output.clone();
+    Ok((std::borrow::Cow::Owned(projected), output))
 }
 
 pub struct SceneProgram {
@@ -385,37 +436,6 @@ impl SceneProgram {
         unsafe {
             *(flag.contents().cast::<u32>()) = 0;
         }
-        let target = match view.target.as_str() {
-            "bypass" => Target::Bypass,
-            "node" => Target::Node,
-            "final" | "" => Target::Final,
-            other => {
-                return Err(SceneError::Invalid(format!(
-                    "unknown scene view target {other}"
-                )))
-            }
-        };
-        let selected = match (target, view.id.as_deref()) {
-            (Target::Node, Some(id)) => {
-                let graph = self
-                    .graph()
-                    .ok_or_else(|| SceneError::Render("scene execution state poisoned".into()))?;
-                let operation = graph
-                    .nodes
-                    .iter()
-                    .find(|node| node.id == id)
-                    .map(|node| &node.operation)
-                    .ok_or_else(|| SceneError::Invalid(format!("unknown scene node {id}")))?;
-                if operation.is_coverage() {
-                    return Err(SceneError::Invalid(format!(
-                        "coverage node {id} is not previewable"
-                    )));
-                }
-                Some(id.to_string())
-            }
-            (Target::Node, None) => return Err(SceneError::Invalid("node view has no id".into())),
-            _ => None,
-        };
         let origin = view.origin.unwrap_or([0, 0]);
         let geometry = view
             .geometry
@@ -462,6 +482,7 @@ impl SceneProgram {
             nodes,
             receipt,
         } = &mut *state;
+        let (graph, endpoint) = monitor_graph(graph, view)?;
         let source_revision = view.source_revision.unwrap_or(0);
         let input_key = format!("source:{source_revision}");
         let command = self.queue.new_command_buffer();
@@ -514,10 +535,9 @@ impl SceneProgram {
             let tile_origin = [origin[0] + x as i64, origin[1] + y as i64];
             let encoder = command.new_compute_command_encoder();
             let rendered = self.evaluate(
-                graph,
+                &graph,
                 tile_input,
-                selected.as_deref(),
-                target,
+                &endpoint,
                 encoder,
                 &flag,
                 tile_width,
@@ -640,8 +660,7 @@ impl SceneProgram {
         &self,
         scope: &Scope,
         input: Arc<metal::Texture>,
-        selected: Option<&str>,
-        target: Target,
+        endpoint: &Endpoint,
         encoder: &metal::ComputeCommandEncoderRef,
         flag: &metal::Buffer,
         width: u32,
@@ -657,7 +676,7 @@ impl SceneProgram {
         input_key: &str,
         external_coverages: &HashMap<String, Arc<metal::Texture>>,
     ) -> Result<Arc<metal::Texture>, SceneError> {
-        if matches!(target, Target::Bypass) {
+        if *endpoint == Endpoint::Input {
             return Ok(input);
         }
         let operations: HashMap<&str, &Operation> = scope
@@ -665,10 +684,6 @@ impl SceneProgram {
             .iter()
             .map(|node| (node.id.as_str(), &node.operation))
             .collect();
-        let endpoint = match (target, selected) {
-            (Target::Node, Some(id)) => Endpoint::Node(id.to_string()),
-            _ => scope.output.clone(),
-        };
         let mut uses: HashMap<String, usize> = HashMap::new();
         let mut dependencies: HashMap<String, Vec<Endpoint>> = HashMap::new();
         let mut steps: Vec<String> = Vec::new();
@@ -697,7 +712,7 @@ impl SceneProgram {
             steps.push(id.to_string());
             Ok(())
         }
-        if let Endpoint::Node(id) = &endpoint {
+        if let Endpoint::Node(id) = endpoint {
             *uses.entry(id.clone()).or_insert(0) += 1;
             visit(id, &operations, &mut uses, &mut dependencies, &mut steps)?;
         } else {
@@ -874,7 +889,7 @@ impl SceneProgram {
             }
             Ok(())
         }
-        if let Endpoint::Node(id) = &endpoint {
+        if let Endpoint::Node(id) = endpoint {
             mark_needed(
                 id,
                 &operations,
@@ -1071,8 +1086,7 @@ impl SceneProgram {
                         let child = self.evaluate(
                             graph,
                             base.clone(),
-                            None,
-                            Target::Final,
+                            &graph.output,
                             encoder,
                             flag,
                             width,
@@ -1269,7 +1283,7 @@ impl SceneProgram {
         match endpoint {
             Endpoint::Input => Ok(input),
             Endpoint::Node(id) => values
-                .remove(&id)
+                .remove(id)
                 .ok_or_else(|| SceneError::Render(format!("scene output {id} did not render"))),
         }
     }

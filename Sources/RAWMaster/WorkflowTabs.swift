@@ -22,6 +22,7 @@ extension AppModel {
     }
 
     func activateWorkflow(_ workflow: WorkbenchWorkflow) {
+        if workflow != .export { pendingGridExport?.cancel() }
         let returningFromExport = workflow != .export && exportWorkspacePresented
         if returningFromExport {
             workbenchExportContext = .project

@@ -47,7 +47,7 @@ extension LibraryStore {
 
   public func catalogAssets(for selection: CatalogFrozenSelection) throws -> [AssetRecord] {
     try withReadSnapshot {
-      _ = try catalogTransaction("validateSelection", selection)
+      guard try catalogTransaction("resolveSelection", selection) != .null else { throw CatalogSelectionError.changed }
       return try rows("SELECT a.data FROM json_each(?) chosen JOIN assets a ON a.id=chosen.value ORDER BY chosen.key",
                       [try json(selection.assetIDs)]).map { try decode($0[0], AssetRecord.self) }
     }

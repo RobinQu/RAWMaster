@@ -55,11 +55,12 @@ final class DevelopmentSceneGraphRendererV1 {
   private let queue: MTLCommandQueue
   private let color, coverage: MTLComputePipelineState
   private let surfaceBudget: Int
+  private let backend: RustSceneGraphRenderer.Mode
   private let rust: RustSceneGraphRenderer?
   private var swiftDispatches = 0
   private(set) var lastReceipt: DevelopmentSceneExecutionReceiptV1?
 
-  init(device: MTLDevice, surfaceBudget: Int = 1_536 * 1024 * 1024) throws {
+  init(device: MTLDevice, surfaceBudget: Int = 1_536 * 1024 * 1024, backend: RustSceneGraphRenderer.Mode = RustSceneGraphRenderer.mode) throws {
     let options = MTLCompileOptions(); options.mathMode = .safe
     let library = try device.makeLibrary(source: Self.shader, options: options)
     guard let color = library.makeFunction(name: "rmDagColorV1"), let coverage = library.makeFunction(name: "rmDagCoverageV1"),
@@ -68,7 +69,8 @@ final class DevelopmentSceneGraphRendererV1 {
     self.color = try device.makeComputePipelineState(function: color)
     self.coverage = try device.makeComputePipelineState(function: coverage)
     self.surfaceBudget = surfaceBudget
-    self.rust = RustSceneGraphRenderer.enabled
+    self.backend = backend
+    self.rust = backend != .swift
       ? RustSceneGraphRenderer(device: device, surfaceBudget: surfaceBudget) : nil
   }
 
@@ -76,9 +78,11 @@ final class DevelopmentSceneGraphRendererV1 {
                     models: DevelopmentSceneModelProgramV1? = nil,
                     provider: (any DevelopmentSceneModelProvider)? = nil,
                     sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> Master {
+    lastReceipt = nil
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
     let surface = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: .init(),
-      externalCoverages: prepared.masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
+      externalCoverages: prepared.masks, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision,
+      tileEdge: tileEdge)
     guard surface.domain == .image else { throw Failure.invalidImage }
     return .init(surface: surface, output: graph.output, modelMasks: prepared.masks, modelScale: prepared.scale)
   }
@@ -114,9 +118,11 @@ final class DevelopmentSceneGraphRendererV1 {
                       models: DevelopmentSceneModelProgramV1? = nil,
                       provider: (any DevelopmentSceneModelProvider)? = nil,
                       sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> PreviewScene {
+    lastReceipt = nil
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
     let selected = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: view,
-      externalCoverages: prepared.masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
+      externalCoverages: prepared.masks, sourceRevision: models?.stages.isEmpty == false ? 0 : sourceRevision,
+      tileEdge: tileEdge)
     guard selected.domain == .image else { throw Failure.invalidImage }
     return PreviewScene(surface: selected)
   }
@@ -170,12 +176,22 @@ final class DevelopmentSceneGraphRendererV1 {
     guard t.allocatedSize <= surfaceBudget else { throw Failure.surfaceBudget }
     let budget = Budget(maximum: surfaceBudget, input: t.allocatedSize)
     var rustFallbackReason: String?
-    if let rust, view.groupPath.isEmpty {
-      if view.target == .bypass || (view.target == .final && graph.graph.output == .input) {
-        return Surface(texture: t, origin: image.origin, domain: .image, budget: budget)
+    if view.groupPath.isEmpty && (view.target == .bypass || (view.target == .final && graph.graph.output == .input)) {
+      lastReceipt = .init(backend: .passthrough, tiles: 0, nodes: 0, dispatches: 0, coverageCacheHits: 0,
+        nodeCacheHits: 0, peakBytes: t.allocatedSize, budgetBytes: surfaceBudget,
+        cpuMilliseconds: Self.elapsedMilliseconds(since: started), fallbackReason: nil)
+      return Surface(texture: t, origin: image.origin, domain: .image)
+    }
+    if let rust {
+      var scope = graph.graph
+      for group in view.groupPath {
+        guard case let .group(_, child, _, _)? = scope.nodes.first(where: { $0.id == group })?.operation else {
+          throw Graph.Failure.unknownGroup(group)
+        }
+        scope = child
       }
       if case let .node(id) = view.target {
-        guard let operation = graph.graph.nodes.first(where: { $0.id == id })?.operation, !operation.isCoverage else {
+        guard let operation = scope.nodes.first(where: { $0.id == id })?.operation, !operation.isCoverage else {
           throw Graph.Failure.unknownNode(id)
         }
       }
@@ -189,10 +205,10 @@ final class DevelopmentSceneGraphRendererV1 {
           origin: image.origin, geometry: .init(geometry.width, geometry.height),
           tileEdge: effectiveTileEdge, sourceRevision: sourceRevision, coverages: externalCoverages)
         lastReceipt = DevelopmentSceneExecutionReceiptV1(backend: .rust,
-          tiles: raw?.tiles ?? 1, nodes: raw?.nodes ?? 0, dispatches: raw?.dispatches ?? 0,
-          coverageCacheHits: raw?.coverageHits ?? 0, nodeCacheHits: raw?.nodeHits ?? 0,
-          peakBytes: raw?.peakBytes ?? budget.peak, budgetBytes: raw?.budgetBytes ?? surfaceBudget,
-          cpuMilliseconds: raw?.cpuMilliseconds ?? Self.elapsedMilliseconds(since: started),
+          tiles: raw.tiles, nodes: raw.nodes, dispatches: raw.dispatches,
+          coverageCacheHits: raw.coverageHits, nodeCacheHits: raw.nodeHits,
+          peakBytes: raw.peakBytes, budgetBytes: raw.budgetBytes,
+          cpuMilliseconds: raw.cpuMilliseconds,
           fallbackReason: nil)
         return Surface(texture: output, origin: image.origin, domain: .image, budget: budget)
       } catch {
@@ -200,7 +216,7 @@ final class DevelopmentSceneGraphRendererV1 {
         // Auto mode keeps the shipping path alive if the optional Rust core cannot compile,
         // load, execute or fit this machine's budget. The strict mode used by shadow tests
         // never falls back, so a backend regression cannot hide there.
-        guard RustSceneGraphRenderer.mode == .auto else { throw error }
+        guard backend == .auto else { throw error }
         rustFallbackReason = String(describing: error)
       }
     }

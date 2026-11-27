@@ -16,14 +16,25 @@ struct Selection {
     asset_ids: Vec<String>,
 }
 
-/// Called inside the very same write transaction as the host bulk mutation.
-pub fn check(db: &Connection, body: &Value) -> Result<Value> {
+/// The caller holds a single snapshot for the revision, membership, and subsequent reads or writes.
+pub fn resolve(db: &Connection, body: &Value) -> Result<Value> {
     let scope: Selection = serde_json::from_value(body.clone())?;
     let (library, cutoff): (String, i64) = db.query_row(
         "SELECT value,(SELECT COALESCE(MAX(seq),0) FROM lc_changes) FROM lc_meta WHERE key='libraryID'",
         [], |r| Ok((r.get(0)?, r.get(1)?)))?;
-    if scope.library_id != library || scope.watermark != cutoff {
-        return Err("The selected catalog revision has changed".into());
+    if scope.library_id != library || !(0..=cutoff).contains(&scope.watermark) {
+        return Ok(Value::Null);
+    }
+    if scope.watermark < cutoff {
+        // v8–v10 journal a per-file row when the project saves its browsing position.
+        // Accept only a complete interval of these rows; a gap or a content edit is stale.
+        let browse_rows: i64 = db.query_row(
+            "SELECT count(*) FROM lc_changes WHERE seq>?1 AND seq<=?2 AND domain='project_review_states'",
+            params![scope.watermark, cutoff], |r| r.get(0),
+        )?;
+        if browse_rows != cutoff - scope.watermark {
+            return Ok(Value::Null);
+        }
     }
     let mut seen = BTreeSet::new();
     let mut st = db.prepare_cached(
@@ -38,4 +49,12 @@ pub fn check(db: &Connection, body: &Value) -> Result<Value> {
         }
     }
     Ok(json!({"count": seen.len(), "watermark": cutoff, "libraryID": library}))
+}
+
+pub fn check(db: &Connection, body: &Value) -> Result<Value> {
+    let result = resolve(db, body)?;
+    if result.is_null() {
+        return Err("The selected catalog revision has changed".into());
+    }
+    Ok(result)
 }

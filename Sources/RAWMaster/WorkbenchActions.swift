@@ -70,26 +70,47 @@ extension AppModel {
         prepareLibraryExport(.selection(ids: actionAssetIDs))
     }
     func prepareLibraryExport(_ context: WorkbenchExportContext) {
+        pendingGridExport?.cancel()
         guard canExport else { return }
         guard isPagedGrid, let grid = catalogGrid, let store else {
             exportCatalogScope = nil
             workbenchExportContext = context; exportWorkspacePresented = true
             return
         }
-        Task {
+        let epoch = grid.epoch, selected = selectedIDs
+        func current() -> Bool { !Task.isCancelled && isPagedGrid && grid.epoch == epoch && selectedIDs == selected }
+        func assets(_ scope: CatalogFrozenSelection) async throws -> [AssetRecord] {
+            try await Task.detached(priority: .userInitiated) { try store.catalogAssets(for: scope) }.value
+        }
+        pendingGridExport = Task {
             do {
-                let scope: CatalogFrozenSelection
-                if let ids = context.exactAssetIDs {
-                    if let frozenSelection, Set(ids) == Set(frozenSelection.assetIDs) { scope = frozenSelection }
-                    else { scope = try grid.visibleSelection(ids) }
-                } else { scope = try await grid.frozenSelection() }
-                let items = try await Task.detached(priority: .userInitiated) { try store.catalogAssets(for: scope) }.value
-                guard isPagedGrid, grid.watermark == scope.watermark, grid.libraryID == scope.libraryID else {
-                    throw LibraryEngineError("导出范围已变化，请重新选择")
+                var scope: CatalogFrozenSelection
+                let items: [AssetRecord]
+                do {
+                    if let ids = context.exactAssetIDs {
+                        if let frozenSelection, Set(ids) == Set(frozenSelection.assetIDs) { scope = frozenSelection }
+                        else { scope = try grid.visibleSelection(ids) }
+                    } else { scope = try await grid.frozenSelection() }
+                    items = try await assets(scope)
+                    guard current() else { return }
+                } catch CatalogSelectionError.changed {
+                    guard current() else { return }
+                    let fresh = try await grid.readSelectionPage()
+                    guard current() else { return }
+                    let eligible = Set(fresh.selection.assetIDs)
+                    guard let ids = context.exactAssetIDs, eligible.isSuperset(of: ids) else {
+                        showRefreshedExportGrid(fresh.page, selection: fresh.selection)
+                        errorMessage = context.exactAssetIDs == nil ? "项目范围已更新，请核对后重新导出。" : "选中的照片已不在当前范围内。请核对选片后重新导出。"
+                        return
+                    }
+                    scope = fresh.selection.replacingMembers(ids)
+                    items = try await assets(scope)
+                    guard current() else { return }
+                    showRefreshedExportGrid(fresh.page, selection: fresh.selection)
                 }
                 exportCatalogScope = scope; exportCatalogAssets = items
                 workbenchExportContext = context; exportWorkspacePresented = true
-            } catch { errorMessage = error.localizedDescription }
+            } catch { if current() { errorMessage = error.localizedDescription } }
         }
     }
     func openPhotoExport(_ mode: WorkbenchExportMode = .original) {

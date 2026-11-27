@@ -2,6 +2,14 @@
 
 下文保留 2026-11-27 原始分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
 
+## 组内监看与实际后端
+
+原实现只在顶层调用 Rust，桥接层省略组路径，执行器也没有使用 ABI 中的 `groupPath`。此外，历史影子测试中标作 Swift 的一侧使用默认模式。修复后，同一份 038 图在两个显式指定的渲染器上运行。测试含两层嵌套、父组禁用、子组部分强度、组前曝光、组内解析覆盖以及非零原点 ROI。组输入、指定节点和组最终根逐通道比较，允许的绝对误差为 2×10⁻⁵ × max(1, |参考通道值|)。返回全图时像素逐值相同。非法组或覆盖目标会报错并清除上次回执。[严格后端回归](../../Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift)
+
+对实拍雪景用签名包重开，HDR drawable 记录了帧 ID、Rust 后端、一次图派发与 66,355,200 字节图峰值。切换查看目标时缓存帧保留原回执，根输入直通记录零派发。模型程序变化会清理预览后缀，带模型的执行暂时关闭源图节点的跨请求缓存，解析遮罩仍可复用。示波器与持久化 032 任务的后端回执、版本化模型资源仍待接通。[帧及测量记录](../032-export-workspace/grid-delivery-20261127.json) · [实拍预览回归](../../Tests/RAWMasterImagingTests/DevelopmentScenePreviewV1Tests.swift)
+
+同一 M4 Max 上，600 万像素图各 15 个暖样本的 p95 为 Rust 14.26 ms、Swift 14.27 ms。61.44 MP 合成输入使用 6 GiB 图预算，分 6 瓦片，派发 42 次，图峰值 4.70 GiB。真实相机 60 MP 仍按产品解码、图和末端共同预算单独验收。[039 放行条件](spec.md#编译瓦片和回执)
+
 ## Builds
 
 ```
@@ -41,7 +49,7 @@ Coverage of the shadow suite:
 
 - All 13 layer modes match the Swift executor for signed, superwhite and premultiplied pixels.
 - Parallel weighted changes, ordered layers, groups, disabled branches, ROI and
-  top-level node/bypass views match the Swift reference. Group-path monitoring currently runs on
+  top-level node/bypass views match the Swift reference. At that revision group-path monitoring ran on
   Swift even in strict mode. Use the actual receipt to verify which backend executed a request.
 - All analytic coverage ports (linear, radial, combine add/subtract/intersect, adjust) and
   external provider coverage are exercised.
@@ -185,4 +193,4 @@ reused surfaces and cross-frame analytic masks. Reports are written with
 
 - 用真实 60 MP RAW 按产品配置测试冷暖预览、1:1 和冻结 HDR／SDR 成片。合成图已取得执行与瓦片回执，源解码、全链路预算和批量仍需实测。
 - 在实际安装包中记录两个显示环境的换屏、亮度及关联帧。组件余量测试记录目标分支和纹理数值，实际显示按 [037](../037-color-film-hdr/plan.md)验收。
-- 组内监看仍在 Swift。后续以逐请求回执、严格模式和实际 032 冻结版本验收 Rust 覆盖。`externalCoverage` 随模型阶段及目标来源重绑，按[迁移顺序](spec.md#迁移顺序)验证。
+- 该轮组内监看由 Swift 执行，本轮已补严格后端对照。后续将回执延伸至示波器和 032 冻结任务。`externalCoverage` 随模型阶段及目标来源重绑，按[迁移顺序](spec.md#迁移顺序)验证。

@@ -7,7 +7,8 @@ extern "C" {
 /* Scene-linear AP1 F32 graph execution for 037/038. Program creation validates and
    compiles the bounded graph. input/output are borrowed RGBA32Float Metal textures;
    output is exclusive scratch. View JSON is {"target":"final"|"bypass"|"node","id":"..."}.
-   A node target executes the reachable graph and writes that node's image surface.
+   Optional groupPath lists enclosing group IDs from the root to the viewed scope.
+   A node target executes its image in that scope; bypass shows that scope's input.
    The optional revision callback must remain valid for the synchronous call. */
 typedef struct RMSceneProgram RMSceneProgram;
 typedef uint32_t (*RMSceneIsCurrent)(void *context, uint64_t revision);
