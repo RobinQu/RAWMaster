@@ -2,8 +2,11 @@
 
 const SceneEditor = (() => {
   const views = new Map();
-  const nativeReview = new URLSearchParams(location.search).get("sceneNativeReview") === "1";
-  const scopesReview = new URLSearchParams(location.search).get("scopesNativeReview") === "1";
+  const review = new URLSearchParams(location.search);
+  const nativeReview = review.get("sceneNativeReview") === "1";
+  const scopesReview = review.get("scopesNativeReview") === "1";
+  const missingRuntime = nativeReview && review.get("sceneRawRuntime") === "unavailable";
+  const runtimeMessage = 'HDR 原片解码运行库不可用。请检查 RAWMaster 安装后重试。';
   const diagnostics = {
     sensor: ['传感器饱和', '斜线 · 源通道饱和'], target: ['超输出目标', '网格 · 峰值或色域超出'],
     screen: ['超屏幕余量', '点阵 · 当前屏幕看不全'], bands: ['HDR 分档', '横线 · 每格 1 EV'],
@@ -83,7 +86,7 @@ const SceneEditor = (() => {
   function hud() {
     if (!hdr()) return '';
     const v = view();
-    if (nativeReview && v.failed) return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">预览失败 · 模拟</span><div class="row">${btn('重试 HDR 预览','scene-review-retry')}</div></div>`;
+    if (nativeReview && (v.failed || missingRuntime && !reason())) return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(missingRuntime ? runtimeMessage : '预览失败')} · 模拟</span><div class="row">${btn('重试 HDR 预览','scene-review-retry')}</div></div>`;
     return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(appearance())} · 模拟${v.preview === 'target' && v.screen === 'sdr' ? ' · 屏幕无 HDR 余量' : ''}</span>
       <div class="row">${btn('按 HDR 目标查看','scene-view','target',{pressed:v.preview === 'target'})}${btn('预览 SDR 派生','scene-view','sdr',{pressed:v.preview === 'sdr'})}</div>
       ${reason() ? '' : [...v.overlays].map(k => `<span class="scene-legend ${k}">${h(diagnostics[k][1])}</span>`).join('')}</div>`;
@@ -154,7 +157,10 @@ const SceneEditor = (() => {
     ($(entrySelector || '.scene-entry') || $('.scene-entry'))?.focus({preventScroll:true});
   }
   actions['scene-open'] = open;
-  const focusMode = key => { entrySelector = `[data-act="scene-mode"][data-val="${key}"]`; };
+  function focusMode(key) {
+    entrySelector = `[data-act="scene-mode"][data-val="${key}"]`;
+    $(entrySelector)?.focus({preventScroll:true});
+  }
   const switchSDR = key => commit(key === 'bw' ? '切换到 SDR 黑白' : '切换到 SDR 彩色', undefined, {...edit().recipe, colorMode:key});
   actions['scene-mode'] = key => {
     if (!Object.hasOwn(modes,key) || key === mode()) return;
@@ -164,7 +170,8 @@ const SceneEditor = (() => {
     focusMode(key);
     if (key !== 'hdr') {
       if (!hdr()) return switchSDR(key);
-      dialog(`切换到 ${modes[key]}？`, '<p>这会退出当前草稿的 HDR 编辑并移除其 SDR 派生设置；已经保存的版本不变。可撤销。若只想检查 SDR 外观，请使用画布的「预览 SDR 派生」。</p>',
+      dialog(`切换到 ${modes[key]}？`, (nativeReview ? `<p><strong>${h(Studio.asset(id()).name)}</strong></p>` : '') +
+        '<p>这会退出当前草稿的 HDR 编辑并移除其 SDR 派生设置；已经保存的版本不变。可撤销。若只想检查 SDR 外观，请使用画布的「预览 SDR 派生」。</p>',
         btn('取消','close') + btn('确认切换','scene-confirm-sdr',key,{cls:'primary'}));
       return;
     }
@@ -175,7 +182,7 @@ const SceneEditor = (() => {
       return warn('工作流含未验证的 SDR 胶片、LUT 或预设，未切换到 HDR。节点和参数保持原样。');
     }
     if (nativeReview) {
-      dialog('从原片创建 HDR 草稿？', '<p>HDR 从原片的场景数据独立求值。不会把现有 SDR 调整、蒙版或外观转换成 HDR；现有已保存版本不变。可取消或撤销。</p>',
+      dialog('从原片创建 HDR 草稿？', `<p><strong>${h(Studio.asset(id()).name)}</strong></p><p>HDR 从原片的场景数据独立求值。不会把现有 SDR 调整、蒙版或外观转换成 HDR；现有已保存版本不变。可取消或撤销。</p>`,
         btn('取消','close') + btn('创建 HDR 草稿','scene-review-start','',{cls:'primary'}));
       return;
     }
@@ -192,6 +199,12 @@ const SceneEditor = (() => {
   };
   actions['scene-review-start'] = () => {
     if (!nativeReview || hdr() || blocked() || reason()) return;
+    if (missingRuntime) {
+      closeSheet();
+      warn(runtimeMessage);
+      $(entrySelector)?.focus({preventScroll:true});
+      return;
+    }
     view().draftBefore = structuredClone(edit().recipe);
     view().failed = false;
     commit('创建 HDR 草稿', RMSceneOutput.clean({intent:'hdr'}), {...Studio.freshRecipe(), colorMode:'hdr'});

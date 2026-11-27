@@ -22,6 +22,33 @@ final class DevelopmentScenePreviewV1Tests: XCTestCase {
     XCTAssertEqual(counts.raw + counts.graph + counts.display, 0)
   }
 
+  func testUnreadableRAWIsNotReportedAsMissingDecoder() throws {
+    guard FlashRawSource.isAvailable else { throw XCTSkip("Use the fixed FlashRaw runtime") }
+    let file = FileManager.default.temporaryDirectory.appendingPathComponent("Unreadable-\(UUID()).ARW")
+    try Data("not a RAW".utf8).write(to: file, options: .withoutOverwriting)
+    defer { try? FileManager.default.removeItem(at: file) }
+    XCTAssertThrowsError(try FlashRawSource.open(file)) { error in
+      guard case .decode = error as? FlashRawError else { return XCTFail("Expected a source error, got \(error)") }
+    }
+  }
+
+  func testOptInMissingRuntimeIsReportedSeparatelyFromRAWCalibration() async throws {
+    let environment = ProcessInfo.processInfo.environment
+    guard environment["RAWMASTER_FLASHRAW_DISABLE"] == "1", let path = environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else {
+      throw XCTSkip("Disable FlashRaw and supply the fixed snow.ARW")
+    }
+    let url = URL(fileURLWithPath: path)
+    let bytes = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+    let service = DevelopmentScenePreviewV1()
+    do {
+      _ = try await service.render(source: makeSource(url, count: Int64(bytes)), graph: grade(ev: 0),
+        view: .init(), target: .sdr709, sampling: .fit(maximumEdge: 800))
+      XCTFail("A scene was created without its decoder")
+    } catch DevelopmentScenePreviewV1.Failure.decoderUnavailable {}
+    let counts = await service.observations()
+    XCTAssertEqual(counts.raw + counts.graph + counts.display, 0)
+  }
+
   func testOptInRealARWPreviewReuseAndNativeROI() async throws {
     guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"] else { throw XCTSkip("Use fixed snow.ARW") }
     let here = FileManager.default.temporaryDirectory.appendingPathComponent("ScenePreview-\(UUID().uuidString)")

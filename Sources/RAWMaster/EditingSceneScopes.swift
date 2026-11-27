@@ -210,18 +210,12 @@ struct EditingSceneScopesCanvas: View {
             requestHDR: editing.sceneRequestedHDR,
             fitInsets: EditingLayout.fitInsets,
             transform: $transform,
-            onHeadroom: editing.setSceneHeadroom,
+            onDisplay: editing.setSceneDisplay,
             onSampling: editing.setSceneSampling,
             onPresentationError: editing.scenePresentationFailed,
-            onScreenProfile: screenProfileHandler,
             onPick: pickHandler,
             onCancelPick: cancelPickHandler
         )
-    }
-
-    private var screenProfileHandler: ((Data?) -> Void)? {
-        guard scopes.open else { return nil }
-        return { data in scopes.receiveScreen(data) }
     }
 
     private var pickHandler: ((CGPoint) -> Void)? {

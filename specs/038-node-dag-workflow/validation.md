@@ -1,6 +1,6 @@
 # 038 · Node 能力域、画布工具与悬浮 Graph 验证
 
-日期：2026-11-26。HTML 原型及规格已交付，原生研发已开始，不等于原生默认行为获准。首个原生证据是 [037 固定场景工作流组件复验](../037-color-film-hdr/validation.md#固定场景工作流的原生组件复验)：严格保存串行节点身份、顺序与启停；预览对最终输出的隔离已在 Metal 像素层验证。旧配方只读适配已有以下原生证据；后续的原生图、历史和运行证据按各阶段分别记录，完整产品范围尚未签收。
+记录从早期原型、组件推进到 `main@b238c0ab` 的原生默认入口。兼容视图、可编辑场景图、模板和批量候选已有下列分阶段证据。完整工具、可访问性和异源出片仍待签收。[本次 main 实拍复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
 ## 原生兼容图与冻结 SDR 导出
 
@@ -43,6 +43,14 @@ swift test -c release --jobs 4 -Xswiftc -enable-testing \
 此图现可在 [037 原生实验暗房](../037-color-film-hdr/validation.md#原生场景查看与显影阶段)显示最终根，单 Corrector 曝光可改、撤销、另存并进入 032 SDR；多节点编辑窗口与连接测试见下节；原生模板与 20／200 项候选目录实测见后续章节；九类控制的其余算子、工具所有权与完整批量交付矩阵仍待验收。全链路 p95、片间缓存、超大规模驻留和实际窗口的视觉/可达性未签收。
 
 ## 原生可编辑 Graph
+
+### 与 037 同包的首条 Graph 闭环
+
+从资料库打开固定雪景，在 HDR 确认工作表取消一次再进入。展开实际 Graph 浮窗，新建串行节点。调色节点的 +1.5 EV 经原生撤销、重做。选择第一节点看局部输出时，主图标明「监看：基础调色 · 不用于导出」。从暗房的「保存候选」保存，监看保持。退出并打开同一签名包后，第二节点仍为 +1.5 EV，监看返回最终结果。冻结版本的节点图、原片摘要与 032 的 PQ 和 SDR 输入逐项一致，其输出根是第二节点。固定人像另有一份 +0.75 EV 的独立图，两个目标同样引用这份候选。[签名包记录与回执](../037-color-film-hdr/validation.md#同一签名-release-首条闭环)
+
+原生回归从实际 HDR 按钮、确认工作表和保存按钮操作。复现旧显影因失焦暂停时，确认仍可取消或提交。保留原有自连拒绝、取消、组内监看、最终根冻结和 Escape 验证。[原生回归](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift) · [原型](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1)
+
+同包打开兼容 JPEG，HDR 入口说明未准入。只读 Graph 显示「照片来源 → 兼容显影 → 最终输出」，关窗回到同一照片及 Graph 按钮。旧配方和导出等价测试继续沿用[兼容图与冻结 SDR](#原生兼容图与冻结-sdr-导出)。
 
 走查 [HDR 场景样本](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1)「岸边的水鸟」→ 编辑 → 基础 → HDR → 创建草稿 → Graph。四项 HTML 场景通过：添加后切节点，监看作用域和历史独立；非法自连不能应用或交付，取消恢复；390px 浅／深色下显式适合全图和 Escape 可退出。[桌面](evidence/native-graph/graph-scene-1440.png) · [390px 浅色](evidence/native-graph/graph-scene-390-light.png) · [390px 深色](evidence/native-graph/graph-scene-390-dark.png)。图和色彩都为授权 JPEG 模拟。
 
@@ -270,7 +278,7 @@ RAWMASTER_UI_DAG_EVIDENCE="$PWD/specs/038-node-dag-workflow/evidence/v2" \
 - 默认窗体尺寸/位置、复杂图适合全图时的文字密度、默认分类、模板底稿与批量结果反馈仍由用户通过原型确认。窄窗可操作，不代表签收窄窗精细调色或拖线密度。
 - 颜色域、RGB 矩阵、HDR/色轮、混合、裁切范围、覆盖细化、补区和延迟是交互示意；准确默认值/单位、RAW 顺序、像素质量、模型、GPU 缓存与真实性能须原生验收。
 - 浏览器提供点击端口、连接选择器及端口拖线；无效连接草稿已检查，但未对每一种拖线手势、系统减少透明设置或原生可访问性作全面签收。
-- 模拟批量不保证浏览器关闭后的后台续跑。原生任务恢复、跨片素材重建、旧配方迁移和真实文件输出均未在本轮实施。
+- 原生候选的重开、重试与撤销以及两种实拍交接 032 已有阶段证据。待签收项是异源 20／200 张候选到成片的全过程、模型资源重绑、跨环境重启和真实卷接回。[原生批量证据](#原生模板与可恢复批量)
 - 第一版 43 PASS 与原目录四张截图仅保留作历史，不能用于证明本轮悬浮布局。已作废的空白 Graph 探索图不作为当前证据。
 
 ## Release 默认入口修复
@@ -278,5 +286,5 @@ RAWMASTER_UI_DAG_EVIDENCE="$PWD/specs/038-node-dag-workflow/evidence/v2" \
 2026-11-27 · Release 安装回归。HDR 模式、场景 Graph 节点工具条和只读兼容图此前只在实验环境变量为 `1` 时出现，Finder 启动的 Release 应用收不到变量，导致入口全部消失。
 
 - `EditingController.sceneReviewEnabled` 和 `EditingCompatibilityGraphPanel.isEnabled` 改为默认开启；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` / `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅作为诊断时隐藏开关。
-- 定向 UI 测试 `EditingCompatibilityGraphTests/testShippingComponentsExposeHDRModeAndBothGraphEntryPoints` 打开真实 JPEG，断言 SDR／HDR 模式条和「当前节点 → Graph」入口均存在；3 个 `EditingCompatibilityGraphTests` 全部通过。
-- Release 应用重新构建、签名、安装到 `/Applications/RAWMaster.app` 并实际启动成功。原生可编辑 Graph 的节点选择、连接、监看和窗口走查仍由需要真实校准 ARW 的 `EditingSceneGraphWindowTests` 覆盖；本轮主机只有未准入的 snow.ARW，不能把该 opt-in 用例当作通过。
+- 定向 UI 测试 `EditingCompatibilityGraphTests/testShippingComponentsExposeHDRModeAndBothGraphEntryPoints` 打开真实 JPEG，断言 SDR／HDR 模式条和只读 Graph 按钮存在。3 个 `EditingCompatibilityGraphTests` 全部通过。可编辑 Graph 由实际 HDR 场景草稿单独验证。
+- 入口修复当时重新构建并启动了签名应用。当时的安装走查未取得已准入 RAW。此次 `main` 复验使用 SHA 匹配的雪景和 FlashRaw 运行库，在 Release 测试包中通过节点选择、连接、监看、保存重开与候选出片。安装包正常入口、设备对照和实际指针／VoiceOver 仍需同动作签收。[复验和复现](../035-portable-processing-cores/roadmap.md#本次-main-复验)

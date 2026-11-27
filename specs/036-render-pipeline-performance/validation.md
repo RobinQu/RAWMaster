@@ -1,5 +1,7 @@
 # 036 验证记录
 
+以下数字属于各次历史测量。`main@b238c0ab` 的 Release 回归重跑了原图取样和定稿运输用例，覆盖实拍 RAW 的 65% 可见区与固定瓦片像素。历史 50 态及 035 封存性能矩阵仍按各自口径保留。[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
+
 ## 环境
 
 | 项 | 值 |
@@ -162,7 +164,7 @@ swift test -c release --jobs 4 --filter PreviewSettledTransportTests
 - [三份参考实现对照](../../docs/research/gpu-pipeline-references.md)：Alcedo `68a2c235`、FlashRaw `bee2ca1a`、LightFlow 发布构建 `20261111155800-2d41ab1`。
 - [LightFlow REA 符号](evidence/lightflow-rea-symbols.json)：`analyze_javascript_application` 覆盖 43 个 JS、670,783 个 AST 节点，提取 21 个引擎方法的模块 SHA 与源码区间；发现此前 035 未覆盖的多线程绑定 `web-mt/lightflow_host_wasm_mt.js`。WABT 未配置，本轮未做 WAT 级验证，沿用 035 的既有取证。
 
-## 1:1（`detail`）仍是原生全帧
+## 1:1 改造前的原生全帧基线
 
 1:1 仍按原生分辨率构图（未做 ROI 裁剪）。用 `RAWMASTER_INTERACTIVE_DETAIL=1` 在同一原片上取 7 个配方，先看改前的成本构成：
 
@@ -208,7 +210,7 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 done
 ```
 
-### 可见窗口（本轮已实现，画布未接）
+### 可见窗口的服务端测量
 
 `detail` 现在可以带一个归一化窗口，只物化 2400×1600 那一块。9504×6336、50 个控件配方、同一二进制：
 
@@ -292,7 +294,7 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 
 `createCGImage` 仍会把同一棵图再算一遍。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。
 
-把有限值扫描也收窄到窗口还能再省一部分，但它把证明从「整幅有限」变成「显示窗口有限」，需要审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域，本轮未做。
+当前保持整幅有限值证明。热态数据及既有见证复用范围决定先处理已定位的邻域和全幅归约。[任务](tasks.md)
 
 早期用 2 个配方的探针估算 ROI 只有 1.8×，那个数字只覆盖扫描与物化两项、且未算上真实路径里的占比，已被上表替代。[旧探针数据](evidence/roi-probe.json)
 

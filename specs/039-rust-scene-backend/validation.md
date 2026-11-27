@@ -1,7 +1,6 @@
-# 039 validation
+# 039 · Rust 场景后端验证
 
-All commands run from the repository root on 2026-11-27, macOS arm64, Rust core built in release
-mode by the SwiftPM build plugin.
+下文保留 2026-11-27 原始分阶段测试。`main@b238c0ab` 重新运行了 Rust 解析器、严格 Metal 影子对照、合成 60 MP、实拍暗房和冻结 032。实际执行的路径及本机数据见[联合复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)。
 
 ## Builds
 
@@ -41,8 +40,9 @@ Executed 25 tests, with 5 tests skipped and 0 failures
 Coverage of the shadow suite:
 
 - All 13 layer modes match the Swift executor for signed, superwhite and premultiplied pixels.
-- Parallel weighted changes, ordered layers, groups, nested scopes, disabled branches, ROI and
-  node/bypass views match the Swift reference.
+- Parallel weighted changes, ordered layers, groups, disabled branches, ROI and
+  top-level node/bypass views match the Swift reference. Group-path monitoring currently runs on
+  Swift even in strict mode. Use the actual receipt to verify which backend executed a request.
 - All analytic coverage ports (linear, radial, combine add/subtract/intersect, adjust) and
   external provider coverage are exercised.
 - Malformed JSON, unknown/coverage previews, over-budget frames and stale revision handling are
@@ -112,9 +112,7 @@ Executed 4 tests, with 0 failures (0 unexpected) in 3.24 s
 - `testAP1ToLinearRec709RoundTripsThroughTheModelDomain` verifies the inverse color matrix used by
   all model adapters.
 
-The scene preview now constructs the production provider and accepts a model program; the editor
-derives denoise/super-resolution stages from a scene-compatible recipe. Subject/person masks are
-Vision-native; landscape masks require the installed mask pack.
+场景预览服务已可接收显式模型程序，测试直接提供程序及资源。编辑控制器从 `adjustmentsV3` 推导去噪和超分，但持久 v4 配方要求该字段为空。示波器、冻结交付尚未消费模型。实拍 PNG 的组件证据覆盖提供者、遮罩端口和 HDR 分支，产品回放待补。[模型接线](spec.md#模型与资源)
 
 ## EDR headroom across real screens
 
@@ -160,10 +158,10 @@ RAWMASTER_SCENE_60MP_PERFORMANCE=/tmp/scene-60mp.json \
 | ACES HDR delivery | 48.7 ms |
 | Peak receipt bytes | 5,046,796,288 (4.70 GiB) |
 
-Both delivery outputs remain `.private`; the test samples one pixel through a small blit only to
-prove the result is finite. This is the first 60MP scene-graph budget evidence, and it replaces
-the previous "not available" boundary for the synthetic case. Real captured 60MP RAW decode and
-cross-screen EDR verification remain separate hardware/fixture work.
+Both delivery outputs remain `.private`. The test reads one pixel per target to check finiteness.
+These receipts cover generated 61.4 MP input, a 6 GiB graph budget, and two separate ACES output
+timings. The production export default is 1.5 GiB. A full RGBA32F input and output already exceed
+that limit at this size. See the [production budget and tiling plan](spec.md#编译瓦片和回执).
 
 ## Performance
 
@@ -183,18 +181,8 @@ enforces no more than a 20% 6MP regression, while the structural wins are the si
 reused surfaces and cross-frame analytic masks. Reports are written with
 `RAWMASTER_SCENE_BACKEND_PERFORMANCE=/path/report.json swift test --filter testOptInRustBackendPerformance`.
 
-## Boundaries and follow-up
+## 待补证据
 
-- Production denoise/super-resolution adapters and Vision subject/person segmentation are wired
-  and tested on a real PNG. Landscape segmentation is wired through the verified ONNX pack;
-  model quality/performance on a broad asset corpus remains follow-up evidence.
-- The full 60MP scene graph, real EDR cross-screen sweep and broad camera corpus remain
-  environment-dependent acceptance work. The Rust executor enforces the same surface budget and
-  region semantics as the Swift executor, but this run did not produce 60MP timing.
-- Group-path preview selection remains on Swift. Delivery graphs, live previews and node targets
-  use the Rust executor when eligible.
-- `externalCoverage` ids are model-stage ids, not graph node ids. A preset that copies such a
-  node must also copy/bind the corresponding stage id or the render fails with a missing
-  coverage error.
-- No user-visible interaction changed, so no HTML prototype or coverage-table entry is required.
-  The backend switch is an environment/diagnostic seam; the shipping path keeps the same views.
+- 用真实 60 MP RAW 按产品配置测试冷暖预览、1:1 和冻结 HDR／SDR 成片。合成图已取得执行与瓦片回执，源解码、全链路预算和批量仍需实测。
+- 在实际安装包中记录两个显示环境的换屏、亮度及关联帧。组件余量测试记录目标分支和纹理数值，实际显示按 [037](../037-color-film-hdr/plan.md)验收。
+- 组内监看仍在 Swift。后续以逐请求回执、严格模式和实际 032 冻结版本验收 Rust 覆盖。`externalCoverage` 随模型阶段及目标来源重绑，按[迁移顺序](spec.md#迁移顺序)验证。

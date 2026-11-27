@@ -110,6 +110,8 @@ import RAWMasterLibrary
     @Published private(set) var scenePreviewError: String?
     @Published private(set) var scenePreviewBusy = false
     @Published private(set) var sceneStarting = false
+    @Published var sceneModeConfirmation: EditingSceneModeChange?
+    @Published var sceneModeFocusRequest: EditingSceneModeChange.Mode?
     @Published private(set) var sceneRequestedHDR = true
     @Published private(set) var sceneHeadroom: CGFloat = 1
     private let scenePreview = DevelopmentScenePreviewV1()
@@ -509,6 +511,8 @@ import RAWMasterLibrary
         if asset?.id != newAsset?.id { showExport = false; exportVersionID = nil }
         if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
         let priorSceneSource = work?.source
+        sceneModeConfirmation = nil
+        sceneModeFocusRequest = nil
         resetSceneViewing()
         if let priorSceneSource {
             let service = scenePreview
@@ -1116,10 +1120,7 @@ import RAWMasterLibrary
               developmentBranchID == originalBranch else { return }
         if let expectedContext, developmentContext != expectedContext { return }
         guard !shuttingDown, sourceReady, let current = work, !saving else { return }
-        if sceneGraphState.connection != nil { message = "先应用或取消 Graph 连接草稿。"; return }
-        if recipe.sceneGraph != nil, sceneFrame == nil || scenePreviewError != nil || scenePreviewBusy {
-            message = "请先完成有效的 HDR 预览再保存。"; return
-        }
+        if let sceneSaveBlockReason { message = sceneSaveBlockReason; return }
         developmentLocalInput.cancelCollection()
         guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else { message = "请等待这笔调整完成后再保存。"; return }
         saveDevelopment(work: current, recipe: recipe, parent: draftParentID ?? current.adoptedVersionID,
@@ -4447,8 +4448,11 @@ extension EditingController {
         let old = sceneTarget; sceneRequestedHDR = enabled
         if old != sceneTarget { requestPreview() }
     }
-    func setSceneHeadroom(_ value: CGFloat) {
-        guard visibleSceneGraph != nil, value.isFinite, value >= 1, abs(value - sceneHeadroom) >= 0.001 else { return }
+    func setSceneDisplay(_ display: SceneDisplayEnvironment?) {
+        guard visibleSceneGraph != nil else { return }
+        sceneScopes.receiveScreen(display?.colorProfile)
+        let value = display?.headroom ?? 1
+        guard (value > 1) != (sceneHeadroom > 1) || abs(value - sceneHeadroom) >= 0.001 else { return }
         let old = sceneTarget; sceneHeadroom = value
         if old != sceneTarget { requestPreview() }
     }
@@ -4524,6 +4528,13 @@ extension EditingController {
         return .init(draft: sceneTicket, generation: sceneGraphState.generation)
     }
     var sceneGraphScope: SceneGraph.Scope? { recipe.sceneGraph?.scope(at: sceneGraphState.path) }
+    var sceneSaveBlockReason: String? {
+        if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
+        if recipe.sceneGraph != nil, sceneFrame == nil || scenePreviewError != nil || scenePreviewBusy {
+            return "请先完成有效的 HDR 预览再保存。"
+        }
+        return nil
+    }
     var sceneGraphNode: SceneGraph.Node? {
         guard let id = sceneGraphState.single else { return nil }
         return sceneGraphScope?.nodes.first { $0.id == id }

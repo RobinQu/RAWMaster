@@ -36,6 +36,13 @@ typedef struct rm_flashraw_decode_statistics {
 
 rm_flashraw_context *rm_flashraw_open(const char *path, const char *library_path,
                                        char *error, size_t error_capacity);
+typedef enum rm_flashraw_open_status {
+    RM_FLASHRAW_OPEN_OK,
+    RM_FLASHRAW_OPEN_RUNTIME_UNAVAILABLE,
+    RM_FLASHRAW_OPEN_SOURCE_UNREADABLE,
+} rm_flashraw_open_status;
+rm_flashraw_context *rm_flashraw_open_checked(const char *path, const char *library_path,
+    rm_flashraw_open_status *open_status, char *error, size_t error_capacity);
 void rm_flashraw_close(rm_flashraw_context *context);
 int32_t rm_flashraw_sensor_layout(const rm_flashraw_context *context);
 void rm_flashraw_geometry(const rm_flashraw_context *context, uint32_t *width,

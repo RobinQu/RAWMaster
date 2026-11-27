@@ -5,6 +5,13 @@ import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
 
+struct SceneDisplayEnvironment {
+    let id: CGDirectDisplayID
+    let colorProfile: Data?
+    let headroom: CGFloat
+    let potentialHeadroom: CGFloat
+}
+
 /// Uses the existing photo transform and safe viewport. Only the image surface is EDR; all UI chrome stays SDR.
 struct EditingSceneCanvas: NSViewRepresentable {
     let frame: DevelopmentScenePreviewFrameV1?
@@ -12,20 +19,18 @@ struct EditingSceneCanvas: NSViewRepresentable {
     let requestHDR: Bool
     let fitInsets: NSEdgeInsets
     @Binding var transform: ImageTransform
-    let onHeadroom: (CGFloat) -> Void
+    let onDisplay: (SceneDisplayEnvironment?) -> Void
     let onSampling: (DevelopmentScenePreviewV1.Sampling) -> Void
     let onPresentationError: () -> Void
-    var onScreenProfile: ((Data?) -> Void)? = nil
     var onPick: ((CGPoint) -> Void)? = nil
     var onCancelPick: (() -> Bool)? = nil
 
     func makeNSView(context: Context) -> SceneMetalView { SceneMetalView() }
     func updateNSView(_ view: SceneMetalView, context: Context) {
         view.changedTransform = { transform = $0 }
-        view.changedHeadroom = onHeadroom
+        view.changedDisplay = onDisplay
         view.changedSampling = onSampling
         view.failed = onPresentationError
-        view.changedProfile = onScreenProfile
         view.pickedPoint = onPick
         view.cancelPick = onCancelPick
         view.submit(frame, target: target, requestHDR: requestHDR, transform: transform, insets: fitInsets)
@@ -36,6 +41,7 @@ struct EditingSceneCanvas: NSViewRepresentable {
     private struct DisplayKey: Equatable {
         let id: UUID?, target: DevelopmentSceneOutputStateV1.Target, hdr: Bool
         let size: CGSize, backing: CGFloat, rect: CGRect, viewport: CGRect
+        let displayGeneration: UInt64
     }
     private struct Parameters {
         var pixels: SIMD4<Float> // target(presentation) pixel bounds, top-left
@@ -44,8 +50,7 @@ struct EditingSceneCanvas: NSViewRepresentable {
     private(set) var photoLayer: CAMetalLayer?
     private(set) var presentedFrameID: UUID?
     var changedTransform: ((ImageTransform) -> Void)?
-    var changedHeadroom: ((CGFloat) -> Void)?
-    var changedProfile: ((Data?) -> Void)?
+    var changedDisplay: ((SceneDisplayEnvironment?) -> Void)?
     var pickedPoint: ((CGPoint) -> Void)?
     var cancelPick: (() -> Bool)?
     var changedSampling: ((DevelopmentScenePreviewV1.Sampling) -> Void)?
@@ -61,6 +66,9 @@ struct EditingSceneCanvas: NSViewRepresentable {
     private var lastReported: DevelopmentScenePreviewV1.Sampling?
     private var timer: Timer?
     private var inFlight = false
+    private var display: SceneDisplayEnvironment?
+    private var displayGeneration: UInt64 = 0
+    private var screenUpdateQueued = false
 
     override var isFlipped: Bool { true }
     override var acceptsFirstResponder: Bool { true }
@@ -91,22 +99,59 @@ struct EditingSceneCanvas: NSViewRepresentable {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         timer?.invalidate(); timer = nil
-        if window != nil {
+        let notifications = NotificationCenter.default
+        notifications.removeObserver(self, name: NSWindow.didChangeScreenNotification, object: nil)
+        notifications.removeObserver(self, name: NSApplication.didChangeScreenParametersNotification, object: nil)
+        if let window {
+            notifications.addObserver(self, selector: #selector(screenChanged), name: NSWindow.didChangeScreenNotification, object: window)
+            notifications.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
             let timer = Timer(timeInterval: 0.4, repeats: true) { [weak self] _ in
-                MainActor.assumeIsolated { self?.sampleScreen() }
+                MainActor.assumeIsolated { self?.scheduleScreenUpdate() }
             }
             RunLoop.main.add(timer, forMode: .common); self.timer = timer
         }
-        sampleScreen()
+        scheduleScreenUpdate()
     }
-    override func viewDidChangeBackingProperties() { super.viewDidChangeBackingProperties(); sampleScreen(); scheduleDraw() }
+    override func viewDidChangeBackingProperties() { super.viewDidChangeBackingProperties(); scheduleScreenUpdate(); scheduleDraw() }
     override func layout() { super.layout(); scheduleDraw() }
 
-    private func sampleScreen() {
-        guard let screen = window?.screen else { changedProfile?(nil); return }
-        if let changedProfile { changedProfile(screen.colorSpace?.iccProfileData) }
-        let current = screen.maximumExtendedDynamicRangeColorComponentValue
-        changedHeadroom?(current.isFinite ? max(1, current) : 1)
+    @objc private func screenChanged(_ notification: Notification) { scheduleScreenUpdate() }
+
+    private static func displayID(_ screen: NSScreen?) -> CGDirectDisplayID? {
+        screen?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID
+    }
+
+    private func scheduleScreenUpdate() {
+        guard !screenUpdateQueued else { return }
+        screenUpdateQueued = true
+        // Moving an NSView into its window may be part of a SwiftUI update. Read the final
+        // window state and publish display properties together after that update returns.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.screenUpdateQueued = false
+            self.updateDisplay()
+        }
+    }
+
+    private func updateDisplay() {
+        let next: SceneDisplayEnvironment?
+        if let screen = window?.screen, let id = Self.displayID(screen) {
+            func finiteHeadroom(_ value: CGFloat) -> CGFloat { value.isFinite ? max(1, value) : 1 }
+            next = .init(id: id, colorProfile: screen.colorSpace?.iccProfileData,
+                headroom: finiteHeadroom(screen.maximumExtendedDynamicRangeColorComponentValue),
+                potentialHeadroom: finiteHeadroom(screen.maximumPotentialExtendedDynamicRangeColorComponentValue))
+        } else { next = nil }
+        let changed = next?.id != display?.id || next?.colorProfile != display?.colorProfile
+            || next?.potentialHeadroom != display?.potentialHeadroom
+        display = next
+        if changed {
+            displayGeneration &+= 1
+            photoLayer?.isHidden = true
+            lastPaint = nil
+            presentedFrameID = nil
+        }
+        changedDisplay?(next)
+        if changed { scheduleDraw() }
     }
 
     private func imageRect(nativeSize: CGSize) -> CGRect {
@@ -121,7 +166,12 @@ struct EditingSceneCanvas: NSViewRepresentable {
 
     private func drawLatest() {
         guard let window, window.isVisible, bounds.width > 0, bounds.height > 0,
+              let display, Self.displayID(window.screen) == display.id,
               let frame = sceneFrame, frame.target == target else { return }
+        // Keep requesting EDR on a capable panel during its SDR fallback. Current headroom can
+        // stay at 1 until onscreen content requests EDR.
+        let enableEDR = requestHDR && display.potentialHeadroom > 1
+        guard frame.target != .hdr2020 || enableEDR else { return }
         let rect = imageRect(nativeSize: frame.nativeSize)
         if transform.physicalMagnification != nil || transform.scale > 1,
            let visible = ImageViewportGeometry.visibleWindow(destination: rect, bounds: bounds),
@@ -137,7 +187,8 @@ struct EditingSceneCanvas: NSViewRepresentable {
         let viewport = pixels.applying(.init(scaleX: 1 / backing, y: 1 / backing))
         let size = pixels.size
         guard size.width <= 8192, size.height <= 8192 else { failed?(); return }
-        let key = DisplayKey(id: frame.id, target: frame.target, hdr: requestHDR, size: size, backing: backing, rect: drawn, viewport: viewport)
+        let key = DisplayKey(id: frame.id, target: frame.target, hdr: enableEDR, size: size, backing: backing,
+            rect: drawn, viewport: viewport, displayGeneration: displayGeneration)
         guard key != lastPaint else { return }
         do {
             let gpu = frame.texture.device
@@ -165,10 +216,15 @@ struct EditingSceneCanvas: NSViewRepresentable {
                 DispatchQueue.main.async {
                     guard let self else { return }
                     self.inFlight = false
-                    if self.window != nil, let active = self.photoLayer, ObjectIdentifier(active) == layerID,
-                       self.lastPaint == key, self.sceneFrame?.id == key.id {
-                        if succeeded { self.presentedFrameID = frame.id; active.isHidden = false }
-                        else { active.isHidden = true; self.presentedFrameID = nil; self.failed?(); return }
+                    if let currentWindow = self.window, let active = self.photoLayer, ObjectIdentifier(active) == layerID,
+                       self.lastPaint == key, self.sceneFrame?.id == key.id,
+                       let currentDisplay = self.display, Self.displayID(currentWindow.screen) == currentDisplay.id {
+                        if succeeded {
+                            self.presentedFrameID = frame.id; active.isHidden = false
+                            InteractionTrace.shared.sceneDrawableCompleted(frame: frame.id, target: frame.target,
+                                display: currentDisplay, windowNumber: currentWindow.windowNumber,
+                                pixelSize: key.size, edrEnabled: key.hdr, nativeWindow: frame.window != nil)
+                        } else { active.isHidden = true; self.presentedFrameID = nil; self.failed?(); return }
                     }
                     self.drawLatest()
                 }

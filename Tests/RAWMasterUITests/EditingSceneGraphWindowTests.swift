@@ -38,8 +38,26 @@ final class EditingSceneGraphWindowTests: XCTestCase {
         do {
             editing.isPresented = true; editing.focus(asset)
             try await wait("original admitted") { editing.sourceReady && !editing.loading }
-            editing.enterSceneDraft(ticket: try XCTUnwrap(editing.sceneTicket))
-            try await wait("live HDR frame") { editing.sceneGraphScope != nil && editing.sceneFrame != nil && !editing.scenePreviewBusy }
+            let compatibilityRecipe = editing.recipe
+            try await press("editing.scene.mode.HDR", within: window)
+            try await wait("HDR confirmation sheet") { window.attachedSheet != nil }
+            // Exercise the workbench's focus-loss behavior even when the XCTest window never becomes key.
+            editing.suspendDevelopmentFocus()
+            XCTAssertNil(editing.developmentContext)
+            XCTAssertEqual(editing.recipe, compatibilityRecipe)
+            try await press("editing.scene.mode.cancel", within: XCTUnwrap(window.attachedSheet))
+            try await wait("cancelled HDR confirmation") { window.attachedSheet == nil }
+            editing.beginDevelopmentInterface()
+            XCTAssertEqual(editing.recipe, compatibilityRecipe)
+            try await press("editing.scene.mode.HDR", within: window)
+            try await wait("reopened HDR confirmation sheet") { window.attachedSheet != nil }
+            editing.suspendDevelopmentFocus()
+            try await press("editing.scene.mode.confirm", within: XCTUnwrap(window.attachedSheet))
+            try await wait("confirmed HDR and live frame") {
+                editing.sceneModeConfirmation == nil && editing.sceneGraphScope != nil && editing.sceneFrame != nil && !editing.scenePreviewBusy
+            }
+            // A non-key XCTest host can retain SwiftUI's sheet window after the binding clears.
+            if let sheet = window.attachedSheet { window.endSheet(sheet) }
             let initialRecipe = editing.recipe, originalFrame = editing.sceneFrame?.id
             let first = try XCTUnwrap(editing.sceneGraphState.single)
             let transform = editing.canvasCommand?.id
@@ -102,7 +120,7 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             }
             // Group view is transient. Save reads the complete graph, not the preview's prefix.
             let expected = try XCTUnwrap(editing.recipe.sceneGraph)
-            editing.saveDevelopment()
+            try await press("editing.scene.saveCandidate", within: window)
             try await wait("frozen version with group") { !editing.saving && editing.versions.contains(where: { $0.recipe.sceneGraph == expected }) }
             let candidate = try XCTUnwrap(editing.versions.first { $0.recipe.sceneGraph == expected })
             let store = try LibraryStore(databaseURL: database)

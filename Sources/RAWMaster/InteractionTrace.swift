@@ -1,4 +1,5 @@
 import AppKit
+import CryptoKit
 import SwiftUI
 import RAWMasterImaging
 import RAWMasterCore
@@ -79,6 +80,18 @@ final class InteractionTrace {
         destination = path.map { URL(fileURLWithPath: $0) }
     }
     var isEnabled: Bool { destination != nil }
+    func sceneDrawableCompleted(frame: UUID, target: DevelopmentSceneOutputStateV1.Target,
+                                display: SceneDisplayEnvironment, windowNumber: Int, pixelSize: CGSize,
+                                edrEnabled: Bool, nativeWindow: Bool) {
+        guard isEnabled else { return }
+        var fields: [String: Any] = ["frameID": frame.uuidString, "target": target.rawValue, "displayID": display.id,
+            "windowNumber": windowNumber, "headroom": display.headroom, "potentialHeadroom": display.potentialHeadroom,
+            "pixelWidth": pixelSize.width, "pixelHeight": pixelSize.height, "edrEnabled": edrEnabled, "nativeWindow": nativeWindow]
+        if let profile = display.colorProfile {
+            fields["displayProfileSHA256"] = SHA256.hash(data: profile).map { String(format: "%02x", $0) }.joined()
+        }
+        record("scene.drawable.completed", fields: fields, includeAssociation: false)
+    }
     /// Lazy, opt-in, process-bounded metadata. This family never inherits event association IDs.
     func thumbnail(_ stage: ThumbnailDiagnosticStage, kind: DevelopmentThumbnailKind? = nil,
                    _ payload: () -> ThumbnailDiagnosticPayload = { .init() }) {

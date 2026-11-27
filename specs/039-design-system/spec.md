@@ -1,6 +1,6 @@
 # 039 · 界面规范
 
-本规范约束 RAWMaster 的可见界面：尺寸、间距、字级、颜色、控件状态、版式与原生/自绘边界。目标是让资料库、编辑、导出和设置在后续迭代里保持同一套设计语言，而不是每个面板各起炉灶。
+本规范约束 RAWMaster 可见界面的尺寸、间距、字级、颜色、控件状态和版式。HDR 的内容、Graph 的命令和引擎资格分别沿用 [037](../037-color-film-hdr/spec.md)、[038](../038-node-dag-workflow/spec.md) 和 [039 Rust 场景后端](../039-rust-scene-backend/spec.md)。两份 039 按全名引用。[联合验收](../035-portable-processing-cores/roadmap.md)
 
 参考对象是 macOS Photos 的整体界面语言（检查器的等距滑块、扁平菜单、平面勾选、分组展开），但它只作为外观与交互参考：RAWMaster 保留自己的工具分类、草稿语义和 RAW 算法，不复制 Photos 的专有能力，也不把模拟值当输出。
 
@@ -15,9 +15,9 @@
 
 ## 三层模型
 
-1. **令牌（Tokens）**：`Sources/RAWMaster/DesignLanguage.swift` 的 `AppDesign`。只有这里可以出现尺寸、间距、圆角、字号和墨色数值。
-2. **原语（Primitives）**：照片检查器的共享控件 `PhotosSliderRow`、`PhotosFlatButtonStyle`、`PhotosFlatCheckboxStyle`、`PhotosFlatTabs`、`PhotosFlatMenu`、`DevelopmentNumberField`，以及 039 新增的 `AppIconButton`、`AppSectionHeader`、`AppHint`、`AppReadout`（`Sources/RAWMaster/DesignControls.swift`）。新代码只用 `App*` 名称，旧名是过渡别名。
-3. **界面（Surfaces）**：由原语组合出的面板。界面文件里不得再出现行高、字号、圆角或临时透明度的字面量。
+1. **令牌。** [AppDesign](../../Sources/RAWMaster/DesignLanguage.swift) 管共享的控件尺寸、间距、圆角、字号和墨色。Graph 的最小可操作面积、照片 viewport 及示波器绘图区遵循各自功能与测量规格。
+2. **原语。** 检查器继续复用 `PhotosSliderRow`、`PhotosFlatButtonStyle`、`PhotosFlatCheckboxStyle`、`PhotosFlatTabs`、`PhotosFlatMenu` 和 `DevelopmentNumberField`。共享的 `AppIconButton`、`AppSectionHeader`、`AppHint`、`AppReadout` 见[原生实现](../../Sources/RAWMaster/DesignControls.swift)。
+3. **界面。** 组合已有控件和语义令牌，照片、节点及批次的作用域由各界面层绑定。
 
 新增控件前先检查原语清单；能组合就不新增类型。
 
@@ -201,6 +201,16 @@
 
 评审清单：行高只允许 26/22/32/24；字号只允许 13/12/11/10/9；颜色来自 `AppDesign.Ink` 或 `AppPalette`；悬停不是唯一反馈；禁用保留值；数字输入有范围、回车、Escape 与输入法处理；浅色、深色、窄窗各走查一次。
 
+## HDR、Graph 与 032 的验收
+
+| 现有入口 | 逐项验证 |
+| --- | --- |
+| [基础与 HDR 示波器](../../docs/ui/prototype/index.html?sceneNativeReview=1&scopesNativeReview=1) | 照片模式和节点选择各在自己的面板。Tab 定位、方向键移焦、确认只写一次编辑。示波器切阶段、采样取消和屏幕围栏均有文字与可访问名称。窗体换屏后 UI、焦点和叠加维持 SDR 呈现。 |
+| [可编辑 Graph](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1) | 单选数值、连接草案及监看有清晰状态。通过实际 AppKit 键盘和 VoiceOver 核对非模态焦点、窄窗展开和 Escape 的层级。原生场景数值行收敛到共享样式时复用稳定标识和草稿作用域，复跑 036 的 drawable 门槛。 |
+| [032 PQ 预检](../../docs/ui/prototype/index.html?pqReview=1) | 逐行读出已存版本、格式、色彩信号和无法交付原因。取消返回选片，结果可继续原任务。系统弹窗和焦点采用对应系统样式。 |
+
+先在现有工作台复验浅深色、窄窗、键盘与失败恢复，再用最低支持 macOS 15 与当前系统的原生窗口复验同一组动作。画廊负责控件标本，产品图和像素证据放在各功能的验收记录。[覆盖表](../../docs/ui/coverage.md#编辑与交付)
+
 ## 现状与迁移清单
 
 2026-11-26 已完成的收敛：
@@ -222,7 +232,7 @@
 | 设置页 | 系统表单，控件尺寸不统一 | 只统一 `controlSize` 与分节 | 低 |
 | 勾选/分段第三种形态 | 系统 checkbox/segmented 与自绘混用 | 按容器边界保留系统形态，编辑面只用自绘 | 低 |
 
-旧类型别名（`PhotosFlatButtonStyle` 等）在本规范生效期内保留；下一个大版本移除。
+既有共享控件先收敛语义和验证用例。替换前验证原调用点的键盘、数字草稿与撤销行为。
 
 ## 验收
 

@@ -148,13 +148,22 @@ final class EditingSceneDarkroomTests: XCTestCase {
         values.withUnsafeBytes { bytes in
             texture.replace(region: MTLRegionMake2D(0, 0, 2, 2), mipmapLevel: 0, withBytes: bytes.baseAddress!, bytesPerRow: 32)
         }
-        let window = NSWindow(contentRect: CGRect(x: 10, y: 60, width: 160, height: 120), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        let screen = NSScreen.screens.first { $0.maximumPotentialExtendedDynamicRangeColorComponentValue > 1 }
+        let origin = screen?.visibleFrame.origin ?? .zero
+        let window = NSWindow(contentRect: CGRect(x: origin.x + 10, y: origin.y + 60, width: 160, height: 120),
+            styleMask: [.titled, .closable], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         let view = SceneMetalView()
         window.contentView = view; window.orderFront(nil)
         defer { window.contentView = nil; window.close() }
         let hdr = DevelopmentScenePreviewFrameV1(id: UUID(), texture: texture, target: .hdr2020, nativeSize: .init(width: 2, height: 2), window: nil)
         let size = view.bounds.size
+        let sdr = DevelopmentScenePreviewFrameV1(id: UUID(), texture: texture, target: .sdr709, nativeSize: hdr.nativeSize, window: nil)
+        view.submit(sdr, target: .sdr709, requestHDR: true, transform: .init(), insets: .zero)
+        try await wait("initial SDR drawable") { view.presentedFrameID == sdr.id }
+        XCTAssertEqual(view.photoLayer?.wantsExtendedDynamicRangeContent, screen != nil)
+        XCTAssertEqual(view.photoLayer?.colorspace?.name, CGColorSpace.extendedLinearSRGB)
+        guard screen != nil else { return }
         view.submit(hdr, target: .hdr2020, requestHDR: true, transform: .init(), insets: .zero)
         try await wait("floating HDR drawable") { view.presentedFrameID == hdr.id }
         XCTAssertTrue(view.photoLayer?.wantsExtendedDynamicRangeContent == true)
@@ -162,6 +171,45 @@ final class EditingSceneDarkroomTests: XCTestCase {
         XCTAssertEqual(view.bounds.size, size)
         view.submit(nil, target: .sdr709, requestHDR: true, transform: .init(), insets: .zero)
         XCTAssertNil(view.presentedFrameID); XCTAssertNil(view.photoLayer, "the previous layer may not be relabelled SDR")
+    }
+
+    @MainActor func testOptInDisplayMoveReissuesTheResidentFrameForThePhysicalScreen() async throws {
+        guard ProcessInfo.processInfo.environment["RAWMASTER_SCENE_PHYSICAL_DISPLAYS"] == "1",
+              let first = NSScreen.screens.first, let second = NSScreen.screens.dropFirst().first else {
+            throw XCTSkip("Use two connected displays and opt in to a physical window move")
+        }
+        let screenID: (NSScreen) throws -> UInt32 = { screen in
+            try XCTUnwrap(screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? UInt32)
+        }
+        let firstID = try screenID(first), secondID = try screenID(second)
+        let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: 2, height: 2, mipmapped: false)
+        descriptor.storageMode = .shared; descriptor.usage = .shaderRead
+        let texture = try XCTUnwrap(device.makeTexture(descriptor: descriptor))
+        let color = [SIMD4<Float>](repeating: .init(0.3, 0.4, 0.5, 1), count: 4)
+        color.withUnsafeBytes { bytes in
+            texture.replace(region: MTLRegionMake2D(0, 0, 2, 2), mipmapLevel: 0, withBytes: bytes.baseAddress!, bytesPerRow: 32)
+        }
+        let window = NSWindow(contentRect: CGRect(x: first.visibleFrame.midX - 100, y: first.visibleFrame.midY - 80,
+            width: 200, height: 160), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        let view = SceneMetalView()
+        var display: SceneDisplayEnvironment?, presentedOnSecondBeforeDraw: UUID?
+        view.changedDisplay = { next in
+            if next?.id == secondID && display?.id != secondID { presentedOnSecondBeforeDraw = view.presentedFrameID }
+            display = next
+        }
+        window.contentView = view
+        window.orderFront(nil)
+        defer { view.changedDisplay = nil; window.contentView = nil; window.close() }
+        let frame = DevelopmentScenePreviewFrameV1(id: UUID(), texture: texture, target: .sdr709,
+            nativeSize: .init(width: 2, height: 2), window: nil)
+        view.submit(frame, target: .sdr709, requestHDR: false, transform: .init(), insets: .zero)
+        try await wait("presented on first display") { display?.id == firstID && view.presentedFrameID == frame.id }
+        window.setFrameOrigin(.init(x: second.visibleFrame.midX - 100, y: second.visibleFrame.midY - 80))
+        try await wait("same frame presented on second display") { display?.id == secondID && view.presentedFrameID == frame.id }
+        XCTAssertNil(presentedOnSecondBeforeDraw)
+        XCTAssertEqual(display?.colorProfile, second.colorSpace?.iccProfileData)
     }
 
     @MainActor private func measureWarmFIT(_ editing: EditingController, node: UUID, view: SceneMetalView, report: String) async throws {

@@ -22,11 +22,12 @@ package actor DevelopmentScenePreviewV1 {
     case pixels(window: CGRect)
   }
   package enum Failure: LocalizedError, Equatable {
-    case unsupportedSource, unavailableSource, invalidViewport, resourceBudget
+    case unsupportedSource, unavailableSource, decoderUnavailable, invalidViewport, resourceBudget
     package var errorDescription: String? {
       switch self {
       case .unsupportedSource: return "此原片未通过 HDR 场景校准准入。"
       case .unavailableSource: return "原片已离线或内容已变化；请重新接回或验证原片。"
+      case .decoderUnavailable: return "HDR 原片解码运行库不可用。请检查 RAWMaster 安装后重试。"
       case .invalidViewport: return "当前取景超出场景预览范围。"
       case .resourceBudget: return "此原片或取景超过场景预览的资源预算。"
       }
@@ -213,6 +214,7 @@ package actor DevelopmentScenePreviewV1 {
         try ctx.decoder.decode(capture.url, maximumOutputBytes: 440 * 1024 * 1024)
       }
     } catch DevelopmentSceneRAWV1.Failure.surfaceBudget { throw Failure.resourceBudget }
+    catch FlashRawError.unavailable { throw Failure.decoderUnavailable }
     catch is CancellationError { throw CancellationError() }
     catch { throw Failure.unsupportedSource }
     try ensureCurrent(source, stamp: stamp)

@@ -1,6 +1,6 @@
 # 算子、配方与执行契约
 
-**目标。** 同一版本的编辑操作可在当前照片交互、批量 worker 和最终导出中复用。版本记录冻结“应当怎么算”，运行回执记录“本次由什么实现算出”。评审可把[可运行 JSON](../../experiments/portable-processing/image/examples/local-look.json)和[原生输入输出](validation.md)逐项对照。[主规格](spec.md)
+本页记录 035 旧 SDR 点配方执行、实验和实拍证据。版本冻结编辑语义，执行回执记录实际后端。场景 AP1 配方和端口由 [037](../037-color-film-hdr/spec.md)／[038](../038-node-dag-workflow/spec.md) 定义，macOS 场景执行由 [039 Rust 场景后端](../039-rust-scene-backend/spec.md) 定义。两个入口共享的演进目标见[联合实施和验收](roadmap.md)。[035 可运行 JSON](../../experiments/portable-processing/image/examples/local-look.json) · [原生输入输出](validation.md)
 
 ## 配方与端口
 

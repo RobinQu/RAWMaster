@@ -63,6 +63,12 @@ static void *symbol(void *library, const char *name) {
 
 rm_flashraw_context *rm_flashraw_open(const char *path, const char *library_path,
                                        char *error, size_t error_capacity) {
+    return rm_flashraw_open_checked(path, library_path, NULL, error, error_capacity);
+}
+
+rm_flashraw_context *rm_flashraw_open_checked(const char *path, const char *library_path,
+        rm_flashraw_open_status *open_status, char *error, size_t error_capacity) {
+    if (open_status) *open_status = RM_FLASHRAW_OPEN_RUNTIME_UNAVAILABLE;
     if (!path || !library_path) {
         set_error(error, error_capacity, "FlashRaw path and library path are required");
         return NULL;
@@ -114,10 +120,12 @@ rm_flashraw_context *rm_flashraw_open(const char *path, const char *library_path
     }
     flashraw_status status = c->open_path(path, NULL, &c->file);
     if (status != FLASHRAW_OK) {
+        if (open_status) *open_status = RM_FLASHRAW_OPEN_SOURCE_UNREADABLE;
         fail(c, status, NULL, error, error_capacity);
         rm_flashraw_close(c);
         return NULL;
     }
+    if (open_status) *open_status = RM_FLASHRAW_OPEN_OK;
     return c;
 missing:
     set_error(error, error_capacity, "FlashRaw library is missing a required symbol");

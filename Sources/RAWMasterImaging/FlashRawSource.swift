@@ -139,7 +139,9 @@ final class FlashRawSource {
 
   private init(url: URL, libraryPath: String) throws {
     var error = [CChar](repeating: 0, count: 2048)
-    guard let handle = rm_flashraw_open(url.path, libraryPath, &error, error.count) else {
+    var status = RM_FLASHRAW_OPEN_OK
+    guard let handle = rm_flashraw_open_checked(url.path, libraryPath, &status, &error, error.count) else {
+      if status == RM_FLASHRAW_OPEN_SOURCE_UNREADABLE { throw FlashRawError.decode(String(cString: error)) }
       throw FlashRawError.unavailable(String(cString: error))
     }
     self.handle = handle

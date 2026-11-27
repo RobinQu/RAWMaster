@@ -596,7 +596,7 @@ function editorView() {
     (basic && SceneEditor.hdr() ? SceneEditor.rendition() : '') + '</div></aside></div>';
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
       <strong>${h(Studio.asset(id).name)}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
-      <div class="row">${btn('智能编辑', 'edit-tool', 'smart', { icon:'spark' })}${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) })}</div></header>
+      <div class="row">${btn('智能编辑', 'edit-tool', 'smart', { icon:'spark' })}${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) || !!S.dagConnectionDraft, title: S.dagConnectionDraft ? '先应用或取消 Graph 连接草稿' : '' })}</div></header>
     <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${compatibilityGraphMode ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
 function editPanel(path, focus) {
@@ -631,7 +631,7 @@ actions['edit-step'] = (v) => {
   render();
 };
 actions['save-version'] = () => {
-  if (S.tool !== 'versions' && Studio.dirty(Studio.data.work)) {
+  if (S.tool !== 'versions' && !S.dagConnectionDraft && Studio.dirty(Studio.data.work)) {
     const v = Studio.candidate(Studio.data.work, '初修');
     render();
     notify('已保存候选 · ' + v.name);

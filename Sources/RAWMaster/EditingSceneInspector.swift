@@ -1,15 +1,22 @@
 import SwiftUI
 import RAWMasterCore
 
+struct EditingSceneModeChange: Identifiable {
+    enum Mode: String, CaseIterable { case sdr = "SDR", hdr = "HDR", bw = "B&W" }
+    let mode: Mode
+    let ticket: EditingController.SceneTicket
+    let filename: String
+    var id: Mode { mode }
+}
+
 /// Native counterpart to the Basic-panel mode strip. The confirmation owns a photo/branch ticket.
 struct EditingSceneModeStrip: View {
     @ObservedObject var editing: EditingController
     @State private var outputOpen = false
-    @State private var pending: (mode: Mode, ticket: EditingController.SceneTicket)?
-    @State private var confirm = false
+    private typealias Mode = EditingSceneModeChange.Mode
+    @Environment(\.isEnabled) private var isEnabled
     @FocusState private var focus: Mode?
 
-    private enum Mode: String, CaseIterable { case sdr = "SDR", hdr = "HDR", bw = "B&W" }
     private var current: Mode {
         if editing.recipe.sceneGraph != nil { return .hdr }
         return editing.recipe.adjustmentsV3?.blackAndWhite.enabled == true ? .bw : .sdr
@@ -44,16 +51,8 @@ struct EditingSceneModeStrip: View {
         .padding(.horizontal, 12).padding(.vertical, 6)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("色彩模式")
-        .confirmationDialog(pending?.mode == .hdr ? "从原片创建 HDR 草稿？" : "返回 SDR 编辑？", isPresented: $confirm, titleVisibility: .visible) {
-            Button(pending?.mode == .hdr ? "创建 HDR 草稿" : "确认切换") { accept() }
-            Button("取消", role: .cancel) { focus = pending?.mode; pending = nil }
-        } message: {
-            if pending?.mode == .hdr {
-                Text("HDR 直接读取场景数据，不会转换当前 SDR 调整、蒙版或外观。已保存版本不变。可撤销。")
-            } else {
-                Text("退出当前草稿的 HDR 编辑，恢复之前的 SDR 编辑。已保存的 HDR 版本不变。可撤销；只想比较外观时请预览 SDR 派生。")
-            }
-        }
+        .onChange(of: isEnabled, initial: true) { _, _ in restoreModeFocus() }
+        .onChange(of: editing.sceneModeFocusRequest) { _, _ in restoreModeFocus() }
         .popover(isPresented: $outputOpen, arrowEdge: .bottom) {
             VStack(alignment: .leading, spacing: 8) {
                 Text("色彩与输出").font(.headline)
@@ -72,6 +71,14 @@ struct EditingSceneModeStrip: View {
         }
     }
 
+    private func restoreModeFocus() {
+        guard isEnabled, let mode = editing.sceneModeFocusRequest else { return }
+        focus = mode
+        Task { @MainActor in
+            if editing.sceneModeFocusRequest == mode { editing.sceneModeFocusRequest = nil }
+        }
+    }
+
     private func moveFocus(_ step: Int, from mode: Mode) -> KeyPress.Result {
         guard let index = Mode.allCases.firstIndex(of: mode) else { return .ignored }
         focus = Mode.allCases[(index + step + Mode.allCases.count) % Mode.allCases.count]
@@ -83,14 +90,42 @@ struct EditingSceneModeStrip: View {
             editing.message = editing.sceneModeBlockReason ?? "此原片未通过 HDR 场景校准准入。"
             return
         }
-        if mode == .hdr || current == .hdr { pending = (mode, ticket); confirm = true }
-        else { editing.setLegacyColorMode(ticket: ticket, monochrome: mode == .bw) }
+        if mode == .hdr || current == .hdr {
+            focus = mode
+            editing.sceneModeConfirmation = .init(mode: mode, ticket: ticket, filename: editing.asset?.filename ?? "当前照片")
+        } else { editing.setLegacyColorMode(ticket: ticket, monochrome: mode == .bw) }
     }
-    private func accept() {
-        guard let pending else { return }
-        focus = pending.mode; self.pending = nil
-        if pending.mode == .hdr { editing.enterSceneDraft(ticket: pending.ticket) }
-        else { editing.leaveSceneDraft(ticket: pending.ticket, monochrome: pending.mode == .bw) }
+}
+
+struct EditingSceneModeConfirmation: View {
+    let editing: EditingController
+    let change: EditingSceneModeChange
+
+    var body: some View {
+        let entersHDR = change.mode == .hdr
+        return VStack(alignment: .leading, spacing: 12) {
+            Text(entersHDR ? "从原片创建 HDR 草稿？" : "切换到 \(change.mode.rawValue)？")
+                .font(.headline).accessibilityAddTraits(.isHeader)
+            Text(change.filename).font(.subheadline)
+            Text(entersHDR
+                 ? "HDR 直接读取场景数据，不会转换当前 SDR 调整、蒙版或外观。已保存版本不变。可撤销。"
+                 : "退出当前草稿的 HDR 编辑及其 SDR 派生设置。已保存的 HDR 版本不变。可撤销；只想比较外观时请预览 SDR 派生。")
+                .font(.callout).fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Spacer()
+                Button("取消") { editing.sceneModeConfirmation = nil }
+                    .keyboardShortcut(.cancelAction)
+                    .accessibilityIdentifier("editing.scene.mode.cancel")
+                Button(entersHDR ? "创建 HDR 草稿" : "确认切换") {
+                    editing.sceneModeConfirmation = nil
+                    if entersHDR { editing.enterSceneDraft(ticket: change.ticket) }
+                    else { editing.leaveSceneDraft(ticket: change.ticket, monochrome: change.mode == .bw) }
+                }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .accessibilityIdentifier("editing.scene.mode.confirm")
+            }
+        }.padding(24).frame(width: 400)
     }
 }
 
@@ -124,6 +159,18 @@ struct EditingSceneInspector: View {
                     if let message = editing.message { Text(message).font(.caption).foregroundStyle(AppPalette.warning) }
                 }.padding(14)
             }
+            Divider()
+            HStack {
+                Button("作品版本") { editing.stage = .versions }
+                    .disabled(editing.saving || editing.sceneGraphState.connection != nil)
+                    .accessibilityIdentifier("editing.scene.versions")
+                Spacer()
+                Button(editing.saving ? "正在保存…" : "保存候选") { editing.saveDevelopment() }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(editing.displayedSavedVersion != nil || editing.sceneGraphTicket == nil || editing.sceneSaveBlockReason != nil)
+                    .help(editing.sceneSaveBlockReason ?? "保存完整场景图为本张候选")
+                    .accessibilityIdentifier("editing.scene.saveCandidate")
+            }.padding(12)
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editing.scene.inspector")

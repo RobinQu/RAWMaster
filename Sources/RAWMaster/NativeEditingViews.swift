@@ -10,6 +10,7 @@ struct NativeEditingInspector: View {
     @State private var gradingExpanded = false
     @State private var geometryExpanded = false
     @State private var exactCropExpanded = false
+    @State private var confirmedSceneMode: EditingSceneModeChange?
     var body: some View {
         VStack(spacing: 0) {
             if editing.stage != .development {
@@ -66,6 +67,16 @@ struct NativeEditingInspector: View {
         }
         .background(Color.clear)
         .environment(\.developmentNumberInputOwner, editing.developmentNumberInputOwner)
+        // The compatibility adjustment context is suspended while this sheet has the key window.
+        .sheet(item: $editing.sceneModeConfirmation, onDismiss: {
+            if let change = confirmedSceneMode, editing.sceneTicket == change.ticket {
+                editing.sceneModeFocusRequest = change.mode
+            }
+            confirmedSceneMode = nil
+        }) { change in
+            EditingSceneModeConfirmation(editing: editing, change: change)
+                .onAppear { confirmedSceneMode = change }
+        }
         .onChange(of: editing.stage) { _, _ in editing.previewContextChanged() }
     }
     private var development: some View {

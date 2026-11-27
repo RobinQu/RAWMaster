@@ -180,6 +180,10 @@ def main():
                   const before=JSON.stringify(currentEdit().recipe.dag), history=currentEdit().past.length;
                   menuAction('dag-preview');assert(dagView().target==='grade'&&el('.dag-photo-status').innerText.includes('不用于导出'));
                   pickNode(node);assert(dagView().target==='grade'&&JSON.stringify(currentEdit().recipe.dag)===before);
+                  const adopted=currentEdit().adopted, count=currentEdit().versions.length;
+                  act('save-version');
+                  const saved=currentEdit().versions.find(v=>JSON.stringify(v.recipe.dag)===before);
+                  assert(saved&&currentEdit().versions.length===count+1&&currentEdit().adopted===adopted&&dagView().target==='grade','save freezes final graph without adopting or changing monitoring');
                   act('dag-preview-final');assert(currentEdit().past.length===history,'preview only');
                 """)
                 native_graph_evidence = os.environ.get("RAWMASTER_UI_NATIVE_GRAPH_EVIDENCE")
@@ -187,10 +191,13 @@ def main():
                     Path(native_graph_evidence).mkdir(parents=True, exist_ok=True)
                     browser("screenshot", str(Path(native_graph_evidence) / "graph-scene-1440.png"))
                 scenario("038 原生评审：无效草稿阻止交付，取消后可编辑", """
-                  const graph=dagCurrent(), node=dagNode().id, recipe=JSON.stringify(currentEdit().recipe.dag);
+                  set('[name=dagNumber][data-key=ev]',1.50);
+                  const node=dagNode().id, recipe=JSON.stringify(currentEdit().recipe.dag);
+                  await wait(()=>!el('[data-act=save-version]').disabled);
                   dagPropose(node,node,'image');assert(el('[data-act=dag-connect-apply]').disabled);
+                  assert(el('[data-act=save-version]').disabled,'open connection blocks save');
                   act('workflow','export');assert(!location.hash.includes('export'),'cannot hand off an uncommitted draft');
-                  act('dag-connect-cancel');assert(JSON.stringify(currentEdit().recipe.dag)===recipe);
+                  act('dag-connect-cancel');assert(JSON.stringify(currentEdit().recipe.dag)===recipe&&!el('[data-act=save-version]').disabled);
                   act('dag-view-toggle');assert(!el('.dag-floating')&&el('.developed')?.checkVisibility(),'close graph only');
                 """)
                 for theme in ['light','dark']:
@@ -251,14 +258,31 @@ def main():
                 check_browser_errors()
                 return
             if args.scene_native_only:
-                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1")
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&sceneRawRuntime=unavailable")
                 browser("set", "viewport", "1440", "900")
+                scenario("037 原生评审：运行库不可用时留在原草稿", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
+                  act('edit-tool','basic');await page('.scene-mode-bar');
+                  const draft=Studio.edit('b1'), old=JSON.stringify(draft.recipe), count=draft.past.length;
+                  act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  const mode=el('.scene-modes [data-val=hdr]');
+                  assert(el('.scene-warning').textContent.includes('HDR 原片解码运行库不可用'),'runtime reason');
+                  assert(!modal().open&&JSON.stringify(draft.recipe)===old&&draft.past.length===count,'no draft or history');
+                  assert(document.activeElement===mode,'returns focus to HDR');
+                  act('scene-dismiss');assert(!el('.scene-warning'),'dismiss keeps photo in the editor');
+                  act('scene-mode','hdr');act('close',null,modal());assert(JSON.stringify(draft.recipe)===old,'can cancel again');
+                """)
+                browser("open", host + ENTRY + "?sceneNativeReview=1")
                 scenario("037 原生评审：从资料库取消、创建与撤销 HDR 草稿", """
                   await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
                   act('edit-tool','basic');await page('.scene-mode-bar');
                   const e=Studio.edit('b1'), old=JSON.stringify(e.recipe);sessionStorage.setItem('scene.review.old',old);
-                  act('scene-mode','hdr');assert(modal().innerText.includes('不会把现有 SDR 调整'));
-                  act('close',null,modal());assert(JSON.stringify(e.recipe)===old,'cancel leaves draft');
+                  act('scene-mode','hdr');
+                  const create=el('[data-act=scene-review-start]',modal()), cancel=el('.dialog-foot [data-act=close]',modal());
+                  assert(modal().innerText.includes('不会把现有 SDR 调整')&&modal().innerText.includes(Studio.asset('b1').name),'confirmation names the source and describes the draft');
+                  assert(!create.disabled&&!cancel.disabled&&JSON.stringify(e.recipe)===old,'both actions enabled before rendering');
+                  cancel.click();await wait(()=>document.activeElement.dataset.val==='hdr');
+                  assert(!modal().open&&JSON.stringify(e.recipe)===old,'cancel returns to HDR without editing');
                   act('scene-mode','hdr');act('scene-review-start',null,modal());
                   assert(e.recipe.sceneOutput?.intent==='hdr'&&!Studio.edit('r1').recipe.sceneOutput,'current photo only');
                   const past=e.past.length;act('scene-view','sdr',el('.scene-hud'));assert(e.past.length===past,'view does not write history');
@@ -353,7 +377,7 @@ def main():
                 check_browser_errors()
                 return
             if not editing_only or args.hdr_only:
-                browser(*options, "open", host.replace('127.0.0.1', 'localhost') + ENTRY)
+                browser(*options, "open", host + ENTRY)
                 browser("set", "viewport", "1440", "900")
                 scenario("037 HDR 暗房状态与冻结交付", """
                   await page('.photo-card');
@@ -500,6 +524,8 @@ def main():
                 if args.hdr_only:
                     check_browser_errors()
                     return
+                # The scripted offline and delivery states must not seed the general workbench run.
+                browser("eval", "localStorage.clear(); sessionStorage.clear();")
             browser(*options, "open", (ROOT / ENTRY).as_uri())
             scenario("双击入口与本地照片", """
               await page('.photo-card');await wait(()=>all('.photo-card img').every(i=>i.complete&&i.naturalWidth));

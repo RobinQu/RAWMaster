@@ -79,7 +79,10 @@ final class DevelopmentSceneRAWV1 {
       throw Calibration.Failure.unqualifiedSource
     }
     let source = try FlashRawSource.open(url)
-    guard source.decoderVersion == "0.3.1", source.rawDetails == .bayerAHD else {
+    guard source.decoderVersion == "0.3.1" else {
+      throw FlashRawError.unavailable("Unsupported scene decoder version")
+    }
+    guard source.rawDetails == .bayerAHD else {
       throw Calibration.Failure.unqualifiedSource
     }
     let geometry = try source.sceneSensorSize()

@@ -1,6 +1,6 @@
 # 036 任务
 
-状态：`实现中`。全部条目以 macOS + FlashRaw 0.3.1 + Core Image/Metal 为验收环境。
+以下既有结果针对 macOS、FlashRaw 与旧 V3 的 Core Image／Metal 路径。场景 AP1 的 Rust／Swift 双跑以及旧 V3 兼容替换采用[联合验收矩阵](../035-portable-processing-cores/roadmap.md#实施顺序与退出条件)。
 
 ## 已完成
 
@@ -60,12 +60,12 @@
 
 ## 待办
 
-- [ ] **区域解码（`use_region`）配合 1:1 窗口。** 解码端没有降采样开关可透出（见[已否决](#已否决)）；唯一剩下的是只解可见区域，省掉一次约 78 ms 的全幅解码。要等窗口接到画布后再评估。
+- [ ] **区域解码（`use_region`）配合 1:1 窗口。** 画布已接窗口。先在冷窗测实际被节省的解码和上传，确认 CFA、方向、边缘及校准与整幅一致后才接入。热窗继续复用驻留源。
 - [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
 - [x] **把窗口接到画布（出厂窗口 = 可见矩形 + 50% 外扩）。** 50 个配方 1:1 中位 191.8 → 111.4 ms（1.72×）。`ImageCanvas` 增加 `window` 与 `canvasPixelSize`：`pixelSize` 仍按整幅画布算（缩放、命中、叠加层坐标不变），位图绘进 `window` 对应的子矩形；`ZoomableImageView` 透传并发布可见窗口。控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅当可见矩形越出当前窗口时重发 `.detail`，并合并 120 ms 内的连续平移。窗口帧不再能充当整幅缩略图见证，吸管取样时请求整幅帧。
-- [ ] **真实窗口走查。** 平移、缩放、叠加层、吸管、裁切在窗口帧上的视觉与手感仍需桌面签收；几何与绘制由 `ImageViewportWindowGeometryTests` 覆盖（含「位图只绘进窗口子矩形」）。
+- [ ] **补足真实窗口走查。** 既有原生 DNG 已复验自由缩放和两个模式的最终像素。实体触控板、平移、叠加、吸管、裁切、窄窗及场景 EDR 的设备矩阵仍需签收。[原生自由缩放](validation.md#自由缩放与原图取样)
 - [x] **窗口化后把有限值扫描也收窄：不做。** 三次连测显示热态 1:1 只有约 12 ms，分带扫描在其中的份额只有十几毫秒；收窄它要把证明从「整幅有限」缩成「窗口有限」，不划算。[热态样本](evidence/native-detail-warm-samples.json)
 - [x] **引导图窗口化原型：否决（逐字节硬门）。** 引导图本身矩形无关（0.0）、纹理往返无损（0.0），但 band 核输出随输入 extent 变化：texture 最大差 1.6e-5、clarity 最大差 7.0e-4（11.1M 分量）。halo 0→110 全试过。结论：CI 求值的 band 核无法做逐字节窗口化，必须连 band 合成一起接管。
 - [x] **窗口化冻结原型：否决。** 探针证明高斯本身矩形无关（整幅 vs 窗口最大差 0.0），但整条 band 图不是（最大差 5.7e-4，11.5M/15.4M 分量有差异）——CI 对子窗口的内部分块改变了取样。要 ROI 安全必须同时自写高斯与 band 合成，属算子级重写。[探针](evidence/advanced-detail-freeze-probe.json)
@@ -73,9 +73,9 @@
 - [x] **严格全幅 factor 服务级验收。** 整幅/窗口共用全幅 factor，texture band 先物化；3000×2000 TIFF whole vs window 0 差异，9504 ARW 引擎级 0；首次整幅 114 ms、窗口 48 ms（6 MP）。双 band 首帧约 2×，因此仍由 QA 开关控制。
 - [x] **固定输出 tile（单 band）。** 1024² tile 的 restore 单独物化，整幅/窗口共享 tile 纹理；60 MP ARW 0 差异，窗口 101.8 ms（inline 471 ms，4.6×），整幅 1375 ms。单 band 1:1 默认启用。
 - [ ] **双 band 的固定 tile。** texture→clarity 串联需要 tile 化的 texture 输出与 clarity factor；当前双 band 回退 inline，避免首帧回退。
-- [ ] **生产化 factor 缓存与窗口 restore。** 键 `(sourceGeneration, band, radius, quantizedWindow+halo)`；texture factor 从输入源、clarity factor 从 texture restore 输出；QA 开关灰度，逐字节/蒙版/50 配方矩阵通过后默认。导出暂用整幅。
+- [ ] **扩展 factor 与窗口 restore 的覆盖。** 符合条件的单带缓存和固定瓦片已默认接入。双带需验证 texture 结果到 clarity 的依赖与失效，并补蒙版、边缘和 50 配方矩阵。交付仍以整幅等价验证为切换前提。
 - [ ] **dehaze / adaptive-brilliance 的分块确定性归约。** 先 profile 整幅归约占比，再做带 halo 的分块统计 PoC；不要假设 factor/restore 可直接复用。
 - [ ] **1:1 的算子成本（下一步的主战场，需要算子重写）。** `DevelopmentAdvancedDetailEngineV3.materialize` 的注释写明它是为了「让 Core Image 对同一个图只选一条 Gaussian 路径」——也就是说这张整幅 F32 纹理是**像素一致性**的前提，窗口帧与整幅帧逐字节相同正依赖它。因此不能靠缩小或改存储模式来省：`.private` 与 `.shared` 实测无差异（`texture` 576/475 → 553/470 ms，噪声内）。要压缩它必须把模糊改成可确定复现的分带实现并带 halo，属于算子级工程。三次连测已经稳定复现：`texture` 480 ms、`dehaze-v2` 1.5 s、`adaptive-brilliance` 3.9 s，热态不降；`dehaze` 与 `adaptive-brilliance` 各自有同形的整幅归约，需要同样的处理。
 - [x] **1:1 首次进入的冷启动。** 已由极速模式的空闲预热解决（182 → 82 ms）。剩余约 50 ms 是规范上下文首次创建与内核编译，属一次性成本。
 - [ ] **Linux。** 本规格只覆盖 macOS。
-- [ ] **原型与原生对照走查。** 需要按 AGENTS.md 在 `docs/ui/prototype/index.html` 的暗房视图标注视口定稿与 1:1 原生两态，并附走查截图。
+- [x] **原型与原生自由缩放对照。** 现有暗房入口覆盖 FIT、倍率和 1:1。后续真实窗口签收沿用同一路线。[覆盖表](../../docs/ui/coverage.md#编辑与交付) · [走查](validation.md#自由缩放与原图取样)

@@ -1,6 +1,20 @@
 # 037 · HDR 实现与验收记录
 
-2026-11-26 · 下文区分 HTML 走查、已验证的场景线性／实拍／诊断文件，以及未开放的原生产品流程。不将 JPEG 模拟、诊断命令或工程测试当作 HDR 产品发布、EDR 或整机性能验收。
+记录从 2026-11-26 原型、诊断文件，到 `main@b238c0ab` 的默认 HDR 入口和 032。应用阶段、显示物理证据及文件交付各自归档。[本次 main 实拍复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
+
+## 同一签名 Release 首条闭环
+
+2026-11-27，在 Apple M4 Max、macOS 27.0.1（26A434）上用 `main@b238c0ab` 加本轮改动构建一个本地签名 Release。用同一包和隔离资料库完成暗房、Graph、保存、进程重开、两次 032 交付及窗口跨屏。重开前复核 `codesign --verify --deep --strict` 和可执行文件、Rust 图像库、FlashRaw 的 SHA-256。[实拍、包、屏幕与交付回执](evidence/signed-release-20261127.json)
+
+1. 打开固定 `snow.ARW` 和 `person.ARW`。在基础面板选择 HDR，按 Escape 可取消并回到 HDR 按钮。重新打开后确认。雪景在 Graph 添加第二个串行节点，输入 +1.5 EV，撤销到 0，再重做。监看第一节点时保存候选，界面保留监看，冻结版本的输出为第二节点。人像单节点改为 +0.75 EV 后另存。从「作品版本」分别明确采用，退出应用，再打开同一包和资料库。重开的暗房读到各自的曝光，雪景返回完整图。
+2. 保存雪景后，在内建屏查看 HDR。临时关闭 LG TV SSCR2 的 HDR，从「窗口」菜单移到 LG，再移回内建屏。窗口 55407 的轨迹依次是内建屏（ID 1）`hdr2020`、LG（ID 5）`sdr709`、内建屏 `hdr2020`。当前 EDR 余量依次为 5.46×、1×、5.46×，LG 的潜在余量为 1×。观察到回退与恢复，回到内建屏时复用同一 HDR 帧 ID。LG HDR 随即恢复开启。记录覆盖实际窗口画面、ICC 与 GPU drawable 完成。面板光度和跨应用显色另验。[AppKit EDR 余量说明](https://developer.apple.com/documentation/AppKit/NSScreen/maximumExtendedDynamicRangeColorComponentValue)
+3. 在资料库选这两张，从雪景暗房进入 032。选择「HDR 成片」，预检列出两个已保存版本。确认冻结到独立目录。保留同一选区，切到 SDR、原始尺寸、JPEG 8 位、净图，在第二目录发布。两批完成标记均与各自的清单摘要一致，四项收据各发布一次。逐个验证原片 SHA、两个目标的同一冻结配方对象、版本 ID、输出 SHA 和文件尺寸。dav1d 读回两份 4000×6000、10 位全范围 Rec.2020/PQ AVIF（CICP 9/16/1）。两份 4000×6000、8 位 JPEG 完整解码，均含 sRGB ICC。
+
+**复现中修复的问题。** OpenCV 的缓存静态库在而头文件缺失，打包误认为缓存齐全。现在验证所需头文件及库，重建残缺的自动缓存，并对指定残缺路径返回明确错误。暗房原先由失焦后暂停的旧显影视图承载 HDR 确认，创建和取消同时被禁用。确认工作表改由稳定的检查器承载。保存入口按不可变候选是否存在判断，避免自动保存后禁用首次候选保存。FlashRaw 运行库、原片读取和传感器校准分别报错。显示器 ID、ICC 与余量一并采样并异步发布，旧屏的 drawable 完成回调失效。本轮签名包日志未再出现 SwiftUI 视图更新期间发布状态的警告。
+
+**复跑。** 使用 `scripts/build-app.sh release` 的正常打包和验签。用 `--library` 指向隔离目录，`--interaction-trace` 采集 `scene.drawable.completed`，按上述路径重新运行。原型默认 60 项通过，`--scene-native-only` 和 `--native-graph-only` 各四项通过，覆盖 Escape、运行库失败、连接封锁及 390px 浅色和深色。原生暗房、跨屏和兼容／可编辑 Graph 共七项通过。严格 Rust 与强制 Swift 各通过七项实拍预览、ROI 和交付组件测试。另复跑下文的 PQ 进程中断恢复，首份文件 inode 和第二份暂存摘要均保持。[038 原生闭环](../038-node-dag-workflow/validation.md#与-037-同包的首条-graph-闭环)
+
+**网格直达。** 本次在资料库网格直接点击「批量导出」时触发目录修订已变更，切换范围并重新选择后仍可复现。暗房入口保持这两张选片，分别完成 PQ 和 SDR。后续需在保留选片的情况下刷新网格快照，再校验本次版本和来源。[032 范围冻结代码](../../Sources/RAWMaster/WorkbenchActions.swift)
 
 ## 集成原型走查
 
@@ -13,7 +27,7 @@ npm exec --yes --package=agent-browser@0.26.0 -- python3 scripts/check-ui-protot
 - 1440×900：合格／不合格样片，场景采样的负值，叠加独立开关和 Escape 焦点，模拟换屏保留未提交字段，派生撤销，取消胶片试看，冻结版本的 AVIF＋JPEG，模拟一项失败后只重试未完成项。另核对原片离线、混批无母版、明确 SDR 备选、取消和返回选片。
 - 390×844：浅色、深色设置及「色彩与输出」对话框和屏幕按钮可达。另用内置浏览器可信键盘与鼠标验证 HDR 准入、采样、叠加、Escape、换屏及输出信号文字。
 - 另以「镜湖人像」先采用 SDR 胶片，验证进入 HDR 时列出冲突：取消不创建版本；明确创建候选会保留原 SDR 草稿，不携带旧胶片，也不自动改采用版本。当前四项专项的细节见下文。
-- T02 尚未完整签收：现有示波器为固定样点与模拟轴，不是自由吸管、真实直方图或像素诊断；未完成全部编辑工具、对比模式和 VoiceOver 逐项走查。真实输出仍未接入 032；不可启用增益图或浮点归档。
+- 此处记录第一轮 T02 原型。固定样点和模拟轴用于交互走查。后续原生示波器和 PQ 队列分别见下文。完整编辑工具、对比模式及 VoiceOver 仍待逐项签收。
 - 最终全量回归开启 Graph 视觉证据：**65 个场景通过，退出码 0，无浏览器脚本错误**。短窗旧失败发生在隔离 Chrome 的隐藏标签：保留当前工作台、关闭测试会话内的旧标签并切回后，原短窗几何、可关闭和恢复断言全部通过，未增加超时。截图及复现见 [038 联合回归](../038-node-dag-workflow/validation.md#节点上下文菜单及-hdr-联合回归)。
 
 ## 右栏色彩模式与节点面板分区
@@ -186,6 +200,12 @@ RAWMASTER_SCENE_DARKROOM_REPORT="$evidence/fit.json" \
 
 原生可编辑 Graph 接线后按原雪景与 FIT 门槛复验，修复数值输入重建引起的延迟，并将呈现 drawable 限于可见照片区域。最终 **22.07/23.30 ms**（p50/p95）；不缩减取样质量或放宽门槛。节点监看缓存与原始性能回退保留在 [038 阶段证据](../038-node-dag-workflow/validation.md#原生可编辑-graph)，不当作跨屏或完整 UI 放行。
 
+### HDR 示波器与诊断
+
+在[阶段工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1&scopesNativeReview=1)选水鸟、创建 HDR 草稿、展开示波器。用 `python3 scripts/check-ui-prototype.py --scene-scopes-only` 复跑两项，涵盖阶段切换、锁定取样、屏幕标线、取消、窄窗和原片不可用。沿用浏览器代理及模拟数值。
+
+`main@b238c0ab` 的 Release `DevelopmentSceneScopesV1Tests` 三项通过。固定雪景长边 192 的全图栅格包含图、限域前信号、HDR／SDR 目标及小规模回读，p50／p95 为 3.03／3.19 ms。实拍测试确认诊断不清退主图缓存，并核对传感器与目标的独立计数。数值用例未包含 UI 的 180 ms 防抖或实际屏幕光输出。真实窗口诊断、跨屏 ICC 和包含模型的完整回放按 T15／T16 续验。[原生示波器](../../Sources/RAWMaster/EditingSceneScopes.swift) · [本次复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
+
 ### 032 PQ 队列与回读
 
 从 [PQ 评审工作台](../../docs/ui/prototype/index.html?pqReview=1) 多选「日落河湾」和「岸边的水鸟」，在暗房保存后者的 HDR 候选，再在 032 选「HDR 成片」。核对弹窗：前者无 HDR 母版，不能确认。返回选片不新建任务；明确取消勾选不合格行后，确认只冻结 `.avif`。`python3 scripts/check-ui-prototype.py --pq-queue-only` 的三项隔离浏览器检查通过（含 390px、离线和恢复可确认）。[日志](evidence/pq-queue-browser.log) · [混选](evidence/pq-queue/pq-mixed-1280.png) · [窄窗合格项](evidence/pq-queue/pq-ready-390.png)。原型使用样片与模拟，不证明像素或硬件能力。
@@ -205,4 +225,4 @@ python3 specs/037-color-film-hdr/verify-pq-restart.py \
 
 ### 剩余发布门槛
 
-实验暗房有单张验收，仍需真实 HDR／SDR 跨屏、亮度、对比和完整视口验证；多机型和更多输入、完整 HDR 编辑及诊断、032 PQ 多目标混批、卷恢复、批次性能与实际客户端观片、双表示增益图、HLG、浮点归档和 HDR 胶片等尚未通过产品端到端验收。本轮查询到设备潜在 EDR 2.0、测量瞬间可用约 1.20，仅是环境读数，不是 EDR 窗口通过。现有九款胶片仍是 SDR 外观。
+固定目标已通过签名包实拍闭环和一组实体 HDR／SDR 跨屏。不同亮度和屏幕组合、同窗比较以及完整视口矩阵仍需在签名应用验收。多机型、完整显影和诊断、同次提交多目标、实际卷重挂、客户端显色和后续格式沿用[放行清单](plan.md#当前实现与验收边界)。九款胶片维持当前 SDR 资产资格。[签名包闭环](#同一签名-release-首条闭环)

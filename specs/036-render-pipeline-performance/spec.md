@@ -1,6 +1,6 @@
 # 036 · 渲染 Pipeline 与编辑 DAG 的性能水位
 
-**实现中。** 目标是把显影链路拉齐 LightFlow 与 Camera Raw 的响应水位。分栏对比与参考实现取证见 [GPU Pipeline 与编辑 DAG 的三份参考实现](../../docs/research/gpu-pipeline-references.md)。[实测记录](validation.md)
+截至 `main@b238c0ab`，旧 V3 已接入 FIT 视口定稿、按显示倍率取样与原图窗口，符合条件的单带 texture／clarity 已用固定输出瓦片。场景预览走独立的 AP1 F32 服务，先解整幅（输出上限 440 MiB），再采长边 1440 的 FIT 或受预算约束的原图 ROI。两个路径按各自的性能口径记录。[实测记录](validation.md) · [联合验收口径](../035-portable-processing-cores/roadmap.md#证据与测量口径) · [参考实现取证](../../docs/research/gpu-pipeline-references.md)
 
 ## 问题
 
@@ -17,7 +17,7 @@
 
 同一份代码里，交互帧已经在参考水位（LightFlow 2400×1600 实测 20.4／21.4 ms），定稿帧却慢 10–200 倍。遥测显示 `DevelopmentRendererV3.develop` 的像素数是 60,217,344，而输出的画布只有 3,840,000 像素，其中 `显影有限值检查`（全域归约）单独占 26–56 ms。
 
-**根因：定稿帧在原生 60 MP 上构图，最后一步才缩到 2400。** 画布尺寸自 2022 年起固定为 2400 px 上限，因此这 25 倍像素从未显示过。参考实现都不这样做：
+当时的定稿在原生 60 MP 上构图，最后缩到 2400×1600，求值像素约为视口的 16 倍。参考实现的运输口径如下。
 
 - LightFlow 的 `render(source, edit, target, options)` 显式接收 `RenderTarget`，`viewerFrame` 按视口尺寸出帧，源按「每一级」驻留。
 - Alcedo 的 `RenderType.FAST_PREVIEW` 目标长边 2560，`DETAIL_ROI_PREVIEW` 只渲染可见 ROI，`DecodeRes` 还能把解码降到 1/2、1/4、1/8。
@@ -35,13 +35,13 @@
 
 不变的部分：
 
-- **1:1（`detail`）继续原生构图**，且仍是 `viewport.maxPixel == 0` 的全尺寸物化。
+- **原图取样（`detail`）** 用 `viewport.maxPixel == 0` 选择原片像素路径，可按倍率和可见窗口物化。空间算子或全局归约仍可能读取整幅。
 - **保存、导出、缩略图、直方图、分析**继续走各自的原生路径。
 - **回归面受控**：`PreviewResourcePolicy.default` 仍是 `canonical`，所有既有测试与既有证据不受影响；只有产品 `DevelopmentPreviewService` 的构造与显式传入 `.viewport` 的用例走新路径。
 
 viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3`）：邻域半径按 `native→proxy` 缩放，代理基图按内容身份常驻，末帧由 `PreviewMetalFrameValidator` 在视口像素上做全帧 F32 校验后转 sRGB8。因此**定稿帧与松手前最后一帧是同一次求值**：缓存键一致，产品 128 MB 位图缓存直接命中，松手不再触发任何 GPU 工作。
 
-无法按视口缩放的算子（`definition`、`sharpen.intensity`、`localEdits`、`grain`、`superResolution`、投影几何等）继续 fail closed 到原生渲染，帧上不带近似标记。判定沿用 `PreviewInteractiveProxyV3.support` 的单一清单。
+配方是否能按视口求值由 `PreviewInteractiveProxyV3.support` 判定。需要原生计算的组合沿用原生路径及其标记。缓存命中时间、定稿调度等待与新求值时间分别记录。
 
 ## 原生扫描改用分带归约
 
@@ -59,9 +59,11 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 | local-detail | 922.5 ms | 808.0 ms | −12% |
 | dehaze-v2 | 2,116.8 ms | 1,820.0 ms | −14% |
 
-1:1 仍按原生像素出帧，没有做 ROI 裁剪；上表的剩余成本主要来自算子本身，`dehaze-v2` 的 1.8 s 即为代表。
+上表测的是当时整幅物化的 1:1 路径。产品随后接入可见窗口，空间算子本身的成本见窗口复测。
 
-## 1:1 可见窗口（传输层已实现，画布待接）
+<a id="11-可见窗口传输层已实现画布待接"></a>
+
+## 原图取样的可见窗口
 
 `detail` 原本整幅物化 60 MP，而 1:1 画布只显示 2400×1600。现在请求可以带一个归一化窗口（`PreviewViewport.window`，左上原点），物化只覆盖该窗口；`canonicalPixelSize` 仍是整幅，叠加层、裁切与吸管继续用原来的归一化坐标。
 
@@ -88,7 +90,7 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 紧贴视口的 0.2525×0.2525 窗口能到 2.62×，但那样平移半步就要重算；50% 外扩把平移余量做到约半个屏宽，同时保留 1.72×。
 
-窗口化不改有限值证明的范围：扫描仍是整幅。把扫描也收窄到窗口是下一步，实测还能再省一部分，但它把证明从「整幅有限」缩小为「显示窗口有限」，需要单独审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域。
+当前有限值证明仍覆盖整幅，支持 `thumbnailCanonicalWitness` 和 `FlashRawNativeFiniteCheck` 的复用。先处理已定位的空间／全局算子成本。将局部摘要纳入证据前须单独定义可复用范围。
 
 ## 解码端：没有可用的降采样开关
 
@@ -100,7 +102,7 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 | `demosaic = HALF_SIZE` | 输出 4752×3168（原生 25% 像素），耗时 39.6 ms vs bilinear 43.5 ms。**只减尺寸不减时间**，因为解码与去马赛克的工作量不变。 |
 | `demosaic = EDGE_AWARE` | 118.9 ms，是 bilinear 的 2.7 倍。`rawDetails` 选 AHD 时会付这个代价。 |
 
-因此 FlashRaw 0.3.1 上唯一还剩的解码杠杆是**区域解码**（`use_region`，已在 C 包装里），它的用法与 1:1 可见窗口绑定：窗口帧可以只解那一块，省掉一次约 78 ms 的全幅解码。这项要等窗口接到画布之后再评估，因为窗口帧的纹理通常已经由定稿帧的解码驻留。
+后续按冷窗与热窗分别验证 FlashRaw `use_region`。必须测实际文件解码、上传和去马赛克是否随区域缩减，再核对 CFA、EXIF、几何、halo、传感器饱和及与整幅裁块一致。窗口有已驻留源时复用该源。上述约 78 ms 是整幅解码的历史样本。
 
 代理基图仍用 bilinear 全幅解码，再经 Metal 采样到 2400×1600。
 
@@ -227,8 +229,8 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 | 从哪里进入 | 对象、完成与退出 |
 | --- | --- |
-| 暗房画布，适应窗口 | 拖动任一控件显示视口帧；松手后画布立即停在最后一帧，不再出现「快速预览 · 待完整预览」。状态行显示 `预览 2400 × 1600 · 原生 9504 × 6336`。 |
-| 暗房画布，放大到 100% | 切到 `detail`，原生构图与原生像素；状态行显示 `原生像素 9504 × 6336`。 |
+| 暗房画布，适应窗口 | 可按视口求值的配方使用 FIT。松手时保留最后有效画面，定稿命中该帧时直接交付。状态行区分代理尺寸、原生尺寸和仍在等待的定稿。 |
+| 暗房画布，放大或选 1:1 | `detail` 按实际显示倍率和可见窗口取样，100% 使用原生像素。状态及动作遵循[自由缩放](#画布自由缩放与取样)。 |
 | 局部调整、裁切、吸管 | 使用当前定稿帧（视口像素）作为叠加与取样底图；坐标仍按归一化画布，构图映射不变。 |
 | 保存版本、导出、缩略图 | 不受影响，继续原生。 |
 
@@ -242,8 +244,8 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 | 50 个配方的定稿 P95 | ≤ 210.23 ms（LightFlow 同机 P95） | 20.24 ms |
 | 单配方最慢定稿 | 不高于同配方交互帧的 1.5 倍 | 33.11 ms（local-defringe，交互 12.60 ms，2.6×；产品位图缓存下 0.275 ms，见验证记录） |
 | 松手后的定稿成本 | 重放同一视口帧，不重跑 GPU | 中位 0.250 ms，最大 0.505 ms |
-| 视口帧与原生定稿的重采样差 | p99 ≤ 8/255，最大通道差只出现在几何与锐化边缘 | p99 中位 2/255、最大 18/255；最大通道差中位 20/255 |
-| 1:1（`detail`）行为 | 保持原生像素，不改语义 | 未改；测得 258–2177 ms，作为下一轮目标 |
+| 视口帧与原生定稿的重采样差 | 每配方 p99 ≤ 8/255，另核对最大通道差的边缘来源 | 该轮中位 2/255，最大 18/255，像素门未全过。保留逐配方差异。 |
+| 1:1（`detail`）行为 | 同倍率的窗口与整幅对应区域等价 | V3 已有窗口和自由缩放回归。50 态出厂窗口 p95 为 1,474.3 ms，空间和全局算子长尾仍待处理。 |
 | 原生路径未被削弱 | `detail`、导出与 `PreviewResourcePolicy.default` 逐位不变 | 由既有回归与新增用例覆盖 |
 
 ## 取证与参考
@@ -292,9 +294,4 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 ## 任务
 
-见[任务清单](tasks.md)。剩余项：
-
-1. 播放尺度的 1:1 查看目前整帧原生构图，尚未按可见 ROI 裁剪（Alcedo `DETAIL_ROI_PREVIEW`）。
-2. 解码端降分辨率（FlashRaw `max_dimension` / `DecodeRes`）尚未接入，视口帧仍消耗一次全尺寸解码。
-3. 视口尺寸仍固定 2400 px，未随实际画布与窗口收窄调整。
-4. `local-defringe` 的定稿是交互帧的 2.6 倍，需单独定位。
+见[任务清单](tasks.md)。优先定位 `local-defringe` 后缀重跑、分段缓存和双带 halo，再迁移去雾／brilliance 的有序全局归约。FIT 先保留各路径已测的目标尺寸。相同分辨率和质量时对照旧预览、严格 Rust 和 Swift。区域解码只在冷窗实测节省且通过整幅对应像素判据后接入。使用[联合测量口径](../035-portable-processing-cores/roadmap.md#证据与测量口径)记录交互到 drawable 及实际呈现，同时独立测批次成片和资源峰值。

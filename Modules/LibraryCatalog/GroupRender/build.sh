@@ -9,9 +9,29 @@ arch="${RAWMASTER_RENDER_ARCH:-$(uname -m)}"
 cache="${RAWMASTER_RENDER_CACHE_DIR:-${TMPDIR:-/tmp}/rawmaster-render-4.12.0-$arch}"
 prefix="${RAWMASTER_OPENCV_PREFIX:-$cache/opencv}"
 mkdir -p "$cache" "$(dirname "$out")"
-if [ ! -f "$prefix/lib/libopencv_calib3d.a" ]; then
+
+opencv_complete() {
+    local part
+    for part in include/opencv4/opencv2/core/version.hpp include/opencv4/opencv2/calib3d.hpp \
+        lib/libopencv_core.a lib/libopencv_calib3d.a lib/libopencv_features2d.a \
+        lib/libopencv_flann.a lib/libopencv_imgproc.a; do
+        [ -s "$1/$part" ] || return 1
+    done
+}
+
+cleanup() {
+    if [ -n "${cache_lock:-}" ]; then rmdir "$cache_lock"; fi
+    if [ -n "${objects:-}" ]; then rm -rf "$objects"; fi
+    if [ -n "${stage:-}" ]; then rm -rf "$stage"; fi
+}
+trap cleanup EXIT
+
+if ! opencv_complete "$prefix"; then
+    if [ -n "${RAWMASTER_OPENCV_PREFIX:-}" ]; then
+        echo "Incomplete OpenCV 4.12.0 installation at RAWMASTER_OPENCV_PREFIX: $prefix" >&2
+        exit 1
+    fi
     stage="$(mktemp -d "$cache/vendor.XXXXXXXX")"
-    trap 'rm -rf "$stage"' EXIT
     curl --fail --silent --show-error --location --retry 2 \
         'https://codeload.github.com/opencv/opencv/tar.gz/refs/tags/4.12.0' -o "$stage/opencv.tar.gz"
     (cd "$stage" && echo '44c106d5bb47efec04e531fd93008b3fcd1d27138985c5baf4eafac0e1ec9e9d  opencv.tar.gz' | shasum -a 256 -c -)
@@ -24,11 +44,23 @@ if [ ! -f "$prefix/lib/libopencv_calib3d.a" ]; then
         -DCV_DISABLE_OPTIMIZATION=ON -DENABLE_LTO=OFF -DCMAKE_OSX_ARCHITECTURES="$arch" \
         -DCMAKE_OSX_DEPLOYMENT_TARGET="$target" -DCMAKE_INSTALL_PREFIX="$stage/prefix"
     cmake --build "$stage/build" --target install --parallel "${RAWMASTER_RENDER_BUILD_JOBS:-4}"
-    mkdir -p "$(dirname "$prefix")"
-    if [ ! -d "$prefix" ]; then mv "$stage/prefix" "$prefix"; fi
+    if ! opencv_complete "$stage/prefix"; then
+        echo "OpenCV 4.12.0 build did not install the required headers and libraries" >&2
+        exit 1
+    fi
+    if mkdir "$cache/opencv-install.lock" 2>/dev/null; then
+        cache_lock="$cache/opencv-install.lock"
+        if ! opencv_complete "$prefix"; then
+            if [ -e "$prefix" ] || [ -L "$prefix" ]; then mv "$prefix" "$stage/incomplete-prefix"; fi
+            mv "$stage/prefix" "$prefix"
+        fi
+        rmdir "$cache_lock"
+        unset cache_lock
+    fi
+    # Another build may be publishing. The verified private installation is already usable.
+    if ! opencv_complete "$prefix"; then prefix="$stage/prefix"; fi
 fi
 objects="$(mktemp -d "$cache/objects.XXXXXXXX")"
-trap 'rm -rf "$objects" "${stage:-}"' EXIT
 for unit in Registration RenderPixels FloatTiff; do
     xcrun clang++ -std=c++17 -O3 -arch "$arch" -mmacosx-version-min="$target" \
         -I"$prefix/include/opencv4" -c "$root/$unit.cpp" -o "$objects/$unit.o"

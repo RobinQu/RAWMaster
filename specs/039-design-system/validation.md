@@ -2,6 +2,8 @@
 
 本批建立界面规范、令牌层、通用原语、原生控件画廊和可操作的 HTML 画廊。旧面板的批量迁移按 [spec.md](spec.md#现状与迁移清单) 分阶段进行，不在本批交付范围内。
 
+2026-11-27 在 `main@b238c0ab` 复跑 5 个 Release `DesignSystemTests`，含浅深色离屏画廊截图。现有摄影工作台 60 个浏览器场景通过，含界面画廊。真实产品焦点、VoiceOver、降低透明度和 macOS 15 证据仍按[联动验收](spec.md#hdrgraph-与-032-的验收)补齐。[本次复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
+
 ## 已落地
 
 | 内容 | 位置 |
@@ -59,7 +61,7 @@ RAWMASTER_DESIGN_GALLERY_OUTPUT=specs/039-design-system/evidence swift test --fi
 
 - 未在 macOS 15 实机运行；本机为 macOS 27.2.1。Liquid Glass 下原生控件与自绘控件并排的观感未做逐屏对照，只按系统控件不重绘的原则实现。
 - `DesignGallery` 只用于测试与诊断，没有接入应用菜单；原生画廊的浅色/深色证据来自离屏渲染，不是交互录制。
-- `scripts/check-ui-prototype.py` 在本机缺少 `agent-browser`，未能执行；新增场景与既有场景同一写法，尚未在本机跑通，需要在有该 CLI 的环境复跑。本次以浏览器手工走查替代。
+- 首轮在浏览器手工走查。2026-11-27 的全量脚本回归已包含画廊。
 - VoiceOver 朗读顺序、减少动态效果与降低透明度未在画廊逐项验证；原语已读取 `accessibilityReduceMotion`，其余沿用既有控件。
 - 旧初修面板、导出数字输入、蒙版/AI 蒙版、预设浏览器与图标按钮尺寸尚未迁移；规范已列出顺序与目标。
 

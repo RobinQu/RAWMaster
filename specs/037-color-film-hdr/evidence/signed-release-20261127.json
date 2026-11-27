@@ -1,0 +1,164 @@
+{
+  "baseCommit": "b238c0abbc376b25ca027dd74661b98a9735deff",
+  "configuration": "Release",
+  "signing": "adhoc, codesign --verify --deep --strict",
+  "cdhash": "4c0636998e9328af94b3e353a97766dd905fc809",
+  "appSHA256": "0bce9c3a304d6884093ee33cc776fcd7b6bfe823846265507e3c1e39ae1b6af8",
+  "rustImageSHA256": "8b891ef3bd6ebfc37465a1f4cd42f9c2322b907523285302a13b526b6aa45db4",
+  "flashRawSHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "machine": "Apple M4 Max",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "crossScreen": [
+    {
+      "windowNumber": 55407,
+      "displayID": 1,
+      "target": "hdr2020",
+      "headroom": 5.461555004119873,
+      "potentialHeadroom": 16,
+      "edrEnabled": true,
+      "pixelWidth": 1036,
+      "pixelHeight": 1552,
+      "displayProfileSHA256": "03c267d679bb9a539d501d16d36f4215c29627d8947df081f20609b58318eff8",
+      "frameID": "87349B17-DBC0-4DB0-9B1E-70C6E3C5F3F4",
+      "uptimeSeconds": 934143.0840269168
+    },
+    {
+      "windowNumber": 55407,
+      "displayID": 5,
+      "target": "sdr709",
+      "headroom": 1,
+      "potentialHeadroom": 1,
+      "edrEnabled": false,
+      "pixelWidth": 518,
+      "pixelHeight": 776,
+      "displayProfileSHA256": "5c39abbefa00449786a5a6d12ada2d78a4f9e0353e5f21e88c0d8ffcea44ecf0",
+      "frameID": "F2896416-8DDE-489B-8CAB-EECAAA63494A",
+      "uptimeSeconds": 934160.386803125
+    },
+    {
+      "windowNumber": 55407,
+      "displayID": 1,
+      "target": "hdr2020",
+      "headroom": 5.461555004119873,
+      "potentialHeadroom": 16,
+      "edrEnabled": true,
+      "pixelWidth": 1036,
+      "pixelHeight": 1552,
+      "displayProfileSHA256": "03c267d679bb9a539d501d16d36f4215c29627d8947df081f20609b58318eff8",
+      "frameID": "87349B17-DBC0-4DB0-9B1E-70C6E3C5F3F4",
+      "uptimeSeconds": 934166.7398919167
+    }
+  ],
+  "reopenedWindow": 55659,
+  "photos": {
+    "person": {
+      "sourceSHA256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8",
+      "versionID": "81F126F7-5DAB-4D14-87E5-9BA409682749",
+      "recipeSchema": 4,
+      "finalNodeID": "BCF45179-43CC-42A4-8B13-BA31FFCBE3FD",
+      "nodeExposureEV": [
+        0.75
+      ],
+      "frozenInputSHA256": "21139c78998fd39a72b622bd19e00ce43a069b41ab120f14cc5e24e31c6ccf04"
+    },
+    "snow": {
+      "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+      "versionID": "3D7A3210-3C1A-4F8C-804C-FDFC17920AF7",
+      "recipeSchema": 4,
+      "finalNodeID": "739E5B5D-FEAE-4D9F-9094-7FDF1B2FC510",
+      "nodeExposureEV": [
+        0,
+        1.5
+      ],
+      "frozenInputSHA256": "4db87a6d66859d5c957d3f1418451726426e3a00db92b342da2a81c80a84cafa"
+    }
+  },
+  "delivery": {
+    "avif10": {
+      "batchID": "52a0782e-369d-4844-a139-4734cb7b2f6f",
+      "manifestSHA256": "6a895e7fb5c4f56a628c89ee132b228b91d65d6f85ef186143e070d9c4444b00",
+      "configurationSHA256": "b411352ae459319cdd53533bee889cbe2d834ea3a1ed681649a66bd24e7fcbf5",
+      "state": "done",
+      "outputs": {
+        "person": {
+          "filename": "person-0001.avif",
+          "sha256": "df4b31c264a3e5c8d01fc027f4069c0b8d53fe276b8d6ca63d4bbd368ba6f565",
+          "bytes": 4619064,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 10,
+            "range": "full",
+            "cicp": [
+              9,
+              16,
+              1
+            ]
+          }
+        },
+        "snow": {
+          "filename": "snow-0002.avif",
+          "sha256": "b400d16229191fee2040c5bc7fbef85a9148c36a9e5570ce9318523f90d7f245",
+          "bytes": 6271414,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 10,
+            "range": "full",
+            "cicp": [
+              9,
+              16,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "jpeg8": {
+      "batchID": "bb62038a-ac44-4a1b-aeef-fb52f86904b3",
+      "manifestSHA256": "f5269d1be23ee056f2764c8f4b6a801c3404832a89124e44165a5b392bf69986",
+      "configurationSHA256": "a1e8d7b7e098b60448cb491517a2f786be088de6734e7d80e6fad5030c528135",
+      "state": "done",
+      "outputs": {
+        "person": {
+          "filename": "person-0001.jpg",
+          "sha256": "7eba474b041198638f555bdf21d11c198a1c0b3bb847ddb60eecac220225c048",
+          "bytes": 1273824,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          }
+        },
+        "snow": {
+          "filename": "snow-0002.jpg",
+          "sha256": "0d7c5f962e528e13b453974ef128b2c611b839535be929ca7a978569b4a923ce",
+          "bytes": 2408288,
+          "attempt": 1,
+          "decoded": {
+            "size": [
+              4000,
+              6000
+            ],
+            "depth": 8,
+            "profile": "sRGB",
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f"
+          }
+        }
+      }
+    }
+  },
+  "avifDecoder": "Version: 1.4.2 (dav1d [dec]:1.5.4, aom [enc/dec]:3.14.1)"
+}
