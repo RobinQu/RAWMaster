@@ -57,7 +57,7 @@ Coverage of the shadow suite:
 
 ```
 swift test --skip-build --filter RAWMasterImagingTests
-Executed 1140 tests, with 100 tests skipped and 0 failures (0 unexpected) in 207.8 s
+Executed 1145 tests, with 101 tests skipped and 0 failures (0 unexpected) in 220.1 s
 ```
 
 This includes the 037/038 delivery service tests, scene RAW/color/output tests and the existing
@@ -71,16 +71,63 @@ Executed 94 tests, with 1 test skipped and 0 failures (0 unexpected) in 35.9 s
 
 The native editor integration suite still passes with auto cutover enabled.
 
+## P2 tiling, cache and receipt tests
+
+```
+swift test --skip-build --filter RustSceneGraphRendererTests
+Executed 13 tests, with 2 tests skipped and 0 failures
+```
+
+- `testTiledExecutionMatchesUntiledAndReportsReceipt` renders a 256×192 graph with a coverage
+  mask, group, parallel mix and layered correction once untiled and once with a forced 64-pixel
+  tile edge. The pixels are bit-identical and the receipt reports 12 tiles and more dispatches
+  than tiles.
+- `testSourceRevisionCacheReusesUnchangedPrefixAfterParameterEdit` edits only the suffix of a
+  two-stage grade. The second render reports `nodeCacheHits = 1`; changing the source revision
+  reports zero node hits but still reuses analytic coverage.
+- `testCoverageCacheInvalidatesWhenMaskParametersChange` verifies that combine/adjust keys include
+  their upstream mask parameters: a changed ramp re-renders exactly like a fresh engine instead of
+  reusing stale coverage.
+- `testAutoFallbackCarriesAReceiptAndReason` forces a Rust budget failure and asserts the Swift
+  fallback receipt with a non-nil reason.
+- The 60MP receipt test below asserts `tiles > 1`, `peakBytes <= budget` and a finite delivered
+  pixel for both SDR and HDR.
+
+## 60MP synthetic graph
+
+Opt-in generated source, no RAW decode:
+
+```
+RAWMASTER_SCENE_60MP_PERFORMANCE=/tmp/scene-60mp.json \
+  swift test --skip-build --filter testOptIn60MegapixelSceneBudgetAndReceipt
+```
+
+| Measure | Result |
+| --- | --- |
+| Resolution | 9600×6400 (61.4 MP) |
+| Surface budget | 6,442,450,944 bytes (6 GiB) |
+| Tiles | 6 |
+| Dispatches | 42 |
+| Graph, first render | 567.9 ms |
+| Graph, warm render | 278.2 ms |
+| ACES SDR delivery | 81.7 ms |
+| ACES HDR delivery | 48.7 ms |
+| Peak receipt bytes | 5,046,796,288 (4.70 GiB) |
+
+Both delivery outputs remain `.private`; the test samples one pixel through a small blit only to
+prove the result is finite. This is the first 60MP scene-graph budget evidence, and it replaces
+the previous "not available" boundary for the synthetic case. Real captured 60MP RAW decode and
+cross-screen EDR verification remain separate hardware/fixture work.
+
 ## Performance
 
 Opt-in six-node AP1 graph, 3000×2000, including two analytic coverage nodes and a two-branch
-parallel mix; RAW decode, DRT and UI excluded. Three fresh runs:
+parallel mix; RAW decode, DRT and UI excluded. Final post-P2 run:
 
-| Run | Swift p50 | Swift p95 | Rust p50 | Rust p95 | Rust cold |
-| --- | --- | --- | --- | --- | --- |
-| 1 | 12.97 | 13.47 | 12.96 | 13.74 | 21.86 |
-| 2 | 14.18 | 15.17 | 14.07 | 15.29 | 22.68 |
-| 3 | 13.38 | 14.09 | 13.54 | 14.45 | 22.08 |
+| Backend | p50 | p95 | cold |
+| --- | --- | --- | --- |
+| Swift reference | 14.46 | 15.76 | — |
+| Rust strict | 14.53 | 15.83 | 21.19 |
 
 At 6MP both backends are within noise of each other (roughly ±5%), consistent with a
 memory-bandwidth-bound graph dominated by five full-resolution color surfaces. The benefit of

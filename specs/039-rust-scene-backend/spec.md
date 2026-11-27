@@ -13,7 +13,7 @@ The five slices:
 | --- | --- |
 | P0 | `RMSceneProgram` C ABI, `ImageEditLoader` host shim, Swift `RAWMasterImageKernel.SceneProgram`, `RustSceneGraphRenderer` seam |
 | P1 | Rust parser/validator plus a single-command-buffer Metal executor for corrector, parallel, layer (13 modes), group and all four analytic coverage ports |
-| P2 | One submit per render, transient surface pool, source-independent coverage prefix cache, shared surface budget, region/origin support |
+| P2 | One submit per render, bounded tiles for 60MP masters, transient surface pool, source-revision-keyed intermediate cache, analytic coverage cache, shared surface budget, completion receipts |
 | P3 | Deterministic full-image model prefix for denoise/2x super-resolution/segmentation, provider protocol, `externalCoverage` graph port for provider masks, explicit exclusion of generative candidates |
 | P4 | Rust result textures feed the existing ACES 2 SDR/HDR output stages and `EditingSceneCanvas` direct `CAMetalLayer` presentation without CPU readback |
 | P5 | Auto cutover: Rust is attempted by default on eligible graphs and falls back to the Swift executor; strict `RAWMASTER_SCENE_BACKEND=rust` is used by shadow tests |
@@ -44,12 +44,25 @@ the Rust executor only sees the post-model image and coverage textures.
 - Image surfaces are premultiplied AP1 `RGBA32Float`; coverage surfaces are `R32Float`. The
   `geometry` and `origin` fields in the view JSON preserve source-edge coverage coordinates for
   ROI renders.
-- A surface pool recycles retired intermediates. Analytic coverage (ramps, ellipses, combine,
-  adjust) is cached across frames, keyed by node, parameters, surface size and frame geometry.
-  Provider/segmentation coverage is never cached because it depends on the source.
-- The input, live intermediates, pool and coverage cache share the caller's surface budget. A
-  strict Rust over-budget frame returns `surfaceBudget`; auto mode lets the Swift executor decide
-  whether its zero-allocation path can satisfy the frame.
+- **Tiling:** `DevelopmentSceneGraphRendererV1` asks for bounded tiles when five full-resolution
+  intermediates would not fit the remaining budget. The Rust executor crops the source and
+  provider masks into each tile, evaluates the same DAG with tile-global coverage coordinates,
+  and blits each result back into the full master. All tiles stay in one command buffer, so the
+  caller still waits once. A 60MP graph uses six 4096-wide tiles on the current budget.
+- **Node cache:** every reachable node gets a content key over the source revision, node id,
+  operation parameters, surface size, frame geometry and dependency keys. With a non-zero
+  source revision, unchanged image prefixes survive a parameter edit because the Swift owner
+  reuses the compiled program and updates its graph in place. A cache hit prunes the ancestor
+  nodes for that frame. Provider coverage keys include the mask texture identity; analytic
+  coverage is keyed without the source and survives source revisions.
+- A surface pool recycles retired intermediates. Cached textures stay charged to the budget until
+  evicted, so the peak receipt includes them.
+- The input, live intermediates, pool and caches share the caller's surface budget. A strict Rust
+  over-budget frame returns `surfaceBudget`; auto mode lets the Swift executor decide whether its
+  zero-allocation path can satisfy the frame.
+- **Completion receipt:** `RMSceneReceiptV1` reports backend, tiles, evaluated nodes, dispatches,
+  coverage/node cache hits, peak bytes, budget and CPU time. `DevelopmentSceneGraphRendererV1`
+  exposes the last receipt, including `swiftFallback` with the Rust failure reason.
 
 ## Model prefix contract
 
@@ -78,6 +91,7 @@ adapters remain explicit platform code.
 - `Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift`,
   `Sources/RAWMasterCore/DevelopmentSceneModelV1.swift`
 - `Sources/RAWMasterImaging/RustSceneGraphRenderer.swift`,
-  `DevelopmentSceneGraphRendererV1.swift`, `DevelopmentSceneModelPipelineV1.swift`
+  `DevelopmentSceneGraphRendererV1.swift`, `DevelopmentSceneModelPipelineV1.swift`,
+  `DevelopmentSceneExecutionReceiptV1.swift`
 - `Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift`,
   `DevelopmentSceneModelPipelineV1Tests.swift`
