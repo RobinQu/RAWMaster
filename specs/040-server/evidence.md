@@ -1,74 +1,80 @@
-# 040 · 现有基础与缺口
+# 040 · 现有基础、调研证据与缺口
 
-2026-11-26 · 设计依据。以下只证明本地资料库已经具备哪些可复用底座，**不证明 Server 已存在或已验收**。服务端网络、认证、服务器目录、独立备份自动化、冷热缓存、多设备同步和远程执行均未实现。
+2026-11-27 · 设计依据。以下区分“本地已有能力”“外部产品事实”和“尚未实现”。不把调研当作 Server 已存在或已验收。
 
-## 1. 可复用的本地底座
+## 1. 本地可复用底座
 
-| 现有能力 | 证据 | 对 Server 1.0 的作用 |
+| 能力 | 证据 | 用途 |
 | --- | --- | --- |
-| 资料库身份与设备身份 | `lc_meta.libraryID`、`metadata.deviceID`；[目录 schema](../../Modules/LibraryCatalog/src/authority_schema.sql) · [LibraryStore](../../Sources/RAWMasterCore/LibraryStore.swift#L85) | 绑定服务器、区分设备、恢复后换设备身份 |
-| 操作 ID、载荷摘要、收据 | [authority.rs](../../Modules/LibraryCatalog/src/authority.rs#L243) 按 `commandID` 保存请求摘要与结果；同 ID 不同载荷报冲突 | 同步幂等、重放去重、客户端收据对账 |
-| 操作水位与结果修订 | [authority.rs](../../Modules/LibraryCatalog/src/authority.rs#L298) 维护 `operationRevision`，收据带 `baseCatalogRevision`／`resultCatalogRevision` | 服务器修订、增量拉取、冲突判断 |
-| 本地业务操作日志 | [LibraryStore.swift](../../Sources/RAWMasterCore/LibraryStore.swift#L111) 的 `operations` 表含设备、实体、基准修订、结果修订、载荷版本 | 客户端 outbox 与冲突来源 |
-| 封存会话不可变 | [authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql) 的封存触发器；`session.seal` 后拒绝写入 | 归档资格只来自封存清单，不能被后续编辑改写 |
-| 逐文件归档资格视图 | [authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql#L77) 的 `lc_archive_files` 从有效 scope 取文件、内容、哈希、路径 | 服务端归档计划与引用派生 |
-| 内容身份与去重 | `lc_contents(sha256, byte_count)`、`lc_replicas`；[authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql#L11) | 内容寻址对象、多引用、多副本 |
-| 本地备份包 | [backup.rs](../../Modules/LibraryCatalog/src/backup.rs#L73) 的 manifest 含目录快照、原件、资源、缺项；[inventory.rs](../../Modules/LibraryCatalog/src/backup/inventory.rs#L10) 的 Original／Resource | 服务端备份代次与恢复清单 |
-| 内容寻址资源 | [resources.rs](../../Modules/LibraryCatalog/src/resources.rs#L10) 的 `lc_resources` 与 `objects/<sha>/<sha>` 布局 | 主存对象库、资源校验、去重 |
-| 分组制作作业 | [processing/schema.sql](../../Modules/LibraryCatalog/src/processing/schema.sql) 的 jobs／inputs／attempts；[processing.rs](../../Modules/LibraryCatalog/src/processing.rs#L132) 的 freeze／claim／publish | 远程作业描述、输入冻结、结果登记 |
-| 本地任务调度 | [scheduler.rs](../../Modules/LibraryCatalog/src/scheduler.rs) 的队列、租约、尝试、外部交付 | 服务端队列、worker 租约、重试 |
-| 组织关系与版本 | [organization/schema.sql](../../Modules/LibraryCatalog/src/organization/schema.sql) 的 works／versions／collections／stacks | 恢复与同步的关系对象 |
-| 现有产品验收 | [033 Server 规格](../033-library-lifecycle/server.md#服务端验收场景) 的归档、冷热、恢复、同步、远程作业场景 | 本规格的验收来源 |
-| 同步选型研究 | [08 本地数据库与同步评估](../../docs/planning/08-local-database-and-sync-evaluation.md) 的业务级同步、冲突和媒体分离结论 | 不共享活动数据库、按操作同步 |
+| 资料库与设备身份 | `lc_meta.libraryID`、`metadata.deviceID`；[authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql) · [LibraryStore](../../Sources/RAWMasterCore/LibraryStore.swift) | 库绑定、所有权、恢复换设备 |
+| 操作 ID、载荷摘要、收据 | [authority.rs](../../Modules/LibraryCatalog/src/authority.rs) | gRPC 命令幂等、重放、收据 |
+| 操作水位 | [authority.rs](../../Modules/LibraryCatalog/src/authority.rs) 的 `operationRevision` | 单客户端修订、补交、对账 |
+| 本地操作日志 | [LibraryStore.swift](../../Sources/RAWMasterCore/LibraryStore.swift) 的 `operations` 表 | 客户端 outbox 与恢复 |
+| 封存会话不可变 | [authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql) 的封存触发器 | 归档资格只来自封存清单 |
+| 逐文件归档资格 | [authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql) 的 `lc_archive_files` | 归档计划、排除项零引用 |
+| 内容身份与去重 | `lc_contents(sha256, byte_count)`、`lc_replicas` | S3 对象 key、SHA-256、同库去重 |
+| 本地备份包 | [backup.rs](../../Modules/LibraryCatalog/src/backup.rs) · [inventory.rs](../../Modules/LibraryCatalog/src/backup/inventory.rs) | 客户端目录快照、清单、恢复 |
+| 内容寻址资源 | [resources.rs](../../Modules/LibraryCatalog/src/resources.rs) | 对象 key 与校验思路 |
+| 分组制作作业 | [processing/schema.sql](../../Modules/LibraryCatalog/src/processing/schema.sql) · [processing.rs](../../Modules/LibraryCatalog/src/processing.rs) | Server 1.1 作业描述、冻结输入、发布 |
+| 本地调度 | [scheduler.rs](../../Modules/LibraryCatalog/src/scheduler.rs) | 队列、租约、重试 |
+| 组织关系 | [organization/schema.sql](../../Modules/LibraryCatalog/src/organization/schema.sql) | 库、作品、版本、集合、堆栈 |
+| 现有产品验收 | [033 Server 规格](../033-library-lifecycle/server.md) | 归档、冷热、恢复、同步、远程作业 |
 
-## 2. 已有但尚未达到 Server 要求
+## 2. 外部调研证据
 
-| 现有实现 | 差距 |
-| --- | --- |
-| Rust 目录命令 | 只在本地进程调用；没有 HTTP、设备鉴权、服务器修订、字段冲突层 |
-| 操作收据 | 每库本地收据；没有跨设备 outbox、拉取游标、回声抑制 |
-| 备份包 | 本地文件系统包；没有独立目标、代次调度、周期校验、服务器恢复入口 |
-| 归档视图 | 本地查询视图；没有服务端归档引用、上传暂存、对象主存、待找回状态 |
-| 资源对象 | 本地 `LibraryResources`；没有服务器对象库、Range 下载、内容寻址主存 |
-| 分组作业 | 本地渲染；没有执行端能力、远程输入解析、跨机器租约和结果回传 |
-| 资料库 UI | 没有 Server 设置、归档队列、备份代次、固定离线、冲突解决、作业重连 |
-| 代理 | 现有 JPEG 显示代理研究，不等于服务器冷片代理与按需取回闭环 |
+| 主题 | 结论 | 来源 |
+| --- | --- | --- |
+| gRPC over H2 | 类型化、流式、deadline、取消、拦截器；gRPC Swift 2 支持 Apple/Linux，HTTP/2 transport | [gRPC Swift 2](https://swift.org/blog/grpc-swift-2/) · [gRPC flow control](https://grpc.io/docs/guides/flow-control/) |
+| gRPC 消息上限 | 默认 4MB；大对象不应放进 gRPC 消息 | [gRPC max message](https://grpc.io/docs/languages/go/api) |
+| QUIC／HTTP3 | 多流、流控、TLS 1.3、连接迁移；本轮 LAN 用 H2 足够 | [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000.html) |
+| ZeroMQ | 消息必须进内存；大文件要分片；无内建 TLS／发现／版本 | [ZeroMQ Guide](https://zguide.zeromq.org/docs/chapter2/) |
+| RustFS S3 | Presigned GET/PUT、multipart、Range、SHA-256 checksum、bucket policy 已测试；ACL 不支持、访问日志计划中 | [RustFS S3 兼容矩阵](https://docs.rustfs.com/en/reference/s3-compatibility) · [RustFS S3](https://docs.rustfs.com/en/administration/protocols/s3) |
+| RustFS on TrueNAS | TrueNAS 25.04 App 目录提供 RustFS | [TrueNAS Apps](https://apps.truenas.com/catalog/rustfs) |
+| SQLite WAL | 不支持网络文件系统；客户端 SQLite 不应放 NFS／SMB | [SQLite WAL](https://www.sqlite.org/wal.html) |
+| PostgreSQL outbox | 业务事务 + outbox 解决跨系统双写 | 通用模式；实现时用 PostgreSQL 事务 |
+| S3 ETag | multipart ETag 不是 SHA-256 | 通用 S3 事实；服务端自算 SHA-256 |
 
-## 3. 明确未实现
+## 3. 已确认的架构选择
 
-- 没有 `RAWMasterServer` 可执行文件、HTTP 服务、数据库 schema 或部署脚本。
-- 没有 TLS、设备登记、令牌、撤销、指纹确认。
-- 没有服务器端资料库绑定、操作同步、冲突表或引导快照。
-- 没有服务端独立备份目标、代次调度、逐对象校验、恢复向导。
-- 没有服务器冷片代理、固定离线、受控释放。
-- 没有远程 worker、能力登记、远程作业提交／查询／取消／重试。
-- 没有百万级／100 TB 容量测量。
-- 没有真实多设备同步或灾备恢复演练。
+1. 一库一客户端；Server 托管多个独立库；不做共享库多端写或跨库逻辑。
+2. gRPC 负责事务性控制；S3 负责对象字节；PostgreSQL 负责服务端元数据；客户端本地 SQLite 仍是离线目录。
+3. Direct 默认，传输失败自动 Relay；两者同一 upload ID／part 号／S3 multipart。
+4. PostgreSQL 和 S3 的 HA／持久性由外部负责；RAWMaster 负责元数据一致性、逻辑备份、恢复、对象清单和校验。
+5. 自建服务使用自签名证书；客户端固定 CA／SPKI；证书、令牌哈希入元数据备份，私钥／pepper 入加密 secret bundle。
+6. 元数据备份默认全 Server 全量逻辑备份；恢复到隔离 PostgreSQL；`metadata doctor` + 对象 HEAD。
+7. Server 本地磁盘只放日志、临时文件和有界 Relay 缓冲。
 
-## 4. 本轮使用的现有文档
+## 4. 明确未实现
 
-- [033 资料库生命周期](../033-library-lifecycle/spec.md)：四阶段、归档资格、五文件样本、100 TB 参照。
-- [033 Server 产品规格](../033-library-lifecycle/server.md)：存储、备份、冷热、同步、远程计算和服务端验收。
-- [033 数据模型](../033-library-lifecycle/data-model.md)：本地身份、操作、作业、原件与兼容。
-- [033 前三阶段方案](../033-library-lifecycle/plan.md)：Rust 目录内核、SQLite、索引与 Server 后置。
-- [26 资料库生命周期方案](../../docs/planning/26-library-lifecycle-proposal.md)：产品交付顺序与 Server 建议。
-- [04 客户端与服务端工作流](../../docs/planning/04-client-server-workflow-draft.md)：历史协作流程、状态与冲突原则。
-- [02 特性地图](../../docs/planning/02-feature-portfolio-draft.md)：F006、F007 要求。
-- [08 本地数据库与同步评估](../../docs/planning/08-local-database-and-sync-evaluation.md)：业务级同步与 Turso 边界。
-- [00 SDD 规划总览](../../docs/planning/00-sdd-planning-overview.md)：阶段与文档入口。
+- 没有 `RAWMasterServer` 可执行文件、gRPC 服务或 PostgreSQL schema。
+- 没有 S3 ObjectStore 适配、presigned Direct、Relay。
+- 没有自签名 CA、证书固定、设备令牌、secret bundle。
+- 没有元数据一致快照、pg_dump 集成、备份验证、恢复向导、doctor。
+- 没有客户端 SQLite 快照上传和重连对账。
+- 没有 RustFS 真实吞吐／兼容性测试。
+- 没有 10TB／20 万对象基线。
+- 没有远程作业。
+- 没有编辑／导出云端；本轮不涉及。
 
-## 5. 证据缺口与研究问题
+## 5. 研究缺口
 
 | 问题 | 需要的证据 | 影响 |
 | --- | --- | --- |
-| 每库 SQLite 是否支撑目标设备数和批次 | 多设备并发写入、批量操作、作业写入的等待与错误率 | D-SRV-01 目录引擎 |
-| 归档吞吐瓶颈 | 1／10 Gbps、SSD／HDD／NAS、不同块大小的真实字节与时长 | S2 计划与容量 |
-| 代理规格 | 冷片首屏、判读质量、带宽、生成 CPU／GPU 成本 | S3 计划 |
-| 独立备份最小方案 | 第二块盘／NAS／远端的容量、校验时长、恢复演练 | D-SRV-02 |
-| 冲突可理解性 | 双设备真实工作流的冲突类型、解决耗时、误操作 | S3 计划 |
-| 远程引擎边界 | 各作业类型在 Linux 与 Mac 的输入、输出、像素差异和许可 | S4 计划 |
-| 百万级目录 | 分页、引导、索引、恢复、内存和存储 | S5 容量专项 |
+| RustFS 在 TrueNAS 25.04 的真实吞吐／CPU | 10GbE、jumbo、Direct、multipart 并发 | S2 基线 |
+| presigned multipart／checksum 兼容 | 真实 RustFS 版本、part ETag、SHA-256 | Direct／Relay |
+| gRPC Swift 2 + 私有 CA | 构建、TLS trust roots、流式、重连 | 客户端 |
+| AWS SDK for Swift／Soto + RustFS | path-style、presigned、multipart | 客户端 |
+| PostgreSQL 一致快照 | `pg_dump --snapshot`、锁、临时磁盘 | S3 元数据备份 |
+| 10TB 元数据规模 | pg_dump／restore、doctor、HEAD 时长 | S5 |
+| 自签名证书轮换 | 同 CA 换 leaf、客户端固定 | 安全 |
+| secret bundle 加密 | age／libsodium、密钥管理、恢复 | 安全 |
+| 单客户端所有权转移 | 旧 epoch fencing、真实双机 | S1/S4 |
+| 外部冷备回执 | TrueNAS 冷备状态是否可读 | S4 释放策略 |
 
-## 6. 结论
+## 6. 非声明
 
-现有本地资料库已经具备 Server 需要的**身份、操作收据、封存不可变、归档资格、内容身份、备份清单、资源对象和作业表**底座。Server 1.0 的主要工作不是重写资料库，而是把这些本地契约接到一个可认证、可恢复、可解释的服务端，并补齐跨设备同步、独立备份、冷热缓存和作业执行。设计阶段不能把这些底座说成已经联网或已经验收。
+- 本文和 040 其它文档是设计，不是 Server 已实现或已验收。
+- RustFS 是 S3 兼容子集，不是 AWS S3 全等；ACL、访问日志、POST form 等边界必须避开。
+- 自签名 TLS 只保护传输，不保护备份静态数据；备份必须另行加密。
+- PostgreSQL HA 不能替代逻辑备份；S3 持久性不能替代对象清单和引用一致性。
+- 10TB 设计不能外推 100TB／200 万文件；容量专项另立。

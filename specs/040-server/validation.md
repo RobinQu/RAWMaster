@@ -1,40 +1,49 @@
 # 040 · 规划验证记录
 
-2026-11-26 · 本轮为功能设计，不是产品验收。记录已做的文档核对、尚未执行的验证和进入实现前必须补齐的证据。
+2026-11-27 · 本轮为架构与功能设计，不是产品验收。记录已完成的文档核对、外部调研和进入实现前必须补齐的验证。
 
 ## 1. 本轮完成
 
 | 检查 | 结果 | 证据 |
 | --- | --- | --- |
-| 阅读 033 资料库生命周期、Server 产品规格、数据模型、前三阶段方案 | 完成 | [033 spec](../033-library-lifecycle/spec.md) · [server](../033-library-lifecycle/server.md) · [data-model](../033-library-lifecycle/data-model.md) · [plan](../033-library-lifecycle/plan.md) |
-| 阅读 F006／F007、客户端—服务端工作流、同步评估、生命周期方案 | 完成 | [02](../../docs/planning/02-feature-portfolio-draft.md) · [04](../../docs/planning/04-client-server-workflow-draft.md) · [08](../../docs/planning/08-local-database-and-sync-evaluation.md) · [26](../../docs/planning/26-library-lifecycle-proposal.md) |
-| 核对现有本地底座 | 完成 | [证据](evidence.md) |
-| 建立 Server 1.0 功能、状态、数据、协议、技术方案和任务 | 完成 | [规格](spec.md) · [交互](ux.md) · [数据](data-model.md) · [协议](protocol.md) · [方案](plan.md) · [任务](tasks.md) |
-| 与 033 归档资格、五文件样本、四条服务端验收对齐 | 完成 | [规格第 9 节](spec.md#9-验收场景) · [追溯](spec.md#12-追溯) |
-| 交叉链接与 Markdown 结构检查 | 完成 | 本轮对本目录、27 总览及改动入口运行相对链接检查，断链为零；Markdown 表格与标题结构人工复核 |
+| 阅读 033 资料库生命周期、Server、数据模型、方案 | 完成 | [033 spec](../033-library-lifecycle/spec.md) · [server](../033-library-lifecycle/server.md) · [data-model](../033-library-lifecycle/data-model.md) · [plan](../033-library-lifecycle/plan.md) |
+| 阅读 F006／F007、04、08、26、27 | 完成 | [02](../../docs/planning/02-feature-portfolio-draft.md) · [04](../../docs/planning/04-client-server-workflow-draft.md) · [08](../../docs/planning/08-local-database-and-sync-evaluation.md) · [26](../../docs/planning/26-library-lifecycle-proposal.md) · [27](../../docs/planning/27-server-version-plan.md) |
+| 核对本地操作／归档／备份／作业底座 | 完成 | [证据](evidence.md) |
+| 调研 gRPC Swift 2、HTTP/2 流控、QUIC、ZeroMQ | 完成 | [evidence](evidence.md#2-外部调研证据) |
+| 调研 RustFS S3 兼容矩阵、TrueNAS 25.04 App、S3 presigned／multipart | 完成 | [storage](storage.md) · [evidence](evidence.md#2-外部调研证据) |
+| 设计 PostgreSQL 元数据、上传状态机、对象模型 | 完成 | [data-model](data-model.md) |
+| 设计元数据一致性、备份、验证、恢复 | 完成 | [metadata-backup](metadata-backup.md) |
+| 设计自签名证书、令牌、secret bundle | 完成 | [security](security.md) |
+| 设计 Direct／Relay、10GbE／10TB、两种部署 | 完成 | [storage](storage.md) |
+| 重写功能规格、协议、方案、任务、交互 | 完成 | [spec](spec.md) · [protocol](protocol.md) · [plan](plan.md) · [tasks](tasks.md) · [ux](ux.md) |
+| 相对链接检查 | 完成 | 本目录、27 总览及入口；断链为零 |
 
 ## 2. 本轮未完成
 
-- **没有服务端实现。** 没有 HTTP 服务、数据库、对象库、备份作业或远程 worker。
-- **没有浏览器走查。** 现有 [Server 规划预演](../../docs/ui/prototype/index.html#tools/server) 只有三条模拟路径；本规格新增的连接、归档计划、备份代次、固定／释放、冲突和恢复界面尚未进入原型。
-- **没有原生界面。** 设置 → Server、资料库工具 → Server、上下文动作和任务中心均未实现。
-- **没有真实多设备同步。** 冲突矩阵是设计规则，不是故障矩阵通过记录。
-- **没有独立备份或异机恢复。** 备份代次、对象校验和恢复向导是设计，不是演练结果。
-- **没有容量测量。** 100 TB／200 万文件仍只是参照，不是 Server 1.0 门。
-- **没有远程作业。** 能力、输入、队列、取消、重试和单次登记均未实现。
+- **没有服务端实现。** 没有 gRPC 服务、PostgreSQL schema、S3 适配、元数据备份代码。
+- **没有 RustFS 实测。** 未测 TrueNAS 25.04 App 的真实吞吐、presigned multipart、checksum、TLS、升级兼容。
+- **没有 PostgreSQL 备份实测。** `pg_dump --snapshot`、隔离恢复、doctor、10TB 元数据规模未执行。
+- **没有证书／令牌实测。** 私有 CA、客户端固定、证书轮换、secret bundle、恢复未执行。
+- **没有 Direct／Relay 实测。** 未测 10GbE、jumbo、无 LAG、S3 直传和回退。
+- **没有客户端实现。** grpc-swift-2、AWS SDK for Swift／Soto、钥匙串、SQLite 快照未接入。
+- **没有元数据恢复演练。** 空 PostgreSQL 恢复、对象缺失、客户端重连、所有权 epoch 未执行。
+- **没有 UI 原型更新。** 现有 Server 预演仍是旧的归档／同步／作业模拟；本轮只定义交互。
+- **没有远程作业。** Server 1.1 未开始。
 
 ## 3. 进入 S1 前必须补齐
 
-1. 按 [AGENTS](../../AGENTS.md) 和 [UI 研发流程](../../docs/ui/README.md) 更新摄影工作台，覆盖 [ux.md](ux.md) 第 5 节的七组场景；记录浏览器、窄窗、浅／深色、键盘与焦点结果。
-2. 冻结 S0 契约夹具：操作信封、五文件归档计划、上传完成、备份清单、作业输入与输出、错误码。
-3. 用现有隔离资料库生成一份真实的五文件封存快照，确认服务端资格派生与 033 清单一致。
-4. 评审 D-SRV-01（目录引擎）、D-SRV-02（备份实现）、D-SRV-04（认证）和 D-SRV-07（保留策略）。
-5. 确认服务器目标硬件、网络、磁盘和独立备份目标；没有独立故障域时不得给出“备份完成”设计承诺。
+1. 按 [AGENTS](../../AGENTS.md) 和 [UI 研发流程](../../docs/ui/README.md) 更新摄影工作台，覆盖 [ux.md](ux.md) 第 5 节；记录浏览器、窄窗、浅／深色、键盘、焦点、读屏。
+2. 冻结 S0 契约：gRPC proto、PostgreSQL schema、S3 profile、备份格式、证书／令牌模型。
+3. 用真实 RustFS 跑 Direct presigned multipart、checksum、Range、TLS、Relay 回退。
+4. 用真实 PostgreSQL 跑 `pg_dump --snapshot`、隔离恢复、doctor、对象清单。
+5. 用真实自签名 CA 跑客户端固定、证书轮换、令牌撤销、secret bundle 恢复。
+6. 确认 10GbE／jumbo 端到端 MTU、RustFS App 网络、无 LAG 的实际吞吐。
+7. 确认外部冷备状态是否可回执；若否，UI 只能显示“外部负责／未知”。
 
 ## 4. 证据口径
 
-- 本文件只证明“设计与现有代码／规格已对齐”，不证明“Server 已可用”。
-- 浏览器原型只能证明交互与状态可操作，不证明网络、对象校验、备份或恢复。
-- 服务端测试必须使用真实 SQLite 目录、真实对象和真实网络故障；合成状态不能替代。
-- 性能数字必须注明硬件、网络、样本、冷热、文件数和字节；API 返回时间不能冒充屏幕呈现或端到端恢复时间。
-- 未通过的验收项保留在任务和发布门中，不用已完成文档数量替代。
+- 本文件只证明“设计与现有代码／外部调研已对齐”，不证明 Server 可用。
+- 浏览器原型只能证明交互，不证明 TLS、S3、PostgreSQL、备份或恢复。
+- 服务端测试必须使用真实 PostgreSQL、真实 S3 对象和真实网络故障；mock 不能替代。
+- 性能数字必须注明硬件、网络、MTU、Direct／Relay、对象大小、冷热和并发；API 返回时间不能冒充端到端恢复时间。
+- 未通过的验收项保留在任务和发布门中，不用文档完成数量替代。

@@ -1,8 +1,10 @@
 # RAWMaster Server · 归档、同步与图像处理
 
-2026-11-22 · 以下为阶段四的产品规格。Server 1.0 的功能设计、数据与协议见 [040](../040-server/spec.md)；开发与验收仍待后续立项。前三阶段只在本地持久化数据和作业中保留将来读写这些数据所需的身份、修订与版本。[本地兼容设计](data-model.md) · [资料库阶段与逐文件归档资格](spec.md) · [Server 1.0 总览](../../docs/planning/27-server-version-plan.md)
+2026-11-22 · 以下为阶段四的产品规格。Server 1.0 的功能设计、数据与协议见 [040](../040-server/spec.md)；开发与验收仍待后续立项。2026-11-27 架构修订为 gRPC + PostgreSQL + S3；RAWMaster 负责自身元数据的一致性、逻辑备份与恢复，S3／ZFS 的存储可靠性由现有 TrueNAS 冷备承担。[Server 1.0 总览](../../docs/planning/27-server-version-plan.md) · [本地兼容设计](data-model.md) · [资料库阶段与逐文件归档资格](spec.md)
 
 ## 存储与备份
+
+> 2026-11-27 架构修订：RAWMaster 不再实现 S3／ZFS 复制、RAID 或纠删码；独立备份由现有 TrueNAS 冷备承担。RAWMaster 负责自身 PostgreSQL 元数据的逻辑一致性、备份、恢复，以及 S3 对象清单和引用核对。详见 [040 元数据备份](../040-server/metadata-backup.md) 与 [040 安全](../040-server/security.md)。
 
 服务端通过对象存储保存不可变的原件、编辑依赖和照片／视频成片。事务型目录按稳定身份记录对象的内容版本、位置、校验结果和对它的业务引用。客户端使用各自的本地目录，通过服务接口交换带版本的变更和清单。单机模式可独立完成导入与整理。
 

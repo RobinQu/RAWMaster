@@ -1,305 +1,233 @@
-# 040 · Server 协议
+# 040 · gRPC 与 S3 协议
 
-2026-11-26 · HTTP／JSON 与内容传输契约。目标是让客户端、服务器和后续执行端能在不共享数据库文件的前提下交换业务操作、归档对象、备份和作业。物理端点可在 S1 评审时调整，语义和不变量不得改变。产品要求见[规格](spec.md)，实体见[数据模型](data-model.md)。
+2026-11-27 · 控制面 gRPC over HTTP/2/TLS，内容面 S3 兼容 API。客户端不直连 PostgreSQL；文件字节不进入 gRPC 消息。产品要求见[规格](spec.md)，实体见[数据模型](data-model.md)，存储见[存储](storage.md)，安全见[安全](security.md)。
 
-## 1. 传输与身份
+## 1. 分层
 
-- 基础路径：`https://<server>/api/v1`。默认只监听局域网；公开暴露必须显式配置。
-- TLS 1.2 以上；客户端首次连接显示并固定服务器证书指纹。指纹变化默认阻止写入。
-- 认证：`Authorization: Bearer <device-token>`。令牌按设备签发，存客户端钥匙串；服务器只保存摘要。
-- 登记：管理员在服务器生成一次性登记码，客户端在有效期内使用；登记成功后签发设备令牌和设备身份。
-- 请求头：`Content-Type: application/json`、`Accept: application/json`、`X-Rawmaster-Device`、`X-Rawmaster-Request-ID`（可与 `commandID` 相同，用于日志关联）。
-- 时间使用 UTC RFC 3339；哈希使用小写十六进制 SHA-256；字节数使用十进制整数。
-- 所有写请求支持重试；客户端必须复用原 `commandID`，不得因超时生成新 ID。
-
-## 2. 通用响应
-
-成功：
-
-```json
-{
-  "apiVersion": 1,
-  "requestID": "req-...",
-  "result": {}
-}
+```text
+┌─────────────────────────────────────────────────────┐
+│ gRPC / HTTP2 / TLS                                  │
+│ 库所有权、操作、上传意图、收据、事件、备份管理      │
+├─────────────────────────────────────────────────────┤
+│ S3 HTTPS                                            │
+│ presigned multipart、Range、HEAD、对象校验          │
+├─────────────────────────────────────────────────────┤
+│ Relay（gRPC bidi stream / HTTP2 chunk）             │
+│ Direct 不可达时，Server 代理缺失 part／下载          │
+└─────────────────────────────────────────────────────┘
 ```
 
-失败：
+- H2 是 gRPC 的传输；S3 是独立 HTTPS 内容面，不强制 H2。
+- gRPC 不承载 RAW／JPEG 字节；Relay 只传分块，不改变事务边界。
+- PostgreSQL 事务由 Server 内部执行，客户端看不到数据库。
 
-```json
-{
-  "apiVersion": 1,
-  "requestID": "req-...",
-  "error": {
-    "code": "conflict",
-    "message": "评分在另一设备已修改",
-    "retryable": false,
-    "details": {
-      "entityType": "asset",
-      "entityID": "asset-...",
-      "field": "rating",
-      "conflictID": "conflict-..."
-    }
-  }
-}
-```
+## 2. TLS、认证与所有权
 
-**错误码。** `unauthorized`、`forbidden`、`not_found`、`invalid_request`、`unsupported_version`、`conflict`、`dependency_missing`、`hash_mismatch`、`length_mismatch`、`insufficient_storage`、`quota_exceeded`、`unavailable`、`rate_limited`、`internal`。`retryable` 只表示同一请求可安全重试；冲突和版本错误不能靠重试解决。
+- 自签名私有 CA 或单张自签名证书；客户端固定 CA／SPKI 指纹。详见[安全](security.md)。
+- 每个 gRPC 请求带 `authorization: Bearer <device-token>`；令牌只存哈希。
+- `library_id` 必须在设备可访问范围内；写操作还要求 `ownership_epoch` 匹配当前所有者。
+- 第二客户端写返回 `FAILED_PRECONDITION` + 当前 owner；只读请求可配置允许。
+- 管理方法（备份、恢复、doctor、证书轮换）要求 admin 角色或本机 CLI。
 
-## 3. 端点
+## 3. gRPC 服务
 
-### 3.1 服务器与登记
+### 3.1 LibraryService
 
-| 方法 | 路径 | 作用 | 幂等 |
-| --- | --- | --- | --- |
-| GET | `/health` | 存活、版本、时间；不返回资料库内容 | 是 |
-| GET | `/server` | 服务器身份、TLS 指纹、API 版本、能力、存储摘要 | 是 |
-| POST | `/enroll` | 用一次性登记码登记设备，返回设备 ID、令牌、服务器指纹 | 登记码一次性 |
-| GET | `/devices` | 当前所有者设备列表、最后在线、版本、撤销状态 | 是 |
-| DELETE | `/devices/{deviceID}` | 撤销设备令牌 | 是 |
-
-登记请求示例：
-
-```json
-{
-  "enrollmentCode": "one-time-code",
-  "deviceName": "MacBook Pro",
-  "clientVersion": "1.0",
-  "deviceID": "existing-or-new"
-}
-```
-
-服务器可拒绝客户端自报的 `deviceID` 并要求新身份；恢复副本必须重新登记，不能复用旧令牌。
-
-### 3.2 资料库绑定
-
-| 方法 | 路径 | 作用 | 幂等 |
-| --- | --- | --- | --- |
-| GET | `/libraries` | 当前设备可访问的资料库及状态 | 是 |
-| POST | `/libraries/attach` | 绑定已有 `libraryID`，可附带目录摘要和 schema | 是，按 `libraryID` |
-| GET | `/libraries/{libraryID}` | 库状态、目录版本、水位、存储摘要 | 是 |
-| POST | `/libraries/{libraryID}/detach` | 解除本设备绑定，不删除服务器对象 | 是 |
-
-绑定请求不得上传活动数据库；只提交身份、schema、摘要和可选引导快照。服务器已有同 ID 但不同来源时返回 `conflict`。
-
-### 3.3 操作同步
-
-| 方法 | 路径 | 作用 |
+| 方法 | 类型 | 作用 |
 | --- | --- | --- |
-| POST | `/libraries/{libraryID}/operations` | 批量提交操作；逐项返回收据、服务器修订或冲突 |
-| GET | `/libraries/{libraryID}/changes?after={revision}&limit=200` | 增量拉取操作、冲突和解决结果 |
-| GET | `/libraries/{libraryID}/snapshot?cursor={revision}` | 分页引导快照，供新设备或恢复使用 |
-| GET | `/libraries/{libraryID}/conflicts` | 当前未解决冲突 |
-| POST | `/libraries/{libraryID}/conflicts/{conflictID}/resolve` | 选择本机、服务器、保留分支或稍后处理 |
+| `AcquireLibrary` | unary | 获取库所有权／续期；返回 `ownershipEpoch`、fencing token |
+| `TransferLibrary` | unary | 显式转移所有权 |
+| `ApplyOperation` | unary | 提交一条操作；PostgreSQL 事务 + 收据 |
+| `ApplyOperations` | unary | 小批操作；逐项结果，允许部分成功 |
+| `GetChanges` | server streaming | 按 `afterRevision` 拉取操作、事件和修订 |
+| `GetLibraryStatus` | unary | 所有权、修订、配额、归档、备份摘要 |
+| `WatchEvents` | bidi streaming | 上传进度、对象校验、备份、配额、所有权事件 |
+| `RegisterLibrarySnapshot` | unary | 客户端已把目录快照上传 S3；Server 校验并登记索引 |
+| `GetLibrarySnapshot` | unary | 获取最新快照索引和下载地址 |
+| `GetServerInfo` | unary | 服务器身份、证书链／SPKI、版本、支持能力、备份格式 |
 
-单条操作：
+### 3.2 TransferService
 
-```json
-{
-  "apiVersion": 1,
-  "libraryID": "library-...",
-  "deviceID": "device-...",
-  "commandID": "command-...",
-  "baseRevision": 42,
-  "payloadVersion": 1,
-  "action": "org.rating",
-  "payload": {
-    "workID": "work-...",
-    "rating": 4
-  },
-  "createdAt": "2026-11-26T10:00:00Z"
-}
-```
-
-批量请求：
-
-```json
-{
-  "apiVersion": 1,
-  "operations": [ { "...": "..." }, { "...": "..." } ]
-}
-```
-
-响应逐项返回，允许部分成功：
-
-```json
-{
-  "apiVersion": 1,
-  "results": [
-    {
-      "commandID": "command-...",
-      "status": "applied",
-      "serverRevision": 43,
-      "resultRevision": 43,
-      "receipt": {}
-    },
-    {
-      "commandID": "command-...",
-      "status": "conflict",
-      "conflictID": "conflict-...",
-      "details": { "field": "rating" }
-    }
-  ]
-}
-```
-
-**幂等。** `unique(libraryID, commandID)`；同 ID 同载荷摘要返回缓存收据；同 ID 不同摘要返回 `conflict`。客户端重试不得更换 `commandID`。
-
-**拉取。** `changes` 返回 `operations`、`conflicts`、`resolutions`、`nextRevision`、`hasMore`。客户端按 `nextRevision` 更新游标；回放自己已发送的操作时按 `commandID` 去重。
-
-**引导。** `snapshot` 分页返回目录实体和最后修订，不包含原件字节；客户端完成快照后按游标追平，再按需取代理或原件。快照必须来自一致水位。
-
-### 3.4 归档与内容传输
-
-| 方法 | 路径 | 作用 |
+| 方法 | 类型 | 作用 |
 | --- | --- | --- |
-| POST | `/libraries/{libraryID}/archive/plans` | 生成或复用归档计划，返回逐文件资格、字节、缺项和计划 ID |
-| GET | `/libraries/{libraryID}/archive/refs?state=...` | 查询归档引用与状态 |
-| POST | `/libraries/{libraryID}/archive/transfers` | 为计划中的文件创建或复用上传；已存在对象可直接返回完成 |
-| PUT | `/uploads/{uploadID}/chunks/{index}` | 上传一个块，带 `Content-Range` 和块摘要 |
-| GET | `/uploads/{uploadID}` | 查询已收字节／区间、状态和到期时间 |
-| POST | `/uploads/{uploadID}/complete` | 提交完整长度和整体 SHA-256，触发校验与归档登记 |
-| DELETE | `/uploads/{uploadID}` | 取消未完成上传并清理暂存 |
-| GET | `/objects/{contentID}` | 下载完整对象，支持 `Range` |
-| HEAD | `/objects/{contentID}` | 查询对象长度、哈希、范围和可用状态 |
+| `CreateUpload` | unary | 校验资格和配额；写 upload intent；创建 S3 multipart；返回 presigned part URL |
+| `RefreshUpload` | unary | 刷新 presigned URL／过期时间 |
+| `RelayUpload` | bidi streaming | Direct 失败时按 part 中转；Server 写入同一 S3 multipart |
+| `CompleteUpload` | unary | 完成 multipart、HEAD 校验、登记对象和归档引用 |
+| `AbortUpload` | unary | 取消并 abort multipart |
+| `GetUpload` | unary | 查询已上传 part、模式、过期时间 |
+| `CreateDownload` | unary | 返回 presigned GET 或 Relay 会话 |
+| `RelayDownload` | server streaming | Server 从 S3 读取并按 Range 流式返回 |
 
-`contentID` 是 `sha256:<hex>:<byteCount>` 的逻辑身份；作为 URL path segment 时必须整体百分号编码。服务器也可接受 `/objects/{sha256}?bytes={byteCount}` 作为等价形式，但归档、收据和备份清单始终记录完整 `contentID`。
+### 3.3 MetadataService（admin）
 
-归档计划响应示例：
+| 方法 | 类型 | 作用 |
+| --- | --- | --- |
+| `CreateMetadataBackup` | unary | 创建一致快照、对象清单、checksums，上传 S3 |
+| `ListMetadataBackups` | unary | 代次、时间、版本、验证状态 |
+| `VerifyMetadataBackup` | unary | 隔离恢复 + `metadata doctor` + 对象抽样 |
+| `RestoreMetadata` | unary | 恢复到隔离 PostgreSQL；返回 restore ID |
+| `GetRestoreStatus` | unary | 阶段、缺项、对象核对结果 |
+| `RunMetadataDoctor` | unary | 运行不变量检查 |
+| `RotateServerCertificate` | unary | 从同一 CA 签发新 leaf；更新 secret bundle 引用 |
+
+### 3.4 JobService（Server 1.1）
+
+`SubmitJob`、`GetJob`、`CancelJob`、`RetryJob`、`WatchJob`、`ListJobs`。1.0 只保留 proto 和身份，不开放执行。
+
+## 4. 通用信封与幂等
+
+```proto
+message OperationEnvelope {
+  uint32 api_version = 1;
+  string library_id = 2;
+  string device_id = 3;
+  string command_id = 4;
+  int64 base_revision = 5;
+  uint32 payload_version = 6;
+  string action = 7;
+  bytes payload_json = 8;
+  string payload_sha256 = 9;
+  google.protobuf.Timestamp created_at = 10;
+}
+```
+
+- `command_id` 全局唯一；同一 ID 同 payload hash 返回原收据；不同 hash 返回 `ALREADY_EXISTS`／冲突。
+- `base_revision` 用于缺口和依赖检查；单客户端单写者，不做字段级合并。
+- 操作应用后返回 `server_revision`、`result_revision`、`receipt_json`。
+- 客户端离线队列按 `command_id` 重放；服务器按库修订单调。
+
+**错误码映射：**
+
+| gRPC | 场景 | 客户端行为 |
+| --- | --- | --- |
+| `UNAUTHENTICATED` | 令牌缺失／过期 | 重新登记／刷新 |
+| `PERMISSION_DENIED` | 非所有者写、admin 受限 | 只读／申请转移 |
+| `FAILED_PRECONDITION` | epoch／修订／依赖不满足 | 拉取后重试或转移 |
+| `ALREADY_EXISTS` | 同 ID 不同载荷 | 不重试，报冲突 |
+| `RESOURCE_EXHAUSTED` | 配额／容量 | 清理或扩容 |
+| `NOT_FOUND` | 库／对象／快照不存在 | 不重试 |
+| `UNAVAILABLE` | 暂时不可用 | 指数退避重试 |
+| `DEADLINE_EXCEEDED` | 超时 | 同 ID 重试 |
+
+## 5. S3 Direct 上传
+
+### 5.1 创建
+
+`CreateUpload` 请求包含：
 
 ```json
 {
-  "planID": "plan-...",
-  "libraryID": "library-...",
-  "scope": { "kind": "session", "id": "session-..." },
-  "files": [
-    {
-      "fileID": "file-...",
-      "captureID": "capture-...",
-      "contentID": "sha256:...:12345678",
-      "sha256": "...",
-      "byteCount": 12345678,
-      "filename": "A.JPG",
-      "role": "jpeg",
-      "basis": "admitted",
-      "state": "needsUpload"
-    },
-    {
-      "fileID": "file-...",
-      "filename": "A.RAW",
-      "basis": "excluded",
-      "state": "historyOnly"
-    }
+  "libraryID": "...",
+  "fileID": "...",
+  "contentID": "sha256:<hex>:<bytes>",
+  "sha256": "<hex>",
+  "byteCount": 12345678,
+  "filename": "A.ARW",
+  "role": "raw",
+  "scopeID": "..."
+}
+```
+
+Server 校验归档资格、配额、对象是否已存在；写 `upload_intent`；创建 S3 multipart；返回：
+
+```json
+{
+  "uploadID": "...",
+  "objectKey": "libraries/<libraryID>/objects/<sha2>/<sha256>",
+  "partSize": 67108864,
+  "parts": [
+    {"partNumber": 1, "url": "https://rustfs.../...&partNumber=1", "expiresAt": "..."}
   ],
-  "summary": {
-    "eligibleFiles": 2,
-    "uniqueContents": 2,
-    "totalBytes": 45678901,
-    "alreadyAvailableBytes": 0,
-    "excludedFiles": 1,
-    "missingFiles": 0
-  }
+  "uploadExpiresAt": "..."
 }
 ```
 
-上传：
+- `partSize` 由 Server 固定；Direct 和 Relay 必须使用相同 part 号。
+- presigned URL 只允许精确 key、part 号、方法；TTL 5–15 分钟。
+- 对象已存在时，Server 先 HEAD 校验；可直接进入 `CompleteUpload` 或只登记引用。
 
-1. `POST /archive/transfers` 返回 `uploadID`、`chunkSize`、`nextOffset`、`expiresAt`。若内容已存在且引用未登记，直接登记引用并返回完成。
-2. 客户端按块 `PUT`；服务器按 `Content-Range` 校验顺序和重叠。重复块幂等。
-3. `complete` 提交总长度和整体摘要；服务器重新计算并核对，成功后原子发布对象并登记 `srv_archive_refs`。
-4. 失败返回 `hash_mismatch`／`length_mismatch`，保留可重试状态；未完成暂存到期清理。
-5. 客户端可 `GET /uploads/{id}` 续传；服务器重启后区间仍可读。
+### 5.2 完成
 
-下载：
+客户端提交 `uploadID` 和 part ETags：
 
-```http
-GET /api/v1/objects/sha256:...:12345678 HTTP/1.1
-Range: bytes=0-8388607
-Authorization: Bearer ...
+```json
+{"uploadID": "...", "parts": [{"partNumber": 1, "etag": "\"...\""}]}
 ```
 
-响应 `200` 或 `206`，带 `Content-Length`、`Content-Range`、`Accept-Ranges: bytes`、`ETag`（内容摘要）。客户端必须核对完整长度和 SHA-256 后再标记原件可用。
+Server：
 
-### 3.5 备份与恢复
+1. `CompleteMultipartUpload`（若客户端未完成）；
+2. `HEAD` 或 `GetObjectAttributes` 核对 key、字节数、SHA-256；
+3. PostgreSQL 事务：`objects.state=available`、创建 `archive_refs`、更新配额、写 outbox；
+4. 返回收据和 `serverRevision`。
 
-| 方法 | 路径 | 作用 |
-| --- | --- | --- |
-| GET | `/libraries/{libraryID}/backups` | 备份代次列表和状态 |
-| POST | `/libraries/{libraryID}/backups` | 创建一代独立备份；返回代次 ID |
-| GET | `/backups/{generationID}` | 代次详情、对象数、字节、缺项、校验 |
-| POST | `/backups/{generationID}/verify` | 逐对象校验并记录收据 |
-| POST | `/backups/{generationID}/restore` | 恢复到指定目标；返回 `restoreID` |
-| GET | `/restores/{restoreID}` | 恢复阶段、进度、缺项和结果 |
+**S3 ETag 不是内容哈希。** RustFS 支持 PutObject SHA-256 checksum 时使用；否则由 Server 校验声明值，并在恢复／scrub 时抽查。
 
-创建备份请求包含模式（目录＋资源／完整）、目标、保留标签；服务器先返回计划，确认后执行。恢复请求包含目标服务器／设备、位置和是否只恢复目录。恢复不能覆盖活动库，必须先进入隔离目标。
+## 6. 自动 Relay
 
-### 3.6 作业
+### 6.1 触发
 
-| 方法 | 路径 | 作用 |
-| --- | --- | --- |
-| POST | `/libraries/{libraryID}/jobs` | 提交作业；返回 `jobID`、状态、需补传输入 |
-| GET | `/jobs/{jobID}` | 状态、输入、尝试、进度、输出、错误 |
-| POST | `/jobs/{jobID}/cancel` | 取消 |
-| POST | `/jobs/{jobID}/retry` | 以同一作业身份重试 |
-| GET | `/jobs/{jobID}/outputs` | 输出与登记状态 |
-| GET | `/libraries/{libraryID}/jobs?state=...` | 作业列表 |
+仅传输类错误触发：
 
-提交示例：
+- DNS 解析失败、TCP 连接失败、TLS 握手失败；
+- presigned URL 过期且 Refresh 后仍失败；
+- S3 5xx／超时／连接重置；
+- 客户端网络策略禁止直连 S3。
+
+以下不触发 Relay：401/403 权限、checksum 不符、配额不足、对象 key 不符、归档资格不合法。
+
+### 6.2 流程
+
+1. 客户端 `GetUpload` 查询已存在 part。
+2. 对缺失 part 调用 `RelayUpload`，流式发送 part 数据；Server 写入同一 S3 multipart。
+3. Server 记录 `upload_parts.source=relay`；Direct part 保留。
+4. `CompleteUpload` 统一完成。
+5. `mode` 记录 `direct`、`relay`、`mixed`；收据保留模式用于审计。
+
+Relay 不把完整文件落本地磁盘；使用有界缓冲流式写 S3。10TB 首传仍建议 Direct；Relay 是可用性回退。
+
+## 7. S3 下载
+
+- `CreateDownload` 返回 presigned GET；客户端可带 `Range`。
+- 客户端校验完整长度和 SHA-256；代理下载不冒充原件。
+- Direct GET 失败时可 `RelayDownload`，Server 从 S3 流式返回并保持 Range。
+- 服务器不缓存完整对象；本地只有临时缓冲。
+
+## 8. 对象存储 profile
+
+`ObjectStoreProfile` 包含：
 
 ```json
 {
-  "apiVersion": 1,
-  "libraryID": "library-...",
-  "projectID": "project-...",
-  "action": "timelapse",
-  "recipe": { "version": 1, "fps": 30 },
-  "engine": { "name": "rawmaster-image", "version": "..." },
-  "model": null,
-  "inputs": [
-    {
-      "ordinal": 0,
-      "captureID": "capture-...",
-      "fileID": "file-...",
-      "contentID": "sha256:...:...",
-      "role": "raw",
-      "required": true
-    }
-  ],
-  "output": { "kind": "video", "format": "mp4" }
+  "provider": "rustfs|minio|aws-s3|other",
+  "endpoint": "https://truenas:9000",
+  "region": "us-east-1",
+  "bucket": "rawmaster",
+  "addressing": "path|virtual",
+  "tls": {"mode": "private-ca|pinned|system", "caRef": "..."},
+  "multipartPartSize": 67108864,
+  "checksum": "sha256"
 }
 ```
 
-提交前客户端和服务端都核对输入是否有归档对象、引擎能力、模型许可和输出空间。响应中的 `needsUpload` 列出缺对象；客户端补传后以同一 `jobID` 重试。作业完成输出先 `staged`，客户端预览后才 `published`。
+- RustFS／MinIO 默认 path-style；云 S3 可用 virtual-host。
+- 客户端 presigned URL 的 host 必须与证书 SAN 和实际 endpoint 一致。
+- 子证书不受信任时，Direct 失败转 Relay；不关闭 TLS 校验。
+- 凭据只在 Server secret store；客户端只拿 presigned URL。
 
-### 3.7 统计与诊断
+## 9. 版本与兼容
 
-| 方法 | 路径 | 作用 |
-| --- | --- | --- |
-| GET | `/libraries/{libraryID}/stats` | 文件／拍摄／内容／归档／备份／缓存／作业计数和字节 |
-| GET | `/libraries/{libraryID}/integrity` | 最近完整性报告 |
-| GET | `/server/logs?after=...` | 结构化审计日志；不返回令牌、密钥或完整路径 |
+- gRPC 包：`rawmaster.library.v1`、`rawmaster.transfer.v1`、`rawmaster.metadata.v1`、`rawmaster.jobs.v1`。
+- proto 字段只增不删；未知字段忽略；未知写版本拒绝。
+- `backup_format_version` 与 PostgreSQL schema 分开；恢复先验证再迁移。
+- `object_store_profile` 和证书／令牌 key ID 带版本，支持轮换。
+- 服务器在 `GetServerInfo` 声明支持版本、S3 profile、证书指纹和备份格式。
 
-## 4. 重试、超时与限流
+## 10. 安全约束
 
-- 网络错误、`429`、`502`、`503`、`504` 可重试；使用指数退避和抖动。`conflict`、`unsupported_version`、`hash_mismatch` 不自动重试。
-- 上传空闲超时和上传会话到期时间由服务器返回；到期前客户端可续传。
-- 批量操作限制单批条数和总字节；超限返回 `invalid_request`，客户端拆分。
-- 客户端时钟只用于显示；服务器以自身时间和修订为准，不信任客户端时间排序。
-- 所有响应带 `requestID`；审计日志只记录 ID、摘要、计数和错误码。
-
-## 5. 版本与兼容
-
-- URL 大版本 `/api/v1`；不兼容变更升 `/api/v2`，不原地改变语义。
-- 操作载荷独立版本；服务器可读旧版本、拒绝未知写版本。
-- 服务器在 `GET /server` 声明支持的 `payloadVersions`、`snapshotFormats`、`engineCapabilities`。
-- 客户端在写入前检查版本；不支持的库进入只读或提示升级，不发送半兼容操作。
-- 快照格式与目录 schema 分开版本化；恢复时先验证再打开。
-
-## 6. 安全约束
-
-- 不把令牌、登记码、备份目标凭据写入 URL、日志、错误消息或资料库包。
-- 内容下载按设备授权和库成员关系校验；不能凭 `contentID` 猜测访问其他库对象。
-- 上传完成前不可读；对象路径不使用用户文件名，避免路径注入。
-- 所有文件路径使用规范化相对路径和 `O_NOFOLLOW` 等安全打开方式；拒绝符号链接逃逸。
-- 公开暴露时要求 TLS、强登记码、速率限制和失败审计；默认不允许匿名上传或匿名列举。
-- 备份目标只由服务器管理员配置；客户端不能指定任意服务器本地路径。
+- presigned URL 短 TTL、精确 key、不记日志；客户端不持有长期 S3 凭据。
+- 令牌、私钥、S3 密钥、备份加密密钥不进入 URL、日志、错误回显或普通 dump。
+- 备份和 secret bundle 静态加密；TLS 只保护传输。
+- 公开暴露 gRPC／S3 需显式配置 TLS、防火墙、速率限制和审计；默认只监听局域网。
+- Relay 仍校验设备令牌、库所有权、配额和内容哈希；不能借 Relay 绕过资格。

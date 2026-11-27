@@ -4,7 +4,7 @@
 
 2026-11-22 已确认资料库的四阶段交付顺序。目录与导入先行，随后是管理与 Lightroom 迁移、分组制作与智能检索，最后验收 Server 存储及远程计算。下方较早的 W／M 顺序作为历史记录。[资料库生命周期规格](../../specs/033-library-lifecycle/spec.md)
 
-2026-11-26 Server 1.0 功能设计见[总览计划](27-server-version-plan.md)与[040 规格](../../specs/040-server/spec.md)：先交付归档、独立备份、异机恢复、冷热数据和多设备同步，远程 AI／批处理作为 1.1。**本轮仅规划，未开始服务端实现。**
+2026-11-27 Server 1.0 架构修订为 gRPC + PostgreSQL + S3，见[总览计划](27-server-version-plan.md)与[040 规格](../../specs/040-server/spec.md)：一库一客户端，先交付归档、Direct／Relay、元数据逻辑备份与恢复、冷热数据，远程 AI／批处理作为 1.1。S3／ZFS 存储可靠性由现有 TrueNAS 冷备承担；RAWMaster 负责自身元数据一致性、备份和恢复。**本轮仅规划，未开始服务端实现。**
 
 ## 最新下一批计划（2026-10-30）
 
