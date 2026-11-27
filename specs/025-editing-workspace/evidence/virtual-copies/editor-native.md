@@ -1,6 +1,6 @@
 # 原片、副本与命名快照的原生验收
 
-2026-11-27 在 macOS 的原生编辑控制器和 SQLite 目录上执行。样片取自仓库已有的 24 MP 雪地 ARW，SHA-256 为 `ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2`。每个测试单独建立和清理临时资料库。35 项编辑及工作流回归、2 项目录专项全部通过。[交互入口与浏览器验收](../../virtual-copies.md)
+2026-11-27 在 macOS 的原生编辑控制器和 SQLite 目录上执行。样片取自仓库已有的 24 MP 雪地 ARW，SHA-256 为 `ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2`。每个测试单独建立和清理临时资料库。37 项编辑及工作流回归、2 项目录专项全部通过。[交互入口与浏览器验收](../../virtual-copies.md)
 
 | 操作 | 实际核验 |
 | --- | --- |
@@ -14,10 +14,12 @@
 
 签名包走查发现旧重命名弹窗点击「存储」后关闭，目录仍保留原名。新版重命名表单在打开时固定具体快照、呈现、父版本和调色分支。窗口焦点转入表单后，第二个快照可从「快照 2」改为「雪景彩色」，独立 SQLite 连接读到新名称，第一行保持原名。空白或 61 字名称在表单内提示。另一个连接删除快照后，旧表单不能重建它；切片后的保存也不能改到另一张照片。真实 HDR 快照通过同一入口保存名字并跨库重开。[重命名与焦点回归](../../../../Tests/RAWMasterUITests/EditingSnapshotTests.swift) · [HDR 重开](../../../../Tests/RAWMasterUITests/EditingAppearanceRoundTripTests.swift)
 
+在原生 AppKit 窗口中，辅助功能读出第二行菜单「快照操作 · 快照 2」。通过字段写入 61 字并点击「存储」，表单保留输入和错误。改为「雪景彩色」后再次点击，另一连接立即读到正确名称。通过窗口文本编辑器输入「雪景暖色」后按 Return，目录更新；再次编辑后按 Esc 或点「取消」，均保留上次已保存名称。[AppKit 字段、按钮和键盘测试](../../../../Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift)
+
 在仓库根目录运行以下命令即可重跑这组断言。真实 RAW 由环境变量指定。
 
 ```sh
 RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/037-038-product-3g3KH4/photos/snow.ARW" \
 RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib" \
-swift test --filter 'testEarlierPhotoWorkPayloadResolvesItsDraftAndAdoptedArchive|testNamedSnapshotsMergeConcurrentWritesAndReopenByWorkParentAndAppearance|EditingVirtualCopyContextTests|EditingAppearanceRoundTripTests|EditingWorkflowTests|EditingCanvasTests|EditingSnapshotTests'
+swift test --filter 'testSnapshotRenameSheetEditsItsSelectedFieldAndOnlyDismissesOnSuccessOrCancel|testEarlierPhotoWorkPayloadResolvesItsDraftAndAdoptedArchive|testNamedSnapshotsMergeConcurrentWritesAndReopenByWorkParentAndAppearance|EditingVirtualCopyContextTests|EditingAppearanceRoundTripTests|EditingWorkflowTests|EditingCanvasTests|EditingSnapshotTests'
 ```

@@ -1,0 +1,116 @@
+{
+  "date": "2026-11-27",
+  "sourceFile": "snow.ARW",
+  "physicalSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "presentationIDs": [
+    "84A080D6-2EC2-4760-80CC-FA16EB2D49A7",
+    "648FD7F2-3082-46B0-9071-6923E5E70972"
+  ],
+  "snapshots": [
+    "雪景彩色",
+    "雪景黑白"
+  ],
+  "appProcesses": [
+    33636,
+    34034
+  ],
+  "snapshotsAndRecipesRestored": true,
+  "single": [
+    {
+      "fullSRGB8SHA256": "9324e1bc8a8adfc64a2fb7cd3324035ffb0824f332f6fd2711d6c08c095ac31b",
+      "file": "snow-0001.jpg",
+      "bytes": 4266297,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 23.137,
+      "sRGB64SHA256": "a90bfb51e5163f040d9ca8d201b4d5ac25963cbfe0d409f65433c5cbd857b6b6",
+      "fileSHA256": "b2d616333d2e5a40323d6e3dfb6babdc2dd37e6c5a538f9795b1f131c5738c52"
+    },
+    {
+      "fullSRGB8SHA256": "f8604aa5f4af2c173ffcaddd8f28422b7f652eb875a654409fd15df072cb7ec8",
+      "file": "snow-黑白习作-0001.jpg",
+      "bytes": 4593900,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 0.0,
+      "sRGB64SHA256": "d7ef8c46946e51a31fa477e9bd4e1b355b57a12ded03ca96f59546dac5189d5c",
+      "fileSHA256": "894f47a268fbc03f7cbe84b40366da6aac7a65d95cd7126631b66f144319177e"
+    }
+  ],
+  "together": [
+    {
+      "fullSRGB8SHA256": "9324e1bc8a8adfc64a2fb7cd3324035ffb0824f332f6fd2711d6c08c095ac31b",
+      "file": "snow-0001.jpg",
+      "bytes": 4266297,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 23.137,
+      "sRGB64SHA256": "a90bfb51e5163f040d9ca8d201b4d5ac25963cbfe0d409f65433c5cbd857b6b6",
+      "fileSHA256": "b2d616333d2e5a40323d6e3dfb6babdc2dd37e6c5a538f9795b1f131c5738c52"
+    },
+    {
+      "fullSRGB8SHA256": "f8604aa5f4af2c173ffcaddd8f28422b7f652eb875a654409fd15df072cb7ec8",
+      "file": "snow-黑白习作-0002.jpg",
+      "bytes": 4593900,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 0.0,
+      "sRGB64SHA256": "d7ef8c46946e51a31fa477e9bd4e1b355b57a12ded03ca96f59546dac5189d5c",
+      "fileSHA256": "894f47a268fbc03f7cbe84b40366da6aac7a65d95cd7126631b66f144319177e"
+    }
+  ],
+  "matchingPixels": true,
+  "matchingFullRaster": true,
+  "identicalJPEGFiles": true,
+  "batches": [
+    {
+      "directory": "deliveries",
+      "batchID": "84990af5-53b9-4d05-b08d-49ae15a67ebd",
+      "delivered": 1
+    },
+    {
+      "directory": "mono-delivery",
+      "batchID": "a9a0033b-2622-4232-953d-10d171c69390",
+      "delivered": 1
+    },
+    {
+      "directory": "paired-delivery",
+      "batchID": "58e1beab-7db6-4652-9f3e-0a129b85cb68",
+      "delivered": 2
+    }
+  ],
+  "CDHash": "d5ea853ca371cef9bbefd43de37fc574784c0d7c",
+  "buildConfiguration": "Release",
+  "featureCommit": "9e5efeab",
+  "installation": {
+    "directory": "/Applications/RAWMaster.app",
+    "priorPID": 10495,
+    "runningPID": 35431,
+    "mainWindowVisible": true,
+    "executableSHA256": "57eef74a1584545915b77d9fca456192e8db4ff711aefbdf90429f199ab5a1ff"
+  },
+  "editableSample": {
+    "library": "雪景彩色与黑白.rawmasterlibrary",
+    "photosRestored": 3,
+    "oneSharedSnowRAW": true,
+    "colorAndMono": true,
+    "namedSnapshots": 2,
+    "manifestSHA256": "28eca0db4a1e139ad5591191a3ffc3966b3f5d49d371ac6997b493cb5b3fcd13",
+    "openedEditableLibraryWithInstalledApp": true,
+    "twoIndependentSnapshots": true,
+    "bothSelected": true,
+    "process": 35696
+  }
+}
