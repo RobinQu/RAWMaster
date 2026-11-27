@@ -64,6 +64,13 @@ This includes the 037/038 delivery service tests, scene RAW/color/output tests a
 SDR/Core Image regression suites. The default auto cutover therefore did not change the reference
 results.
 
+```
+swift test --skip-build --filter PhotosDevelopmentIntegrationTests
+Executed 94 tests, with 1 test skipped and 0 failures (0 unexpected) in 35.9 s
+```
+
+The native editor integration suite still passes with auto cutover enabled.
+
 ## Performance
 
 Opt-in six-node AP1 graph, 3000×2000, including two analytic coverage nodes and a two-branch
