@@ -1,0 +1,232 @@
+{
+  "date": "2026-11-27",
+  "source": {
+    "filename": "DSC05995-authorized-copy.ARW",
+    "SHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "dimensions": [
+      9504,
+      6336
+    ]
+  },
+  "release": {
+    "CDHash": "f5cd9a90807f9f7f18a0623696c8a62854ab7e0e",
+    "installed": "/Applications/RAWMaster.app",
+    "executableSHA256": "83b606da0433b0ee8e518834ec850ea42ea4054edf3eecaa5251102c72903f95",
+    "rustImageSHA256": "ff9f41383ec977eff4a732b0168e9b7d083ce2e7ce6b426bcc981630d69daf09",
+    "sourceCommit": "72787d04f6c1f02803e84e7df0edeef21a433a87",
+    "macOS": "27.0.1",
+    "build": "26A434",
+    "architecture": "arm64",
+    "mainWindowVerifiedAfterInstallation": true,
+    "additionalWindowReopenEventAtInstall": true
+  },
+  "desktop": {
+    "sdrHistogramFocus": {
+      "heightPoints": 96,
+      "sampledRegionSHA256BeforeAndAfter": "890e2a26d3d6b534ef98f5b57f1229cbb3373972b742432e286244cdb08d0044"
+    },
+    "savedResults": {
+      "emptyWithOriginal": true,
+      "afterReturn": 1
+    },
+    "autoDismissSecondsFromInput": 4.08,
+    "manualDismissed": true,
+    "versionsAfterLooks": 1,
+    "hdrScopeHeightPoints": {
+      "histogram": 96,
+      "vectorscope": 96
+    },
+    "background": {
+      "toolbar": true,
+      "windowMenu": true,
+      "history": true,
+      "tasks": true,
+      "logs": true
+    },
+    "signedBatches": [
+      "a18a5b48-7db6-4e27-8c5f-da4a81370819",
+      "6fd2b4f7-7286-42ec-9480-73125ac595be"
+    ],
+    "restartWithActivityOpen": {
+      "normalQuit": true,
+      "mainWindowRestored": true,
+      "activityExplicitlyReopened": true,
+      "historyRetained": true
+    },
+    "stageTabsAbsent": true,
+    "candidateCount": 0
+  },
+  "drawable": {
+    "target": "hdr2020",
+    "edrEnabled": true,
+    "headroom": 3.347646474838257,
+    "graphBackend": "rust",
+    "graphDispatches": 1,
+    "pixelWidth": 824,
+    "pixelHeight": 550
+  },
+  "signedAppEditsAndExports": {
+    "jpg": {
+      "format": {
+        "decoder": "libjpeg-turbo",
+        "bitDepth": 8,
+        "profile": "sRGB built-in"
+      },
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "batchID": "a18a5b48-7db6-4e27-8c5f-da4a81370819",
+      "frozenInput": "4C9BC2DB-A570-8502-B585-6FD8D92542E8",
+      "parent": "A7F6BA81-3094-4246-866E-226739936A0E",
+      "SHA256": "07381fb80376cb57a418ae0441497fe04278a4e3ea8102becaf29d43882a2b97",
+      "bytes": 8374556,
+      "sceneExecution": {
+        "backend": "rust",
+        "tiles": 35,
+        "nodes": 35,
+        "dispatches": 35,
+        "coverageCacheHits": 0,
+        "nodeCacheHits": 0,
+        "peakBytes": 1212776448,
+        "budgetBytes": 1610612736,
+        "cpuMilliseconds": 32.65379000000001
+      }
+    },
+    "avif": {
+      "format": {
+        "decoder": "libavif / dav1d",
+        "bitDepth": 10,
+        "CICP": [
+          9,
+          16,
+          1
+        ],
+        "range": "full"
+      },
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "batchID": "6fd2b4f7-7286-42ec-9480-73125ac595be",
+      "frozenInput": "4C9BC2DB-A570-8502-B585-6FD8D92542E8",
+      "parent": "A7F6BA81-3094-4246-866E-226739936A0E",
+      "SHA256": "ab4f5b7b23cbebac550b7b3889850bf2afc1002d1f6278ec4fd0e217e6b8e58c",
+      "bytes": 11542129,
+      "sceneExecution": {
+        "backend": "rust",
+        "tiles": 35,
+        "nodes": 35,
+        "dispatches": 35,
+        "coverageCacheHits": 0,
+        "nodeCacheHits": 0,
+        "peakBytes": 1212776448,
+        "budgetBytes": 1610612736,
+        "cpuMilliseconds": 28.340333000000005
+      }
+    }
+  },
+  "controllerEditsAndExports": {
+    "avif": {
+      "format": {
+        "decoder": "libavif / dav1d",
+        "bitDepth": 10,
+        "CICP": [
+          9,
+          16,
+          1
+        ],
+        "range": "full"
+      },
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "batchID": "e2744c1f-e660-4cb0-aa7e-8cc1d8f87d27",
+      "frozenInput": "48E76F08-FC56-8652-A696-B6C89B85C83C",
+      "parent": "DD79192E-4B33-4370-9686-2F1C68959B41",
+      "SHA256": "ab4f5b7b23cbebac550b7b3889850bf2afc1002d1f6278ec4fd0e217e6b8e58c",
+      "bytes": 11542129,
+      "sceneExecution": {
+        "backend": "rust",
+        "tiles": 35,
+        "nodes": 35,
+        "dispatches": 35,
+        "coverageCacheHits": 0,
+        "nodeCacheHits": 0,
+        "peakBytes": 1212776448,
+        "budgetBytes": 1610612736,
+        "cpuMilliseconds": 32.213705
+      }
+    },
+    "jpg": {
+      "format": {
+        "decoder": "libjpeg-turbo",
+        "bitDepth": 8,
+        "profile": "sRGB built-in"
+      },
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "batchID": "342524f4-e69e-4a8f-a1d8-21e51d96e062",
+      "frozenInput": "48E76F08-FC56-8652-A696-B6C89B85C83C",
+      "parent": "DD79192E-4B33-4370-9686-2F1C68959B41",
+      "SHA256": "a9dffb2b67027284f8d10187779bef4221ff0c2c384fd9b894073461ea29b699",
+      "bytes": 8372217,
+      "sceneExecution": {
+        "backend": "rust",
+        "tiles": 35,
+        "nodes": 35,
+        "dispatches": 35,
+        "coverageCacheHits": 0,
+        "nodeCacheHits": 0,
+        "peakBytes": 1212776448,
+        "budgetBytes": 1610612736,
+        "cpuMilliseconds": 32.252663999999996
+      }
+    }
+  },
+  "nativeRegression": {
+    "passed": 190,
+    "failed": 0,
+    "skipped": [
+      "RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalSpacePanPreservesFieldEditorPriorityAndNeverRevivesCancelledStroke"
+    ],
+    "skipReason": "WindowServer did not activate the XCTest host for the local retouch Space/field-editor test."
+  },
+  "browserRegression": {
+    "workbench": 60,
+    "appearanceAndActivity": 8
+  },
+  "olderCatalogue": {
+    "before": "348AE42A-032C-4C47-A528-5ABF22E6F0E5",
+    "viewedWithoutAdopting": "1317B447-DF7C-4B16-A9C0-262DCF12223F",
+    "explicitlyAdopted": "1317B447-DF7C-4B16-A9C0-262DCF12223F",
+    "storedResults": 2,
+    "sameLiveRecipeAfterReturn": true,
+    "generalSettingsReflectEditing": true
+  },
+  "queuedProcessRestart": {
+    "target": "avif10",
+    "writerTermination": "SIGKILL after prepared",
+    "originalWasOffline": true,
+    "firstInodePreserved": true,
+    "preparedDigestPreserved": true,
+    "reconnectedOriginalWithoutChangingPreparedSHA": true,
+    "rejectedDifferentSource": true,
+    "rejectedReplacementDirectory": true,
+    "mixedSelectionRejectedBeforeRegistration": true,
+    "changedVersionRejectedBeforeRegistration": true,
+    "decodedDimensions": [
+      4000,
+      6000
+    ],
+    "bitDepth": 10,
+    "cicp": [
+      9,
+      16,
+      1
+    ]
+  }
+}
