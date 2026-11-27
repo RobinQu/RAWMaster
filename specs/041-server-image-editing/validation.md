@@ -70,7 +70,7 @@ Linux 12 GiB 缓存的四轮回执：
 **NVIDIA Vulkan 硬件门阻塞。** RTX 6000 Ada（驱动 610.43.02）的 ICD 让 `vk_icdGetInstanceProcAddr` 对 `vkCreateInstance`／`vkGetInstanceProcAddr` 都返回 `NULL`；释放 sglang 后 `vk_icdNegotiateLoaderICDInterfaceVersion` 对 1–8 仍全部返回 **-3**。Vulkan loader 1.4.341 与 1.3.275 均失败，因此不是显存不足。GPU 释放后已用 CUDA 做同图显存／并发测量（见 3.2.1）。因此：
 
 - P1 功能／像素／缓存结论成立；
-- P1 NVIDIA 性能、显存和 49 GB 预算结论不成立，不能用 llvmpipe 外推；
+- P1 NVIDIA Vulkan 性能结论仍不成立；llvmpipe 时间不能外推。CUDA 同图显存／并发测量见 3.2.1，但 CUDA 不是 Vulkan，不能替代 Vulkan 门；
 - `image_scene_batch` 仍关闭，直到硬件 Vulkan、生产 executor 和色彩门完成。
 
 
