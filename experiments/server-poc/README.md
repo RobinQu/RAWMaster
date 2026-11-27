@@ -21,12 +21,30 @@ Vulkan scene harness (requires a Vulkan loader/ICD in the container or host):
 
 ```sh
 cargo build --release --features vulkan --bin scene-vulkan
-scene-vulkan --input scene-input.f32 \
+VK_DRIVER_FILES="$PWD/tools/nvidia_egl_icd.json" \
+  scene-vulkan --input scene-input.f32 \
   --graph fixtures/scene-60mp-v1.json --graph-v2 fixtures/scene-60mp-v2.json \
   --reference scene-output.f32 --output scene-output-linux.f32 \
   --report report.json --width 9504 --height 6336 --tile-edge 2048 \
   --budget-bytes 17179869184 --cache-bytes 12884901888
 ```
+
+On headless NVIDIA hosts, use the EGL ICD, not the packaged GLX ICD:
+
+```sh
+VK_DRIVER_FILES=/opt/vulkan/nvidia_egl_icd.json
+NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
+./tools/check_vulkan_egl.sh
+```
+
+The packaged `nvidia_icd.json` points at `libGLX_nvidia.so.0`, which calls
+`XOpenDisplay(NULL)` and returns `VK_ERROR_INCOMPATIBLE_DRIVER` without X. The EGL library
+exports the same ICD interface and works headless. See
+[validation](../../specs/041-server-image-editing/validation.md).
+
+Optional harness flags: `--single-pass` runs only the cold pass (used by the concurrency matrix);
+`--hold-file <path>` waits after input/output allocation until the barrier file exists, so N
+processes can be measured while resident.
 
 `scene-input.f32` / `scene-output.f32` are RGBA32F AP1 dumps produced by the macOS
 `DevelopmentScenePOCDiagnostics` PoC helper in `macos/`. The Linux harness compares every
@@ -38,8 +56,10 @@ receipts.
 - The contract is small enough to freeze independently of the UI and the Metal executor.
 - Queue semantics can be tested before PostgreSQL/gRPC exist.
 - Scene batch identity (`batch_id`, `target_head`, scene/output/model hashes, compatibility route, target/format) can survive submission, claim, publish and retry.
-- On a real 60MP RAW, the WGSL port matches the macOS Rust/Metal AP1 master within 1e-6 (max absolute error 9.54e-7).
+- On a real 60MP RAW, the WGSL port matches the macOS Rust/Metal AP1 master within 1e-6: llvmpipe max 9.54e-7, NVIDIA Vulkan max 7.15e-7.
 - Tiling, analytic-coverage caching, node prefix caching and receipts can be exercised on the same graph.
+- Headless NVIDIA Vulkan works with the EGL ICD: 60MP warm render 33 ms with a 12 GiB cache, 80/80 node and coverage hits.
+- 26 single-pass 60MP Vulkan processes complete at a 48.5 GiB high-water; strict CUDA allocation admits 21 scene jobs. Production admission should use the strict bound.
 - Linux OpenColorIO ACES 2 SDR/HDR matches the macOS Metal delivery prefix on the same 60MP master.
 - libavif/AOM, SVT-AV1 and rav1e can be compared on the same PQ16 frame with container and bitstream receipts.
 - The CUDA fallback shows the 60MP scene graph fits 21 concurrent jobs at 2.29 GiB/job, and the full decode+scene+display model fits 10 jobs at 4.64 GiB/job on a 49,140 MiB RTX 6000 Ada.
@@ -48,7 +68,8 @@ See [validation.md](../../specs/041-server-image-editing/validation.md) for the 
 
 ## What this does not prove
 
-- NVIDIA hardware Vulkan performance: the RTX 6000 Ada ICD returns `VK_ERROR_INCOMPATIBLE_DRIVER` even with the GPU idle; the P1 run used Mesa llvmpipe. CUDA was used only for VRAM/concurrency measurement.
+- Production NVIDIA Vulkan executor performance: the PoC harness is not the production scheduler; its per-tile submit/wait overhead is visible. The functional, pixel and cache gates pass on hardware Vulkan.
+- Production deployment has not yet frozen the EGL ICD config or startup capability probe.
 - Linux RAW decode parity (the 60MP AP1 input was decoded on macOS and transferred).
 - Production scene executor, S3/PostgreSQL/gRPC, authentication, queue crash recovery or fairness.
 - `SceneWorkflowBatch` integration, `sceneProxy`, model prefix on Linux, or Flux.
@@ -64,12 +85,13 @@ See [validation.md](../../specs/041-server-image-editing/validation.md) for the 
 - `cuda/` — CUDA fallback that measures the same 60MP tiled graph's VRAM and concurrency; not the production Vulkan backend.
 - `tools/aces2.py` — fixed OCIO ACES 2 prefix, PQ16 export, macOS reference comparison.
 - `tools/avif_bakeoff.sh`, `tools/avif_metrics.py` — libavif encoder matrix and quality receipts.
-- `tools/vk_icd_probe.c` — direct ICD negotiation probe used to document the NVIDIA Vulkan block.
+- `tools/vk_icd_probe.c` — direct ICD negotiation probe used to document the original GLX ICD failure.
+- `tools/nvidia_egl_icd.json`, `tools/check_vulkan_egl.sh` — headless NVIDIA Vulkan ICD override and probe.
 - `fixtures/scene-60mp-v1.json`, `fixtures/scene-60mp-v2.json` — 9-node graph used for P1/P2.
 
 ## Next
 
-1. Re-run the same 60MP graph on NVIDIA Vulkan after the ICD/driver and GPU occupancy are fixed; do not use llvmpipe timings as the hardware gate.
+1. Integrate the production Linux scene executor/worker with the EGL ICD deployment and startup capability probe; do not use the PoC harness as the production scheduler.
 2. Add Linux RAW decode and compare its AP1 input with the macOS decode separately from executor parity.
 3. Add a fake S3/PostgreSQL adapter and gRPC contract once the queue semantics are accepted.
 4. Extend the client side with `SceneWorkflowBatch` remote mapping; do not create a second batch model.

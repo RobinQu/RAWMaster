@@ -123,3 +123,58 @@ scene throughput saturated around 45 jobs/s while per-job latency rose from 20 m
 Production admission should reserve headroom (scene 18–20, full 8–9) and avoid 2–4 GiB
 per-job caches. Full stage includes decode surfaces, HDR/SDR and PQ, but not a GPU AV1 encoder
 or model-prefix stages. Raw receipts: `specs/041-server-image-editing/evidence/cuda-vram/`.
+
+---
+
+# P1c · NVIDIA hardware Vulkan with the EGL ICD
+
+2026-11-27 · follow-up after the root cause was found. The earlier CUDA section remains the
+strict-admission model; this section is the hardware Vulkan functional/pixel/cache result.
+
+## Root cause
+
+- Packaged `/usr/share/vulkan/icd.d/nvidia_icd.json` points to `libGLX_nvidia.so.0`.
+- Its Vulkan initialization calls `XOpenDisplay(NULL)`; headless returns
+  `VK_ERROR_INCOMPATIBLE_DRIVER` (-3) for ICD interface versions 1–8.
+- `libEGL_nvidia.so.0` exports the same ICD interface and negotiates Vulkan 1.4.341 headless.
+- `libegl1`/Xvfb do not fix the GLX path; `libnvidia-vksc-core` is Vulkan SC.
+- Containers need `NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility`.
+
+## Fix used
+
+`tools/nvidia_egl_icd.json` + `VK_DRIVER_FILES`; probe with `tools/check_vulkan_egl.sh`.
+The packaged ICD was not edited.
+
+## Hardware Vulkan 60MP results
+
+- `vulkaninfo`: RTX 6000 Ada, API 1.4.341, driver 610.43.02.
+- Pixel parity vs macOS Rust/Metal: 240,869,376 channel samples, max abs **7.1525574e-7**,
+  >1e-5 **0**, non-finite 0. All cache/tile configs produced the same output SHA-256.
+- tile 2048, cache 0: 2,424 MiB actual peak, warm 426.6 ms.
+- tile 2048, cache 12 GiB: 12,560 MiB actual peak, warm **33.2 ms**, 80/80 node and coverage hits,
+  0 dispatches; edited group 75.0 ms / 20 dispatches; new source 294.6 ms / 120 dispatches.
+- tile 1024/4096 cache 0: 2,040/3,960 MiB actual peak; warm 443.9/398.2 ms.
+- 4 GiB cache is too small for the 60MP full-frame prefix (0 hits); 12 GiB is the useful scale.
+
+## Concurrency
+
+N independent single-pass scene jobs, tile 2048, cache 0, with a barrier after input/output
+allocation:
+
+| N | barrier | high-water | completed |
+| ---: | ---: | ---: | ---: |
+| 1 | 1,912 MiB | 2,424 MiB | 1 |
+| 4 | 7,623 MiB | 9,671 MiB | 4 |
+| 8 | 15,242 MiB | 19,340 MiB | 8 |
+| 16 | 30,481 MiB | 38,678 MiB | 16 |
+| 20 | 38,103 MiB | 48,347 MiB | 20 |
+| 21 | 40,006 MiB | 48,532 MiB | 21 |
+| 22 | 41,911 MiB | 48,525 MiB | 22 |
+| 26 | 47,677 MiB | 48,538 MiB | 26 |
+
+Vulkan can schedule 26 single-pass jobs at a 48.5 GiB high-water, but this is not a safe
+resident-admission limit. CUDA strict allocation OOMs at 22 scene jobs (max 21). Use scene
+18–20 / full 8–9 for production planning and reserve headroom.
+
+Full receipts: [041 validation](../../specs/041-server-image-editing/validation.md) ·
+[hardware Vulkan evidence](../../specs/041-server-image-editing/evidence/p1-vulkan-nvidia-egl-60mp.json).

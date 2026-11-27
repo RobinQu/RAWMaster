@@ -2,7 +2,7 @@
 
 2026-11-27 · 规划任务，均未开始。产品要求见[规格](spec.md)，队列见[queues.md](queues.md)，技术方案见[plan.md](plan.md)。
 
-> 2026-11-27 PoC 结果见 [validation.md](validation.md)：真实 60MP RAW 的 Linux／Vulkan 功能、像素、瓦片、缓存和 ACES 2／AVIF 组件证据已记录；释放 sglang 后 NVIDIA Vulkan ICD 仍返回 -3，CUDA 已补同图显存／并发测量。生产任务仍未完成，本页复选框不因 PoC 自动勾选，`image_scene_batch` 仍关闭。
+> 2026-11-27 PoC 结果见 [validation.md](validation.md)：真实 60MP RAW 的 Linux／Vulkan 功能、像素、瓦片、缓存和 ACES 2／AVIF 组件证据已记录；NVIDIA headless Vulkan 已通过 EGL ICD 解锁，60MP 像素／缓存／并发实测通过，CUDA 补严格显存分配模型。生产 executor、队列、色彩门仍未完成；本页复选框不因 PoC 自动勾选，`image_scene_batch` 仍关闭。
 
 ## 0. 原则
 

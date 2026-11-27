@@ -1,10 +1,11 @@
 # CUDA VRAM / concurrency probe (P1 fallback)
 
-This probe exists because the NVIDIA Vulkan ICD on the validation host returns
-`VK_ERROR_INCOMPATIBLE_DRIVER` for ICD interface versions 1–8, even after the GPU was freed.
-CUDA is the only working GPU API on that host. The probe measures the **same tiled 9-node
-scene graph** and the same 60MP AP1 input through CUDA, so the surface count and VRAM demand are
-representative; it is **not** the production Vulkan backend and does not close the Vulkan gate.
+This probe was originally created because the packaged NVIDIA GLX ICD returned
+`VK_ERROR_INCOMPATIBLE_DRIVER` headless. That root cause is now fixed with the EGL ICD
+(`tools/nvidia_egl_icd.json`), and hardware Vulkan functional/pixel/cache tests pass. This probe
+remains useful as the **strict allocation / admission model**: `cudaMalloc` fails hard instead of
+letting the Vulkan driver schedule/overcommit short-lived tile surfaces. It also models the full
+decode+scene+display VRAM footprint. It is not the production Vulkan backend.
 
 ## Build
 
@@ -63,9 +64,16 @@ allocation failed. Production admission must reserve driver/context, fragmentati
 space. See `specs/041-server-image-editing/evidence/p1-cuda-vram-concurrency-60mp.json` for every
 row and the raw receipts in `evidence/cuda-vram/`.
 
+## Relation to hardware Vulkan
+
+Vulkan single-pass concurrency completed 26 processes at a 48.5 GiB high-water, but strict CUDA
+allocation OOMs at the 22nd scene job. Use the CUDA bounds for admission; Vulkan's scheduler is
+more permissive than a safe resident limit. See
+`specs/041-server-image-editing/evidence/p1-vulkan-nvidia-egl-60mp.json`.
+
 ## Caveats
 
-- CUDA fallback, not Vulkan.
+- CUDA strict allocation, not the Vulkan scheduler.
 - The full stage is an allocation model, not an end-to-end decode + AVIF measurement.
 - The 60MP input is a macOS-decoded AP1 dump; Linux RAW decode is a separate gate.
 - A GPU AV1 encoder, model-prefix workers, or a shared multi-job cache change the VRAM budget.

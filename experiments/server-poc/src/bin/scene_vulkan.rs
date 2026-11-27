@@ -17,7 +17,7 @@ use std::num::NonZeroU64;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use wgpu::util::DeviceExt;
 
 const WGSL: &str = include_str!("../scene_vulkan.wgsl");
@@ -1452,6 +1452,24 @@ struct Run {
 }
 
 #[allow(clippy::too_many_arguments)]
+fn empty_run() -> Run {
+    Run {
+        graph_ms: 0.0,
+        readback_ms: 0.0,
+        receipt: Receipt {
+            tiles: 0,
+            nodes: 0,
+            dispatches: 0,
+            coverage_cache_hits: 0,
+            node_cache_hits: 0,
+            peak_bytes: 0,
+            budget_bytes: 0,
+            cpu_ms: 0.0,
+        },
+        comparison: None,
+    }
+}
+
 fn run_pass(
     gpu: &Gpu,
     renderer: &mut Renderer,
@@ -1583,6 +1601,7 @@ struct Report {
     budget_bytes: u64,
     cache_bytes: u64,
     source_revision: u64,
+    single_pass: bool,
     cold: Run,
     warm: Run,
     edited: Run,
@@ -1605,6 +1624,8 @@ struct Args {
     budget_bytes: Option<u64>,
     cache_bytes: Option<u64>,
     source_revision: Option<u64>,
+    single_pass: bool,
+    hold_file: Option<PathBuf>,
 }
 
 fn parse_args() -> Result<Args, String> {
@@ -1613,6 +1634,11 @@ fn parse_args() -> Result<Args, String> {
     let mut index = 0;
     while index < values.len() {
         let key = values[index].as_str();
+        if key == "--single-pass" {
+            args.single_pass = true;
+            index += 1;
+            continue;
+        }
         let value = values
             .get(index + 1)
             .ok_or_else(|| format!("missing value for {key}"))?
@@ -1636,6 +1662,7 @@ fn parse_args() -> Result<Args, String> {
             "--source-revision" => {
                 args.source_revision = Some(value.parse().map_err(|_| "invalid revision")?)
             }
+            "--hold-file" => args.hold_file = Some(value.into()),
             other => return Err(format!("unknown argument {other}")),
         }
         index += 2;
@@ -1691,6 +1718,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     let (document_v2, _) = scene::parse(&graph_v2_bytes)?;
 
     let gpu = Gpu::new(width, height, budget_bytes, &input_bytes)?;
+    if let Some(path) = &args.hold_file {
+        let name = path
+            .file_name()
+            .map(|value| value.to_string_lossy().into_owned())
+            .unwrap_or_else(|| "hold".into());
+        let ready = path.with_file_name(format!("{name}.ready.{}", std::process::id()));
+        std::fs::write(&ready, b"ready")?;
+        while !path.exists() {
+            std::thread::sleep(Duration::from_millis(20));
+        }
+    }
     let reference = if let Some(path) = &args.reference {
         let file = File::open(path)?;
         let mmap = unsafe { Mmap::map(&file)? };
@@ -1719,6 +1757,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let mut renderer = Renderer::new(&gpu, tile_edge, tile_edge, cache_bytes);
+    let cold_readback = reference_slice.is_some() || output_mmap.is_some();
     let cold = run_pass(
         &gpu,
         &mut renderer,
@@ -1727,38 +1766,44 @@ fn main() -> Result<(), Box<dyn Error>> {
         tile_edge,
         reference_slice.as_deref(),
         output_mmap.as_deref_mut(),
-        true,
+        cold_readback,
     )?;
-    let warm = run_pass(
-        &gpu,
-        &mut renderer,
-        &document.graph,
-        source_revision,
-        tile_edge,
-        None,
-        None,
-        false,
-    )?;
-    let edited = run_pass(
-        &gpu,
-        &mut renderer,
-        &document_v2.graph,
-        source_revision,
-        tile_edge,
-        None,
-        None,
-        false,
-    )?;
-    let new_source = run_pass(
-        &gpu,
-        &mut renderer,
-        &document_v2.graph,
-        source_revision + 1,
-        tile_edge,
-        None,
-        None,
-        false,
-    )?;
+    let (warm, edited, new_source) = if args.single_pass {
+        (empty_run(), empty_run(), empty_run())
+    } else {
+        (
+            run_pass(
+                &gpu,
+                &mut renderer,
+                &document.graph,
+                source_revision,
+                tile_edge,
+                None,
+                None,
+                false,
+            )?,
+            run_pass(
+                &gpu,
+                &mut renderer,
+                &document_v2.graph,
+                source_revision,
+                tile_edge,
+                None,
+                None,
+                false,
+            )?,
+            run_pass(
+                &gpu,
+                &mut renderer,
+                &document_v2.graph,
+                source_revision + 1,
+                tile_edge,
+                None,
+                None,
+                false,
+            )?,
+        )
+    };
 
     if let Some(mmap) = output_mmap.as_mut() {
         mmap.flush()?;
@@ -1783,6 +1828,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         budget_bytes,
         cache_bytes,
         source_revision,
+        single_pass: args.single_pass,
         cold,
         warm,
         edited,

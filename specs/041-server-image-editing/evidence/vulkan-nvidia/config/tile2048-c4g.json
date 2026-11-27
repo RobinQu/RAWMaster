@@ -1,0 +1,96 @@
+{
+  "schema": "rawmaster-server-poc-linux-vulkan-v1",
+  "adapter": {
+    "name": "NVIDIA RTX 6000 Ada Generation",
+    "backend": "Vulkan",
+    "deviceType": "DiscreteGpu",
+    "driver": "NVIDIA",
+    "driverInfo": "610.43.02"
+  },
+  "resolution": [
+    9504,
+    6336
+  ],
+  "tileEdge": 2048,
+  "budgetBytes": 8589934592,
+  "cacheBytes": 4294967296,
+  "sourceRevision": 1,
+  "singlePass": false,
+  "cold": {
+    "graphMs": 1533.585975,
+    "readbackMs": 2597.799556,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 200,
+      "coverageCacheHits": 0,
+      "nodeCacheHits": 0,
+      "peakBytes": 6419054596,
+      "budgetBytes": 8589934592,
+      "cpuMs": 1533.585975
+    },
+    "comparison": {
+      "samples": 240869376,
+      "maxAbs": 7.1525574e-7,
+      "maxRelative": 5.9604645e-7,
+      "meanAbs": 5.046200623324572e-9,
+      "over1e5": 0,
+      "over1e4": 0,
+      "over1e3": 0,
+      "nonfinite": 0,
+      "maxChannelAbs": [
+        4.7683716e-7,
+        4.7683716e-7,
+        7.1525574e-7,
+        0.0
+      ]
+    }
+  },
+  "warm": {
+    "graphMs": 459.748282,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 200,
+      "coverageCacheHits": 0,
+      "nodeCacheHits": 0,
+      "peakBytes": 6419054596,
+      "budgetBytes": 8589934592,
+      "cpuMs": 459.748282
+    },
+    "comparison": null
+  },
+  "edited": {
+    "graphMs": 424.710596,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 200,
+      "coverageCacheHits": 0,
+      "nodeCacheHits": 0,
+      "peakBytes": 6419054596,
+      "budgetBytes": 8589934592,
+      "cpuMs": 424.710596
+    },
+    "comparison": null
+  },
+  "newSource": {
+    "graphMs": 428.544273,
+    "readbackMs": 0.0,
+    "receipt": {
+      "tiles": 20,
+      "nodes": 180,
+      "dispatches": 200,
+      "coverageCacheHits": 0,
+      "nodeCacheHits": 0,
+      "peakBytes": 6419054596,
+      "budgetBytes": 8589934592,
+      "cpuMs": 428.544273
+    },
+    "comparison": null
+  },
+  "outputSha256": null,
+  "outputPath": null
+}

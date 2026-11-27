@@ -102,13 +102,14 @@ flowchart LR
 | `library_core` | 总是 | gRPC + PostgreSQL + S3 |
 | `image_proxy` | `image_module`（CUDA GPU + Vulkan + flag）；无模块时客户端生成 | Vulkan；CPU 回退另定 |
 | `image_sdr_batch` | 旧点配方；`image_module` | `rawmaster-image` Vulkan／CPU |
-| `image_scene_batch` | 037／038 场景图；**Linux／Vulkan scene executor** + `image_module` + 色彩门 | `rawmaster-image` scene executor；当前仅 Metal，Linux 待移植 |
+| `image_scene_batch` | 037／038 场景图；**Linux／Vulkan scene executor** + `image_module` + 色彩门 | `rawmaster-image` scene executor；PoC WGSL 已在 NVIDIA Vulkan 验证，生产端口仍待实现 |
 | `model.prefix` | 确定性 denoise／superres／segmentation；模型／显存 | 模型 provider |
 | `generative` | CUDA GPU + 模型／许可／显存 + flag | Flux/CUDA AI 栈 |
 
 - CUDA GPU 是图像模块硬件准入；影像计算优先 Vulkan。
-- `rawmaster-image` 当前：点配方图有 CPU／Metal／Vulkan；scene executor 仅 macOS Metal（039）。
-- 无 Linux scene executor 时 `image_scene_batch` 不开放；legacy SDR 不能被标成场景／HDR。
+- `rawmaster-image` 当前：点配方图有 CPU／Metal／Vulkan；生产 scene executor 仅 macOS Metal（039）。
+- PoC WGSL 端口已在 NVIDIA Vulkan 上通过 60MP 像素／缓存门；生产 `rawmaster-image` 端口、队列和色彩门未完成。
+- 无生产 Linux scene executor 时 `image_scene_batch` 不开放；legacy SDR 不能被标成场景／HDR。
 - 能力清单返回后端、显存、scene backend、模型、引擎版本；客户端按能力显示入口。
 - 无 GPU Server 仍提供 `library_core`。
 
@@ -188,6 +189,7 @@ flowchart LR
 - 同机或分离均通过能力清单和队列；不把 GPU 依赖加到资料库基线。
 - Feature flag：`image_proxy`、`image_sdr_batch`、`image_scene_batch`、`model.prefix`、`generative`；按服务器／部署配置。
 - 容器／驱动／Vulkan ICD／CUDA toolkit 固定版本；升级前跑能力与精度回归。
+- **NVIDIA headless Vulkan**：不要使用包管理的 `nvidia_icd.json`（指向 `libGLX_nvidia.so.0`，需要 X）。为图像 worker 增加 EGL ICD（`libEGL_nvidia.so.0`），设置 `VK_DRIVER_FILES`，容器 capability 至少 `graphics,compute,utility`；启动时探测适配器，失败则关闭 `image_scene_batch`，不能静默退回 llvmpipe。
 
 ## 9. 测试
 
@@ -223,6 +225,7 @@ flowchart LR
 | --- | --- |
 | sceneProxy 存储／带宽爆炸 | 原生或 0.5×；按需；只对冷／远程生成；linearProxy 不默认全量 |
 | scene executor 仅 Metal | Q4 前 `image_scene_batch` 关闭；legacy SDR 独立；不混用 |
+| headless Vulkan ICD 选错 | 使用 EGL ICD；启动能力探测；容器加 `graphics` capability；不依赖 Xvfb／GLX |
 | 场景图／旧 SDR 混淆 | 冻结 `compatibility_route`；不自动迁移；逐图测试 |
 | 60MP／大图内存 | 复用 039 tiling、预算、receipt；Server 另测真实 60MP RAW，不用合成图外推 |
 | HDR 色彩不一致 | 037 色彩门；AVIF／SDR 分别验证；未过门只候选 |

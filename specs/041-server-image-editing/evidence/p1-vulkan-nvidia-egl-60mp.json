@@ -1,0 +1,277 @@
+{
+  "artifacts": {
+    "concurrencyReceipts": "specs/041-server-image-editing/evidence/vulkan-nvidia/concurrency",
+    "configReceipts": "specs/041-server-image-editing/evidence/vulkan-nvidia/config",
+    "eglICD": "experiments/server-poc/tools/nvidia_egl_icd.json",
+    "probe": "experiments/server-poc/tools/check_vulkan_egl.sh",
+    "vulkanInfo": "specs/041-server-image-editing/evidence/nvidia-vulkan-egl-summary.txt"
+  },
+  "concurrency": {
+    "method": "N independent scene-vulkan processes; each allocates full input/output, waits at a barrier, then runs one 60MP scene pass (tile 2048, cache 0, 4GiB budget). Barrier memory is measured after all N processes allocate. actualMaxMiB is the nvidia-smi high-water.",
+    "note": "All 26 tested processes completed; the high-water plateaus around 48.5 GiB of 49.1 GiB. This is driver scheduling/overcommit, not a safe admission limit. A 27th run reached the barrier at 47,729 MiB but the single-pass phase was stopped and is not counted. CUDA strict allocation fails at 22 scene jobs; use the CUDA bound for admission.",
+    "rows": [
+      {
+        "actualMaxMiB": 2424,
+        "barrierMiB": 1912,
+        "concurrency": 1,
+        "ready": 1,
+        "reports": 1,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 4839,
+        "barrierMiB": 3815,
+        "concurrency": 2,
+        "ready": 2,
+        "reports": 2,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 9671,
+        "barrierMiB": 7623,
+        "concurrency": 4,
+        "ready": 4,
+        "reports": 4,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 19340,
+        "barrierMiB": 15242,
+        "concurrency": 8,
+        "ready": 8,
+        "reports": 8,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 29009,
+        "barrierMiB": 22862,
+        "concurrency": 12,
+        "ready": 12,
+        "reports": 12,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 38678,
+        "barrierMiB": 30481,
+        "concurrency": 16,
+        "ready": 16,
+        "reports": 16,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48347,
+        "barrierMiB": 38103,
+        "concurrency": 20,
+        "ready": 20,
+        "reports": 20,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48532,
+        "barrierMiB": 40006,
+        "concurrency": 21,
+        "ready": 21,
+        "reports": 21,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48525,
+        "barrierMiB": 41911,
+        "concurrency": 22,
+        "ready": 22,
+        "reports": 22,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48538,
+        "barrierMiB": 45720,
+        "concurrency": 24,
+        "ready": 24,
+        "reports": 24,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48538,
+        "barrierMiB": 47625,
+        "concurrency": 25,
+        "ready": 25,
+        "reports": 25,
+        "success": true
+      },
+      {
+        "actualMaxMiB": 48538,
+        "barrierMiB": 47677,
+        "concurrency": 26,
+        "ready": 26,
+        "reports": 26,
+        "success": true
+      }
+    ]
+  },
+  "configSweep": [
+    {
+      "actualMaxMiB": 2040,
+      "budgetMiB": 4096,
+      "cacheMiB": 0,
+      "coldMs": 1471.5,
+      "editedMs": 412.4,
+      "logicalColdPeakMiB": 1949.7,
+      "logicalPeakMiB": 1949.7,
+      "newSourceMs": 415.6,
+      "parityMaxAbs": 7.1525574e-07,
+      "parityOver1e5": 0,
+      "tag": "tile1024-c0",
+      "tile": 1024,
+      "warmCoverageCacheHits": 0,
+      "warmDispatches": 700,
+      "warmMs": 443.9,
+      "warmNodeCacheHits": 0
+    },
+    {
+      "actualMaxMiB": 2424,
+      "budgetMiB": 4096,
+      "cacheMiB": 0,
+      "coldMs": 1542.8,
+      "editedMs": 407.4,
+      "logicalColdPeakMiB": 2285.7,
+      "logicalPeakMiB": 2285.7,
+      "newSourceMs": 413.7,
+      "parityMaxAbs": 7.1525574e-07,
+      "parityOver1e5": 0,
+      "tag": "tile2048-c0",
+      "tile": 2048,
+      "warmCoverageCacheHits": 0,
+      "warmDispatches": 200,
+      "warmMs": 426.6,
+      "warmNodeCacheHits": 0
+    },
+    {
+      "actualMaxMiB": 3960,
+      "budgetMiB": 6144,
+      "cacheMiB": 0,
+      "coldMs": 1511.7,
+      "editedMs": 395.6,
+      "logicalColdPeakMiB": 3629.7,
+      "logicalPeakMiB": 3629.7,
+      "newSourceMs": 393.9,
+      "parityMaxAbs": 7.1525574e-07,
+      "parityOver1e5": 0,
+      "tag": "tile4096-c0",
+      "tile": 4096,
+      "warmCoverageCacheHits": 0,
+      "warmDispatches": 60,
+      "warmMs": 398.2,
+      "warmNodeCacheHits": 0
+    },
+    {
+      "actualMaxMiB": 6302,
+      "budgetMiB": 8192,
+      "cacheMiB": 4096,
+      "coldMs": 1533.6,
+      "editedMs": 424.7,
+      "logicalColdPeakMiB": 6121.7,
+      "logicalPeakMiB": 6121.7,
+      "newSourceMs": 428.5,
+      "parityMaxAbs": 7.1525574e-07,
+      "parityOver1e5": 0,
+      "tag": "tile2048-c4g",
+      "tile": 2048,
+      "warmCoverageCacheHits": 0,
+      "warmDispatches": 200,
+      "warmMs": 459.7,
+      "warmNodeCacheHits": 0
+    },
+    {
+      "actualMaxMiB": 12560,
+      "budgetMiB": 16384,
+      "cacheMiB": 12288,
+      "coldMs": 1491.4,
+      "editedMs": 75.0,
+      "logicalColdPeakMiB": 7354.6,
+      "logicalPeakMiB": 12867.7,
+      "newSourceMs": 294.6,
+      "parityMaxAbs": 7.1525574e-07,
+      "parityOver1e5": 0,
+      "tag": "tile2048-c12g",
+      "tile": 2048,
+      "warmCoverageCacheHits": 80,
+      "warmDispatches": 0,
+      "warmMs": 33.2,
+      "warmNodeCacheHits": 80
+    }
+  ],
+  "date": "2026-11-27",
+  "gates": {
+    "image_scene_batch_production": "still closed: production executor, queue, color gate and admission policy remain open",
+    "p1VulkanCache": "pass (12 GiB cache: warm 80 node + 80 coverage hits, 0 dispatches; edited group 20 dispatches; new source coverage-only hits)",
+    "p1VulkanFunctional": "pass (EGL ICD, NVIDIA RTX 6000 Ada)",
+    "p1VulkanParity": "pass (max abs 7.1525574e-7, zero >1e-5)",
+    "p1VulkanPerformance": "measured on the PoC harness; not a production executor benchmark"
+  },
+  "host": {
+    "containerCapabilities": "graphics,compute,utility",
+    "containerImage": "rawmaster-poc-rust-vulkan",
+    "driver": "610.43.02",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "loader": "1.3.275 (Debian bookworm container) / 1.4.341 (probe container)",
+    "totalMiB": 49140,
+    "vulkanApi": "1.4.341"
+  },
+  "reference": {
+    "ap1OutputSHA256": "de8e671b1fe26b51c21919aad61ebcad7bf02269413b2124b27ce188491d8e64",
+    "backend": "macOS Rust/Metal scene executor",
+    "resolution": [
+      9504,
+      6336
+    ]
+  },
+  "rootCause": {
+    "behavior": "libGLX_nvidia Vulkan initialization calls XOpenDisplay(NULL); on a headless host it returns VK_ERROR_INCOMPATIBLE_DRIVER (-3), so the loader ignores the ICD.",
+    "containerNote": "NVIDIA_DRIVER_CAPABILITIES=compute,utility does not mount libEGL_nvidia/libGLX_nvidia; graphics must be included.",
+    "eglBehavior": "exports the same Vulkan ICD entry points and negotiates successfully headless; vkEnumerateInstanceVersion reports 1.4.341",
+    "eglLibrary": "libEGL_nvidia.so.0",
+    "evidence": [
+      "libGLX_nvidia vk_icdNegotiateLoaderICDInterfaceVersion returns -3 for requests 1..8",
+      "libGLX_nvidia vkEnumerateInstanceVersion returns -3",
+      "libGLX_nvidia disassembly calls XOpenDisplay(NULL)",
+      "installing libegl1 alone does not fix the GLX ICD",
+      "Xvfb is not a substitute for NVIDIA GLX"
+    ],
+    "packagedICD": "/usr/share/vulkan/icd.d/nvidia_icd.json",
+    "packagedLibrary": "libGLX_nvidia.so.0",
+    "vkscNote": "libnvidia-vksc-core is a Vulkan SC ICD, not the normal Vulkan path; do not use it."
+  },
+  "schema": "rawmaster-041-p1-vulkan-nvidia-egl-60mp-v1",
+  "solution": {
+    "alternatives": [
+      "system-wide ICD replacement (package upgrade risk)",
+      "real NVIDIA X server + DISPLAY (not recommended for headless)",
+      "driver/package upgrade if it fixes GLX headless init"
+    ],
+    "config": "experiments/server-poc/tools/nvidia_egl_icd.json",
+    "configBody": {
+      "ICD": {
+        "api_version": "1.4.341",
+        "library_path": "libEGL_nvidia.so.0"
+      },
+      "file_format_version": "1.0.1"
+    },
+    "environment": [
+      "VK_DRIVER_FILES=/opt/vulkan/nvidia_egl_icd.json",
+      "NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility"
+    ],
+    "legacyLoader": "VK_ICD_FILENAMES as fallback",
+    "recommended": "per-service EGL ICD override; do not edit the package-owned nvidia_icd.json"
+  },
+  "source": {
+    "note": "Authorized local RAW; not redistributed.",
+    "path": "/Users/robinqu/Downloads/rawmaster-poc-20261127/raw/DSC00413.ARW",
+    "resolution": [
+      9504,
+      6336
+    ],
+    "sha256": "38e48a6e71bd741e1c0b9c5f28dc55347c5aa8d69da5a29dea90bc347c3e4140"
+  },
+  "status": "NVIDIA hardware Vulkan functional/pixel parity passes with the EGL ICD; production gate remains open",
+  "vulkanInfoEvidence": "specs/041-server-image-editing/evidence/nvidia-vulkan-egl-summary.txt"
+}

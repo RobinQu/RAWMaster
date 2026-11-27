@@ -51,14 +51,18 @@
   },
   "date": "2026-11-27",
   "hardwareVulkan": {
-    "consequence": "No hardware Vulkan performance or 49GB-VRAM receipt is claimed. P1 functional/parity evidence uses llvmpipe. CUDA was used only to measure the same graph's VRAM/concurrency and does not close the Vulkan gate.",
-    "cudaFallback": "specs/041-server-image-editing/evidence/p1-cuda-vram-concurrency-60mp.json",
+    "consequence": "Hardware Vulkan functional/parity/cache gate passed. Production image_scene_batch remains closed until the production Linux executor, queue, color gate and admission policy are integrated.",
     "driver": "610.43.02",
-    "evidence": "specs/041-server-image-editing/evidence/p1-nvidia-vulkan-blocked.log",
-    "failure": "vk_icdNegotiateLoaderICDInterfaceVersion returns VK_ERROR_INCOMPATIBLE_DRIVER (-3) for requested interface versions 1..8; vkCreateInstance and vkGetInstanceProcAddr remain NULL. Vulkan loaders 1.4.341 and 1.3.275 both fail. This is not a memory or wgpu failure.",
-    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB total; after stopping the sglang server: 2 MiB used, 48537 MiB free",
-    "icd": "/usr/share/vulkan/icd.d/nvidia_icd.json (libGLX_nvidia.so.0)",
-    "status": "blocked"
+    "environment": [
+      "VK_DRIVER_FILES=/opt/vulkan/nvidia_egl_icd.json",
+      "NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility"
+    ],
+    "evidence": "specs/041-server-image-editing/evidence/p1-vulkan-nvidia-egl-60mp.json",
+    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB total",
+    "packagedICD": "/usr/share/vulkan/icd.d/nvidia_icd.json -> libGLX_nvidia.so.0 (requires X; headless returns -3)",
+    "rootCauseLog": "specs/041-server-image-editing/evidence/p1-nvidia-vulkan-blocked.log",
+    "status": "resolved via EGL ICD; hardware Vulkan functional/parity/cache passed",
+    "workingICD": "libEGL_nvidia.so.0 via tools/nvidia_egl_icd.json; Vulkan 1.4.341"
   },
   "linux": {
     "adapter": {
@@ -267,7 +271,7 @@
     ],
     "sha256": "38e48a6e71bd741e1c0b9c5f28dc55347c5aa8d69da5a29dea90bc347c3e4140"
   },
-  "status": "PoC functional parity passed on a software Vulkan adapter; hardware Vulkan performance gate is blocked on this host",
+  "status": "PoC functional parity passed on software Vulkan and on NVIDIA hardware Vulkan via the EGL ICD; production executor/queue/color gate remains open.",
   "tilingAndCache": {
     "coldDispatches": 200,
     "coldPeakBytes": 7711850516,

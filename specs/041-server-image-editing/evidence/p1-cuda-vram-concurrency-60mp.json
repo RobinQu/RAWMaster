@@ -358,7 +358,7 @@
     "notVulkan": "These numbers measure the same surfaces on the GPU through CUDA. They are not a substitute for the Vulkan execution/performance gate.",
     "parity": "CUDA port vs macOS Rust/Metal AP1 master: maxAbs 7.15255737e-7, maxRelative 4.07646e-7, meanAbs 2.74635e-9, zero channel samples over 1e-5, zero non-finite.",
     "sceneStage": "input AP1 + output AP1 + tile input + 5 tile image surfaces + 4 tile coverage surfaces.",
-    "whyCUDA": "After stopping sglang the GPU had 48,537 MiB free, but the NVIDIA Vulkan ICD still returned VK_ERROR_INCOMPATIBLE_DRIVER (-3) for ICD interface versions 1..8. CUDA is the only working GPU API on this host."
+    "whyCUDA": "Originally measured while the packaged GLX ICD was blocked. After the EGL ICD fix, hardware Vulkan functional/parity/cache tests pass. CUDA is retained as the strict allocation model because cudaMalloc fails hard at 22 scene jobs while Vulkan can schedule 26 single-pass processes at a 48.5 GiB high-water."
   },
   "planning": {
     "headroomNote": "Max used at 21 scene jobs was 48,485 MiB of 49,140 MiB; the 22nd allocation failed. Production admission must reserve driver/context and fragmentation headroom, so do not schedule at the exact measured maximum.",
@@ -757,7 +757,7 @@
     }
   },
   "schema": "rawmaster-041-cuda-vram-concurrency-60mp-v1",
-  "status": "CUDA fallback memory/concurrency measurement; NVIDIA Vulkan remains blocked by VK_ERROR_INCOMPATIBLE_DRIVER",
+  "status": "CUDA strict allocation model for VRAM admission; hardware Vulkan now works via the EGL ICD, but the Vulkan driver schedules/overcommits short-lived tiles, so CUDA remains the conservative admission bound.",
   "tileSweep": [
     {
       "fullMaxConcurrent": 11,
