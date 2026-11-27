@@ -162,7 +162,7 @@ exiftool -ImageWidth -ImageHeight -BitsPerSample -BitDepth -ProfileDescription \
 
 ### 原生场景查看与显影阶段
 
-[评审工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1)先验交互，原生在 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1` 下进入。浏览器三项阶段走查通过：资料库选片、确认／取消、曝光及撤销、SDR 回退、预览失败重试、390px 浅深色、离线、方向键仅移焦。[浏览器输出](evidence/scene-native-browser.log) · [桌面](evidence/native-scene-review/scene-review-fit.png) · [390px 浅色](evidence/native-scene-review/scene-review-390-light.png) · [390px 深色](evidence/native-scene-review/scene-review-390-dark.png)。默认完整 HDR 原型仍独立运行：`python3 scripts/check-ui-prototype.py --hdr-only` 四项通过。模拟像素不作 EDR 证据。
+[评审工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1)先验交互，原生在 Release 默认进入；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 可临时隐藏做诊断。浏览器三项阶段走查通过：资料库选片、确认／取消、曝光及撤销、SDR 回退、预览失败重试、390px 浅深色、离线、方向键仅移焦。[浏览器输出](evidence/scene-native-browser.log) · [桌面](evidence/native-scene-review/scene-review-fit.png) · [390px 浅色](evidence/native-scene-review/scene-review-390-light.png) · [390px 深色](evidence/native-scene-review/scene-review-390-dark.png)。默认完整 HDR 原型仍独立运行：`python3 scripts/check-ui-prototype.py --hdr-only` 四项通过。模拟像素不作 EDR 证据。
 
 [预览服务](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift)从捕获的真实 ARW 校验内容，在单源预算内保留已校准 AP1 F32 输入；同一 FIT 或实际像素 ROI 只改变图与末端。图与临时监看进入输入键，HDR／SDR 保持独立后缀；派生曝光不使 HDR 或 RAW 失效。当前 FIT 是 F32 降采样后求值，不假称等于全尺寸再缩小；实际窗口在已校准源纹理中裁出，再用全源坐标计算覆盖。原片改动、过期或取消请求不得发布成新帧。
 
@@ -190,7 +190,7 @@ RAWMASTER_SCENE_DARKROOM_REPORT="$evidence/fit.json" \
 
 从 [PQ 评审工作台](../../docs/ui/prototype/index.html?pqReview=1) 多选「日落河湾」和「岸边的水鸟」，在暗房保存后者的 HDR 候选，再在 032 选「HDR 成片」。核对弹窗：前者无 HDR 母版，不能确认。返回选片不新建任务；明确取消勾选不合格行后，确认只冻结 `.avif`。`python3 scripts/check-ui-prototype.py --pq-queue-only` 的三项隔离浏览器检查通过（含 390px、离线和恢复可确认）。[日志](evidence/pq-queue-browser.log) · [混选](evidence/pq-queue/pq-mixed-1280.png) · [窄窗合格项](evidence/pq-queue/pq-ready-390.png)。原型使用样片与模拟，不证明像素或硬件能力。
 
-原生评审在 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1`。确认前显示保存版本和不可用项目；提交前用目录读快照再核对版本 ID、来源和配方摘要，不满足时不会注册批次。Rust 032 保存同一 schema 2 版本资源和 `avif10` 设置，沿用原目录授权、命名冲突、暂存摘要、排他发布和恢复。PQ 的文件限已保存母版全尺寸；不自动缩放，不把 SDR 水印或元数据设置套到 PQ，不将队列目标写回 SDR 可移植预设。10 位 CICP 保留；对 ImageIO AVIF `clli` 自动给出的图片光量字段置为「未指定」（见 [libavif 对零值的定义](https://github.com/AOMediaCodec/libavif/blob/main/include/avif/avif.h)），不改像素数据或把 100/1000 nits 目标当作各照片实测光量。
+原生评审默认可见；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 可临时隐藏。确认前显示保存版本和不可用项目；提交前用目录读快照再核对版本 ID、来源和配方摘要，不满足时不会注册批次。Rust 032 保存同一 schema 2 版本资源和 `avif10` 设置，沿用原目录授权、命名冲突、暂存摘要、排他发布和恢复。PQ 的文件限已保存母版全尺寸；不自动缩放，不把 SDR 水印或元数据设置套到 PQ，不将队列目标写回 SDR 可移植预设。10 位 CICP 保留；对 ImageIO AVIF `clli` 自动给出的图片光量字段置为「未指定」（见 [libavif 对零值的定义](https://github.com/AOMediaCodec/libavif/blob/main/include/avif/avif.h)），不改像素数据或把 100/1000 nits 目标当作各照片实测光量。
 
 2026-11-27 · [Release 回归](evidence/pq-queue/release-test-excerpt.log)：28 项通过；需要独立进程的用例另行运行。Rust [队列回归](evidence/pq-queue/rust-batches.log) 21 项通过。实拍人像和雪景 ARW 从导入、已采用场景版本、原生模型逐张预检到 032 的配方资源落盘：混选 SDR／HDR、核对后改采用一个同配方不同 ID 的版本，均在注册前拒绝，没有文件或批次。作者授权及原片 SHA 见[实拍源证据](evidence/scene-raw-m2.json)。
 

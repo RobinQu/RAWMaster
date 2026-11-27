@@ -4283,7 +4283,11 @@ extension ProcessingJobState {
 }
 
 extension EditingController {
-    static var sceneReviewEnabled: Bool { ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM"] == "1" }
+    /// The HDR scene workflow is part of the shipping editor. The environment override remains
+    /// for diagnostics and test isolation (`0` disables it); absence means enabled.
+    static var sceneReviewEnabled: Bool {
+        ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM"] != "0"
+    }
 
     /// Includes original and already-committed version views, but never uses stale focus/draft on either.
     var visibleSceneGraph: DevelopmentSceneGraphV1? {

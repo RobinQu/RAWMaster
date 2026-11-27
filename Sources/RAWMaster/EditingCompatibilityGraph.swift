@@ -4,7 +4,9 @@ import RAWMasterCore
 
 /// Presentation only. This window never owns an edit session, a renderer, or an export target.
 @MainActor final class EditingCompatibilityGraphPanel: NSObject, ObservableObject, NSWindowDelegate {
-    static let isEnabled = ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH"] == "1"
+    /// Read-only compatibility graph is visible in the shipping editor; `0` keeps it hidden for
+    /// focused diagnostics without changing the stored recipe.
+    static let isEnabled = ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH"] != "0"
     private static let minimum = CGSize(width: 520, height: 392)
     private static let defaultSize = CGSize(width: 640, height: 392)
     private static let collapsedHeight: CGFloat = 69

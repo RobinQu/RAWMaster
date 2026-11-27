@@ -19,7 +19,7 @@ swift test -c release --jobs 4 -Xswiftc -enable-testing \
 
 ## 原生只读兼容视图
 
-2026-11-27 · [评审入口与复现步骤](spec.md#只读兼容视图评审入口)。兼容节点不提供拆线、忽略或单节点监看，不将显影拆分或迁移。新增窗口仅在 `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=1` 时从原生暗房检查器进入；窗口位置和开合不写入照片。完整多节点行为仍在原 [Graph 原型](../../docs/ui/prototype/index.html#edit/dag)。
+2026-11-27 · [评审入口与复现步骤](spec.md#只读兼容视图评审入口)。兼容节点不提供拆线、忽略或单节点监看，不将显影拆分或迁移。窗口随 Release 默认从原生暗房检查器进入；`RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅用于诊断时隐藏。窗口位置和开合不写入照片。完整多节点行为仍在原 [Graph 原型](../../docs/ui/prototype/index.html#edit/dag)。
 
 - **浏览器**：`RAWMASTER_UI_DAG_EVIDENCE=<目录> python3 scripts/check-ui-prototype.py --compatibility-only`，使用 Chrome 和 `agent-browser`。五项通过：从资料库「日落河湾」进入，打开、收起、展开和复位；方向键调宽不翻片；真实 Escape 关闭并返还焦点，版本查看关闭 Graph；390×844 浅色可读；900×360 短窗仅保留可关闭标题，离线有解释。兼容模式打开 Graph 不生成配方或历史。窗口首开放在右下，以保留照片主体。另复跑[默认完整工作台 60 个场景](evidence/compatibility/workbench-check.log)，退出码 0（未开启额外截图场景），Graph 和 HDR 原型保持通过。[1440×900 深色](evidence/compatibility/compatibility-1440-dark.png) · [390×844 浅色](evidence/compatibility/compatibility-390-light.png)
 - **原生复现**：运行 `swift test -c release --jobs 4 -Xswiftc -enable-testing --filter EditingCompatibilityGraphTests`。以同一份授权代理 JPEG `dji187-context376/files/asset0000.jpg` 建隔离资料库，从编辑面板的可访问按钮打开 AppKit 子窗口，然后关闭。另测试折叠／展开、屏幕边界、窗口非模态和场景切换清理。两项原生用例均通过；同一批 123 项定向回归另核对旧配方重开、SDR 成片等价、历史与导出交接。[Release 测试摘要](evidence/compatibility/native-release.log)。未将 AppKit 操作测试折算为 VoiceOver、实际装包或可编辑多节点验收。
@@ -71,7 +71,7 @@ python3 scripts/check-ui-prototype.py --native-graph-only
 
 [批量交互评审](../../docs/ui/prototype/index.html?batchNativeReview=1) → 资料库多选 → 底栏「更多 → 批量工作流」。先在浏览器复验不落盘的确认、取消，以及“候选不采用”；390px 深色走查逐张离线、取消余项、重试及后续修订不可撤销。样片只模拟工作流，不测 RAW 校准、SQLite 提交或输出像素。
 
-原生相同入口由 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1` 开放。图窗「更多 → 工作流模板」保存整图或当前组选段，丢弃源身份及输出设置；应用在所选边/组内重映射身份。资料库批量沿用现有编辑目录，确认时冻结每个目标原片、草稿修订、底稿和候选配方；SQLite 原子提交各项版本及回执，不自动采用。即使已取消或重启也可核对原状态，重试前验证原片 SHA 及校准，撤销前验证目标修订与版本依赖。结果的「导出成功候选」选择明确版本 ID，不读当前临时监看或选片中的另一配方。阶段曝光同步只改一个正确器的曝光，完整色域字段与源绑定素材仍按规格逐项开放。
+原生相同入口随 Release 默认显示；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` 仅用于诊断时隐藏。图窗「更多 → 工作流模板」保存整图或当前组选段，丢弃源身份及输出设置；应用在所选边/组内重映射身份。资料库批量沿用现有编辑目录，确认时冻结每个目标原片、草稿修订、底稿和候选配方；SQLite 原子提交各项版本及回执，不自动采用。即使已取消或重启也可核对原状态，重试前验证原片 SHA 及校准，撤销前验证目标修订与版本依赖。结果的「导出成功候选」选择明确版本 ID，不读当前临时监看或选片中的另一配方。阶段曝光同步只改一个正确器的曝光，完整色域字段与源绑定素材仍按规格逐项开放。
 
 2026-11-27 · [浏览器专项两项](evidence/native-batch/browser.log)，[默认工作台 60 项](evidence/native-batch/workbench-regression.log)，均退出码 0。隔离 [Release 应用主跑](evidence/native-batch/native-test-excerpt.log) 9 项、独立定向复跑 11 项通过（含重叠项，不合计），0 跳过。模板保存/重开保持图结构，插入时重映射身份并保留目的图的 SDR 派生。同步保留未选字段。额外以两个 SQLite 连接在校准回调进行期间取消，事务未发布候选；明确重试后只创建一个，后来产生依赖版本时撤销拒绝。
 
@@ -272,3 +272,11 @@ RAWMASTER_UI_DAG_EVIDENCE="$PWD/specs/038-node-dag-workflow/evidence/v2" \
 - 浏览器提供点击端口、连接选择器及端口拖线；无效连接草稿已检查，但未对每一种拖线手势、系统减少透明设置或原生可访问性作全面签收。
 - 模拟批量不保证浏览器关闭后的后台续跑。原生任务恢复、跨片素材重建、旧配方迁移和真实文件输出均未在本轮实施。
 - 第一版 43 PASS 与原目录四张截图仅保留作历史，不能用于证明本轮悬浮布局。已作废的空白 Graph 探索图不作为当前证据。
+
+## Release 默认入口修复
+
+2026-11-27 · Release 安装回归。HDR 模式、场景 Graph 节点工具条和只读兼容图此前只在实验环境变量为 `1` 时出现，Finder 启动的 Release 应用收不到变量，导致入口全部消失。
+
+- `EditingController.sceneReviewEnabled` 和 `EditingCompatibilityGraphPanel.isEnabled` 改为默认开启；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` / `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅作为诊断时隐藏开关。
+- 定向 UI 测试 `EditingCompatibilityGraphTests/testShippingComponentsExposeHDRModeAndBothGraphEntryPoints` 打开真实 JPEG，断言 SDR／HDR 模式条和「当前节点 → Graph」入口均存在；3 个 `EditingCompatibilityGraphTests` 全部通过。
+- Release 应用重新构建、签名、安装到 `/Applications/RAWMaster.app` 并实际启动成功。原生可编辑 Graph 的节点选择、连接、监看和窗口走查仍由需要真实校准 ARW 的 `EditingSceneGraphWindowTests` 覆盖；本轮主机只有未准入的 snow.ARW，不能把该 opt-in 用例当作通过。

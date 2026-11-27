@@ -113,6 +113,63 @@ final class EditingCompatibilityGraphTests: XCTestCase {
         } catch { await editing.shutdown(); throw error }
     }
 
+    @MainActor func testShippingComponentsExposeHDRModeAndBothGraphEntryPoints() async throws {
+        guard ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM"] != "0",
+              ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH"] != "0" else {
+            throw XCTSkip("experimental UI disabled by environment")
+        }
+        XCTAssertTrue(EditingController.sceneReviewEnabled)
+        XCTAssertTrue(EditingCompatibilityGraphPanel.isEnabled)
+        let fixture = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0000.jpg")
+        _ = NSApplication.shared
+        NSApp.activate(ignoringOtherApps: true)
+        let enhanced = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let priorAccessibility = NSApp.accessibilityAttributeValue(enhanced)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+        defer { NSApp.accessibilitySetValue(priorAccessibility, forAttribute: enhanced) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = root.appendingPathComponent("shipping-ui.sqlite")
+        let sourceDirectory = root.appendingPathComponent("sources", isDirectory: true)
+        try FileManager.default.createDirectory(at: sourceDirectory, withIntermediateDirectories: false)
+        let source = sourceDirectory.appendingPathComponent("shipping.jpg")
+        try FileManager.default.copyItem(at: fixture, to: source)
+        let asset = try NativePresentedCanvasTests.register(source: source, library: library, requiresRAW: false)
+        let defaultsName = "RAWMaster-shipping-\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: defaultsName))
+        defer { defaults.removePersistentDomain(forName: defaultsName) }
+        let model = AppModel(libraryURL: library, defaults: defaults)
+        let editing = try XCTUnwrap(model.editing, model.errorMessage ?? "Editor unavailable")
+        let window = NSWindow(contentRect: NSRect(x: 70, y: 120, width: 340, height: 720),
+            styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        let host = NSHostingView(rootView: VStack(spacing: 0) {
+            EditingSceneModeStrip(editing: editing)
+            EditingCompatibilityGraphToolbar(editing: editing)
+        }.frame(width: 304))
+        window.contentView = host
+        window.makeKeyAndOrderFront(nil)
+        defer { window.contentView = nil; window.close() }
+        do {
+            editing.isPresented = true
+            editing.focus(asset)
+            try await wait { editing.sourceReady && !editing.loading }
+            for _ in 0..<30 {
+                host.layoutSubtreeIfNeeded()
+                if element(in: window, selector: "accessibilityIdentifier", equals: "editing.scene.mode.HDR") != nil { break }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            let hdr = element(in: window, selector: "accessibilityIdentifier", equals: "editing.scene.mode.HDR")
+            let compat = element(in: window, selector: "accessibilityIdentifier", equals: "editing.compatibilityGraph")
+            XCTAssertNotNil(hdr)
+            XCTAssertNotNil(element(in: window, selector: "accessibilityIdentifier", equals: "editing.scene.mode.SDR"))
+            XCTAssertNotNil(compat)
+            await editing.shutdown()
+        } catch { await editing.shutdown(); throw error }
+    }
+
     @MainActor private func wait(_ condition: () -> Bool) async throws {
         let limit = ContinuousClock.now + .seconds(30)
         while !condition() {

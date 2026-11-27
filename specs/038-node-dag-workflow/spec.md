@@ -174,7 +174,7 @@
 
 ## 只读兼容视图评审入口
 
-在[兼容评审工作台](../../docs/ui/prototype/index.html?compatibilityGraph=1)选「日落河湾」，点击「编辑」；右栏「当前节点 → Graph」打开非模态窗。只有「照片来源 → 兼容显影 → 最终输出」；旧几何、修饰和色彩顺序仍封装在兼容显影，不能拆线、忽略或单独监看。主图仍可编辑，缩放、历史和冻结版本不由 Graph 决定。窗口初开靠右下、让出主图。用标题区收起、展开、复位、关闭；在窗内按 Escape 关闭并返回暗房。换片、检查作品版本及离开暗房关闭；不改变选片或草稿。原片不可用、正在读入或画布工具未完成时说明原因，不发布图。软件评审版通过 `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=1` 进入；默认不显示这一实验入口。[相同动作及实际证据](validation.md#原生只读兼容视图)。完整可编辑流程仍由 [Graph 目标原型](../../docs/ui/prototype/index.html#edit/dag)描述。
+在[兼容评审工作台](../../docs/ui/prototype/index.html?compatibilityGraph=1)选「日落河湾」，点击「编辑」；右栏「当前节点 → Graph」打开非模态窗。只有「照片来源 → 兼容显影 → 最终输出」；旧几何、修饰和色彩顺序仍封装在兼容显影，不能拆线、忽略或单独监看。主图仍可编辑，缩放、历史和冻结版本不由 Graph 决定。窗口初开靠右下、让出主图。用标题区收起、展开、复位、关闭；在窗内按 Escape 关闭并返回暗房。换片、检查作品版本及离开暗房关闭；不改变选片或草稿。原片不可用、正在读入或画布工具未完成时说明原因，不发布图。Release 默认显示只读兼容图入口；`RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅用于诊断时隐藏。[相同动作及实际证据](validation.md#原生只读兼容视图)。完整可编辑流程仍由 [Graph 目标原型](../../docs/ui/prototype/index.html#edit/dag)描述。
 
 ## 原生可编辑 Graph 阶段走查
 
