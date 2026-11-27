@@ -326,5 +326,20 @@
     "cdhash": "aca6e1218affc35e73ae2467651bc1c399cf2c20",
     "readyWindowVerified": true,
     "previousCDHash": "408ca1c6c67ff52b7b3d28ead7ad012d3159ef2a"
+  },
+  "coldStartObservation": {
+    "storedProjectGridSelection": [
+      "person.ARW",
+      "snow.ARW"
+    ],
+    "storedFocus": "snow.ARW",
+    "restoredGridSelection": [
+      "compatibility.jpg"
+    ],
+    "state": "open",
+    "returnFrom032InSameProcess": {
+      "count": 2,
+      "focus": "snow.ARW"
+    }
   }
 }
