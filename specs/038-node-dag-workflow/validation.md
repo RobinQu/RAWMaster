@@ -322,3 +322,5 @@ RAWMASTER_UI_DAG_EVIDENCE="$PWD/specs/038-node-dag-workflow/evidence/v2" \
 - `EditingController.sceneReviewEnabled` 和 `EditingCompatibilityGraphPanel.isEnabled` 改为默认开启；`RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=0` / `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅作为诊断时隐藏开关。
 - 定向 UI 测试 `EditingCompatibilityGraphTests/testShippingComponentsExposeHDRModeAndBothGraphEntryPoints` 打开真实 JPEG，断言 SDR／HDR 模式条和只读 Graph 按钮存在。3 个 `EditingCompatibilityGraphTests` 全部通过。可编辑 Graph 由实际 HDR 场景草稿单独验证。
 - 入口修复当时重新构建并启动了签名应用。当时的安装走查未取得已准入 RAW。此次 `main` 复验使用 SHA 匹配的雪景和 FlashRaw 运行库，在 Release 测试包中通过节点选择、连接、监看、保存重开与候选出片。安装包正常入口、设备对照和实际指针／VoiceOver 仍需同动作签收。[复验和复现](../035-portable-processing-cores/roadmap.md#本次-main-复验)
+
+同一对图窗已在最终安装包的签名产物上从资料库普通入口复验。标题与画布的两类拖动、窗口边缘和焦点返回均有独立坐标回读。[签名回执中的两个 Graph 窗口](../025-editing-workspace/evidence/appearance-parity/signed-release.json)

@@ -82,6 +82,7 @@ function canvasToolFinish(cancel = false) {
     if (s.kind === 'mask' && !s.legacy) {
       if (s.mask.missing) return notify('蒙版素材缺失，请先重建或取消', 'error');
     }
+    if (!admitModelGeometry(s.draft)) return;
     if (s.draft.dag && dagError(s.draft.dag)) return notify(dagError(s.draft.dag), 'error');
     if (JSON.stringify(s.draft) !== JSON.stringify(s.before)) Studio.setRecipe(s.photo, '完成 ' + { crop: 'Crop', mask: 'Mask', remove: 'Remove' }[s.kind], s.draft);
   }

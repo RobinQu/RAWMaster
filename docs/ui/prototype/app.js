@@ -559,7 +559,7 @@ function render() {
     const replacement=root.querySelector('.editor-notices');
     if (replacement && noticeHost.firstElementChild?.dataset.noticeId===replacement.firstElementChild?.dataset.noticeId) replacement.replaceWith(noticeHost);
   }
-  if (S.page === 'edit') PhotographicScopes.drawImagePreview();
+  if (S.page === 'edit') {PhotographicScopes.drawImagePreview();refreshSamplerPanel();}
   if (S.renderRoute === location.hash) {
     const scroll = root.querySelector('.photos-scroll'),
       ins = root.querySelector('.inspector,.inspector-content');

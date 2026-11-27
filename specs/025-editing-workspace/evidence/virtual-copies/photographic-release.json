@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-27",
+  "sourceFile": "snow.ARW",
+  "physicalSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "presentationIDs": [
+    "84A080D6-2EC2-4760-80CC-FA16EB2D49A7",
+    "C2CD068E-28B5-4D3A-B251-973962D9A731"
+  ],
+  "snapshots": [
+    "雪景彩色",
+    "雪景黑白"
+  ],
+  "appProcesses": [
+    52091,
+    52687
+  ],
+  "snapshotsAndRecipesRestored": true,
+  "single": [
+    {
+      "fullSRGB8SHA256": "ebd81bb16f38487db0cbc6b5e0bbd40256895676a1618f1590d167ae95f92cf1",
+      "file": "snow-0001.jpg",
+      "bytes": 4519958,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 29.096,
+      "sRGB64SHA256": "e063d2ac5e5b877dc6cad161f1688c09a72af13f744c23137e83ac45d9606a9d",
+      "fileSHA256": "85e2e9aec377a3b4bd1df514a82fa6f9c0404a67f7644c72f23544d31560b5d4"
+    },
+    {
+      "fullSRGB8SHA256": "0f36f1b1f2976f9660200db15ea8fc07b1a56eed3608ea7264474e554589e3da",
+      "file": "snow-黑白习作-0001.jpg",
+      "bytes": 4573829,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 0.0,
+      "sRGB64SHA256": "f1cd70c38fab9a94b3ae81306b8f59bdc503ff129c1e503bacddcbf413f64438",
+      "fileSHA256": "ed454ae3104013ab23338fa6d01fcff8f375c4443e73896507c7623b0d05803e"
+    }
+  ],
+  "together": [
+    {
+      "fullSRGB8SHA256": "ebd81bb16f38487db0cbc6b5e0bbd40256895676a1618f1590d167ae95f92cf1",
+      "file": "snow-0001.jpg",
+      "bytes": 4519958,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 29.096,
+      "sRGB64SHA256": "e063d2ac5e5b877dc6cad161f1688c09a72af13f744c23137e83ac45d9606a9d",
+      "fileSHA256": "85e2e9aec377a3b4bd1df514a82fa6f9c0404a67f7644c72f23544d31560b5d4"
+    },
+    {
+      "fullSRGB8SHA256": "0f36f1b1f2976f9660200db15ea8fc07b1a56eed3608ea7264474e554589e3da",
+      "file": "snow-黑白习作-0002.jpg",
+      "bytes": 4573829,
+      "pixels": [
+        4000,
+        6000
+      ],
+      "colorSpace": "sRGB",
+      "meanRGBChannelRange8": 0.0,
+      "sRGB64SHA256": "f1cd70c38fab9a94b3ae81306b8f59bdc503ff129c1e503bacddcbf413f64438",
+      "fileSHA256": "ed454ae3104013ab23338fa6d01fcff8f375c4443e73896507c7623b0d05803e"
+    }
+  ],
+  "matchingPixels": true,
+  "matchingFullRaster": true,
+  "identicalJPEGFiles": true,
+  "batches": [
+    {
+      "directory": "deliveries",
+      "batchID": "4e7ff76a-05b0-4cf3-9fa5-efee0a17db3f",
+      "delivered": 1
+    },
+    {
+      "directory": "mono-delivery",
+      "batchID": "677877c1-dd1a-45f1-8a39-52fcff34ce9d",
+      "delivered": 1
+    },
+    {
+      "directory": "paired-delivery",
+      "batchID": "2a4532ac-4e02-4368-9b61-e2dfb9a732fe",
+      "delivered": 2
+    }
+  ],
+  "releaseCDHash": "7482e3672c234a023614462ddc131ee962707faf",
+  "independentEdits": {
+    "colorSaturation": 0.18,
+    "blackAndWhiteLightExposure": -0.2
+  },
+  "editableLibrary": {
+    "library": "雪景彩色与黑白.rawmasterlibrary",
+    "photosRestored": 3,
+    "oneSharedSnowRAW": true,
+    "colorAndMono": true,
+    "namedSnapshots": 2,
+    "manifestSHA256": "8a2537185c15895bd0c38d439d9cc61bc73ea2b993e6362c565c3f4411486479"
+  },
+  "restoredWithInstalledApp": {
+    "openedEditableLibraryWithInstalledApp": true,
+    "twoIndependentSnapshots": true,
+    "bothSelected": true,
+    "process": 55337
+  }
+}

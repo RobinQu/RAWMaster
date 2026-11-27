@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-27",
+  "applicationSourceCommit": "1fcc337648d259401340cc7ca84943cbc645d892",
+  "package": "local ad-hoc signed Release, verified with codesign --verify --deep --strict",
+  "os": "27.0.1",
+  "build": "26A434",
+  "installedBundle": "/Applications/RAWMaster.app",
+  "signature": {
+    "cdhash": "7482e3672c234a023614462ddc131ee962707faf",
+    "binarySHA256": "5778f0534db1fa1965f5f2b350633002ee8faacc17d8a55ced2ca53d4c24284a",
+    "rustImageSHA256": "ff9f41383ec977eff4a732b0168e9b7d083ce2e7ce6b426bcc981630d69daf09",
+    "rustLibrarySHA256": "c1cf9d7c6a8fe60f48b523c7c2c480a69c4c97563b23dbe7f93cba5b585f643f"
+  },
+  "oldInstanceQuitAndNewInstanceVisible": true,
+  "photo": "snow.ARW",
+  "sha256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "desktop": {
+    "bwToastTextToClosePoints": 155,
+    "timedDismissalObservedAfterSeconds": 3.149,
+    "derivativeBounds": {
+      "预览 SDR 派生": [
+        1265,
+        562,
+        113,
+        24
+      ],
+      "预览 HDR 派生": [
+        1382,
+        562,
+        113,
+        24
+      ]
+    },
+    "scopeHeightPoints": [
+      96,
+      96
+    ],
+    "drag2to3EV": {
+      "before": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "after": [
+        0,
+        0,
+        0.11,
+        0
+      ]
+    },
+    "keyboard2to3EV": [
+      [
+        0,
+        0,
+        0.16,
+        0
+      ],
+      [
+        0,
+        0,
+        -0.09,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "graph-hdr": true,
+    "graph-legacy": true,
+    "visualizeReturnedToRequestedSDR": true,
+    "nativeGraphPanels": 2
+  },
+  "graphPanels": {
+    "hdr": {
+      "afterCanvasDrag": [
+        802,
+        492,
+        640,
+        392
+      ],
+      "afterRightEdgeDrag": [
+        802,
+        492,
+        608,
+        392
+      ],
+      "afterTitleDrag": [
+        802,
+        492,
+        640,
+        392
+      ],
+      "bundle": "RAWMaster.app",
+      "canvasDrag": [
+        43,
+        -27
+      ],
+      "displayID": 1,
+      "focusAfterClose": "editing.scene.graph.toggle",
+      "initial": [
+        868,
+        536,
+        640,
+        392
+      ],
+      "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+      "nativeClose": "AXCloseButton/AXPress",
+      "nodeAfterCanvasRelative": [
+        228,
+        151,
+        118,
+        56
+      ],
+      "nodeAfterTitleRelative": [
+        185,
+        178,
+        118,
+        56
+      ],
+      "nodeInitiallyRelative": [
+        185,
+        178,
+        118,
+        56
+      ],
+      "observedTitleDrag": [
+        -66,
+        -44
+      ],
+      "os": "Version 27.0.1 (Build 26A434)",
+      "ownerFrame": [
+        40,
+        64,
+        1480,
+        940
+      ],
+      "pid": 50809,
+      "reopened": [
+        802,
+        492,
+        608,
+        392
+      ],
+      "requestedTitleDrag": [
+        -72,
+        -48
+      ],
+      "title": "工作流 Graph",
+      "titlePoint": [
+        1258.4,
+        545.5
+      ],
+      "windowRole": "AXWindow",
+      "windowSubrole": "AXFloatingWindow"
+    },
+    "legacy": {
+      "afterCanvasDrag": [
+        802,
+        492,
+        640,
+        392
+      ],
+      "afterRightEdgeDrag": [
+        802,
+        492,
+        608,
+        392
+      ],
+      "afterTitleDrag": [
+        802,
+        492,
+        640,
+        392
+      ],
+      "bundle": "RAWMaster.app",
+      "canvasDrag": [
+        43,
+        -27
+      ],
+      "displayID": 1,
+      "focusAfterClose": "editing.compatibilityGraph",
+      "initial": [
+        868,
+        536,
+        640,
+        392
+      ],
+      "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+      "nativeClose": "AXCloseButton/AXPress",
+      "nodeAfterCanvasRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "nodeAfterTitleRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "nodeInitiallyRelative": [
+        254,
+        181,
+        132,
+        50
+      ],
+      "observedTitleDrag": [
+        -66,
+        -44
+      ],
+      "os": "Version 27.0.1 (Build 26A434)",
+      "ownerFrame": [
+        40,
+        64,
+        1480,
+        940
+      ],
+      "pid": 50809,
+      "reopened": [
+        802,
+        492,
+        608,
+        392
+      ],
+      "requestedTitleDrag": [
+        -72,
+        -48
+      ],
+      "title": "只读兼容图",
+      "titlePoint": [
+        1258.4,
+        545.5
+      ],
+      "windowRole": "AXWindow",
+      "windowSubrole": "AXFloatingWindow"
+    }
+  },
+  "testSuites": {
+    "RAWMasterCoreTests": {
+      "discovered": 425,
+      "skipped": 9,
+      "failures": 0
+    },
+    "RAWMasterImagingTests": {
+      "discovered": 1166,
+      "skipped": 98,
+      "failures": 0
+    },
+    "RAWMasterUITests": {
+      "discovered": 617,
+      "skipped": 35,
+      "failures": 0
+    }
+  },
+  "screenshots": {
+    "native-hdr.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "60cabfb4f54fbd5057e1c4af5b1823aa8869b245d936e435acad338298f5c354"
+    },
+    "native-visualize.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "c3b5ad72894b18d3b211083413abe75b00aa8063344739dc6bedb013043d60e7"
+    },
+    "native-toast.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "2672f281093c08c9faba0ecac5858b758cbba5047dfb846747dc826fa7ef7292"
+    },
+    "native-graph.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "ea282e3314e67e71649c10249b0ffb8353cb432a0c6b76f76ae67ee2ac59616e"
+    },
+    "native-library.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "135b0ea93e8f69c87d74a6fbdee91a3b96840deb1ec4630b224612d2e6d82055"
+    },
+    "native-export.webp": {
+      "pixels": [
+        1480,
+        940
+      ],
+      "sha256": "8a5337ec794a1ca069b9fc4162f723f9c736db8115c9920aa53344ffe979a05a"
+    }
+  }
+}

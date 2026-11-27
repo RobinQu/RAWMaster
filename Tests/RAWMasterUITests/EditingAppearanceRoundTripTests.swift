@@ -150,19 +150,40 @@ final class EditingAppearanceRoundTripTests: XCTestCase {
             previousSettings.geometry.crop = .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8)
             let oldGraph = try Graph(graph: .init(nodes: [bound, coverage], output: .node(bound.id)),
                 output: XCTUnwrap(hdr.sceneGraph?.output), models: .init(stages: [model]), photographic: previousSettings)
-            let incompatibleID = UUID(), parentID = try XCTUnwrap(editor.draftParentID)
-            _ = try store.updateDevelopmentSnapshots(in: .init(workID: workID, parentVersionID: parentID, appearance: .hdr),
+            let incompatibleID = UUID(), boundID = UUID()
+            let snapshotScope = DevelopmentSnapshotScope(workID: workID, parentVersionID: try XCTUnwrap(editor.draftParentID), appearance: .hdr)
+            let boundRecipe = DevelopmentRecipe(sceneGraph: try oldGraph.replacingPhotographic(.init()))
+            _ = try store.updateDevelopmentSnapshots(in: snapshotScope,
                 .create(id: incompatibleID, name: "旧的几何与模型蒙版", createdAt: Date(), recipe: .init(sceneGraph: oldGraph), adoptions: nil))
+            _ = try store.updateDevelopmentSnapshots(in: snapshotScope,
+                .create(id: boundID, name: "已连接模型蒙版", createdAt: Date(), recipe: boundRecipe, adoptions: nil))
             await editor.shutdown()
             editor = try EditingController(store: LibraryStore(databaseURL: db), libraryURL: db, defaults: defaults)
             try await open()
             XCTAssertEqual(editor.recipe, hdr)
-            XCTAssertEqual(editor.sceneSnapshots.map(\.id), [sceneSnapshotID, incompatibleID])
+            XCTAssertEqual(editor.sceneSnapshots.map(\.id), [sceneSnapshotID, incompatibleID, boundID])
             editor.restoreSceneSnapshot(incompatibleID, ticket: try XCTUnwrap(editor.sceneTicket))
             XCTAssertEqual(editor.recipe, hdr)
             XCTAssertTrue(editor.message?.contains("模型蒙版") == true)
             XCTAssertEqual(try store.photoWork(id: workID).liveRecipe, hdr)
             editor.updateSceneSnapshot(incompatibleID, name: nil, ticket: try XCTUnwrap(editor.sceneTicket))
+            editor.restoreSceneSnapshot(boundID, ticket: try XCTUnwrap(editor.sceneTicket))
+            XCTAssertEqual(editor.recipe, boundRecipe)
+            editor.beginDevelopmentInterface()
+            try await wait { editor.developmentContext != nil }
+            let boundContext = try XCTUnwrap(editor.developmentContext)
+            let boundSession = editor.developmentSession
+            let drag = try boundSession.beginGesture(.init(group: nil, name: "crop.bounds"), context: boundContext)
+            XCTAssertThrowsError(try editor.setDevelopmentGeometry(previousSettings.geometry, context: boundContext, gesture: drag, control: "crop.bounds")) { error in
+                XCTAssertTrue(error is Graph.PhotographicCoverageMisalignment)
+                editor.reportPhotographicControlError(error, fallback: "裁切未应用")
+            }
+            try boundSession.endGesture(drag, .commit)
+            XCTAssertTrue(editor.message?.contains("请先断开它") == true)
+            XCTAssertEqual(editor.recipe, boundRecipe)
+            XCTAssertTrue(editor.stepSceneHistory(redo: false))
+            XCTAssertEqual(editor.recipe, hdr, "Rejected geometry must not add an undo step.")
+            editor.updateSceneSnapshot(boundID, name: nil, ticket: try XCTUnwrap(editor.sceneTicket))
             XCTAssertEqual(editor.sceneSnapshots.first?.name, "雪地高光")
             XCTAssertEqual(editor.sceneSnapshots.first?.recipe, hdr)
             editor.setSceneHighlightLimit(1, ticket: try XCTUnwrap(editor.sceneTicket))

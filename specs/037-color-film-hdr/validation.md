@@ -274,4 +274,8 @@ HDR 使用同一份 Bayer 捕获，按相机标定得到带符号的 AP1。全�
 
 图中算子及真实差分可用摄影测试复跑，完整 032 版本往返、目标尺寸、编码和哈希可用交付测试复跑。[摄影像素](../../Tests/RAWMasterImagingTests/DevelopmentScenePhotographicV1Tests.swift) · [编辑往返](../../Tests/RAWMasterUITests/EditingAppearanceRoundTripTests.swift) · [冻结并交付](../../Tests/RAWMasterImagingTests/DevelopmentSceneDeliveryServiceV1Tests.swift) · [实测回执](evidence/2026-11-27-photographic-60mp.json)
 
-已准入的模型先以原尺寸执行，再供摄影、图与采样使用。60MP 全图推理超过已声明的预算时会报告原因。对改变几何的摄影设置，传感器饱和叠加只在有效源映射下报告，使用外部模型覆盖的 DAG 需要保持覆盖与源几何对齐。拍摄原片、屏幕 HDR 余量以及输出目标属于独立条件。
+已准入的模型先以原尺寸执行，再供摄影、图与采样使用。60MP 全图推理超过已声明的预算时会报告原因。传感器饱和叠加仅在能对应原片坐标时显示。拍摄原片、屏幕 HDR 余量以及输出目标属于独立条件。
+
+模型分割在原图坐标中生成蒙版。当最终输出或当前监看的调色节点实际使用该蒙版时，裁切、旋转、透视和有效的镜头畸变校正会移动坐标。编辑器在提交前提示先断开模型蒙版，保留当前草稿和撤销位置。没有连入当前运算的模型、已停用的节点、零权重分支以及不改变坐标的光学校正都能继续使用。预览、示波器和全分辨率交付共用这项判定。
+
+24MP 实拍测试重新打开 SQLite 后读取了两个命名快照。旧快照同时含有裁切和主体蒙版，尝试恢复它时，编辑器解释冲突，SQLite 中的可用草稿仍与打开前逐项相同。另一个快照只含有效的主体蒙版。恢复后拖动裁切被拒绝，松手后的一次撤销直接回到恢复快照之前的配方。[图的输入与准入测试](../../Tests/RAWMasterCoreTests/DevelopmentSceneGraphV1Tests.swift) · [实拍草稿与快照回归](../../Tests/RAWMasterUITests/EditingAppearanceRoundTripTests.swift)

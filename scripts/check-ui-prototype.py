@@ -251,6 +251,64 @@ def main():
                   assert(all('.scene-previews button').every(b=>b.offsetWidth>65)&&!el('.scene-hud')&&!modal().open);
                 """)
                 capture("08-appearance-narrow")
+                browser("set","viewport","1440","1000")
+                scenario("HDR 持久样点跟随当前帧与派生，诊断及 1:1 越界停读", """
+                  const e=currentEdit(), before=JSON.stringify(e.recipe);
+                  const row=n=>el('.sampler-row[data-sampler="'+n+'"] .sampler-readout').innerText;
+                  const pick=async(x,y)=>{act('sampler-pick','');await wait(()=>!!sampleGeometry());
+                    const f=el('.edit-image'),b=f.getBoundingClientRect();
+                    f.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:b.x+x*b.width,clientY:b.y+y*b.height}));};
+                  act('edit-zoom','fit');await pick(.05,.06);await pick(.5,.5);
+                  showLab();act('scene-screen','hdr',el('.scene-lab'));hdrView('target');
+                  await wait(()=>row(0).includes('HDR 目标 · Rec.2020')&&row(1).includes('JPEG 代理 R'));
+                  assert(!row(0).includes('nits')&&!row(1).includes('nits'),'JPEG sample uses its own units');
+                  hdrView('sdr');await wait(()=>row(0).includes('SDR 派生 · Rec.709'));
+                  showLight();set('[name=visualizeHDR]',true);
+                  assert(row(0).includes('退出亮度诊断后可读数')&&!row(1).includes('JPEG')&&!el('.sampler-swatch').style.getPropertyValue('--sample-color'),'do not sample pseudocolor or last frame');
+                  hdrView('sdr');act('edit-zoom','pixels');await wait(()=>row(0).includes('当前画面外')&&row(1).includes('JPEG 代理'));
+                  act('edit-zoom','fit');await wait(()=>row(0).includes('JPEG 代理'));
+                  assert(JSON.stringify(e.recipe)===before&&colorSamplerPoints().length===2,'sampling does not change pixels or history');
+                  act('scene-mode','sdr');await wait(()=>row(0).includes('R ')&&!row(0).includes('JPEG')&&!row(0).includes('Rec.'));
+                  act('scene-mode','hdr');await wait(()=>row(0).includes('JPEG 代理'));
+                  for(let i=1;i>=0;i--){el('.sampler-row[data-sampler="'+i+'"] details').open=true;act('sampler-remove',i);}
+                """)
+                scenario("主体模型覆盖只拦截影响输出的几何，取消或断开后可继续", """
+                  if(!dagEnabled())act('dag-view-toggle');
+                  const graph=currentEdit().recipe.dag, corrector=graph.nodes.find(n=>n.kind==='grade');
+                  if(!dagEnabled() || !el('.photo-node-scope')){if(!el('.dag-floating'))act('dag-view-toggle');}
+                  pickNode(corrector.id);act('edit-tool','basic',el('.inspector-rail'));await page('.photo-node-scope');
+                  set('.photo-node-scope [name=dagNumber][data-key=ev]','.4');
+                  act('edit-tool','masks');maskType('主体');act('canvas-tool-done');
+                  const e=currentEdit(), saved=JSON.stringify(e.recipe), count=e.past.length;
+                  act('canvas-crop');act('canvas-turn');act('canvas-tool-done');
+                  assert(S.canvasTool?.kind==='crop'&&e.past.length===count&&JSON.stringify(e.recipe)===saved &&
+                    el('.editor-toast.error').textContent.includes('当前调色使用模型蒙版。请先断开它，再裁切、旋转或校正镜头畸变。'),'blocked crop retains draft and saved graph');
+                  act('canvas-tool-cancel');act('edit-tool','optics',el('.inspector-rail'));await page('[data-adjustment=distort]');
+                  set('[data-adjustment=distort]','12');assert(JSON.stringify(e.recipe)===saved,'blocked distortion leaves the photo unchanged');
+                  act('edit-tool','basic',el('.inspector-rail'));await page('.photo-node-scope');
+                  set('.photo-node-scope [name=dagNumber][data-key=ev]','0');
+                  set('.photo-node-scope [name=dagNumber][data-key=curveHigh]','0');
+                  act('canvas-crop');act('canvas-turn');act('canvas-tool-done');assert(!S.canvasTool&&e.recipe.quarterTurns===1,'neutral node can crop');
+                  act('edit-step','undo');set('.photo-node-scope [name=dagNumber][data-key=ev]','.4');
+                  act('edit-tool','masks');act('canvas-mask-enable');act('canvas-tool-done');
+                  act('canvas-crop');act('canvas-turn');act('canvas-tool-done');assert(!S.canvasTool&&e.recipe.quarterTurns===1,'unbound or disabled coverage can crop');
+                """)
+                scenario("跨照片应用整图模板保留接收方的摄影、裁切和输出", """
+                  if(!el('.dag-floating'))act('dag-view-toggle');
+                  menuAction('dag-template-save','whole');set('[name=dagTemplateName]','水鸟节点',modal());act('dag-template-save-confirm',null,modal());
+                  const template=Studio.data.dagTemplates.at(-1), source=JSON.stringify(currentEdit().recipe);
+                  act('workflow','library');await page('.photo-card');act('photo','m1');act('workflow','edit');await page('.scene-modes');
+                  act('scene-mode','hdr');if(!el('.dag-floating'))act('dag-view-toggle');
+                  set('[data-adjustment=wbTemperature]','7250');set('[name=sceneLimit]','2.21');
+                  act('canvas-crop');set('[name=crop]','4:5');act('canvas-tool-done');
+                  const e=currentEdit(), before=JSON.stringify(e.recipe);
+                  if(!el('.dag-floating')?.checkVisibility())act('dag-view-toggle');
+                  await page('.graph-text-tools');menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());
+                  assert(!modal().open&&e.recipe.wbTemperature===7250&&e.recipe.crop==='4:5'&&e.recipe.sceneOutput.limitEV===2.21&&
+                         e.recipe.dag.nodes.find(n=>n.kind==='grade').params.ev===.4,'apply graph nodes with receiving photo properties');
+                  assert(JSON.stringify(Studio.edit('b1').recipe)===source,'source unchanged');act('edit-step','undo');
+                  assert(JSON.stringify(e.recipe)===before,'undo restores receiving graph');
+                """)
                 browser("open",(ROOT / ENTRY).as_uri())
                 scenario("双击本地 HTML 也可按照片亮度查看分档", """
                   await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');

@@ -17,7 +17,7 @@ function dagSeed(recipe = currentEdit().recipe) {
   delete params.masks;
   delete params.sceneOutput;
   delete params.colorMode;
-  const photographic = SceneEditor.hdr() ? structuredClone(params) : undefined;
+  const photographic = recipe.sceneOutput ? structuredClone(params) : undefined;
   return { schema: 1, photographic, base: structuredClone({ ...recipe, dag: undefined }), nodes: [
     { id: 'source', kind: 'source', name: '原片显影', enabled: true, params: {} },
     { id: 'grade', kind: 'grade', name: '基础调色', enabled: true, params:photographic ? {} : params },
@@ -63,6 +63,44 @@ function dagEnsure() {
 }
 function dagAllNodes(g, prefix = '') {
   return g.nodes.flatMap(n => [{ node: n, path: prefix }, ...(n.graph ? dagAllNodes(n.graph, prefix + n.name + ' › ') : [])]);
+}
+function dagModelGeometryConflict(recipe) {
+  const graph=recipe.dag;
+  if (!graph || !recipe.sceneOutput) return false;
+  const b=recipe.cropBox;
+  const warped=recipe.crop && recipe.crop!=='原始' || recipe.angle || recipe.quarterTurns || recipe.flipH || recipe.flipV ||
+    recipe.distort || recipe.vertical || (b && (b.x!==0 || b.y!==0 || b.width!==100 || b.height!==100));
+  if (!warped) return false;
+  function readsModel(scope) {
+    const visited=new Set();
+    function visit(id) {
+      if(visited.has(id))return false;
+      visited.add(id);
+      const n=scope.nodes.find(node=>node.id===id);
+      if (!n) return false;
+      const p=n.params, enabled=n.enabled!==false && (p.nodeAmount??100)>0;
+      const mask=n.mask, effective=p.ev || p.curveLow || p.curveHigh || p.curveMid || (Array.isArray(p.curve) && p.curve.some(point=>point.x!==point.y));
+      if (enabled && n.kind==='grade' && effective && mask?.enabled!==false && (mask?.opacity??100)>0) {
+        const semantic=part=>['主体','背景','天空','人物部位','前景实例'].includes(part?.kind) && part.enabled!==false && (part.opacity??100)>0;
+        if (semantic(mask) || mask?.components?.some(semantic)) return true;
+      }
+      if (n.kind==='group' && enabled && readsModel(n.graph)) return true;
+      return scope.edges.filter(edge=>edge.to===id).some(edge=>{
+        if (n.kind==='mix' && edge.slot!=='base') {
+          const amount=edge.slot==='layer' ? p.amount : p['weight:'+edge.slot];
+          if (n.enabled===false || !(amount>0)) return false;
+        }
+        return visit(edge.from);
+      });
+    }
+    return visit(scope.nodes.find(node=>node.kind==='output')?.id);
+  }
+  return readsModel(graph);
+}
+function admitModelGeometry(recipe) {
+  if (!dagModelGeometryConflict(recipe)) return true;
+  notifyEditor('当前调色使用模型蒙版。请先断开它，再裁切、旋转或校正镜头畸变。','error');
+  return false;
 }
 function dagError(g, depth = 0) {
   if (depth > 8 || g.nodes.length > 128) return '节点或嵌套超出原型预算';
@@ -179,7 +217,9 @@ function dagCommit(label, mutate, refresh = true) {
   mutate(graph, root);
   const error = dagError(root);
   if (error) { notify(error, 'error'); return false; }
-  Studio.setRecipe(Studio.data.work, label, dagProject(root));
+  const result=dagProject(root);
+  if (!admitModelGeometry(result)) return false;
+  Studio.setRecipe(Studio.data.work, label, result);
   dagView(); if (refresh) render(); return true;
 }
 function dagRenderFocus(selector = '[name=dagNode]') { render(); $(selector)?.focus({ preventScroll: true }); }
@@ -744,11 +784,21 @@ actions['dag-template-save-confirm'] = () => {
 actions['dag-template-library'] = () => dialog('应用模板到本张', `<div class="menu-list">${(Studio.data.dagTemplates || []).map(t=>btn(t.name,'dag-template-open',t.id,{icon:'folder'})).join('')}</div>`,btn('取消','close'));
 actions['dag-template-open'] = id => {
   const t = Studio.data.dagTemplates.find(t => t.id === id); S.dagTemplateID = id;
-  dialog('应用工作流 · ' + t.name, `<p>${t.kind === 'group' ? '当前草稿：插入所选连线或当前节点的唯一出边，可在组内插入；分叉需先选连线。原片底稿或批量应用：插入目标图的几何节点之前。不会替换整个工作流。' : '替换本张工作流；旧配方可撤销，保存时生成独立版本。'}</p>` + select('底稿', 'dagTemplateBase', [['current', '当前草稿'], ['original', '原片']], 'current'), btn('取消', 'close') + btn('应用到本张', 'dag-template-apply', '', { cls: 'primary' }));
+  dialog('应用工作流 · ' + t.name, `<p>${t.kind === 'group' ? '当前草稿：插入所选连线或当前节点的唯一出边，可在组内插入；分叉需先选连线。原片底稿或批量应用：插入目标图的几何节点之前。不会替换整个工作流。' : '使用模板的节点与连接，保留所选底稿的裁切、整图摄影调整、模型与输出。可撤销。'}</p>` + select('底稿', 'dagTemplateBase', [['current', '当前草稿'], ['original', '原片']], 'current'), btn('取消', 'close') + btn('应用到本张', 'dag-template-apply', '', { cls: 'primary' }));
 };
 function dagApplyTemplate(recipe, t, baseline) {
   const old = structuredClone(recipe), g = baseline === 'original' ? dagSeed(Studio.freshRecipe()) : old.dag ?? dagSeed(old);
-  if (t.kind === 'whole') { const remapped = dagRemap(t.graph); remapped.base = baseline === 'original' ? Studio.freshRecipe() : g.base; return dagProject(remapped); }
+  if (t.kind === 'whole') {
+    const remapped=dagRemap(t.graph);
+    remapped.base=g.base;
+    remapped.photographic=g.photographic;
+    if (g.models) remapped.models=g.models; else delete remapped.models;
+    for (const kind of ['source','geometry','output']) {
+      const target=remapped.nodes.find(n=>n.kind===kind), local=g.nodes.find(n=>n.kind===kind);
+      if (target && local) target.params=structuredClone(local.params);
+    }
+    return dagProject(remapped);
+  }
   const node = { id: dagID(), kind: 'group', name: t.name, enabled: true, params: {}, graph: dagRemap(t.graph) };
   const edge = g.edges.find(e => e.to === g.nodes.find(n => n.kind === 'geometry')?.id) ?? g.edges.find(e => e.to === g.nodes.find(n => n.kind === 'output')?.id);
   g.nodes.splice(g.nodes.findIndex(n => n.id === edge.to), 0, node); g.edges = g.edges.filter(e => e !== edge); g.edges.push({ from: edge.from, to: node.id, slot: 'image' }, { from: node.id, to: edge.to, slot: edge.slot }); return dagProject(g);
@@ -770,6 +820,7 @@ actions['dag-template-apply'] = () => {
     return;
   }
   const result = dagApplyTemplate(currentEdit().recipe, t, base); if (dagError(result.dag)) return notify(dagError(result.dag), 'error');
+  if (!admitModelGeometry(result)) return;
   Studio.setRecipe(Studio.data.work, '应用工作流：' + t.name, result); closeSheet(); dagView(); render();
 };
 actions['dag-batch-menu'] = () => {

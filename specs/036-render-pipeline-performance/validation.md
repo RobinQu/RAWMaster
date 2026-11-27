@@ -4,6 +4,8 @@
 
 ## 场景图与监看复验
 
+在 M4 Max 上给同一份 9504 × 6336 原片添加摄影曝光、饱和度和自然饱和度，并冻结三节点 DAG。PQ AVIF 和 SDR JPEG 各按 35 个原寸瓦片处理。每个目标的图资源核算峰值为 1,458,929,664 字节，包含摄影中间资源预留，预算为 1.5 GiB。一次双交付耗时 1.751 秒。视口尾延迟和整个进程的常驻内存沿用各自测量口径。[阶段与预算回执](../037-color-film-hdr/evidence/2026-11-27-photographic-60mp.json)
+
 2026-11-27，在 M4 Max 上分别固定 Swift 与 Rust 后端测试 6 MP 图，p95 为 14.27 和 14.26 ms。原生雪景的组内监看到 SDR drawable 完成 p95 为 25.44 ms。61.44 MP 合成图在 6 GiB 组件预算内完成。随后用 9504×6336 的实拍原片，在产品预算内分别验证了解码、FIT、非居中 1:1、全图示波器及全尺寸 PQ／SDR 交付。图峰值按执行器单独记账，同进程还需分别核算模型、编码和在途任务的总驻留。[实拍预算和测量](../037-color-film-hdr/evidence/real-60mp-bayer-budget.json) · [签名包与成片回执](../025-editing-workspace/appearance-acceptance.md)[测量与原始样本](../032-export-workspace/grid-delivery-20261127.json) · [图输出与实拍证据](../039-rust-scene-backend/validation.md#组内监看与实际后端)
 
 切换窗口焦点时，兼容直方图沿用上一批像素，HDR 诊断按来源、有效图和输出目标复用采样。原生布局、采样次数、竞态与曲线像素均可复验。[窗口与示波器验收](../025-editing-workspace/appearance-acceptance.md) · [Rust 恒等与长链预算](../039-rust-scene-backend/validation.md#零权重分支与长链预算)

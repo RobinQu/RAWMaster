@@ -102,7 +102,9 @@ function setPhotoParameters(label, fields) {
   const root=structuredClone(r.dag);
   root.photographic={...photoParameters(r),...fields};
   delete root.photographic.dag;
-  Studio.setRecipe(Studio.data.work,label,dagProject(root));
+  const result=dagProject(root);
+  if (!admitModelGeometry(result)) return false;
+  Studio.setRecipe(Studio.data.work,label,result);
 }
 function photoControls() {
   return !dagEnabled() || SceneEditor.hdr();
@@ -389,19 +391,45 @@ document.addEventListener('keydown', (event) => {
 function colorSamplerPoints() {
   return Studio.data.colorSamplers?.[Studio.data.work] ?? [];
 }
-function samplerRGB(point) {
-  const current = $('.developed');
-  if (!Studio.asset(Studio.data.work).online || !current) return null;
-  if (current.complete && current.naturalWidth) S.samplerImage = {src:current.src, image:current};
-  const image = current.complete && current.naturalWidth ? current : S.samplerImage?.src === current.src ? S.samplerImage.image : null;
-  if (!image) return null;
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 1;
-  const context = canvas.getContext('2d', {willReadFrequently:true});
-  context.filter = RMPhotos.filter(RMPhotos.displayLook(currentEdit().recipe));
-  context.drawImage(image, Math.min(image.naturalWidth - 1, Math.floor(point.x * image.naturalWidth / 100)),
-    Math.min(image.naturalHeight - 1, Math.floor(point.y * image.naturalHeight / 100)), 1, 1, 0, 0, 1, 1);
-  return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+function sampleGeometry() {
+  const frame=$('.canvas-fit .edit-image'), image=frame?.querySelector('.developed');
+  if (!image?.complete || !image.naturalWidth || frame.closest('.canvas-panel')?.dataset.photo!==Studio.data.work) return null;
+  const box=frame.getBoundingClientRect(), viewport=frame.closest('.canvas-fit').getBoundingClientRect();
+  if (!box.width || !box.height) return null;
+  const scale=Math.max(box.width/image.naturalWidth,box.height/image.naturalHeight);
+  const width=image.naturalWidth*scale, height=image.naturalHeight*scale;
+  const css=getComputedStyle(image).transform, transform=css==='none' ? new DOMMatrix() : new DOMMatrix(css);
+  function map(point, inverse=false) {
+    const input=new DOMPoint((point.x/100-.5)*(inverse?box.width:width),(point.y/100-.5)*(inverse?box.height:height));
+    const result=input.matrixTransform(inverse?transform.inverse():transform);
+    return {x:100*(.5+result.x/(inverse?width:box.width)),y:100*(.5+result.y/(inverse?height:box.height))};
+  }
+  return {image,box,viewport,map};
+}
+function samplerValue(point) {
+  const hdr=SceneEditor.hdr(), branch=hdr && SceneEditor.samplerFrame();
+  if (branch.status) return {label:branch.status};
+  const frame=sampleGeometry();
+  if (!Studio.asset(Studio.data.work).online || !frame) return {label:'等待读数'};
+  const {box, viewport, image}=frame, mapped=frame.map(point);
+  const x=box.left+box.width*mapped.x/100, y=box.top+box.height*mapped.y/100;
+  if ([mapped.x,mapped.y,point.x,point.y].some(v=>v<0 || v>=100) ||
+      (hdr && (x<viewport.left || x>=viewport.right || y<viewport.top || y>=viewport.bottom))) return {label:'当前画面外'};
+  const overlay=hdr && $('.hdr-range-preview:not([hidden])');
+  const source=overlay || image, sx=overlay?mapped.x:point.x, sy=overlay?mapped.y:point.y;
+  const width=overlay?source.width:source.naturalWidth, height=overlay?source.height:source.naturalHeight;
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=1;
+  const context=canvas.getContext('2d',{willReadFrequently:true});
+  context.filter=overlay?'none':getComputedStyle(image).filter;
+  context.drawImage(source,Math.floor(sx*width/100),Math.floor(sy*height/100),1,1,0,0,1,1);
+  try {
+    const rgb=[...context.getImageData(0,0,1,1).data].slice(0,3);
+    const values='R '+rgb[0]+'　G '+rgb[1]+'　B '+rgb[2];
+    return {rgb,label:hdr ? branch.name+' · JPEG 代理 '+values : values};
+  } catch (error) {
+    if (error.name!=='SecurityError') throw error;
+    return {label:'浏览器未授权读取本地 JPEG 代理'};
+  }
 }
 function colorSamplerPanel() {
   const points = colorSamplerPoints(), available = Studio.asset(Studio.data.work).online;
@@ -409,23 +437,37 @@ function colorSamplerPanel() {
   return `<section class="sampler-panel" aria-label="颜色采样点">
     ${btn('添加颜色采样点', 'sampler-pick', '', {icon:'sampler', disabled:!available || points.length >= 9 || !!S.compare || !!S.cropOpen})}
     ${armed ? '<p class="control-hint" role="status">在照片上点选颜色，或按 Escape 取消。</p>' : ''}
-    <ol class="sampler-list">${points.map((point, i) => {
-      const rgb = samplerRGB(point);
-      return `<li class="sampler-row${rgb ? '' : ' outside'}" data-sampler="${i}">
-        <span class="sampler-swatch" aria-hidden="true"${rgb ? ` style="--sample-color:rgb(${rgb.join(',')})"` : ''}></span>
-        <span class="sampler-readout"><strong>${i + 1}</strong>　${rgb ? `R ${rgb[0]}　G ${rgb[1]}　B ${rgb[2]}` : '当前画面外'}</span>
+    <ol class="sampler-list">${points.map((_point, i) => `<li class="sampler-row outside" data-sampler="${i}">
+        <span class="sampler-swatch" aria-hidden="true"></span>
+        <span class="sampler-readout"><strong>${i + 1}</strong>　<span>等待读数</span></span>
         <details class="sampler-manage"><summary aria-label="编辑采样点 ${i + 1}">${icon('menu', 14)}</summary><div>
           ${btn('重新取样', 'sampler-pick', i, {icon:'sampler', disabled:!available || !!S.compare || !!S.cropOpen})}
-          ${btn('移除采样点', 'sampler-remove', i, {icon:'trash'})}</div></details></li>`;
-    }).join('')}</ol></section>`;
+          ${btn('移除采样点', 'sampler-remove', i, {icon:'trash'})}</div></details></li>`).join('')}</ol></section>`;
 }
 function refreshSamplerPanel() {
-  const panel = $('.sampler-panel');
-  if (panel) panel.outerHTML = colorSamplerPanel();
+  const rows=$$('.sampler-panel [data-sampler]');
+  if (!rows.length) return;
+  const points=colorSamplerPoints(), values=points.map(samplerValue), geometry=sampleGeometry();
+  for (const row of rows) {
+    const i=Number(row.dataset.sampler), sample=values[i];if(!sample) continue;
+    const text=row.querySelector('.sampler-readout > span'), swatch=row.querySelector('.sampler-swatch');
+    if (text.textContent!==sample.label) text.textContent=sample.label;
+    row.classList.toggle('outside',!sample.rgb);
+    if (sample.rgb) swatch.style.setProperty('--sample-color','rgb('+sample.rgb.join(',')+')');else swatch.style.removeProperty('--sample-color');
+  }
+  if (geometry) $$('.sampler-mark').forEach((mark,i)=>{
+    if(!points[i])return;
+    const location=geometry.map(points[i]);mark.style.left=location.x+'%';mark.style.top=location.y+'%';
+  });
 }
 document.addEventListener('load', event => {
-  if (event.target.matches?.('.developed')) refreshSamplerPanel();
+  if (event.target.matches?.('.developed')) {PhotographicScopes.drawImagePreview();refreshSamplerPanel();}
 }, true);
+let samplerScrollFrame;
+document.addEventListener('scroll',event=>{
+  if (!event.target.matches?.('.canvas-fit') || samplerScrollFrame) return;
+  samplerScrollFrame=requestAnimationFrame(()=>{samplerScrollFrame=null;refreshSamplerPanel();});
+},true);
 actions['sampler-pick'] = (index) => {
   if (!Studio.asset(Studio.data.work).online || S.compare || S.cropOpen) return;
   if (sheet.open) closeSheet();
@@ -776,7 +818,7 @@ changes.adjustNumber = (el) => {
   const row = el.closest('.range'), slider = row.querySelector('[name=adjust]'), value = el.valueAsNumber;
   const recipe = adjusted({ dataset: slider.dataset, value });
   if (S.canvasTool) canvasToolPatch(slider.dataset.label, recipe, false);
-  else if(dagEnabled() && photoControls()) setPhotoParameters(slider.dataset.label,recipe);
+  else if(dagEnabled() && photoControls()) {if(setPhotoParameters(slider.dataset.label,recipe)===false){render();return;}}
   else Studio.setRecipe(Studio.data.work, slider.dataset.label, recipe);
   el.defaultValue = el.value;
   el.removeAttribute('aria-invalid');
@@ -971,7 +1013,8 @@ function point(x, y) {
   if (S.cropOpen || S.compare) return;
   const draft = S.canvasSelection;
   if (draft?.id === Studio.data.work && draft.kind === 'sampler' && S.tool === 'basic') {
-    const points = [...colorSamplerPoints()], point = {x:Math.max(0, Math.min(100, x)), y:Math.max(0, Math.min(100, y))};
+    const points = [...colorSamplerPoints()], point = sampleGeometry()?.map({x,y},true);
+    if (!point || [point.x,point.y].some(v=>v<0 || v>=100)) return;
     if (draft.replacing == null) { if (points.length >= 9) return; points.push(point); }
     else { if (!points[draft.replacing]) return; points[draft.replacing] = point; }
     (Studio.data.colorSamplers ??= {})[Studio.data.work] = points;

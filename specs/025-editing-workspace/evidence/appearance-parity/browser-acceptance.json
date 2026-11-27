@@ -1,5 +1,5 @@
 {
-  "completed_at": "2026-11-27T22:23:20+08:00",
+  "completed_at": "2026-11-27T22:56:57+08:00",
   "base_commit": "7e91aa4783ac18adaae8a5b8f14a2c109f79059e",
   "browser": "Google Chrome 158.0.8127.37",
   "driver": "agent-browser 0.26.0",
@@ -16,14 +16,13 @@
     }
   ],
   "scope": "摄影工作台浏览器交互。照片为仓库 JPEG 代理，HDR 超白区和伪色为模拟。套件之间重复运行的场景分别计数。",
-  "scenario_executions": 126,
+  "scenario_executions": 129,
   "suites": [
     {
       "suite": "appearance-parity",
       "command": "python3 scripts/check-ui-prototype.py --appearance-parity-only",
       "exit_code": 0,
-      "scenario_executions": 11,
-      "seconds": 15.5,
+      "scenario_executions": 14,
       "passed": true,
       "scenarios": [
         "三种外观共享摄影控件，保留当前呈现",
@@ -36,6 +35,9 @@
         "错误消退，后台可查，重试成功只显示新通知",
         "窄窗深色的兼容图和返回焦点",
         "只读图窗的菜单收起、展开与 Esc",
+        "HDR 持久样点跟随当前帧与派生，诊断及 1:1 越界停读",
+        "主体模型覆盖只拦截影响输出的几何，取消或断开后可继续",
+        "跨照片应用整图模板保留接收方的摄影、裁切和输出",
         "双击本地 HTML 也可按照片亮度查看分档"
       ]
     },
@@ -44,7 +46,7 @@
       "command": "python3 scripts/check-ui-prototype.py --editor-rails-only",
       "exit_code": 0,
       "scenario_executions": 6,
-      "seconds": 6.9,
+      "seconds": 7.3,
       "passed": true
     },
     {
@@ -52,7 +54,7 @@
       "command": "python3 scripts/check-ui-prototype.py --hdr-only",
       "exit_code": 0,
       "scenario_executions": 4,
-      "seconds": 5.6,
+      "seconds": 5.7,
       "passed": true
     },
     {
@@ -76,7 +78,7 @@
       "command": "python3 scripts/check-ui-prototype.py --native-graph-only",
       "exit_code": 0,
       "scenario_executions": 4,
-      "seconds": 2.6,
+      "seconds": 3.0,
       "passed": true
     },
     {
@@ -116,7 +118,7 @@
       "command": "python3 scripts/check-ui-prototype.py --grid-export-only",
       "exit_code": 0,
       "scenario_executions": 4,
-      "seconds": 9.2,
+      "seconds": 10.0,
       "passed": true
     },
     {
@@ -124,7 +126,7 @@
       "command": "python3 scripts/check-virtual-copies-prototype.py",
       "exit_code": 0,
       "scenario_executions": 13,
-      "seconds": 5.6,
+      "seconds": 5.3,
       "passed": true
     },
     {
@@ -132,7 +134,6 @@
       "command": "python3 scripts/check-ui-prototype.py",
       "exit_code": 0,
       "scenario_executions": 60,
-      "seconds": 62.2,
       "passed": true
     }
   ],

@@ -48,3 +48,5 @@
 完整 `.rawmasterlibrary` 备份实测覆盖原片、归档显影成片及连续创建的两级副本。包内共写入三个内容对象，分别为原件、归档 PNG 和发布回执。移除测试原件与旧归档后，恢复的三个呈现仍各自保有命名快照，并读取同一份归档，解码像素逐通道匹配。若副本引用另一张照片的归档，或其显影版本记录了与发布回执不符的配方或预设，完整资料库包及编辑归档备份都会拒绝该引用。[完整包恢复和归档归属回归](../../Tests/RAWMasterCoreTests/LibraryVirtualCopyStorageTests.swift) · [原片离线导出和重连后重新显影](../../Tests/RAWMasterUITests/VirtualCopyDeliveryTests.swift)
 
 前一轮的方案评估对照 Lightroom Classic 的虚拟副本、命名快照及历史语义。当时命名快照仍在编辑会话内存里。本轮以按呈现和分支持久化的库数据为基础。[Adobe 虚拟副本说明](https://helpx.adobe.com/lightroom-classic/desktop/manage-catalogs-and-files/photos.html) · [Adobe 的快照与历史说明](https://helpx.adobe.com/lightroom-classic/desktop/process-and-develop-photos/develop-module-options.html)
+
+本轮签名包另以实拍原片执行两次独立滑杆编辑。彩色原片设置饱和度 +18，黑白副本单独调整光照曝光。退出进程后重开，两份快照和配方匹配各自的资料库卡片。独立与合并选片导出的 JPEG 均作全分辨率像素校验。[本轮原生资料库与 032 验收](evidence/virtual-copies/signed-desktop.md#共用摄影工具后的发布版复验)

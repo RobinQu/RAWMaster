@@ -140,7 +140,7 @@ const SceneEditor = (() => {
       ${v.scope === 'output' ? chart(config(), v) : `<div class="scene-axis" role="img" aria-label="${h(label + '：' + axes)}"><span>${h(axes)}</span></div>`}
       <small class="scene-display-key">模拟屏幕余量：${v.screen === 'unknown' ? '未知' : v.screen === 'sdr' ? '0 EV' : '+2 EV'} · 实线可显示／虚线超余量</small>
       <div class="row">${btn(v.sample ? '解除样点' : '锁定中心样点','scene-sample','',{pressed:v.sample,disabled:!!why})}${scopesReview ? btn('在主图取样','scene-pick','',{pressed:!!v.picking,disabled:!!why}) : ''}</div>
-      <p role="status" class="small">${why ? '源数据不可用，尚无采样值。' : (v.sample ? `锁定样点（${Math.round((v.point?.x ?? .5)*100)}%，${Math.round((v.point?.y ?? .5)*100)}%）：` : '中心预读：') + h(reading)} 未提供 HDR Lab 或 HDR 矢量图。</p>
+      <p role="status" class="small">${why ? '源数据不可用，尚无采样值。' : (v.sample ? `锁定样点（${Math.round((v.point?.x ?? .5)*100)}%，${Math.round((v.point?.y ?? .5)*100)}%）：` : '中心预读：') + '阶段示例 · '+h(reading)} 未提供 HDR Lab 或 HDR 矢量图。</p>
       ${controls()}${reviewDisplay()}</section>`;
   }
   function trimFields(c, disabled) {
@@ -291,6 +291,7 @@ const SceneEditor = (() => {
       el.style.filter = RMPhotos.filter(RMPhotos.displayLook(preview(r)));
     });
     PhotographicScopes.drawImagePreview();
+    refreshSamplerPanel();
     const monitor = $('.dag-monitor img');
     if (monitor) monitor.style.filter = dagPhotoFilter();
   }
@@ -346,7 +347,13 @@ const SceneEditor = (() => {
     if (!c || versions() || reason() || key && !Object.hasOwn(RMPhotos.filmStocks,key)) return;
     c.film = key; view().preview = 'sdr'; commit(key ? '在 SDR 派生中采用胶片' : '移除派生胶片', c);
   };
+  function samplerFrame() {
+    const v = view();
+    if (v.overlays.has('bands')) return {status:'退出亮度诊断后可读数'};
+    if (v.failed || reason() || S.cropOpen || S.compare || S.dagConnectionDraft || (dagEnabled() && (dagView().target || dagPreviewState().bypass || dagPreviewState().solo))) return {status:'等待读数'};
+    return {name:!fallback() ? 'HDR 目标 · Rec.2020' : v.preview==='sdr' ? 'SDR 派生 · Rec.709' : 'SDR 显示回退 · Rec.709'};
+  }
   const preview = r => !hdr() || fallback() ? RMSceneOutput.sdrPreview(r, config(r)) : r;
   const overlayMarkup = () => !hdr() ? (mode()==='bw' ? '<canvas class="bw-range-preview" hidden aria-hidden="true"></canvas>' : '') : reason() ? '' : `<div class="scene-marks" aria-hidden="true">${[...view().overlays].filter(k=>k!=='bands').map(k=>`<i class="${k}"></i>`).join('')}<canvas class="hdr-range-preview" data-visualize="${view().overlays.has('bands')}" hidden></canvas></div>`;
-  return { modeBar, badge, reportRuntime, unavailable: () => blocked() || reason(), scope, rgbPlot, film, preview, config, hdr, overlayMarkup, rendition, nativeReview, visualizeControl, bands, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
+  return { modeBar, badge, reportRuntime, unavailable: () => blocked() || reason(), scope, rgbPlot, film, preview, config, hdr, overlayMarkup, rendition, nativeReview, visualizeControl, bands, scopesReview, scopePick, samplerFrame, scopeOpen: () => view().scopeOpen };
 })();
