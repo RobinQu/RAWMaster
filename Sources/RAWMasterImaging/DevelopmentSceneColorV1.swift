@@ -73,10 +73,21 @@ enum DevelopmentSceneColorV1 {
       rows = (.init(0.6954522414, 0.1406786965, 0.1638690622, 0),
               .init(0.0447945634, 0.8596711185, 0.0955343182, 0),
               .init(-0.0055258826, 0.0040252103, 1.0015006723, 0))
+    case (.acescg, .linearRec709):
+      rows = (.init(1.7050509973, -0.6217921295, -0.0832588687, 0),
+              .init(-0.1302564132, 1.1408047346, -0.0105483215, 0),
+              .init(-0.0240033524, -0.1289689744, 1.1529723383, 0))
     case (.acescg, .acescg), (.aces2065, .aces2065):
       rows = (.init(1, 0, 0, 0), .init(0, 1, 0, 0), .init(0, 0, 1, 0))
     default: throw Failure.unsupportedConversion
     }
-    return Transform(rows: rows, scale: scale, input: input, output: target == .acescg ? .working : .exchange)
+    let output: Port
+    switch target {
+    case .acescg: output = .working
+    case .aces2065: output = .exchange
+    case .linearRec709:
+      output = .init(space: .linearRec709, reference: .sceneLinear(scaleToSceneReference: 1), alpha: .premultiplied)
+    }
+    return Transform(rows: rows, scale: scale, input: input, output: output)
   }
 }

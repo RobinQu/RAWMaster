@@ -88,6 +88,24 @@ enum DevelopmentPhotoDenoise {
         return (input, mix)
     }
 
+    /// Production scene-graph entry: no file URL or RAW-domain capability is required. Only the
+    /// full-chroma display-RGB network is valid on an already demosaiced scene-linear surface.
+    static var sceneAvailable: Bool {
+        PhotoDenoiseNetwork.resourceURL != nil
+            && MTLCreateSystemDefaultDevice().map(MPSSupportsMTLDevice) == true
+    }
+
+    static func applyScene(_ settings: DevelopmentAIDenoiseV1, to source: CIImage) throws -> CIImage {
+        try settings.validate()
+        guard settings.model == .photoVGG7Chroma,
+              let device = MTLCreateSystemDefaultDevice(), MPSSupportsMTLDevice(device) else {
+            throw Failure.source
+        }
+        _ = try PhotoDenoiseNetwork.forDevice(device)
+        let encoded = try displayInput(source)
+        return try compose(settings: settings, original: encoded, prediction: prediction(from: encoded))
+    }
+
     static func apply(_ settings: DevelopmentAIDenoiseV1, at url: URL, to source: CIImage) throws -> CIImage {
         try settings.validate()
         guard !settings.model.requiresMosaic, settings.model.isSupported(by: capability(at:url)) else { throw Failure.source }

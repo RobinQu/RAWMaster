@@ -175,3 +175,18 @@ public enum DevelopmentSceneSegmentationModelV1: String, Codable, CaseIterable, 
   case landscape = "efficientvit-seg-b2-ade20k@mask-ai-native-v1"
   case people = "selfie-multiclass@mask-ai-native-v1"
 }
+
+public extension DevelopmentSceneModelProgramV1 {
+  /// Maps the scene-compatible parts of a legacy recipe into the deterministic model prefix.
+  /// RAW-domain/mosaic denoisers and mask candidates are intentionally not inferred here.
+  static func derived(from adjustments: DevelopmentAdjustmentsV3) throws -> Self? {
+    var stages: [DevelopmentSceneModelStageV1] = []
+    if let denoise = adjustments.aiDenoise, denoise.model == .photoVGG7Chroma {
+      stages.append(.denoise(denoise.model, amount: denoise.amount))
+    }
+    if let superResolution = adjustments.superResolution {
+      stages.append(.superResolution(superResolution))
+    }
+    return stages.isEmpty ? nil : try .init(stages: stages)
+  }
+}

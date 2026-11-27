@@ -4488,10 +4488,14 @@ extension EditingController {
         let id = UUID(), focus = focusGeneration, version = selectedVersionID
         sceneRequestID = id; scenePreviewError = nil; scenePreviewBusy = true
         let source = work.source, sampling = sceneSampling, target = sceneTarget, service = scenePreview
+        let models = recipe.adjustmentsV3.flatMap {
+          try? DevelopmentSceneModelProgramV1.derived(from: $0)
+        } ?? nil
         let viewing = stage == .development ? sceneGraphState.viewing : .init()
         sceneTask = Task { [weak self] in
             do {
-                let frame = try await service.render(source: source, graph: graph, view: viewing, target: target, sampling: sampling)
+                let frame = try await service.render(source: source, graph: graph, view: viewing,
+                  target: target, sampling: sampling, models: models)
                 guard let self, !Task.isCancelled, self.sceneRequestID == id, self.focusGeneration == focus,
                       self.selectedVersionID == version, self.sceneTarget == target, self.visibleSceneGraph == graph else { return }
                 self.sceneFrame = frame; self.scenePreviewBusy = false; self.sceneTask = nil

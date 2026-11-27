@@ -41,6 +41,7 @@ package actor DevelopmentScenePreviewV1 {
     let graph: DevelopmentSceneGraphRendererV1
     let queue: MTLCommandQueue
     let downsample: MTLComputePipelineState
+    let modelProvider: DevelopmentSceneProductionModelProvider?
     init() throws {
       guard let device = MTLCreateSystemDefaultDevice(), let queue = device.makeCommandQueue() else {
         throw DevelopmentSceneColorV1.Failure.metalUnavailable
@@ -52,6 +53,7 @@ package actor DevelopmentScenePreviewV1 {
       downsample = try device.makeComputePipelineState(function: kernel)
       decoder = try DevelopmentSceneRAWV1(device: device)
       graph = try DevelopmentSceneGraphRendererV1(device: device, surfaceBudget: 640 * 1024 * 1024)
+      modelProvider = try? DevelopmentSceneProductionModelProvider(device: device)
     }
   }
   private struct Upstream {
@@ -96,14 +98,16 @@ package actor DevelopmentScenePreviewV1 {
 
   package nonisolated func render(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1,
       view: DevelopmentSceneGraphV1.View, target: DevelopmentSceneOutputStateV1.Target,
-      sampling: Sampling) async throws -> DevelopmentScenePreviewFrameV1 {
+      sampling: Sampling, models: DevelopmentSceneModelProgramV1? = nil) async throws -> DevelopmentScenePreviewFrameV1 {
     try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, io: 1)) {
-      try await self.perform(source: source, graph: graph, view: view, target: target, sampling: sampling)
+      try await self.perform(source: source, graph: graph, view: view, target: target,
+        sampling: sampling, models: models)
     }
   }
 
   private func perform(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
-                       target: DevelopmentSceneOutputStateV1.Target, sampling: Sampling) throws -> DevelopmentScenePreviewFrameV1 {
+                       target: DevelopmentSceneOutputStateV1.Target, sampling: Sampling,
+                       models: DevelopmentSceneModelProgramV1? = nil) throws -> DevelopmentScenePreviewFrameV1 {
     return try autoreleasepool {
       let (ctx, upstream) = try open(source)
       let stamp = upstream.stamp, raw = upstream.raw.image
@@ -125,7 +129,7 @@ package actor DevelopmentScenePreviewV1 {
       if selection?.view != view {
         selection = nil
         let result = try ctx.graph.preparePreview(input.image, geometry: input.geometry, graph: graph,
-          view: view, sourceRevision: revision)
+          view: view, models: models, provider: ctx.modelProvider, sourceRevision: revision)
         selection = Selection(scope: graph.graph, view: view, scene: result); counts.graph += 1
       }
       guard let selection else { throw Failure.invalidViewport }

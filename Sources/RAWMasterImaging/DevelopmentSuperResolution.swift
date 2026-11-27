@@ -18,6 +18,7 @@ enum DevelopmentSuperResolution {
     }
 
     static let checkpoint = "deb2c288f635bed4a0ffc0be9ca8f6a735233b530ad5b2c392c5b2e6c5fe30ad"
+    static var isAvailable: Bool { UpconvPhotoNetwork.resourceURL != nil }
     private static let sourceForRange: Result<CIKernel, Error> = Result {
         let source = """
         #include <metal_stdlib>
@@ -64,6 +65,13 @@ enum DevelopmentSuperResolution {
 
 private final class UpconvPhotoNetwork {
     static let side = 192
+    static let resourceURL: URL? = {
+        let owner: Bundle?
+        if Bundle.main.bundleURL.pathExtension.lowercased() == "app" {
+            owner = Bundle.main.resourceURL.flatMap { Bundle(url: $0.appendingPathComponent("RAWMaster_RAWMasterImaging.bundle")) }
+        } else { owner = Bundle.module }
+        return owner?.url(forResource: "PhotoUpconv7", withExtension: "mlpackage", subdirectory: "PhotoSuperResolution")
+    }()
     static let shared: Result<UpconvPhotoNetwork, Error> = Result { try UpconvPhotoNetwork() }
     private let model: MLModel
     private let predictionLock=NSLock()
@@ -75,11 +83,7 @@ private final class UpconvPhotoNetwork {
         return try model.prediction(from:features)
     }
     private init() throws {
-        let owner: Bundle?
-        if Bundle.main.bundleURL.pathExtension.lowercased() == "app" {
-            owner = Bundle.main.resourceURL.flatMap { Bundle(url:$0.appendingPathComponent("RAWMaster_RAWMasterImaging.bundle")) }
-        } else { owner = Bundle.module }
-        guard let url = owner?.url(forResource:"PhotoUpconv7",withExtension:"mlpackage",subdirectory:"PhotoSuperResolution") else {
+        guard let url = Self.resourceURL else {
             throw DevelopmentSuperResolution.Failure.model
         }
         let verified = [

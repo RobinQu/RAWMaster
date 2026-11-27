@@ -18,7 +18,7 @@ public struct DevelopmentMaskModelPack: Sendable {
   public static let runtimePath = "ONNXRuntime/lib/libonnxruntime.1.27.0.dylib"
   public static let runtimeHash = "49422a138fff12d7fcbd544373aefbffd510e473e08e18af28a8ecc3581029bf"
   public static let landscapeHash =
-    "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+    "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d"
 
   public func modelHashes(_ component: Component) -> [String] {
     switch component {
