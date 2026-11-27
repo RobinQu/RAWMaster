@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "graph": {
+    "nodes": [
+      {
+        "id": "ramp",
+        "name": "Linear coverage",
+        "operation": {
+          "kind": "linearCoverage",
+          "start": [0.1, 0.1],
+          "end": [0.9, 0.9]
+        }
+      },
+      {
+        "id": "local",
+        "name": "Local exposure",
+        "operation": {
+          "kind": "corrector",
+          "image": "$input",
+          "mask": "ramp",
+          "exposureEV": 0.75,
+          "curve": [],
+          "strength": 1.0,
+          "enabled": true
+        }
+      },
+      {
+        "id": "inner",
+        "name": "Inner group",
+        "operation": {
+          "kind": "group",
+          "image": "local",
+          "graph": {
+            "nodes": [
+              {
+                "id": "inner-correct",
+                "name": "Inner exposure",
+                "operation": {
+                  "kind": "corrector",
+                  "image": "$input",
+                  "mask": null,
+                  "exposureEV": 0.25,
+                  "curve": [],
+                  "strength": 1.0,
+                  "enabled": true
+                }
+              }
+            ],
+            "output": "inner-correct"
+          },
+          "strength": 0.5,
+          "enabled": true
+        }
+      }
+    ],
+    "output": "inner"
+  }
+}

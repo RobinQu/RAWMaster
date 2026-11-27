@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "graph": {
+    "nodes": [
+      {
+        "id": "base",
+        "name": "Base exposure",
+        "operation": {
+          "kind": "corrector",
+          "image": "$input",
+          "mask": null,
+          "exposureEV": 1.0,
+          "curve": [],
+          "strength": 1.0,
+          "enabled": true
+        }
+      },
+      {
+        "id": "warm",
+        "name": "Warm branch",
+        "operation": {
+          "kind": "corrector",
+          "image": "$input",
+          "mask": null,
+          "exposureEV": 0.5,
+          "curve": [],
+          "strength": 1.0,
+          "enabled": true
+        }
+      },
+      {
+        "id": "mix",
+        "name": "Parallel mix",
+        "operation": {
+          "kind": "parallel",
+          "base": "base",
+          "layers": [
+            { "image": "warm", "weight": 1.0, "mode": "normal" }
+          ],
+          "enabled": true
+        }
+      }
+    ],
+    "output": "mix"
+  }
+}
