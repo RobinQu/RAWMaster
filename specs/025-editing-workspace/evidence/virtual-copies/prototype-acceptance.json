@@ -8,11 +8,12 @@
   "copyWalkthrough": {
     "entry": "docs/ui/prototype/index.html?sceneNativeReview=1",
     "command": "python3 scripts/check-virtual-copies-prototype.py",
-    "passed": 12,
+    "passed": 13,
     "scenarios": [
       "原片建立独立 SDR 和 HDR 命名快照",
       "照片右键、名称验证和取消",
       "重开和切换恢复本份快照，恢复可撤销",
+      "⌘ 取消原片后底栏和顶部编辑唯一勾选的副本",
       "同源多选共享文件元数据，修改标签只列出一张照片",
       "032 两份成片与一份原件，分别冻结并提交",
       "冻结回执在继续编辑后维持身份与名称",

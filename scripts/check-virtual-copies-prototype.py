@@ -104,6 +104,25 @@ def main():
               assert(el('.photo-card[data-val="'+copyID()+'"] img').style.filter!==el('.photo-card[data-val=b1] img').style.filter,'different thumbnail looks');
             """)
             capture('01-library-copies')
+            run('⌘ 取消原片后底栏和顶部编辑唯一勾选的副本',"""
+              const selectCopyWithSourceFocus=()=>{
+                choose(copyID());choose('b1',true);choose('b1',true);
+                assert(activeIDs().join()===copyID()&&activeBrowser().focus==='b1','source has focus while copy alone is checked');
+              };
+              selectCopyWithSourceFocus();
+              act('selection-menu');act('copy-request','rename',dlg());
+              assert(el('[name=copyName]').value==='银盐黑白','more operates on sole copy');act('copy-cancel',null,dlg());
+              for(const entry of ['footer','toolbar']){
+                selectCopyWithSourceFocus();
+                if(entry==='footer')tap('.actionbar [data-act=edit]');else act('workflow','edit');
+                await wait(()=>S.page==='edit'&&el('.edit-identity')?.innerText.includes('银盐黑白'),'copy editor from '+entry);
+                assert(Studio.data.work===copyID()&&currentEdit().recipe.mono,'same copy recipe');
+                set('[data-adjustment=ev]',entry==='footer'?'-0.6':'-0.5');
+                assert(Studio.edit('b1').recipe.ev===0.55,'source recipe unchanged');await library();
+                assert(activeBrowser().focus===copyID()&&activeIDs().join()===copyID(),'returns to selected copy');
+              }
+              choose('b1');choose(copyID(),true);
+            """)
             run('同源多选共享文件元数据，修改标签只列出一张照片',"""
               assert(activeIDs().length===2&&selectedPhysicalIDs().length===1,'two selected looks share a file');
               act('rate','4');assert(Studio.asset('b1').stars===4&&Studio.asset(copyID()).stars===4,'shared rating');

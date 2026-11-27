@@ -218,13 +218,13 @@ function actionbar(b, info) {
   const selected = b.selected.length,
     stage = isTriage(),
     history = isHistory(),
-    focus = b.focus;
+    focus = libraryEditTarget(b);
   return `<footer class="actionbar"><strong>已选 ${selected} 张</strong><div class="row wrap">${
     history
       ? btn('查看封存记录', 'history-detail', info.session.id)
       : btn(stage ? '通过' : '保留', 'decide', 'keep', { icon: 'flag', disabled: !selected }) +
         btn('排除', 'decide', 'reject', { disabled: !selected }) +
-        btn('更多…', 'selection-menu', '', { disabled: !selected })
+        btn('更多…', 'selection-menu', '', { disabled: !selected, title:'更多照片操作' })
   }</div>
       <div class="row end">${btn('编辑照片', 'edit', '', { disabled: !validWork(focus), icon: 'edit' })}${btn('批量导出', 'export', '', { cls: 'primary', icon: 'export', disabled: !b.selected.some(validWork) })}</div></footer>`;
 }

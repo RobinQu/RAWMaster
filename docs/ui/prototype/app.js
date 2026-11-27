@@ -510,7 +510,7 @@ function chrome() {
           icon: ic,
           pressed: part === k,
           disabled:
-            (k === 'edit' && !(page === 'library' ? validWork(activeBrowser().focus) : validWork(work))) ||
+            (k === 'edit' && !(page === 'library' ? validWork(libraryEditTarget()) : validWork(work))) ||
             (k === 'export' && page === 'library' && isTriage()),
         }),
       )

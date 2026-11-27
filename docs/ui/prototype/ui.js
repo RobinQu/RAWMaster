@@ -206,6 +206,10 @@ function activeBrowser() {
 function activeIDs() {
   return [...activeBrowser().selected];
 }
+function libraryEditTarget(browser = activeBrowser()) {
+  const projectGrid = browser.view === 'grid' && (S.scope === 'all' || S.scope === 'picks' || S.scope.startsWith('project/'));
+  return projectGrid && browser.selected.length === 1 ? browser.selected[0] : browser.focus;
+}
 function mutate(label, fn) {
   Studio.change(label, fn);
   render();
@@ -246,6 +250,13 @@ function canEditPhoto(id) {
 }
 function openEditor(id) {
   if (!canEditPhoto(id)) return;
+  if (S.page === 'library') {
+    const browser = activeBrowser();
+    if (browser.focus !== id) {
+      browser.focus = browser.anchor = id;
+      Studio.save();
+    }
+  }
   withPhoto(id);
   go('edit/development');
 }
@@ -285,7 +296,7 @@ function route() {
 actions.close = closeSheet;
 actions.goto = go;
 actions.workflow = (page) => {
-  if (page === 'edit') openEditor(S.page === 'library' ? activeBrowser().focus : Studio.data.work);
+  if (page === 'edit') openEditor(S.page === 'library' ? libraryEditTarget() : Studio.data.work);
   else if (page === 'export') {
     if (S.page !== 'export') showExport();
   } else go('library/' + S.scope);
@@ -301,7 +312,7 @@ actions.inspector = () => {
   else S.inspector = !S.inspector;
   render();
 };
-actions.edit = () => openEditor(activeBrowser().focus);
+actions.edit = () => openEditor(libraryEditTarget());
 actions.export = () => showExport();
 document.addEventListener('click', (event) => {
   const el = event.target.closest('[data-act]');

@@ -27,7 +27,9 @@ const VirtualCopies = (() => {
     return '副本 ' + index;
   }
   function open(kind) {
-    const id = activeBrowser().focus;
+    const ids = activeIDs();
+    if (ids.length !== 1) return;
+    const id = ids[0];
     if (!canPresent() || !validWork(id) || !labels[kind] || (kind!=='create' && !Studio.copy(id))) return;
     request = {kind,id};
     const removing = kind === 'remove';
