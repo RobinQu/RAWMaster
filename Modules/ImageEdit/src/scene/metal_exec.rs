@@ -9,9 +9,10 @@ use metal::{
     MTLCommandBufferStatus, MTLOrigin, MTLPixelFormat, MTLResourceOptions, MTLSize, MTLStorageMode,
     MTLTextureUsage,
 };
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::ffi::c_void;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -27,13 +28,16 @@ struct Params {
 struct SurfaceBudget {
     maximum: usize,
     used: usize,
+    peak: usize,
 }
 
 impl SurfaceBudget {
     fn new(maximum: usize, input: usize) -> Self {
+        let used = input.min(maximum);
         Self {
             maximum,
-            used: input.min(maximum),
+            used,
+            peak: used,
         }
     }
 
@@ -44,6 +48,7 @@ impl SurfaceBudget {
             ));
         }
         self.used += bytes;
+        self.peak = self.peak.max(self.used);
         Ok(())
     }
 
@@ -52,23 +57,45 @@ impl SurfaceBudget {
     }
 }
 
-/// Source-independent coverage prefixes (ramps, ellipses, combines) survive across frames.
-/// Their key includes the node, all parameters, the surface size, and frame geometry.
-struct CoverageCache {
+/// Completion receipt for one render. Kept as a C-compatible value so the Swift adapter can log
+/// exactly what the backend did without a second GPU query.
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
+pub struct Receipt {
+    pub abi: u32,
+    pub tiles: u32,
+    pub nodes: u32,
+    pub dispatches: u32,
+    pub coverage_hits: u32,
+    pub node_hits: u32,
+    pub reserved: u32,
+    pub peak_bytes: u64,
+    pub budget_bytes: u64,
+    pub cpu_ms: f64,
+}
+
+pub const RECEIPT_ABI: u32 = 1;
+
+/// LRU texture cache used for analytic coverage and source-revision-keyed intermediate nodes.
+/// Every retained texture stays charged to the render budget until eviction.
+struct TextureCache {
     entries: HashMap<String, (Arc<metal::Texture>, usize)>,
     order: VecDeque<String>,
     bytes: usize,
+    budget: usize,
+    max_entries: usize,
+    max_entry_bytes: usize,
 }
 
-impl CoverageCache {
-    const BUDGET: usize = 512 * 1024 * 1024;
-    const ENTRIES: usize = 64;
-
-    fn new() -> Self {
+impl TextureCache {
+    fn new(budget: usize, max_entries: usize, max_entry_bytes: usize) -> Self {
         Self {
             entries: HashMap::new(),
             order: VecDeque::new(),
             bytes: 0,
+            budget,
+            max_entries,
+            max_entry_bytes,
         }
     }
 
@@ -88,7 +115,7 @@ impl CoverageCache {
         bytes: usize,
         budget: &mut SurfaceBudget,
     ) {
-        if bytes > Self::BUDGET {
+        if bytes > self.max_entry_bytes || bytes > self.budget {
             return;
         }
         if let Some((old, old_bytes)) = self.entries.remove(&key) {
@@ -101,7 +128,7 @@ impl CoverageCache {
                 ));
             }
         }
-        while self.bytes + bytes > Self::BUDGET || self.entries.len() >= Self::ENTRIES {
+        while self.bytes + bytes > self.budget || self.entries.len() >= self.max_entries {
             let Some(oldest) = self.order.pop_front() else {
                 break;
             };
@@ -119,6 +146,30 @@ impl CoverageCache {
         self.bytes += bytes;
         self.entries.insert(key.clone(), (texture, bytes));
         self.order.push_back(key);
+    }
+}
+
+struct ExecutionState {
+    graph: Scope,
+    coverage: TextureCache,
+    nodes: TextureCache,
+    receipt: Receipt,
+}
+
+impl ExecutionState {
+    fn new(graph: Scope) -> Self {
+        Self {
+            graph,
+            // Analytic masks are small relative to color surfaces and survive panning/editing.
+            coverage: TextureCache::new(512 * 1024 * 1024, 128, 256 * 1024 * 1024),
+            // General intermediates are keyed by the caller's source revision. The cap keeps a
+            // 60MP edit from pinning several full-resolution color frames.
+            nodes: TextureCache::new(768 * 1024 * 1024, 64, 256 * 1024 * 1024),
+            receipt: Receipt {
+                abi: RECEIPT_ABI,
+                ..Receipt::default()
+            },
+        }
     }
 }
 
@@ -187,18 +238,42 @@ fn texture_bytes(width: u32, height: u32, format: MTLPixelFormat) -> usize {
     width as usize * height as usize * pixel
 }
 
-fn coverage_key(
+fn node_key(
+    source_revision: u64,
     id: &str,
-    operation: &Operation,
+    operation_key: &str,
     width: u32,
     height: u32,
     origin: [i64; 2],
     geometry: (u32, u32),
+    input_key: &str,
+    dependency_keys: &[String],
 ) -> String {
     format!(
-        "{id}|{operation:?}|{width}x{height}|{},{},{}x{}",
-        origin[0], origin[1], geometry.0, geometry.1
+        "rev{source_revision}|src{input_key}|{id}|{operation_key}|{width}x{height}|{},{},{}x{}|{}",
+        origin[0],
+        origin[1],
+        geometry.0,
+        geometry.1,
+        dependency_keys.join("|")
     )
+}
+
+fn tile_ranges(width: u32, height: u32, edge: u32) -> Vec<(u32, u32, u32, u32)> {
+    let edge = if edge == 0 { u32::MAX } else { edge.max(64) };
+    let mut tiles = Vec::new();
+    let mut y = 0;
+    while y < height {
+        let tile_height = edge.min(height - y);
+        let mut x = 0;
+        while x < width {
+            let tile_width = edge.min(width - x);
+            tiles.push((x, y, tile_width, tile_height));
+            x += tile_width;
+        }
+        y += tile_height;
+    }
+    tiles
 }
 
 #[derive(Clone, Copy)]
@@ -213,8 +288,7 @@ pub struct SceneProgram {
     queue: metal::CommandQueue,
     color: metal::ComputePipelineState,
     coverage: metal::ComputePipelineState,
-    graph: Scope,
-    cache: Mutex<CoverageCache>,
+    state: Mutex<ExecutionState>,
 }
 
 impl SceneProgram {
@@ -248,13 +322,31 @@ impl SceneProgram {
             queue,
             color,
             coverage,
-            graph,
-            cache: Mutex::new(CoverageCache::new()),
+            state: Mutex::new(ExecutionState::new(graph)),
         })
     }
 
-    pub fn graph(&self) -> &Scope {
-        &self.graph
+    pub fn graph(&self) -> Option<Scope> {
+        self.state.lock().ok().map(|state| state.graph.clone())
+    }
+
+    /// Replaces the graph for an existing topology. The parameter caches remain keyed by node
+    /// content, so unchanged prefixes still hit while edited nodes miss.
+    pub fn update(&self, document: &[u8]) -> Result<(), SceneError> {
+        let (_, graph) = parse(document)?;
+        let mut state = self
+            .state
+            .lock()
+            .map_err(|_| SceneError::Render("scene execution state poisoned".into()))?;
+        state.graph = graph;
+        Ok(())
+    }
+
+    pub fn receipt(&self) -> Receipt {
+        self.state
+            .lock()
+            .map(|state| state.receipt)
+            .unwrap_or_default()
     }
 
     pub fn render(
@@ -265,6 +357,7 @@ impl SceneProgram {
         external_coverages: &HashMap<String, Arc<metal::Texture>>,
         current: impl Fn() -> bool,
     ) -> Result<(), SceneError> {
+        let started = Instant::now();
         if !current() {
             return Err(SceneError::Render("stale scene frame".into()));
         }
@@ -276,7 +369,7 @@ impl SceneProgram {
             || output.pixel_format() != MTLPixelFormat::RGBA32Float
             || input.width() != output.width()
             || input.height() != output.height()
-            || output.usage().contains(MTLTextureUsage::ShaderWrite) == false
+            || !output.usage().contains(MTLTextureUsage::ShaderWrite)
         {
             return Err(SceneError::Invalid(
                 "scene surfaces must be matching RGBA32F textures".into(),
@@ -304,8 +397,10 @@ impl SceneProgram {
         };
         let selected = match (target, view.id.as_deref()) {
             (Target::Node, Some(id)) => {
-                let operation = self
-                    .graph
+                let graph = self
+                    .graph()
+                    .ok_or_else(|| SceneError::Render("scene execution state poisoned".into()))?;
+                let operation = graph
                     .nodes
                     .iter()
                     .find(|node| node.id == id)
@@ -326,60 +421,150 @@ impl SceneProgram {
             .geometry
             .map(|size| (size[0], size[1]))
             .unwrap_or((width, height));
-        if !external_coverages.is_empty()
-            && (origin != [0, 0] || width != geometry.0 || height != geometry.1)
-        {
+        if origin[0] < 0 || origin[1] < 0 {
             return Err(SceneError::Invalid(
-                "external coverage requires a full-frame scene render".into(),
+                "scene origin must be non-negative".into(),
             ));
         }
-        let mut cache = self
-            .cache
+        for (id, mask) in external_coverages {
+            if mask.pixel_format() != MTLPixelFormat::R32Float
+                || mask.width() != geometry.0 as u64
+                || mask.height() != geometry.1 as u64
+            {
+                return Err(SceneError::Invalid(format!(
+                    "external coverage {id} must be full-frame R32F"
+                )));
+            }
+        }
+
+        let mut state = self
+            .state
             .lock()
-            .map_err(|_| SceneError::Render("scene coverage cache poisoned".into()))?;
+            .map_err(|_| SceneError::Render("scene execution state poisoned".into()))?;
+        state.receipt = Receipt {
+            abi: RECEIPT_ABI,
+            ..Receipt::default()
+        };
         let mut pool = SurfacePool::new();
         let maximum = view.surface_budget.unwrap_or(1_536 * 1024 * 1024) as usize;
         let mut budget = SurfaceBudget::new(
             maximum,
-            texture_bytes(width, height, MTLPixelFormat::RGBA32Float),
+            texture_bytes(width, height, MTLPixelFormat::RGBA32Float)
+                + texture_bytes(width, height, MTLPixelFormat::RGBA32Float),
         );
+        state.receipt.budget_bytes = maximum as u64;
+        let tile_edge = view.tile_edge.unwrap_or(0);
+        let tiles = tile_ranges(width, height, tile_edge);
+        state.receipt.tiles = tiles.len() as u32;
+        let ExecutionState {
+            graph,
+            coverage,
+            nodes,
+            receipt,
+        } = &mut *state;
+        let source_revision = view.source_revision.unwrap_or(0);
+        let input_key = format!("source:{source_revision}");
         let command = self.queue.new_command_buffer();
-        let encoder = command.new_compute_command_encoder();
-        let rendered = self.evaluate(
-            &self.graph,
-            input.clone(),
-            selected.as_deref(),
-            target,
-            encoder,
-            &flag,
-            width,
-            height,
-            origin,
-            geometry,
-            &mut cache,
-            &mut pool,
-            &mut budget,
-            external_coverages,
-        )?;
-        encoder.end_encoding();
-        let source = rendered.as_ref();
-        if source.as_ptr() != output_surface.as_ptr() {
-            let blit = command.new_blit_command_encoder();
-            blit.copy_from_texture(
-                source,
-                0,
-                0,
-                MTLOrigin { x: 0, y: 0, z: 0 },
-                MTLSize::new(width as u64, height as u64, 1),
-                &output_surface,
-                0,
-                0,
-                MTLOrigin { x: 0, y: 0, z: 0 },
+
+        for (x, y, tile_width, tile_height) in tiles {
+            if !current() {
+                return Err(SceneError::Render("stale scene frame".into()));
+            }
+            let mut retired: Vec<Arc<metal::Texture>> = Vec::new();
+            let (tile_input, owned_input) = if tile_width == width && tile_height == height {
+                (input.clone(), None)
+            } else {
+                let texture = Arc::new(self.make_texture(
+                    &mut pool,
+                    &mut budget,
+                    tile_width,
+                    tile_height,
+                    MTLPixelFormat::RGBA32Float,
+                )?);
+                let blit = command.new_blit_command_encoder();
+                blit.copy_from_texture(
+                    input.as_ref(),
+                    0,
+                    0,
+                    MTLOrigin {
+                        x: x as u64,
+                        y: y as u64,
+                        z: 0,
+                    },
+                    MTLSize::new(tile_width as u64, tile_height as u64, 1),
+                    texture.as_ref(),
+                    0,
+                    0,
+                    MTLOrigin { x: 0, y: 0, z: 0 },
+                );
+                blit.end_encoding();
+                (texture.clone(), Some(texture))
+            };
+            let (tile_masks, owned_masks) = self.crop_coverages(
+                external_coverages,
+                origin,
+                x,
+                y,
+                tile_width,
+                tile_height,
+                &command,
+                &mut pool,
+                &mut budget,
+            )?;
+            let tile_origin = [origin[0] + x as i64, origin[1] + y as i64];
+            let encoder = command.new_compute_command_encoder();
+            let rendered = self.evaluate(
+                graph,
+                tile_input,
+                selected.as_deref(),
+                target,
+                encoder,
+                &flag,
+                tile_width,
+                tile_height,
+                tile_origin,
+                geometry,
+                coverage,
+                nodes,
+                receipt,
+                &mut pool,
+                &mut budget,
+                source_revision,
+                &input_key,
+                &tile_masks,
             );
-            blit.end_encoding();
+            encoder.end_encoding();
+            let rendered = rendered?;
+            if let Some(input) = owned_input {
+                retired.push(input);
+            }
+            drop(tile_masks);
+            retired.extend(owned_masks);
+            if rendered.as_ptr() != output_surface.as_ptr() {
+                let blit = command.new_blit_command_encoder();
+                blit.copy_from_texture(
+                    rendered.as_ref(),
+                    0,
+                    0,
+                    MTLOrigin { x: 0, y: 0, z: 0 },
+                    MTLSize::new(tile_width as u64, tile_height as u64, 1),
+                    output_surface.as_ref(),
+                    0,
+                    0,
+                    MTLOrigin {
+                        x: x as u64,
+                        y: y as u64,
+                        z: 0,
+                    },
+                );
+                blit.end_encoding();
+            }
+            pool.recycle(&mut retired, &mut budget);
         }
         command.commit();
         command.wait_until_completed();
+        receipt.peak_bytes = budget.peak as u64;
+        receipt.cpu_ms = started.elapsed().as_secs_f64() * 1000.0;
         if command.status() != MTLCommandBufferStatus::Completed {
             return Err(SceneError::Render("scene command buffer failed".into()));
         }
@@ -395,6 +580,62 @@ impl SceneProgram {
         Ok(())
     }
 
+    fn crop_coverages(
+        &self,
+        coverages: &HashMap<String, Arc<metal::Texture>>,
+        origin: [i64; 2],
+        x: u32,
+        y: u32,
+        width: u32,
+        height: u32,
+        command: &metal::CommandBufferRef,
+        pool: &mut SurfacePool,
+        budget: &mut SurfaceBudget,
+    ) -> Result<
+        (
+            HashMap<String, Arc<metal::Texture>>,
+            Vec<Arc<metal::Texture>>,
+        ),
+        SceneError,
+    > {
+        let mut result = HashMap::new();
+        let mut owned = Vec::new();
+        for (id, mask) in coverages {
+            if mask.width() == width as u64 && mask.height() == height as u64 {
+                result.insert(id.clone(), mask.clone());
+                continue;
+            }
+            let texture = Arc::new(self.make_texture(
+                pool,
+                budget,
+                width,
+                height,
+                MTLPixelFormat::R32Float,
+            )?);
+            let blit = command.new_blit_command_encoder();
+            blit.copy_from_texture(
+                mask.as_ref(),
+                0,
+                0,
+                MTLOrigin {
+                    x: (origin[0] + x as i64) as u64,
+                    y: (origin[1] + y as i64) as u64,
+                    z: 0,
+                },
+                MTLSize::new(width as u64, height as u64, 1),
+                texture.as_ref(),
+                0,
+                0,
+                MTLOrigin { x: 0, y: 0, z: 0 },
+            );
+            blit.end_encoding();
+            result.insert(id.clone(), texture.clone());
+            owned.push(texture);
+        }
+        Ok((result, owned))
+    }
+
+    #[allow(clippy::too_many_arguments)]
     fn evaluate(
         &self,
         scope: &Scope,
@@ -407,9 +648,13 @@ impl SceneProgram {
         height: u32,
         origin: [i64; 2],
         geometry: (u32, u32),
-        cache: &mut CoverageCache,
+        coverage_cache: &mut TextureCache,
+        node_cache: &mut TextureCache,
+        receipt: &mut Receipt,
         pool: &mut SurfacePool,
         budget: &mut SurfaceBudget,
+        source_revision: u64,
+        input_key: &str,
         external_coverages: &HashMap<String, Arc<metal::Texture>>,
     ) -> Result<Arc<metal::Texture>, SceneError> {
         if matches!(target, Target::Bypass) {
@@ -458,14 +703,215 @@ impl SceneProgram {
         } else {
             return Ok(input);
         }
+
+        // Coverage fingerprints never include the source revision: analytic masks survive source
+        // changes, but combine/adjust keys include their dependencies so a parameter edit cannot
+        // reuse an old result. External provider masks are never cached and their identity is part
+        // of every dependent key.
+        let mut coverage_keys: HashMap<String, String> = HashMap::new();
+        let mut cacheable_coverage: HashSet<String> = HashSet::new();
+        for id in &steps {
+            let operation = operations
+                .get(id.as_str())
+                .copied()
+                .ok_or_else(|| SceneError::Invalid(format!("scene node {id} vanished")))?;
+            if !operation.is_coverage() {
+                continue;
+            }
+            let mut dependency_keys = Vec::new();
+            let mut cacheable = !matches!(operation, Operation::ExternalCoverage { .. });
+            for dependency in operation.coverages() {
+                let key = coverage_keys
+                    .get(dependency)
+                    .cloned()
+                    .unwrap_or_else(|| format!("external:{dependency}"));
+                if !cacheable_coverage.contains(dependency) {
+                    cacheable = false;
+                }
+                dependency_keys.push(key);
+            }
+            let operation_key = match operation {
+                Operation::ExternalCoverage { id } => format!(
+                    "external:{id}:{:p}",
+                    external_coverages
+                        .get(id)
+                        .map(|texture| texture.as_ptr())
+                        .unwrap_or(std::ptr::null_mut())
+                ),
+                _ => format!("{operation:?}"),
+            };
+            coverage_keys.insert(
+                id.clone(),
+                format!(
+                    "cov|{id}|{operation_key}|{width}x{height}|{},{},{}x{}|{}",
+                    origin[0],
+                    origin[1],
+                    geometry.0,
+                    geometry.1,
+                    dependency_keys.join("|")
+                ),
+            );
+            if cacheable {
+                cacheable_coverage.insert(id.clone());
+            }
+        }
+
+        // Image fingerprints include the caller's source revision and dependency keys, so a
+        // parameter edit invalidates only the affected suffix while unchanged prefixes reuse.
+        let mut keys: HashMap<String, String> = HashMap::new();
+        for id in &steps {
+            let operation = operations
+                .get(id.as_str())
+                .copied()
+                .ok_or_else(|| SceneError::Invalid(format!("scene node {id} vanished")))?;
+            let operation_key = match operation {
+                Operation::ExternalCoverage { id } => format!(
+                    "external:{id}:{:p}",
+                    external_coverages
+                        .get(id)
+                        .map(|texture| texture.as_ptr())
+                        .unwrap_or(std::ptr::null_mut())
+                ),
+                _ => format!("{operation:?}"),
+            };
+            let dependency_keys = dependencies
+                .get(id)
+                .into_iter()
+                .flatten()
+                .map(|endpoint| match endpoint {
+                    Endpoint::Input => input_key.to_string(),
+                    Endpoint::Node(parent) => {
+                        if operations
+                            .get(parent.as_str())
+                            .is_some_and(|operation| operation.is_coverage())
+                        {
+                            coverage_keys.get(parent).cloned().unwrap_or_default()
+                        } else {
+                            keys.get(parent).cloned().unwrap_or_default()
+                        }
+                    }
+                })
+                .collect::<Vec<_>>();
+            keys.insert(
+                id.clone(),
+                node_key(
+                    source_revision,
+                    id,
+                    &operation_key,
+                    width,
+                    height,
+                    origin,
+                    geometry,
+                    input_key,
+                    &dependency_keys,
+                ),
+            );
+        }
+
+        // Prune cached prefixes: if a node hits, its ancestors do not need to run for this frame
+        // unless another needed branch also consumes them.
+        let mut needed: HashSet<String> = HashSet::new();
+        let mut node_hits: HashMap<String, Arc<metal::Texture>> = HashMap::new();
+        let mut coverage_hits: HashMap<String, Arc<metal::Texture>> = HashMap::new();
+        #[allow(clippy::too_many_arguments)]
+        fn mark_needed(
+            id: &str,
+            operations: &HashMap<&str, &Operation>,
+            dependencies: &HashMap<String, Vec<Endpoint>>,
+            keys: &HashMap<String, String>,
+            coverage_keys: &HashMap<String, String>,
+            cacheable_coverage: &HashSet<String>,
+            coverage_cache: &mut TextureCache,
+            node_cache: &mut TextureCache,
+            receipt: &mut Receipt,
+            source_revision: u64,
+            needed: &mut HashSet<String>,
+            node_hits: &mut HashMap<String, Arc<metal::Texture>>,
+            coverage_hits: &mut HashMap<String, Arc<metal::Texture>>,
+        ) -> Result<(), SceneError> {
+            if !needed.insert(id.to_string()) {
+                return Ok(());
+            }
+            let operation = operations
+                .get(id)
+                .copied()
+                .ok_or_else(|| SceneError::Invalid(format!("scene node {id} vanished")))?;
+            if cacheable_coverage.contains(id) {
+                if let Some(key) = coverage_keys.get(id) {
+                    if let Some(texture) = coverage_cache.get(key) {
+                        receipt.coverage_hits += 1;
+                        coverage_hits.insert(id.to_string(), texture);
+                        return Ok(());
+                    }
+                }
+            } else if source_revision != 0 && !operation.is_coverage() {
+                if let Some(key) = keys.get(id) {
+                    if let Some(texture) = node_cache.get(key) {
+                        receipt.node_hits += 1;
+                        node_hits.insert(id.to_string(), texture);
+                        return Ok(());
+                    }
+                }
+            }
+            for endpoint in dependencies.get(id).into_iter().flatten() {
+                if let Endpoint::Node(parent) = endpoint {
+                    mark_needed(
+                        parent,
+                        operations,
+                        dependencies,
+                        keys,
+                        coverage_keys,
+                        cacheable_coverage,
+                        coverage_cache,
+                        node_cache,
+                        receipt,
+                        source_revision,
+                        needed,
+                        node_hits,
+                        coverage_hits,
+                    )?;
+                }
+            }
+            Ok(())
+        }
+        if let Endpoint::Node(id) = &endpoint {
+            mark_needed(
+                id,
+                &operations,
+                &dependencies,
+                &keys,
+                &coverage_keys,
+                &cacheable_coverage,
+                coverage_cache,
+                node_cache,
+                receipt,
+                source_revision,
+                &mut needed,
+                &mut node_hits,
+                &mut coverage_hits,
+            )?;
+        }
+
         let mut values: HashMap<String, Arc<metal::Texture>> = HashMap::new();
         let mut retired: Vec<Arc<metal::Texture>> = Vec::new();
         for id in steps {
+            if !needed.contains(&id) {
+                continue;
+            }
             pool.recycle(&mut retired, budget);
             let operation = operations
                 .get(id.as_str())
                 .copied()
                 .ok_or_else(|| SceneError::Invalid(format!("scene node {id} vanished")))?;
+            if let Some(texture) = node_hits.get(&id) {
+                values.insert(id, texture.clone());
+                continue;
+            }
+            if let Some(texture) = coverage_hits.get(&id) {
+                values.insert(id, texture.clone());
+                continue;
+            }
+            receipt.nodes += 1;
             let base = match operation {
                 Operation::Corrector { image, .. }
                 | Operation::Group { image, .. }
@@ -478,34 +924,69 @@ impl SceneProgram {
                 | Operation::AdjustCoverage { .. }
                 | Operation::ExternalCoverage { .. } => input.clone(),
             };
-            let key = operation
-                .is_source_independent_coverage()
-                .then(|| coverage_key(&id, operation, width, height, origin, geometry));
-            let cached = key.as_deref().and_then(|key| cache.get(key));
-            let was_cached = cached.is_some();
-            let result: Arc<metal::Texture> = match (cached, operation) {
-                (Some(texture), _) => texture,
-                (None, operation) => match operation {
-                    Operation::Corrector {
-                        mask,
-                        exposure_ev,
-                        curve,
-                        strength,
-                        enabled,
-                        ..
-                    } => {
-                        let neutral = *exposure_ev == 0.0 && curve.iter().all(|p| p[0] == p[1]);
-                        if !enabled || *strength == 0.0 || neutral {
-                            base
-                        } else {
-                            let coverage = match mask {
-                                Some(id) => Some(self.value(
-                                    &values,
-                                    &Endpoint::Node(id.clone()),
-                                    &input,
-                                )?),
-                                None => None,
-                            };
+            let result: Arc<metal::Texture> = match operation {
+                Operation::Corrector {
+                    mask,
+                    exposure_ev,
+                    curve,
+                    strength,
+                    enabled,
+                    ..
+                } => {
+                    let neutral = *exposure_ev == 0.0 && curve.iter().all(|p| p[0] == p[1]);
+                    if !enabled || *strength == 0.0 || neutral {
+                        base.clone()
+                    } else {
+                        let coverage = match mask {
+                            Some(id) => {
+                                Some(self.value(&values, &Endpoint::Node(id.clone()), &input)?)
+                            }
+                            None => None,
+                        };
+                        let output = self.make_texture(
+                            pool,
+                            budget,
+                            width,
+                            height,
+                            MTLPixelFormat::RGBA32Float,
+                        )?;
+                        self.dispatch_color(
+                            encoder,
+                            flag,
+                            receipt,
+                            0,
+                            base.as_ref(),
+                            coverage.as_deref().unwrap_or(base.as_ref()),
+                            base.as_ref(),
+                            output.as_ref(),
+                            [
+                                2f32.powf(*exposure_ev),
+                                *strength,
+                                curve.len() as f32,
+                                coverage.is_some() as u32 as f32,
+                            ],
+                            0,
+                            curve,
+                            origin,
+                            geometry,
+                        )?;
+                        Arc::new(output)
+                    }
+                }
+                Operation::Parallel {
+                    layers, enabled, ..
+                } => {
+                    let mut current = base.clone();
+                    if *enabled {
+                        for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
+                            let branch = self.value(&values, &layer.image, &input)?;
+                            if Arc::ptr_eq(&branch, &base) {
+                                continue;
+                            }
+                            if layer.weight == 1.0 && layer.mode == Blend::Normal {
+                                current = branch;
+                                continue;
+                            }
                             let output = self.make_texture(
                                 pool,
                                 budget,
@@ -516,299 +997,265 @@ impl SceneProgram {
                             self.dispatch_color(
                                 encoder,
                                 flag,
-                                0,
-                                base.as_ref(),
-                                coverage.as_deref().unwrap_or(base.as_ref()),
+                                receipt,
+                                2,
+                                current.as_ref(),
+                                branch.as_ref(),
                                 base.as_ref(),
                                 output.as_ref(),
-                                [
-                                    2f32.powf(*exposure_ev),
-                                    *strength,
-                                    curve.len() as f32,
-                                    coverage.is_some() as u32 as f32,
-                                ],
+                                [layer.weight, 0.0, 0.0, 0.0],
                                 0,
-                                curve,
+                                &[],
+                                origin,
+                                geometry,
+                            )?;
+                            current = Arc::new(output);
+                        }
+                    }
+                    current
+                }
+                Operation::Layer {
+                    layers, enabled, ..
+                } => {
+                    let mut current = base.clone();
+                    if *enabled {
+                        for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
+                            let branch = self.value(&values, &layer.image, &input)?;
+                            if Arc::ptr_eq(&branch, &current) && layer.mode == Blend::Normal {
+                                continue;
+                            }
+                            if layer.weight == 1.0 && layer.mode == Blend::Normal {
+                                current = branch;
+                                continue;
+                            }
+                            let output = self.make_texture(
+                                pool,
+                                budget,
+                                width,
+                                height,
+                                MTLPixelFormat::RGBA32Float,
+                            )?;
+                            self.dispatch_color(
+                                encoder,
+                                flag,
+                                receipt,
+                                1,
+                                current.as_ref(),
+                                branch.as_ref(),
+                                base.as_ref(),
+                                output.as_ref(),
+                                [layer.weight, layer.mode.code() as f32, 0.0, 0.0],
+                                0,
+                                &[],
+                                origin,
+                                geometry,
+                            )?;
+                            current = Arc::new(output);
+                        }
+                    }
+                    current
+                }
+                Operation::Group {
+                    image,
+                    graph,
+                    strength,
+                    enabled,
+                } => {
+                    if !enabled || *strength == 0.0 {
+                        base.clone()
+                    } else {
+                        let child_input_key = match image {
+                            Endpoint::Input => input_key.to_string(),
+                            Endpoint::Node(parent) => keys.get(parent).cloned().unwrap_or_default(),
+                        };
+                        let child = self.evaluate(
+                            graph,
+                            base.clone(),
+                            None,
+                            Target::Final,
+                            encoder,
+                            flag,
+                            width,
+                            height,
+                            origin,
+                            geometry,
+                            coverage_cache,
+                            node_cache,
+                            receipt,
+                            pool,
+                            budget,
+                            source_revision,
+                            &child_input_key,
+                            external_coverages,
+                        )?;
+                        if *strength == 1.0 || Arc::ptr_eq(&child, &base) {
+                            child
+                        } else {
+                            let output = self.make_texture(
+                                pool,
+                                budget,
+                                width,
+                                height,
+                                MTLPixelFormat::RGBA32Float,
+                            )?;
+                            self.dispatch_color(
+                                encoder,
+                                flag,
+                                receipt,
+                                1,
+                                base.as_ref(),
+                                child.as_ref(),
+                                base.as_ref(),
+                                output.as_ref(),
+                                [*strength, 0.0, 0.0, 0.0],
+                                0,
+                                &[],
                                 origin,
                                 geometry,
                             )?;
                             Arc::new(output)
                         }
                     }
-                    Operation::Parallel {
-                        layers, enabled, ..
-                    } => {
-                        let mut current = base.clone();
-                        if *enabled {
-                            for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
-                                let branch = self.value(&values, &layer.image, &input)?;
-                                if Arc::ptr_eq(&branch, &base) {
-                                    continue;
-                                }
-                                if layer.weight == 1.0 && layer.mode == Blend::Normal {
-                                    current = branch;
-                                    continue;
-                                }
-                                let output = self.make_texture(
-                                    pool,
-                                    budget,
-                                    width,
-                                    height,
-                                    MTLPixelFormat::RGBA32Float,
-                                )?;
-                                self.dispatch_color(
-                                    encoder,
-                                    flag,
-                                    2,
-                                    current.as_ref(),
-                                    branch.as_ref(),
-                                    base.as_ref(),
-                                    output.as_ref(),
-                                    [layer.weight, 0.0, 0.0, 0.0],
-                                    0,
-                                    &[],
-                                    origin,
-                                    geometry,
-                                )?;
-                                current = Arc::new(output);
-                            }
-                        }
-                        current
+                }
+                Operation::ExternalCoverage { id } => {
+                    let mask = external_coverages.get(id).cloned().ok_or_else(|| {
+                        SceneError::Invalid(format!("external coverage {id} is not bound"))
+                    })?;
+                    if mask.pixel_format() != MTLPixelFormat::R32Float
+                        || mask.width() != width as u64
+                        || mask.height() != height as u64
+                    {
+                        return Err(SceneError::Invalid(format!(
+                            "external coverage {id} must match the execution tile"
+                        )));
                     }
-                    Operation::Layer {
-                        layers, enabled, ..
-                    } => {
-                        let mut current = base.clone();
-                        if *enabled {
-                            for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
-                                let branch = self.value(&values, &layer.image, &input)?;
-                                if Arc::ptr_eq(&branch, &current) && layer.mode == Blend::Normal {
-                                    continue;
-                                }
-                                if layer.weight == 1.0 && layer.mode == Blend::Normal {
-                                    current = branch;
-                                    continue;
-                                }
-                                let output = self.make_texture(
-                                    pool,
-                                    budget,
-                                    width,
-                                    height,
-                                    MTLPixelFormat::RGBA32Float,
-                                )?;
-                                self.dispatch_color(
-                                    encoder,
-                                    flag,
-                                    1,
-                                    current.as_ref(),
-                                    branch.as_ref(),
-                                    base.as_ref(),
-                                    output.as_ref(),
-                                    [layer.weight, layer.mode.code() as f32, 0.0, 0.0],
-                                    0,
-                                    &[],
-                                    origin,
-                                    geometry,
-                                )?;
-                                current = Arc::new(output);
-                            }
-                        }
-                        current
-                    }
-                    Operation::Group {
-                        graph,
-                        strength,
-                        enabled,
-                        ..
-                    } => {
-                        if !enabled || *strength == 0.0 {
-                            base
-                        } else {
-                            let child = self.evaluate(
-                                graph,
-                                base.clone(),
-                                None,
-                                Target::Final,
-                                encoder,
-                                flag,
-                                width,
-                                height,
-                                origin,
-                                geometry,
-                                cache,
-                                pool,
-                                budget,
-                                external_coverages,
-                            )?;
-                            if *strength == 1.0 {
-                                child
-                            } else {
-                                let output = self.make_texture(
-                                    pool,
-                                    budget,
-                                    width,
-                                    height,
-                                    MTLPixelFormat::RGBA32Float,
-                                )?;
-                                self.dispatch_color(
-                                    encoder,
-                                    flag,
-                                    1,
-                                    base.as_ref(),
-                                    child.as_ref(),
-                                    base.as_ref(),
-                                    output.as_ref(),
-                                    [*strength, 0.0, 0.0, 0.0],
-                                    0,
-                                    &[],
-                                    origin,
-                                    geometry,
-                                )?;
-                                Arc::new(output)
-                            }
-                        }
-                    }
-                    Operation::ExternalCoverage { id } => {
-                        let mask = external_coverages.get(id).cloned().ok_or_else(|| {
-                            SceneError::Invalid(format!("external coverage {id} is not bound"))
-                        })?;
-                        if mask.pixel_format() != MTLPixelFormat::R32Float
-                            || mask.width() != width as u64
-                            || mask.height() != height as u64
-                        {
-                            return Err(SceneError::Invalid(format!(
-                                "external coverage {id} must be full-frame R32F"
-                            )));
-                        }
-                        mask
-                    }
-                    Operation::LinearCoverage { start, end } => {
-                        let output = self.make_texture(
-                            pool,
-                            budget,
-                            width,
-                            height,
-                            MTLPixelFormat::R32Float,
-                        )?;
-                        self.dispatch_coverage(
-                            encoder,
-                            flag,
-                            0,
-                            base.as_ref(),
-                            base.as_ref(),
-                            output.as_ref(),
-                            [start[0], start[1], end[0], end[1]],
-                            0,
-                            origin,
-                            geometry,
-                        )?;
-                        Arc::new(output)
-                    }
-                    Operation::RadialCoverage {
-                        center,
-                        radii,
-                        feather,
-                    } => {
-                        let output = self.make_texture(
-                            pool,
-                            budget,
-                            width,
-                            height,
-                            MTLPixelFormat::R32Float,
-                        )?;
-                        self.dispatch_coverage(
-                            encoder,
-                            flag,
-                            1,
-                            base.as_ref(),
-                            base.as_ref(),
-                            output.as_ref(),
-                            [center[0], center[1], radii[0], radii[1]],
-                            feather.to_bits(),
-                            origin,
-                            geometry,
-                        )?;
-                        Arc::new(output)
-                    }
-                    Operation::CombineCoverage {
-                        base: a,
-                        other: b,
-                        mode,
-                    } => {
-                        let a = self.value(&values, &Endpoint::Node(a.clone()), &input)?;
-                        let b = self.value(&values, &Endpoint::Node(b.clone()), &input)?;
-                        let output = self.make_texture(
-                            pool,
-                            budget,
-                            width,
-                            height,
-                            MTLPixelFormat::R32Float,
-                        )?;
-                        self.dispatch_coverage(
-                            encoder,
-                            flag,
-                            2,
-                            a.as_ref(),
-                            b.as_ref(),
-                            output.as_ref(),
-                            [
-                                match mode {
-                                    CoverageCombine::Add => 0.0,
-                                    CoverageCombine::Subtract => 1.0,
-                                    CoverageCombine::Intersect => 2.0,
-                                },
-                                0.0,
-                                0.0,
-                                0.0,
-                            ],
-                            0,
-                            origin,
-                            geometry,
-                        )?;
-                        Arc::new(output)
-                    }
-                    Operation::AdjustCoverage {
-                        mask,
-                        strength,
-                        inverted,
-                    } => {
-                        let mask = self.value(&values, &Endpoint::Node(mask.clone()), &input)?;
-                        let output = self.make_texture(
-                            pool,
-                            budget,
-                            width,
-                            height,
-                            MTLPixelFormat::R32Float,
-                        )?;
-                        self.dispatch_coverage(
-                            encoder,
-                            flag,
-                            3,
-                            mask.as_ref(),
-                            mask.as_ref(),
-                            output.as_ref(),
-                            [*strength, *inverted as u32 as f32, 0.0, 0.0],
-                            0,
-                            origin,
-                            geometry,
-                        )?;
-                        Arc::new(output)
-                    }
-                },
+                    mask
+                }
+                Operation::LinearCoverage { start, end } => {
+                    let output =
+                        self.make_texture(pool, budget, width, height, MTLPixelFormat::R32Float)?;
+                    self.dispatch_coverage(
+                        encoder,
+                        flag,
+                        receipt,
+                        0,
+                        base.as_ref(),
+                        base.as_ref(),
+                        output.as_ref(),
+                        [start[0], start[1], end[0], end[1]],
+                        0,
+                        origin,
+                        geometry,
+                    )?;
+                    Arc::new(output)
+                }
+                Operation::RadialCoverage {
+                    center,
+                    radii,
+                    feather,
+                } => {
+                    let output =
+                        self.make_texture(pool, budget, width, height, MTLPixelFormat::R32Float)?;
+                    self.dispatch_coverage(
+                        encoder,
+                        flag,
+                        receipt,
+                        1,
+                        base.as_ref(),
+                        base.as_ref(),
+                        output.as_ref(),
+                        [center[0], center[1], radii[0], radii[1]],
+                        feather.to_bits(),
+                        origin,
+                        geometry,
+                    )?;
+                    Arc::new(output)
+                }
+                Operation::CombineCoverage {
+                    base: a,
+                    other: b,
+                    mode,
+                } => {
+                    let a = self.value(&values, &Endpoint::Node(a.clone()), &input)?;
+                    let b = self.value(&values, &Endpoint::Node(b.clone()), &input)?;
+                    let output =
+                        self.make_texture(pool, budget, width, height, MTLPixelFormat::R32Float)?;
+                    self.dispatch_coverage(
+                        encoder,
+                        flag,
+                        receipt,
+                        2,
+                        a.as_ref(),
+                        b.as_ref(),
+                        output.as_ref(),
+                        [
+                            match mode {
+                                CoverageCombine::Add => 0.0,
+                                CoverageCombine::Subtract => 1.0,
+                                CoverageCombine::Intersect => 2.0,
+                            },
+                            0.0,
+                            0.0,
+                            0.0,
+                        ],
+                        0,
+                        origin,
+                        geometry,
+                    )?;
+                    Arc::new(output)
+                }
+                Operation::AdjustCoverage {
+                    mask,
+                    strength,
+                    inverted,
+                } => {
+                    let mask = self.value(&values, &Endpoint::Node(mask.clone()), &input)?;
+                    let output =
+                        self.make_texture(pool, budget, width, height, MTLPixelFormat::R32Float)?;
+                    self.dispatch_coverage(
+                        encoder,
+                        flag,
+                        receipt,
+                        3,
+                        mask.as_ref(),
+                        mask.as_ref(),
+                        output.as_ref(),
+                        [*strength, *inverted as u32 as f32, 0.0, 0.0],
+                        0,
+                        origin,
+                        geometry,
+                    )?;
+                    Arc::new(output)
+                }
             };
-            if let (Some(key), false) = (key, was_cached) {
-                cache.put(
-                    key,
-                    result.clone(),
-                    texture_bytes(width, height, MTLPixelFormat::R32Float),
-                    budget,
-                );
+            if cacheable_coverage.contains(&id) {
+                if let Some(key) = coverage_keys.get(&id) {
+                    coverage_cache.put(
+                        key.clone(),
+                        result.clone(),
+                        texture_bytes(width, height, MTLPixelFormat::R32Float),
+                        budget,
+                    );
+                }
+            } else if source_revision != 0
+                && !operation.is_coverage()
+                && !matches!(operation, Operation::Group { .. })
+                && !Arc::ptr_eq(&result, &base)
+            {
+                if let Some(key) = keys.get(&id) {
+                    node_cache.put(
+                        key.clone(),
+                        result.clone(),
+                        texture_bytes(width, height, MTLPixelFormat::RGBA32Float),
+                        budget,
+                    );
+                }
             }
             values.insert(id.clone(), result);
             for endpoint in dependencies.get(&id).into_iter().flatten() {
                 if let Endpoint::Node(parent) = endpoint {
                     if let Some(count) = uses.get_mut(parent) {
-                        *count -= 1;
+                        *count = count.saturating_sub(1);
                         if *count == 0 {
                             if let Some(texture) = values.remove(parent) {
                                 retired.push(texture);
@@ -874,6 +1321,7 @@ impl SceneProgram {
         &self,
         encoder: &metal::ComputeCommandEncoderRef,
         flag: &metal::Buffer,
+        receipt: &mut Receipt,
         kind: u32,
         input: &metal::TextureRef,
         other: &metal::TextureRef,
@@ -914,6 +1362,7 @@ impl SceneProgram {
             std::mem::size_of_val(points) as u64,
             points.as_ptr().cast(),
         );
+        receipt.dispatches += 1;
         let lanes = self.color.thread_execution_width();
         let threads = MTLSize::new(output.width(), output.height(), 1);
         let group = MTLSize::new(
@@ -929,6 +1378,7 @@ impl SceneProgram {
         &self,
         encoder: &metal::ComputeCommandEncoderRef,
         flag: &metal::Buffer,
+        receipt: &mut Receipt,
         kind: u32,
         input: &metal::TextureRef,
         other: &metal::TextureRef,
@@ -959,6 +1409,7 @@ impl SceneProgram {
             (&params as *const Params).cast(),
         );
         encoder.set_buffer(1, Some(flag), 0);
+        receipt.dispatches += 1;
         let lanes = self.coverage.thread_execution_width();
         let threads = MTLSize::new(output.width(), output.height(), 1);
         let group = MTLSize::new(

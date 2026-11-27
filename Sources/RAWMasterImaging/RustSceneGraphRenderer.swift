@@ -30,18 +30,20 @@ final class RustSceneGraphRenderer {
     func render(input: any MTLTexture, output: any MTLTexture,
                 graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
                 origin: SIMD2<Int>, geometry: SIMD2<Int>,
-                coverages: [UUID: any MTLTexture] = [:]) throws {
+                tileEdge: Int?, sourceRevision: UInt64,
+                coverages: [UUID: any MTLTexture] = [:]) throws
+      -> RAWMasterImageKernel.SceneProgram.SceneReceipt? {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
-        let document = Document(graph: graph.graph)
-        let data = try encoder.encode(document)
-        let key = String(decoding: data, as: UTF8.self)
+        let data = try encoder.encode(Document(graph: graph.graph))
+        let key = Self.topology(graph.graph)
         let program: RAWMasterImageKernel.SceneProgram
         if let cached = programs[key] {
+            // Same node identity and scope nesting: swap parameters in place so the Rust prefix
+            // cache can keep unchanged nodes across an edit.
+            try cached.update(graph: data)
             program = cached
         } else {
-            // Keep only the current topology/parameter document; graph edits are infrequent
-            // compared with the repeated previews of a settled graph.
             if programs.count >= 8 { programs.removeAll(keepingCapacity: true) }
             let created = try RAWMasterImageKernel.SceneProgram(graph: data, device: device)
             programs[key] = created
@@ -55,10 +57,25 @@ final class RustSceneGraphRenderer {
         do {
             try program.render(input: input, output: output, view: sceneView,
                                origin: origin, geometry: geometry, surfaceBudget: surfaceBudget,
+                               tileEdge: tileEdge, sourceRevision: sourceRevision,
                                coverages: coverages)
+            return program.receipt()
         } catch RAWMasterImageKernel.Failure.surfaceBudget {
             throw DevelopmentSceneGraphRendererV1.Failure.surfaceBudget
         }
+    }
+
+    /// Programs are reusable while node identities and group nesting stay fixed. Node parameter
+    /// changes are applied with `update`, and Rust invalidates cache entries by content.
+    private static func topology(_ scope: DevelopmentSceneGraphV1.Scope) -> String {
+        scope.nodes.map { node in
+            switch node.operation {
+            case .group(_, let child, _, _):
+                return "\(node.id.uuidString){\(topology(child))}"
+            default:
+                return node.id.uuidString
+            }
+        }.joined(separator: ",") + ">\(scope.output)"
     }
 
     private struct Document: Encodable {

@@ -114,6 +114,7 @@ package actor DevelopmentScenePreviewV1 {
       }
       guard let input else { throw Failure.invalidViewport }
       if selection?.scope != graph.graph { clearSelection() }
+      let revision = Self.sourceRevision(stamp: stamp, sampling: sampling)
       let trim = target == .sdr709 ? graph.output.sdrTrim : nil
       if let hit = suffixes.firstIndex(where: { $0.frame.target == target && $0.view == view && $0.route == graph.output.route && $0.trim == trim }) {
         try ensureCurrent(source, stamp: stamp)
@@ -123,7 +124,8 @@ package actor DevelopmentScenePreviewV1 {
       }
       if selection?.view != view {
         selection = nil
-        let result = try ctx.graph.preparePreview(input.image, geometry: input.geometry, graph: graph, view: view)
+        let result = try ctx.graph.preparePreview(input.image, geometry: input.geometry, graph: graph,
+          view: view, sourceRevision: revision)
         selection = Selection(scope: graph.graph, view: view, scene: result); counts.graph += 1
       }
       guard let selection else { throw Failure.invalidViewport }
@@ -142,6 +144,22 @@ package actor DevelopmentScenePreviewV1 {
     try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, io: 1)) {
       try await self.performAnalysis(source: source, graph: graph, view: view)
     }
+  }
+
+  /// Stable within one process and sensitive to the capture stamp plus sampling choice. A cache
+  /// entry is only valid for the same source content and the same sampled window.
+  private static func sourceRevision(stamp: PreviewFileStamp, sampling: Sampling) -> UInt64 {
+    var hasher = Hasher()
+    hasher.combine(stamp)
+    switch sampling {
+    case .fit(let edge): hasher.combine(0); hasher.combine(edge)
+    case .pixels(let window):
+      hasher.combine(1)
+      hasher.combine(window.origin.x.bitPattern); hasher.combine(window.origin.y.bitPattern)
+      hasher.combine(window.size.width.bitPattern); hasher.combine(window.size.height.bitPattern)
+    }
+    let value = UInt64(bitPattern: Int64(hasher.finalize()))
+    return value == 0 ? 1 : value
   }
 
   private func performAnalysis(source: EditingSourceSnapshot, graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View) throws -> DevelopmentSceneScopesV1 {

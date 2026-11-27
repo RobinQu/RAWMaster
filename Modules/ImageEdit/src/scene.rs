@@ -202,6 +202,13 @@ pub struct ViewSpec {
     /// Upper bound for input, intermediates, pool and source-independent coverage cache.
     #[serde(default, rename = "surfaceBudget")]
     pub surface_budget: Option<u64>,
+    /// Optional square-ish execution tile. Zero or absent renders the surface in one pass.
+    #[serde(default, rename = "tileEdge")]
+    pub tile_edge: Option<u32>,
+    /// Caller-owned source generation. Non-zero enables the general intermediate cache; the
+    /// caller must change it whenever the input pixels or bound model masks change.
+    #[serde(default, rename = "sourceRevision")]
+    pub source_revision: Option<u64>,
 }
 fn default_target() -> String {
     "final".into()
@@ -215,6 +222,8 @@ impl Default for ViewSpec {
             origin: None,
             geometry: None,
             surface_budget: None,
+            tile_edge: None,
+            source_revision: None,
         }
     }
 }
@@ -300,18 +309,6 @@ impl Operation {
         };
         result.dedup();
         result
-    }
-
-    /// Analytic coverage depends only on its parameters, so it can be cached across frames.
-    /// Provider masks (segmentation) change with the source and must never be cached here.
-    fn is_source_independent_coverage(&self) -> bool {
-        matches!(
-            self,
-            Self::LinearCoverage { .. }
-                | Self::RadialCoverage { .. }
-                | Self::CombineCoverage { .. }
-                | Self::AdjustCoverage { .. }
-        )
     }
 }
 

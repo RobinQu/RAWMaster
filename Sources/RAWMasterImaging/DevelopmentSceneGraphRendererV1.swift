@@ -26,10 +26,16 @@ final class DevelopmentSceneGraphRendererV1 {
   fileprivate final class Budget {
     let maximum: Int
     var used: Int
-    init(maximum: Int, input: Int) { self.maximum = maximum; used = input }
+    private(set) var peak: Int
+    init(maximum: Int, input: Int) {
+      self.maximum = maximum
+      used = input
+      peak = input
+    }
     func reserve(_ size: Int) throws {
       guard size <= maximum - used else { throw Failure.surfaceBudget }
       used += size
+      peak = max(peak, used)
     }
   }
 
@@ -50,6 +56,8 @@ final class DevelopmentSceneGraphRendererV1 {
   private let color, coverage: MTLComputePipelineState
   private let surfaceBudget: Int
   private let rust: RustSceneGraphRenderer?
+  private var swiftDispatches = 0
+  private(set) var lastReceipt: DevelopmentSceneExecutionReceiptV1?
 
   init(device: MTLDevice, surfaceBudget: Int = 1_536 * 1024 * 1024) throws {
     let options = MTLCompileOptions(); options.mathMode = .safe
@@ -66,10 +74,11 @@ final class DevelopmentSceneGraphRendererV1 {
 
   func prepareFinal(_ image: Image, geometry: Geometry, graph: Graph,
                     models: DevelopmentSceneModelProgramV1? = nil,
-                    provider: (any DevelopmentSceneModelProvider)? = nil) throws -> Master {
+                    provider: (any DevelopmentSceneModelProvider)? = nil,
+                    sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> Master {
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
     let surface = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: .init(),
-      externalCoverages: prepared.masks)
+      externalCoverages: prepared.masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
     guard surface.domain == .image else { throw Failure.invalidImage }
     return .init(surface: surface, output: graph.output, modelMasks: prepared.masks, modelScale: prepared.scale)
   }
@@ -103,10 +112,11 @@ final class DevelopmentSceneGraphRendererV1 {
 
   func preparePreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
                       models: DevelopmentSceneModelProgramV1? = nil,
-                      provider: (any DevelopmentSceneModelProvider)? = nil) throws -> PreviewScene {
+                      provider: (any DevelopmentSceneModelProvider)? = nil,
+                      sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> PreviewScene {
     let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
     let selected = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: view,
-      externalCoverages: prepared.masks)
+      externalCoverages: prepared.masks, sourceRevision: sourceRevision, tileEdge: tileEdge)
     guard selected.domain == .image else { throw Failure.invalidImage }
     return PreviewScene(surface: selected)
   }
@@ -114,9 +124,11 @@ final class DevelopmentSceneGraphRendererV1 {
   func renderPreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
                      viewing: DevelopmentSceneOutputStateV1.ViewingConditions,
                      models: DevelopmentSceneModelProgramV1? = nil,
-                     provider: (any DevelopmentSceneModelProvider)? = nil) throws -> DevelopmentSceneOutputV1.DisplayImage {
+                     provider: (any DevelopmentSceneModelProvider)? = nil,
+                     sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> DevelopmentSceneOutputV1.DisplayImage {
     try renderPreview(preparePreview(image, geometry: geometry, graph: graph, view: view,
-      models: models, provider: provider), output: graph.output, target: viewing.displayedTarget)
+      models: models, provider: provider, sourceRevision: sourceRevision, tileEdge: tileEdge),
+      output: graph.output, target: viewing.displayedTarget)
   }
 
   func renderPreview(_ scene: PreviewScene, output: DevelopmentSceneOutputStateV1.Version,
@@ -145,7 +157,9 @@ final class DevelopmentSceneGraphRendererV1 {
   }
 
   private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
-                       externalCoverages: [UUID: MTLTexture] = [:]) throws -> Surface {
+                       externalCoverages: [UUID: MTLTexture] = [:],
+                       sourceRevision: UInt64 = 0, tileEdge: Int? = nil) throws -> Surface {
+    let started = DispatchTime.now().uptimeNanoseconds
     try Task.checkCancellation()
     let t = image.texture
     guard image.port == .working, t.device === device, t.textureType == .type2D, t.pixelFormat == .rgba32Float,
@@ -155,6 +169,7 @@ final class DevelopmentSceneGraphRendererV1 {
           image.origin.x <= geometry.width - t.width, image.origin.y <= geometry.height - t.height else { throw Failure.invalidImage }
     guard t.allocatedSize <= surfaceBudget else { throw Failure.surfaceBudget }
     let budget = Budget(maximum: surfaceBudget, input: t.allocatedSize)
+    var rustFallbackReason: String?
     if let rust, view.groupPath.isEmpty {
       if view.target == .bypass || (view.target == .final && graph.graph.output == .input) {
         return Surface(texture: t, origin: image.origin, domain: .image, budget: budget)
@@ -165,13 +180,20 @@ final class DevelopmentSceneGraphRendererV1 {
         }
       }
       let output = try makeTexture(width: t.width, height: t.height, format: .rgba32Float)
+      let effectiveTileEdge = tileEdge ?? rustTileEdge(input: t, output: output)
       var reserved = false
       do {
         try budget.reserve(output.allocatedSize)
         reserved = true
-        try rust.render(input: t, output: output, graph: graph, view: view,
+        let raw = try rust.render(input: t, output: output, graph: graph, view: view,
           origin: image.origin, geometry: .init(geometry.width, geometry.height),
-          coverages: externalCoverages)
+          tileEdge: effectiveTileEdge, sourceRevision: sourceRevision, coverages: externalCoverages)
+        lastReceipt = DevelopmentSceneExecutionReceiptV1(backend: .rust,
+          tiles: raw?.tiles ?? 1, nodes: raw?.nodes ?? 0, dispatches: raw?.dispatches ?? 0,
+          coverageCacheHits: raw?.coverageHits ?? 0, nodeCacheHits: raw?.nodeHits ?? 0,
+          peakBytes: raw?.peakBytes ?? budget.peak, budgetBytes: raw?.budgetBytes ?? surfaceBudget,
+          cpuMilliseconds: raw?.cpuMilliseconds ?? Self.elapsedMilliseconds(since: started),
+          fallbackReason: nil)
         return Surface(texture: output, origin: image.origin, domain: .image, budget: budget)
       } catch {
         if reserved { budget.used = max(budget.used - output.allocatedSize, 0) }
@@ -179,10 +201,36 @@ final class DevelopmentSceneGraphRendererV1 {
         // load, execute or fit this machine's budget. The strict mode used by shadow tests
         // never falls back, so a backend regression cannot hide there.
         guard RustSceneGraphRenderer.mode == .auto else { throw error }
+        rustFallbackReason = String(describing: error)
       }
     }
-    return try evaluate(graph.graph, input: Surface(texture: t, origin: image.origin, domain: .image), geometry: geometry, budget: budget,
+    swiftDispatches = 0
+    let surface = try evaluate(graph.graph, input: Surface(texture: t, origin: image.origin, domain: .image), geometry: geometry, budget: budget,
       groupPath: view.groupPath[...], target: view.target, externalCoverages: externalCoverages)
+    lastReceipt = DevelopmentSceneExecutionReceiptV1(
+      backend: rustFallbackReason == nil ? .swift : .swiftFallback, tiles: 1,
+      nodes: graph.graph.nodes.count, dispatches: swiftDispatches, coverageCacheHits: 0,
+      nodeCacheHits: 0, peakBytes: budget.peak, budgetBytes: surfaceBudget,
+      cpuMilliseconds: Self.elapsedMilliseconds(since: started),
+      fallbackReason: rustFallbackReason)
+    return surface
+  }
+
+  /// Tiling is chosen from the budget left after the full input and output surfaces. A 60MP graph
+  /// cannot hold five full-resolution intermediates, so it runs in bounded tiles on one command
+  /// buffer; smaller graphs keep the direct single-pass path.
+  private func rustTileEdge(input: MTLTexture, output: MTLTexture) -> Int? {
+    let imageBytes = input.width * input.height * 16
+    let available = surfaceBudget - input.allocatedSize - output.allocatedSize
+    guard available > 0, imageBytes * 5 > available else { return nil }
+    let tileBytes = max(available / 8, 64 * 64 * 16)
+    let edge = min(4_096, max(512, Int(sqrt(Double(tileBytes) / 16.0))))
+    let rounded = max(64, edge / 64 * 64)
+    return rounded < max(input.width, input.height) ? rounded : nil
+  }
+
+  private static func elapsedMilliseconds(since start: UInt64) -> Double {
+    Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
   }
 
   private func makeTexture(width: Int, height: Int, format: MTLPixelFormat) throws -> MTLTexture {
@@ -391,6 +439,7 @@ final class DevelopmentSceneGraphRendererV1 {
           let cmd = queue.makeCommandBuffer(), let encoder = cmd.makeComputeCommandEncoder() else {
       throw DevelopmentSceneColorV1.Failure.metalUnavailable
     }
+    swiftDispatches += 1
     try budget.reserve(texture.allocatedSize)
     let result = Surface(texture: texture, origin: origin, domain: isColor ? .image : .coverage, budget: budget)
     let invalid = flag.contents().bindMemory(to: UInt32.self, capacity: 1); invalid.pointee = 0

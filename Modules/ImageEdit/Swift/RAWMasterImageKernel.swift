@@ -397,6 +397,12 @@ public enum RAWMasterImageKernel {
     }
 
     public final class SceneProgram {
+        public struct SceneReceipt: Sendable, Equatable {
+            public let tiles, nodes, dispatches, coverageHits, nodeHits: Int
+            public let peakBytes, budgetBytes: Int
+            public let cpuMilliseconds: Double
+        }
+
         private let runtime: Runtime
         private let program: OpaquePointer
 
@@ -416,9 +422,32 @@ public enum RAWMasterImageKernel {
             self.program = handle
         }
 
+        public func update(graph: Data) throws {
+            let status = graph.withUnsafeBytes { bytes in
+                rm_image_host_scene_update(runtime.handle, program,
+                    bytes.bindMemory(to: UInt8.self).baseAddress, bytes.count)
+            }
+            switch status {
+            case 0: break
+            case 1: throw Failure.invalidParameters
+            case 2: throw Failure.unavailable
+            default: throw Failure.renderFailed
+            }
+        }
+
+        public func receipt() -> SceneReceipt? {
+            var raw = RMSceneReceiptV1()
+            guard rm_image_host_scene_receipt(runtime.handle, program, &raw) == 0 else { return nil }
+            return .init(tiles: Int(raw.tiles), nodes: Int(raw.nodes), dispatches: Int(raw.dispatches),
+                coverageHits: Int(raw.coverage_hits), nodeHits: Int(raw.node_hits),
+                peakBytes: Int(raw.peak_bytes), budgetBytes: Int(raw.budget_bytes),
+                cpuMilliseconds: raw.cpu_ms)
+        }
+
         public func render(input: any MTLTexture, output: any MTLTexture, view: SceneView = .final,
                            origin: SIMD2<Int> = .zero, geometry: SIMD2<Int>? = nil,
                            surfaceBudget: Int? = nil,
+                           tileEdge: Int? = nil, sourceRevision: UInt64 = 0,
                            coverages: [UUID: any MTLTexture] = [:],
                            revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true }) throws {
             var payload: [String: Any] = switch view {
@@ -429,6 +458,8 @@ public enum RAWMasterImageKernel {
             payload["origin"] = [origin.x, origin.y]
             if let geometry { payload["geometry"] = [geometry.x, geometry.y] }
             if let surfaceBudget { payload["surfaceBudget"] = surfaceBudget }
+            if let tileEdge { payload["tileEdge"] = tileEdge }
+            if sourceRevision != 0 { payload["sourceRevision"] = sourceRevision }
             let viewData = try JSONSerialization.data(withJSONObject: payload)
             let entries = Array(coverages)
             let status = withExtendedLifetime((input, output, entries.map(\.1))) {

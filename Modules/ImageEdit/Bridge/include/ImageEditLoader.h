@@ -55,6 +55,8 @@ int32_t rm_image_host_metal_mask_half_render(const RMImageRuntime *runtime, cons
 
 int32_t rm_image_host_scene_open(const RMImageRuntime *runtime, const uint8_t *graph,
     size_t graph_bytes, void *device, RMSceneProgram **out);
+int32_t rm_image_host_scene_update(const RMImageRuntime *runtime, const RMSceneProgram *program,
+    const uint8_t *graph, size_t graph_bytes);
 int32_t rm_image_host_scene_render(const RMImageRuntime *runtime, const RMSceneProgram *program,
     void *input, void *output, const uint8_t *view, size_t view_bytes, uint64_t revision,
     RMSceneIsCurrent current, void *context);
@@ -62,4 +64,6 @@ int32_t rm_image_host_scene_render_coverages(const RMImageRuntime *runtime,
     const RMSceneProgram *program, void *input, void *output, const uint8_t *view,
     size_t view_bytes, const char *const *coverage_ids, void *const *coverage_textures,
     size_t coverage_count, uint64_t revision, RMSceneIsCurrent current, void *context);
+int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,
+    const RMSceneProgram *program, RMSceneReceiptV1 *out);
 void rm_image_host_scene_close(const RMImageRuntime *runtime, RMSceneProgram *program);

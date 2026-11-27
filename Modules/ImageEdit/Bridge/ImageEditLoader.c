@@ -25,8 +25,10 @@ struct RMImageRuntime {
         RMImageMetalIsCurrentV1, void *);
     void (*metal_frame_close)(RMImageMetalFrame *);
     int32_t (*scene_open)(const uint8_t *, size_t, void *, RMSceneProgram **);
+    int32_t (*scene_update)(const RMSceneProgram *, const uint8_t *, size_t);
     int32_t (*scene_render)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, uint64_t, RMSceneIsCurrent, void *);
     int32_t (*scene_render_coverages)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, const char *const *, void *const *, size_t, uint64_t, RMSceneIsCurrent, void *);
+    int32_t (*scene_receipt)(const RMSceneProgram *, RMSceneReceiptV1 *);
     void (*scene_close)(RMSceneProgram *);
     void (*metal_program_close)(RMImageMetalProgram *);
     int32_t (*metal_half_program_open)(const RMImagePlan *, void *, RMImageMetalHalfProgram **);
@@ -80,8 +82,10 @@ RMImageRuntime *rm_image_host_open(const char *path) {
         runtime->metal_frame_render = dlsym(library, "rm_image_metal_frame_render_v1");
         runtime->metal_frame_close = dlsym(library, "rm_image_metal_frame_close_v1");
         runtime->scene_open = dlsym(library, "rm_scene_program_open_v1");
+        runtime->scene_update = dlsym(library, "rm_scene_program_update_v1");
         runtime->scene_render = dlsym(library, "rm_scene_program_render_v1");
         runtime->scene_render_coverages = dlsym(library, "rm_scene_program_render_coverages_v1");
+        runtime->scene_receipt = dlsym(library, "rm_scene_program_receipt_v1");
         runtime->scene_close = dlsym(library, "rm_scene_program_close_v1");
         runtime->metal_program_close = dlsym(library, "rm_image_metal_program_close_v1");
         runtime->metal_half_program_open = dlsym(library, "rm_image_metal_half_program_open_v1");
@@ -236,6 +240,11 @@ int32_t rm_image_host_scene_open(const RMImageRuntime *runtime, const uint8_t *g
     if (!runtime || !runtime->scene_open) { if (out) *out = NULL; return 2; }
     return runtime->scene_open(graph, graph_bytes, device, out);
 }
+int32_t rm_image_host_scene_update(const RMImageRuntime *runtime, const RMSceneProgram *program,
+    const uint8_t *graph, size_t graph_bytes) {
+    if (!runtime || !runtime->scene_update) return 2;
+    return runtime->scene_update(program, graph, graph_bytes);
+}
 int32_t rm_image_host_scene_render(const RMImageRuntime *runtime, const RMSceneProgram *program,
     void *input, void *output, const uint8_t *view, size_t view_bytes, uint64_t revision,
     RMSceneIsCurrent current, void *context) {
@@ -249,6 +258,11 @@ int32_t rm_image_host_scene_render_coverages(const RMImageRuntime *runtime,
     if (!runtime || !runtime->scene_render_coverages) return 2;
     return runtime->scene_render_coverages(program, input, output, view, view_bytes,
         coverage_ids, coverage_textures, coverage_count, revision, current, context);
+}
+int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,
+    const RMSceneProgram *program, RMSceneReceiptV1 *out) {
+    if (!runtime || !runtime->scene_receipt) return 2;
+    return runtime->scene_receipt(program, out);
 }
 void rm_image_host_scene_close(const RMImageRuntime *runtime, RMSceneProgram *program) {
     if (runtime && runtime->scene_close) runtime->scene_close(program);

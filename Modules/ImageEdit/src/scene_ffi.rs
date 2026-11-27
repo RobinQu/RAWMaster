@@ -1,6 +1,9 @@
 //! C ABI for the scene-linear AP1 graph executor (macOS Metal only).
 
-use crate::scene::{metal_exec::SceneProgram, ViewSpec};
+use crate::scene::{
+    metal_exec::{Receipt, SceneProgram},
+    ViewSpec,
+};
 use foreign_types::ForeignTypeRef;
 use std::collections::HashMap;
 use std::ffi::{c_char, c_void, CStr};
@@ -12,7 +15,7 @@ type Current = extern "C" fn(*mut c_void, u64) -> u32;
 
 #[no_mangle]
 pub extern "C" fn rm_scene_abi_version() -> u32 {
-    1
+    2
 }
 
 #[no_mangle]
@@ -41,6 +44,32 @@ pub unsafe extern "C" fn rm_scene_program_open_v1(
         };
         out.write(Box::into_raw(Box::new(program)));
         0
+    }))
+    .unwrap_or(4)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_program_update_v1(
+    program: *const SceneProgram,
+    graph: *const u8,
+    graph_bytes: usize,
+) -> i32 {
+    catch_unwind(AssertUnwindSafe(|| {
+        let Some(program) = program.as_ref() else {
+            return 1;
+        };
+        if graph.is_null() || graph_bytes == 0 {
+            return 1;
+        }
+        let document = slice::from_raw_parts(graph, graph_bytes);
+        match program.update(document) {
+            Ok(()) => 0,
+            Err(crate::scene::SceneError::Invalid(_)) => 1,
+            Err(crate::scene::SceneError::Backend(_)) => 2,
+            Err(crate::scene::SceneError::Budget(_)) | Err(crate::scene::SceneError::Render(_)) => {
+                3
+            }
+        }
     }))
     .unwrap_or(4)
 }
@@ -164,6 +193,21 @@ unsafe fn render(
         }
     }))
     .unwrap_or(4)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_program_receipt_v1(
+    program: *const SceneProgram,
+    out: *mut Receipt,
+) -> i32 {
+    let Some(program) = program.as_ref() else {
+        return 1;
+    };
+    if out.is_null() {
+        return 1;
+    }
+    out.write(program.receipt());
+    0
 }
 
 #[no_mangle]
