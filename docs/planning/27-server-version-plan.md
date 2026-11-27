@@ -45,6 +45,8 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 7. **Server 本地磁盘只放日志／临时。** PostgreSQL、S3 外部；Server 可容器化；Relay 流式，不落完整文件。
 8. **编辑／导出云端后置。** 本轮只做资料库；编辑云端见 [041 Server 图像编辑模块](../../specs/041-server-image-editing/spec.md)，导出后续单独设计。
 
+2026-11-27 已把 main 的 [037 色彩／HDR](../../specs/037-color-film-hdr/spec.md)、[038 DAG 工作流](../../specs/038-node-dag-workflow/spec.md) 和 [039 Rust scene backend](../../specs/039-rust-scene-backend/spec.md) 纳入 040／041：场景图、输出状态、模型前缀、模板／批次候选随元数据保存；041 的 `image_scene_batch` 仍受 Linux／Vulkan scene executor 与色彩门约束。039 当前为 macOS Metal-only。
+
 ## 5. 交付阶段
 
 | 阶段 | 交付 | 发布门 |

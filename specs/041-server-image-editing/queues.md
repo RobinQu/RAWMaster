@@ -1,6 +1,6 @@
 # 041 · 客户端与 Server 队列
 
-2026-11-27 · 客户端背景队列、Server 作业队列以及两者的协同。**两边不共享队列数据库**；客户端本地 SQLite 保存自己的任务和远端作业镜像，Server PostgreSQL 是作业执行状态权威。交互编辑帧不进入任何队列。
+2026-11-27 · 客户端背景队列、Server 作业队列以及两者的协同。**两边不共享队列数据库**；客户端本地 SQLite 保存自己的任务、`SceneWorkflowBatch` 批次和远端作业镜像，Server PostgreSQL 是作业执行状态权威。交互编辑帧不进入任何队列。客户端复用现有 `CatalogTaskQueue` 的持久任务／租约语义和 `SceneWorkflowBatch` 的 review／register／commit／cancel／retry／undo，不另造不兼容批次。
 
 ## 1. 目标
 
@@ -17,9 +17,13 @@
 | 类型 | 作用 | 资源 | 可取消 |
 | --- | --- | --- | --- |
 | `prefetch.displayProxy` | 网格／首屏代理 | network, disk | 是 |
-| `prefetch.editProxy` | 进入编辑前准备高质量代理 | network, disk | 是 |
+| `prefetch.editProxy` | 进入 SDR 编辑前准备高质量代理 | network, disk | 是 |
+| `prefetch.sceneProxy` | 进入 037／038 场景图编辑前准备线性／HDR 代理 | network, disk | 是 |
 | `prefetch.original` | 1:1／最终前取回原件 | network, disk | 是 |
-| `generate.editProxy` | Server 不可用时本地生成代理 | CPU/GPU, disk | 是 |
+| `generate.editProxy` | Server 不可用时本地生成 SDR 代理 | CPU/GPU, disk | 是 |
+| `generate.sceneProxy` | Server 不可用时本地生成场景线性／HDR 代理 | CPU/GPU, disk | 是 |
+| `scene.batch.run` | 本地执行 `SceneWorkflowBatch` review／commit／retry／undo | CPU/GPU, disk | 是 |
+| `scene.batch.remote` | 将场景批次项提交 Server final／HDR 渲染 | network, disk | 是 |
 | `submit.remoteJob` | 提交 Server 作业 | network | 提交前可；已提交转核对 |
 | `watch.remoteJob` | 查询／订阅 Server 作业 | network | 是 |
 | `fetch.remoteResult` | 下载并校验结果 | network, disk | 是 |
@@ -79,7 +83,8 @@ client_tasks(
 )
 ```
 
-- `dedupe_key`：例如 `editProxy:<library>:<contentID>:<proxyContract>`；同键只保留一个任务。
+- `dedupe_key`：例如 `editProxy:<library>:<contentID>:<proxyContract>`、`sceneProxy:<library>:<contentID>:<sceneProxyContract>`；同键只保留一个任务。
+- 场景批次任务额外绑定 `batch_id`、`asset_id`、`parent_version`、`target_head`、`scene_graph_hash`、`output_state_hash`；不得把不同 head 的批次项合并。
 - `payload_hash`：任务输入不可变；同 `task_id` 不同 payload 拒绝。
 - 状态：`queued`、`running`、`waiting`（网络／资源）、`paused`、`cancelling`、`cancelled`、`succeeded`、`failed`、`reconcile`。
 - 结果：缓存键、文件、SHA-256、字节数、验证时间；不把临时文件当完成。
@@ -110,6 +115,13 @@ queued → running → succeeded
 - 取消后台任务不能破坏已完成的缓存；部分文件清理。
 - 交互恢复后不自动全速重启所有后台任务；按优先级逐步恢复。
 
+### 2.7 `SceneWorkflowBatch` 集成
+
+- 现有 `SceneWorkflowBatch` 已定义 header／item／candidate、`pending`／`offline`／`incompatible`／`conflict`／`completed`／`cancelled`／`undone`／`failed`，以及 review／register／commit／cancel／retry／undo。客户端队列直接复用这些语义。
+- 本地批次继续由 `SceneWorkflowBatchCoordinator` 执行；新增 `scene.batch.run` 只负责持久化、优先级、抢占和重启恢复，不改变“只创建候选、不自动采用、head 冲突保留”的规则。
+- 需要 Server final／HDR 渲染时，批次项生成 `jobID`，由 `scene.batch.remote` 提交；客户端保存 batch／item／target head 与 jobID 的映射。Server 结果回到同一批次作为候选，不直接改采用版本。
+- 批次取消／重试只作用于未完成项；已完成候选和旧版本不删除；`undo` 仍检查目标 head 和版本依赖。
+
 ## 3. Server 作业队列
 
 ### 3.1 作业类型
@@ -117,9 +129,11 @@ queued → running → succeeded
 | 类型 | 用途 | 资源 | 硬件 |
 | --- | --- | --- | --- |
 | `proxy.generate` | display／edit／linear proxy | CPU/GPU, IO | `image_module`；无模块时客户端生成 |
-| `render.final` | 单张最终渲染 | GPU Vulkan/CPU, memory | 图像模块 |
-| `render.batch` | 多张／组最终渲染 | GPU Vulkan/CPU, memory | 图像模块 |
-| `ai.heavy` | 降噪／超分等 | GPU/CPU, model | 图像模块 + 模型 |
+| `scene.proxy` | sceneProxy（AP1／HDR 线性表示） | GPU Vulkan/CPU, IO | `image_scene_batch` 或客户端生成 |
+| `scene.render.final` | 单张场景图／HDR／SDR 最终渲染 | GPU Vulkan, memory | `image_scene_batch` |
+| `scene.render.batch` | 多张／场景批次／模板渲染 | GPU Vulkan, memory | `image_scene_batch` |
+| `legacy.render.final` | 旧 SDR 兼容配方最终渲染 | Vulkan/CPU | `image_sdr_batch` |
+| `model.prefix` | denoise／superResolution／segmentation 确定性前缀 | GPU/CPU, model | `image_module` + 模型 |
 | `generative` | Flux 等 | CUDA GPU, model, memory | 生成式模块 |
 
 `image_module` 的硬件准入门槛：兼容 CUDA 的 NVIDIA GPU、最低显存／驱动、Vulkan 后端可用、feature flag 开启。实际图像算子优先 Vulkan；CUDA 只用于生成式 AI 栈，除非未来单独验证 CUDA 图像后端。
@@ -130,8 +144,10 @@ queued → running → succeeded
 | --- | --- | --- |
 | `library` | 归档、元数据、取回、备份 | 最高；不能被图像任务饿死 |
 | `image-foreground-proxy` | 用户当前编辑所需代理生成 | 高 |
-| `image-final` | 用户明确提交的 final／batch | 中高 |
+| `image-scene-final` | 场景图／HDR final／batch | 中高 |
+| `image-legacy-final` | 旧 SDR 兼容 final／batch | 中高 |
 | `image-background` | 预取代理、缓存预热 | 中 |
+| `model-prefix` | 确定性降噪／超分／分割 | 按模型准入 |
 | `generative` | Flux 等 | 按用户提交，独立 GPU 配额 |
 | `maintenance` | 校验、清理、重建 | 低 |
 
@@ -139,6 +155,7 @@ queued → running → succeeded
 
 - 每库加权公平；一个库的大批任务不能占满队列。
 - `library` lane 有保留容量；图像 lane 队列满时拒绝或延后，不挤占资料库。
+- 场景图／HDR lane 需要 Linux／Vulkan scene executor；未通过 039 等价验收时该 lane 关闭，不能把 legacy SDR 结果冒充场景输出。
 - 同一库的单张 final 可优先于同库大批量；避免用户等待被批处理拖死。
 - GPU 任务按显存和模型准入；显存不足排队，不超卖。
 
@@ -154,6 +171,16 @@ jobs(
   request_hash TEXT NOT NULL,
   input_manifest JSONB NOT NULL,
   recipe_hash TEXT,
+  scene_graph_hash TEXT,
+  output_state_hash TEXT,
+  model_program_hash TEXT,
+  compatibility_route TEXT,
+  delivery_target TEXT,
+  format TEXT,
+  template_id TEXT,
+  batch_id TEXT,
+  target_head TEXT,
+  scene_backend TEXT,
   engine_version TEXT,
   model_version TEXT,
   backend TEXT,
@@ -167,13 +194,14 @@ jobs(
 )
 job_attempts(job_id, attempt, worker_id, state, started_at, finished_at, error)
 job_inputs(job_id, ordinal, content_id, file_id, role, required)
-job_outputs(job_id, output_id, object_key, sha256, bytes, work_id, version_id, state)
+job_outputs(job_id, output_id, object_key, sha256, bytes, target, format, bit_depth, color_space, cicp, work_id, version_id, state)
 job_events(job_id, sequence, kind, payload, created_at)
 worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 ```
 
 - `job_id` 由客户端生成或 Server 按幂等规则分配；`unique(library_id, job_id)`。
-- `request_hash` 绑定输入、配方、引擎、模型、输出；同 ID 不同 hash 拒绝。
+- `request_hash` 绑定输入、场景图／旧配方、输出状态、模型前缀、模板／批次、目标 head、引擎、模型和输出；同 ID 不同 hash 拒绝。
+- `compatibility_route` 区分 legacy SDR 与 scene graph；`delivery_target`／`format` 区分 HDR AVIF 与 SDR JPEG/PNG16；不匹配拒绝，不自动换路线。
 - 状态：`submitted`、`queued`、`admitted`、`running`、`staged`、`published`、`failed`、`cancelled`、`reconcile`、`expired`。
 - `staged` 通过输出校验后才能 `published`；`published` 唯一。
 - 结果登记在 PostgreSQL + S3；客户端不直接改队列。
@@ -217,7 +245,7 @@ worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 - 客户端按 `job_id` 更新本地镜像；重复事件幂等；旧 sequence 丢弃。
 - Server 状态权威；客户端不能把本地“完成”当 Server 已发布。
 - `published` 后客户端下载结果，校验，登记候选；下载失败可重试。
-- 结果事件包含 `inputHash`、`recipeHash`、`engineVersion`、`outputHash`；客户端核对当前编辑版本。
+- 结果事件包含 `inputHash`、`recipeHash`／`sceneGraphHash`、`outputStateHash`、`modelProgramHash`、`compatibilityRoute`、`deliveryTarget`、`format`、`engineVersion`、`outputHash`；客户端核对当前版本、目标 head 和输出目标。
 
 ### 4.3 取消
 
@@ -250,6 +278,9 @@ worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 | 队列满 | 延后／提示 | 拒绝并给出原因 |
 | 显存不足 | 不提交或等待 | 排队／拒绝 |
 | 模型缺失 | 禁用入口 | 拒绝；不换模型 |
+| 场景后端未移植 | 只显示 legacy 能力 | `image_scene_batch` 关闭 |
+| 场景图／目标不匹配 | 拒绝提交 | 拒绝；不换路线 |
+| HDR／SDR 格式不匹配 | 拒绝采用 | 拒绝；不静默降级 |
 | 作业取消 | 停止等待 | 协作取消；清理暂存 |
 | 结果下载失败 | 重试 | 结果保留 |
 | 结果哈希不符 | 拒绝采用 | 标记输出异常 |
@@ -276,6 +307,9 @@ worker_capabilities(worker_id, backends, cuda, vulkan, vram, models, last_seen)
 8. 结果下载：S3 presigned／Relay；SHA-256 校验；预览不当母版。
 9. 能力缺失：无 CUDA／Vulkan／模型时入口禁用；资料库仍可用。
 10. 生成式：模型加载失败不换模型；结果候选，不自动采用。
+11. 场景批次：`SceneWorkflowBatch` 候选／head 冲突保留；远程 final 结果回到同一批次，不直接采用；旧 SDR 兼容不迁移。
+12. HDR／SDR：HDR AVIF 与 SDR JPEG/PNG16 的 target／format 不可互换；未过色彩门只候选。
+13. 场景后端：Linux／Vulkan scene executor 未通过时 `image_scene_batch` 关闭；legacy SDR 不能冒充场景输出。
 
 ## 8. 待决
 

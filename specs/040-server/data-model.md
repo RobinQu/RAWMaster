@@ -48,7 +48,7 @@
 | --- | --- | --- |
 | `upload_intents` | `upload_id`、`library_id`、`file_id`、`content_id`、`expected_sha256`、`expected_bytes`、`object_key`、`s3_upload_id`、`state`、`mode`、`expires_at` | `state`：`reserved`、`uploading`、`uploaded`、`verified`、`failed`、`expired`、`aborted`；`mode`：`direct`、`relay`、`mixed` |
 | `upload_parts` | `upload_id`、`part_number`、`etag`、`bytes`、`sha256`、`source`、`received_at` | Direct／Relay 共用 part 号；用于跳过已完成 part |
-| `objects` | `library_id`、`content_id`、`sha256`、`byte_count`、`bucket`、`object_key`、`state`、`created_at`、`verified_at`、`last_checked_at` | 主键 `(library_id, content_id)`；`state`：`available`、`missing`、`corrupt`、`quarantined` |
+| `objects` | `library_id`、`content_id`、`sha256`、`byte_count`、`bucket`、`object_key`、`media_kind`、`encoding`、`bit_depth`、`color_space`、`target`、`cicp`、`state`、`created_at`、`verified_at`、`last_checked_at` | 主键 `(library_id, content_id)`；`state`：`available`、`missing`、`corrupt`、`quarantined`；HDR AVIF、SDR JPEG/PNG16、代理分别记录编码、位深、色彩和 CICP |
 | `archive_refs` | `archive_ref_id`、`library_id`、`file_id`、`content_id`、`scope_id`、`project_id`、`session_id`、`filename`、`role`、`basis`、`state`、`created_at` | `basis`：`admitted`、`sequenceOnly`、`restored` |
 | `object_events` | `event_id`、`library_id`、`content_id`、`kind`、`detail`、`created_at` | 创建、校验、缺失、修复、删除意图 |
 
@@ -104,12 +104,21 @@ reserved
 
 | 表 | 关键字段 | 说明 |
 | --- | --- | --- |
-| `jobs` | `job_id`、`library_id`、`action`、`recipe_version`、`engine`、`model`、`state`、`created_at` | 与本地作业描述共用 |
+| `jobs` | `job_id`、`library_id`、`action`、`recipe_version`、`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`delivery_target`、`format`、`compatibility_route`、`template_id`、`batch_id`、`target_head`、`engine`、`model`、`state`、`created_at` | 与本地作业描述共用；场景图、旧 SDR 兼容路线、HDR／SDR 目标必须分开 |
 | `job_inputs` | `job_id`、`ordinal`、`content_id`、`file_id`、`role`、`required` | 冻结输入 |
 | `job_attempts` | `job_id`、`attempt`、`worker_id`、`state`、`error` | 租约与重试 |
 | `job_outputs` | `job_id`、`output_id`、`object_key`、`work_id`、`state` | 唯一发布 |
 
-1.0 只建立身份和表结构，不开放执行；1.1 单独验收。
+1.0 只建立身份和表结构，不开放执行；1.1 按 [041](../041-server-image-editing/spec.md) 单独验收。
+
+### 7.1 037／038／039 资源
+
+- **场景图。** `DevelopmentRecipe` schema 4 的 `sceneGraph`、输出状态（`route`、`sdrTrim`）和 `DevelopmentSceneModelV1` 模型前缀进入操作载荷／客户端快照；Server 只按不透明版本化 JSON 保存、索引和恢复，不自行迁移旧 SDR 配方。
+- **兼容路线。** 旧 SDR 配方、兼容显影图与场景图是不同路线；一条记录只能有一个 `engineVersion`／`compatibility_route`，不能把旧 SDR 结果标记为场景 HDR。
+- **模板与批量。** `SceneWorkflowTemplate`、`SceneWorkflowBatch` 的 header／item／candidate、目标 head 和冲突状态属于客户端目录；随库快照保存。Server 作业若引用它们，只保存冻结的模板／批次身份和输入摘要。
+- **交付目标。** HDR AVIF 10 位 Rec.2020／PQ、SDR JPEG8、PNG16 分别记录 target、format、bit depth、ICC／CICP 和 SDR 派生参数；不能只按扩展名判断语义。
+- **模型前缀。** denoise → superResolution? → segmentation* 是有序、确定性前缀；Flux／Seedream 生成候选不属于该前缀，单独记录模型、输入和候选。
+- **服务端执行。** Rust scene executor 当前是 macOS Metal-only；Linux／Vulkan 的 scene executor 未实现前，Server 只能执行已验证的点配方子集，不能宣称 HDR／DAG 批处理可用。
 
 ## 8. 配额、分区与规模
 
@@ -154,3 +163,5 @@ reserved
 8. 运行中作业恢复后转 `reconcile`，不自动发布。
 9. 元数据备份必须包含证书公有部分、令牌哈希和 secret bundle 引用；私钥不入普通 dump。
 10. 未验证备份不得作为恢复来源。
+11. 场景图、输出状态、模型前缀、模板／批量身份和 HDR／SDR 交付元数据必须随版本保存；旧 SDR 兼容记录不得被静默重写为场景图。
+12. 服务端作业的 `compatibility_route`、`delivery_target` 和 `format` 必须与输入版本一致；不匹配时拒绝，不自动换路线。

@@ -182,7 +182,7 @@ flowchart LR
 | S3 | metadata doctor、备份、验证、恢复、secret bundle | 空 PostgreSQL 恢复；对象缺失报告；证书／令牌恢复 |
 | S4 | 冷热、代理、固定、释放、过期、客户端重连 | 冷片切换；释放门槛；旧备份不倒带 |
 | S5 | 10TB／10GbE、证书轮换、演练、容量报告 | 真实基线；未测规模不标完成 |
-| S5.1 | 远程作业 | Server 1.1 独立验收 |
+| S5.1 | 远程作业 | 按 [041](../041-server-image-editing/spec.md)；场景图／HDR 需 Linux scene executor 和色彩门 |
 
 ## 8. 风险
 
@@ -196,7 +196,7 @@ flowchart LR
 | 10GbE 单流瓶颈 | multipart 并发；jumbo 端到端；测 RustFS 容器 MTU |
 | Relay 成瓶颈 | Direct 默认；Relay 流式、有界、仅回退 |
 | 单客户端限制 | 明确产品边界；后续共享库另立规格 |
-| 远程作业引擎不一致 | 只开放已验证 Linux 引擎；1.1 独立验收 |
+| 远程作业引擎不一致 | 只开放已验证 Linux 引擎；039 scene executor 当前 Metal-only，041 另立 Linux 端口与色彩门 |
 
 ## 9. 待验证
 

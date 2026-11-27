@@ -27,8 +27,8 @@
 | `libraries`、`devices`、`library_members` | 是 | 库、设备、所有权、配额 |
 | `server_identity`、公有证书链、SPKI | 是 | 私钥不入普通 dump |
 | `device_tokens` 哈希、key ID、撤销状态 | 是 | 不存明文令牌 |
-| `operations`、`operation_receipts`、`library_revisions` | 是 | 操作日志和收据 |
-| `objects`、`archive_refs`、`object_events` | 是 | 对象索引和归档引用 |
+| `operations`、`operation_receipts`、`library_revisions` | 是 | 操作日志和收据；场景图、输出状态、模型前缀随操作载荷保存 |
+| `objects`、`archive_refs`、`object_events` | 是 | 对象索引和归档引用；HDR／SDR 交付目标、格式、位深、ICC／CICP 一并保存 |
 | `library_snapshots`、`snapshot_events` | 是 | 快照索引；快照字节在 S3 |
 | `jobs`、`job_inputs`、`job_attempts`、`job_outputs` | 是 | 历史作业；运行中恢复后转待核对 |
 | `upload_intents`、`upload_parts` | 否 | 瞬态；恢复后作废并清理 |
@@ -51,12 +51,12 @@
 2. **约束**：外键、唯一键、CHECK、非空。
 3. **操作日志**：每库 `server_revision` 连续；`command_id` 唯一；收据 payload hash 匹配。
 4. **所有权**：每库一个 owner；epoch 单调；owner 设备存在。
-5. **对象**：`content_id`、`sha256`、`byte_count`、`bucket`、`object_key` 自洽；key 符合 `libraries/<libraryID>/objects/<sha2>/<sha256>`。
+5. **对象**：`content_id`、`sha256`、`byte_count`、`bucket`、`object_key` 自洽；key 符合 `libraries/<libraryID>/objects/<sha2>/<sha256>`；HDR AVIF／SDR JPEG／PNG16 的 target、format、bit depth、ICC／CICP 与对象索引一致。
 6. **归档引用**：每个引用指向同库对象；每个对象至少一个引用或保留代次引用；无跨库引用。
 7. **配额**：`used_bytes` 等于该库唯一对象字节和；≤ `quota_bytes`。
 8. **上传意图**：没有未过期活动残留；状态合法；part 号不冲突。
-9. **作业**：输入／输出引用完整；`published` 唯一；运行中恢复后转 `reconcile`。
-10. **快照**：`revision` 不超前；S3 快照对象存在；摘要匹配。
+9. **作业**：输入／输出引用完整；`published` 唯一；运行中恢复后转 `reconcile`；`scene_graph_hash`、`output_state_hash`、`model_program_hash`、`compatibility_route`、`delivery_target`、`format` 与输入版本一致。
+10. **快照**：`revision` 不超前；S3 快照对象存在；摘要匹配；场景工作流模板／批量候选身份随客户端快照保存。
 11. **outbox／审计**：事件 ID 唯一；可从当前状态重建。
 12. **S3 清单**：对象数／字节数一致；抽样 HEAD；恢复时全量 HEAD。
 13. **孤儿**：S3 有对象但无 DB 引用；DB 有对象但 S3 缺失。
@@ -90,7 +90,7 @@ backups/metadata/<generationID>/
 ```
 
 - `metadata.dump`：`pg_dump -Fc`，含 schema 和数据。
-- `object-manifest.ndjson.zst`：每行 `libraryID`、`contentID`、`sha256`、`bytes`、`bucket`、`key`、`state`、`archiveRefIDs`、`verifiedAt`。
+- `object-manifest.ndjson.zst`：每行 `libraryID`、`contentID`、`sha256`、`bytes`、`bucket`、`key`、`mediaKind`、`target`、`format`、`bitDepth`、`colorSpace`、`cicp`、`state`、`archiveRefIDs`、`verifiedAt`。
 - `library-snapshots.json`：快照 ID、修订、S3 key、SHA-256、字节、验证时间。
 - `checksums.json`：所有文件的 SHA-256。
 - `manifest.json`：
@@ -111,7 +111,8 @@ backups/metadata/<generationID>/
   "librarySnapshots": {"key": "...", "sha256": "...", "bytes": 0, "count": 0},
   "counts": {
     "libraries": 0, "devices": 0, "operations": 0, "objects": 0,
-    "archiveRefs": 0, "jobs": 0, "snapshots": 0
+    "archiveRefs": 0, "jobs": 0, "snapshots": 0,
+    "sceneGraphVersions": 0, "hdrArtifacts": 0, "sdrArtifacts": 0
   },
   "retention": "daily",
   "verifiedAt": null,
@@ -232,7 +233,8 @@ backups/metadata/<generationID>/
 5. 客户端重连：服务器恢复旧修订，客户端补交后续操作；重复命令去重；所有权 epoch 正确。
 6. 证书／令牌：同 CA／私钥恢复后客户端无需重新固定；secret bundle 缺失时明确要求重新登记；错误指纹被拒。
 7. 换 bucket／endpoint：重绑定后对象全部 HEAD 通过；缺项列出。
-8. 10TB 级：记录备份、恢复、doctor、全量 HEAD 时长和临时磁盘占用；不以单次结果外推 100TB。
+8. 场景图／HDR：恢复含 `sceneGraph`、输出状态、模型前缀、模板／批量候选的版本；HDR AVIF 与 SDR JPEG/PNG16 的 target／format／位深／ICC／CICP 保留；旧 SDR 兼容记录不变。
+9. 10TB 级：记录备份、恢复、doctor、全量 HEAD 时长和临时磁盘占用；不以单次结果外推 100TB。
 9. 加密：备份静态加密；错误密钥不能解密；日志不含密钥／令牌。
 
 ## 10. 待决

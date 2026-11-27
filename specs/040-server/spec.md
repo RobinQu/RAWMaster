@@ -13,7 +13,8 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 5. **元数据备份是 Server 业务逻辑。** 使用 PostgreSQL 一致快照 + 对象清单 + 校验和，恢复到隔离数据库并逐项验证；不依赖 PostgreSQL HA 代替逻辑恢复。
 6. **自签名证书是正式方案。** 自建服务使用私有 CA 或自签名证书，客户端固定服务器身份；证书、设备令牌哈希、令牌密钥／pepper 纳入服务端备份范围。私钥和密钥材料进入单独加密的 secret bundle，不进入普通元数据 dump。
 7. **存储可靠性外部化。** RAWMaster 不实现 RAID、纠删码、跨站点复制或 S3/ZFS 可靠性；现有 TrueNAS 冷备承担介质与灾难恢复。RAWMaster 只保证逻辑清单、哈希、引用和恢复路径。
-8. **编辑／导出云端后置。** 本轮只设计资料库云端；编辑和导出的云端执行、缓存与交付在后续会话单独讨论。
+8. **编辑／导出云端后置。** 本轮只设计资料库云端；编辑云端见 [041 Server 图像编辑模块](../041-server-image-editing/spec.md)，导出云端后续单独讨论。
+9. **037／038／039 对齐。** 资料库必须能保存和恢复新版场景图配方（`DevelopmentRecipe` schema 4 / `DevelopmentSceneGraphV1`）、输出状态、模型前缀、场景工作流模板与批量候选身份；旧 SDR 兼容配方与新场景配方分开，不能静默迁移。HDR AVIF 10 位 PQ 与 SDR JPEG/PNG16 成片作为不同交付资源登记。Server 本身不执行交互编辑；场景图批处理属于 041。
 
 ## 2. 用户与问题
 
@@ -42,7 +43,7 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 - PostgreSQL 元数据一致性校验、逻辑备份、备份验证、恢复、对象清单核对。
 - 证书、令牌哈希、私钥／密钥材料的备份与恢复。
 - 健康、配额、归档／备份状态、日志和版本兼容。
-- 远程作业只保留接口和身份预留；Server 1.1 再开放。
+- 远程作业只保留接口和身份预留；场景图／HDR／批处理的 Server 执行见 [041](../041-server-image-editing/spec.md)，不在 040 内实现。
 
 ### 3.2 Server 1.0 明确不做
 
@@ -67,7 +68,7 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 | S3 · 元数据备份 | `metadata doctor`、一致快照、对象清单、备份验证、隔离恢复 | 全量备份可恢复到新 PostgreSQL；对象缺失明确报告；客户端可重连 |
 | S4 · 冷热与过期 | 代理、取回、固定、释放、垃圾桶、版本／墓碑过期、单客户端重连 | 冷片可切换；释放条件正确；旧备份不会静默倒带 |
 | S5 · 运维与规模 | 10TB／10GbE 基线、证书轮换、secret bundle、恢复演练、容量报告 | 真实网络和真实 S3 对象通过；未测规模不标完成 |
-| S5.1 · 远程作业 | 作业描述、能力、队列、结果登记 | Server 1.1 独立验收；不阻塞 1.0 |
+| S5.1 · 远程作业 | 作业描述、能力、队列、结果登记 | 按 [041](../041-server-image-editing/spec.md) 独立验收；不阻塞 1.0 |
 
 **Server 1.0 = S1 + S2 + S3 + S4。** S3 元数据恢复是 1.0 发布门，不是可选项。
 
@@ -166,7 +167,7 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 - **SRV-R39 · 版本兼容。** gRPC API、proto、PostgreSQL schema、备份格式、S3 provider profile 分别版本化；未知写版本拒绝，旧客户端只读或安全退出。
 - **SRV-R40 · 升级前备份。** 数据库迁移、证书轮换、Server 升级前创建并验证元数据备份；失败可回到隔离恢复。
 - **SRV-R41 · 恢复演练。** 至少每季度从元数据备份 + S3 对象恢复到隔离环境，核对库、引用、客户端快照和对象哈希；记录回执。
-- **SRV-R42 · 远程作业（1.1）。** 作业描述、冻结输入、能力、队列、取消、重试、结果登记；未通过验证的引擎不开放。
+- **SRV-R42 · 远程作业（1.1）。** 作业描述、冻结输入、能力、队列、取消、重试、结果登记按 [041](../041-server-image-editing/spec.md) 执行；必须支持 scene graph、输出状态、模型前缀和 HDR／SDR 交付目标。未通过验证的引擎不开放。
 
 ## 7. 状态词汇
 
@@ -236,6 +237,7 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 10. **规模。** 10TB 级库、约 20 万对象、10GbE + jumbo frame 记录首传、增量、恢复、`pg_dump`、`metadata doctor` 和 S3 HEAD 时长；未测 100TB 不标通过。
 11. **安全。** 自签名证书固定、私钥备份加密、备份静态加密、日志不含令牌／密钥、公开暴露需 TLS 和显式配置。
 12. **版本。** 未知 gRPC／proto／schema／备份格式拒绝写入；旧客户端只读或安全退出；升级前备份可回退。
+13. **037／038／039 资源。** 保存并恢复含 `sceneGraph`、输出状态、模型前缀的场景版本；HDR AVIF 10 位 PQ 与 SDR JPEG/PNG16 成片分别登记；旧 SDR 兼容配方不被静默迁移；场景模板与批量候选身份可追溯；Server 不执行交互编辑，批处理按 041 验收。
 
 ## 10. 成功标准
 
@@ -246,6 +248,7 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 - **单写者安全。** 第二客户端不能写；转移有 fencing；服务器恢复后旧 epoch 不能倒带。
 - **不误释放。** 未固定、未校验、未备份、未同步或唯一副本不被自动回收。
 - **存储可靠性外置。** 不把 S3/ZFS 复制、RAID、纠删码算作 RAWMaster 功能；但逻辑备份和恢复必须通过。
+- **新资源可追溯。** 场景图、输出状态、模型前缀、模板、批量候选和 HDR／SDR 交付资源在元数据、对象清单和恢复中都保留身份；旧 SDR 兼容路径不被静默改写。
 - **性能基线。** 10GbE／jumbo、10TB 库、Direct／Relay、`pg_dump`、恢复和 S3 HEAD 在固定环境测量后冻结；不以未测数字承诺。
 
 ## 11. 假设、非目标与待决
@@ -256,7 +259,8 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 - PostgreSQL 和 S3 是外部高可用服务；Server 本地磁盘只放日志、临时文件和有界中转缓冲。
 - S3 通过 RustFS（TrueNAS 25.04 App）、MinIO 或云 S3 提供；Direct 默认，Relay 回退。
 - 存储可靠性、RAID、纠删码、跨站点复制由 TrueNAS／S3 和现有冷备负责。
-- 编辑／导出云端后续单独设计；本轮只保留接口和身份。
+- 编辑云端见 041；本轮只保留场景图、输出状态、模型前缀、模板和批量候选等身份，不执行交互编辑或场景图批处理。
+- 037／038／039 的新场景图、HDR、DAG 和 Rust scene executor 已进入 main；Server 场景图／HDR 批处理仍受 041 的后端与色彩门约束。
 
 ### 待决
 
@@ -271,7 +275,8 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 | D-SRV-07 | Relay 触发策略 | 仅传输错误触发；认证／哈希／配额错误不触发 | S2 计划前 |
 | D-SRV-08 | Postgres HA | 外部 primary + standby；不引入分布式 SQL | S1 冻结前 |
 | D-SRV-09 | 冷备回执 | 外部负责；RAWMaster 可显示“外部冷备未知”或接收回执 | S4 计划前 |
-| D-SRV-10 | 远程作业类型 | 仅 Linux 已验证引擎；Server 1.1 | S5 后 |
+| D-SRV-10 | 远程作业类型 | 按 041：SDR 点配方、场景图/HDR、模型前缀、Flux 分开准入；未移植 Linux scene executor 前只开放已验证子集 | S5 后 |
+| D-SRV-11 | 场景图／HDR 资源版本 | `DevelopmentRecipe` schema 4、输出状态、模型前缀、交付格式分别版本化；旧 SDR 兼容路径不迁移 | S0 冻结 |
 
 ## 12. 追溯
 
@@ -286,6 +291,10 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 | [040 安全](security.md) | 自签名证书、令牌、secret bundle |
 | [040 数据模型](data-model.md) | PostgreSQL 表与不变量 |
 | [040 协议](protocol.md) | gRPC 与 S3 |
+| [037 色彩／HDR](../037-color-film-hdr/spec.md) | 场景线性、ACES 2、SDR／HDR 输出、AVIF PQ |
+| [038 DAG 工作流](../038-node-dag-workflow/spec.md) | 场景图、模板、批量、兼容图 |
+| [039 Rust scene backend](../039-rust-scene-backend/spec.md) | Rust scene executor；当前 Metal-only，Server 移植待办 |
+| [041 Server 图像编辑](../041-server-image-editing/spec.md) | 场景图／HDR 批处理、队列、代理、模型 |
 
 ## 13. 参考
 
@@ -299,4 +308,8 @@ PostgreSQL 与 S3 的高可用和存储可靠性由基础设施负责；RAWMaste
 - [交互与状态](ux.md)
 - [任务与发布门](tasks.md)
 - [现有基础与缺口](evidence.md)
+- [037 色彩／胶片／HDR](../037-color-film-hdr/spec.md)
+- [038 Node DAG 工作流](../038-node-dag-workflow/spec.md)
+- [039 Rust scene backend](../039-rust-scene-backend/spec.md)
+- [041 Server 图像编辑模块](../041-server-image-editing/spec.md)
 - [现有 Server 规划预演](../../docs/ui/prototype/index.html#tools/server)

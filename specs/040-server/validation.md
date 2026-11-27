@@ -27,6 +27,8 @@
 - **没有 Direct／Relay 实测。** 未测 10GbE、jumbo、无 LAG、S3 直传和回退。
 - **没有客户端实现。** grpc-swift-2、AWS SDK for Swift／Soto、钥匙串、SQLite 快照未接入。
 - **没有元数据恢复演练。** 空 PostgreSQL 恢复、对象缺失、客户端重连、所有权 epoch 未执行。
+- **没有 037／038／039 资源恢复。** sceneGraph／输出状态／模型前缀／模板／批量候选、HDR AVIF 与 SDR JPEG/PNG16 元数据尚未在备份恢复中验证。
+- **没有 Linux scene executor。** 039 当前 Metal-only；Server HDR／DAG 批处理不能据此声称可用。
 - **没有 UI 原型更新。** 现有 Server 预演仍是旧的归档／同步／作业模拟；本轮只定义交互。
 - **没有远程作业。** Server 1.1 未开始。
 
@@ -39,6 +41,8 @@
 5. 用真实自签名 CA 跑客户端固定、证书轮换、令牌撤销、secret bundle 恢复。
 6. 确认 10GbE／jumbo 端到端 MTU、RustFS App 网络、无 LAG 的实际吞吐。
 7. 确认外部冷备状态是否可回执；若否，UI 只能显示“外部负责／未知”。
+8. 用真实 sceneGraph 版本、模板、批量候选和 HDR／SDR 成片跑一次元数据备份恢复；确认旧 SDR 兼容记录不被迁移。
+9. 在 Linux／Vulkan 上确认 scene executor 是否存在；没有则 041 的 HDR／DAG 队列保持关闭。
 
 ## 4. 证据口径
 

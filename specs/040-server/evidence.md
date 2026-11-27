@@ -18,6 +18,10 @@
 | 分组制作作业 | [processing/schema.sql](../../Modules/LibraryCatalog/src/processing/schema.sql) · [processing.rs](../../Modules/LibraryCatalog/src/processing.rs) | Server 1.1 作业描述、冻结输入、发布 |
 | 本地调度 | [scheduler.rs](../../Modules/LibraryCatalog/src/scheduler.rs) | 队列、租约、重试 |
 | 组织关系 | [organization/schema.sql](../../Modules/LibraryCatalog/src/organization/schema.sql) | 库、作品、版本、集合、堆栈 |
+| 场景图／HDR 配方 | [EditingModels.swift](../../Sources/RAWMasterCore/EditingModels.swift) schema 4 · [DevelopmentSceneGraphV1.swift](../../Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift) · [DevelopmentSceneOutputStateV1.swift](../../Sources/RAWMasterCore/DevelopmentSceneOutputStateV1.swift) | 版本、操作和快照保存 sceneGraph／输出状态 |
+| 模板与批量 | [SceneWorkflowBatch.swift](../../Sources/RAWMasterCore/SceneWorkflowBatch.swift) · [LibraryStore+SceneWorkflowBatch.swift](../../Sources/RAWMasterCore/LibraryStore+SceneWorkflowBatch.swift) | 模板、批量候选、head 冲突、撤销 |
+| Rust scene executor | [039 Rust scene backend](../039-rust-scene-backend/spec.md) | 当前 Metal-only；Linux／Vulkan 未实现 |
+| HDR／SDR 交付 | [037 验证](../037-color-film-hdr/validation.md) · [DevelopmentSceneDeliveryServiceV1.swift](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift) | HDR AVIF 10 位 PQ、SDR JPEG/PNG16；Server 端口待办 |
 | 现有产品验收 | [033 Server 规格](../033-library-lifecycle/server.md) | 归档、冷热、恢复、同步、远程作业 |
 
 ## 2. 外部调研证据
@@ -54,6 +58,8 @@
 - 没有 RustFS 真实吞吐／兼容性测试。
 - 没有 10TB／20 万对象基线。
 - 没有远程作业。
+- 没有 Linux／Vulkan 的 037／038 scene executor；039 当前只实现 macOS Metal。
+- 没有 Server 端 HDR AVIF／SDR 交付、场景图批处理或模型前缀执行；041 另立验收。
 - 没有编辑／导出云端；本轮不涉及。
 
 ## 5. 研究缺口
@@ -70,6 +76,8 @@
 | secret bundle 加密 | age／libsodium、密钥管理、恢复 | 安全 |
 | 单客户端所有权转移 | 旧 epoch fencing、真实双机 | S1/S4 |
 | 外部冷备回执 | TrueNAS 冷备状态是否可读 | S4 释放策略 |
+| 场景图／HDR 元数据 | schema 4、输出状态、模型前缀、模板／批量候选在备份恢复中的一致性 | 040 资源与 041 作业 |
+| Linux scene executor | 037／038 图在 Vulkan／CPU 的像素和性能 | 041 图像模块/HDR |
 
 ## 6. 非声明
 
@@ -78,3 +86,4 @@
 - 自签名 TLS 只保护传输，不保护备份静态数据；备份必须另行加密。
 - PostgreSQL HA 不能替代逻辑备份；S3 持久性不能替代对象清单和引用一致性。
 - 10TB 设计不能外推 100TB／200 万文件；容量专项另立。
+- 039 的 Rust scene executor 目前是 macOS Metal-only，不能据此宣称 Server Linux／Vulkan 可执行 HDR／DAG。040 能保存和恢复这些元数据，不等于 041 已能批处理。

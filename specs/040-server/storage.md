@@ -74,6 +74,13 @@ s3://rawmaster/
 - 对象 key 不使用用户文件名；文件名、来源路径、角色在 PostgreSQL。
 - 跨库不去重；同一内容在不同库各存一份。
 
+### 3.1 代理、HDR 与 SDR 交付
+
+- `displayProxy`、`editProxy`、`sceneProxy`、`linearProxy` 可分别存 S3；代理可重建，不进入原件归档引用。
+- HDR AVIF 10 位 Rec.2020／PQ、SDR JPEG8、PNG16 是不同交付对象；对象索引记录 `target`、`format`、`bit_depth`、ICC／CICP 和 SDR 派生参数，不能只按扩展名判断。
+- `sceneProxy` 是 037／038 场景图的线性输入代理，不能拿 SDR JPEG 代替；其格式、分辨率和存储预算由 041 冻结。
+- 代理可配置生命周期；成片母版和归档对象不得被 S3 生命周期自动删除。
+
 ## 4. Direct 与 Relay
 
 ### 4.1 Direct
