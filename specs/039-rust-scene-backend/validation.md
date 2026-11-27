@@ -57,7 +57,7 @@ Coverage of the shadow suite:
 
 ```
 swift test --skip-build --filter RAWMasterImagingTests
-Executed 1145 tests, with 101 tests skipped and 0 failures (0 unexpected) in 220.1 s
+Executed 1151 tests, with 101 tests skipped and 0 failures (0 unexpected) in 228.7 s
 ```
 
 This includes the 037/038 delivery service tests, scene RAW/color/output tests and the existing
@@ -92,6 +92,52 @@ Executed 13 tests, with 2 tests skipped and 0 failures
   fallback receipt with a non-nil reason.
 - The 60MP receipt test below asserts `tiles > 1`, `peakBytes <= budget` and a finite delivered
   pixel for both SDR and HDR.
+
+## Production model adapters on a real asset
+
+```
+swift test --skip-build --filter DevelopmentSceneProductionModelProviderTests
+Executed 4 tests, with 0 failures (0 unexpected) in 3.24 s
+```
+
+- `testRealAssetDenoiseAndSuperResolutionProduceDeterministicAP1Surfaces` loads
+  `Fixtures/Spektrafilm/person.png`, converts the real pixels to AP1, runs the bundled PhotoVGG7
+  denoiser and PhotoUpconv7 2x model, and verifies changed finite pixels plus doubled dimensions.
+- `testVisionSegmentationFeedsARealSceneGraphMask` runs Vision foreground and person segmentation,
+  verifies non-trivial full-size `R32Float` masks, then runs
+  `denoise → super-resolution → externalCoverage corrector → ACES HDR delivery` in one render.
+- `testLandscapeSegmentationUsesTheVerifiedMaskPack` runs the EfficientViT ONNX model from
+  `experiments/MaskAI/Vendor` after the landscape integrity hash was corrected to the shipped
+  `e6df30d...` artifact.
+- `testAP1ToLinearRec709RoundTripsThroughTheModelDomain` verifies the inverse color matrix used by
+  all model adapters.
+
+The scene preview now constructs the production provider and accepts a model program; the editor
+derives denoise/super-resolution stages from a scene-compatible recipe. Subject/person masks are
+Vision-native; landscape masks require the installed mask pack.
+
+## EDR headroom across real screens
+
+```
+RAWMASTER_SCENE_EDR_REPORT=/tmp/scene-edr.json \
+  swift test --skip-build --filter DevelopmentSceneEDRCrossScreenTests
+Executed 1 test, with 0 failures
+```
+
+The host reported two real screens:
+
+| Screen | Current headroom | Potential headroom |
+| --- | --- | --- |
+| Built-in Retina Display | 1.2× | 16× |
+| LG TV SSCR2 | 1.2× | 6.70× |
+
+The numeric matrix rendered an 8.0 AP1 highlight through SDR and HDR paths. SDR highlight was
+0.886; HDR highlight was 5.351; all headroom values above 1 selected `hdr2020`, and 1.0 selected
+`sdr709`. Outputs were finite, `.private`, and highlight > middle at every headroom. This covers
+every connected screen profile plus simulated 1.2/1.5/2/4/6.7/16 headroom values. Physical
+simultaneous presentation on two EDR displays is still a manual/visual acceptance step; the test
+records the actual screen inventory and headroom rather than pretending a single compositor run
+is a cross-monitor visual pass.
 
 ## 60MP synthetic graph
 
@@ -139,9 +185,9 @@ reused surfaces and cross-frame analytic masks. Reports are written with
 
 ## Boundaries and follow-up
 
-- Real Core ML/ONNX denoise, super-resolution and segmentation adapters are not part of this
-  change. The contracts, ordering, budget and graph binding are verified with deterministic Metal
-  providers; model quality/performance and model-file admission still need their own evidence.
+- Production denoise/super-resolution adapters and Vision subject/person segmentation are wired
+  and tested on a real PNG. Landscape segmentation is wired through the verified ONNX pack;
+  model quality/performance on a broad asset corpus remains follow-up evidence.
 - The full 60MP scene graph, real EDR cross-screen sweep and broad camera corpus remain
   environment-dependent acceptance work. The Rust executor enforces the same surface budget and
   region semantics as the Swift executor, but this run did not produce 60MP timing.

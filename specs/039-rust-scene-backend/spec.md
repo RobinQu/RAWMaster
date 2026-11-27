@@ -79,8 +79,26 @@ the Rust executor only sees the post-model image and coverage textures.
 `DevelopmentSceneModelProvider` is the platform adapter. The renderer runs the prefix inside the
 same `prepareFinal`/`preparePreview` call and passes segmentation masks into the graph through
 `externalCoverage(id:)` nodes, so a corrector can be masked by a deterministic provider result on
-both the Swift and Rust executors. The test provider uses Metal kernels; production Core ML/ONNX
-adapters remain explicit platform code.
+both the Swift and Rust executors.
+
+`DevelopmentSceneProductionModelProvider` is the shipping adapter:
+
+- **Denoise:** the bundled PhotoVGG7 full-chroma network, invoked without a source URL or RAW
+  capability check. AP1 is converted to linear Rec.709, display-encoded for the network, composed,
+  rendered back to a texture and converted to AP1.
+- **Super-resolution:** the bundled PhotoUpconv7 Core ML package on the same linear Rec.709
+  domain; the returned image is twice the input size and is converted back to AP1.
+- **Segmentation:** Vision foreground instances for `.subject`, Vision person segmentation for
+  `.people`, and the verified EfficientViT landscape pack for `.landscape`. Masks are scaled to
+  the full scene surface as `R32Float`.
+- **Recipe wiring:** `DevelopmentSceneModelProgramV1.derived(from:)` maps scene-compatible legacy
+  denoise and super-resolution settings; `DevelopmentScenePreviewV1.render` accepts the program and
+  installs the production provider beside the graph renderer. RAW-domain/mosaic denoisers and
+  generative candidates are not inferred.
+
+The deterministic test provider remains for contract tests. The production provider is exercised
+on a real photographic PNG through denoise, 2x super-resolution, Vision segmentation, the
+`externalCoverage` graph port and ACES HDR delivery.
 
 ## Files
 
@@ -92,6 +110,6 @@ adapters remain explicit platform code.
   `Sources/RAWMasterCore/DevelopmentSceneModelV1.swift`
 - `Sources/RAWMasterImaging/RustSceneGraphRenderer.swift`,
   `DevelopmentSceneGraphRendererV1.swift`, `DevelopmentSceneModelPipelineV1.swift`,
-  `DevelopmentSceneExecutionReceiptV1.swift`
+  `DevelopmentSceneProductionModelProvider.swift`, `DevelopmentSceneExecutionReceiptV1.swift`
 - `Tests/RAWMasterImagingTests/RustSceneGraphRendererTests.swift`,
   `DevelopmentSceneModelPipelineV1Tests.swift`
