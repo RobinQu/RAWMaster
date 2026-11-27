@@ -16,8 +16,8 @@
   "cacheBytes": 12884901888,
   "sourceRevision": 1,
   "cold": {
-    "graphMs": 6158.097820999999,
-    "readbackMs": 3187.067853,
+    "graphMs": 6074.276270999999,
+    "readbackMs": 3208.22442,
     "receipt": {
       "tiles": 20,
       "nodes": 180,
@@ -26,7 +26,7 @@
       "nodeCacheHits": 0,
       "peakBytes": 7711850500,
       "budgetBytes": 17179869184,
-      "cpuMs": 6158.097820999999
+      "cpuMs": 6074.276270999999
     },
     "comparison": {
       "samples": 240869376,
@@ -46,7 +46,7 @@
     }
   },
   "warm": {
-    "graphMs": 620.87386,
+    "graphMs": 636.906101,
     "readbackMs": 0.0,
     "receipt": {
       "tiles": 20,
@@ -56,12 +56,12 @@
       "nodeCacheHits": 80,
       "peakBytes": 7774928900,
       "budgetBytes": 17179869184,
-      "cpuMs": 620.87386
+      "cpuMs": 636.906101
     },
     "comparison": null
   },
   "edited": {
-    "graphMs": 1131.057615,
+    "graphMs": 1190.834999,
     "readbackMs": 0.0,
     "receipt": {
       "tiles": 20,
@@ -71,12 +71,12 @@
       "nodeCacheHits": 80,
       "peakBytes": 8685092868,
       "budgetBytes": 17179869184,
-      "cpuMs": 1131.057615
+      "cpuMs": 1190.834999
     },
     "comparison": null
   },
   "newSource": {
-    "graphMs": 4141.902929000001,
+    "graphMs": 4059.280172,
     "readbackMs": 0.0,
     "receipt": {
       "tiles": 20,
@@ -86,10 +86,10 @@
       "nodeCacheHits": 0,
       "peakBytes": 13492715524,
       "budgetBytes": 17179869184,
-      "cpuMs": 4141.902929000001
+      "cpuMs": 4059.280172
     },
     "comparison": null
   },
   "outputSha256": "32b0d96b51b8b5a498273cff6c660b79486b13bc1e2e47938e8a578746fab61c",
-  "outputPath": "/data/linux/scene-output-linux-final.f32"
+  "outputPath": "/data/linux/scene-output-linux-final2.f32"
 }

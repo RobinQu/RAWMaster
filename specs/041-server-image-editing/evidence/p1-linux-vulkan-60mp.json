@@ -87,12 +87,12 @@
         "over1e5": 0,
         "samples": 240869376
       },
-      "graphMs": 6158.097820999999,
-      "readbackMs": 3187.067853,
+      "graphMs": 6074.276270999999,
+      "readbackMs": 3208.22442,
       "receipt": {
         "budgetBytes": 17179869184,
         "coverageCacheHits": 0,
-        "cpuMs": 6158.097820999999,
+        "cpuMs": 6074.276270999999,
         "dispatches": 200,
         "nodeCacheHits": 0,
         "nodes": 180,
@@ -102,12 +102,12 @@
     },
     "edited": {
       "comparison": null,
-      "graphMs": 1131.057615,
+      "graphMs": 1190.834999,
       "readbackMs": 0.0,
       "receipt": {
         "budgetBytes": 17179869184,
         "coverageCacheHits": 80,
-        "cpuMs": 1131.057615,
+        "cpuMs": 1190.834999,
         "dispatches": 20,
         "nodeCacheHits": 80,
         "nodes": 180,
@@ -118,12 +118,12 @@
     "host": "OpenCode Linux host (192 logical CPUs)",
     "newSource": {
       "comparison": null,
-      "graphMs": 4141.902929000001,
+      "graphMs": 4059.280172,
       "readbackMs": 0.0,
       "receipt": {
         "budgetBytes": 17179869184,
         "coverageCacheHits": 80,
-        "cpuMs": 4141.902929000001,
+        "cpuMs": 4059.280172,
         "dispatches": 120,
         "nodeCacheHits": 0,
         "nodes": 180,
@@ -135,12 +135,12 @@
     "tileEdge": 2048,
     "warm": {
       "comparison": null,
-      "graphMs": 620.87386,
+      "graphMs": 636.906101,
       "readbackMs": 0.0,
       "receipt": {
         "budgetBytes": 17179869184,
         "coverageCacheHits": 80,
-        "cpuMs": 620.87386,
+        "cpuMs": 636.906101,
         "dispatches": 0,
         "nodeCacheHits": 80,
         "nodes": 160,
