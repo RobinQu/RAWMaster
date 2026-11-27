@@ -127,6 +127,23 @@ final class DevelopmentSceneGraphV1Tests: XCTestCase {
     }
   }
 
+  func testExternalCoverageRoundTripsAsAProviderPort() throws {
+    let stage = UUID()
+    let mask = Node(name: "Segmentation", operation: .externalCoverage(id: stage))
+    let node = grade(mask: mask.id)
+    let graph = try value([mask, node], end: .node(node.id))
+    XCTAssertTrue(mask.operation.isCoverage)
+    XCTAssertEqual(mask.operation.images, [])
+    XCTAssertEqual(mask.operation.coverages, [])
+    XCTAssertEqual(try JSONDecoder().decode(Graph.self, from: JSONEncoder().encode(graph)), graph)
+    let clone = try graph.remapped()
+    guard case let .externalCoverage(id) = clone.graph.nodes.first(where: { $0.name == "Segmentation" })?.operation else {
+      return XCTFail("external coverage disappeared during remap")
+    }
+    XCTAssertEqual(id, stage, "provider ids are stage identities, not graph node ids")
+    XCTAssertThrowsError(try value([mask, grade(mask: UUID())], end: .node(node.id)))
+  }
+
   private func grade(id: UUID = UUID(), input: Graph.Endpoint = .input, mask: UUID? = nil, enabled: Bool = true) -> Node {
     .init(id: id, name: "Grade", operation: .corrector(image: input, mask: mask, exposureEV: 1,
       curve: [.init(-2, -1.5), .init(2, 2)], strength: 0.75, enabled: enabled))
