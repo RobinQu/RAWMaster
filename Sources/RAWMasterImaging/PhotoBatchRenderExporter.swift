@@ -26,6 +26,10 @@ public struct PhotoBatchExportConfiguration: Equatable, Codable, Sendable {
         if let maximumLongEdge, !(64...100000).contains(maximumLongEdge) { throw DevelopmentError.invalidGeometry }
         try layout.validate()
         let look = layout.resolvedAppearance
+        if format == .avif10 {
+            guard maximumLongEdge == nil, look.frame == "none", look.mark == "off", metadataPolicy == .none,
+                  !includeGPS, jpegQuality == 0.95 else { throw DevelopmentError.unsupportedEngine }
+        }
         if ["signature", "both"].contains(look.mark), layout.signature.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             throw EditingError.invalidRecipe
         }
@@ -123,6 +127,15 @@ public actor PhotoBatchRenderExporter {
         var retainPreparedStage = false
         defer { if !retainPreparedStage { try? FileManager.default.removeItem(at: temporary) } }
         let stage = temporary.appendingPathComponent("pixels").appendingPathExtension(configuration.format.filenameExtension)
+        if configuration.format == .avif10 {
+            let ticket = try DevelopmentSceneDeliveryV1(work: work, version: version, format: .avif10)
+            try await renderingTask(lane: .export, resources: .init(cpu: 1, gpu: 1, io: 1, memoryBytes: 2 << 30)) {
+                try DevelopmentSceneDeliveryServiceV1.encodePQForBatch(ticket, to: stage)
+            }
+            return try await publishBatchPayload(stage, final: final, protected: protected, execution: execution,
+                preparePublication: preparePublication, retainPreparedStage: &retainPreparedStage,
+                verify: { try RenderFiles.verify(version.source) })
+        }
         let look = configuration.layout.resolvedAppearance
         let needsMetadata = look.mark == "exif" || look.mark == "both" || configuration.metadataPolicy != .none
         let tagged = temporary.appendingPathComponent("delivery").appendingPathExtension(configuration.format.filenameExtension)
@@ -135,7 +148,26 @@ public actor PhotoBatchRenderExporter {
         defer {
             if let stagingCapture { try? FileManager.default.removeItem(at: stagingCapture.deletingLastPathComponent()) }
         }
-        if let artifactURL, let artifact = version.artifact {
+        if let graph = version.recipe.sceneGraph {
+            let format: DevelopmentSceneDeliveryV1.Format = configuration.format == .jpeg8 ? .jpeg8 : .png16
+            guard configuration.format == .jpeg8 || configuration.format == .png16 else { throw DevelopmentError.unsupportedEngine }
+            _ = try DevelopmentSceneDeliveryV1(work: work, version: version, format: format)
+            verify = { try RenderFiles.verify(version.source) }
+            metadataURL = version.source.sourceLocation
+            raster = try await renderingTask(lane: .export) {
+                let capture = try RenderFiles.verifiedPreviewCapture(version.source)
+                defer { try? FileManager.default.removeItem(at: capture.url.deletingLastPathComponent()) }
+                return try capture.withCurrent(at: capture.url) {
+                    let image = try DevelopmentSceneDeliveryServiceV1.renderSDRForComposition(capture: capture.url, graph: graph)
+                    return try Self.rasterize(image, source: capture.url, configuration: configuration)
+                }
+            }
+            if needsMetadata {
+                stagingCapture = try await renderingTask(lane: .export, resources: .init(cpu: 1, io: 1)) {
+                    try RenderFiles.capture(version.source, synchronize: false)
+                }
+            }
+        } else if let artifactURL, let artifact = version.artifact {
             if needsMetadata {
                 stagingCapture = try await renderingTask(lane: .export, resources: .init(cpu: 1, io: 1)) {
                     do { return try RenderFiles.capture(version.source, synchronize: false) }
@@ -222,16 +254,26 @@ public actor PhotoBatchRenderExporter {
             thumbnail = nil
         }
         // The GPU permit ends after the joined bitmap render. Encoding and metadata may overlap a different frame.
+        let frozenMetadataURL = stagingCapture ?? metadataURL
         let payload = try await renderingTask(lane: .export, resources: .init(cpu: 1, io: 1)) {
-            try Self.encode(raster, source: metadataURL, configuration: configuration, stage: stage, tagged: tagged)
+            try Self.encode(raster, source: frozenMetadataURL, configuration: configuration, stage: stage, tagged: tagged)
         }
-        try Task.checkCancellation()
         if execution.retainStageForRecovery {
-            // Once preparation starts, its response may be lost after the ticket was committed.
             // Keep just the deliverable in the private folder for the durable receipt.
             for scratch in [stage, tagged, temporary.appendingPathComponent("development.tiff")] where scratch != payload {
                 if FileManager.default.fileExists(atPath: scratch.path) { try FileManager.default.removeItem(at: scratch) }
             }
+        }
+        return try await publishBatchPayload(payload, final: final, protected: protected, execution: execution,
+            preparePublication: preparePublication, retainPreparedStage: &retainPreparedStage, verify: verify)
+    }
+
+    private func publishBatchPayload(_ payload: URL, final: URL, protected: [URL], execution: BatchPhotoExecution,
+                                     preparePublication: BatchPhotoPublication?, retainPreparedStage: inout Bool,
+                                     verify: @escaping @Sendable () throws -> Void) async throws -> URL {
+        try Task.checkCancellation()
+        if execution.retainStageForRecovery {
+            // The callback can commit a ticket before reporting failure; retain it for reconciliation.
             retainPreparedStage = preparePublication != nil
         }
         let commit: BatchPhotoCommit?
@@ -322,13 +364,7 @@ public actor PhotoBatchRenderExporter {
 
     private static func encode(_ raster: DeliveryRaster, source metadataURL: URL,
                                configuration: PhotoBatchExportConfiguration, stage: URL, tagged: URL) throws -> URL {
-        let jpeg = configuration.format == .jpeg8
-        let codec: PhotoExportKernel.Codec = jpeg ? .jpeg : (configuration.format == .png16 ? .png : .tiff)
-        let size = PhotoExportKernel.Dimensions(width: UInt32(raster.width), height: UInt32(raster.height))
-        try raster.bitmap.withUnsafeBytes { bytes in
-            try PhotoExportKernel.encode(to: stage, size: size, pixels: bytes, stride: raster.stride,
-                pixelFormat: jpeg ? .rgbx8 : .rgba16, codec: codec, quality: UInt8((configuration.jpegQuality * 100).rounded()))
-        }
+        try encodePixels(raster, format: configuration.format, quality: configuration.jpegQuality, to: stage)
         let metadata = configuration.metadataPolicy == .none ? nil :
             CGImageSourceCreateWithURL(metadataURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary)
         let payload: URL
@@ -341,7 +377,25 @@ public actor PhotoBatchRenderExporter {
         return payload
     }
 
-    private static func bitmap(_ image: CIImage, jpeg: Bool) throws -> DeliveryRaster {
+    /// Encode an already rendered display-linear SDR image using the same embedded-profile codecs as 032.
+    /// Source metadata and layout do not participate in this path.
+    static func encodeSceneSDRPixels(_ image: CIImage, format: PhotoRenderFormat, to stage: URL, context: CIContext) throws {
+        guard format == .jpeg8 || format == .png16 else { throw DevelopmentError.invalidEncoding }
+        try encodePixels(bitmap(image, jpeg: format == .jpeg8, context: context), format: format, quality: 0.95, to: stage)
+    }
+
+    private static func encodePixels(_ raster: DeliveryRaster, format: PhotoRenderFormat, quality: Double, to stage: URL) throws {
+        guard format != .avif10 else { throw DevelopmentError.invalidEncoding }
+        let jpeg = format == .jpeg8
+        let codec: PhotoExportKernel.Codec = jpeg ? .jpeg : (format == .png16 ? .png : .tiff)
+        let size = PhotoExportKernel.Dimensions(width: UInt32(raster.width), height: UInt32(raster.height))
+        try raster.bitmap.withUnsafeBytes { bytes in
+            try PhotoExportKernel.encode(to: stage, size: size, pixels: bytes, stride: raster.stride,
+                pixelFormat: jpeg ? .rgbx8 : .rgba16, codec: codec, quality: UInt8((quality * 100).rounded()))
+        }
+    }
+
+    private static func bitmap(_ image: CIImage, jpeg: Bool, context: CIContext = bitmapContext) throws -> DeliveryRaster {
         let extent = image.extent
         let (width, height) = (Int(extent.width), Int(extent.height))
         guard width > 0, height > 0, width <= 100_000, height <= 100_000, width * height <= 260_000_000
@@ -359,7 +413,7 @@ public actor PhotoBatchRenderExporter {
                 let rows = min(bandHeight, height - row)
                 for column in Swift.stride(from: 0, to: width, by: tileWidth) {
                     let tile = CGRect(x: column, y: height - row - rows, width: min(tileWidth, width - column), height: rows)
-                    bitmapContext.render(pixels, toBitmap: base.advanced(by: row * stride + column * bytesPerPixel),
+                    context.render(pixels, toBitmap: base.advanced(by: row * stride + column * bytesPerPixel),
                         rowBytes: stride, bounds: tile, format: jpeg ? .RGBA8 : .RGBA16, colorSpace: PhotoRenderer.sRGB)
                 }
 

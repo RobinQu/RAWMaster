@@ -7,6 +7,19 @@ public actor RenderExportService {
   public func export(work: PhotoWork, version: EditingVersion, archive: EditingArchive, destination: URL, format: PhotoRenderFormat, protectedURLs: [URL] = [], preparePublication: RenderPublicationPreparation? = nil) async throws -> RenderedPhoto {
     guard version.workID == work.id, version.source.hasSameIdentity(as: work.source) else { throw EditingError.invalidSource }
     let protected = protectedURLs + [work.source.sourceLocation, archive.root]
+    if version.recipe.sceneGraph != nil {
+      let rendition: DevelopmentSceneDeliveryV1.Format
+      switch format {
+      case .jpeg8: rendition = .jpeg8
+      case .png16: rendition = .png16
+      case .avif10: rendition = .avif10
+      case .tiff16: throw DevelopmentError.unsupportedEngine
+      }
+      let ticket = try DevelopmentSceneDeliveryV1(work: work, version: version, format: rendition)
+      let receipt = try await DevelopmentSceneDeliveryServiceV1.export(ticket, to: destination,
+        protectedURLs: protected, preparePublication: preparePublication)
+      return RenderedPhoto(fileURL: destination, artifact: receipt.artifact)
+    }
     if let artifact = version.artifact {
       let input = try archive.artifactURL(artifact)
       return try await renderingTask(lane: .export) {
@@ -30,6 +43,7 @@ public actor RenderExportService {
         return output
       }
     }
-    return try await DevelopmentService().render(source: version.source, recipe: version.recipe, format: format, destination: destination, protectedURLs: protected, preparePublication: preparePublication)
+    let graph = try DevelopmentCompatibilityGraphV1(version)
+    return try await DevelopmentService().render(source: graph.source, recipe: graph.recipe, format: format, destination: destination, protectedURLs: protected, preparePublication: preparePublication)
   }
 }

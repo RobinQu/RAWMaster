@@ -64,6 +64,7 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
   public var engineVersion: String
   public var color: DevelopmentColorAdjustments?
   public var adjustmentsV3: DevelopmentAdjustmentsV3?
+  package private(set) var sceneGraph: DevelopmentSceneGraphV1?
   public init(exposureEV: Double = 0, whiteBalance: DevelopmentWhiteBalance = .asShot,
               straightenDegrees: Double = 0, crop: NormalizedCrop = .init(), engineVersion: String = "core-image-v1") {
     self.schemaVersion = 1; self.exposureEV = exposureEV; self.whiteBalance = whiteBalance
@@ -73,7 +74,18 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
     schemaVersion = 3; engineVersion = "rawmaster-adjust-v3"; self.adjustmentsV3 = adjustmentsV3
     exposureEV = 0; whiteBalance = .asShot; straightenDegrees = 0; crop = .init(); color = nil
   }
+  package init(sceneGraph: DevelopmentSceneGraphV1) {
+    self.init()
+    schemaVersion = 4; engineVersion = "rawmaster-scene-graph-v1"; self.sceneGraph = sceneGraph
+  }
   public func validate() throws {
+    if schemaVersion == 4 {
+      guard engineVersion == "rawmaster-scene-graph-v1", sceneGraph != nil, adjustmentsV3 == nil,
+            exposureEV == 0, whiteBalance == .asShot, straightenDegrees == 0,
+            crop == NormalizedCrop(), color == nil else { throw EditingError.invalidRecipe }
+      return
+    }
+    guard sceneGraph == nil else { throw EditingError.invalidRecipe }
     if schemaVersion == 3 {
       guard engineVersion == "rawmaster-adjust-v3", exposureEV == 0, whiteBalance == .asShot,
         straightenDegrees == 0, crop == NormalizedCrop(), color == nil, let adjustmentsV3 else { throw EditingError.invalidRecipe }
@@ -92,12 +104,13 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
     }
   }
   public func promotingToV2() throws -> DevelopmentRecipe {
-    try validate(); guard schemaVersion != 3 else { throw EditingError.invalidRecipe }; if schemaVersion == 2 { return self }
+    try validate(); guard schemaVersion == 1 || schemaVersion == 2 else { throw EditingError.invalidRecipe }; if schemaVersion == 2 { return self }
     var promoted = self; promoted.schemaVersion = 2; promoted.engineVersion = "rawmaster-color-v2"; promoted.color = .init()
     return promoted
   }
   public func promotingToV3() throws -> DevelopmentRecipe {
     try validate(); if schemaVersion == 3 { return self }
+    guard schemaVersion == 1 || schemaVersion == 2 else { throw EditingError.invalidRecipe }
     let basis = DevelopmentLegacyBasis(version:schemaVersion == 1 ? .v1 : .v2,exposureEV:exposureEV,whiteBalance:whiteBalance,color:color)
     try basis.validate()
     let geometry = DevelopmentGeometryV3(version:schemaVersion == 1 ? .legacyV1 : .legacyV2,straightenDegrees:straightenDegrees,crop:crop)
@@ -121,10 +134,17 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
     guard data.count <= metadataLimit + 2 * tableBytes else { throw EditingError.invalidRecipe }
     return recipe
   }
-  private enum CodingKeys: String, CodingKey { case schemaVersion, exposureEV, whiteBalance, straightenDegrees, crop, engineVersion, color, adjustmentsV3 }
+  private enum CodingKeys: String, CodingKey { case schemaVersion, exposureEV, whiteBalance, straightenDegrees, crop, engineVersion, color, adjustmentsV3, sceneGraph }
   public init(from decoder: Decoder) throws {
     let object = try decoder.container(keyedBy: CodingKeys.self)
     schemaVersion = try object.decode(Int.self, forKey: .schemaVersion)
+    if schemaVersion == 4 {
+      try RecipeCoding.requireKeys(decoder, ["schemaVersion", "engineVersion", "sceneGraph"])
+      engineVersion = try object.decode(String.self, forKey: .engineVersion)
+      exposureEV = 0; whiteBalance = .asShot; straightenDegrees = 0; crop = .init(); color = nil; adjustmentsV3 = nil
+      sceneGraph = try object.decode(DevelopmentSceneGraphV1.self, forKey: .sceneGraph)
+      try validate(); return
+    }
     if schemaVersion == 3 {
       try RecipeCoding.requireKeys(decoder,["schemaVersion","engineVersion","adjustmentsV3"])
       engineVersion = try object.decode(String.self,forKey:.engineVersion)
@@ -158,6 +178,10 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
   public func encode(to encoder: Encoder) throws {
     try validate()
     var object = encoder.container(keyedBy: CodingKeys.self)
+    if schemaVersion == 4, let sceneGraph {
+      try object.encode(schemaVersion, forKey: .schemaVersion); try object.encode(engineVersion, forKey: .engineVersion)
+      try object.encode(sceneGraph, forKey: .sceneGraph); return
+    }
     if schemaVersion == 3 {
       try object.encode(schemaVersion,forKey:.schemaVersion); try object.encode(engineVersion,forKey:.engineVersion)
       try object.encode(adjustmentsV3!,forKey:.adjustmentsV3); return

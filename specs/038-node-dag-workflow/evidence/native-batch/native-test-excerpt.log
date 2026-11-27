@@ -1,0 +1,39 @@
+2026-11-27 · Apple M2 · macOS 27.2.1 (26B131) · Xcode 27.2 (27B52) · Release
+Focused app run: 9 passed; independent repeat and transaction fence: 11 passed. No skips or failures; repeated cases counted only in their own run.
+Native fixture: fixed authorized snow ARW across separately admitted target projects; app 032 handoff includes the authorized person source.
+
+release.log
+Build complete! (277.13 sec)
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' started.
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (0.872 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' passed (0.424 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' passed (0.119 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' passed (0.107 seconds).
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInBatchCandidateHandsItsVersionTo032WithoutAdoption]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInBatchCandidateHandsItsVersionTo032WithoutAdoption]' passed (0.666 seconds).
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInTwentyAndTwoHundredRealRAWBatchReopenCancelRetryAndUndo]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInTwentyAndTwoHundredRealRAWBatchReopenCancelRetryAndUndo]' passed (4.088 seconds).
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testTemplateKeepsDestinationOutputAndRemapsNestedIDs]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testTemplateKeepsDestinationOutputAndRemapsNestedIDs]' passed (0.000 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 09:38:32.916.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 8.296 (8.298) seconds
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 09:38:33.395.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+
+repeat.log
+Build complete! (55.22 sec)
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInBatchCandidateHandsItsVersionTo032WithoutAdoption]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInBatchCandidateHandsItsVersionTo032WithoutAdoption]' passed (0.761 seconds).
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInTwentyAndTwoHundredRealRAWBatchReopenCancelRetryAndUndo]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testOptInTwentyAndTwoHundredRealRAWBatchReopenCancelRetryAndUndo]' passed (3.955 seconds).
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testTemplateKeepsDestinationOutputAndRemapsNestedIDs]' started.
+Test Case '-[RAWMasterUITests.SceneWorkflowBatchTests testTemplateKeepsDestinationOutputAndRemapsNestedIDs]' passed (0.000 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 09:40:36.556.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 4.717 (4.718) seconds
+Test Case '-[RAWMasterCoreTests.SceneWorkflowBatchConcurrencyTests testCancellationDuringQualificationCannotPublishAndRetryRemainsIdempotent]' started.
+Test Case '-[RAWMasterCoreTests.SceneWorkflowBatchConcurrencyTests testCancellationDuringQualificationCannotPublishAndRetryRemainsIdempotent]' passed (0.163 seconds).
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 09:40:37.153.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.166 (0.167) seconds

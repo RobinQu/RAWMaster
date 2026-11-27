@@ -1,4 +1,5 @@
 import AppKit
+import CoreImage
 import ImageIO
 import RAWMasterCore
 
@@ -10,6 +11,19 @@ extension RenderExportService {
         let metadata = try await renderingTask {
             let url = try Self.captureMetadataURL(work: work, version: version, archive: archive)
             return PhotoExportMetadata.read(from: url)
+        }
+        if let graph = version.recipe.sceneGraph {
+            let frame = try await DevelopmentScenePreviewV1().render(source: version.source, graph: graph, view: .init(),
+                target: .sdr709, sampling: .fit(maximumEdge: min(2400, max(64, maxPixel))))
+            let image = try await renderingTask {
+                let image = try DevelopmentSceneDeliveryServiceV1.linearSDRImage(frame.texture)
+                let context = CIContext(mtlDevice: frame.texture.device)
+                guard let cg = context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: PhotoRenderer.sRGB) else {
+                    throw DevelopmentError.unreadable
+                }
+                return cg
+            }
+            return (image, metadata)
         }
         if let artifact = version.artifact {
             let url = try archive.artifactURL(artifact)

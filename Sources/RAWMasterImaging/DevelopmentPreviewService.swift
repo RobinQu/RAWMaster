@@ -486,6 +486,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   }
   private func validate(_ request: DevelopmentPreviewRequest, supportRecipe: DevelopmentRecipe? = nil) throws -> Lease {
     try request.recipe.validate()
+    guard request.recipe.sceneGraph == nil else { throw PreviewPresentationError.unsupported }
     guard !terminated, draining[request.consumerID] == nil else { throw DevelopmentPreviewError.closed }
     guard request.viewport.maxPixel >= 0, request.viewport.maxPixel <= 4096,
       (request.quality == .detail ? request.viewport.maxPixel == 0 : request.viewport.maxPixel != 0),

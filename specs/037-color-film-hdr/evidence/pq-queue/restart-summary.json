@@ -1,0 +1,38 @@
+{
+  "changedVersionRejectedBeforeRegistration": true,
+  "files": {
+    "person.pq-0001.avif": "35964148ca0ce84f8ba371d887e64986611ff74babc8df939eadef4c1a41a8f1",
+    "snow.pq-0002.avif": "f7612e3b10be66c3b11771d980ffe2e1bcd2e584405482d67cacd0e039e9c3d6"
+  },
+  "firstInodePreserved": true,
+  "manifestSchema": 2,
+  "mixedSelectionRejectedBeforeRegistration": true,
+  "originalWasOffline": true,
+  "preparedDigestPreserved": true,
+  "reconnectedOriginalWithoutChangingPreparedSHA": true,
+  "rejectedDifferentSource": true,
+  "rejectedReplacementDirectory": true,
+  "selectionPreserved": true,
+  "status": "passed",
+  "target": "avif10",
+  "versionIDs": [
+    "1841E464-7C50-437C-BE65-0850FD1FF852",
+    "84E55437-8EE2-4F26-BD1C-7522D52E6A45"
+  ],
+  "writerTermination": "SIGKILL after prepared",
+  "nativeWriterWallSeconds": 3.701077542034909,
+  "decodedDimensions": [
+    4000,
+    6000
+  ],
+  "bitDepth": 10,
+  "fullRange": true,
+  "cicp": [
+    9,
+    16,
+    1
+  ],
+  "pictureLightLevels": "unspecified",
+  "decoder": "Version: 1.3.0 (dav1d [dec]:1.5.4, aom [enc/dec]:3.13.1)",
+  "testExecutableSHA256": "ae6ba8adb69d9bec1ed2db20e6924b1acf9bd8a73d804427d2294ab86540724d"
+}

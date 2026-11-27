@@ -31,6 +31,7 @@ function handoffDelivery(ids, source, { version, mode = 'render', companions = f
   go('export');
 }
 function showExport(preferred = null) {
+  if (S.page === 'edit' && S.dagConnectionDraft) return notify('先完成或取消当前连接草稿');
   const editing = S.page === 'edit',
     focus = Studio.data.work,
     set = new Set(activeIDs());
@@ -123,7 +124,8 @@ function renderDelivery(root) {
   const fragment = new URLSearchParams({ selection: JSON.stringify(S.delivery) });
   if (requested || pending) fragment.set('receipt', requested || pending.photoReceipt);
   if (requested) fragment.set('details','1');
-  const src = live?.dataset.batch || '../../../specs/032-export-workspace/prototype.html#' + fragment;
+  const review = new URLSearchParams(location.search).has('pqReview') ? '?pqReview=1' : '';
+  const src = live?.dataset.batch || '../../../specs/032-export-workspace/prototype.html' + review + '#' + fragment;
   const openLiveReceipt = () => live?.contentWindow.postMessage({type:'rawmaster.delivery.open',id:requested}, location.protocol === 'file:' ? '*' : location.origin);
   if (S.exportKey === src) { openLiveReceipt(); return; }
   let next = live || frames.find((frame) => frame.dataset.batch === src);

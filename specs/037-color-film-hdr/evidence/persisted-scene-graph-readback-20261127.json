@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-27",
+  "scope": "Persisted final graph in an isolated LibraryStore, component delivery (not UI or 032 queue)",
+  "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "source": "Sean Liu, Snow and sunset (CC BY-SA 4.0)",
+  "formula": "AP1 +1 EV through horizontal coverage 0.15\u20130.85, then 50% normal Layer over the RAW scene",
+  "decoded": {
+    "AVIF": {
+      "decoder": "Version: 1.3.0 (dav1d [dec]:1.5.4, aom [enc/dec]:3.13.1)",
+      "width": 4000,
+      "height": 6000,
+      "bitDepth": 10,
+      "alpha": false,
+      "range": "full",
+      "cicp": [
+        9,
+        16,
+        1
+      ],
+      "CLLI": [
+        1000,
+        64
+      ],
+      "CLLIIndependentMeasurement": false,
+      "sha256": "0ee7696682ff661a327b83fc5d85443bbf1f1ac207897b737530e7eec5384c14",
+      "bytes": 4323803
+    },
+    "JPEG": {
+      "decoder": "ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers",
+      "metadata": {
+        "ImageWidth": 4000,
+        "ImageHeight": 6000,
+        "BitsPerSample": 8,
+        "ProfileDescription": "sRGB built-in"
+      },
+      "ExifTool": "13.59",
+      "embeddedICCSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+      "sha256": "6004bd886a5a176c5aad133b4ac1207aa8828f45276570e2eb98eb25d3eb8abd",
+      "bytes": 2910206
+    }
+  },
+  "legacyDiagnosticAVIFByteIdentical": true
+}

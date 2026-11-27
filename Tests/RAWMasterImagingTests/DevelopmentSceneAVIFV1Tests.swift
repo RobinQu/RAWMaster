@@ -18,6 +18,17 @@ final class DevelopmentSceneAVIFV1Tests: XCTestCase {
     XCTAssertEqual(output.signal.bitDepth,10); XCTAssertTrue(output.signal.fullRange)
     XCTAssertEqual(output.referenceWhiteNits,100); XCTAssertEqual(output.peakNits,1000)
     XCTAssertEqual(try DevelopmentSceneAVIFV1.readSignal(output.bytes),output.signal)
+    let prepared = try DevelopmentSceneAVIFV1.leavingLightLevelsUnspecified(output.bytes)
+    XCTAssertEqual(try DevelopmentSceneAVIFV1.readSignal(prepared), output.signal)
+    XCTAssertEqual(prepared.count, output.bytes.count)
+    if try DevelopmentSceneAVIFV1.lightLevels(output.bytes) != nil {
+      XCTAssertEqual(try DevelopmentSceneAVIFV1.lightLevels(prepared), [0, 0])
+    } else { XCTAssertEqual(prepared, output.bytes) }
+    let before = try XCTUnwrap(CGImageSourceCreateWithData(output.bytes as CFData, nil))
+    let after = try XCTUnwrap(CGImageSourceCreateWithData(prepared as CFData, nil))
+    let sourcePixels = try XCTUnwrap(CGImageSourceCreateImageAtIndex(before, 0, nil)?.dataProvider?.data)
+    let stagePixels = try XCTUnwrap(CGImageSourceCreateImageAtIndex(after, 0, nil)?.dataProvider?.data)
+    XCTAssertEqual(sourcePixels as Data, stagePixels as Data)
     if let url=ProcessInfo.processInfo.environment["RAWMASTER_SCENE_AVIF_EVIDENCE"] {
       try output.bytes.write(to:URL(fileURLWithPath:url),options:.withoutOverwriting)
     }

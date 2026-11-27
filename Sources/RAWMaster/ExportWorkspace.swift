@@ -20,6 +20,9 @@ struct ExportWorkspace: View {
     @State private var message: String?
     @State private var grantedDirectory: URL?
     @State private var showingDeliveryDetails = false
+    @State private var pqReview: WorkbenchPQReview?
+    @State private var pqReviewRequest: Task<Void, Never>?
+    @FocusState private var submitFocused: Bool
     @FocusState private var deliveryDetailsFocused: Bool
     @AppStorage private var directoryPath: String
     private let defaults: UserDefaults
@@ -93,6 +96,17 @@ struct ExportWorkspace: View {
             footer(assets)
         }
         .onAppear { loadPresets() }
+        .onDisappear { pqReviewRequest?.cancel(); pqReviewRequest = nil }
+        .sheet(item: $pqReview, onDismiss: { submitFocused = true }) { review in
+            ExportPQReview(review: review) {
+                guard review.canSubmit, review.identifiers == checked, values.mode == "render", values.pqDelivery else {
+                    pqReview = nil; message = WorkbenchDeliveryIssue.pqSelectionChanged.localizedDescription; return
+                }
+                pqReview = nil
+                model.submitWorkbenchPhotoDelivery(directory: directory, naming: values.namingTemplate,
+                    configuration: values.resolvedConfiguration, ids: review.identifiers, collision: values.collision, pqReview: review)
+            }
+        }
         .onChange(of: model.requestedWorkbenchExportMode, initial: true) { _, requested in
             if let requested {
                 values.mode = requested.rawValue
@@ -170,14 +184,14 @@ struct ExportWorkspace: View {
                 HStack {
                     Text(asset.filename).font(.headline).lineLimit(1).truncationMode(.middle)
                     Spacer()
-                    Text(values.mode == "render" ? "成片预览" : "原件预览")
+                    Text(values.mode == "render" ? (values.pqDelivery ? "SDR 代理 · 不代表 HDR 亮度" : "成片预览") : "原件预览")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 7).fill(Color(nsColor: .underPageBackgroundColor))
                     if let preview = currentPreview {
                         if values.mode == "render" {
-                            ExportStyledPhoto(photo: preview, layout: values.configuration.layout, maximum: previewMaximum)
+                            ExportStyledPhoto(photo: preview, layout: values.resolvedConfiguration.layout, maximum: previewMaximum)
                                 .padding(14)
                         } else {
                             Image(decorative: preview.image, scale: 1).resizable().scaledToFit().padding(14)
@@ -189,7 +203,7 @@ struct ExportWorkspace: View {
                         ProgressView("读取照片…").font(.caption)
                     }
                 }
-                if values.mode == "render" {
+                if values.mode == "render", !values.pqDelivery {
                     HStack {
                         Label(values.configuration.layout.style.exportTitle, systemImage: "rectangle.inset.filled")
                         Spacer()
@@ -241,10 +255,12 @@ struct ExportWorkspace: View {
                     Text("超出单批上限").font(.caption).foregroundStyle(AppPalette.warning)
                 }
                 let original = values.mode == "original"
-                let label = original ? (values.copyMode == "manifest" ? "导出所选清单" : "交付原件") : "导出成片"
+                let label = original ? (values.copyMode == "manifest" ? "导出所选清单" : "交付原件")
+                    : values.pqDelivery ? (pqReviewRequest == nil ? "核对 HDR 成片" : "正在核对 HDR") : "导出成片"
                 Button("\(label)（\(checked.count)）") { submit(assets) }
                     .buttonStyle(.borderedProminent)
-                    .disabled(checked.isEmpty || checked.count > AppModel.maximumWorkbenchExportCount || model.isBusy)
+                    .disabled(checked.isEmpty || checked.count > AppModel.maximumWorkbenchExportCount || model.isBusy || pqReviewRequest != nil)
+                    .focused($submitFocused)
                     .accessibilityIdentifier("export.workspace.confirm")
             }
         }.padding(.horizontal, 16).padding(.vertical, 12)
@@ -385,6 +401,21 @@ struct ExportWorkspace: View {
             rememberSubmission()
             model.export(ids: copy ? ids : [], destination: directory.path, formats: values.originalFormats,
                          exactAssetIDs: ids, csvLayout: .photoRows)
+            return
+        }
+        if values.pqDelivery {
+            guard PhotoExportFilename.validTemplate(values.namingTemplate) else { message = "请检查命名模板。"; return }
+            do { try values.resolvedConfiguration.validate() }
+            catch { message = error.localizedDescription; return }
+            let selection = assets.filter { checked.contains($0.id) }
+            pqReviewRequest = Task {
+                defer { pqReviewRequest = nil }
+                do {
+                    let review = try await model.reviewWorkbenchPQ(selection)
+                    guard !Task.isCancelled, review.identifiers == checked, values.mode == "render", values.pqDelivery else { return }
+                    pqReview = review
+                } catch is CancellationError {} catch { message = error.localizedDescription }
+            }
             return
         }
         if let issue = ExportLayoutControls.issue(for: values.configuration.layout) {

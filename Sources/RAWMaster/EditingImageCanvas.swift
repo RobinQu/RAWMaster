@@ -159,8 +159,8 @@ struct EditingImageCanvas: View {
             }
             .menuStyle(.borderlessButton)
             .foregroundStyle(editing.comparing ? AppPalette.accent : .primary)
-            .disabled(editing.cropEditing)
-            .help("对比模式 · V 开关；可在此选择参考版本")
+            .disabled(editing.cropEditing || editing.visibleSceneGraph != nil)
+            .help(editing.visibleSceneGraph != nil ? "此 HDR 阶段未开放比较" : "对比模式 · V 开关；可在此选择参考版本")
             .accessibilityLabel("对比模式")
             .accessibilityIdentifier("editing.beforeAfter")
             .accessibilityAddTraits(editing.comparing ? .isSelected : [])
@@ -440,7 +440,9 @@ struct EditingImageCanvas: View {
     private var currentPane: some View {
         VStack(spacing: 0) {
             ZStack {
-                if let review = editing.quickPromptReview, editing.quickPromptPresented {
+                if editing.visibleSceneGraph != nil {
+                    scenePane
+                } else if let review = editing.quickPromptReview, editing.quickPromptPresented {
                     quickPromptReviewCanvas(review)
                 } else if editing.quickPromptPresented {
                     imageCanvas(frame: editing.previews.primary.frame, primary: true, insets: quickPromptFitInsets).overlay {
@@ -484,31 +486,65 @@ struct EditingImageCanvas: View {
                             }
                         }
                 }
-                beforeAfterOverlay
-                if editing.quickPromptReview != nil {
-                    if quickPromptDetailLoading { ProgressView("读取原尺寸边缘…").controlSize(.small) }
-                } else if let error = editing.previews.primary.error {
-                    VStack(spacing: 8) {
-                        Text(error).font(.caption).foregroundStyle(AppPalette.warning)
-                        if !editing.sourceNeedsRevalidation { Button("重试预览") { editing.retryPreview() } }
-                    }.padding(20)
-                } else if editing.previews.primary.rendering && (editing.preview != nil || editing.previews.primary.fitFallback != nil) {
-                    VStack { HStack { Spacer(); ProgressView("计算中…").controlSize(.small).font(.caption).padding(10).background(AppPalette.overlay) }; Spacer() }
-                }
-                if editing.preview == nil && editing.previews.primary.error == nil {
-                    if editing.loading { ProgressView("准备显影…").font(.caption) }
-                    else { Text(editing.message ?? "正在渲染预览…").font(.caption).foregroundStyle(.secondary).padding(20) }
-                }
-                if editing.comparing && editing.comparisonPreviewFrame == nil && editing.previews.comparison.error == nil {
-                    ProgressView("正在生成参考预览…").controlSize(.small).font(.caption)
-                        .padding(10).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
-                }
-                if editing.comparing, let error = editing.previews.comparison.error {
-                    Text("参考预览：" + error).font(.caption).foregroundStyle(AppPalette.warning)
-                        .padding(12).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
+                if editing.visibleSceneGraph == nil {
+                    beforeAfterOverlay
+                    if editing.quickPromptReview != nil {
+                        if quickPromptDetailLoading { ProgressView("读取原尺寸边缘…").controlSize(.small) }
+                    } else if let error = editing.previews.primary.error {
+                        VStack(spacing: 8) {
+                            Text(error).font(.caption).foregroundStyle(AppPalette.warning)
+                            if !editing.sourceNeedsRevalidation { Button("重试预览") { editing.retryPreview() } }
+                        }.padding(20)
+                    } else if editing.previews.primary.rendering && (editing.preview != nil || editing.previews.primary.fitFallback != nil) {
+                        VStack { HStack { Spacer(); ProgressView("计算中…").controlSize(.small).font(.caption).padding(10).background(AppPalette.overlay) }; Spacer() }
+                    }
+                    if editing.preview == nil && editing.previews.primary.error == nil {
+                        if editing.loading { ProgressView("准备显影…").font(.caption) }
+                        else { Text(editing.message ?? "正在渲染预览…").font(.caption).foregroundStyle(.secondary).padding(20) }
+                    }
+                    if editing.comparing && editing.comparisonPreviewFrame == nil && editing.previews.comparison.error == nil {
+                        ProgressView("正在生成参考预览…").controlSize(.small).font(.caption)
+                            .padding(10).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
+                    }
+                    if editing.comparing, let error = editing.previews.comparison.error {
+                        Text("参考预览：" + error).font(.caption).foregroundStyle(AppPalette.warning)
+                            .padding(12).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
+                    }
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    private var scenePane: some View {
+        EditingSceneScopesCanvas(editing: editing, scopes: editing.sceneScopes, transform: $transform)
+            .accessibilityIdentifier("editing.scene.canvas")
+            .overlay(alignment: .top) {
+                VStack(spacing: 6) {
+                    if let monitor = editing.sceneGraphMonitorText {
+                        HStack {
+                            Text(monitor).font(.caption).accessibilityIdentifier("editing.scene.graph.monitor")
+                            Button("返回最终结果") { editing.stopSceneGraphMonitor() }.controlSize(.small)
+                        }
+                    }
+                    if let error = editing.scenePreviewError {
+                        Text(error).font(.caption)
+                        if editing.sourceReady { Button("重试 HDR 预览") { editing.requestPreview() }.accessibilityIdentifier("editing.scene.retry") }
+                    } else {
+                        Text(editing.sceneTarget == .hdr2020
+                            ? "HDR 目标预览 · 屏幕余量 \(editing.sceneHeadroom, specifier: "%.2f")×"
+                            : editing.sceneRequestedHDR ? "HDR · SDR 派生预览（屏幕无 HDR 余量）" : "HDR · SDR 派生预览")
+                            .font(.caption).accessibilityIdentifier("editing.scene.viewState")
+                        HStack(spacing: 6) {
+                            Button("按 HDR 目标查看") { editing.setSceneViewingHDR(true) }.disabled(editing.sceneRequestedHDR)
+                            Button("预览 SDR 派生") { editing.setSceneViewingHDR(false) }.disabled(!editing.sceneRequestedHDR)
+                            Button("1:1") { transform.physicalMagnification = 1 }.accessibilityLabel("实际像素")
+                        }.controlSize(.small)
+                        if editing.scenePreviewBusy { ProgressView().controlSize(.small).accessibilityLabel("正在准备场景预览") }
+                    }
+                }.padding(8)
+                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 9))
+                 .padding(.top, 4)
+            }
     }
 
     private func quickPromptReviewCanvas(_ review: QuickPromptReview) -> some View {

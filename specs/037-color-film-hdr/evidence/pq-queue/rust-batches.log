@@ -1,0 +1,28 @@
+   Compiling rawmaster-library v0.1.0 (/Users/robinqu/workspace/github/robinqu/RAWMaster/Modules/LibraryCatalog)
+    Finished `release` profile [optimized] target(s) in 4.73s
+     Running tests/scheduled_processing.rs (.build/plugins/outputs/librarycatalog/RAWMasterLibrary/destination/BuildLibraryCatalog/cargo/release/build/rawmaster-library/cd7479654af0269b/out/scheduled_processing-cd7479654af0269b)
+
+running 21 tests
+test workbench_batches::concurrent_registration_is_immutable_and_only_the_inserter_gets_the_token ... ok
+test workbench_batches::invalid_or_partial_submissions_are_rejected_and_public_pages_preserve_batch_order ... ok
+test workbench_batches::expired_generation_cannot_renew_or_publish_and_explicit_resume_is_exclusive ... ok
+test workbench_batches::objects::delivery::bad_stage_paths_and_different_frozen_formats_fail_and_failed_item_waits_for_explicit_generation ... ok
+test workbench_batches::objects::delivery::cancelling_a_prepared_batch_does_not_transfer_its_original_receipt_to_another_batch ... ok
+test workbench_batches::objects::a_missing_corrupt_or_unregistered_object_blocks_explicit_resume_and_member_load ... ok
+test workbench_batches::objects::delivery::inline::bound_inline_stops_at_one_mib_and_never_backfills_a_legacy_directory ... ok
+test workbench_batches::objects::delivery::completion_requires_the_exact_registered_item_keys ... ok
+test workbench_batches::objects::delivery::actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and_terminal_count ... ok
+test workbench_batches::objects::delivery::workbench_crash_worker ... ok
+test workbench_batches::objects::delivery::inline::bound_inline_uses_frozen_format_and_exact_abi_recipe_bits_through_actual_delivery ... ok
+test workbench_batches::objects::delivery::prepared_conflict_keeps_same_name_and_stage_and_late_ack_preserves_parent_cancellation ... ok
+test workbench_batches::raw_c_abi_freezes_native_float_bits_and_canonical_batch_uuid_spelling ... ok
+test workbench_batches::objects::delivery::two_windows_expired_owners_legacy_claim_and_cancel_share_no_publication_authority ... ok
+test workbench_batches::objects::delivery::two_active_batches_in_one_directory_reserve_distinct_names_before_either_file_exists ... ok
+test workbench_batches::objects::delivery::directory_grant_cannot_be_added_later_replaced_or_inherited_from_a_restored_catalog ... ok
+test workbench_batches::objects::delivery::equal_frozen_names_can_only_reserve_one_candidate_and_attempts_reset_on_explicit_continuation ... ok
+test workbench_batches::objects::swapped_valid_photos_and_wrong_roles_cannot_commit_a_partial_registration ... ok
+test workbench_batches::restored_database_retains_only_history_and_export_tokens_do_not_cross_catalog_writers ... ok
+test workbench_batches::objects::concurrent_stage_and_registration_share_bytes_and_backup_includes_only_committed_resources ... ok
+test workbench_batches::objects::two_large_luts_roundtrip_with_exact_recipe_and_shared_objects_across_batches ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 1.77s

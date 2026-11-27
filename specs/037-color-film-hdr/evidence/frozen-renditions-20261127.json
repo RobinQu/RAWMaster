@@ -1,0 +1,91 @@
+{
+  "fixture": "Sean Liu, Snow and sunset (CC BY-SA 4.0)",
+  "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "render": {
+    "exposureEV": 1,
+    "sdrTrimEV": 0,
+    "profile": "fixed ACES 2; presentational EDR not tested"
+  },
+  "decoders": {
+    "avifdec": "Version: 1.3.0 (dav1d [dec]:1.5.4, aom [enc/dec]:3.13.1)",
+    "ffprobe": "ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers",
+    "exiftool": "13.59"
+  },
+  "files": {
+    "snow.avif": {
+      "sha256": "a7d339cbd9a40acc218f965cf3f7f837ad25995cde176713804958ac06501045",
+      "bytes": 5486263,
+      "stream": {
+        "codec_name": "av1",
+        "width": 1024,
+        "height": 1024,
+        "pix_fmt": "yuv420p10le",
+        "color_range": "pc",
+        "color_space": "bt709",
+        "color_transfer": "smpte2084",
+        "color_primaries": "bt2020"
+      },
+      "ffprobeReportsCodedGridTile": true,
+      "avifdec": [
+        " * Resolution     : 4000x6000",
+        " * Bit Depth      : 10",
+        " * Format         : YUV420",
+        " * Chroma Sam. Pos: 0",
+        " * Alpha          : Absent",
+        " * Range          : Full",
+        " * Color Primaries: 9",
+        " * Transfer Char. : 16",
+        " * Matrix Coeffs. : 1",
+        " * ICC Profile    : Absent",
+        " * XMP Metadata   : Absent",
+        " * Exif Metadata  : Absent",
+        " * Transformations:",
+        " * Progressive    : Unavailable",
+        " * CLLI           : 1000, 64",
+        " * Gain map       : Absent",
+        " * 1 timescales per second, 1.00 seconds (1 timescales), 1 frame",
+        " * Frame:",
+        "   * Decoded frame [0] [pts 0.00 (0 timescales)] [duration 1.00 (1 timescales)] [4000x6000]"
+      ]
+    },
+    "snow-share.jpg": {
+      "sha256": "f85148b41d6a43478220ac5f65ffa3aecf46ca3dc1bc621ac66b5c30a50c1f49",
+      "bytes": 3573219,
+      "stream": {
+        "codec_name": "mjpeg",
+        "width": 4000,
+        "height": 6000,
+        "pix_fmt": "yuvj420p",
+        "color_range": "pc",
+        "color_space": "bt470bg",
+        "bits_per_raw_sample": "8"
+      },
+      "embeddedICCSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+      "decodedFrames": 1,
+      "metadata": {
+        "BitsPerSample": 8,
+        "ProfileDescription": "sRGB built-in",
+        "ColorSpaceData": "RGB "
+      }
+    },
+    "snow-share.png": {
+      "sha256": "ee3e18600c5947151d00504cbae2cee0b3f0fa37648e051f68e246f8bd387448",
+      "bytes": 133018851,
+      "stream": {
+        "codec_name": "png",
+        "width": 4000,
+        "height": 6000,
+        "pix_fmt": "rgba64be",
+        "color_range": "pc",
+        "color_space": "gbr"
+      },
+      "embeddedICCSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+      "decodedFrames": 1,
+      "metadata": {
+        "BitDepth": 16,
+        "ProfileDescription": "sRGB built-in",
+        "ColorSpaceData": "RGB "
+      }
+    }
+  }
+}

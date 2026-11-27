@@ -1,6 +1,97 @@
 # 038 · Node 能力域、画布工具与悬浮 Graph 验证
 
-日期：2026-11-26。HTML 原型及规格已交付，原生研发已开始，不等于原生默认行为获准。首个原生证据是 [037 固定场景工作流组件复验](../037-color-film-hdr/validation.md#固定场景工作流的原生组件复验)：严格保存串行节点身份、顺序与启停；预览对最终输出的隔离已在 Metal 像素层验证。旧配方适配、产品历史、自由拓扑／混合／组、原生界面与批次还没有通过。以下为浏览器证据，不是上述原生场景的签收。
+日期：2026-11-26。HTML 原型及规格已交付，原生研发已开始，不等于原生默认行为获准。首个原生证据是 [037 固定场景工作流组件复验](../037-color-film-hdr/validation.md#固定场景工作流的原生组件复验)：严格保存串行节点身份、顺序与启停；预览对最终输出的隔离已在 Metal 像素层验证。旧配方只读适配已有以下原生证据；后续的原生图、历史和运行证据按各阶段分别记录，完整产品范围尚未签收。
+
+## 原生兼容图与冻结 SDR 导出
+
+[只读投影](../../Sources/RAWMasterCore/DevelopmentCompatibilityGraphV1.swift)把无归档成片的原片或编辑版本投影成「来源 → 兼容调色 → 最终输出」。节点身份按照片和阶段固定；旧几何与算子顺序封装在现有渲染器内，不拆成声称等价的场景算子。投影不序列化，不迁移配方，不改变候选、草稿、历史或档案。已有归档成片仍直接作为输出来源；未知配方拒绝投影。旧 SDR 配方不进入 HDR 母版。
+
+[现有版本导出服务](../../Sources/RAWMasterImaging/RenderExportService.swift)消费投影中的冻结来源与配方，未改动 SDR 渲染、落盘准备及发布策略。Release 定向回归 45 项通过，另有 1 项显式实拍用例在初轮未提供路径而跳过。隔离资料库重开后，v1／v2／v3 配方、指纹及已存版本数据库内容保持不变；同一张带 EXIF 方向和裁切的夹具由原有入口与投影后版本入口输出，三个版本的 PNG 与完整产物描述均逐字节／逐项一致，并验证另存草稿不进入交付。
+
+```sh
+swift test -c release --jobs 4 -Xswiftc -enable-testing \
+  --filter 'EditingTests|DevelopmentServiceTests|DevelopmentSceneWorkflowV1Tests|DevelopmentSceneOutputV1Tests'
+```
+
+同一构建用 `RAWMASTER_TEST_RAW` 指向 [037 的固定雪景 ARW](../037-color-film-hdr/validation.md#合格-arw-的场景线性入口)，以 `RAWMASTER_TEST_RAW_EVIDENCE` 指向新临时目录，运行 `swift test -c release --skip-build --jobs 4 -Xswiftc -enable-testing --filter 'testOptInRealRAWRecipeAndPrecision|EditingDevelopmentSessionTests.*(Undo|Redo)'`。此前跳过的实拍 SDR 预览／JPEG／TIFF 用例通过，8 项现有编辑会话撤销／重做回归也通过。本轮共 54 项通过，不能以会话回归代替新 Graph 的历史联动验收。
+
+这是 038 T02 的兼容底座验收，不是 Graph 窗口、可编辑节点或 032 批量任务的端到端验收。下文的交互证据仍属 HTML 原型。
+
+## 原生只读兼容视图
+
+2026-11-27 · [评审入口与复现步骤](spec.md#只读兼容视图评审入口)。兼容节点不提供拆线、忽略或单节点监看，不将显影拆分或迁移。新增窗口仅在 `RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=1` 时从原生暗房检查器进入；窗口位置和开合不写入照片。完整多节点行为仍在原 [Graph 原型](../../docs/ui/prototype/index.html#edit/dag)。
+
+- **浏览器**：`RAWMASTER_UI_DAG_EVIDENCE=<目录> python3 scripts/check-ui-prototype.py --compatibility-only`，使用 Chrome 和 `agent-browser`。五项通过：从资料库「日落河湾」进入，打开、收起、展开和复位；方向键调宽不翻片；真实 Escape 关闭并返还焦点，版本查看关闭 Graph；390×844 浅色可读；900×360 短窗仅保留可关闭标题，离线有解释。兼容模式打开 Graph 不生成配方或历史。窗口首开放在右下，以保留照片主体。另复跑[默认完整工作台 60 个场景](evidence/compatibility/workbench-check.log)，退出码 0（未开启额外截图场景），Graph 和 HDR 原型保持通过。[1440×900 深色](evidence/compatibility/compatibility-1440-dark.png) · [390×844 浅色](evidence/compatibility/compatibility-390-light.png)
+- **原生复现**：运行 `swift test -c release --jobs 4 -Xswiftc -enable-testing --filter EditingCompatibilityGraphTests`。以同一份授权代理 JPEG `dji187-context376/files/asset0000.jpg` 建隔离资料库，从编辑面板的可访问按钮打开 AppKit 子窗口，然后关闭。另测试折叠／展开、屏幕边界、窗口非模态和场景切换清理。两项原生用例均通过；同一批 123 项定向回归另核对旧配方重开、SDR 成片等价、历史与导出交接。[Release 测试摘要](evidence/compatibility/native-release.log)。未将 AppKit 操作测试折算为 VoiceOver、实际装包或可编辑多节点验收。
+
+## 场景曝光图编译
+
+新增 [有界编译器](../../Sources/RAWMasterCore/DevelopmentSceneExecutionPlanV1.swift) 与 [Metal 执行入口](../../Sources/RAWMasterImaging/DevelopmentSceneWorkflowRendererV1.swift)。当前只接受同源、同几何、同 alpha 的场景 AP1 曝光和二输入 normal Layer，固定最终根；Normal 按线性增益 `g = (1-w)·g_base + w·g_layer` 混合，不能做 EV 插值。对既有串行图保留前缀曝光定义，零权重精确保留基底，但仍验证两个支路。编译拒绝重复身份、缺节点、回路、未达最终根节点、非法权重及曝光；图监看选择不是最终求值参数。此编译计划不改变持久配方，不是通用 Layer、Parallel、Group、Mask 依赖或批量；UI 不公开这些实验算子。两个拓扑用例和一个 Metal 像素对照通过：半透明、含负值样本与 CPU 预混手算母版相符，监看支路与最终母版保持独立。
+
+## 可持久化场景 DAG 与异步交付
+
+[严格图模型](../../Sources/RAWMasterCore/DevelopmentSceneGraphV1.swift)将图像和覆盖端口、组边界、研发预算、配置版本分别校验。新增[作用域内命令](../../Sources/RAWMasterCore/DevelopmentSceneGraphCommandsV1.swift)：绑定生产者的端口重连、中性插入、单入单出成组、保真解组和带身份重映射的模板插入。Outside 深复制完整覆盖依赖树，并由中性节点引用反转副本。无效拓扑不会替换原值；新类型不会读取旧配方的显示参考像素。
+
+[Metal 执行器](../../Sources/RAWMasterImaging/DevelopmentSceneGraphRendererV1.swift)在 AP1 F32 上执行一个已验证的范围，不做 CPU 像素转运。重复依赖在一次求值内只执行一次，最后一个使用者完成后释放；覆盖是独立 R32F 表面。分配预算包含输入和该次图中活跃表面，不是系统内存统计或跨请求缓存。按最终根准备的母版与节点/旁路查看接口分开。组内监看不改变 HDR 或 SDR 交付。
+
+- [图值与命令测试](../../Tests/RAWMasterCoreTests/DevelopmentSceneGraphV1Tests.swift)覆盖严格回读、遮罩错误、组路径和冻结前的显式边。
+- [像素、ROI 与资源测试](../../Tests/RAWMasterImagingTests/DevelopmentSceneGraphRendererV1Tests.swift)覆盖 CPU 双精度参考、全部 13 个带符号及超白混合模式、Parallel 与 Layer 区别、同一全图和 ROI、嵌套监看及预算释放。组件门槛见[实施计划](plan.md#场景图工程门槛先于实测)。
+- [实拍版本交付](../037-color-film-hdr/validation.md#持久场景图的冻结版本交付)使用实际 `LibraryStore` 重开后的版本及固定的母版，不经过 032 产品窗口或 Rust 批次租约。
+
+2026-11-27 · [Release 定向回归](evidence/scene-graph/release.log)：70 项通过，0 跳过，退出码 0。常驻 960×640 的 [60 组图执行实测](evidence/scene-graph/performance.json)两轮 p95 为 **6.73 ms / 4.16 ms**，通过预先规定的每轮 ≤20 ms 组件门槛。此数值不包括 RAW、DRT、上传、画布或输入事件，不能与 036 的端到端通过混用。复测：以新的 JSON 路径设置 `RAWMASTER_SCENE_GRAPH_PERFORMANCE`，运行 `swift test -c release --jobs 4 -Xswiftc -enable-testing --filter 'DevelopmentSceneGraphV1Tests|DevelopmentSceneGraphRendererV1Tests'`。
+
+此图现可在 [037 原生实验暗房](../037-color-film-hdr/validation.md#原生场景查看与显影阶段)显示最终根，单 Corrector 曝光可改、撤销、另存并进入 032 SDR；多节点编辑窗口与连接测试见下节；原生模板与 20／200 项候选目录实测见后续章节；九类控制的其余算子、工具所有权与完整批量交付矩阵仍待验收。全链路 p95、片间缓存、超大规模驻留和实际窗口的视觉/可达性未签收。
+
+## 原生可编辑 Graph
+
+走查 [HDR 场景样本](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1)「岸边的水鸟」→ 编辑 → 基础 → HDR → 创建草稿 → Graph。四项 HTML 场景通过：添加后切节点，监看作用域和历史独立；非法自连不能应用或交付，取消恢复；390px 浅／深色下显式适合全图和 Escape 可退出。[桌面](evidence/native-graph/graph-scene-1440.png) · [390px 浅色](evidence/native-graph/graph-scene-390-light.png) · [390px 深色](evidence/native-graph/graph-scene-390-dark.png)。图和色彩都为授权 JPEG 模拟。
+
+实验暗房复用原生 AppKit 非模态窗口，与兼容视图共用屏幕边界、最小尺寸、移动、折叠、焦点返回；图内容独立，不修改主图变换。右栏节点工具条和 Graph 使用同一照片、组路径、单／多选；有效提交必须同时匹配工作、草稿修订和选择代际。通过输出/已选有名端口插入，支持串行、Parallel、Layer、组、图层权重、混合模式和有序重排。草稿核对使用独立值，非法时不发布。节点与组内旁路监看调用浮点查看分支；不把监看写入配方或交付。离开监看、关窗或离开照片均清除临时呈现。多选不广播调色参数。
+
+[工程验收用例](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift)用已校验的雪景 ARW、现有资料库和 Graph 窗口，验证主图/Graph 非模态并存、轴上实际选卡、延迟参数回调、多选、组内真实像素监看、草稿阻塞及冻结版本。尚无全部顶级图命令、独立第二显示器、完整 VoiceOver、全部节点算子、几何覆盖工具和 20/200 张批量的产品证据。
+
+2026-11-27 · [Release 摘录](evidence/native-graph/release-test-excerpt.log)：27 项通过、0 跳过，另独立复跑原生 Graph 测试通过。实拍用例从原生按钮打开非模态窗口，触发实际图卡与适合全图操作；过期/多选数值回调拒绝；组内中间结果与最终帧读取到不同像素，改变当前节点不改变监看目标。自连草稿被拒绝并阻止保存/导出；取消后在监看中保存，重开资料库核对冻结票据仍是完整图。Escape 依次还原最终结果并关闭浮窗。AppKit 可访问树检查没有充当完整 VoiceOver 验收。修正了窗口可访问树中的父识别符覆盖图卡识别符，测试使用原生 `accessibilityPerformPress`，不是 SwiftUI 代理按钮。
+
+**热态实测（不改门槛）**：原始新增 UI 的 FIT p50 **29.95 ms**，只缩小 drawable 后仍为 **29.02 ms**，均未达 25.92 ms；避免按曝光修订重建稳定原生数值输入后，最终 **22.07/23.30 ms**（p50/p95）。[初测](evidence/native-graph/fit-initial-regression.json) · [drawable 缩小后](evidence/native-graph/fit-cropped-regression.json) · [最终复验](evidence/native-graph/fit-after-layout-and-crop.json)。drawable 按照片可见区域分配，保留同倍率、坐标和取样规则。
+
+Graph 打开、雪景已常驻、每方向 30 个样本：原来反复重新求值的监看 p50 超阈值（节点 **27.03**、最终 **27.29 ms**，[失败原样](evidence/native-graph/monitor-initial-regression.json)）。现将末端按作用域、查看目标、格式和派生曝光隔离，最多四项/96 MiB；不常驻多个场景母版，源、视口或图变更仍失效。复验节点 **19.43/20.78 ms**、最终 **18.23/19.34 ms**；独立复跑节点 **19.64/21.61 ms**、最终 **18.58/20.39 ms**（各为 p50/p95）。[主跑](evidence/native-graph/monitor-round-1.json) · [复跑](evidence/native-graph/monitor-round-2.json)。通过当前暖态门槛，不计 RAW 冷读、HID、面板发光时延、跨屏、复杂图拖动或批量吞吐。
+
+```sh
+out="$(mktemp -d)"
+export RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+export RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/spec037-raw-fixtures/snow.ARW"
+RAWMASTER_SCENE_DARKROOM_REPORT="$out/fit.json" RAWMASTER_SCENE_GRAPH_MONITOR_REPORT="$out/monitor.json" \
+  swift test -c release --jobs 4 -Xswiftc -enable-testing \
+    --filter 'EditingSceneGraphWindowTests|EditingSceneDarkroomTests|DevelopmentScenePreviewV1Tests'
+python3 scripts/check-ui-prototype.py --native-graph-only
+```
+
+## 原生模板与可恢复批量
+
+[批量交互评审](../../docs/ui/prototype/index.html?batchNativeReview=1) → 资料库多选 → 底栏「更多 → 批量工作流」。先在浏览器复验不落盘的确认、取消，以及“候选不采用”；390px 深色走查逐张离线、取消余项、重试及后续修订不可撤销。样片只模拟工作流，不测 RAW 校准、SQLite 提交或输出像素。
+
+原生相同入口由 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1` 开放。图窗「更多 → 工作流模板」保存整图或当前组选段，丢弃源身份及输出设置；应用在所选边/组内重映射身份。资料库批量沿用现有编辑目录，确认时冻结每个目标原片、草稿修订、底稿和候选配方；SQLite 原子提交各项版本及回执，不自动采用。即使已取消或重启也可核对原状态，重试前验证原片 SHA 及校准，撤销前验证目标修订与版本依赖。结果的「导出成功候选」选择明确版本 ID，不读当前临时监看或选片中的另一配方。阶段曝光同步只改一个正确器的曝光，完整色域字段与源绑定素材仍按规格逐项开放。
+
+2026-11-27 · [浏览器专项两项](evidence/native-batch/browser.log)，[默认工作台 60 项](evidence/native-batch/workbench-regression.log)，均退出码 0。隔离 [Release 应用主跑](evidence/native-batch/native-test-excerpt.log) 9 项、独立定向复跑 11 项通过（含重叠项，不合计），0 跳过。模板保存/重开保持图结构，插入时重映射身份并保留目的图的 SDR 派生。同步保留未选字段。额外以两个 SQLite 连接在校准回调进行期间取消，事务未发布候选；明确重试后只创建一个，后来产生依赖版本时撤销拒绝。
+
+| 实拍数据库阶段 | 结果 | 首次 / 独立复跑耗时 |
+| --- | --- | --- |
+| 20 项 | 全部创建独立候选并撤销；原片、原版本和目标草稿不改 | 0.319 / 0.294 s |
+| 200 项 | 创建 23 项后取消余项，重开数据库；1 项原片离线，接回重试。最终 199 个候选及 1 个后续修订冲突；再主动采用一项，撤销 198 项，保留两个冲突 | 2.811 / 2.762 s |
+
+[首轮数据](evidence/native-batch/batch-round-1.json) · [独立复跑](evidence/native-batch/batch-round-2.json)。使用同一授权、固定 SHA 的 25 MB 雪景 RAW，分开纳入 200 个独立项目及目标身份；每项重算 SHA，严格相同的内容复用一次实际相机校准。达到预设 ≤15／120 s 数据库门槛；该测量不代表 200 张不同 RAW、冷 I/O、原生指针速度、多格式成片或产品吞吐。照片模板的版本任务从现有目录重开，不把 SQLite 重开等同于杀进程或卷恢复。另通过真实人像＋雪景两种源的原生模型，把未采用候选交给 032 独立导出，读回 JPEG 并确认提交资源是完全相同的候选 ID 与配方；返回仍保留原选片。未进行完整 AppKit 模态窗口、读屏、批量图片质量与上限端到端验收。
+
+```sh
+out="$(mktemp -d)"
+export RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+export RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/spec037-raw-fixtures/snow.ARW"
+RAWMASTER_SCENE_BATCH_REPORT="$out/batch.json" \
+  swift test -c release --jobs 4 -Xswiftc -enable-testing \
+    --filter 'SceneWorkflowBatchTests|SceneWorkflowBatchConcurrencyTests'
+python3 scripts/check-ui-prototype.py --workflow-batch-only
+```
 
 ## 节点上下文菜单及 HDR 联合回归
 

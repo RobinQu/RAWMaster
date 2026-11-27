@@ -3,6 +3,7 @@ import RAWMasterCore
 import RAWMasterImaging
 
 struct ExportWorkspaceSettings: Equatable {
+    var pqDelivery = false // presentation choice; portable SDR presets keep their existing contract
     var configuration = PhotoBatchExportConfiguration(format: .jpeg8, maximumLongEdge: 2048, jpegQuality: 0.9, metadataPolicy: .rights)
     var sizeChoice = 2048
     var customLongEdge = 3000
@@ -26,13 +27,18 @@ struct ExportWorkspaceSettings: Equatable {
     }
 
     var resolvedConfiguration: PhotoBatchExportConfiguration {
+        if mode == "render", pqDelivery { return .init(format: .avif10, jpegQuality: 0.95, metadataPolicy: .none) }
+        return sdrConfiguration
+    }
+
+    private var sdrConfiguration: PhotoBatchExportConfiguration {
         var result = configuration
         result.maximumLongEdge = sizeChoice == 0 ? nil : (sizeChoice == -1 ? customLongEdge : sizeChoice)
         return result
     }
 
     func portable(named name: String) -> PhotoExportPreset {
-        PhotoExportPreset(name: name, configuration: resolvedConfiguration, namingTemplate: namingTemplate,
+        PhotoExportPreset(name: name, configuration: sdrConfiguration, namingTemplate: namingTemplate,
                           sizeChoice: sizeChoice, customLongEdge: customLongEdge, mode: mode,
                           copyMode: copyMode, originalFormats: originalFormats, collision: collision)
     }

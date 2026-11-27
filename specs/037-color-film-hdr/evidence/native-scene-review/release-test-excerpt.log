@@ -1,0 +1,33 @@
+2026-11-27 · Apple M2 · macOS 27.2.1 (26B131) · Xcode 27.2 (27B52) · Release
+Filter: EditingSceneDarkroom|DevelopmentScenePreview|DevelopmentSceneGraph|DevelopmentSceneDeliveryService|CompatibilityGraph|EditingDevelopmentSessionTests|ExportWorkspaceTests|PhotoBatchRenderExporterTests
+Exit 0: 66 selected tests passed; no skips. Independent replay of the full RAW AppKit/SDR delivery test also passed.
+This extract keeps relevant XCTest lines and omits compile warnings and unrelated system messages.
+
+Main filtered run
+Build complete! (57.26 sec)
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' passed (0.028 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' passed (2.100 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' passed (0.396 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' passed (0.094 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' passed (0.095 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 08:32:09.740.
+	 Executed 42 tests, with 0 failures (0 unexpected) in 3.465 (3.468) seconds
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInRealARWPreviewReuseAndNativeROI]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInRealARWPreviewReuseAndNativeROI]' passed (0.209 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testRejectsDisplaySourceAndCancelledRequestBeforeGPUWork]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testRejectsDisplaySourceAndCancelledRequestBeforeGPUWork]' passed (0.000 seconds).
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-27 08:32:16.991.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 7.016 (7.018) seconds
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 08:32:17.319.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.093 (0.094) seconds
+
+Replayed native AppKit test
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' passed (2.282 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 08:32:57.416.
+	 Executed 1 test, with 0 failures (0 unexpected) in 2.282 (2.282) seconds

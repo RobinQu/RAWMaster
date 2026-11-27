@@ -5,6 +5,7 @@ import RAWMasterCore
 final class DevelopmentSceneWorkflowRendererV1 {
   typealias Output = DevelopmentSceneOutputStateV1
   typealias Scene = DevelopmentSceneMetalV1.Image
+  typealias Plan = DevelopmentSceneExecutionPlanV1
 
   enum Failure: Error, Equatable { case incompatibleMaster, unsupportedSDRTrim }
   enum Preview { case final, corrector(UUID), bypassCorrectors }
@@ -19,7 +20,11 @@ final class DevelopmentSceneWorkflowRendererV1 {
   init(device: MTLDevice) { self.device = device }
 
   func prepareFinal(_ raw: Scene, workflow: DevelopmentSceneWorkflowV1) throws -> Master {
-    Master(image: try evaluate(raw, exposureEV: workflow.finalExposureEV()), output: workflow.output)
+    try prepareFinal(raw, plan: Plan(serial: workflow), output: workflow.output)
+  }
+
+  func prepareFinal(_ raw: Scene, plan: Plan, output: Output.Version) throws -> Master {
+    Master(image: try evaluate(raw, exposureEV: plan.finalExposureEV), output: output)
   }
 
   func renderDelivery(_ master: Master, target: Output.Target) throws -> DevelopmentSceneOutputV1.DisplayImage {
@@ -28,13 +33,18 @@ final class DevelopmentSceneWorkflowRendererV1 {
 
   func renderPreview(_ raw: Scene, workflow: DevelopmentSceneWorkflowV1, preview: Preview,
                      viewing: Output.ViewingConditions) throws -> DevelopmentSceneOutputV1.DisplayImage {
+    try renderPreview(raw, plan: Plan(serial: workflow), output: workflow.output, preview: preview, viewing: viewing)
+  }
+
+  func renderPreview(_ raw: Scene, plan: Plan, output: Output.Version, preview: Preview,
+                     viewing: Output.ViewingConditions) throws -> DevelopmentSceneOutputV1.DisplayImage {
     let exposure: Float
     switch preview {
-    case .final: exposure = try workflow.finalExposureEV()
-    case .corrector(let id): exposure = try workflow.exposureEV(through: id)
+    case .final: exposure = plan.finalExposureEV
+    case .corrector(let id): exposure = try plan.exposureEV(at: .node(id))
     case .bypassCorrectors: exposure = 0
     }
-    return try render(evaluate(raw, exposureEV: exposure), output: workflow.output, target: viewing.displayedTarget)
+    return try render(evaluate(raw, exposureEV: exposure), output: output, target: viewing.displayedTarget)
   }
 
   private func evaluate(_ raw: Scene, exposureEV: Float) throws -> Scene {

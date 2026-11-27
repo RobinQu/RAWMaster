@@ -139,7 +139,7 @@ final class PhotoExportLayoutTests: XCTestCase {
 
     func testMetadataPoliciesReopenAllContainersWithGPSDepthICCAndFineSteps() async throws {
         let input = try writeInput("metadata", date: "2024:05:06")
-        let cases: [(PhotoRenderFormat, PhotoExportMetadataPolicy, Bool, BuiltinPhotoStyle)] = PhotoRenderFormat.allCases.flatMap { format in
+        let cases: [(PhotoRenderFormat, PhotoExportMetadataPolicy, Bool, BuiltinPhotoStyle)] = [PhotoRenderFormat.jpeg8, .png16, .tiff16].flatMap { format in
             [(format, .none, true, .plain), (format, .rights, true, .plain), (format, .photo, false, .plain), (format, .photo, true, .sign)]
         }
         for (i, item) in cases.enumerated() {

@@ -70,6 +70,14 @@ extension LibraryStore {
       return source
     }
   }
+  /// Freeze catalogued identity even for an offline row; the batch must rehash before commit.
+  func sceneWorkflowSource(_ assetID: String) throws -> EditingSourceSnapshot {
+    let row = try asset(assetID)
+    guard let hash = row.contentHash?.lowercased(), EditingFingerprint.isSHA256(hash), row.fileSize > 0 else { throw EditingError.invalidSource }
+    return EditingSourceSnapshot(projectID: row.projectID, assetID: assetID, contentSHA256: hash, byteCount: row.fileSize,
+      admissionFingerprint: try editingAdmission(assetID: assetID, projectID: row.projectID, sha256: hash, byteCount: row.fileSize),
+      sourceLocation: row.resolvedURL, catalogContentHash: hash)
+  }
   func validateAdmission(_ source: EditingSourceSnapshot) throws {
     let current = try editingAdmission(assetID: source.assetID, projectID: source.projectID, sha256: source.contentSHA256, byteCount: source.byteCount)
     guard current == source.admissionFingerprint else { throw EditingError.staleSource }
@@ -145,7 +153,9 @@ extension LibraryStore {
       let parent = try editingVersion(id: parentVersionID)
       guard parent.workID == workID, parent.source.hasSameIdentity(as: work.source),
             (work.liveRevision ?? 0) == expectedRevision else { throw EditingError.staleAdoption }
-      try recipe.validate(); try validateAdmission(work.source)
+      try recipe.validate()
+      if recipe.sceneGraph != nil, presetAdoptions != nil { throw EditingError.invalidRecipe }
+      try validateSceneRecipeSource(recipe, source: work.source); try validateAdmission(work.source)
       work.liveRecipe = recipe; work.liveParentVersionID = parentVersionID
       work.livePresetAdoptions = presetAdoptions
       work.liveRevision = expectedRevision + 1
@@ -163,9 +173,30 @@ extension LibraryStore {
       return try decode(row[0], EditingVersion.self)
     }
   }
+  /// Resolve only a stored immutable version; an unrelated live draft cannot enter the delivery ticket.
+  package func freezeSceneDelivery(versionID: String, format: DevelopmentSceneDeliveryV1.Format) throws -> DevelopmentSceneDeliveryV1 {
+    try locked {
+      let version = try editingVersion(id: versionID)
+      let work = try photoWork(id: version.workID)
+      guard try versionDisposition(versionID: versionID) != .discarded else { throw EditingError.invalidParent }
+      try validateEditingSource(version.source)
+      var source = version.source
+      source.sourceLocation = try asset(source.assetID).resolvedURL
+      return try .init(work: work, version: version, format: format, resolvedSource: source)
+    }
+  }
+
+  private func validateSceneRecipeSource(_ recipe: DevelopmentRecipe, source: EditingSourceSnapshot) throws {
+    guard recipe.sceneGraph == nil || source.sourceLocation.pathExtension.lowercased() == "arw" else { throw EditingError.invalidSource }
+    // This is the catalogue boundary; the scene RAW decoder must independently confirm calibration and geometry.
+  }
   private func validateVersion(_ version: EditingVersion, work: PhotoWork) throws {
     try EditingArchive.safeID(version.id); try EditingArchive.safeID(version.workID)
     try version.recipe.validate(); try validateConfiguration(version.configuration)
+    if version.recipe.sceneGraph != nil {
+      guard version.kind == .development, version.artifact == nil, version.presetAdoptions == nil else { throw EditingError.invalidRecipe }
+      try validateSceneRecipeSource(version.recipe, source: version.source)
+    }
     guard version.workID == work.id, version.source.hasSameIdentity(as: work.source),
       version.kind != .original, let parentID = version.parentVersionID, parentID != version.id else { throw EditingError.invalidParent }
     let parent = try editingVersion(id: parentID)

@@ -119,6 +119,28 @@ final class DevelopmentServiceTests: XCTestCase {
     XCTAssertEqual(exported.artifact.bitDepth, 16); XCTAssertEqual(input.artifact.bitDepth, 8)
   }
 
+  func testCompatibilityGraphExportMatchesExistingRendererForAllRecipeSchemas() async throws {
+    let (directory, source) = try fixture(orientation: 6)
+    var work = PhotoWork(source: source)
+    work.liveRecipe = DevelopmentRecipe(exposureEV: 4)
+    let archive = try EditingArchive(root: directory.appendingPathComponent("archive"), protectedRoots: [source.sourceLocation])
+    let original = DevelopmentRecipe(exposureEV: -0.25, crop: .init(x: 0, y: 0.2, width: 1, height: 0.6))
+    let recipes = [original, try original.promotingToV2(), try original.promotingToV3()]
+    let developer = DevelopmentService(), exporter = RenderExportService()
+    for recipe in recipes {
+      let schema = recipe.schemaVersion
+      let version = EditingVersion(workID: work.id, parentVersionID: work.originalVersionID, kind: .development,
+        source: source, recipe: recipe)
+      let expected = try await developer.render(source: source, recipe: recipe, format: .png16,
+        destination: directory.appendingPathComponent("baseline-\(schema).png"))
+      let rendered = try await exporter.export(work: work, version: version, archive: archive,
+        destination: directory.appendingPathComponent("projected-\(schema).png"), format: .png16)
+      XCTAssertEqual(try Data(contentsOf: expected.fileURL), try Data(contentsOf: rendered.fileURL))
+      XCTAssertEqual(expected.artifact, rendered.artifact)
+      XCTAssertEqual(recipe, version.recipe)
+    }
+  }
+
   func testExportPreparationFailureRetainsOwnedStageAndNeverPublishes() async throws {
     final class Capture: @unchecked Sendable {
       let lock = NSLock(); var stage: URL?; var artifact: RenderArtifact?

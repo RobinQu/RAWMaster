@@ -1,0 +1,50 @@
+Release (Xcode 27.2 build 27B52, macOS 27.2.1 26B131, Apple M2), 2026-11-27
+Exit status: 0; 123 passed, 2 skipped in this run.
+Swift test filter: DevelopmentScene|CompatibilityGraph|EditingTests|DevelopmentServiceTests|EditingDevelopmentSessionTests|EditingExportHandoffTests|RenderedExportTests|ExportWorkspaceTests|PhotoBatchRenderExporterTests
+This extract preserves the relevant XCTest output, excluding compile warnings and unrelated diagnostics.
+
+Build complete! (214.19 sec)
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' passed (0.920 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' passed (0.050 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 07:53:26.466.
+	 Executed 42 tests, with 0 failures (0 unexpected) in 2.601 (2.605) seconds
+Test skipped: Set RAWMASTER_SCENE_COLOR_PERFORMANCE_JSON to a new report path
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testAuthorizedSnowPreparedStageRetainedAndSDRRenditionsVerifyOnDisk]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testAuthorizedSnowPreparedStageRetainedAndSDRRenditionsVerifyOnDisk]' passed (2.773 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testAuthorizedSnowRAWPublishesVerifiedAVIFWithoutReplacingDestination]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testAuthorizedSnowRAWPublishesVerifiedAVIFWithoutReplacingDestination]' passed (1.511 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testCancelledTaskNeverEntersRenderingOrLeavesAStage]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testCancelledTaskNeverEntersRenderingOrLeavesAStage]' passed (0.001 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testFrozenRequestRoundTripAndStrictVersionAndTarget]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testFrozenRequestRoundTripAndStrictVersionAndTarget]' passed (0.001 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testRejectsReplacedSourceUnsupportedFormatAndProtectedDestinationBeforePublishing]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testRejectsReplacedSourceUnsupportedFormatAndProtectedDestinationBeforePublishing]' passed (0.004 seconds).
+Test skipped: Set a real fixture, the compiled Core ML model and an evidence destination
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneOutputV1Tests testNormalLayerAndNodePreviewRenderIndependentOutputs]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneOutputV1Tests testNormalLayerAndNodePreviewRenderIndependentOutputs]' passed (0.007 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneOutputV1Tests testSDREncoderKeepsScanlineOrientationAndSingleDRT]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneOutputV1Tests testSDREncoderKeepsScanlineOrientationAndSingleDRT]' passed (0.035 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneRAWV1Tests testOptInRealARWAndPairedPerformance]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneRAWV1Tests testOptInRealARWAndPairedPerformance]' passed (3.301 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testCompatibilityGraphExportMatchesExistingRendererForAllRecipeSchemas]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testCompatibilityGraphExportMatchesExistingRendererForAllRecipeSchemas]' passed (0.118 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testOptInRealRAWRecipeAndPrecision]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testOptInRealRAWRecipeAndPrecision]' passed (2.168 seconds).
+Test Case '-[RAWMasterImagingTests.PhotoBatchRenderExporterTests testCompressedThumbnailInputLimitAndReleaseOnFailure]' started.
+Test Case '-[RAWMasterImagingTests.PhotoBatchRenderExporterTests testCompressedThumbnailInputLimitAndReleaseOnFailure]' passed (0.004 seconds).
+Test Case '-[RAWMasterImagingTests.PhotoBatchRenderExporterTests testRealRecipeResizeQualityNamingAndNoOverwrite]' started.
+Test Case '-[RAWMasterImagingTests.PhotoBatchRenderExporterTests testRealRecipeResizeQualityNamingAndNoOverwrite]' passed (0.050 seconds).
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-27 07:53:37.069.
+	 Executed 38 tests, with 2 tests skipped and 0 failures (0 unexpected) in 10.342 (10.346) seconds
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneExecutionPlanV1Tests testExactBypassAndStructuralRejectionIncludingZeroWeightBranches]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneExecutionPlanV1Tests testExactBypassAndStructuralRejectionIncludingZeroWeightBranches]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneExecutionPlanV1Tests testNormalLayerUsesLinearGainAndDoesNotDependOnNodeArrayOrder]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneExecutionPlanV1Tests testNormalLayerUsesLinearGainAndDoesNotDependOnNodeArrayOrder]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphPreservesStoredVersionsAndStableNodesAcrossReopen]' started.
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphPreservesStoredVersionsAndStableNodesAcrossReopen]' passed (0.037 seconds).
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphRejectsUnsupportedRecipesAndAuthoritativeArtifacts]' started.
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphRejectsUnsupportedRecipesAndAuthoritativeArtifacts]' passed (0.029 seconds).
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 07:53:40.246.
+	 Executed 45 tests, with 0 failures (0 unexpected) in 2.886 (2.890) seconds

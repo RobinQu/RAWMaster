@@ -1,4 +1,6 @@
 'use strict';
+const nativeBatchReview = new URLSearchParams(location.search).get('batchNativeReview') === '1';
+const nativeGraphReview = new URLSearchParams(location.search).get('graphNativeReview') === '1';
 
 // Recipe graphs own edit state; viewport and selection remain outside pixel history.
 const dagKinds = { source: 'RAW 显影', grade: '调色', mix: '混合', group: '组', geometry: '几何', output: '输出' };
@@ -287,6 +289,8 @@ function dagInspector() {
   if (n.kind === 'geometry') return head + '<p>固定照片几何阶段。请使用照片底部 Crop 工具；此处只显示阶段，不提供节点裁切参数。</p>' + fact('比例',p.crop || '原始');
   if (n.kind === 'source') return head + '<p>原片解码和白平衡是输入阶段。预览不代表真实 RAW 运算。</p>' + dagRange('warmth', '原生白平衡（示意）', -100, 100, 1, p.warmth || 0) + check('原片离线（模拟）', 'dagOffline', !Studio.asset(Studio.data.work).online) + '<p>离线仍能编辑已保存图结构；素材重建和精确输出需要原件。</p>';
   if (n.kind === 'mix') return head + select('Mixer 类型','dagMixMode',[['parallel','Parallel Mixer'],['layer','Layer Mixer']],p.mode || 'parallel') + '<h3>有序输入</h3>' + dagCurrent().edges.filter(e => e.to === n.id).sort((a,b)=>dagSlotRank(a.slot)-dagSlotRank(b.slot)).map((e,i) => `<div class="dag-input-row"><p><b>${e.slot === 'base' ? '基底 base' : '图层 '+e.slot}</b>：${h(dagCurrent().nodes.find(x => x.id === e.from)?.name)}</p>${p.mode === 'layer' && i ? select('混合方式','dagBlend',dagBlendModes,p['blend:'+e.slot] || 'normal').replace('<select ','<select data-slot="'+h(e.slot)+'" ') : ''}${i>1 ? dagRange('weight:'+e.slot,'输入权重',0,100,1,p['weight:'+e.slot] ?? 0) : ''}${btn('上移输入','dag-input-move',e.slot+':-1',{disabled:i===0})}${btn('下移输入','dag-input-move',e.slot+':1',{disabled:i===dagCurrent().edges.filter(x=>x.to===n.id).length-1})}</div>`).join('') + dagRange('amount', '混合强度', 0, 100, 1, p.amount ?? 0) + btn('交换输入顺序', 'dag-swap') + btn('添加输入支路','dag-add-input') + '<p>忽略返回基底；Parallel 权重与 Layer 有序混合分开。13 种混合方式仅演示选择与顺序，不声称 CSS 是真实混合公式。</p>';
+  if (nativeGraphReview && SceneEditor.hdr()) return head + dagRange('ev','节点曝光（EV）',-12,12,.05,p.ev ?? 0) +
+    dagRange('nodeAmount','节点强度',0,100,1,p.nodeAmount ?? 100) + '<p class="small">其他类型的调色、画布工具与模型暂未接入。多选不广播数值。</p>';
   const cat = Object.hasOwn(editTools, S.tool) ? S.tool : 'basic';
   const fields = dagPanels.includes(cat) ? dagFields(cat,p) : null;
   if (cat === 'masks') return dagMaskInspector(n);
@@ -386,7 +390,7 @@ function dagPhotoCanvas(r, id) {
 }
 actions['dag-view'] = mode => {
   if (S.canvasTool?.legacy) return notify('请先完成或取消兼容画布草案');
-  dagEnsure(); if (mode !== 'graph') dagClearPreview();
+  dagEnsure(); if (mode !== 'graph') { dagClearPreview(); if (nativeGraphReview) S.dagConnectionDraft = null; }
   S.graphOpen = mode === 'graph'; dagView().mode = mode; S.canvasMenu = ''; S.dagWireFrom = null;
   if (!S.canvasTool && ['smart', 'agent', 'versions'].includes(S.tool)) { go('edit/basic'); }
   dagRenderFocus(mode === 'graph' ? '[data-dag-viewport]' : '[name=dagNode]');
@@ -771,7 +775,7 @@ actions['dag-batch-menu'] = () => {
 };
 function dagBatchForm() {
   const source = S.dagBatchSource, operation = value('dagBatchOperation') || (source.node ? 'sync' : 'template'), baseline = value('dagBatchBase') || 'current', picked = value('dagBatchTemplate');
-  dialog('批量工作流预检', `<p>源：${h(Studio.asset(source.id).name)}／当前草稿${source.node ? ' · '+h(source.node.name) : ''}。其余所选照片作为目标，源照片不写入。</p>` + select('操作', 'dagBatchOperation', [...(source.node ? [['sync', '同步源节点曝光与色彩（保留未选字段）']] : []), ['template', '创建工作流分支']], operation) + `<div class="dag-batch-template"${operation==='template'?'':' hidden'}>${select('工作流模板','dagBatchTemplate',[['','源照片工作流'],...(Studio.data.dagTemplates || []).map(t=>[t.id,t.name])],picked)}</div>` + select('目标底稿', 'dagBatchBase', [['current', '每张当前版本'], ['original', '从原片创建分支']], baseline) + `<div class="dag-target-list">${S.dagBatchIDs.map(id => check(Studio.asset(id).name + (Studio.asset(id).online ? '' : ' · 离线，待接回'), 'dagBatchTarget', S.dagBatchChosen.includes(id), { key: id })).join('')}</div><details class="dag-menu-advanced"><summary>原型评审样本</summary><div class="row wrap">${btn('20 张评审样本', 'dag-batch-samples', '20')}${btn('200 张评审样本', 'dag-batch-samples', '200')}${btn('仅当前选片', 'dag-batch-samples', 'selection')}</div></details><p>未选字段保留；从原片分支是显式另一个底稿。覆盖与预览为模拟。</p>`, btn('取消', 'close') + btn('核对将发生的变化', 'dag-batch-preflight', '', { cls: 'primary', disabled: !S.dagBatchChosen.length }));
+  dialog('批量工作流预检', `<p>源：${h(Studio.asset(source.id).name)}／当前草稿${source.node ? ' · '+h(source.node.name) : ''}。其余所选照片作为目标，源照片不写入。</p>` + select('操作', 'dagBatchOperation', [...(source.node ? [['sync', nativeBatchReview ? '仅同步节点曝光（保留其他字段）' : '同步源节点曝光与色彩（保留未选字段）']] : []), ['template', '创建工作流分支']], operation) + `<div class="dag-batch-template"${operation==='template'?'':' hidden'}>${select('工作流模板','dagBatchTemplate',[['','源照片工作流'],...(Studio.data.dagTemplates || []).map(t=>[t.id,t.name])],picked)}</div>` + select('目标底稿', 'dagBatchBase', [['current', '每张当前版本'], ['original', '从原片创建分支']], baseline) + `<div class="dag-target-list">${S.dagBatchIDs.map(id => check(Studio.asset(id).name + (Studio.asset(id).online ? '' : ' · 离线，待接回'), 'dagBatchTarget', S.dagBatchChosen.includes(id), { key: id })).join('')}</div><details class="dag-menu-advanced"><summary>原型评审样本</summary><div class="row wrap">${btn('20 张评审样本', 'dag-batch-samples', '20')}${btn('200 张评审样本', 'dag-batch-samples', '200')}${btn('仅当前选片', 'dag-batch-samples', 'selection')}</div></details><p>未选字段保留；从原片分支是显式另一个底稿。覆盖与预览为模拟。</p>`, btn('取消', 'close') + btn('核对将发生的变化', 'dag-batch-preflight', '', { cls: 'primary', disabled: !S.dagBatchChosen.length }));
 }
 changes.dagBatchOperation = el => { sheet.querySelector('.dag-batch-template').hidden = el.value !== 'template'; };
 actions['dag-batch-samples'] = count => {
@@ -800,12 +804,12 @@ actions['dag-batch-preflight'] = () => {
     else {
       const g = baseline === 'original' ? dagSeed(Studio.freshRecipe()) : before.dag ? structuredClone(before.dag) : dagSeed(before);
       const target = g.nodes.find(n => n.kind === 'grade');
-      for (const k of ['ev', 'contrast', 'warmth', 'sat']) target.params[k] = source.node.params[k] ?? 0;
+      for (const k of nativeBatchReview ? ['ev'] : ['ev', 'contrast', 'warmth', 'sat']) target.params[k] = source.node.params[k] ?? 0;
       next = dagProject(g);
     }
     return { id, before, fingerprint: JSON.stringify(before), next, state: Studio.asset(id).online ? 'pending' : 'offline' };
   });
-  dialog('确认批量变更', `<p>${S.dagBatchPlan.length} 张 · ${operation === 'sync' ? '仅同步曝光／对比／暖色／饱和度' : '完整工作流分支'} · ${baseline === 'current' ? '每张当前版本' : '原片底稿'}</p><p>可执行 ${S.dagBatchPlan.filter(i => i.state === 'pending').length}，离线 ${S.dagBatchPlan.filter(i => i.state === 'offline').length}。旧版本保留，未选字段不写。取消不提交。</p><div class="dag-batch-preview">${S.dagBatchPlan.slice(0, 3).map(i => `<figure>${pic(i.id, '', 'style="filter:' + RMPhotos.filter(RMPhotos.displayLook(i.next)) + '"')}<figcaption>${h(Studio.asset(i.id).name)} · 变更后示意</figcaption></figure>`).join('')}</div>`, btn('取消', 'close') + btn('确认创建批量版本', 'dag-batch-start', '', { cls: 'primary' }));
+  dialog('确认批量变更', `<p>${S.dagBatchPlan.length} 张 · ${operation === 'sync' ? nativeBatchReview ? '仅同步曝光' : '仅同步曝光／对比／暖色／饱和度' : '完整工作流分支'} · ${baseline === 'current' ? '每张当前版本' : '原片底稿'}</p><p>可执行 ${S.dagBatchPlan.filter(i => i.state === 'pending').length}，离线 ${S.dagBatchPlan.filter(i => i.state === 'offline').length}。旧版本保留，未选字段不写。取消不提交。${nativeBatchReview ? '只创建候选，不自动采用，也不更改目标草稿。' : ''}</p><div class="dag-batch-preview">${S.dagBatchPlan.slice(0, 3).map(i => `<figure>${pic(i.id, '', 'style="filter:' + RMPhotos.filter(RMPhotos.displayLook(i.next)) + '"')}<figcaption>${h(Studio.asset(i.id).name)} · 变更后示意</figcaption></figure>`).join('')}</div>`, btn('取消', 'close') + btn('确认创建批量版本', 'dag-batch-start', '', { cls: 'primary' }));
 };
 let dagBatchTimer;
 actions['dag-batch-start'] = () => {
@@ -822,7 +826,11 @@ function dagRunBatch(batch) {
     if (JSON.stringify(Studio.edit(i.id).recipe) !== i.fingerprint) i.state = 'conflict';
     else if (!Studio.asset(i.id).online) i.state = 'offline';
     else {
-      Studio.setRecipe(i.id, '批量同步工作流', i.next); const version = Studio.candidate(i.id, '工作流'); i.version = version.id; i.after = JSON.stringify(Studio.edit(i.id).recipe); i.state = 'done';
+      if (!nativeBatchReview) Studio.setRecipe(i.id, '批量同步工作流', i.next);
+      const live = Studio.edit(i.id), saved = live.saved, last = live.lastSaved;
+      const version = Studio.candidate(i.id, '工作流', i.next);
+      if (nativeBatchReview) { live.saved = saved; live.lastSaved = last; }
+      i.version = version.id; i.after = JSON.stringify(live.recipe); i.state = 'done';
     }
     Studio.save();
     if (sheet.open && sheet.dataset.dagBatch === batch.id) actions['dag-batch-results'](batch.id);
@@ -831,14 +839,25 @@ function dagRunBatch(batch) {
 }
 actions['dag-batch-results'] = id => {
   const b = Studio.data.dagBatches.find(b => b.id === id); S.dagBatchID = id;
-  dialog('批量工作流结果', `<p>${b.running ? '正在处理，可关闭此面板返回编辑' : '本轮已停止'} · ${b.items.filter(i => i.state === 'done').length}/${b.items.length} 成功</p><div class="dag-result-list">${b.items.slice(0, 30).map(i => `<p>${h(Studio.asset(i.id).name)} <b>${h({ pending: '等待', done: '已创建版本', cancelled: '已取消', conflict: '版本冲突', offline: '原片离线', undone: '已撤销' }[i.state])}</b></p>`).join('')}${b.items.length > 30 ? '<p>另有 ' + (b.items.length - 30) + ' 张，以上计数包含整批。</p>' : ''}</div>`, btn('返回选片', 'close') + btn('模拟目标修订冲突', 'dag-batch-conflict') + btn('接回离线项', 'dag-batch-relink') + btn('取消待处理项', 'dag-batch-cancel', id, { disabled: !b.running }) + btn('重试离线／取消项', 'dag-batch-retry', id, { disabled: b.running }) + btn('撤销成功项', 'dag-batch-undo', id, { disabled: b.running }));
+  dialog('批量工作流结果', `<p>${b.running ? '正在处理，可关闭此面板返回编辑' : '本轮已停止'} · ${b.items.filter(i => i.state === 'done').length}/${b.items.length} 成功</p><div class="dag-result-list">${b.items.slice(0, 30).map(i => `<p>${h(Studio.asset(i.id).name)} <b>${h({ pending: '等待', done: '已创建版本', cancelled: '已取消', conflict: '版本冲突', offline: '原片离线', undone: '已撤销' }[i.state])}</b></p>`).join('')}${b.items.length > 30 ? '<p>另有 ' + (b.items.length - 30) + ' 张，以上计数包含整批。</p>' : ''}</div>`, btn('返回选片', 'close') + (nativeBatchReview ? btn('导出成功候选', 'dag-batch-export', id, {disabled:b.running || !b.items.some(i=>i.state==='done')}) : '') + btn('模拟目标修订冲突', 'dag-batch-conflict') + btn('接回离线项', 'dag-batch-relink') + btn('取消待处理项', 'dag-batch-cancel', id, { disabled: !b.running }) + btn('重试离线／取消项', 'dag-batch-retry', id, { disabled: b.running }) + btn('撤销成功项', 'dag-batch-undo', id, { disabled: b.running }));
   sheet.dataset.dagBatch = id;
+};
+actions['dag-batch-export'] = id => {
+  const b = Studio.data.dagBatches.find(b=>b.id===id);
+  if (b?.running) return;
+  const items = (b?.items || []).filter(i=>i.state==='done').map(i=>Studio.exportItem(i.id,i.version));
+  if (!items.length) return;
+  closeSheet(); S.delivery = { source:'工作流批次候选', mode:'render', items };
+  sessionStorage.setItem('rawmaster.ui.delivery',JSON.stringify(S.delivery)); go('export');
 };
 actions['dag-batch-cancel'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.running = false; b.items.filter(i => i.state === 'pending').forEach(i => i.state = 'cancelled'); Studio.save(); actions['dag-batch-results'](id); };
 actions['dag-batch-relink'] = () => { const b = Studio.data.dagBatches.find(b => b.id === S.dagBatchID); b.items.filter(i => i.state === 'offline').forEach(i => Studio.asset(i.id).online = true); Studio.save(); actions['dag-batch-results'](b.id); };
 actions['dag-batch-retry'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'cancelled' || i.state === 'offline' && Studio.asset(i.id).online).forEach(i => i.state = 'pending'); b.running = true; dagRunBatch(b); actions['dag-batch-results'](id); };
 actions['dag-batch-conflict'] = () => { const b = Studio.data.dagBatches.find(b => b.id === S.dagBatchID), i = b.items.find(i => ['pending', 'done'].includes(i.state)); if (i) { Studio.patchRecipe(i.id, '模拟后续编辑', { contrast: 31 }); notify('已模拟目标后续修订，重试或撤销不能覆盖'); } };
-actions['dag-batch-undo'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'done').forEach(i => { if (JSON.stringify(Studio.edit(i.id).recipe) !== i.after) i.state = 'conflict'; else { Studio.setRecipe(i.id, '撤销批量工作流', i.before); i.state = 'undone'; } }); Studio.save(); actions['dag-batch-results'](id); render(); };
+actions['dag-batch-undo'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'done').forEach(i => { if (JSON.stringify(Studio.edit(i.id).recipe) !== i.after) i.state = 'conflict'; else {
+  if (nativeBatchReview) { const v=Studio.edit(i.id).versions.find(v=>v.id===i.version); if (v) v.discarded=true; }
+  else Studio.setRecipe(i.id, '撤销批量工作流', i.before);
+  i.state = 'undone'; } }); Studio.save(); actions['dag-batch-results'](id); render(); };
 actions['dag-review'] = () => dialog('Node DAG 评审场景', '<ol><li>右侧切节点并修改曝光，查看作用域与历史。</li><li>Graph 下串行／并行添加，混合初始为 0%，换输入并撤销。</li><li>Shift 多选成组，进入／退出，保存模板。</li><li>新建蒙版，拖动覆盖，采用／取消返回 Graph。</li><li>编辑连接：制造回路或断开输入，应用禁用，取消恢复。</li><li>模板批量 20／200 张，取消、重试、版本冲突、撤销。</li><li>保存版本、最终导出；中间预览不改变输出。</li></ol><p>原片离线在输入节点模拟；蒙版素材缺失在蒙版面板模拟；渲染失败在输出节点模拟。设置可切换浅／深色。所有像素、模型与批量结果为本地模拟。</p>', btn('关闭', 'close'));
 
 let dagPointer = null, dagSpace = false;

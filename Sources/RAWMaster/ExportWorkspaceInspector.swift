@@ -19,7 +19,15 @@ struct ExportWorkspaceInspector: View {
                     Text("原件与清单").tag("original")
                 }.pickerStyle(.segmented).labelsHidden()
                     .accessibilityIdentifier("export.workspace.mode")
-                if values.mode == "render" { renderControls } else { originalControls }
+                if values.mode == "render" {
+                    if EditingController.sceneReviewEnabled {
+                        Picker("成片目标", selection: $values.pqDelivery) {
+                            Text("现有 SDR 格式").tag(false)
+                            Text("HDR 成片").tag(true)
+                        }.accessibilityIdentifier("export.workspace.sceneTarget")
+                    }
+                    if values.pqDelivery { pqControls } else { renderControls }
+                } else { originalControls }
             }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -76,27 +84,7 @@ struct ExportWorkspaceInspector: View {
             }
         }
         Divider()
-        DisclosureGroup("文件命名", isExpanded: $showNaming) {
-            VStack(alignment: .leading, spacing: 8) {
-                TextField("命名模板", text: $values.namingTemplate).textFieldStyle(.roundedBorder)
-                Text("{name} 原名　{index} 序号\n{date} 导出日　{captureDate} 拍摄日")
-                    .font(.caption).foregroundStyle(.secondary)
-                if let asset = firstAsset {
-                    switch Result(catching: { try PhotoExportFilename.stem(for: asset, ordinal: 1,
-                            template: values.namingTemplate, exportDate: Date()) }) {
-                    case .success(let stem):
-                        Text("示例　" + stem + "." + values.configuration.format.filenameExtension)
-                            .font(.caption).lineLimit(2).textSelection(.enabled)
-                    case .failure(let error):
-                        Text(error.localizedDescription).font(.caption).foregroundStyle(AppPalette.warning)
-                    }
-                }
-                Picker("重名", selection: $values.collision) {
-                    Text("保留两份").tag("rename")
-                    Text("跳过").tag("skip")
-                }
-            }.padding(.top, 7)
-        }
+        namingControls
         Divider()
         DisclosureGroup("文件元数据", isExpanded: $showMetadata) {
             VStack(alignment: .leading, spacing: 8) {
@@ -109,6 +97,41 @@ struct ExportWorkspaceInspector: View {
                     Toggle("包含 GPS 位置", isOn: $values.configuration.includeGPS)
                 }
                 Text("画面上的题注由边框与水印决定。").font(.caption).foregroundStyle(.secondary)
+            }.padding(.top, 7)
+        }
+    }
+
+    @ViewBuilder private var pqControls: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("AVIF · 10 位 Rec.2020 PQ").font(.subheadline.weight(.semibold))
+            Text("参考白 100 nits · 输出峰值 1000 nits")
+            Text("版本全尺寸；此阶段不加边框水印，不写入原片描述性元数据。")
+            Text("仅已保存的 HDR 母版可交付。预览为 SDR 代理；可移植预设保留 SDR 设置。")
+        }.font(.caption)
+        Divider()
+        namingControls
+    }
+
+    private var namingControls: some View {
+        DisclosureGroup("文件命名", isExpanded: $showNaming) {
+            VStack(alignment: .leading, spacing: 8) {
+                TextField("命名模板", text: $values.namingTemplate).textFieldStyle(.roundedBorder)
+                Text("{name} 原名　{index} 序号\n{date} 导出日　{captureDate} 拍摄日")
+                    .font(.caption).foregroundStyle(.secondary)
+                if let asset = firstAsset {
+                    switch Result(catching: { try PhotoExportFilename.stem(for: asset, ordinal: 1,
+                            template: values.namingTemplate, exportDate: Date()) }) {
+                    case .success(let stem):
+                        Text("示例　" + stem + "." + values.resolvedConfiguration.format.filenameExtension)
+                            .font(.caption).lineLimit(2).textSelection(.enabled)
+                    case .failure(let error):
+                        Text(error.localizedDescription).font(.caption).foregroundStyle(AppPalette.warning)
+                    }
+                }
+                Picker("重名", selection: $values.collision) {
+                    Text("保留两份").tag("rename")
+                    Text("跳过").tag("skip")
+                }
             }.padding(.top, 7)
         }
     }

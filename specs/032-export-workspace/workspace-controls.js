@@ -111,11 +111,11 @@ function paint() {
   if (!photo || !image.complete || !image.naturalWidth || mode!=='render') return;
   const version=photo.versions[photo.choice];
   if (!canvas.hidden) {
-    const geo=geometry(version);
-    canvas.setAttribute('aria-label',photo.scene+'，'+styleName(layout)+'，成品 '+geo.width+' × '+geo.height);
-    drawFitted(byId('stage'),canvas,image,version,layout,geo,photo);
+    const geo=geometry(version), look=pqSelected() ? ExportLayout.style() : layout;
+    canvas.setAttribute('aria-label',photo.scene+'，'+(pqSelected() ? 'SDR 代理' : styleName(look))+'，成品 '+geo.width+' × '+geo.height);
+    drawFitted(byId('stage'),canvas,image,version,look,geo,photo);
   }
-  renderCards('quick-styles',layout,image,photo,version);
+  if (!pqSelected()) renderCards('quick-styles',layout,image,photo,version);
   if (!draftLayout || !byId('layout-dialog').open) return;
   renderCards('studio-styles',draftLayout,image,photo,version);
   if (!ExportLayout.valid(draftLayout)) return;

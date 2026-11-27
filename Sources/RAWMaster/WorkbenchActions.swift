@@ -11,13 +11,15 @@ enum WorkbenchExportContext: Equatable {
     case project
     case selection(ids: [String])
     case photo(id: String)
+    case workflowBatch(versions: [String: String])
 
     var exactAssetIDs: [String]? {
-        switch self { case .project: return nil; case .selection(let ids): return ids; case .photo(let id): return [id] }
+        switch self { case .project: return nil; case .selection(let ids): return ids; case .photo(let id): return [id]; case .workflowBatch(let versions): return versions.keys.sorted() }
     }
+    var workflowVersions: [String: String] { if case .workflowBatch(let versions) = self { return versions }; return [:] }
     var isPhoto: Bool { if case .photo = self { return true }; return false }
     var title: String {
-        switch self { case .project: return "导出项目"; case .selection: return "批量导出所选照片"; case .photo: return "导出当前照片" }
+        switch self { case .project: return "导出项目"; case .selection: return "批量导出所选照片"; case .photo: return "导出当前照片"; case .workflowBatch: return "导出工作流候选" }
     }
 }
 

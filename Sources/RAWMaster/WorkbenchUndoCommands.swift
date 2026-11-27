@@ -54,9 +54,9 @@ enum WorkbenchUndoRouting {
             return
         }
         if model?.isNativeEditing == true {
-            if let editing = model?.editing, let context = editing.developmentContext {
-                editing.undoDevelopment(context: context, redo: redo)
-            }
+            guard let editing = model?.editing else { return }
+            if editing.stepSceneHistory(redo: redo) { return }
+            if let context = editing.developmentContext { editing.undoDevelopment(context: context, redo: redo) }
             return
         }
         guard !redo else { return }

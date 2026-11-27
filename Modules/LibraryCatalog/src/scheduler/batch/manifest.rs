@@ -15,6 +15,7 @@ pub(super) fn extension(format: Option<&str>) -> Option<&'static str> {
         Some("jpeg8") => Some("jpg"),
         Some("tiff16") => Some("tiff"),
         Some("png16") => Some("png"),
+        Some("avif10") => Some("avif"),
         _ => None,
     }
 }

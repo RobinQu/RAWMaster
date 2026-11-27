@@ -167,6 +167,7 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
   let shutdown: @MainActor () async -> Void = { [model, workbenchTeardown] in
       model?.stopLibraryIndexing()
       await model?.stopWorkbenchPhotoDelivery()
+      await model?.sceneWorkflowBatches.stopAndJoin()
       await model?.editing?.shutdown(finishPreviews: false)
       var teardownResult: QAWorkbenchTeardown.Result?
       if let workbenchTeardown {

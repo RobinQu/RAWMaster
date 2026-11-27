@@ -1,7 +1,11 @@
+import CoreImage
 import Foundation
 import Metal
+import RAWMasterCore
+
 
 final class DevelopmentSceneRAWV1 {
+  enum Failure: Error, Equatable { case surfaceBudget }
   typealias Calibration = DevelopmentCameraCalibrationV1
   typealias Color = DevelopmentSceneColorV1
 
@@ -61,7 +65,15 @@ final class DevelopmentSceneRAWV1 {
     self.device=device; self.queue=queue
   }
 
-  func decode(_ url: URL, region: MTLRegion? = nil) throws -> Result {
+  func decode(_ url: URL, region: MTLRegion? = nil, maximumOutputBytes: Int? = nil) throws -> Result {
+    let (frame, sensor) = try Self.sensorFrame(url)
+    if let maximumOutputBytes, region == nil, Int(sensor.size.x) * Int(sensor.size.y) > maximumOutputBytes / 17 {
+      throw Failure.surfaceBudget
+    }
+    return try develop(try frame.data(), sensor: sensor, region: region)
+  }
+
+  private static func sensorFrame(_ url: URL) throws -> (FlashRawFrame, Sensor) {
     try Task.checkCancellation()
     guard url.isFileURL, url.pathExtension.lowercased() == "arw" else {
       throw Calibration.Failure.unqualifiedSource
@@ -83,7 +95,12 @@ final class DevelopmentSceneRAWV1 {
       colors: .init(info.colors.0,info.colors.1,info.colors.2,info.colors.3),
       black: .init(info.black.0,info.black.1,info.black.2,info.black.3),
       white: .init(info.white.0,info.white.1,info.white.2,info.white.3), calibration: calibration)
-    return try develop(try frame.data(), sensor: sensor, region: region)
+    return (frame, sensor)
+  }
+
+  /// A batch candidate still needs real RAW/calibration admission but no GPU surface before it is rendered.
+  static func verifyCalibration(_ url: URL) throws {
+    try autoreleasepool { _ = try sensorFrame(url) }
   }
 
   func develop(_ mosaic: Data, sensor: Sensor, region: MTLRegion? = nil) throws -> Result {
@@ -168,4 +185,17 @@ kernel void rmSceneBayerV1(texture2d<uint, access::read> raw [[texture(0)]],
     saturation.write(uint4(saturated,0,0,0),xy);
 }
 """#
+}
+
+package enum SceneWorkflowRawQualification {
+  package static func verify(_ source: EditingSourceSnapshot) throws {
+    try DevelopmentSceneRAWV1.verifyCalibration(source.sourceLocation)
+  }
+  package static func sharePreview(_ frame: DevelopmentScenePreviewFrameV1) throws -> CGImage {
+    guard frame.target == .sdr709 else { throw DevelopmentError.invalidEncoding }
+    let image = try DevelopmentSceneDeliveryServiceV1.linearSDRImage(frame.texture)
+    let context = CIContext(mtlDevice: frame.texture.device)
+    guard let result = context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: PhotoRenderer.sRGB) else { throw DevelopmentError.invalidEncoding }
+    return result
+  }
 }

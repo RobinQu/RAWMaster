@@ -481,6 +481,13 @@ struct BrowserView: View {
 
 struct GridSelectionActionBar: View {
     @EnvironmentObject var model: AppModel
+    @State private var workflow: WorkflowRequest?
+    private struct WorkflowRequest: Identifiable {
+        let id = UUID()
+        let assets: [String]
+        let donor: String?
+        let results: Bool
+    }
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -499,6 +506,12 @@ struct GridSelectionActionBar: View {
                 Button { model.confirmSelectedPair() } label: { Label("关联 RAW+JPG", systemImage: "link") }
                     .disabled(!model.canLinkSelectedPair).help("选择同一导入会话内的一个 RAW 文件和一个 JPG 文件")
                 GroupSelectionActionButton()
+                if EditingController.sceneReviewEnabled, model.workbenchExportStore != nil {
+                    Menu("更多") {
+                        Button("批量工作流…") { openWorkflow(results: false) }.disabled(model.actionAssetIDs.count < 2 || model.actionAssetIDs.count > 201)
+                        Button("最近工作流批次与撤销…") { openWorkflow(results: true) }
+                    }.accessibilityIdentifier("library.selection.sceneWorkflow")
+                }
                 Spacer(minLength: 0)
                 Button { model.openSelectionExport() } label: { Label("批量导出", systemImage: "square.and.arrow.up") }
                     .buttonStyle(.borderedProminent).disabled(!model.canExport)
@@ -506,6 +519,17 @@ struct GridSelectionActionBar: View {
         }.padding(12).frame(maxWidth: 700)
             .floatingSelectionSurface()
             .accessibilityElement(children: .contain).accessibilityLabel("所选照片操作")
+            .sheet(item: $workflow) { request in
+                if let store = model.workbenchExportStore {
+                    SceneWorkflowBatchSheet(store: store, ids: request.assets, donor: request.donor, showResults: request.results,
+                        coordinator: model.sceneWorkflowBatches) { model.prepareLibraryExport(.workflowBatch(versions: $0)) }
+                }
+            }
+    }
+    private func openWorkflow(results: Bool) {
+        let ids = model.actionAssetIDs
+        let focus = model.focusedID.flatMap { ids.contains($0) ? $0 : nil } ?? ids.first
+        workflow = .init(assets: ids, donor: focus, results: results || model.sceneWorkflowBatches.running)
     }
 }
 

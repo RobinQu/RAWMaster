@@ -132,6 +132,7 @@ final class AppModel: ObservableObject {
     @Published var timelapseIsRunning = false
     @Published var workbenchExportContext: WorkbenchExportContext = .project
     @Published var requestedWorkbenchExportMode: WorkbenchExportMode?
+    let sceneWorkflowBatches = SceneWorkflowBatchCoordinator()
     @Published var workbenchPhotoDelivery: WorkbenchPhotoDelivery?
     var workbenchPhotoDeliveryTask: Task<Void, Never>?
     var workbenchActiveLease: WorkbenchDeliveryCatalog.Lease?

@@ -195,3 +195,178 @@ final class WorkbenchContinuation035Tests: XCTestCase {
         return batch
     }
 }
+
+extension WorkbenchContinuation035Tests {
+    func testWorkbenchPQSettingsLeavePortableSDRPresetsUnchanged() throws {
+        var values = ExportWorkspaceSettings()
+        values.sizeChoice = 2048
+        values.configuration.layout = .init(style: .paper)
+        let before = try values.portable(named: "Safe SDR").fileData()
+        values.pqDelivery = true
+        let config = values.resolvedConfiguration
+        XCTAssertEqual(config.format, .avif10)
+        XCTAssertNil(config.maximumLongEdge)
+        XCTAssertEqual(config.metadataPolicy, .none)
+        try config.validate()
+        XCTAssertEqual(try values.portable(named: "Safe SDR").fileData(), before)
+        var invalid = config; invalid.maximumLongEdge = 2048
+        XCTAssertThrowsError(try invalid.validate())
+        invalid = config; invalid.layout = .init(style: .paper)
+        XCTAssertThrowsError(try invalid.validate())
+        invalid = config; invalid.metadataPolicy = .rights
+        XCTAssertThrowsError(try invalid.validate())
+        values.pqDelivery = false
+        XCTAssertEqual(values.resolvedConfiguration.maximumLongEdge, 2048)
+        XCTAssertEqual(values.resolvedConfiguration.layout.style, .paper)
+    }
+
+    @MainActor func testOptInWorkbenchPQPreparedAcrossProcesses() async throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let path = env["RAWMASTER_037_PQ_RESTART_ROOT"], let phase = env["RAWMASTER_037_PQ_RESTART_PHASE"],
+              let fixtures = env["RAWMASTER_SCENE_RAW_FIXTURES"] else { throw XCTSkip("Use isolated 037 process-restart runner and fixed person/snow RAWs") }
+        _ = NSApplication.shared
+        let root = URL(fileURLWithPath: path, isDirectory: true).resolvingSymlinksInPath()
+        let db = root.appending(path: "catalog/library.sqlite"), input = root.appending(path: "originals"), output = root.appending(path: "delivery")
+        let store = try LibraryStore(databaseURL: db), queue = WorkbenchDeliveryCatalog(database: db)
+        let suite = "rawmaster-pq-restart-" + root.lastPathComponent
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        if phase == "write" {
+            let fixed = URL(fileURLWithPath: fixtures, isDirectory: true)
+            try FileManager.default.createDirectory(at: input, withIntermediateDirectories: false)
+            let expected = ["person.ARW": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8", "snow.ARW": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2"]
+            for (name, digest) in expected {
+                let url = fixed.appending(path: name)
+                XCTAssertEqual(try FileSafety.hash(url), digest)
+                try FileManager.default.copyItem(at: url, to: input.appending(path: name))
+            }
+            let jpeg = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+                .appending(path: "RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0000.jpg")
+            try FileManager.default.copyItem(at: jpeg, to: input.appending(path: "sdr.jpg"))
+            _ = try await ImportService(store: store).importDirectory(source: input, destination: nil,
+                projectName: "037 PQ restart", mode: .reference, progress: { _ in })
+            let assets = try store.loadAssets()
+            XCTAssertEqual(assets.count, 3)
+            for asset in assets where expected[asset.filename] != nil {
+                let source = try store.captureEditingSourceSnapshot(assetID: asset.id)
+                let work = try store.createPhotoWork(source: source)
+                let grade = DevelopmentSceneGraphV1.Node(id: UUID(uuidString: "37800000-0000-4000-8000-000000000001")!,
+                    name: "Scene", operation: .corrector(image: .input, mask: nil, exposureEV: 1, curve: [], strength: 1, enabled: true))
+                let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [grade], output: .node(grade.id)),
+                    output: .init(sdrTrim: .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0)))
+                let version = try store.appendEditingVersion(.init(workID: work.id, parentVersionID: work.originalVersionID,
+                    kind: .development, source: source, recipe: .init(sceneGraph: graph)))
+                _ = try store.adoptEditingVersion(workID: work.id, versionID: version.id, expectedRevision: 0)
+            }
+            let model = AppModel(libraryURL: db, defaults: defaults, editingPreviewBackend: PhotosDevelopmentBackend())
+            let candidates = model.workbenchExportCandidates
+            XCTAssertEqual(candidates.count, 3)
+            let config = PhotoBatchExportConfiguration(format: .avif10, jpegQuality: 0.95)
+            let mixed = try await model.reviewWorkbenchPQ(candidates)
+            XCTAssertFalse(mixed.canSubmit)
+            XCTAssertTrue(mixed.lines.contains { $0.name == "sdr.jpg" && $0.reason?.contains("没有 HDR 母版") == true })
+            do {
+                _ = try await model.exportWorkbenchPhotos(directory: output, namingTemplate: "{name}-{index}", configuration: config,
+                    includedIDs: Set(candidates.map(\.id)), pqReview: mixed) { _, _, _ in }
+                XCTFail("an explicit HDR batch cannot fall back to SDR")
+            } catch WorkbenchDeliveryIssue.pqSelectionChanged {}
+            let noJobs = try await queue.history()
+            XCTAssertTrue(noJobs.isEmpty)
+            let ready = candidates.filter { expected[$0.filename] != nil }
+            let review = try await model.reviewWorkbenchPQ(ready)
+            XCTAssertTrue(review.canSubmit, "\(review.lines.compactMap(\.reason))")
+            let reviewedAsset = try XCTUnwrap(ready.first)
+            let reviewedWork = try XCTUnwrap(store.loadPhotoWorks(assetID: reviewedAsset.id).first)
+            let pinned = try store.editingVersion(id: reviewedWork.adoptedVersionID)
+            let replacement = try store.appendEditingVersion(.init(workID: reviewedWork.id, parentVersionID: pinned.id,
+                kind: .development, source: reviewedWork.source, recipe: pinned.recipe))
+            _ = try store.adoptEditingVersion(workID: reviewedWork.id, versionID: replacement.id, expectedRevision: reviewedWork.adoptionRevision)
+            do {
+                _ = try await model.exportWorkbenchPhotos(directory: output, namingTemplate: "{name}-{index}", configuration: config,
+                    includedIDs: review.identifiers, pqReview: review) { _, _, _ in }
+                XCTFail("the reviewed version cannot be substituted even with the same recipe")
+            } catch WorkbenchDeliveryIssue.pqSelectionChanged {}
+            _ = try store.adoptEditingVersion(workID: reviewedWork.id, versionID: pinned.id, expectedRevision: reviewedWork.adoptionRevision + 1)
+            let staleJobs = try await queue.history(); XCTAssertTrue(staleJobs.isEmpty)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: output.path))
+            model.workbenchExportContext = .selection(ids: Array(review.identifiers))
+            model.activateWorkflow(.export)
+            model.workbenchDeliveryCheckpoint = { ordinal, checkpoint in
+                guard ordinal == 2, checkpoint == .prepared else { return }
+                _ = UserDefaults(suiteName: suite)?.synchronize()
+                do { try Data("\(getpid()) prepared".utf8).write(to: root.appending(path: "checkpoint"), options: .atomic) }
+                catch { fatalError("Unable to record isolated fixture checkpoint: \(error)") }
+                kill(getpid(), SIGSTOP)
+            }
+            model.submitWorkbenchPhotoDelivery(directory: output, naming: "{name}.pq-{index}", configuration: config,
+                ids: review.identifiers, collision: "rename", pqReview: review)
+            await model.workbenchPhotoDeliveryTask?.value
+            XCTFail("Did not reach prepared checkpoint: \(model.workbenchPhotoDelivery?.message ?? "no job")")
+            return
+        }
+
+        XCTAssertEqual(phase, "reopen")
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let history = try await queue.history()
+        let batchID = try XCTUnwrap(history.first?.id)
+        XCTAssertEqual(history.count, 1)
+        let before = try await settlePriorWriter(queue, batchID: batchID)
+        XCTAssertEqual(before.batch.phase, .interrupted)
+        XCTAssertEqual(before.manifest?.schema, 2)
+        let config = try await queue.configuration(batchID: batchID)
+        XCTAssertEqual(config.format, .avif10)
+        let first = try XCTUnwrap(before.items.items.first(where: { $0.ordinal == 1 })), second = try XCTUnwrap(before.items.items.first(where: { $0.ordinal == 2 }))
+        XCTAssertEqual(first.state, .delivered); XCTAssertEqual(second.state, .prepared)
+        let firstURL = output.appending(path: try XCTUnwrap(first.filename)), readyURL = output.appending(path: try XCTUnwrap(second.filename))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: readyURL.path))
+        let firstIdentity = try FileSafety.stat(firstURL)
+        let model = AppModel(libraryURL: db, defaults: defaults, editingPreviewBackend: PhotosDevelopmentBackend())
+        let sdr = try XCTUnwrap(model.workbenchExportCandidates.first(where: { $0.filename == "sdr.jpg" }))
+        model.selectedIDs = [sdr.id]
+        let displaced = root.appending(path: "displaced")
+        try FileManager.default.moveItem(at: output, to: displaced)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: false)
+        let invalid = try await model.workbenchDeliveryDetails(batchID)
+        do {
+            try await model.reconnectWorkbenchDestination(invalid, granted: output)
+            XCTFail("another directory must not inherit a frozen PQ ticket")
+        } catch WorkbenchDeliveryIssue.targetOffline {}
+        try FileManager.default.removeItem(at: output)
+        try FileManager.default.moveItem(at: displaced, to: output)
+        try await model.reconnectWorkbenchDestination(invalid, granted: output)
+        let manifest = try XCTUnwrap(before.manifest)
+        let frozenSource = input.appending(path: manifest.sourceContext.filenames[1])
+        let relocated = root.appending(path: "reconnected-original")
+        try FileManager.default.moveItem(at: frozenSource, to: relocated)
+        try await model.resumeWorkbenchPhotoDelivery(batchID)
+        await model.workbenchPhotoDeliveryTask?.value
+        let missing = try await model.workbenchDeliveryDetails(batchID)
+        XCTAssertEqual(missing.receipt.batch.phase, .interrupted)
+        XCTAssertEqual(missing.items.first(where: { $0.ordinal == 2 })?.reason, WorkbenchDeliveryIssue.sourceOffline.rawValue)
+        do {
+            try await model.reconnectWorkbenchSource(missing, ordinal: 2, granted: sdr.resolvedURL)
+            XCTFail("cannot use different bytes for a prepared scene")
+        } catch WorkbenchDeliveryIssue.sourceOffline {}
+        XCTAssertFalse(FileManager.default.fileExists(atPath: readyURL.path))
+        try await model.reconnectWorkbenchSource(missing, ordinal: 2, granted: relocated)
+        try await model.resumeWorkbenchPhotoDelivery(batchID)
+        await model.workbenchPhotoDeliveryTask?.value
+        let final = try await queue.receipt(batchID: batchID)
+        XCTAssertEqual(final.batch.phase, .done, model.workbenchPhotoDelivery?.message ?? "")
+        XCTAssertEqual(final.manifest?.items.map(\.versionID), before.manifest?.items.map(\.versionID))
+        XCTAssertEqual(try FileSafety.stat(firstURL), firstIdentity)
+        XCTAssertEqual(try FileSafety.hash(firstURL), first.sha256)
+        XCTAssertEqual(try FileSafety.hash(readyURL), second.sha256)
+        XCTAssertEqual(model.selectedIDs, [sdr.id])
+        let files = [firstURL, readyURL]
+        XCTAssertTrue(files.allSatisfy { $0.pathExtension == "avif" })
+        let body: [String: Any] = ["status": "passed", "manifestSchema": 2, "target": config.format.rawValue,
+            "files": try Dictionary(uniqueKeysWithValues: files.map { ($0.lastPathComponent, try FileSafety.hash($0)) }),
+            "firstInodePreserved": true, "preparedDigestPreserved": true, "rejectedReplacementDirectory": true,
+            "versionIDs": final.manifest?.items.map(\.versionID) ?? [], "selectionPreserved": true,
+            "originalWasOffline": true, "rejectedDifferentSource": true, "reconnectedOriginalWithoutChangingPreparedSHA": true,
+            "mixedSelectionRejectedBeforeRegistration": true, "changedVersionRejectedBeforeRegistration": true]
+        try JSONSerialization.data(withJSONObject: body, options: [.prettyPrinted, .sortedKeys])
+            .write(to: root.appending(path: "receipt.json"), options: .atomic)
+        await model.editing?.shutdown()
+    }
+}

@@ -1,0 +1,32 @@
+macOS 27.2.1 (26B131), Apple M2, Xcode 27.2 (27B52), 2026-11-27
+Primary regression: 28 passed, one opt-in restart test excluded from the primary run; exit code 0.
+Opt-in process restart (write and reopen) verified separately with a prepared ticket and independent AVIF decode.
+
+Build complete! (213.49 sec)
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' passed (0.178 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' passed (1.697 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testFrozenBatchV2RoundTripsTwoMaximumSizeLUTsAndTheDraftRecipe]' passed (0.523 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto]' passed (0.110 seconds).
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' started.
+Test Case '-[RAWMasterUITests.ExportWorkspaceTests testSubmittedDeliverySurvivesReturningToLibraryWithAnotherSelection]' passed (0.110 seconds).
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testOptInWorkbenchPQPreparedAcrossProcesses]' started.
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testOptInWorkbenchPQPreparedAcrossProcesses]' skipped (0.001 seconds).
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testWorkbenchPQSettingsLeavePortableSDRPresetsUnchanged]' started.
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testWorkbenchPQSettingsLeavePortableSDRPresetsUnchanged]' passed (0.000 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 08:48:03.792.
+	 Executed 14 tests, with 1 test skipped and 0 failures (0 unexpected) in 4.057 (4.059) seconds
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneAVIFV1Tests testAVIFDoesNotSilentlyEncodeSDROrFlattenAlpha]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneAVIFV1Tests testAVIFDoesNotSilentlyEncodeSDROrFlattenAlpha]' passed (0.015 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneAVIFV1Tests testHDRAVIFIsActually10BitAndCarriesPQSignal]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneAVIFV1Tests testHDRAVIFIsActually10BitAndCarriesPQSignal]' passed (0.154 seconds).
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-27 08:48:11.829.
+	 Executed 15 tests, with 0 failures (0 unexpected) in 7.722 (7.724) seconds
+
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testOptInWorkbenchPQPreparedAcrossProcesses]' started.
+Test Case '-[RAWMasterUITests.WorkbenchContinuation035Tests testOptInWorkbenchPQPreparedAcrossProcesses]' passed (15.153 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 08:48:47.956.
+	 Executed 1 test, with 0 failures (0 unexpected) in 15.153 (15.154) seconds

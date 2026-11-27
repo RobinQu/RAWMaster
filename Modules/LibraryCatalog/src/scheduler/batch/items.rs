@@ -122,7 +122,7 @@ fn target(db: &Connection, parent: &Control) -> Result<Option<Target>> {
     let plan: Target = serde_json::from_str(&data)?;
     if plan.manifest_sha256 != parent.manifest_sha256
         || plan.stems.len() != parent.item_count
-        || !matches!(plan.extension.as_str(), "jpg" | "tiff" | "png")
+        || !matches!(plan.extension.as_str(), "jpg" | "tiff" | "png" | "avif")
         || !matches!(plan.collision.as_str(), "skip" | "rename")
         || !plan.stems.iter().all(|s| manifest::literal_stem(s))
     {

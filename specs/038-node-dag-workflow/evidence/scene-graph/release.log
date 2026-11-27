@@ -1,0 +1,47 @@
+2026-11-27 · Apple M2 · macOS 27.2.1 (26B131) · Xcode 27.2 (27B52) · Release
+swift test -c release --jobs 4 -Xswiftc -enable-testing --filter DevelopmentSceneGraph|DevelopmentSceneDeliveryService|CompatibilityGraph|DevelopmentSceneWorkflowV1Tests|DevelopmentSceneOutputV1Tests|EditingTests|RenderedExportTests|PhotoBatchRenderExporterTests
+RAWMASTER_SCENE_DELIVERY_SNOW_ARW, RAWMASTER_SCENE_DELIVERY_EVIDENCE, RAWMASTER_SCENE_GRAPH_PERFORMANCE, RAWMASTER_FLASHRAW_LIBRARY set.
+Exit status: 0; 70 passed, no skips in the selected suites.
+Extract: graph cases and target totals below.
+
+Build complete! (285.40 sec)
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' passed (1.207 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' passed (0.075 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 08:10:53.628.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 1.282 (1.283) seconds
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testOptInPersistedSceneGraphReopensAndRendersTheFrozenFinalBeforeAndAfterLiveChanges]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneDeliveryServiceV1Tests testOptInPersistedSceneGraphReopensAndRendersTheFrozenFinalBeforeAndAfterLiveChanges]' passed (2.665 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testAllThirteenLayerModesMatchLinearAP1CPUReferenceIncludingSignedAndSuperwhite]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testAllThirteenLayerModesMatchLinearAP1CPUReferenceIncludingSignedAndSuperwhite]' passed (0.013 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testCoverageGroupROIAndMonitoringNeverReplaceDeliveryRoot]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testCoverageGroupROIAndMonitoringNeverReplaceDeliveryRoot]' passed (0.009 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testDisabledBranchesRequireNoRenderBudgetAndLongChainFreesSurfaces]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testDisabledBranchesRequireNoRenderBudgetAndLongChainFreesSurfaces]' passed (0.012 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testOptInGraphSurfacePerformance]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testOptInGraphSurfacePerformance]' passed (0.272 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testParallelUsesWeightedChangesAndLayerOrderIsSignificant]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testParallelUsesWeightedChangesAndLayerOrderIsSignificant]' passed (0.005 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testCompatibilityGraphExportMatchesExistingRendererForAllRecipeSchemas]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentServiceTests testCompatibilityGraphExportMatchesExistingRendererForAllRecipeSchemas]' passed (0.172 seconds).
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-27 08:11:01.490.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 7.617 (7.620) seconds
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testAllInsertionKindsKeepExplicitAnchorAndNeutralWeight]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testAllInsertionKindsKeepExplicitAnchorAndNeutralWeight]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testBudgetsApplyAcrossNestedScopesAndInvalidViewNotPersisted]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testBudgetsApplyAcrossNestedScopesAndInvalidViewNotPersisted]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testExplicitEdgesGroupRoundTripAndTemplateInsertionIntoNestedScope]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testExplicitEdgesGroupRoundTripAndTemplateInsertionIntoNestedScope]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testNestedScopeMaskDependenciesAndRecipeRoundTripRemapAsOneValue]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testNestedScopeMaskDependenciesAndRecipeRoundTripRemapAsOneValue]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testOutsideRequiresCoverageAndAnExplicitSingleImageEdge]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testOutsideRequiresCoverageAndAnExplicitSingleImageEdge]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testRejectsCyclesPortMismatchAndUnknownFieldsEvenOnUnrenderedBranches]' started.
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testRejectsCyclesPortMismatchAndUnknownFieldsEvenOnUnrenderedBranches]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphPreservesStoredVersionsAndStableNodesAcrossReopen]' started.
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphPreservesStoredVersionsAndStableNodesAcrossReopen]' passed (0.035 seconds).
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphRejectsUnsupportedRecipesAndAuthoritativeArtifacts]' started.
+Test Case '-[RAWMasterCoreTests.EditingTests testCompatibilityGraphRejectsUnsupportedRecipesAndAuthoritativeArtifacts]' passed (0.035 seconds).
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 08:11:04.671.
+	 Executed 47 tests, with 0 failures (0 unexpected) in 2.926 (2.931) seconds

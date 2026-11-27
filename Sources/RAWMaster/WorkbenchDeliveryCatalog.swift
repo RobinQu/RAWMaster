@@ -464,6 +464,7 @@ struct WorkbenchDeliveryCatalog: Sendable {
 
 enum WorkbenchDeliveryIssue: String, LocalizedError, Sendable {
     case invalidReceipt, leaseUnavailable, targetOffline, sourceOffline, conflictingPrepared, missingStage, writeFailed
+    case hdrMasterRequired, pqSelectionChanged
 
     var errorDescription: String? {
         switch self {
@@ -473,6 +474,8 @@ enum WorkbenchDeliveryIssue: String, LocalizedError, Sendable {
         case .sourceOffline: "接回原片后继续本项交付。"
         case .conflictingPrepared: "输出位置有同名文件。请核对原目标后重试。"
         case .missingStage: "找不到本项的暂存文件。请核对原目标目录。"
+        case .hdrMasterRequired: "所选版本没有已保存的 HDR 母版；请返回选片或明确选择 SDR。"
+        case .pqSelectionChanged: "照片或版本已变化，请重新核对 HDR 成片。"
         case .writeFailed: "写入未完成。请检查输出目录后重试。"
         }
     }

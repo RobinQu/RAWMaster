@@ -1,3 +1,4 @@
+import CoreImage
 import Foundation
 import Metal
 import RAWMasterCore
@@ -138,12 +139,70 @@ final class DevelopmentSceneOutputV1Tests: XCTestCase {
     }
   }
 
-  private func upload(_ values: [SIMD4<Float>], device: MTLDevice) throws -> MTLTexture {
-    let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba32Float,width:values.count,height:1,mipmapped:false)
+  func testNormalLayerAndNodePreviewRenderIndependentOutputs() throws {
+    typealias Plan = DevelopmentSceneExecutionPlanV1
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let a = UUID(), b = UUID(), mix = UUID()
+    let plan = try Plan(nodes: [
+      .init(id: b, operation: .exposure(input: .source, ev: 2, enabled: true)),
+      .init(id: mix, operation: .normalLayer(base: .node(a), layer: .node(b), weight: 0.5)),
+      .init(id: a, operation: .exposure(input: .source, ev: 0, enabled: true)),
+    ], final: .node(mix))
+    let pixel = SIMD4<Float>(0.3, 0.15, -0.002, 0.5)
+    let raw = DevelopmentSceneMetalV1.Image(texture: try upload([pixel], device: device), port: .working, origin: .init(5, 12))
+    let reference = DevelopmentSceneMetalV1.Image(texture: try upload([.init(pixel.x * 2.5, pixel.y * 2.5, pixel.z * 2.5, pixel.w)], device: device),
+      port: .working, origin: raw.origin)
+    let renderer = DevelopmentSceneWorkflowRendererV1(device: device)
+    let output = DevelopmentSceneOutputStateV1.Version(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
+    let master = try renderer.prepareFinal(raw, plan: plan, output: output)
+    let viewing = try DevelopmentSceneOutputStateV1.ViewingConditions(requested: .hdrTarget, currentHeadroom: 2,
+      displayProfileSHA256: String(repeating: "a", count: 64))
+    let preview = try renderer.renderPreview(raw, plan: plan, output: output, preview: .corrector(b), viewing: viewing)
+    let actual = try renderer.renderDelivery(master, target: .hdr2020)
+    let expected = try DevelopmentSceneOutputV1(device: device, target: .hdr2020).render(reference)
+    let pixelActual = try XCTUnwrap(read(actual.texture).first), pixelExpected = try XCTUnwrap(read(expected.texture).first)
+    for channel in 0..<3 { XCTAssertEqual(pixelActual[channel], pixelExpected[channel], accuracy: 1e-5) }
+    XCTAssertEqual(pixelActual.w, pixel.w)
+    XCTAssertEqual(actual.origin, raw.origin)
+    XCTAssertGreaterThan(try XCTUnwrap(read(preview.texture).first).x, pixelActual.x)
+  }
+
+  func testSDREncoderKeepsScanlineOrientationAndSingleDRT() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+    defer { try? FileManager.default.removeItem(at: root) }
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let gray: [Float] = [4, 0.18, 0.05, 0.02]
+    let pixels = gray.map { SIMD4<Float>($0, $0, $0, 1) }
+    let stage = try Output(device: device, target: .sdr709)
+    let display = try stage.render(.init(texture: upload(pixels, device: device, width: 2), port: .working))
+    let file = root.appendingPathComponent("orientation.png")
+    let encoded = try DevelopmentSceneDeliveryServiceV1.writeSDR(display, format: .png16, to: file, protected: [])
+    XCTAssertEqual(encoded.artifact.bitDepth, 16)
+    XCTAssertNotNil(try Data(contentsOf: file).range(of: Data("iCCP".utf8)), "the file itself must carry the profile")
+    let png = try XCTUnwrap(CIImage(contentsOf: file))
+    let context = CIContext()
+    let reference = try read(stage.render(.init(texture: upload(pixels, device: device), port: .working)).texture)
+    for i in pixels.indices {
+      var rgba = [UInt8](repeating: 0, count: 4)
+      rgba.withUnsafeMutableBytes { bytes in
+        context.render(png, toBitmap: bytes.baseAddress!, rowBytes: 4,
+          bounds: CGRect(x: i % 2, y: 1 - i / 2, width: 1, height: 1), format: .RGBA8, colorSpace: PhotoRenderer.sRGB)
+      }
+      for channel in 0..<3 {
+        XCTAssertEqual(Float(rgba[channel]) / 255, try Output.Target.sdr709.encodeChannel(reference[i][channel]), accuracy: 2.0 / 255)
+      }
+      XCTAssertEqual(rgba[3], 255)
+    }
+  }
+
+  private func upload(_ values: [SIMD4<Float>], device: MTLDevice, width: Int? = nil) throws -> MTLTexture {
+    let width = width ?? values.count, height = values.count / width
+    let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba32Float,width:width,height:height,mipmapped:false)
     d.storageMode = .shared; d.usage = .shaderRead
     let texture=try XCTUnwrap(device.makeTexture(descriptor:d))
     values.withUnsafeBytes { bytes in
-      texture.replace(region:MTLRegionMake2D(0,0,values.count,1),mipmapLevel:0,withBytes:bytes.baseAddress!,bytesPerRow:bytes.count)
+      texture.replace(region:MTLRegionMake2D(0,0,width,height),mipmapLevel:0,withBytes:bytes.baseAddress!,bytesPerRow:bytes.count / height)
     }
     return texture
   }

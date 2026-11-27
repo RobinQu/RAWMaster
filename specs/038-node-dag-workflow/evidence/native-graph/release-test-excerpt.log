@@ -1,0 +1,31 @@
+2026-11-27 · macOS 27.2.1 (26B131) · Apple M2 · Xcode 27.2 (27B52) · Release
+Main filter: EditingScene|EditingCompatibilityGraphTests|DevelopmentSceneGraph|DevelopmentScenePreviewV1|DevelopmentSceneDeliveryServiceV1Tests|ExportWorkspaceTests|WorkbenchUndo
+Exit 0: 27 passed, no skips. Independent repeat of native graph inspection, monitor and frozen save also passed.
+Filtered output (only named XCTest cases and target totals).
+
+Build complete! (212.23 sec)
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' passed (0.705 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' started.
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' passed (0.052 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testNativeFloatingLayerCanPresentBothProfilesWithoutChangingTexture]' passed (0.041 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' started.
+Test Case '-[RAWMasterUITests.EditingSceneDarkroomTests testOptInRealRAWOpenEditUndoSaveReopenAndPresentResidentFrame]' passed (2.101 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' started.
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (2.217 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 09:21:30.346.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 5.705 (5.706) seconds
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInRealARWPreviewReuseAndNativeROI]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInRealARWPreviewReuseAndNativeROI]' passed (0.220 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testRejectsDisplaySourceAndCancelledRequestBeforeGPUWork]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testRejectsDisplaySourceAndCancelledRequestBeforeGPUWork]' passed (0.000 seconds).
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-27 09:21:37.469.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 6.893 (6.895) seconds
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-27 09:21:37.701.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' started.
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (2.717 seconds).
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-27 09:22:00.947.
+	 Executed 1 test, with 0 failures (0 unexpected) in 2.717 (2.717) seconds

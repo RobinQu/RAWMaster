@@ -574,7 +574,8 @@ function editorView() {
     versions = S.tool === 'versions';
   const r = canvasToolPreview(versions ? versionRecipe(S.versionView || e.adopted) : e.recipe);
   if (dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
-  const inspector = S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && dagEnabled() && !['smart', 'agent'].includes(S.tool)
+  const sceneReview = SceneEditor.nativeReview && SceneEditor.hdr() && !versions && !(nativeGraphReview && dagEnabled());
+  const inspector = sceneReview ? SceneEditor.reviewInspector() : S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && dagEnabled() && !['smart', 'agent'].includes(S.tool)
     ? dagInspector()
     : versions
     ? versionsInspector()
@@ -587,8 +588,8 @@ function editorView() {
   const sceneTool = SceneEditor.toolNote();
   const canvas = `<div class="edit-center">${SceneEditor.warning()}${dagPhotoCanvas(r, id)}</div>`;
   const basic = S.tool === 'basic' && !S.canvasTool;
-  const sceneControls = basic ? SceneEditor.modeBar() + (dagEnabled() ? scopesPanel(true) : '') : '';
-  const right = `<div class="edit-right">${versions ? '' : dagToolbar()}
+  const sceneControls = basic ? SceneEditor.modeBar() + (dagEnabled() && !sceneReview || SceneEditor.scopesReview && SceneEditor.hdr() ? (SceneEditor.scopesReview ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${scopesPanel(true)}</details>` : scopesPanel(true)) : '') : '';
+  const right = `<div class="edit-right">${versions ? '' : compatibilityGraphMode ? compatibilityGraphToolbar() : dagToolbar()}
     <aside class="edit-inspector" aria-label="调整工具">${inspectorRail()}
     <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">` +
     sceneControls + (sceneTool ? `<p class="control-hint">${h(sceneTool)}</p><fieldset class="scene-tool-controls" disabled>${inspector}</fieldset>` : inspector) +
@@ -596,7 +597,7 @@ function editorView() {
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
       <strong>${h(Studio.asset(id).name)}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
       <div class="row">${btn('智能编辑', 'edit-tool', 'smart', { icon:'spark' })}${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) })}</div></header>
-    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
+    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${compatibilityGraphMode ? compatibilityGraphWindow() : dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
 function editPanel(path, focus) {
   S.editFocus = focus;
@@ -1005,6 +1006,7 @@ document.addEventListener('keydown', (event) => {
   event.preventDefault(); actions['cancel-selection']();
 });
 actions['canvas-point'] = (_, event, el) => {
+  if (SceneEditor.scopePick(event, el)) return;
   const box = el.getBoundingClientRect();
   point(
     Math.round(((event.clientX - box.left) * 100) / box.width),

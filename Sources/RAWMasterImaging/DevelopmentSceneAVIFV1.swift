@@ -82,7 +82,25 @@ final class DevelopmentSceneAVIFV1 {
   }
 
   // These item properties are required; a successful ImageIO call alone is not an HDR receipt.
-  static func readSignal(_ data: Data) throws -> Signal {
+  static func readSignal(_ data: Data) throws -> Signal { try readProperties(data).signal }
+
+  /// ImageIO can fill `clli` with defaults. Until picture light levels are measured,
+  /// leave both bounds unspecified (AVIF uses 0 for no upper bound).
+  static func leavingLightLevelsUnspecified(_ data: Data) throws -> Data {
+    guard let bounds = try readProperties(data).lightLevels else { return data }
+    var result = data
+    let range = (result.startIndex + bounds.lowerBound)..<(result.startIndex + bounds.upperBound)
+    result.replaceSubrange(range, with: [UInt8](repeating: 0, count: 4))
+    return result
+  }
+
+  static func lightLevels(_ data: Data) throws -> [Int]? {
+    guard let offset = try readProperties(data).lightLevels?.lowerBound else { return nil }
+    let i = data.startIndex + offset
+    return [Int(data[i]) << 8 | Int(data[i + 1]), Int(data[i + 2]) << 8 | Int(data[i + 3])]
+  }
+
+  private static func readProperties(_ data: Data) throws -> (signal: Signal, lightLevels: Range<Int>?) {
     try data.withUnsafeBytes { bytes in
       struct Box { let tag: String; let payload: Range<Int> }
       func boxes(_ range: Range<Int>) throws -> [Box] {
@@ -124,7 +142,9 @@ final class DevelopmentSceneAVIFV1 {
       func u16(_ i: Int) -> Int { Int(bytes[p+i]) << 8 | Int(bytes[p+i+1]) }
       let signal=Signal(primaries:u16(4),transfer:u16(6),matrix:u16(8),bitDepth:10,fullRange:bytes[p+10] == 128)
       guard signal.primaries == 9, signal.transfer == 16, [1,9].contains(signal.matrix), signal.fullRange else { throw Failure.invalidContainer }
-      return signal
+      let light = properties.filter { $0.tag == "clli" }
+      guard light.count <= 1, light.first.map({ $0.payload.count == 4 }) ?? true else { throw Failure.invalidContainer }
+      return (signal, light.first?.payload)
     }
   }
 

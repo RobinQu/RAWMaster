@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-27",
+  "system": "macOS 27.2.1 (26B131), Apple M2",
+  "probe": "AppKit NSScreen.screens after NSApplication.shared; no image presentation",
+  "screens": [
+    {
+      "localizedName": "Built-in Retina Display",
+      "visibleWidthPoints": 1680,
+      "visibleHeightPoints": 938,
+      "maximumPotentialExtendedDynamicRangeColorComponentValue": 2.0,
+      "maximumExtendedDynamicRangeColorComponentValue": 1.2000000476837158
+    }
+  ],
+  "limitations": "A momentary environment observation on one screen. No measurement of the RAWMaster view, pixel luminance, SDR fallback, display switching or complete 1000-nit target presentation."
+}

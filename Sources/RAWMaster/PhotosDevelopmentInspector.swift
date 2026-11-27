@@ -130,6 +130,10 @@ private struct PhotosDevelopmentContent: View {
                     Divider()
                     VStack(spacing: 0) {
                         if destination == .basic {
+                            if EditingController.sceneReviewEnabled {
+                                EditingSceneModeStrip(editing: editing)
+                                Divider()
+                            }
                             PhotosColorScopes(editing: editing, floating: false)
                                 .padding(.horizontal, 12).padding(.vertical, 6)
                             Divider()

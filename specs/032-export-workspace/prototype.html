@@ -185,7 +185,7 @@
           <div id="scene-delivery" class="controls" hidden>
             <label>成片目标<select id="scene-target"><option value="legacy">现有 SDR 格式</option><option value="sdr">SDR 分享</option><option value="hdr">HDR 成片</option><option value="both">HDR 成片 + SDR 分享（两个文件）</option><option disabled>双兼容增益图（未验证）</option><option disabled>继续编辑 · 浮点归档（未验证）</option></select></label>
             <label id="scene-fallback-field" hidden><input type="checkbox" id="scene-fallback"> 对没有 HDR 母版的照片，明确改为交付 SDR 分享文件</label>
-            <small>原型只模拟选择和交付，不写入真实 HDR 文件。</small>
+            <small id="scene-phase-note">原型只模拟选择和交付，不写入真实 HDR 文件。</small>
           </div>
           <div class="two">
             <label id="format-field">格式<select id="format"><option value="jpeg">JPEG · 8 位</option><option value="tiff">TIFF · 16 位</option><option value="png">PNG · 16 位</option></select></label>
@@ -263,6 +263,12 @@
     </div>
     <div class="studio-foot"><span id="studio-error" class="small warn" role="status"></span><div class="actions"><button id="cancel-layout">取消</button><button id="apply-layout" class="primary">应用版式</button></div></div>
   </div>
+</dialog>
+<dialog id="pq-review" aria-labelledby="pq-review-title">
+  <div class="section-head"><h2 id="pq-review-title">核对 HDR 成片</h2></div>
+  <p class="small">10 位 AVIF · Rec.2020 PQ · 参考白 100 nits · 输出峰值 1000 nits · 模拟</p>
+  <ul id="pq-list" style="max-height:45vh;overflow:auto"></ul>
+  <div class="actions"><button id="pq-cancel">返回选片</button><button class="primary" id="pq-confirm">确认冻结并导出</button></div>
 </dialog>
 <dialog id="job" aria-labelledby="job-title">
   <div class="between"><h2 id="job-title">任务详情</h2><button id="close-job">返回面板</button></div>
@@ -398,17 +404,25 @@
     byId('gps').checked=settings.gps;
     setLayout(settings.layout || ExportLayout.style());
   }
+  const pqReview = new URLSearchParams(location.search).get('pqReview') === '1';
+  const pqSelected = () => pqReview && sceneTarget() === 'hdr';
+  if (pqReview) {
+    byId('scene-target').querySelector('[value=both]').disabled = true;
+    byId('scene-target').querySelector('[value=sdr]').hidden = true;
+    byId('scene-phase-note').textContent = 'PQ 评审阶段：仅版本全尺寸、无边框水印、不携带原片描述性元数据。预览是 SDR 代理；预设保留 SDR 设置。';
+  }
   function validateSettings() {
     if (mode === 'original') return '';
     const edge = Number(byId('edge').value);
     if (byId('size').value === 'custom' && (!Number.isInteger(edge) || edge < 64 || edge > 100000)) return '长边需为 64 到 100000 之间的整数。';
     const template = byId('template').value;
     if (!ExportPreset.templateOK(template)) return '请检查文件名和模板中的字段。';
+    if (pqSelected()) return '';
     if (!ExportLayout.valid(layout)) return '请检查版式中边距、细线、大小或不透明度的取值。';
     return ExportLayout.problem(layout);
   }
   function geometry(version, limit = Number(byId('size').value === 'custom' ? byId('edge').value : byId('size').value)) {
-    return ExportLayout.plan(version,limit,layout);
+    return pqSelected() ? ExportLayout.plan(version,0,ExportLayout.style()) : ExportLayout.plan(version,limit,layout);
   }
   function itemSpec(photo, index, sequence, used, settings, target = 'legacy') {
     const cfgError = settings.error;
@@ -438,11 +452,11 @@
       if (!cfgError) {
         const geo=settings.geometries.get(version) || geometry(version,settings.limit);
         settings.geometries.set(version,geo);
-        composition={geometry:geo,lines:ExportLayout.lettering(layout,photo)};
+        composition={geometry:geo,lines:pqSelected() ? [] : ExportLayout.lettering(layout,photo)};
         const signal = RMSceneOutput.targets[target]?.signal ?? bits+' 位 · sRGB';
         const origin = version.sceneOutput ? target === 'hdr' ? 'HDR 母版' : 'SDR 派生' : 'SDR 版本';
         facts=geo.width+' × '+geo.height+' px · '+(target === 'legacy' && !version.sceneOutput ? '' : origin+' · ')+signal;
-        if (layout.frame!=='none') facts+=' · 照片区域 '+geo.photo.w+' × '+geo.photo.h;
+        if (!pqSelected() && layout.frame!=='none') facts+=' · 照片区域 '+geo.photo.w+' × '+geo.photo.h;
       }
     } else if (settings.copyMode === 'manifest') {
       name = photo.name; facts = '仅列入 CSV / JSON'; state = '清单条目';
@@ -459,7 +473,7 @@
     return {
       error:validateSettings(), format:byId('format').value, template:byId('template').value,
       collision:byId('collision').value, limit:Number(size === 'custom' ? byId('edge').value : size),
-      metadata:byId('metadata').value, gps:byId('gps').checked, copyMode:byId('copy-mode').value,
+      metadata:pqSelected() ? 'none' : byId('metadata').value, gps:!pqSelected() && byId('gps').checked, copyMode:byId('copy-mode').value,
       copyFilter:byId('original-format').value, folder:byId('folder').value,
       geometries:new Map(), suffixes:new Map()
     };
@@ -471,7 +485,7 @@
     const settings = planningSettings();
     const occupied = demoFiles[settings.folder];
     const target = sceneTarget();
-    const fallback = byId('scene-fallback').checked;
+    const fallback = !pqReview && byId('scene-fallback').checked;
     const key = JSON.stringify([mode,target,fallback,selection.revision,occupied.size,settings,{...layout,logo:layout.logo?.sha256}]);
     if (key !== plannedKey) {
       const used = new Set(occupied);
@@ -506,10 +520,15 @@
     byId('render').setAttribute('aria-pressed',String(render)); byId('original').setAttribute('aria-pressed',String(!render));
     byId('render-fields').hidden = !render; byId('copy-fields').hidden = render; byId('extra').hidden = !render;
     byId('copy-filter').hidden = manifest;
-    byId('edge-field').hidden = byId('size').value !== 'custom';
+    byId('edge-field').hidden = pqSelected() || byId('size').value !== 'custom';
     const target = sceneTarget(), explicit = target !== 'legacy';
     byId('scene-delivery').hidden = !render || !handoff;
-    byId('scene-fallback-field').hidden = !['hdr','both'].includes(target);
+    byId('scene-fallback-field').hidden = pqReview || !['hdr','both'].includes(target);
+    byId('size').disabled = pqSelected();
+    byId('size').closest('label').hidden = pqSelected();
+    byId('metadata').disabled = pqSelected();
+    byId('gps').disabled = pqSelected();
+    byId('watermark-shelf').hidden = pqSelected();
     byId('format-field').hidden = explicit;
     byId('quality-field').hidden = target === 'hdr' && !byId('scene-fallback').checked || !explicit && byId('format').value !== 'jpeg';
     byId('gps-field').hidden = byId('metadata').value !== 'photo';
@@ -530,7 +549,7 @@
     byId('focus-name').textContent = photo.name;
     byId('preview-kind').textContent = !render || !inputAvailable(photo,mode) ? '资料库缩略图'
       : validateSettings() ? '资料库缩略图 · 设置待修正' : '成品构图预览';
-    const printVisible=render && layout.mark!=='off';
+    const printVisible=render && !pqSelected() && layout.mark!=='off';
     byId('imprint-label').hidden=byId('imprint').hidden=!printVisible;
     byId('imprint').textContent=printVisible ? imprintSummary(layout,ExportLayout.lettering(layout,photo)) : '';
     drawPreview();
@@ -551,12 +570,12 @@
     byId('count').textContent = manifest ? '清单覆盖 ' + plan.length + ' 张' : '可交付 ' + ready + unit + (missing ? ' · 待找回 ' + missing + unit : '') + (skipped ? ' · 跳过 ' + skipped + unit : '') + (blocked ? ' · 无 HDR 母版 ' + blocked + ' 张' : '');
     const button = byId('submit');
     const partial = missing || blocked;
-    button.textContent = manifest ? '输出清单' : (partial ? '先' : '') + (render ? '导出' : '复制') + (partial ? '可用的 ' : ' ') + ready + unit;
+    button.textContent = pqSelected() ? '核对 HDR 成片（' + included.size + '）' : manifest ? '输出清单' : (partial ? '先' : '') + (render ? '导出' : '复制') + (partial ? '可用的 ' : ' ') + ready + unit;
     if (selection.overLimit) {
       byId('count').textContent = '本批已勾选 ' + included.size.toLocaleString('zh-CN') + ' 张，单批上限 200 张';
       button.textContent = '请先调整选片';
     }
-    button.disabled = Boolean(selection.overLimit || validateSettings() || job?.running || (manifest ? !plan.length : !ready));
+    button.disabled = Boolean(selection.overLimit || validateSettings() || job?.running || (manifest || pqSelected() ? !plan.length : !ready));
     byId('show-job').disabled = !job;
     byId('show-job').textContent = job?.photoReceipt && !job.running && !['done','cancelled'].includes(job.phase) ? '任务详情 · 待处理' : '任务详情';
     drawList();
@@ -670,7 +689,21 @@
       runNext();
     },950);
   }
-  function submit() {
+  function showPQReview() {
+    const rows = getPlan(true);
+    byId('pq-list').replaceChildren(...rows.map(row => {
+      const li = document.createElement('li');
+      li.textContent = row.name + ' · ' + row.version.label + ' · ' + row.state;
+      return li;
+    }));
+    byId('pq-confirm').disabled = !rows.some(row => row.state === '待执行') || rows.some(row => ['无 HDR 母版','待找回'].includes(row.state));
+    byId('pq-review').showModal();
+  }
+  byId('pq-cancel').onclick = () => byId('pq-review').close();
+  byId('pq-confirm').onclick = () => { byId('pq-review').close(); submit(true); };
+  function submit(confirmed = false) {
+    if (pqSelected() && confirmed !== true) { if (!byId('submit').disabled) showPQReview(); return; }
+    if (pqSelected() && getPlan(true).some(row => ['无 HDR 母版','待找回'].includes(row.state))) return;
     if (selection.overLimit || !included.size || byId('submit').disabled) return;
     const items = getPlan();
     const manifest = mode === 'original' && byId('copy-mode').value === 'manifest';

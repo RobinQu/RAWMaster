@@ -26,6 +26,12 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
     parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
+    parser.add_argument("--compatibility-only", action="store_true", help="Run the Spec 038 read-only compatibility graph walkthrough.")
+    parser.add_argument("--scene-native-only", action="store_true", help="Walk through the Spec 037 native-review HDR slice.")
+    parser.add_argument("--pq-queue-only", action="store_true", help="Walk through the native PQ queue preflight interaction in the workbench.")
+    parser.add_argument("--native-graph-only", action="store_true", help="Walk through the editable scene DAG native-review slice.")
+    parser.add_argument("--workflow-batch-only", action="store_true", help="Walk the native-template/batch review entry in the workbench.")
+    parser.add_argument("--scene-scopes-only", action="store_true", help="Walk through HDR scopes and diagnostics in the native-review prototype.")
     args = parser.parse_args()
     editing_only = args.editing_only
     cli = shutil.which("agent-browser")
@@ -91,6 +97,261 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.scene_scopes_only:
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&scopesNativeReview=1")
+                browser("set", "viewport", "1280", "800")
+                scenario("037 示波器：阶段、点位、屏幕标线与取消", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  const details=()=>el('.scope-native-review');assert(details()&&!details().open);tap('.scope-native-review summary');
+                  await wait(()=>details().open);const recipe=JSON.stringify(currentEdit().recipe), h=currentEdit().past.length;
+                  act('scene-scope','scene');await wait(()=>el('.scene-axis')?.checkVisibility());assert(el('.scene-scopes').innerText.includes('线性 AP1'));
+                  act('scene-pick');const image=el('.edit-image'), box=image.getBoundingClientRect();image.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:box.x+box.width*.35,clientY:box.y+box.height*.6}));
+                  assert(el('.scene-scopes').innerText.includes('35%，60%'),'sample stays fixed to image');
+                  act('scene-scope','output');const axis=el('.scene-chart-white').getAttribute('d');
+                  act('scene-overlay','sensor');act('scene-overlay','target');assert(all('.scene-marks i').length===2);
+                  act('scene-open');act('scene-screen','unknown',modal());assert(el('[data-act=scene-overlay][data-val=screen]',modal()).disabled);
+                  act('close',null,modal());assert(el('.scene-chart-white').getAttribute('d')===axis);
+                  act('scene-pick');key(document.activeElement,'Escape');assert(all('.scene-marks i').length===2);
+                  key(document.activeElement,'Escape');assert(!all('.scene-marks i').length);
+                  assert(JSON.stringify(currentEdit().recipe)===recipe&&currentEdit().past.length===h,'diagnostics and sample are transient');
+                """)
+                scopes_evidence = os.environ.get("RAWMASTER_UI_SCOPES_EVIDENCE")
+                if scopes_evidence:
+                    Path(scopes_evidence).mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(Path(scopes_evidence) / "scopes-1280.png"))
+                browser("set", "viewport", "390", "844")
+                scenario("037 示波器：窄窗与原片不可用", """
+                  assert(document.documentElement.scrollWidth<=innerWidth,'no horizontal overflow');
+                  Studio.asset('b1').online=false;render();
+                  assert(el('[data-act=scene-overlay][data-val=sensor]').disabled,'offline is unavailable, not zero');
+                """)
+                if scopes_evidence:
+                    browser("screenshot", str(Path(scopes_evidence) / "scopes-offline-390.png"))
+                check_browser_errors()
+                return
+            if args.workflow_batch_only:
+                browser(*options, "open", host + ENTRY + "?batchNativeReview=1")
+                browser("set", "viewport", "1280", "800")
+                scenario("038 批量：确认前不写入，候选不采用", """
+                  await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
+                  const ids=activeIDs(), target=ids.find(id=>id!==activeBrowser().focus), before=JSON.stringify(Studio.edit(target).recipe);
+                  act('selection-menu');act('dag-batch-menu',null,modal());act('dag-batch-preflight',null,modal());
+                  assert(modal().innerText.includes('只创建候选，不自动采用'));
+                  act('close',null,modal());assert(!(Studio.data.dagBatches||[]).length);
+                  act('selection-menu');act('dag-batch-menu',null,modal());act('dag-batch-preflight',null,modal());act('dag-batch-start',null,modal());
+                  await wait(()=>Studio.data.dagBatches.at(-1)?.running===false);
+                  const batch=Studio.data.dagBatches.at(-1), item=batch.items[0];
+                  assert(item.state==='done'&&Studio.edit(target).adopted!==item.version&&JSON.stringify(Studio.edit(target).recipe)===before);
+                  act('dag-batch-undo',batch.id,modal());assert(item.state==='undone'&&Studio.edit(target).versions.some(v=>v.id===item.version&&v.discarded));
+                  act('close',null,modal());assert(JSON.stringify(activeIDs())===JSON.stringify(ids),'selection unchanged');
+                """)
+                browser("set", "viewport", "390", "844")
+                scenario("038 批量：窄窗深色取消、重试及复现冲突", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
+                  await hash('library/project/river');await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
+                  act('selection-menu');act('dag-batch-menu',null,modal());
+                  tap('.dag-menu-advanced summary',modal());act('dag-batch-samples','20',modal());
+                  S.dagBatchChosen.slice(1,2).forEach(id=>Studio.asset(id).online=false);
+                  act('dag-batch-preflight',null,modal());
+                  assert(modal().innerText.includes('离线 1')&&modal().getBoundingClientRect().right<=innerWidth,'narrow preflight fits and lists offline');
+                  act('dag-batch-start',null,modal());const b=Studio.data.dagBatches.at(-1);
+                  act('dag-batch-cancel',b.id,modal());assert(b.items.some(i=>i.state==='done')&&b.items.some(i=>i.state==='cancelled'));
+                  act('dag-batch-retry',b.id,modal());await wait(()=>!b.running);
+                  assert(b.items.filter(i=>i.state==='done').length===19&&b.items.filter(i=>i.state==='offline').length===1);
+                  act('dag-batch-relink',null,modal());act('dag-batch-retry',b.id,modal());await wait(()=>!b.running);
+                  assert(b.items.every(i=>i.state==='done'));
+                  act('dag-batch-conflict',null,modal());act('dag-batch-undo',b.id,modal());
+                  assert(b.items.filter(i=>i.state==='conflict').length===1&&b.items.filter(i=>i.state==='undone').length===19);
+                """)
+                check_browser_errors()
+                return
+            if args.native_graph_only:
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1&graphNativeReview=1")
+                browser("set", "viewport", "1440", "900")
+                scenario("038 原生评审：HDR 草稿、插入和节点监看", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
+                  act('edit-tool','basic');await page('.scene-mode-bar');act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  act('dag-view-toggle');await page('.dag-floating');
+                  assert(el('.developed')?.checkVisibility()&&el('.dag-floating').getAttribute('aria-modal')==='false');
+                  addNodeMenu();act('dag-add','serial',modal());const node=dagNode().id;
+                  set('[name=dagNumber][data-key=ev]',1.25);pickNode('grade');
+                  assert(el('[name=dagNumber][data-key=ev]').value==='0','node change does not alter first');
+                  const before=JSON.stringify(currentEdit().recipe.dag), history=currentEdit().past.length;
+                  menuAction('dag-preview');assert(dagView().target==='grade'&&el('.dag-photo-status').innerText.includes('不用于导出'));
+                  pickNode(node);assert(dagView().target==='grade'&&JSON.stringify(currentEdit().recipe.dag)===before);
+                  act('dag-preview-final');assert(currentEdit().past.length===history,'preview only');
+                """)
+                native_graph_evidence = os.environ.get("RAWMASTER_UI_NATIVE_GRAPH_EVIDENCE")
+                if native_graph_evidence:
+                    Path(native_graph_evidence).mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(Path(native_graph_evidence) / "graph-scene-1440.png"))
+                scenario("038 原生评审：无效草稿阻止交付，取消后可编辑", """
+                  const graph=dagCurrent(), node=dagNode().id, recipe=JSON.stringify(currentEdit().recipe.dag);
+                  dagPropose(node,node,'image');assert(el('[data-act=dag-connect-apply]').disabled);
+                  act('workflow','export');assert(!location.hash.includes('export'),'cannot hand off an uncommitted draft');
+                  act('dag-connect-cancel');assert(JSON.stringify(currentEdit().recipe.dag)===recipe);
+                  act('dag-view-toggle');assert(!el('.dag-floating')&&el('.developed')?.checkVisibility(),'close graph only');
+                """)
+                for theme in ['light','dark']:
+                    browser("set", "viewport", "390", "844")
+                    scenario("038 原生评审：窄窗 "+theme+" 取景及退出", """
+                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
+                      await hash('edit/basic');await page('.scene-mode-bar');act('dag-view-toggle');await page('.dag-viewport');
+                      act('dag-fit');const frame=el('.dag-floating').getBoundingClientRect();
+                      assert(frame.left>=0&&frame.right<=innerWidth&&el('.dag-viewport').offsetHeight>=240);
+                      const bytes=JSON.stringify(currentEdit().recipe.dag);el('.dag-viewport').focus();key(el('.dag-viewport'),'Escape');
+                      assert(!el('.dag-floating')&&JSON.stringify(currentEdit().recipe.dag)===bytes&&el('.developed')?.checkVisibility());
+                    """)
+                    if native_graph_evidence:
+                        browser("eval", "actions['dag-view-toggle']();actions['dag-fit']();")
+                        browser("screenshot", str(Path(native_graph_evidence) / f"graph-scene-390-{theme}.png"))
+                        browser("eval", "actions['dag-view-toggle']();")
+                check_browser_errors()
+                return
+            if args.pq_queue_only:
+                browser(*options, "open", host + ENTRY + "?pqReview=1")
+                browser("set", "viewport", "1280", "800")
+                scenario("037 PQ 队列：混合选区核对", """
+                  await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
+                  act('workflow','edit');await page('.inspector-rail');act('edit-tool','basic');await page('.scene-mode-bar');
+                  act('scene-mode','hdr');act('workflow','export');act('export-choice','draft',modal());await page('#export-frame[src]');
+                  const d=()=>el('#export-frame').contentDocument;
+                  await wait(()=>el('#scene-target',d())?.checkVisibility());
+                  set('#scene-target','hdr',d());
+                  assert(el('#size',d()).disabled&&el('#watermark-shelf',d()).hidden&&el('#metadata',d()).disabled,'fixed output lacks ambiguous controls');
+                  tap('#submit',d());assert(el('#pq-review',d()).open&&el('#pq-confirm',d()).disabled,'mixed selection cannot silently switch to SDR');
+                  assert(el('#pq-list',d()).textContent.includes('无 HDR 母版')&&el('#pq-list',d()).textContent.includes('.avif'));
+                """)
+                pq_evidence = os.environ.get("RAWMASTER_UI_PQ_EVIDENCE")
+                if pq_evidence:
+                    Path(pq_evidence).mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(Path(pq_evidence) / "pq-mixed-1280.png"))
+                browser("set", "viewport", "390", "844")
+                scenario("037 PQ 队列：窄窗取消、离线检查及明确冻结", """
+                  const d=()=>el('#export-frame').contentDocument, win=d().defaultView;
+                  const review=el('#pq-review',d());assert(review.getBoundingClientRect().right<=win.innerWidth,'narrow sheet fits');
+                  tap('#pq-cancel',d());
+                  assert(!el('#job',d()).open&&!review.open,'cancel did not register task');
+                  // Remove only the explicitly incompatible row via the same selection API as its checkbox.
+                  const incompatible=win.eval('getPlan(true).find(row=>row.state===\"无 HDR 母版\").index');
+                  win.eval('selection.toggle('+incompatible+',false,false)');
+                  win.eval('photos[selection.ordered[0]].online=false;plannedKey=\"\";refresh()');
+                  tap('#submit',d());assert(el('#pq-confirm',d()).disabled&&el('#pq-list',d()).textContent.includes('待找回'),'offline selection remains blocked');
+                  tap('#pq-cancel',d());win.eval('photos[selection.ordered[0]].online=true;plannedKey=\"\";refresh()');
+                  tap('#submit',d());assert(!el('#pq-confirm',d()).disabled,'qualified selection ready');
+                """)
+                if pq_evidence:
+                    browser("screenshot", str(Path(pq_evidence) / "pq-ready-390.png"))
+                scenario("037 PQ 队列：确认仅冻结 AVIF", """
+                  const d=()=>el('#export-frame').contentDocument;
+                  tap('#pq-confirm',d());await wait(()=>el('#job',d()).open);
+                  assert(el('#job',d()).textContent.includes('.avif')&&!el('#job',d()).textContent.includes('.jpg'),'exact target frozen');
+                """)
+                check_browser_errors()
+                return
+            if args.scene_native_only:
+                browser(*options, "open", host + ENTRY + "?sceneNativeReview=1")
+                browser("set", "viewport", "1440", "900")
+                scenario("037 原生评审：从资料库取消、创建与撤销 HDR 草稿", """
+                  await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.inspector-rail');
+                  act('edit-tool','basic');await page('.scene-mode-bar');
+                  const e=Studio.edit('b1'), old=JSON.stringify(e.recipe);sessionStorage.setItem('scene.review.old',old);
+                  act('scene-mode','hdr');assert(modal().innerText.includes('不会把现有 SDR 调整'));
+                  act('close',null,modal());assert(JSON.stringify(e.recipe)===old,'cancel leaves draft');
+                  act('scene-mode','hdr');act('scene-review-start',null,modal());
+                  assert(e.recipe.sceneOutput?.intent==='hdr'&&!Studio.edit('r1').recipe.sceneOutput,'current photo only');
+                  const past=e.past.length;act('scene-view','sdr',el('.scene-hud'));assert(e.past.length===past,'view does not write history');
+                  el('[name=sceneGraphExposure]').value='1.25';act('scene-review-exposure');assert(e.recipe.ev===1.25,'node exposure');
+                  act('edit-step','undo');assert(e.recipe.sceneOutput&&e.recipe.ev===0,'undo exposure only');
+                  act('edit-step','undo');assert(JSON.stringify(e.recipe)===old,'undo HDR restores exact SDR');
+                  act('scene-mode','hdr');act('scene-review-start',null,modal());act('scene-open');
+                  act('scene-review-fail',null,modal());assert(el('.scene-hud').innerText.includes('预览失败'),'visible failure');
+                  act('scene-review-retry');assert(!el('.scene-hud').innerText.includes('预览失败'),'retry returns to same HDR draft');
+                """)
+                scene_evidence = os.environ.get("RAWMASTER_UI_SCENE_EVIDENCE")
+                if scene_evidence:
+                    Path(scene_evidence).mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(Path(scene_evidence) / "scene-review-fit.png"))
+                for theme in ['light', 'dark']:
+                    browser("set", "viewport", "390", "844")
+                    scenario(f"037 原生评审：390px {theme}、回退原因和离线", """
+                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
+                      await hash('edit/basic');await page('.scene-mode-bar');
+                      assert(document.documentElement.scrollWidth<=innerWidth,'no horizontal overflow');
+                      act('scene-view','target',el('.scene-hud'));
+                      assert(el('.scene-hud').innerText.includes('屏幕无 HDR 余量'),'fallback explicit');
+                      const e=Studio.edit('b1'), hdr=JSON.stringify(e.recipe);Studio.asset('b1').online=false;render();
+                      act('scene-mode','sdr');assert(el('.scene-warning').innerText.includes('离线')&&JSON.stringify(e.recipe)===hdr,'offline is fail closed');
+                      Studio.asset('b1').online=true;render();
+                      const button=el('[data-act=scene-mode][data-val=hdr]');button.focus();key(button,'ArrowLeft');
+                      assert(document.activeElement.dataset.val==='sdr'&&JSON.stringify(e.recipe)===hdr,'arrow moves focus only');
+                    """)
+                    if scene_evidence:
+                        browser("screenshot", str(Path(scene_evidence) / f"scene-review-390-{theme}.png"))
+                check_browser_errors()
+                return
+            if args.compatibility_only:
+                browser(*options, "open", host + ENTRY + "?compatibilityGraph=1")
+                browser("set", "viewport", "1440", "900")
+                scenario("Node DAG 兼容评审：正常入口、主图和草稿隔离", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
+                  await hash('library/project/river');
+                  await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.dag-scope-head');
+                  act('edit-tool','basic');await page('.scene-mode-bar');
+                  const edit=Studio.edit('r1'), before=JSON.stringify(edit.recipe), history=edit.past.length;
+                  sessionStorage.setItem('compat.before',before);sessionStorage.setItem('compat.history',history);
+                  act('compatibility-graph-toggle','',el('.dag-scope-head'));
+                  assert(el('.dag-compat').getAttribute('aria-modal')==='false'&&el('.edit-center .developed').checkVisibility(),'Graph and photo coexist');
+                  assert(document.documentElement.dataset.theme==='dark'&&el('.dag-compat').getBoundingClientRect().left>innerWidth/2,'desktop Graph opens to the side so the main photo remains visible');
+                  assert(all('.dag-compat-canvas b').map(x=>x.textContent).join()==='照片来源,兼容显影,最终输出','matches the native stage order');
+                  assert(el('[data-act=compatibility-ignore]').disabled&&!el('.dag-compat [data-dag-node]'),'read-only graph has no editing commands');
+                  act('compatibility-graph-fold');assert(!el('.dag-compat-canvas'),'collapsed');
+                  act('compatibility-graph-fold');assert(el('.dag-compat-canvas'),'expanded');
+                  act('compatibility-graph-reset');
+                  assert(JSON.stringify(edit.recipe)===before&&edit.past.length===history&&!edit.recipe.dag,'presentation does not seed a recipe or history');
+                """)
+                compatibility_evidence = os.environ.get("RAWMASTER_UI_DAG_EVIDENCE")
+                if compatibility_evidence:
+                    Path(compatibility_evidence).mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(Path(compatibility_evidence) / "compatibility-1440-dark.png"))
+                browser("focus", ".dag-compat [data-dag-window-resize]")
+                browser("press", "ArrowLeft")
+                scenario("Node DAG 兼容评审：键盘调整窗宽不翻片", """
+                  assert(el('.dag-compat').getBoundingClientRect().width===620&&document.activeElement.matches('[data-dag-window-resize]'),'keyboard resize preserves focus');
+                  assert(Studio.data.work==='r1'&&JSON.stringify(Studio.edit('r1').recipe)===sessionStorage.getItem('compat.before'),'resizing does not route to the photo');
+                """)
+                browser("press", "Escape")
+                scenario("Node DAG 兼容评审：Escape 关闭并返还焦点", """
+                  assert(!el('.dag-compat')&&document.activeElement===el('.dag-scope-head [data-act=compatibility-graph-toggle]'),'Escape restores the trigger');
+                  act('compatibility-graph-toggle','',el('.dag-scope-head'));
+                  act('open-versions');await page('#adjustment-panel');
+                  assert(!el('.dag-compat')&&!el('.dag-scope-head'),'versions do not expose the graph');
+                  act('return-adjustments');await page('.scene-mode-bar');
+                  assert(!el('.dag-compat')&&Studio.data.work==='r1','return to same editor without reopening the window');
+                """)
+                browser("set", "viewport", "390", "844")
+                scenario("Node DAG 兼容评审：390px 浅色布局", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','light');
+                  await hash('edit/basic');await page('.dag-scope-head');
+                  act('compatibility-graph-toggle','',el('.dag-scope-head'));
+                  const frame=el('.dag-compat').getBoundingClientRect();
+                  assert(document.documentElement.dataset.theme==='light'&&frame.left>=0&&frame.right<=innerWidth&&el('.dag-compat-canvas').offsetHeight>=240,'narrow canvas stays readable');
+                """)
+                if compatibility_evidence:
+                    browser("screenshot", str(Path(compatibility_evidence) / "compatibility-390-light.png"))
+                browser("set", "viewport", "900", "360")
+                scenario("Node DAG 兼容评审：短窗标题与原片离线", """
+                  await wait(()=>el('.dag-compat.minimized')?.checkVisibility());
+                  assert(!el('.dag-compat-canvas')&&el('.dag-compat small').textContent.includes('增高窗口'),'short window explains why only the title is visible');
+                  el('.dag-compat [data-act=compatibility-graph-toggle]').click();
+                  Studio.asset('r1').online=false;render();
+                  assert(!el('.dag-compat')&&el('[data-act=compatibility-graph-toggle]').disabled&&el('.dag-scope-head small').textContent.includes('离线'),'offline source has a reason');
+                  Studio.asset('r1').online=true;render();
+                  const edit=Studio.edit('r1');assert(JSON.stringify(edit.recipe)===sessionStorage.getItem('compat.before')&&edit.past.length===+sessionStorage.getItem('compat.history'),'original draft remains');
+                """)
+                check_browser_errors()
+                return
             if not editing_only or args.hdr_only:
                 browser(*options, "open", host.replace('127.0.0.1', 'localhost') + ENTRY)
                 browser("set", "viewport", "1440", "900")

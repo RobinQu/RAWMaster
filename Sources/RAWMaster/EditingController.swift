@@ -13,6 +13,7 @@ import RAWMasterLibrary
     let developmentNumberInputOwner = DevelopmentNumberInputOwner()
     @Published var isPresented = false {
         willSet { if !newValue { finishDevelopmentNumberInput(); cancelDevelopmentGradingInteraction(); invalidateDevelopmentInteraction(reason: .viewTeardown) } }
+        didSet { if oldValue && !isPresented { resetSceneViewing() } }
     }
     @Published var stage: Stage = .development {
         willSet { if newValue != stage {
@@ -57,12 +58,12 @@ import RAWMasterLibrary
         canvasCommand = EditingCanvasCommand(action: action)
     }
     func toggleBeforeAfter() {
-        guard !cropEditing else { return }
+        guard !cropEditing, visibleSceneGraph == nil else { return }
         setComparisonMode(comparing ? .off : .wipeHorizontal)
     }
     func setComparisonMode(_ mode: EditingComparisonMode) {
         guard !shuttingDown, isPresented, work != nil else { return }
-        if mode != .off { guard comparison.reference.resolve(work: work, versions: versions) != nil else { return } }
+        if mode != .off { guard visibleSceneGraph == nil, comparison.reference.resolve(work: work, versions: versions) != nil else { return } }
         guard comparison.mode != mode else { return }
         comparison.mode = mode
         if !mode.supportsInversion { comparison.inverted = false }
@@ -104,6 +105,21 @@ import RAWMasterLibrary
     @Published private(set) var recipe = DevelopmentRecipe() {
         didSet { liveRecipeGeneration &+= 1 }
     }
+    @Published private(set) var sceneGraphState = EditingSceneGraphState()
+    @Published private(set) var sceneFrame: DevelopmentScenePreviewFrameV1?
+    @Published private(set) var scenePreviewError: String?
+    @Published private(set) var scenePreviewBusy = false
+    @Published private(set) var sceneStarting = false
+    @Published private(set) var sceneRequestedHDR = true
+    @Published private(set) var sceneHeadroom: CGFloat = 1
+    private let scenePreview = DevelopmentScenePreviewV1()
+    let sceneScopes = EditingSceneScopesState()
+    private var sceneTask: Task<Void, Never>?
+    private var sceneStart: Task<Void, Never>?
+    private var sceneRequestID = UUID()
+    private var sceneSampling: DevelopmentScenePreviewV1.Sampling = .fit(maximumEdge: 1440)
+    private var sceneHistory: [(before: DevelopmentRecipe, after: DevelopmentRecipe)] = []
+    private var sceneRedo: [(before: DevelopmentRecipe, after: DevelopmentRecipe)] = []
     @Published private(set) var savedRecipe = DevelopmentRecipe()
     @Published private(set) var draftParentID: String?
     @Published private(set) var preview: NSImage?
@@ -476,7 +492,7 @@ import RAWMasterLibrary
     var runningJobCount: Int { tasks.count }
     var localWorkIsRunning: Bool { jobs.contains { $0.request.profile.kind == .localComfy && tasks[$0.id] != nil } }
     var canGenerate: Bool {
-        guard !shuttingDown, sourceReady, work != nil, work?.strictDocumentary != true, !isDirty, !saving,
+        guard !shuttingDown, visibleSceneGraph == nil, sourceReady, work != nil, work?.strictDocumentary != true, !isDirty, !saving,
               generationPreparationTask == nil, !quickPromptPreparing, let profile = selectedProfile else { return false }
         if profile.kind == .localComfy && (modelDownloading || runtimeBusy) { return false }
         if profile.kind != .localComfy && jobs.contains(where: { $0.request.workID == work?.id && $0.request.profile.id == profile.id && $0.state == .outcomeUnknown }) { return false }
@@ -492,6 +508,13 @@ import RAWMasterLibrary
         if draftExportIntent?.work.source.assetID != newAsset?.id { draftExportIntent = nil; showDraftExportChoice = false }
         if asset?.id != newAsset?.id { showExport = false; exportVersionID = nil }
         if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
+        let priorSceneSource = work?.source
+        resetSceneViewing()
+        if let priorSceneSource {
+            let service = scenePreview
+            Task { await service.releaseSource(matching: priorSceneSource) }
+        }
+        sceneHistory.removeAll(); sceneRedo.removeAll()
         focusGeneration = UUID(); let generation = focusGeneration
         focusTask?.cancel()
         sourceRevalidationTask?.cancel(); previews.reset(); previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
@@ -557,6 +580,7 @@ import RAWMasterLibrary
                     draftParentID = persistedParent ?? rawBase?.id ?? loaded.0.originalVersionID
                 }
                 developmentBranchID = rememberedDevelopmentBranches[loaded.0.id] ?? .init()
+                sceneGraphState.reconcile(recipe.sceneGraph)
                 loading = false; requestPreview()
                 if pendingExportAssetID == newAsset.id { pendingExportAssetID = nil; openExport() }
             } catch { guard generation == focusGeneration else { return }; loading = false; message = "无法准备制作：\(error.localizedDescription)" }
@@ -584,6 +608,7 @@ import RAWMasterLibrary
             developmentHistogramTask?.cancel()
         }
         let before = recipe
+        if before.sceneGraph == nil, candidate.sceneGraph == nil { sceneHistory.removeAll(); sceneRedo.removeAll() }
         developmentDehazeInput.recipeWillChange(preservingTracking: writingDevelopmentDehaze)
         developmentLocalInput.recipeWillChange()
         developmentMaskInput.cancel()
@@ -836,6 +861,10 @@ import RAWMasterLibrary
 
     func selectVersion(_ version: EditingVersion, continueEditing: Bool = false) {
         guard !shuttingDown, version.workID == work?.id else { return }
+        if version.id != selectedVersionID || continueEditing {
+            resetSceneViewing()
+            sceneHistory.removeAll(); sceneRedo.removeAll()
+        }
         if continueEditing || stage == .development {
             let originalFocus = focusGeneration, originalBranch = developmentBranchID
             finishDevelopmentNumberInput()
@@ -855,6 +884,7 @@ import RAWMasterLibrary
             if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
             scheduleLiveStatePersistence()
         }
+        sceneGraphState.reconcile(recipe.sceneGraph)
         requestPreview()
         prepareDevelopmentSessionIfNeeded()
     }
@@ -932,6 +962,12 @@ import RAWMasterLibrary
         }
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
+        if let graph = visibleSceneGraph {
+            previews.primary.clearIfNeeded(); previews.comparison.clearIfNeeded()
+            requestScenePreview(graph)
+            return
+        }
+        if sceneFrame != nil || sceneTask != nil { resetSceneViewing() }
         let isolated=isolatedDevelopmentSlot,clipping=developmentClippingPreview
         if filterHoverToken != nil { cancelDevelopmentFilterHover() }
         if let slot=isolated,let context=developmentContext { updateDevelopmentHueIsolation(slot,context:context) }
@@ -1080,6 +1116,10 @@ import RAWMasterLibrary
               developmentBranchID == originalBranch else { return }
         if let expectedContext, developmentContext != expectedContext { return }
         guard !shuttingDown, sourceReady, let current = work, !saving else { return }
+        if sceneGraphState.connection != nil { message = "先应用或取消 Graph 连接草稿。"; return }
+        if recipe.sceneGraph != nil, sceneFrame == nil || scenePreviewError != nil || scenePreviewBusy {
+            message = "请先完成有效的 HDR 预览再保存。"; return
+        }
         developmentLocalInput.cancelCollection()
         guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else { message = "请等待这笔调整完成后再保存。"; return }
         saveDevelopment(work: current, recipe: recipe, parent: draftParentID ?? current.adoptedVersionID,
@@ -1149,9 +1189,21 @@ import RAWMasterLibrary
         return outputRoot.appendingPathComponent(UUID().uuidString).appendingPathExtension(extensionName)
     }
     private func renderAndArchive(work: PhotoWork, parent: String, recipe: DevelopmentRecipe, adoptions: [DevelopmentPresetAdoption]? = nil) async throws -> EditingVersion {
+        let database = store
+        if recipe.sceneGraph != nil {
+            // The scene recipe is the master. A rendered SDR proxy is never its authoritative archive.
+            let candidate = EditingVersion(workID: work.id, parentVersionID: parent, kind: .development,
+                source: work.source, recipe: recipe, configuration: ["engine": recipe.engineVersion])
+            let worker = Task.detached(priority: .utility) {
+                try Task.checkCancellation()
+                let source = try database.captureEditingSourceSnapshot(assetID: candidate.source.assetID, cancel: { try Task.checkCancellation() })
+                guard source.hasSameIdentity(as: candidate.source) else { throw EditingError.staleSource }
+                return try database.appendEditingVersion(candidate)
+            }
+            return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
+        }
         let url = try temporaryURL("png")
         defer { try? FileManager.default.removeItem(at: url) }
-        let database = store
         let protected = try await Task.detached { try database.editingProtectedRoots() }.value
         try Task.checkCancellation()
         guard !shuttingDown else { throw CancellationError() }
@@ -1267,6 +1319,9 @@ import RAWMasterLibrary
     /// Keep the exact current recipe or selected saved version for both preview and delivery.
     /// Focus may still be loading. Both consumers await the same selection without opening a sheet.
     func beginWorkbenchExport(asset: AssetRecord, admissionFingerprint: String) -> Bool {
+        if asset.id == self.asset?.id, sceneGraphState.connection != nil {
+            message = "先应用或取消 Graph 连接草稿。"; return false
+        }
         closeWorkbenchExport()
         pendingExportAssetID = nil
         showExport = false
@@ -1313,11 +1368,15 @@ import RAWMasterLibrary
 
     private func selectVersionForExport() -> Bool {
         guard !shuttingDown, let originalWork = work?.id else { return false }
+        if sceneGraphState.connection != nil { message = "先应用或取消 Graph 连接草稿。"; return false }
         let originalFocus = focusGeneration, originalBranch = developmentBranchID
         finishDevelopmentNumberInput()
         guard focusGeneration == originalFocus, work?.id == originalWork,
               developmentBranchID == originalBranch, !shuttingDown, let work else { return false }
         if isDisplayingDevelopmentDraft {
+            if recipe.sceneGraph != nil, displayedSavedVersion == nil {
+                message = "请先保存当前 HDR 草稿为候选，再导出这个版本。"; return false
+            }
             guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else {
                 message = "请等待这笔调整完成后再导出。"; return false
             }
@@ -1479,7 +1538,7 @@ import RAWMasterLibrary
         return version
     }
     var canOpenQuickPrompt: Bool {
-        !shuttingDown && !saving && work != nil && sourceReady && selectedVersion != nil && !cropEditing &&
+        !shuttingDown && visibleSceneGraph == nil && !saving && work != nil && sourceReady && selectedVersion != nil && !cropEditing &&
         developmentLocalInput.tool == nil && !developmentMaskInput.isActive && developmentPicker == nil &&
         !developmentShowingOriginal && developmentSessionStorage?.activeGesture == nil
     }
@@ -1518,6 +1577,7 @@ import RAWMasterLibrary
     }
 
     func openQuickPrompt() {
+        guard visibleSceneGraph == nil else { message = "此 HDR 阶段尚不支持快速 Prompt。"; return }
         guard canOpenQuickPrompt, !quickPromptPresented else { return }
         finishDevelopmentNumberInput()
         cancelDevelopmentFilterHover(); cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
@@ -2175,6 +2235,11 @@ import RAWMasterLibrary
         cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
         let startup = startupTask; startup?.cancel()
         focusTask?.cancel(); sourceRevalidationTask?.cancel()
+        let scene = sceneTask, startingScene = sceneStart
+        await sceneScopes.stopAndJoin()
+        resetSceneViewing()
+        await scene?.value; await startingScene?.value
+        await scenePreview.releaseSource()
         let preparingInput = generationPreparationTask; preparingInput?.cancel()
         previewControls = []; previewInteracting = false
         let actions = Array(operations.values), exportEntries = Array(exportOperations.values)
@@ -2493,7 +2558,7 @@ import RAWMasterLibrary
         developmentSourceFacts = nil
     }
     func prepareDevelopmentSessionIfNeeded() {
-        guard developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, let current = work,
+        guard recipe.sceneGraph == nil, developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, let current = work,
               developmentSessionStorage?.context == nil, developmentMetadataRequestID == nil else { return }
         guard previews.primary.canInspectDevelopmentSource else { return }
         if let facts = developmentSourceFacts, facts.sourceGeneration == previews.primary.currentSourceGeneration,
@@ -4053,6 +4118,7 @@ import RAWMasterLibrary
         if responder is NSTextView || responder is NSTextField { return false }
         let flags = event.modifierFlags
         let key = event.charactersIgnoringModifiers?.lowercased()
+        if event.keyCode == 53, visibleSceneGraph != nil, sceneScopes.escape() { return true }
         if quickPromptPresented {
             if event.keyCode == 53 {
                 if quickPromptSelecting { quickPromptSelecting = false }
@@ -4062,6 +4128,7 @@ import RAWMasterLibrary
             return false
         }
         if flags.contains(.command), key == "z" {
+            if stage == .development, stepSceneHistory(redo: flags.contains(.shift)) { return true }
             if !flags.contains(.shift), quickPromptUndoVersion != nil, stage != .development { undoQuickPrompt() }
             else if let context = developmentContext { undoDevelopment(context: context, redo: flags.contains(.shift)) }
             return true
@@ -4212,5 +4279,398 @@ extension EditingVersion {
 extension ProcessingJobState {
     var editingTitle: String {
         switch self { case .queued: return "排队"; case .preparing: return "准备"; case .submitting: return "提交"; case .running: return "生成"; case .archiving: return "保存结果"; case .cancelRequested: return "取消中"; case .reconciling: return "核对结果"; case .outcomeUnknown: return "结果待核对"; case .succeeded: return "候选已保存"; case .failed: return "失败"; case .cancelled: return "已取消" }
+    }
+}
+
+extension EditingController {
+    static var sceneReviewEnabled: Bool { ProcessInfo.processInfo.environment["RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM"] == "1" }
+
+    /// Includes original and already-committed version views, but never uses stale focus/draft on either.
+    var visibleSceneGraph: DevelopmentSceneGraphV1? {
+        if stage == .development && sourceReady { return recipe.sceneGraph }
+        return selectedVersion?.recipe.sceneGraph
+    }
+    var sceneTarget: DevelopmentSceneOutputStateV1.Target {
+        sceneRequestedHDR && sceneHeadroom > 1 ? .hdr2020 : .sdr709
+    }
+    var sceneModeBlockReason: String? {
+        if !sourceReady || sourceNeedsRevalidation { return "原片离线或待验证；接回后可切换模式。" }
+        if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
+        if cropEditing || developmentMaskInput.isActive || developmentLocalInput.tool != nil || quickPromptPresented ||
+            developmentPicker != nil || developmentAnalysisBusy || saving || previewInteracting || comparing {
+            return "请先完成或取消当前工具，再切换色彩模式。"
+        }
+        return nil
+    }
+    struct SceneTicket: Hashable {
+        let workID: String
+        fileprivate let focus: UUID
+        fileprivate let branch: EditingDraftBranchID
+        fileprivate let revision: UInt64
+    }
+    var sceneTicket: SceneTicket? {
+        guard isPresented, !shuttingDown, !loading, stage == .development, let work else { return nil }
+        return .init(workID: work.id, focus: focusGeneration, branch: developmentBranchID, revision: liveRecipeGeneration)
+    }
+
+    func enterSceneDraft(ticket: SceneTicket) {
+        guard ticket == sceneTicket, !sceneStarting, recipe.sceneGraph == nil, let work else { return }
+        if let reason = sceneModeBlockReason { message = reason; return }
+        let source = work.source
+        guard source.sourceLocation.pathExtension.lowercased() == "arw" else {
+            message = "此原片未通过 HDR 场景校准准入。"; return
+        }
+        let grade = DevelopmentSceneGraphV1.Node(name: "基础调色", operation: .corrector(image: .input, mask: nil,
+            exposureEV: 0, curve: [], strength: 1, enabled: true))
+        do {
+            let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
+            let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [grade], output: .node(grade.id)), output: .init(sdrTrim: trim))
+            sceneStarting = true; message = nil
+            let service = scenePreview
+            sceneStart = Task { [weak self] in
+                var result: Result<DevelopmentScenePreviewFrameV1, Error>
+                do { result = .success(try await service.render(source: source, graph: graph, view: .init(),
+                    target: .sdr709, sampling: .fit(maximumEdge: 1440))) }
+                catch { result = .failure(error) }
+                guard let self, !Task.isCancelled else { return }
+                self.sceneStarting = false; self.sceneStart = nil
+                guard self.sceneTicket == ticket else { return }
+                switch result {
+                case .success:
+                    self.applySceneCommit(.init(sceneGraph: graph))
+                case .failure(let error):
+                    self.message = error.localizedDescription
+                }
+            }
+        } catch { message = error.localizedDescription }
+    }
+
+    func cancelSceneStart() { sceneStart?.cancel(); sceneStart = nil; sceneStarting = false }
+
+    func leaveSceneDraft(ticket: SceneTicket, monochrome: Bool) {
+        guard ticket == sceneTicket, recipe.sceneGraph != nil, let work else { return }
+        if let reason = sceneModeBlockReason { message = reason; return }
+        var parent = draftParentID
+        var safeLegacy = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
+        while let id = parent, let node = versions.first(where: { $0.id == id }) {
+            if node.recipe.sceneGraph == nil, node.kind == .original || node.kind == .development { safeLegacy = node.recipe; break }
+            parent = node.parentVersionID
+        }
+        let legacy = sceneHistory.last(where: { $0.before.sceneGraph == nil && $0.after.sceneGraph != nil })?.before ?? safeLegacy
+        changeLegacyColorMode(ticket: ticket, monochrome: monochrome, base: legacy)
+    }
+
+    func setLegacyColorMode(ticket: SceneTicket, monochrome: Bool) {
+        guard recipe.sceneGraph == nil else { return }
+        changeLegacyColorMode(ticket: ticket, monochrome: monochrome, base: recipe)
+    }
+    private func changeLegacyColorMode(ticket: SceneTicket, monochrome: Bool, base: DevelopmentRecipe) {
+        guard ticket == sceneTicket else { return }
+        if let reason = sceneModeBlockReason { message = reason; return }
+        do {
+            var result = try base.promotingToV3()
+            if result.adjustmentsV3?.blackAndWhite.enabled != monochrome { result.adjustmentsV3?.blackAndWhite.enabled = monochrome }
+            try result.validate()
+            if recipe.sceneGraph != nil { applySceneCommit(result) }
+            else { setRecipe(control: "色彩模式") { $0 = result } }
+        } catch { message = error.localizedDescription }
+    }
+
+    func setSceneExposure(_ value: Double, node: UUID, ticket: SceneTicket) {
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let graph = recipe.sceneGraph, let index = graph.graph.nodes.firstIndex(where: { $0.id == node }),
+              case let .corrector(image, mask, _, curve, strength, enabled) = graph.graph.nodes[index].operation else { return }
+        do {
+            var nodes = graph.graph.nodes
+            nodes[index] = .init(id: node, name: nodes[index].name, operation: .corrector(image: image, mask: mask,
+                exposureEV: Float(value), curve: curve, strength: strength, enabled: enabled))
+            applySceneCommit(.init(sceneGraph: try graph.replacingGraph(.init(nodes: nodes, output: graph.graph.output))))
+        } catch { message = "曝光数值无效；没有提交调整。" }
+    }
+
+    func setSceneTrimExposure(_ value: Double, ticket: SceneTicket) {
+        guard ticket == sceneTicket, sceneGraphTicket != nil, let graph = recipe.sceneGraph else { return }
+        do {
+            let current = graph.output.sdrTrim
+            let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: value,
+                mapping: current.mapping, highlightCompression: current.highlightCompression, film: current.film)
+            let next = try DevelopmentSceneGraphV1(graph: graph.graph, output: .init(route: graph.output.route, sdrTrim: trim))
+            let oldTarget = sceneTarget
+            sceneRequestedHDR = false
+            if next != graph { applySceneCommit(.init(sceneGraph: next)) }
+            else if oldTarget != sceneTarget { requestPreview() }
+        } catch { message = "派生曝光数值无效；没有提交调整。" }
+    }
+
+    private func applySceneCommit(_ next: DevelopmentRecipe) {
+        guard next != recipe else { return }
+        sceneHistory.append((recipe, next)); sceneRedo.removeAll()
+        if sceneHistory.count > 64 { sceneHistory.removeFirst() }
+        installSceneRecipe(next)
+    }
+    private func installSceneRecipe(_ next: DevelopmentRecipe) {
+        // Do not run a scene recipe through the legacy control projection.
+        if (recipe.sceneGraph == nil) != (next.sceneGraph == nil) {
+            suspendDevelopmentInteraction(disposition: .cancel)
+            cancelDevelopmentBackgroundWork()
+            developmentBranchID = .init()
+        }
+        let viewing = sceneGraphState.viewing
+        var state = sceneGraphState
+        state.reconcileTopology(from: recipe.sceneGraph, to: next.sceneGraph)
+        if message != nil { message = nil }
+        recipe = next
+        if sceneGraphState.generation != state.generation { sceneGraphState = state }
+        if viewing != sceneGraphState.viewing { sceneFrame = nil }
+        if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
+        scheduleLiveStatePersistence()
+        requestPreview()
+    }
+    var sceneCanUndo: Bool { sceneHistory.last?.after == recipe }
+    var sceneCanRedo: Bool { sceneRedo.last?.before == recipe }
+    @discardableResult func stepSceneHistory(redo: Bool) -> Bool {
+        guard sceneTicket != nil, !saving, sceneGraphState.connection == nil else { return false }
+        if redo, sceneCanRedo, let step = sceneRedo.popLast() {
+            sceneHistory.append(step); installSceneRecipe(step.after); return true
+        }
+        if !redo, sceneCanUndo, let step = sceneHistory.popLast() {
+            sceneRedo.append(step); installSceneRecipe(step.before); return true
+        }
+        return false
+    }
+
+    func setSceneViewingHDR(_ enabled: Bool) {
+        guard visibleSceneGraph != nil, sceneRequestedHDR != enabled else { return }
+        let old = sceneTarget; sceneRequestedHDR = enabled
+        if old != sceneTarget { requestPreview() }
+    }
+    func setSceneHeadroom(_ value: CGFloat) {
+        guard visibleSceneGraph != nil, value.isFinite, value >= 1, abs(value - sceneHeadroom) >= 0.001 else { return }
+        let old = sceneTarget; sceneHeadroom = value
+        if old != sceneTarget { requestPreview() }
+    }
+    func setSceneSampling(_ value: DevelopmentScenePreviewV1.Sampling) {
+        guard visibleSceneGraph != nil, sceneSampling != value else { return }
+        sceneSampling = value; requestPreview()
+    }
+    func setSceneScopesOpen(_ open: Bool) {
+        sceneScopes.setOpen(open)
+        updateSceneScopes()
+    }
+    func retrySceneScopes() {
+        sceneScopes.invalidate()
+        updateSceneScopes()
+    }
+    private func updateSceneScopes() {
+        guard isPresented, sourceReady, !sourceNeedsRevalidation, !shuttingDown, let graph = visibleSceneGraph,
+              let work else { sceneScopes.invalidate(); return }
+        sceneScopes.update(source: work.source, graph: graph, view: stage == .development ? sceneGraphState.viewing : .init(), using: scenePreview)
+    }
+    func scenePresentationFailed() {
+        guard visibleSceneGraph != nil else { return }
+        scenePreviewError = "未能提交浮点预览画面。"
+        sceneFrame = nil
+    }
+    private func resetSceneViewing() {
+        cancelSceneStart()
+        sceneTask?.cancel(); sceneTask = nil; sceneRequestID = UUID()
+        sceneFrame = nil; scenePreviewError = nil; scenePreviewBusy = false
+        sceneGraphState = .init()
+        sceneScopes.leavePhoto()
+        sceneRequestedHDR = true; sceneSampling = .fit(maximumEdge: 1440); sceneHeadroom = 1
+    }
+    private func requestScenePreview(_ graph: DevelopmentSceneGraphV1) {
+        guard isPresented, !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
+        guard sourceReady, !sourceNeedsRevalidation else {
+            resetSceneViewing(); scenePreviewError = "原片已离线或待验证，无法重算此 HDR 版本。"; return
+        }
+        updateSceneScopes()
+        sceneTask?.cancel()
+        let id = UUID(), focus = focusGeneration, version = selectedVersionID
+        sceneRequestID = id; scenePreviewError = nil; scenePreviewBusy = true
+        let source = work.source, sampling = sceneSampling, target = sceneTarget, service = scenePreview
+        let viewing = stage == .development ? sceneGraphState.viewing : .init()
+        sceneTask = Task { [weak self] in
+            do {
+                let frame = try await service.render(source: source, graph: graph, view: viewing, target: target, sampling: sampling)
+                guard let self, !Task.isCancelled, self.sceneRequestID == id, self.focusGeneration == focus,
+                      self.selectedVersionID == version, self.sceneTarget == target, self.visibleSceneGraph == graph else { return }
+                self.sceneFrame = frame; self.scenePreviewBusy = false; self.sceneTask = nil
+            } catch {
+                guard let self, !Task.isCancelled, self.sceneRequestID == id, self.focusGeneration == focus else { return }
+                self.sceneScopes.invalidate()
+                self.sceneFrame = nil; self.scenePreviewError = error.localizedDescription; self.scenePreviewBusy = false; self.sceneTask = nil
+            }
+        }
+    }
+}
+
+extension EditingController {
+    typealias SceneGraph = DevelopmentSceneGraphV1
+    struct SceneGraphTicket: Hashable {
+        let draft: SceneTicket
+        let generation: UUID
+    }
+    var sceneGraphTicket: SceneGraphTicket? {
+        guard let sceneTicket, sourceReady, !sourceNeedsRevalidation, !saving,
+              recipe.sceneGraph != nil, sceneGraphState.connection == nil else { return nil }
+        return .init(draft: sceneTicket, generation: sceneGraphState.generation)
+    }
+    var sceneGraphScope: SceneGraph.Scope? { recipe.sceneGraph?.scope(at: sceneGraphState.path) }
+    var sceneGraphNode: SceneGraph.Node? {
+        guard let id = sceneGraphState.single else { return nil }
+        return sceneGraphScope?.nodes.first { $0.id == id }
+    }
+    var sceneGraphMonitorText: String? {
+        guard stage == .development else { return nil }
+        switch sceneGraphState.viewing.target {
+        case .final: return nil
+        case .node(let id):
+            let name = recipe.sceneGraph?.scope(at: sceneGraphState.viewing.groupPath)?.nodes.first { $0.id == id }?.name ?? "节点"
+            return "监看：\(name) · 不用于导出"
+        case .bypass: return "旁路调色 · 不用于导出"
+        }
+    }
+
+    func showSceneGraph(_ visible: Bool) {
+        if visible {
+            guard sceneGraphTicket != nil else { return }
+            sceneGraphState.reconcile(recipe.sceneGraph)
+            sceneGraphState.open = true
+        } else {
+            sceneGraphState.open = false
+            sceneGraphState.connection = nil
+            sceneGraphState.generation = UUID()
+            stopSceneGraphMonitor()
+        }
+    }
+    func selectSceneNodes(_ ids: Set<UUID>, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, let scope = sceneGraphScope else { return }
+        let valid = Set(scope.nodes.filter { !$0.operation.isCoverage }.map(\.id))
+        guard ids.isSubset(of: valid) else { return }
+        sceneGraphState.selection = ids; sceneGraphState.edge = nil; sceneGraphState.generation = UUID()
+    }
+    func selectSceneEdge(_ edge: SceneGraph.Edge, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, sceneGraphScope?.imageEdges.contains(edge) == true else { return }
+        sceneGraphState.edge = edge; sceneGraphState.selection.removeAll(); sceneGraphState.generation = UUID()
+    }
+    func moveSceneGraphPath(_ path: [UUID], ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, let scope = recipe.sceneGraph?.scope(at: path) else { return }
+        sceneGraphState.path = path; sceneGraphState.resetSelection(in: scope)
+        stopSceneGraphMonitor()
+    }
+    func monitorSceneGraph(_ target: SceneGraph.View.Target, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket else { return }
+        switch target {
+        case .final: stopSceneGraphMonitor(); return
+        case .node(let id): guard sceneGraphNode?.id == id else { return }
+        case .bypass: break
+        }
+        let next = SceneGraph.View(groupPath: sceneGraphState.path, target: target)
+        guard next != sceneGraphState.viewing else { return }
+        sceneFrame = nil // Never label a previously presented final frame as a node's output.
+        sceneGraphState.viewing = next
+        requestPreview()
+    }
+    func stopSceneGraphMonitor() {
+        guard sceneGraphState.viewing != .init() else { return }
+        sceneFrame = nil; sceneGraphState.viewing = .init(); requestPreview()
+    }
+    func dismissSceneGraphLayer() -> Bool {
+        if sceneGraphState.connection != nil { cancelSceneConnection(); return true }
+        if sceneGraphMonitorText != nil { stopSceneGraphMonitor(); return true }
+        return false
+    }
+
+    func changeSceneGraphNode(_ id: UUID, ticket: SceneGraphTicket, _ map: (SceneGraph.Node) throws -> SceneGraph.Node) {
+        guard ticket == sceneGraphTicket, sceneGraphState.single == id else { return }
+        changeSceneGraph(ticket: ticket) { graph, path in try graph.updating(id, at: path, map) }
+    }
+    func addSceneGraphNode(_ kind: SceneGraph.Insert, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, let scope = sceneGraphScope else { return }
+        let edge = sceneGraphState.edge ?? .init(.final, upstream: scope.output), id = UUID()
+        if changeSceneGraph(ticket: ticket, { try $0.inserting(kind, on: edge, at: $1, name: "调色节点", id: id) }),
+           let ticket = sceneGraphTicket { selectSceneNodes([id], ticket: ticket) }
+    }
+    func groupSceneSelection(ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, let scope = sceneGraphScope else { return }
+        let nodes = scope.dependencies(of: sceneGraphState.selection), id = UUID()
+        if changeSceneGraph(ticket: ticket, { try $0.grouping(nodes, at: $1, name: "调色组", id: id) }),
+           let ticket = sceneGraphTicket { selectSceneNodes([id], ticket: ticket) }
+    }
+    func ungroupSceneSelection(ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, let id = sceneGraphState.single else { return }
+        changeSceneGraph(ticket: ticket) { try $0.ungrouping(id, at: $1) }
+    }
+    func moveSceneLayer(_ node: UUID, from start: Int, to end: Int, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, node == sceneGraphState.single else { return }
+        changeSceneGraph(ticket: ticket) { try $0.movingLayer(of: node, from: start, to: end, at: $1) }
+    }
+    func addSceneLayer(_ node: UUID, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, node == sceneGraphState.single else { return }
+        changeSceneGraph(ticket: ticket) { try $0.addingLayer(to: node, at: $1) }
+    }
+    @discardableResult private func changeSceneGraph(ticket: SceneGraphTicket, _ change: (SceneGraph, [UUID]) throws -> SceneGraph) -> Bool {
+        guard ticket == sceneGraphTicket, let current = recipe.sceneGraph else { return false }
+        do {
+            let next = try change(current, sceneGraphState.path)
+            guard current != next else { return false }
+            applySceneCommit(.init(sceneGraph: next)); return true
+        } catch { message = sceneGraphReason(error); return false }
+    }
+    func loadSceneWorkflowTemplates() async throws -> [SceneWorkflowTemplate] {
+        let store = store
+        return try await Task.detached { try store.sceneWorkflowTemplates() }.value
+    }
+    func saveSceneWorkflowTemplate(_ name: String, kind: SceneWorkflowTemplate.Kind, ticket: SceneGraphTicket) async throws {
+        guard ticket == sceneGraphTicket, let graph = recipe.sceneGraph else { throw EditingError.commandConflict }
+        let scope: SceneGraph.Scope
+        switch kind {
+        case .whole: scope = graph.graph
+        case .group:
+            guard case let .group(_, child, _, _)? = sceneGraphNode?.operation else { throw EditingError.invalidRecipe }
+            scope = child
+        }
+        let template = try SceneWorkflowTemplate(name: name, kind: kind, scope: scope), store = store
+        try await Task.detached { try store.storeSceneWorkflowTemplate(template) }.value
+    }
+    @discardableResult func applySceneWorkflowTemplate(_ item: SceneWorkflowTemplate, ticket: SceneGraphTicket) -> Bool {
+        changeSceneGraph(ticket: ticket) { graph, path in
+            try item.applying(to: graph, at: path, edge: sceneGraphState.edge)
+        }
+    }
+
+    func beginSceneConnection(_ port: SceneGraph.Edge, ticket: SceneGraphTicket) {
+        guard ticket == sceneGraphTicket, sceneGraphScope?.imageEdges.contains(port) == true else { return }
+        sceneGraphState.connection = .init(port: port, original: ticket.draft, path: sceneGraphState.path,
+            replacement: port.upstream, candidate: nil, reason: nil)
+        sceneGraphState.generation = UUID()
+    }
+    func proposeSceneConnection(_ source: SceneGraph.Endpoint) {
+        guard var draft = sceneGraphState.connection, draft.original == sceneTicket, let graph = recipe.sceneGraph else { return }
+        draft.replacement = source
+        do { draft.candidate = try graph.rewiring(draft.port, to: source, at: draft.path); draft.reason = nil }
+        catch { draft.candidate = nil; draft.reason = sceneGraphReason(error) }
+        sceneGraphState.connection = draft
+    }
+    func applySceneConnection() {
+        guard let draft = sceneGraphState.connection, let next = draft.candidate, draft.original == sceneTicket,
+              sourceReady, !sourceNeedsRevalidation, !saving else { return }
+        cancelSceneConnection()
+        applySceneCommit(.init(sceneGraph: next))
+    }
+    func cancelSceneConnection() {
+        sceneGraphState.connection = nil; sceneGraphState.generation = UUID()
+    }
+    private func sceneGraphReason(_ error: Error) -> String {
+        guard let issue = error as? SceneGraph.Failure else { return error.localizedDescription }
+        switch issue {
+        case .cycle: return "这条连线会形成回路。"
+        case .disconnectedNodes: return "这条连线会使部分节点脱离最终输出。"
+        case .ambiguousBoundary: return "请选择完整的单入单出片段；不可跨组共享覆盖。"
+        case .unsupportedUngroup: return "仅启用且强度为 100% 的组可无损解组。"
+        case .budget: return "超出当前工作流的节点或嵌套上限。"
+        case .invalidParameter: return "参数无效或超过上限。"
+        default: return "输入端口、节点或修订已变化，请重新选择。"
+        }
     }
 }

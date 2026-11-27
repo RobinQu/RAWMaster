@@ -42,12 +42,28 @@ struct WorkbenchPhotoDelivery {
     var total: Int { resumedCount ?? assets.count }
 }
 
+struct WorkbenchPQReview: Identifiable, Sendable {
+    struct Line: Identifiable, Sendable {
+        let id: String
+        let name: String
+        let version: String?
+        let sourceDigest: String?
+        let recipeDigest: String?
+        let reason: String?
+    }
+    let id = UUID()
+    let lines: [Line]
+    var canSubmit: Bool { !lines.isEmpty && lines.allSatisfy { $0.reason == nil && $0.version != nil } }
+    var identifiers: Set<String> { Set(lines.map(\.id)) }
+}
+
 struct WorkbenchPhotoScope {
     let batchID: UUID
     let candidates: [AssetRecord]
     let catalog: CatalogFrozenSelection?
     let fingerprints: [String: String]
     let editorInput: (assetID: String, input: Task<(PhotoWork, EditingVersion), Error>)?
+    let workflowVersions: [String: String]
 }
 
 struct WorkbenchDeliveryDetails {
@@ -89,11 +105,12 @@ extension AppModel {
     }
 
     func submitWorkbenchPhotoDelivery(directory: URL, naming: String, configuration: PhotoBatchExportConfiguration,
-                                      ids: Set<String>, collision: String) {
+                                      ids: Set<String>, collision: String, pqReview: WorkbenchPQReview? = nil) {
         guard workbenchPhotoDeliveryTask == nil else { return }
         let candidates = workbenchExportCandidates
         let fingerprints = editingAdmissions.mapValues(\.fingerprint)
-        if isNativeEditing, let asset = focusedAsset, ids.contains(asset.id), let editing,
+        let workflowVersions = workbenchExportContext.workflowVersions
+        if workflowVersions.isEmpty, isNativeEditing, let asset = focusedAsset, ids.contains(asset.id), let editing,
            let fingerprint = fingerprints[asset.id], !editing.hasWorkbenchExport(for: asset.id),
            !editing.beginWorkbenchExport(asset: asset, admissionFingerprint: fingerprint) {
             workbenchPhotoDelivery = .init(directory: directory, assets: [], running: false,
@@ -102,7 +119,8 @@ extension AppModel {
         }
         let submitted = WorkbenchPhotoDelivery(directory: directory, assets: candidates.filter { ids.contains($0.id) })
         let scope = WorkbenchPhotoScope(batchID: submitted.id, candidates: candidates, catalog: isPagedGrid ? exportCatalogScope : nil,
-            fingerprints: fingerprints, editorInput: editing?.takeWorkbenchExportInput(for: ids))
+            fingerprints: fingerprints, editorInput: workflowVersions.isEmpty ? editing?.takeWorkbenchExportInput(for: ids) : nil,
+            workflowVersions: workflowVersions)
         workbenchPhotoDelivery = submitted
         workbenchPhotoDeliveryTask = Task {
             defer {
@@ -113,7 +131,7 @@ extension AppModel {
             }
             do {
                 let result = try await exportWorkbenchPhotos(directory: directory, namingTemplate: naming, configuration: configuration,
-                    includedIDs: ids, collision: collision, submittedScope: scope, delivered: { url in
+                    includedIDs: ids, collision: collision, submittedScope: scope, pqReview: pqReview, delivered: { url in
                         guard self.workbenchPhotoDelivery?.id == submitted.id else { return }
                         self.workbenchPhotoDelivery?.files.append(url)
                     }) { done, _, name in
@@ -302,6 +320,9 @@ extension AppModel {
     private func workbenchExportInput(_ asset: AssetRecord) async throws -> (PhotoWork, EditingVersion) {
         guard let store = workbenchExportStore else { throw EditingError.missingWork }
         let fingerprint = editingAdmissions[asset.id]?.fingerprint
+        if let id = workbenchExportContext.workflowVersions[asset.id] {
+            return try await Task.detached { try Self.workbenchBatchCandidate(id, asset: asset, fingerprint: fingerprint, store: store) }.value
+        }
         if let input = try await workbenchEditorInput(asset, fingerprint: fingerprint) { return input }
         return try await Task.detached(priority: .userInitiated) {
             try Self.workbenchStoredInput(asset, fingerprint: fingerprint, store: store)
@@ -331,6 +352,19 @@ extension AppModel {
         return (work, version)
     }
 
+    private nonisolated static func workbenchBatchCandidate(_ id: String, asset: AssetRecord, fingerprint: String?,
+                                                          store: LibraryStore) throws -> (PhotoWork, EditingVersion) {
+        try store.withReadSnapshot {
+            var version = try store.editingVersion(id: id)
+            var work = try store.photoWork(id: version.workID)
+            let frozen = try store.freezeSceneDelivery(versionID: id, format: .jpeg8)
+            guard frozen.source.assetID == asset.id, frozen.source.projectID == asset.projectID,
+                  frozen.source.admissionFingerprint == fingerprint else { throw EditingError.staleSource }
+            version.source = frozen.source; work.source = frozen.source
+            return (work, version)
+        }
+    }
+
     private nonisolated static func workbenchStoredInput(_ asset: AssetRecord, fingerprint: String?,
                                                          store: LibraryStore) throws -> (PhotoWork, EditingVersion)? {
         let existing = try store.loadPhotoWorks(projectID: asset.projectID, assetID: asset.id).last {
@@ -348,6 +382,9 @@ extension AppModel {
         var version: EditingVersion
         if let recipe = work.liveRecipe, let parent = work.liveParentVersionID {
             version = try store.editingVersion(id: parent)
+            if recipe.sceneGraph != nil, version.recipe != recipe {
+                throw LibraryError.invalid("\(asset.filename) 的 HDR 草稿尚未保存为候选。请先保存，再选取该版本。")
+            }
             if version.artifact == nil && (asset.availability != .available || !FileManager.default.isReadableFile(atPath: asset.resolvedURL.path)) {
                 let adopted = try store.editingVersion(id: work.adoptedVersionID)
                 guard adopted.artifact != nil, adopted.recipe == recipe else {
@@ -385,9 +422,58 @@ extension AppModel {
         return try await RenderExportService().preview(work: work, version: version, archive: archive, maxPixel: maxPixel)
     }
 
+    func reviewWorkbenchPQ(_ assets: [AssetRecord]) async throws -> WorkbenchPQReview {
+        try PhotoExportKernel.validatePhotoCount(assets.count)
+        guard let store = workbenchExportStore else { throw EditingError.missingWork }
+        var lines = [WorkbenchPQReview.Line]()
+        for asset in assets {
+            try Task.checkCancellation()
+            var version: String?, source: String?, recipe: String?, reason: String?
+            if asset.availability != .available { reason = asset.availability == .missing ? "原片离线" : "原片已变更" }
+            else if asset.resolvedURL.pathExtension.lowercased() != "arw" { reason = "所选版本没有 HDR 母版" }
+            else {
+                do {
+                    let (work, selected) = try await workbenchExportInput(asset)
+                    guard selected.recipe.sceneGraph != nil else { throw WorkbenchDeliveryIssue.hdrMasterRequired }
+                    let stored = try store.freezeSceneDelivery(versionID: selected.id, format: .avif10)
+                    let chosen = try DevelopmentSceneDeliveryV1(work: work, version: selected, format: .avif10)
+                    guard stored.program == chosen.program, stored.source.hasSameIdentity(as: chosen.source) else { throw EditingError.staleSource }
+                    version = selected.id; source = stored.source.contentSHA256; recipe = try stored.program.fingerprint()
+                } catch is CancellationError { throw CancellationError() }
+                catch WorkbenchDeliveryIssue.hdrMasterRequired { reason = "所选版本没有 HDR 母版" }
+                catch { reason = "请核对原片与已保存的 HDR 版本：\(error.localizedDescription)" }
+            }
+            lines.append(.init(id: asset.id, name: asset.filename, version: version, sourceDigest: source, recipeDigest: recipe, reason: reason))
+        }
+        return WorkbenchPQReview(lines: lines)
+    }
+
+    /// Called immediately before durable registration. A UI review is a receipt for the shown
+    /// version/digest, not authorization to substitute whatever the selection returns later.
+    private nonisolated static func validatePQBatch(_ frozen: [(PhotoWork, EditingVersion)], against review: WorkbenchPQReview?,
+                                                     store: LibraryStore) throws {
+        let accepted = review.map { Dictionary(uniqueKeysWithValues: $0.lines.map { ($0.id, $0) }) }
+        if let review, !review.canSubmit || review.identifiers != Set(frozen.map { $0.1.source.assetID }) { throw WorkbenchDeliveryIssue.pqSelectionChanged }
+        try store.withReadSnapshot {
+            for (work, version) in frozen {
+                try Task.checkCancellation()
+                guard version.recipe.sceneGraph != nil else { throw WorkbenchDeliveryIssue.hdrMasterRequired }
+                let stored = try store.freezeSceneDelivery(versionID: version.id, format: .avif10)
+                let chosen = try DevelopmentSceneDeliveryV1(work: work, version: version, format: .avif10)
+                guard stored.program == chosen.program, stored.source.hasSameIdentity(as: chosen.source) else { throw WorkbenchDeliveryIssue.pqSelectionChanged }
+                if let accepted {
+                    let shown = accepted[version.source.assetID]
+                    guard shown?.version == version.id, shown?.sourceDigest == stored.source.contentSHA256,
+                          shown?.recipeDigest == (try stored.program.fingerprint()) else { throw WorkbenchDeliveryIssue.pqSelectionChanged }
+                }
+            }
+        }
+    }
+
     func exportWorkbenchPhotos(directory: URL, namingTemplate: String, configuration: PhotoBatchExportConfiguration,
                               includedIDs: Set<String>? = nil, collision: String = "rename",
-                              submittedScope: WorkbenchPhotoScope? = nil, delivered: (@MainActor @Sendable (URL) -> Void)? = nil,
+                              submittedScope: WorkbenchPhotoScope? = nil, pqReview: WorkbenchPQReview? = nil,
+                              delivered: (@MainActor @Sendable (URL) -> Void)? = nil,
                               progress: @escaping @Sendable (Int, Int, String) -> Void) async throws -> [URL] {
         guard let store = workbenchExportStore else { throw EditingError.missingWork }
         let candidates = submittedScope?.candidates ?? workbenchExportCandidates
@@ -413,19 +499,24 @@ extension AppModel {
         let batch = (submittedScope?.batchID ?? UUID()).uuidString.lowercased()
         let fingerprints = submittedScope?.fingerprints ?? editingAdmissions.mapValues(\.fingerprint)
         let selection = selected.map { (asset: $0, fingerprint: fingerprints[$0.id]) }
+        let workflowVersions = submittedScope?.workflowVersions ?? workbenchExportContext.workflowVersions
         var current = [String: (PhotoWork, EditingVersion)]()
         if let input = submittedScope?.editorInput, let asset = selected.first(where: { $0.id == input.assetID }) {
             let frozen = try await withTaskCancellationHandler { try await input.input.value } onCancel: { input.input.cancel() }
             current[asset.id] = try Self.checkedWorkbenchEditorInput(frozen, asset: asset, fingerprint: fingerprints[asset.id])
-        } else if submittedScope == nil {
+        } else if submittedScope == nil, workflowVersions.isEmpty {
             for item in selection where (isNativeEditing && focusedID == item.asset.id) || editing?.hasWorkbenchExport(for: item.asset.id) == true {
                 current[item.asset.id] = try await workbenchEditorInput(item.asset, fingerprint: item.fingerprint)
             }
         }
         let capture = Task.detached(priority: .userInitiated) { [current] in
             let saved = try store.withReadSnapshot {
-                try selection.map { item in
+                try selection.map { item -> (PhotoWork, EditingVersion)? in
                     try Task.checkCancellation()
+                    if !workflowVersions.isEmpty {
+                        guard let id = workflowVersions[item.asset.id] else { throw EditingError.missingVersion }
+                        return try Self.workbenchBatchCandidate(id, asset: item.asset, fingerprint: item.fingerprint, store: store)
+                    }
                     return try current[item.asset.id] ?? Self.workbenchStoredInput(item.asset, fingerprint: item.fingerprint, store: store)
                 }
             }
@@ -437,6 +528,10 @@ extension AppModel {
             }
         }
         let frozen = try await withTaskCancellationHandler { try await capture.value } onCancel: { capture.cancel() }
+        if configuration.format == .avif10 {
+            try await Task.detached(priority: .utility) { try Self.validatePQBatch(frozen, against: pqReview, store: store) }.value
+            try Task.checkCancellation()
+        }
         try await Self.reconcileWorkbenchDeliveries(store)
         let access = WorkbenchDeliveryAccess(directory)
         try FileManager.default.createDirectory(at: access.url, withIntermediateDirectories: true)

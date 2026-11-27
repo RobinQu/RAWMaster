@@ -1,7 +1,6 @@
 import CryptoKit
 import Darwin
 import Foundation
-import Metal
 import RAWMasterCore
 
 package enum DevelopmentSceneHDRDiagnostics {
@@ -29,18 +28,11 @@ package enum DevelopmentSceneHDRDiagnostics {
           destination.pathExtension.lowercased() == "avif", exposureEV.isFinite, (-12...12).contains(exposureEV)
     else { throw Failure.invalidRequest }
     if FileManager.default.fileExists(atPath:destination.path) { throw Failure.destinationExists }
-    guard let device=MTLCreateSystemDefaultDevice() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
     try Task.checkCancellation()
     let before=try digest(source)
-    let encoded=try autoreleasepool { () throws -> DevelopmentSceneAVIFV1.Encoded in
-      let raw=try DevelopmentSceneRAWV1(device:device).decode(source).image
-      let output = DevelopmentSceneOutputStateV1.Version(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
-      let workflow = try DevelopmentSceneWorkflowV1(correctors: [.init(exposureEV: exposureEV)], output: output)
-      let renderer = DevelopmentSceneWorkflowRendererV1(device: device)
-      let master = try renderer.prepareFinal(raw, workflow: workflow)
-      let display = try renderer.renderDelivery(master, target: .hdr2020)
-      return try DevelopmentSceneAVIFV1(device:device).encode(display)
-    }
+    let output = DevelopmentSceneOutputStateV1.Version(sdrTrim: try .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0))
+    let workflow = try DevelopmentSceneWorkflowV1(correctors: [.init(exposureEV: exposureEV)], output: output)
+    let encoded = try autoreleasepool { try DevelopmentSceneDeliveryServiceV1.encodeHDR(source, workflow: workflow) }
     guard try digest(source) == before else { throw Failure.sourceChanged }
     let result=Receipt(width:encoded.width,height:encoded.height,bitDepth:encoded.signal.bitDepth,
       primaries:encoded.signal.primaries,transfer:encoded.signal.transfer,matrix:encoded.signal.matrix,

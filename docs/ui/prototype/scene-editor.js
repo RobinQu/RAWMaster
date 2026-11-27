@@ -2,6 +2,8 @@
 
 const SceneEditor = (() => {
   const views = new Map();
+  const nativeReview = new URLSearchParams(location.search).get("sceneNativeReview") === "1";
+  const scopesReview = new URLSearchParams(location.search).get("scopesNativeReview") === "1";
   const diagnostics = {
     sensor: ['传感器饱和', '斜线 · 源通道饱和'], target: ['超输出目标', '网格 · 峰值或色域超出'],
     screen: ['超屏幕余量', '点阵 · 当前屏幕看不全'], bands: ['HDR 分档', '横线 · 每格 1 EV'],
@@ -75,32 +77,37 @@ const SceneEditor = (() => {
   });
   function controls() {
     const why = reason();
-    return `<div class="row scene-diagnostics">${Object.entries(diagnostics).map(([k,[t]]) => btn(t,'scene-overlay',k,{pressed:view().overlays.has(k),disabled:!!why})).join('')}</div>${why ? `<p class="small">诊断不可用：${h(why)}</p>` : ''}`;
+    const missing = scopesReview && view().screen === 'unknown';
+    return `<div class="row scene-diagnostics">${Object.entries(diagnostics).map(([k,[t]]) => btn(t,'scene-overlay',k,{pressed:view().overlays.has(k),disabled:!!why || k === 'screen' && missing})).join('')}</div>${missing ? '<p class="small">当前屏幕色彩空间不可线性化 · 超屏幕余量不可用，不是零。</p>' : ''}${why ? `<p class="small">诊断不可用：${h(why)}</p>` : ''}`;
   }
   function hud() {
     if (!hdr()) return '';
     const v = view();
+    if (nativeReview && v.failed) return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">预览失败 · 模拟</span><div class="row">${btn('重试 HDR 预览','scene-review-retry')}</div></div>`;
     return `<div class="scene-hud" aria-label="HDR 查看状态"><span role="status">${h(appearance())} · 模拟${v.preview === 'target' && v.screen === 'sdr' ? ' · 屏幕无 HDR 余量' : ''}</span>
       <div class="row">${btn('按 HDR 目标查看','scene-view','target',{pressed:v.preview === 'target'})}${btn('预览 SDR 派生','scene-view','sdr',{pressed:v.preview === 'sdr'})}</div>
       ${reason() ? '' : [...v.overlays].map(k => `<span class="scene-legend ${k}">${h(diagnostics[k][1])}</span>`).join('')}</div>`;
   }
+  document.addEventListener('toggle', event => {
+    if (scopesReview && event.target.matches('.scope-native-review') && event.target.isConnected) view().scopeOpen = event.target.open;
+  }, true);
   function scope(docked) {
     const why = reason(), v = view(), [label, axes, reading] = scopes[v.scope];
     return `<section class="editing-scopes scene-scopes${docked ? ' docked' : ''}" aria-label="HDR 示波器（模拟）">
       <div class="row">${Object.entries(scopes).map(([k,[t]]) => btn(t,'scene-scope',k,{pressed:v.scope === k})).join('')}${docked ? btn('在独立窗口显示示波器','scopes','',{icon:'pulse',only:true,cls:'icon-btn'}) : ''}</div>
       ${v.scope === 'output' ? chart(config(), v) : `<div class="scene-axis" role="img" aria-label="${h(label + '：' + axes)}"><span>${h(axes)}</span></div>`}
       <small class="scene-display-key">模拟屏幕余量：${v.screen === 'sdr' ? '0' : '+2'} EV · 实线可显示／虚线超余量</small>
-      ${docked ? `<div class="scene-limit"><label for="scene-limit">HDR 高光限制</label><output for="scene-limit">+${config().limitEV.toFixed(1)} EV</output><input id="scene-limit" name="sceneLimit" type="range" min="0" max="3.3" step="0.1" value="${config().limitEV}" ${blocked() || why ? 'disabled' : ''}></div>` : ''}
-      <div class="row">${btn(v.sample ? '解除中心样点' : '锁定中心样点','scene-sample','',{pressed:v.sample,disabled:!!why})}</div>
-      <p role="status" class="small">${why ? '源数据不可用，尚无采样值。' : (v.sample ? '锁定样点（50%，50%）：' : '中心预读：') + h(reading)} 未提供 HDR Lab 或 HDR 矢量图。</p>
+      ${docked && !scopesReview ? `<div class="scene-limit"><label for="scene-limit">HDR 高光限制</label><output for="scene-limit">+${config().limitEV.toFixed(1)} EV</output><input id="scene-limit" name="sceneLimit" type="range" min="0" max="3.3" step="0.1" value="${config().limitEV}" ${blocked() || why ? 'disabled' : ''}></div>` : ''}
+      <div class="row">${btn(v.sample ? '解除样点' : '锁定中心样点','scene-sample','',{pressed:v.sample,disabled:!!why})}${scopesReview ? btn('在主图取样','scene-pick','',{pressed:!!v.picking,disabled:!!why}) : ''}</div>
+      <p role="status" class="small">${why ? '源数据不可用，尚无采样值。' : (v.sample ? `锁定样点（${Math.round((v.point?.x ?? .5)*100)}%，${Math.round((v.point?.y ?? .5)*100)}%）：` : '中心预读：') + h(reading)} 未提供 HDR Lab 或 HDR 矢量图。</p>
       ${controls()}</section>`;
   }
   function trimFields(c, disabled) {
     const trim = c.trim;
     return `<div class="scene-form">
         <label>派生曝光（EV）<input name="sceneExposure" type="number" min="-3" max="3" step="0.25" required value="${trim.exposure}" ${disabled}></label>
-        <label>亮度映射<select name="sceneMapping" ${disabled}><option value="balanced">平衡</option><option value="soft" ${trim.mapping === 'soft' ? 'selected' : ''}>柔和</option></select></label>
-        <label>高光压缩<input name="sceneCompression" type="number" min="0" max="100" required value="${trim.compression}" ${disabled}></label></div>
+        <label>亮度映射<select name="sceneMapping" ${nativeReview ? "disabled" : disabled}><option value="balanced">平衡</option><option value="soft" ${trim.mapping === 'soft' ? 'selected' : ''}>柔和</option></select></label>
+        <label>高光压缩<input name="sceneCompression" type="number" min="0" max="100" required value="${trim.compression}" ${nativeReview ? "disabled" : disabled}></label></div>
         <p class="small">仅用于 SDR 派生；不改变 HDR 母版。${c.film ? h(RMPhotos.filmStocks[c.film].name) + ' · 仅在派生分支' : ''}</p>
         ${disabled ? '' : `<div class="row">${btn('应用 SDR 派生','scene-trim')}${btn('复位 SDR 派生','scene-trim','reset')}${c.film ? btn('移除派生胶片','scene-film','') : ''}</div>`}`;
   }
@@ -123,8 +130,8 @@ const SceneEditor = (() => {
       ${why ? `<p class="warn">${h(why)}</p>` : ''}
       ${c ? `<p>标准 ACES 2 · ${h(RMSceneOutput.targets.hdr.signal)}。其他成像路线和目标未放行；屏幕 ICC 不改变成片目标。</p>
         <fieldset class="scene-trim-fields"><legend>SDR 派生</legend>${trimFields(c, disabled)}</fieldset>
-        <fieldset><legend>评审用屏幕状态</legend><div class="row">${btn('模拟 SDR 屏','scene-screen','sdr',{pressed:view().screen === 'sdr'})}${btn('模拟 HDR 屏','scene-screen','hdr',{pressed:view().screen === 'hdr'})}</div></fieldset>
-        <fieldset class="scene-sheet-diagnostics"><legend>查看叠加</legend>${controls()}</fieldset>` : ''}</div>`,
+        <fieldset><legend>评审用屏幕状态</legend><div class="row">${btn('模拟 SDR 屏','scene-screen','sdr',{pressed:view().screen === 'sdr'})}${btn('模拟 HDR 屏','scene-screen','hdr',{pressed:view().screen === 'hdr'})}${scopesReview ? btn('模拟屏幕色彩空间未知','scene-screen','unknown',{pressed:view().screen === 'unknown'}) : ''}</div></fieldset>
+        ${nativeReview && !scopesReview ? `<p>诊断尚未接入此切片。</p>${btn('模拟 HDR 预览失败','scene-review-fail')}` : `<fieldset class="scene-sheet-diagnostics"><legend>查看叠加</legend>${controls()}</fieldset>`}` : ''}</div>`,
       btn('关闭','close'));
   }
   function commit(label, sceneOutput, base = edit().recipe, saveCandidate = false) {
@@ -167,13 +174,41 @@ const SceneEditor = (() => {
     if (r.dag && (graphStyle || r.filmStock || r.preset)) {
       return warn('工作流含未验证的 SDR 胶片、LUT 或预设，未切换到 HDR。节点和参数保持原样。');
     }
+    if (nativeReview) {
+      dialog('从原片创建 HDR 草稿？', '<p>HDR 从原片的场景数据独立求值。不会把现有 SDR 调整、蒙版或外观转换成 HDR；现有已保存版本不变。可取消或撤销。</p>',
+        btn('取消','close') + btn('创建 HDR 草稿','scene-review-start','',{cls:'primary'}));
+      return;
+    }
     if (conflicts.length) {
       dialog('在 HDR 候选中继续', `<p>这些调整没有确认的 HDR 等价项：${h(conflicts.join('、'))}。保留原 SDR 编辑；${r.dag ? '新 HDR 候选保留节点与参数，使用 HDR 彩色外观。' : '新 HDR 候选保留曝光、裁切和选区，不携带上述外观。'}</p>`,btn('取消','close') + btn('创建 HDR 候选','scene-new','',{cls:'primary'}));
       return;
     }
     commit('启用 HDR 编辑', RMSceneOutput.clean({intent:'hdr'}), {...r, colorMode:'hdr'});
   };
-  actions['scene-confirm-sdr'] = key => { if (!blocked() && hdr() && ['sdr','bw'].includes(key)) switchSDR(key); };
+  actions['scene-confirm-sdr'] = key => {
+    if (blocked() || !hdr() || !['sdr','bw'].includes(key)) return;
+    if (nativeReview) commit('返回 SDR 编辑', undefined, {...(view().draftBefore ?? Studio.freshRecipe()), colorMode:key});
+    else switchSDR(key);
+  };
+  actions['scene-review-start'] = () => {
+    if (!nativeReview || hdr() || blocked() || reason()) return;
+    view().draftBefore = structuredClone(edit().recipe);
+    view().failed = false;
+    commit('创建 HDR 草稿', RMSceneOutput.clean({intent:'hdr'}), {...Studio.freshRecipe(), colorMode:'hdr'});
+  };
+  actions['scene-review-fail'] = () => { if (nativeReview && hdr()) { view().failed = true; if (sheet.open) closeSheet(); render(); $('.scene-hud button')?.focus(); } };
+  actions['scene-review-retry'] = () => { view().failed = false; render(); $('.scene-hud button')?.focus(); };
+  actions['scene-review-exposure'] = () => {
+    const field = $('[name=sceneGraphExposure]');
+    if (!hdr() || blocked() || reason() || !field.reportValidity()) return;
+    entrySelector = '[data-act=scene-review-exposure]';
+    commit('调整节点曝光', config(), {...edit().recipe, ev:field.valueAsNumber});
+  };
+  function reviewInspector() {
+    return `<p class="small">当前照片 · 基础调色 · 场景线性 AP1</p>
+      <label>节点曝光（EV） <input name="sceneGraphExposure" type="number" min="-12" max="12" step="0.25" required value="${edit().recipe.ev || 0}"></label> ${btn('应用曝光','scene-review-exposure')}
+      <p class="small">其他 HDR 算子、采样和诊断暂未接入评审切片。</p>`;
+  }
   actions['scene-new'] = () => {
     if (reason() || blocked() || hdr()) return;
     const before = edit().recipe;
@@ -220,6 +255,7 @@ const SceneEditor = (() => {
       return;
     }
     const docked = $('.inspector-content .scene-scopes');
+    if (scopesReview && $('.scope-native-review')) view().scopeOpen = $('.scope-native-review').open;
     if (!inSheet) {
       const rendition = $('.scene-rendition');
       if (rendition) view().rendition = rendition.open;
@@ -234,7 +270,10 @@ const SceneEditor = (() => {
       const floating = sheet.querySelector('.scene-scopes');
       if (floating) floating.outerHTML = scope(false);
       sheet.querySelectorAll('[data-act=scene-screen]').forEach(el => el.setAttribute('aria-pressed', String(el.dataset.val === view().screen)));
-      sheet.querySelectorAll('[data-act=scene-overlay]').forEach(el => el.setAttribute('aria-pressed', String(view().overlays.has(el.dataset.val))));
+      sheet.querySelectorAll('[data-act=scene-overlay]').forEach(el => {
+        el.setAttribute('aria-pressed', String(view().overlays.has(el.dataset.val)));
+        if (scopesReview && el.dataset.val === 'screen') el.disabled = !!reason() || view().screen === 'unknown';
+      });
       refreshCanvasLook();
       document.querySelectorAll('.scene-marks').forEach(el => { el.outerHTML = overlayMarkup(); });
     }
@@ -248,7 +287,7 @@ const SceneEditor = (() => {
     const monitor = $('.dag-monitor img');
     if (monitor) monitor.style.filter = dagPhotoFilter();
   }
-  actions['scene-screen'] = (s, _, el) => { view().screen = s; updateView('scene-screen',s,el); };
+  actions['scene-screen'] = (s, _, el) => { view().screen = s; if (s === 'unknown') view().overlays.delete('screen'); updateView('scene-screen',s,el); };
   actions['scene-view'] = (s, _, el) => { view().preview = s; updateView('scene-view',s,el); };
   actions['scene-scope'] = (s, _, el) => { view().scope = s; updateView('scene-scope',s,el); };
   actions['scene-overlay'] = (k, _, el) => {
@@ -257,8 +296,18 @@ const SceneEditor = (() => {
     if (set.has(k)) set.delete(k); else set.add(k);
     updateView('scene-overlay',k,el);
   };
-  actions['scene-sample'] = (_, event, el) => { view().sample = !view().sample; updateView('scene-sample','',el); };
+  actions['scene-sample'] = (_, event, el) => { view().sample = !view().sample; view().point = null; updateView('scene-sample','',el); };
+  actions['scene-pick'] = () => { view().picking = !view().picking; view().scopeOpen = true; render(); const image = $('.edit-image'); if (image) { image.tabIndex = -1; image.focus({preventScroll:true}); } };
+  function scopePick(event, image) {
+    if (!scopesReview || !hdr() || !view().picking) return false;
+    if (reason()) return true;
+    const box = image.getBoundingClientRect();
+    view().point = {x:(event.clientX-box.left)/box.width, y:(event.clientY-box.top)/box.height};
+    view().sample = true; view().picking = false; render(); $('[data-act=scene-pick]')?.focus({preventScroll:true});
+    return true;
+  }
   document.addEventListener('keydown', e => {
+    if (scopesReview && e.key === 'Escape' && S.page === 'edit' && hdr() && view().picking) { view().picking = false; render(); $('[data-act=scene-pick]')?.focus(); e.preventDefault(); e.stopImmediatePropagation(); return; }
     if (e.key !== 'Escape' || sheet.open || S.page !== 'edit' || S.canvasTool || S.canvasMenu || quickPromptVisible() ||
       e.target.closest('#dag-node-picker, .dag-floating') || !hdr() || !view().overlays.size) return;
     const last = [...view().overlays].at(-1);
@@ -288,5 +337,5 @@ const SceneEditor = (() => {
     return ['smart','agent','detail','effects','grading','hdr','mixer','slice','warp','lens'].includes(S.tool)
       ? '此工具尚未验证 HDR 母版运算；当前版本不可应用，也不会改用 SDR 代理。' : '';
   }
-  return { modeBar, badge, hud, scope, film, preview, config, hdr, overlayMarkup, toolNote, warning, rendition };
+  return { modeBar, badge, hud, scope, film, preview, config, hdr, overlayMarkup, toolNote, warning, rendition, nativeReview, reviewInspector, scopesReview, scopePick, scopeOpen: () => view().scopeOpen };
 })();

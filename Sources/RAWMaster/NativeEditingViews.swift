@@ -26,7 +26,15 @@ struct NativeEditingInspector: View {
                 Divider()
             }
             if editing.stage == .development, editing.work != nil, !editing.loading {
-                PhotosDevelopmentInspector(editing: editing)
+                if let graph = editing.recipe.sceneGraph {
+                    EditingSceneInspector(editing: editing, graph: graph)
+                } else {
+                    if EditingCompatibilityGraphPanel.isEnabled {
+                        EditingCompatibilityGraphToolbar(editing: editing)
+                        Divider()
+                    }
+                    PhotosDevelopmentInspector(editing: editing)
+                }
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {

@@ -29,7 +29,7 @@ final class NativePresentedCanvasTests: XCTestCase {
         try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]).write(to: url, options: .atomic)
     }
 
-    static func register(source: URL, library: URL) throws -> AssetRecord {
+    static func register(source: URL, library: URL, requiresRAW: Bool = true) throws -> AssetRecord {
         let store = try LibraryStore(databaseURL: library)
         let project = ProjectRecord(name: "Presented canvas benchmark")
         try store.saveProject(project)
@@ -37,7 +37,7 @@ final class NativePresentedCanvasTests: XCTestCase {
             sourcePath: source.deletingLastPathComponent().path, mode: .reference, status: "completed",
             discovered: 1, completed: 1, scanCompleted: true)
         try store.saveSession(imported)
-        guard PhotoRenderer.rawExtensions.contains(source.pathExtension.lowercased()),
+        guard (!requiresRAW || PhotoRenderer.rawExtensions.contains(source.pathExtension.lowercased())),
               let image = CGImageSourceCreateWithURL(source as CFURL, nil),
               let props = CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [String: Any],
               let width = props[kCGImagePropertyPixelWidth as String] as? Int,

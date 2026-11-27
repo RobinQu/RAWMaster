@@ -31,8 +31,8 @@ npm exec --yes --package=agent-browser@0.26.0 -- python3 scripts/check-ui-protot
 | --- | --- | --- |
 | 窄范围 Sony Bayer ARW | [两张固定实拍与各自摘要](evidence/scene-raw-m2.json)；人像与雪景，方向、超白与饱和位 | 缺标准色卡、高饱和灯光、黑电平和机型覆盖。不能推广到所有 ARW 或 RAW。 |
 | 场景转换与标准分支 | 固定 OCIO 向量，见下文；不假定有色卡实测 | 未独立验证 DCP、X-Trans、HDR 合并、光栅 PQ／HLG／增益图。 |
-| 交付 | [实拍 AVIF 回执](evidence/scene-arw-avif-end-to-end.json)与[独立回读](evidence/scene-avif-readback.json) | 没有从应用编辑到真实文件、混批和断点恢复的证据。 |
-| 显示／安装 | 已测潜在 EDR 2.0，当时可用 1.0；最低系统为 macOS 15 | 缺实际 EDR＞1 与 SDR 对照、最低系统装包复验；当前默认包路径未找到固定 `catalog.json` 和 runtime ZIP。 |
+| 交付 | [24MP 冻结版 AVIF／JPEG／PNG 独立回读](evidence/frozen-renditions-20261127.json)、[灰阶 PQ 回读](evidence/scene-avif-readback.json) | 组件证据不是从应用编辑到 032 混批和断点恢复的产品证据。 |
+| 显示／安装 | [2026-11-27 AppKit 环境记录](evidence/edr-environment-20261127.json)：一块内建 Retina，潜在 EDR 2.0、当前 1.20；最低系统为 macOS 15 | 余量是环境读数，尚无原生 HDR 查看与 SDR 对照、跨屏或最低系统装包验收；当前默认包路径无固定 `catalog.json` 和 runtime ZIP。 |
 | 性能 | 以下列独立门槛衡量 scene F32 融合、OCIO 精度、编码；保留未通过的 10 对 RAW 小样本尾延迟 | 同质视口沿用 [036 验收](../036-render-pipeline-performance/spec.md#验收) p50 ≤25.92 ms／p95 ≤210.23 ms；松手不得重跑 GPU。真实 HDR 同质量口径按 [037 计划](plan.md#调度与判定)至少 30 组交错样本。完整端到端内存、ROI 和尾延迟门槛仍待冻结。 |
 
 
@@ -128,8 +128,81 @@ swift test -c release --jobs 4 -Xswiftc -enable-testing \
   --filter 'DevelopmentSceneWorkflowV1Tests|DevelopmentSceneOutputStateV1Tests|DevelopmentSceneOutputV1Tests|DevelopmentSceneAVIFV1Tests'
 ```
 
-Release **11 项通过，退出码 0**，包含节点身份与顺序的严格序列化、未知版本／节点和非法前缀拒绝、GPU 像素比较、临时预览与最终输出隔离。上文实拍命令改用临时新目录重新执行：雪景 +1 EV 通过新固定工作流，dav1d 解码 4000×6000、10 位、全范围 CICP 9/16/1，`cmp` 与历史产物逐字节相等，SHA-256 仍为 `a7d339cbd9a40acc218f965cf3f7f837ad25995cde176713804958ac06501045`。另以同一 Release 构建重跑色彩、旧 SDR 滤镜／Spektrafilm 与场景用例，共 **30 项通过，退出码 0**（含上述 11 项，不重复累计）。这是组件及诊断证明，不是产品版 032 或真实屏幕验收。固定阶段的产品接线、缓存失效及旧配方投影尚未验收。
+Release **11 项通过，退出码 0**，包含节点身份与顺序的严格序列化、未知版本／节点和非法前缀拒绝、GPU 像素比较、临时预览与最终输出隔离。上文实拍命令改用临时新目录重新执行：雪景 +1 EV 通过新固定工作流，dav1d 解码 4000×6000、10 位、全范围 CICP 9/16/1，`cmp` 与历史产物逐字节相等，SHA-256 仍为 `a7d339cbd9a40acc218f965cf3f7f837ad25995cde176713804958ac06501045`。另以同一 Release 构建重跑色彩、旧 SDR 滤镜／Spektrafilm 与场景用例，共 **30 项通过，退出码 0**（含上述 11 项，不重复累计）。这是组件及诊断证明，不是产品版 032 或真实屏幕验收。[038 兼容 SDR 投影](../038-node-dag-workflow/validation.md#原生兼容图与冻结-sdr-导出)已有原生重开和成片等价证据；它保持旧渲染语义，不是场景输入。新的 HDR 固定阶段产品接线、缓存失效和原生查看仍未验收。
+
+### 冻结场景的 HDR／SDR 文件交付组件
+
+[冻结内容](../../Sources/RAWMasterCore/DevelopmentSceneDeliveryV1.swift)包含来源、版本 ID、严格式工作流、输出目标和格式。交付组件先做独占的已验证源捕获，再对同一冻结版本准备一份场景母版；AVIF 10 位 PQ、JPEG 8 位 sRGB、PNG 16 位 sRGB 可分别求值、落盘和返回回执。每张媒体独立预检和准备发布；任一发布准备失败不发布该文件，已准备的暂存项按现有单文件契约保留供所有者处理，其余输出不受影响。取消按准备发布的边界处理，目标同名不覆盖。SDR 分支当前只支持 balanced 映射与独立曝光；不把尚未放行的高光压缩、胶片或软映射当作 SDR 派生成功。该组件未绑定产品编辑版本和 032 租约，不等于队列重启、可移动卷接回或批量交付。
+
+2026-11-27，雪景 ARW（4000×6000，+1 EV）完成三种真实交付。[独立回读](evidence/frozen-renditions-20261127.json)确认 dav1d 解码的 AVIF 为 10 位 Rec.2020／PQ、全范围 CICP 9/16/1，与原诊断产物逐字节相同；`ffprobe` 对该容器报告 1024×1024 编码网格块，整图尺寸以 dav1d 完整解码为准。JPEG 8 位和 PNG 16 位经 FFmpeg 完整解码，ExifTool 从文件各自提取了与仓库 sRGB 配置相同的 ICC。初轮 ImageIO 只写了 sRGB 标记，解码器创建的色彩空间不能证明实际嵌入 ICC；现复用 032 的 Rust 像素编码，保留 F32 求值至末端，新增非对称灰阶用例核对扫描行与单次 DRT。ImageIO 的 AVIF CLLI 1000／64 仍不是样片 MaxCLL／MaxFALL 的独立测量，保留为发布前需验证项。
+
+定向 Release 主回归退出码 **0**，**123 项通过、2 项默认跳过**。[测试摘要](../038-node-dag-workflow/evidence/compatibility/native-release.log)包含旧 SDR 像素、旧版导出、032 像素编码与两张固定 SHA 实拍源；还核对了成功目标不覆盖、发布准备失败保留可核验暂存、其余 SDR 继续、预取消不落盘及原片摘要不变。
+
+随后在同一 Release 构建补跑前一命令默认跳过的两项，退出码 **0**；两轮合计 125 项通过。两种尺寸的 [Metal 单算子复测](evidence/scene-color-component-20261127.json)达到既定融合门槛；[旧显影的真实 RAW 深度与重开回归](evidence/legacy-depth-regression-20261127.json)使用固定本地 Core ML 模型通过。前者不测产品视口，后者不证明 HDR 母版的模型接线或 HDR 像素能力。
+
+复现（使用上文同一来源及固定摘要的 RAW，目的目录不可复用旧文件）：
+
+```sh
+evidence="$(mktemp -d)"
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/spec037-raw-fixtures/snow.ARW" \
+  RAWMASTER_SCENE_DELIVERY_EVIDENCE="$evidence" \
+  swift test -c release --jobs 4 -Xswiftc -enable-testing \
+    --filter 'DevelopmentSceneDeliveryServiceV1Tests|DevelopmentSceneOutputV1Tests'
+avifdec --info "$evidence/snow.avif"
+exiftool -ImageWidth -ImageHeight -BitsPerSample -BitDepth -ProfileDescription \
+  "$evidence/snow-share.jpg" "$evidence/snow-share.png"
+```
+
+### 持久场景图的冻结版本交付
+
+新场景图使用 `DevelopmentRecipe` schema 4，保存进现有 `LibraryStore` 草稿与不可变版本；未重写旧 v1/v2/v3 字节。工作流、版本及原片准入绑定，不携带屏幕 ICC、EDR 余量或节点监看。旧引擎拒绝这种配方，不能把它显示成“原片未调整”。目录按已存版本 ID 读取冻结票据，校验原片准入与关联；渲染器仍独立验证字节、RAW 校准和几何。两路输出都由同一已保存最终根求值；不是把其中一路逆变换回另一条。
+
+[实拍集成测试](../../Tests/RAWMasterImagingTests/DevelopmentSceneDeliveryServiceV1Tests.swift)用授权雪景 ARW 写入含线性蒙版与非中性 Layer 的版本，另存不同的实时草稿，验证过期修订拒绝，再重开目录、恢复冻结票据并依次写 PQ AVIF 与 sRGB JPEG。此闭环尚无暗房和 032 批次入口；兼容版本和早期串行交付票据均仍可回读。2026-11-27，同一 [70 项 Release 定向回归](../038-node-dag-workflow/evidence/scene-graph/release.log)通过重开及真实交付。[独立回读](evidence/persisted-scene-graph-readback-20261127.json)核验两个 4000×6000 文件：10 位全范围 PQ/Rec.2020 AVIF（CICP 9/16/1）与带实际 sRGB ICC 的 8 位 JPEG，旧诊断 AVIF 仍逐字节相同。
+
+### 原生场景查看与显影阶段
+
+[评审工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1)先验交互，原生在 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1` 下进入。浏览器三项阶段走查通过：资料库选片、确认／取消、曝光及撤销、SDR 回退、预览失败重试、390px 浅深色、离线、方向键仅移焦。[浏览器输出](evidence/scene-native-browser.log) · [桌面](evidence/native-scene-review/scene-review-fit.png) · [390px 浅色](evidence/native-scene-review/scene-review-390-light.png) · [390px 深色](evidence/native-scene-review/scene-review-390-dark.png)。默认完整 HDR 原型仍独立运行：`python3 scripts/check-ui-prototype.py --hdr-only` 四项通过。模拟像素不作 EDR 证据。
+
+[预览服务](../../Sources/RAWMasterImaging/DevelopmentScenePreviewV1.swift)从捕获的真实 ARW 校验内容，在单源预算内保留已校准 AP1 F32 输入；同一 FIT 或实际像素 ROI 只改变图与末端。图与临时监看进入输入键，HDR／SDR 保持独立后缀；派生曝光不使 HDR 或 RAW 失效。当前 FIT 是 F32 降采样后求值，不假称等于全尺寸再缩小；实际窗口在已校准源纹理中裁出，再用全源坐标计算覆盖。原片改动、过期或取消请求不得发布成新帧。
+
+[暗房 AppKit 画布](../../Sources/RAWMaster/EditingSceneCanvas.swift)取同一画布变换和 FIT 安全边界，显示采用独立的 `rgba16Float` Metal layer、扩展线性 Rec.2020 或扩展线性 sRGB；系统根据明确色彩空间管理屏幕转换。没有把 PQ 文件码值交给浮点画布，也没有把主图读回 RGBA8。屏幕当前余量不足走 SDR 派生；此处只有单屏阶段测试，不是实测亮度或跨屏通过。已保存版本保留场景配方作为像素权威，不用 SDR 代理取代。原生走查使用、创建和另存行为见 [测试](../../Tests/RAWMasterUITests/EditingSceneDarkroomTests.swift)；完整工具、跨屏和目标端见下节。
+
+2026-11-27 · [Release 验收摘录](evidence/native-scene-review/release-test-excerpt.log)，**66 项通过，0 跳过**，另单独复跑一次原生实拍闭环通过。实拍雪景在隔离资料库，通过原生控制器驱动曝光、撤销、重做、另存与重开；AppKit 中实际提交浮点 drawable，SDR 回退不改配方。真实 500×750 ROI 与同一 RAW 的独立区域显影逐像素一致。切换 HDR→SDR、改派生曝光、再回 HDR 共观测到 1 次 RAW、1 次场景图、3 次末端运算，同一 HDR 后缀原样复用。替换同路径同体积源文件必须拒绝缓存。首次 FIT 实拍出现非法像素；将原 Lanczos 路线改成 AP1 F32 面积加权后通过原来的有效性和像素断言。原生窗口切换断言同步等候同一帧与正确 compositor 模式，不以旧帧 ID 作为完成条件。
+
+另以此保存的 HDR 场景候选，经现有 **032** 选片、SDR 预检、缩至长边 600 的 JPEG、Rust 冻结与发布回执通过。测试验证任务中保存的是已存版本（含同一 v4 图），不是当前监看或临时草稿。此接线同时提供 JPEG／PNG 的 SDR 求值；未将 TIFF 当浮点交换，也没有开放产品版 PQ 批量出片或卷重挂验收。
+
+原生热态：用授权雪景、1240×660、2× 背板、单 Corrector 在 1.75／2.25 EV 间交错。每轮 30 个样本，从命令到相应 drawable GPU 完成（SDR 派生）。p50/p95 分别是 **22.85/23.94 ms**、**23.39/25.00 ms**，符合阶段门槛 25.92/210.23 ms。[首轮](evidence/native-scene-review/fit-round-1.json) · [单独复跑](evidence/native-scene-review/fit-round-2.json)。不包含 HID、屏幕发光时延、冷 RAW、真实 HDR 输出、连续拖拽、比对和 1:1 平移放行。命令级复现（资料库为测试临时路径，不使用用户资料库）：
+
+```sh
+evidence="$(mktemp -d)"
+export RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+export RAWMASTER_SCENE_DELIVERY_SNOW_ARW="$PWD/output/spec037-raw-fixtures/snow.ARW"
+RAWMASTER_SCENE_DARKROOM_REPORT="$evidence/fit.json" \
+  swift test -c release --jobs 4 -Xswiftc -enable-testing \
+    --filter 'EditingSceneDarkroomTests|DevelopmentScenePreviewV1Tests|ExportWorkspaceTests'
+```
+
+原生可编辑 Graph 接线后按原雪景与 FIT 门槛复验，修复数值输入重建引起的延迟，并将呈现 drawable 限于可见照片区域。最终 **22.07/23.30 ms**（p50/p95）；不缩减取样质量或放宽门槛。节点监看缓存与原始性能回退保留在 [038 阶段证据](../038-node-dag-workflow/validation.md#原生可编辑-graph)，不当作跨屏或完整 UI 放行。
+
+### 032 PQ 队列与回读
+
+从 [PQ 评审工作台](../../docs/ui/prototype/index.html?pqReview=1) 多选「日落河湾」和「岸边的水鸟」，在暗房保存后者的 HDR 候选，再在 032 选「HDR 成片」。核对弹窗：前者无 HDR 母版，不能确认。返回选片不新建任务；明确取消勾选不合格行后，确认只冻结 `.avif`。`python3 scripts/check-ui-prototype.py --pq-queue-only` 的三项隔离浏览器检查通过（含 390px、离线和恢复可确认）。[日志](evidence/pq-queue-browser.log) · [混选](evidence/pq-queue/pq-mixed-1280.png) · [窄窗合格项](evidence/pq-queue/pq-ready-390.png)。原型使用样片与模拟，不证明像素或硬件能力。
+
+原生评审在 `RAWMASTER_EXPERIMENTAL_SCENE_DARKROOM=1`。确认前显示保存版本和不可用项目；提交前用目录读快照再核对版本 ID、来源和配方摘要，不满足时不会注册批次。Rust 032 保存同一 schema 2 版本资源和 `avif10` 设置，沿用原目录授权、命名冲突、暂存摘要、排他发布和恢复。PQ 的文件限已保存母版全尺寸；不自动缩放，不把 SDR 水印或元数据设置套到 PQ，不将队列目标写回 SDR 可移植预设。10 位 CICP 保留；对 ImageIO AVIF `clli` 自动给出的图片光量字段置为「未指定」（见 [libavif 对零值的定义](https://github.com/AOMediaCodec/libavif/blob/main/include/avif/avif.h)），不改像素数据或把 100/1000 nits 目标当作各照片实测光量。
+
+2026-11-27 · [Release 回归](evidence/pq-queue/release-test-excerpt.log)：28 项通过；需要独立进程的用例另行运行。Rust [队列回归](evidence/pq-queue/rust-batches.log) 21 项通过。实拍人像和雪景 ARW 从导入、已采用场景版本、原生模型逐张预检到 032 的配方资源落盘：混选 SDR／HDR、核对后改采用一个同配方不同 ID 的版本，均在注册前拒绝，没有文件或批次。作者授权及原片 SHA 见[实拍源证据](evidence/scene-raw-m2.json)。
+
+[进程恢复](evidence/pq-queue/restart-summary.json)：第一项已发布、第二项成片暂存并持久化摘要时杀掉隔离写入进程；另起 XCTest 进程。拒绝同路径不同目录；按原目录接回。移走第二张原片触发待找回，不发布暂存；不同原片被拒绝，精确字节重新授权后继续。首文件 inode/摘要未改、次文件匹配中断前暂存摘要，版本 ID 和新资料库选片保留。两个真实文件均由 dav1d 解码为 **4000×6000、10 位、Rec.2020/PQ、全范围 CICP 9/16/1**，且 `clli` 未声明图片光量上限：[人像](evidence/pq-queue/person.pq-0001.avif.readback.txt) · [雪景](evidence/pq-queue/snow.pq-0002.avif.readback.txt)。该测试不等于卷重挂、全部目的地竞争、真 HDR 客户端观片或队列吞吐验收。回执单次墙钟包含测试准备，不是性能分位数。
+
+```sh
+export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
+swift test -c release --jobs 4 -Xswiftc -enable-testing --filter testWorkbenchPQSettingsLeavePortableSDRPresetsUnchanged
+python3 specs/037-color-film-hdr/verify-pq-restart.py \
+  --products-dir .build/release --fixtures output/spec037-raw-fixtures --output "$(mktemp -d)/pq"
+```
 
 ### 剩余发布门槛
 
-现有应用的显影与导出界面、版本配方、生产 DAG、显示器 ICC／EDR、HDR 编辑控件、输出工作台、双表示增益图、HLG、浮点归档和 HDR 胶片路线尚未接入或通过端到端验收。系统报告设备潜在 EDR 为 2.0、测量瞬间可用为 1.0，仅是环境读数，不是 EDR 窗口通过。现有九款胶片仍是 SDR 外观。
+实验暗房有单张验收，仍需真实 HDR／SDR 跨屏、亮度、对比和完整视口验证；多机型和更多输入、完整 HDR 编辑及诊断、032 PQ 多目标混批、卷恢复、批次性能与实际客户端观片、双表示增益图、HLG、浮点归档和 HDR 胶片等尚未通过产品端到端验收。本轮查询到设备潜在 EDR 2.0、测量瞬间可用约 1.20，仅是环境读数，不是 EDR 窗口通过。现有九款胶片仍是 SDR 外观。

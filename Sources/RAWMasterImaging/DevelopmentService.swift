@@ -9,8 +9,16 @@ import UniformTypeIdentifiers
 
 public typealias RenderPublicationPreparation = @Sendable (_ stagedURL: URL, _ targetURL: URL, _ artifact: RenderArtifact) throws -> Void
 
-public enum PhotoRenderFormat: String, CaseIterable, Codable, Sendable { case png16, jpeg8, tiff16
-  public var filenameExtension: String { self == .jpeg8 ? "jpg" : (self == .tiff16 ? "tiff" : "png") }
+public enum PhotoRenderFormat: String, CaseIterable, Codable, Sendable {
+  case png16, jpeg8, tiff16, avif10
+  public var filenameExtension: String {
+    switch self {
+    case .jpeg8: return "jpg"
+    case .tiff16: return "tiff"
+    case .png16: return "png"
+    case .avif10: return "avif"
+    }
+  }
 }
 public struct DevelopmentPreview: @unchecked Sendable {
   public let image: NSImage
@@ -76,6 +84,7 @@ public actor DevelopmentService {
     if let scene = recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth, scene.sourceSHA256 != source.contentSHA256 {
       throw EditingError.staleSource
     }
+    guard format != .avif10 else { throw DevelopmentError.unsupportedEngine }
     let newBrilliance=DevelopmentBrilliancePublicV1.active(recipe)
     guard !newBrilliance || (qaBrilliancePublicV1 && format == .tiff16) else{throw PreviewPresentationError.unsupported}
     return try await renderingTask(lane: .export) {
@@ -314,6 +323,7 @@ enum PhotoRenderer {
     return CGSize(width: (width*c-height*s)/cos2, height: (height*c-width*s)/cos2)
   }
   static func write(_ original: CIImage, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL], sourceDepth: Int?, preparePublication: RenderPublicationPreparation? = nil, renderContext: CIContext? = nil, tiffTransport:TIFF16Output.Transport = .whole, legacyMask: DevelopmentLegacyMaskOutput? = nil, beforePublish: () throws -> Void = {}) throws -> RenderedPhoto {
+    guard format != .avif10 else { throw DevelopmentError.invalidEncoding }
     let telemetry = ImagePerformanceTelemetry.shared
     let token = telemetry.begin(operation: "导出图像", stage: format.filenameExtension, queue: "导出")
     var outcome = ImagePerformanceOutcome.failed
@@ -337,6 +347,7 @@ enum PhotoRenderer {
       switch format {
       case .jpeg8: try context.writeJPEGRepresentation(of: image, to: stage, colorSpace: sRGB, options: [CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String): 0.95])
       case .tiff16: try TIFF16Output.write(image, context: context, colorSpace: sRGB, to: stage, transport:tiffTransport)
+      case .avif10: throw DevelopmentError.invalidEncoding
       case .png16: try context.writePNGRepresentation(of: image, to: stage, format: .RGBA16, colorSpace: sRGB)
       }
     }
@@ -543,6 +554,7 @@ enum TIFF16Output {
         provider:actualProvider,decode:nil,shouldInterpolate:false,intent:.defaultIntent)
       let type:UTType, properties:[CFString:Any]
       switch format {
+      case .avif10: throw DevelopmentError.invalidEncoding
       case .tiff16: type = .tiff; properties=[kCGImagePropertyTIFFDictionary:[kCGImagePropertyTIFFCompression:1]]
       case .png16: type = .png; properties=[kCGImagePropertyDepth:16]
       case .jpeg8: type = .jpeg; properties=[kCGImageDestinationLossyCompressionQuality:jpegQuality]

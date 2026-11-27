@@ -48,6 +48,52 @@ final class EditingTests: XCTestCase {
     XCTAssertNotNil(submitting.currentAttempt.submissionIntentAt)
     return try store.transitionProcessingJob(id: job.id, attemptID: job.currentAttempt.id, runID: job.currentAttempt.runID, to: .running, remoteID: "remote-1")
   }
+  func testCompatibilityGraphPreservesStoredVersionsAndStableNodesAcrossReopen() throws {
+    let work = try work()
+    let first = try store.editingVersion(id: work.originalVersionID)
+    let legacy = DevelopmentRecipe(exposureEV: 0.75, straightenDegrees: 3)
+    var versions = [first]
+    for recipe in [legacy, try legacy.promotingToV2(), try legacy.promotingToV3()] {
+      let candidate = EditingVersion(workID: work.id, parentVersionID: try XCTUnwrap(versions.last).id,
+        kind: .development, source: work.source, recipe: recipe)
+      versions.append(try store.appendEditingVersion(candidate))
+    }
+    _ = try store.saveLiveDevelopmentState(workID: work.id, recipe: .init(exposureEV: -2),
+      parentVersionID: first.id, expectedRevision: 0)
+    let graph = try DevelopmentCompatibilityGraphV1(first)
+    XCTAssertEqual(graph.nodes.map(\.stage), [.source, .compatibilityCorrector, .finalOutput])
+    XCTAssertEqual(graph.edges.map(\.source), Array(graph.nodes.dropLast()))
+    XCTAssertEqual(graph.edges.map(\.destination), Array(graph.nodes.dropFirst()))
+    let before = try store.rows("SELECT id, data FROM editing_versions WHERE work_id=? ORDER BY id", [work.id])
+    store = nil
+    store = try LibraryStore(databaseURL: database)
+    for version in versions.reversed() {
+      let reopened = try store.editingVersion(id: version.id)
+      let projection = try DevelopmentCompatibilityGraphV1(reopened)
+      XCTAssertEqual(projection.nodes, graph.nodes)
+      XCTAssertEqual(projection.versionID, version.id)
+      XCTAssertEqual(projection.recipe, version.recipe)
+      XCTAssertEqual(try EditingFingerprint.of(projection.recipe), try EditingFingerprint.of(version.recipe))
+      XCTAssertTrue(projection.source.hasSameIdentity(as: source))
+    }
+    XCTAssertEqual(try store.rows("SELECT id, data FROM editing_versions WHERE work_id=? ORDER BY id", [work.id]), before)
+    XCTAssertEqual(try store.photoWork(id: work.id).liveRecipe?.exposureEV, -2)
+    let unrelated = PhotoWork(source: source)
+    XCTAssertNotEqual(try DevelopmentCompatibilityGraphV1(version(unrelated)).nodes, graph.nodes)
+  }
+
+  func testCompatibilityGraphRejectsUnsupportedRecipesAndAuthoritativeArtifacts() throws {
+    let work = try work()
+    var candidate = version(work)
+    candidate.recipe.schemaVersion = 999
+    XCTAssertThrowsError(try DevelopmentCompatibilityGraphV1(candidate))
+    candidate = version(work, artifact: try renderedFile().1)
+    XCTAssertThrowsError(try DevelopmentCompatibilityGraphV1(candidate)) {
+      XCTAssertEqual($0 as? DevelopmentCompatibilityGraphV1.Failure, .unsupportedVersion)
+    }
+    XCTAssertThrowsError(try DevelopmentCompatibilityGraphV1(version(work, kind: .ai)))
+  }
+
   func testSourceSnapshotIgnoresRatingAndLocationButRejectsAdmissionABAAndContentChanges() throws {
     _ = try store.updateSelection(ids: [asset.id], decision: .keep, rating: 5)
     try store.validateEditingSource(source)

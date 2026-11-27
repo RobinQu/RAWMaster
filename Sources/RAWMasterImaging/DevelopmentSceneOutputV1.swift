@@ -31,6 +31,8 @@ extension DevelopmentSceneOutputStateV1.Target {
 final class DevelopmentSceneOutputV1 {
   typealias Target = DevelopmentSceneOutputStateV1.Target
 
+  enum Boundary { case display, beforeGamut }
+
   struct DisplayImage {
     let texture: MTLTexture
     let target: Target
@@ -43,6 +45,7 @@ final class DevelopmentSceneOutputV1 {
   enum Failure: Error, Equatable { case invalidResource, invalidInput, invalidPixel }
   typealias MetalFailure = DevelopmentSceneColorV1.Failure
 
+  private let boundary: Boundary
   private let target: Target
   private let device: MTLDevice
   private let queue: MTLCommandQueue
@@ -50,7 +53,7 @@ final class DevelopmentSceneOutputV1 {
   private let reach, cusp: MTLTexture
   private let sampler: MTLSamplerState
 
-  init(device: MTLDevice, target: Target) throws {
+  init(device: MTLDevice, target: Target, boundary: Boundary = .display) throws {
     let pins=target.pins
     func data(_ suffix: String, _ ext: String, _ pin: String) throws -> Data {
       guard let url=Bundle.module.url(forResource:target.rawValue+suffix,withExtension:ext,subdirectory:"SceneColor") else {
@@ -62,7 +65,20 @@ final class DevelopmentSceneOutputV1 {
       guard digest == pin else { throw Failure.invalidResource }
       return value
     }
-    let shader=try data("","metal",pins.shader)
+    var shader=String(decoding:try data("","metal",pins.shader),as:UTF8.self)
+    if boundary == .beforeGamut {
+      // Derived only from the pinned shader. Tone and chroma rendering are retained;
+      // export still runs the *unaltered* gamut compressor and final range operator.
+      guard target == .hdr2020,
+            let gamut = shader.range(of: "// Add GamutCompress (fwd)"),
+            let conversion = shader.range(of: "// Add JMh to RGB", range: gamut.upperBound..<shader.endIndex) else {
+        throw Failure.invalidResource
+      }
+      shader.removeSubrange(gamut.lowerBound..<conversion.lowerBound)
+      guard let range = shader.range(of: "// Add Range processing"),
+            let end = shader.range(of: "return outColor;", range: range.upperBound..<shader.endIndex) else { throw Failure.invalidResource }
+      shader.removeSubrange(range.lowerBound..<end.lowerBound)
+    }
     func table(_ suffix: String,_ pin: String,_ format: MTLPixelFormat,_ bytesPerPixel: Int) throws -> MTLTexture {
       let value=try data(suffix,"f32",pin)
       let width=362, length=width*bytesPerPixel
@@ -76,7 +92,7 @@ final class DevelopmentSceneOutputV1 {
       return texture
     }
     let options=MTLCompileOptions(); options.mathMode = .safe
-    let source="#include <metal_stdlib>\nusing namespace metal;\n"+String(decoding:shader,as:UTF8.self)+Self.wrapper
+    let source="#include <metal_stdlib>\nusing namespace metal;\n"+shader+Self.wrapper
     let library=try device.makeLibrary(source:source,options:options)
     guard let function=library.makeFunction(name:"rmSceneViewV1"), let queue=device.makeCommandQueue() else {
       throw MetalFailure.metalUnavailable
@@ -86,10 +102,21 @@ final class DevelopmentSceneOutputV1 {
     guard let sampler=device.makeSamplerState(descriptor:s) else { throw MetalFailure.metalUnavailable }
     self.reach=try table("-reach",pins.reach,.r32Float,4); self.cusp=try table("-cusp",pins.cusp,.rgba32Float,16)
     self.pipeline=try device.makeComputePipelineState(function:function)
-    self.device=device; self.queue=queue; self.target=target; self.sampler=sampler
+    self.device=device; self.queue=queue; self.target=target; self.sampler=sampler; self.boundary=boundary
   }
 
   func render(_ image: DevelopmentSceneMetalV1.Image) throws -> DisplayImage {
+    guard boundary == .display else { throw Failure.invalidInput }
+    return DisplayImage(texture: try evaluate(image), target: target, origin: image.origin)
+  }
+
+  struct TargetEvidence { let texture: MTLTexture }
+  func preGamutEvidence(_ image: DevelopmentSceneMetalV1.Image) throws -> TargetEvidence {
+    guard boundary == .beforeGamut else { throw Failure.invalidInput }
+    return .init(texture: try evaluate(image))
+  }
+
+  private func evaluate(_ image: DevelopmentSceneMetalV1.Image) throws -> MTLTexture {
     try Task.checkCancellation()
     let source=image.texture
     guard image.port == .working, source.device === device, source.textureType == .type2D,
@@ -111,7 +138,7 @@ final class DevelopmentSceneOutputV1 {
     guard command.status == .completed else { throw command.error ?? MetalFailure.gpuExecutionFailed }
     try Task.checkCancellation()
     guard invalid.pointee == 0 else { throw Failure.invalidPixel }
-    return DisplayImage(texture:output,target:target,origin:image.origin)
+    return output
   }
 
   private static let wrapper = #"""

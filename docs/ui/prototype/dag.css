@@ -96,3 +96,15 @@
   .dag-commandbar button { padding: 3px 5px; }
   .dag-monitor { width: 110px; }
 }
+
+.dag-picker-row > strong { flex:1; font-size:12px; }
+.dag-compat { display:flex; flex-direction:column; }
+.dag-compat-canvas { container-type:inline-size; display:flex; flex:1; min-height:240px; align-items:center; justify-content:center; gap:8px; margin:0 8px; padding:8px; background:var(--inset); border-radius:8px; }
+.dag-compat-canvas > div { width:136px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+.dag-compat-canvas b,.dag-compat-canvas small { display:block; font-size:12px; }
+.dag-compat-canvas small,.dag-compat-canvas > span,.dag-compat > p { color:var(--muted); }
+.dag-compat > p { font-size:11px; margin:5px 24px 4px 8px; }
+@media(max-width:520px) {
+  .dag-compat-canvas { flex-direction:column; gap:3px; }
+  .dag-compat-canvas > span { transform:rotate(90deg); }
+}

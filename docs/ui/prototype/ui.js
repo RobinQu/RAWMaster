@@ -233,7 +233,7 @@ function route() {
   }
   if (S.page === 'edit') {
     S.tool = S.sub === 'dag' ? 'basic' : Object.hasOwn(editTools, S.sub) || ['agent', 'versions'].includes(S.sub) ? S.sub : 'smart';
-    if (S.sub === 'dag') { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
+    if (S.sub === 'dag' && !compatibilityGraphMode) { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
     if (['masks','repair'].includes(S.tool)) { S.canvasRouteTool = S.tool === 'masks' ? 'mask' : 'remove'; S.tool = 'basic'; }
     S.editReturn = 'edit/' + (S.sub || 'development');
     S.canvasMenu = '';
