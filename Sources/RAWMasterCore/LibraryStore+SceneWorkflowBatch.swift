@@ -83,6 +83,18 @@ extension LibraryStore {
         try locked { try rows("SELECT data FROM editing_commands WHERE action=? ORDER BY rowid DESC LIMIT 1", [Self.workflowBatchAction])
             .first.map { try decode($0[0], SceneWorkflowBatch.Header.self) } }
     }
+    package func sceneWorkflowTaskHistory(limit: Int = 100) throws -> [(SceneWorkflowBatch.Header, [SceneWorkflowBatch.State], historical: Bool)] {
+        try withReadSnapshot {
+            let headers = try rows("SELECT data FROM editing_commands WHERE action=? ORDER BY rowid DESC LIMIT ?",
+                                   [Self.workflowBatchAction, String(limit)]).map { try decode($0[0], SceneWorkflowBatch.Header.self) }
+            return try headers.map { header in
+                let states = try rows("SELECT json_extract(data,'$.state') FROM editing_commands WHERE action=? AND id GLOB ?",
+                                      [Self.workflowItemAction, Self.workflowItemKey(header.id, "") + "*"])
+                return (header, states.compactMap { SceneWorkflowBatch.State(rawValue: $0[0]) },
+                        try isHistoricalTask(.sceneWorkflow, id: header.id.uuidString))
+            }
+        }
+    }
     package func sceneWorkflow(id: UUID) throws -> SceneWorkflowBatch.Review {
         try withReadSnapshot {
             let header = try sceneWorkflowHeader(id)
@@ -93,6 +105,7 @@ extension LibraryStore {
     /// Decode/certify a source off the SQLite write lock, then atomically check the persisted pending item and target head.
     package func commitSceneWorkflowItem(_ batch: UUID, assetID: String, cancel: () throws -> Void = {},
                                          qualify: (EditingSourceSnapshot) throws -> Void) throws -> SceneWorkflowBatch.Item {
+        try requireLocalTask(.sceneWorkflow, id: batch.uuidString)
         var frozen = try sceneWorkflowItem(batch, assetID: assetID)
         guard frozen.state == .pending, let expected = frozen.source, let recipe = frozen.recipe else { return frozen }
         try cancel()
@@ -147,17 +160,20 @@ extension LibraryStore {
     }
 
     package func cancelSceneWorkflow(_ batch: UUID) throws -> SceneWorkflowBatch.Review {
-        try changeWorkflowItems(batch) { item in
+        try requireLocalTask(.sceneWorkflow, id: batch.uuidString)
+        return try changeWorkflowItems(batch) { item in
             if item.state == .pending { item.state = .cancelled; item.reason = "已停止待处理项。" }
         }
     }
     package func retrySceneWorkflow(_ batch: UUID) throws -> SceneWorkflowBatch.Review {
-        try changeWorkflowItems(batch) { item in
+        try requireLocalTask(.sceneWorkflow, id: batch.uuidString)
+        return try changeWorkflowItems(batch) { item in
             if item.state.retryable, item.recipe != nil { item.state = .pending; item.reason = nil }
         }
     }
     package func undoSceneWorkflow(_ batch: UUID) throws -> SceneWorkflowBatch.Review {
-        try changeWorkflowItems(batch) { item in
+        try requireLocalTask(.sceneWorkflow, id: batch.uuidString)
+        return try changeWorkflowItems(batch) { item in
             guard item.state == .completed, let head = item.committedHead, let candidate = item.candidate else { return }
             let work = try photoWork(id: head.id)
             guard SceneWorkflowBatch.Head(work) == head, try versionDisposition(versionID: candidate) == .candidate,

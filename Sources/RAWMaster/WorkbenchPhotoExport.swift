@@ -116,7 +116,7 @@ extension AppModel {
 
     func submitWorkbenchPhotoDelivery(directory: URL, naming: String, configuration: PhotoBatchExportConfiguration,
                                       ids: Set<String>, collision: String, pqReview: WorkbenchPQReview? = nil) {
-        guard workbenchPhotoDeliveryTask == nil else { return }
+        guard !isLibraryTransitioning, workbenchPhotoDeliveryTask == nil else { return }
         let candidates = workbenchExportCandidates
         let fingerprints = editingAdmissions.mapValues(\.fingerprint)
         let workflowVersions = workbenchExportContext.workflowVersions
@@ -175,6 +175,11 @@ extension AppModel {
     }
 
     func cancelWorkbenchPhotoDelivery() async {
+        guard !isLibraryTransitioning else { return }
+        await workbenchDeliveryOperations.perform { await cancelActiveWorkbenchPhotoDelivery() }
+    }
+
+    private func cancelActiveWorkbenchPhotoDelivery() async {
         guard let id = workbenchPhotoDelivery?.id, workbenchPhotoDeliveryTask != nil else { return }
         workbenchExplicitCancellation = id.uuidString.lowercased()
         if let lease = workbenchActiveLease {
@@ -185,9 +190,14 @@ extension AppModel {
     }
 
     func workbenchDeliveryDetails(_ id: String) async throws -> WorkbenchDeliveryDetails {
+        guard !isLibraryTransitioning else { throw CancellationError() }
+        return try await workbenchDeliveryOperations.perform { try await loadWorkbenchDeliveryDetails(id) }
+    }
+
+    private func loadWorkbenchDeliveryDetails(_ id: String) async throws -> WorkbenchDeliveryDetails {
         let queue = WorkbenchDeliveryCatalog(database: libraryURL)
         let receipt = try await queue.receipt(batchID: id)
-        guard let manifest = receipt.manifest,
+        guard receipt.batch.phase != .historical, let manifest = receipt.manifest,
               let access = try? WorkbenchDeliveryAccess.open(grantID: manifest.destination.grantID, database: libraryURL, in: defaults),
               (try? await queue.checkDirectory(batchID: id, directory: access.url)) != nil else {
             return .init(receipt: receipt, directory: nil, items: receipt.items.items)
@@ -215,26 +225,37 @@ extension AppModel {
     }
 
     func reconnectWorkbenchDestination(_ details: WorkbenchDeliveryDetails, granted: URL) async throws {
-        guard let destination = details.receipt.manifest?.destination else { throw WorkbenchDeliveryIssue.invalidReceipt }
-        let access = WorkbenchDeliveryAccess(granted)
-        do {
-            try await WorkbenchDeliveryCatalog(database: libraryURL).checkDirectory(batchID: details.receipt.batch.batchID, directory: access.url)
-        } catch {
-            throw WorkbenchDeliveryIssue.targetOffline
+        guard !isLibraryTransitioning, details.receipt.batch.phase != .historical else { throw CancellationError() }
+        try await workbenchDeliveryOperations.perform {
+            guard let destination = details.receipt.manifest?.destination else { throw WorkbenchDeliveryIssue.invalidReceipt }
+            let access = WorkbenchDeliveryAccess(granted)
+            do {
+                try await WorkbenchDeliveryCatalog(database: libraryURL).checkDirectory(batchID: details.receipt.batch.batchID, directory: access.url)
+            } catch {
+                throw WorkbenchDeliveryIssue.targetOffline
+            }
+            // The Rust check above validates the original writer and directory identity.
+            try access.remember(grantID: destination.grantID, database: libraryURL, in: defaults, reauthorized: true)
         }
-        try access.remember(grantID: destination.grantID, database: libraryURL, in: defaults)
     }
 
     func reconnectWorkbenchSource(_ details: WorkbenchDeliveryDetails, ordinal: Int, granted: URL) async throws {
-        guard let manifest = details.receipt.manifest,
+        guard !isLibraryTransitioning, details.receipt.batch.phase != .historical else { throw CancellationError() }
+        try await workbenchDeliveryOperations.perform { try await verifyWorkbenchSource(details, ordinal: ordinal, granted: granted) }
+    }
+
+    private func verifyWorkbenchSource(_ details: WorkbenchDeliveryDetails, ordinal: Int, granted: URL) async throws {
+        let id = details.receipt.batch.batchID
+        let queue = WorkbenchDeliveryCatalog(database: libraryURL)
+        let current = try await queue.receipt(batchID: id)
+        guard current.batch.phase != .historical, let manifest = current.manifest,
               let item = manifest.items.first(where: { $0.ordinal == ordinal }) else {
             throw WorkbenchDeliveryIssue.invalidReceipt
         }
-        let id = details.receipt.batch.batchID
         let access = WorkbenchDeliveryAccess(granted)
         let input: WorkbenchDeliveryCatalog.FrozenInput
-        if let inline = details.receipt.inlineInputs { input = inline[ordinal - 1] }
-        else { input = try await WorkbenchDeliveryCatalog(database: libraryURL).input(batchID: id, ordinal: ordinal) }
+        if let inline = current.inlineInputs { input = inline[ordinal - 1] }
+        else { input = try await queue.input(batchID: id, ordinal: ordinal) }
         do {
             try await ProcessingAdmission.shared.withPermit(.export, resources: .init(cpu: 1, io: 1)) {
                 try PhotoBatchRenderExporter.validateRelocatedSource(access.url, expected: input.version.source)
@@ -243,7 +264,8 @@ extension AppModel {
             throw WorkbenchDeliveryIssue.sourceOffline
         }
         for sibling in manifest.items where sibling.source == item.source {
-            try access.remember(grantID: Self.workbenchSourceGrant(batchID: id, ordinal: sibling.ordinal), database: libraryURL, in: defaults)
+            try access.remember(grantID: Self.workbenchSourceGrant(batchID: id, ordinal: sibling.ordinal),
+                database: libraryURL, in: defaults, reauthorized: true)
         }
     }
 
@@ -252,9 +274,14 @@ extension AppModel {
     }
 
     func resumeWorkbenchPhotoDelivery(_ id: String) async throws {
+        guard !isLibraryTransitioning else { throw CancellationError() }
+        try await workbenchDeliveryOperations.perform { try await startResumedWorkbenchPhotoDelivery(id) }
+    }
+
+    private func startResumedWorkbenchPhotoDelivery(_ id: String) async throws {
         guard workbenchPhotoDeliveryTask == nil, let store = workbenchExportStore else { throw WorkbenchDeliveryIssue.leaseUnavailable }
         let epoch = workbenchExecutionEpoch
-        let details = try await workbenchDeliveryDetails(id)
+        let details = try await loadWorkbenchDeliveryDetails(id)
         guard let manifest = details.receipt.manifest, let uuid = UUID(uuidString: id) else {
             throw WorkbenchDeliveryIssue.invalidReceipt
         }
@@ -268,7 +295,10 @@ extension AppModel {
         else { configuration = try await queue.configuration(batchID: id) }
         let archive = try await workbenchArchive()
         let protected = try await Task.detached { try store.editingProtectedRoots() }.value
-        guard workbenchPhotoDeliveryTask == nil, workbenchExecutionEpoch == epoch, !Task.isCancelled else { throw CancellationError() }
+        // A resume admitted before confirmation may finish starting while the session waits.
+        // Pausing or closing invalidates this epoch in stopWorkbenchPhotoDelivery().
+        guard workbenchPhotoDeliveryTask == nil, workbenchExecutionEpoch == epoch, !Task.isCancelled
+        else { throw CancellationError() }
         let lease = try await queue.begin(batch)
         if workbenchPhotoDeliveryTask != nil || workbenchExecutionEpoch != epoch || Task.isCancelled {
             try? await queue.stop(batchID: id, generation: lease.generation, token: lease.token, cancel: false)
@@ -312,11 +342,14 @@ extension AppModel {
     }
 
     func cancelWorkbenchDelivery(_ batch: WorkbenchDeliveryCatalog.Batch) async throws {
-        if workbenchPhotoDelivery?.id.uuidString.lowercased() == batch.batchID && workbenchPhotoDeliveryTask != nil {
-            await cancelWorkbenchPhotoDelivery()
-        } else {
-            try await WorkbenchDeliveryCatalog(database: libraryURL).stop(batchID: batch.batchID,
-                generation: batch.generation, token: nil, cancel: true)
+        guard !isLibraryTransitioning, batch.phase != .historical else { throw CancellationError() }
+        try await workbenchDeliveryOperations.perform {
+            if workbenchPhotoDelivery?.id.uuidString.lowercased() == batch.batchID && workbenchPhotoDeliveryTask != nil {
+                await cancelActiveWorkbenchPhotoDelivery()
+            } else {
+                try await WorkbenchDeliveryCatalog(database: libraryURL).stop(batchID: batch.batchID,
+                    generation: batch.generation, token: nil, cancel: true)
+            }
         }
     }
 

@@ -32,7 +32,7 @@ function quickBase(id) {
   return adopted?.id ?? e.base ?? e.adopted;
 }
 function quickLibrary() {
-  return Studio.catalog().packageName || '本机资料库';
+  return packageLocation().id;
 }
 function quickSubject(id = Studio.data.work) {
   return JSON.stringify([quickLibrary(), id]);
@@ -117,8 +117,8 @@ function promptDock() {
     const version = Studio.edit(Studio.data.work).versions.find((v) => v.id === job.result);
     const dimensions = version ? ' · ' + version.w + ' × ' + version.h : '';
     body = `<div class="quick-result"><p role="status">${h(issue || ('候选已就绪' + dimensions + '。请核对效果和边缘。'))}</p>
-    <div class="quick-buttons">${btn('生成前', 'quick-compare', 'before', { pressed: d.before, disabled: stale })}
-    ${btn('候选', 'quick-compare', 'after', { pressed: !d.before, disabled: stale })}${btn('100%', 'quick-inspect', '', { disabled: stale, pressed: !!S.quickInspect })}
+    <div class="quick-buttons"><div class="button-group" role="group" aria-label="比较" data-select-on-arrow>${btn('生成前', 'quick-compare', 'before', { pressed: d.before, disabled: stale })}
+    ${btn('候选', 'quick-compare', 'after', { pressed: !d.before, disabled: stale })}</div>${btn('100%', 'quick-inspect', '', { disabled: stale, pressed: !!S.quickInspect })}
     ${stale ? btn('查看已有编辑结果', 'quick-inspect-version') : ''}${btn('放弃候选', 'quick-discard')}
     ${btn('应用到照片', 'quick-apply', '', { cls: 'quick-primary', disabled: !!issue })}</div></div>`;
   } else {
@@ -493,7 +493,7 @@ actions['quick-inspect-version'] = () => {
 function applyQuickVersion(version) {
   const j = quickJobForVersion(version), id = Studio.data.work;
   if (j?.state !== 'done' || quickAdoptionIssue(j, id)) return false;
-  if (!Studio.adoptPromptVersion(id, version)) return false;
+  if (!Studio.adoptCandidateWithHistory(id, version, '采用快速 Prompt')) return false;
   j.quickPrompt.reviewed = true;
   Studio.save();
   return true;

@@ -399,7 +399,7 @@
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='m2 4 3-3 3 3m-6 4 3 3 3-3' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
   pointer-events: none;
 }
-.manual-inspector select, .manual-inspector button:not(.primary):not(.adjustment-disclosure):not(.adjustment-reset):not(:where(.flat-tabs button)) {
+.manual-inspector select, .manual-inspector button:not(.primary):not(.adjustment-disclosure):not(.adjustment-reset):not(:where(.button-group > button)) {
   min-height: 26px;
   border: 0;
   border-radius: 5px;
@@ -407,7 +407,7 @@
   box-shadow: none;
 }
 .manual-inspector select { appearance: none; height: 26px; padding: 0 24px 0 8px; }
-.manual-inspector button:not(.primary):not(.adjustment-disclosure):not(.adjustment-reset):not(:where(.flat-tabs button)) { padding-block: 4px; }
+.manual-inspector button:not(.primary):not(.adjustment-disclosure):not(.adjustment-reset):not(:where(.button-group > button)) { padding-block: 4px; }
 .manual-inspector :is(select, button):not(:disabled):hover { background-color: color-mix(in srgb, currentColor 13%, transparent); }
 .manual-inspector button[aria-pressed='true'] { background: var(--active); color: var(--accent); }
 .manual-inspector :is(select, button):disabled { opacity: .5; }
@@ -793,13 +793,7 @@ body[data-route^='edit/'] .toast {
 .editing-scopes.docked .histogram figcaption { display: none; }
 .editing-scopes .histogram svg, .editing-scopes .vector-plot { display: block; width: 100%; height: var(--scope-plot-height); }
 .editing-scopes .vector-plot { margin-top: 4px; background: #101112; border-radius: 5px; }
-.flat-tabs { display: flex; flex: 1; gap: 7px; min-width: 0; align-items: stretch; }
-:is(.manual-inspector, .editing-scopes) .flat-tabs button {
-  flex: 1; min-width: 0; padding: 3px; border: 0; border-bottom: 2px solid transparent;
-  border-radius: 0; background: transparent; color: var(--muted); box-shadow: none; font-size: 12px; min-height: 24px;
-}
-:is(.manual-inspector, .editing-scopes) .flat-tabs button:hover { background: transparent; color: var(--text); }
-:is(.manual-inspector, .editing-scopes) .flat-tabs button[aria-pressed=true] { border-bottom-color: var(--accent); color: var(--accent); }
+.editing-scopes .button-group { flex: 1; }
 .manual-inspector, .editing-scopes {
   --inspector-text-gap: 7px;
   --inspector-group-gap: 12px;

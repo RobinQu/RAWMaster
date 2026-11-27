@@ -1,6 +1,6 @@
 # 040 · gRPC 与 S3 协议
 
-2026-11-27 · 控制面 gRPC over HTTP/2/TLS，内容面 S3 兼容 API。客户端不直连 PostgreSQL；文件字节不进入 gRPC 消息。产品要求见[规格](spec.md)，实体见[数据模型](data-model.md)，存储见[存储](storage.md)，安全见[安全](security.md)。
+2026-11-27 · 控制面 gRPC over HTTP/2/TLS，内容默认经 S3 HTTPS 传输，Relay 使用有界分块流。产品要求见[规格](spec.md)，实体见[数据模型](data-model.md)，存储见[存储](storage.md)，安全见[安全](security.md)。
 
 ## 1. 分层
 
@@ -25,7 +25,7 @@
 
 - 自签名私有 CA 或单张自签名证书；客户端固定 CA／SPKI 指纹。详见[安全](security.md)。
 - 每个 gRPC 请求带 `authorization: Bearer <device-token>`；令牌只存哈希。
-- `library_id` 必须在设备可访问范围内；写操作还要求 `ownership_epoch` 匹配当前所有者。
+- `library_id` 必须在设备可访问范围内。每个写方法及分块会话确认当前 `replica_id`、`ownership_epoch`、`recovery_generation` 与写授权，适用时在发布事务内再次核对。
 - 第二客户端写返回 `FAILED_PRECONDITION` + 当前 owner；只读请求可配置允许。
 - 管理方法（备份、恢复、doctor、证书轮换）要求 admin 角色或本机 CLI。
 
@@ -35,7 +35,9 @@
 
 | 方法 | 类型 | 作用 |
 | --- | --- | --- |
-| `AcquireLibrary` | unary | 获取库所有权／续期；返回 `ownershipEpoch`、fencing token |
+| `ListLibraries` | unary | 按设备权限列出可打开库、所有者、最近已核验快照及修订 |
+| `CreateLibrary` / `GetLibraryCreation` | unary | 以稳定建库命令 ID 创建或查询原收据。初始化完成后返回库与初始快照修订 |
+| `AcquireLibrary` | unary | 已授权包实例续期或显式接续。返回所有权 epoch、恢复代次和临时 fencing token |
 | `TransferLibrary` | unary | 显式转移所有权 |
 | `ApplyOperation` | unary | 提交一条操作；PostgreSQL 事务 + 收据 |
 | `ApplyOperations` | unary | 小批操作；逐项结果，允许部分成功 |
@@ -73,7 +75,7 @@
 
 ### 3.4 JobService（Server 1.1）
 
-`GetCapabilities`、`SubmitJob`、`GetJob`、`CancelJob`、`RetryJob`、`WatchJob`、`ListJobs`。1.0 只保留 proto 和身份，不开放执行；图像批处理语义见 [041](../041-server-image-editing/spec.md)。
+`GetCapabilities`、`SubmitJob`、`GetJob`、`CancelJob`、`RetryJob`、`WatchJob`、`ListJobs`、`GetJobResult`。040 预留能力和版本。完整状态机、幂等及事件补差由 [041](../041-server-image-editing/queues.md#4-双端协同) 冻结。
 
 作业信封至少包含：
 
@@ -100,6 +102,9 @@ message OperationEnvelope {
   bytes payload_json = 8;
   string payload_sha256 = 9;
   google.protobuf.Timestamp created_at = 10;
+  string replica_id = 11;
+  uint64 ownership_epoch = 12;
+  string recovery_generation = 13;
 }
 ```
 
@@ -117,9 +122,9 @@ message OperationEnvelope {
 | `FAILED_PRECONDITION` | epoch／修订／依赖不满足 | 拉取后重试或转移 |
 | `ALREADY_EXISTS` | 同 ID 不同载荷 | 不重试，报冲突 |
 | `RESOURCE_EXHAUSTED` | 配额／容量 | 清理或扩容 |
-| `NOT_FOUND` | 库／对象／快照不存在 | 不重试 |
-| `UNAVAILABLE` | 暂时不可用 | 指数退避重试 |
-| `DEADLINE_EXCEEDED` | 超时 | 同 ID 重试 |
+| `NOT_FOUND` | 库／对象／快照不存在，或查询代次内无作业记录 | 先区分缺失对象与未知提交。恢复旧备份后的无记录不能证明未接收 |
+| `UNAVAILABLE` | 暂时不可用 | 已知未提交的工作有限退避，可能提交的写操作先查收据 |
+| `DEADLINE_EXCEEDED` | 超时 | 用原 ID 核对，再按操作语义恢复 |
 
 ## 5. S3 Direct 上传
 
@@ -145,7 +150,7 @@ Server 校验归档资格、配额、对象是否已存在；写 `upload_intent`
 ```json
 {
   "uploadID": "...",
-  "objectKey": "libraries/<libraryID>/objects/<sha2>/<sha256>",
+  "stagingKey": "libraries/<libraryID>/staging/<uploadID>/object",
   "partSize": 67108864,
   "parts": [
     {"partNumber": 1, "url": "https://rustfs.../...&partNumber=1", "expiresAt": "..."}
@@ -169,11 +174,11 @@ Server 校验归档资格、配额、对象是否已存在；写 `upload_intent`
 Server：
 
 1. `CompleteMultipartUpload`（若客户端未完成）；
-2. `HEAD` 或 `GetObjectAttributes` 核对 key、字节数、SHA-256；
-3. PostgreSQL 事务：`objects.state=available`、创建 `archive_refs`、更新配额、写 outbox；
+2. 核对暂存 key、长度及可信的整对象 SHA-256，再条件发布到同库内容 key，已有对象逐项核验复用。
+3. PostgreSQL 条件事务重查资格、配额和写授权，登记 `objects.state=available`、`archive_refs` 与 outbox。
 4. 返回收据和 `serverRevision`。
 
-**S3 ETag 不是内容哈希。** RustFS 支持 PutObject SHA-256 checksum 时使用；否则由 Server 校验声明值，并在恢复／scrub 时抽查。
+Provider 若无法返回可验证的整对象 SHA-256，Server 以有界缓冲读取暂存对象计算摘要。ETag、multipart 合成摘要和客户端自填元数据均只用于相应传输或声明核对。收据保存校验方式，数据库落盘前的孤儿对象交给对账。[Amazon S3 完整对象与合成校验](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity-upload.html)
 
 ## 6. 自动 Relay
 

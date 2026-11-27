@@ -84,14 +84,11 @@ flowchart LR
 - 缓存：LRU、TTL、固定、离线、校验；显示、编辑、场景代理分开。
 - 存储预算：全量 16-bit 线性不默认落盘；`sceneProxy` 0.5–1× 按需；1:1 用原件。
 
-### 3.3 客户端队列
+### 3.3 远端作业的客户端接入
 
-- 复用 `CatalogTaskQueue`：持久任务、租约、重试、外部投递。
-- 复用 `SceneWorkflowBatch`：header／item／candidate、`pending`／`offline`／`incompatible`／`conflict`／`completed`／`cancelled`／`undone`／`failed`，以及 review／register／commit／cancel／retry／undo。
-- 扩展任务类型：`prefetch.sceneProxy`、`generate.sceneProxy`、`scene.batch.run`、`scene.batch.remote`、`submit.remoteJob`、`watch.remoteJob`、`fetch.remoteResult`。
-- 场景批次项绑定 `batch_id`、`parent_version`、`target_head`、`scene_graph_hash`、`output_state_hash`；不同 head 不合并。
-- 前台 `foregroundBlocking` 可抢占；拖动时暂停 prefetch。
-- 重启：`running` → `waiting`／重试；不假装完成；批次候选／head 冲突保留。
+- 复用 [042 的业务记录、资源预算和会话](../042-local-library-workbench/plan.md)。在现有「制作任务」中增加远端作业详情、提交意图和事件游标。
+- 观察和下载是同一个任务的阶段。场景批次项映射到一份稳定的远端作业 ID，沿用已冻结的父版本、目标 head、场景图和输出状态。返回时按原来批次或版本登记。
+- 客户端重启先查持久收据，已发送的操作按原 ID 核对。切库停止在旧会话中应用事件，重开所属库后补差。按需取回和后台预取共用 042 的前台资源限制。
 
 ## 4. Server
 
@@ -117,7 +114,7 @@ flowchart LR
 - 类型：`proxy.generate`、`scene.proxy`、`scene.render.final`、`scene.render.batch`、`legacy.render.final`、`model.prefix`、`generative`。
 - 冻结：原件、`sceneGraph`／旧配方、`outputState`（route／sdrTrim）、`modelProgram`、模板／批次、目标 head、引擎／模型、`deliveryTarget`、`format`。
 - PostgreSQL `jobs`／`job_attempts`／`job_inputs`／`job_outputs`／`job_events`；字段含 scene graph／output state／model program hash、compatibility route、target、format。
-- 状态、租约、重试、取消、发布见 [queues.md](queues.md#3-server-作业队列)。
+- 状态、租约、重试、取消、发布见 [Server 作业与准入](queues.md#3-server-作业和准入)。
 - 结果先 S3 暂存，校验后登记；同一作业只发布一次。
 - HDR AVIF 10 位 Rec.2020／PQ、SDR JPEG8、PNG16 分别记录 target、format、位深、ICC／CICP；不自动采用。
 - 旧 SDR 兼容版本不迁移为 scene graph；不把 HDR 目标降为 SDR。
@@ -143,10 +140,10 @@ flowchart LR
 
 - 客户端 SQLite；Server PostgreSQL；不共享数据库。
 - 提交：稳定 `jobID` + `requestHash`；同 ID 幂等。
-- 观察：`WatchJob` server streaming 或 `GetJob` 轮询；断线补 sequence。
+- 观察：`WatchJob` server streaming 或 `GetJob` 轮询，断线补 sequence，游标过期或恢复换代时先取权威快照。
 - 取消：客户端 → Server → worker；已发布保留。
-- 未知：同 ID 查询；不新 ID 重发。
-- 结果：S3 presigned／Relay；客户端 SHA-256 校验；候选。
+- 未知：同 ID 查询，提交可否重送以同一权威代次的未接收回执为准。恢复旧备份后保留跨代核对。
+- 结果：S3 presigned／Relay。客户端核验并登记候选、代理或 032 渲染阶段。032 交付收据须在本地写盘后登记。
 - 场景批次：本地 `SceneWorkflowBatch` 与远端 `scene.render.*` 通过 batch／item／target head 绑定；结果回批次，不直接采用。
 - 公平：library lane 保留；每库加权；GPU／显存配额。
 - 详细见 [queues.md](queues.md)。
@@ -189,6 +186,18 @@ flowchart LR
 - Feature flag：`image_proxy`、`image_sdr_batch`、`image_scene_batch`、`model.prefix`、`generative`；按服务器／部署配置。
 - 容器／驱动／Vulkan ICD／CUDA toolkit 固定版本；升级前跑能力与精度回归。
 
+### 8.1 执行节点的工作存储
+
+S3 保存原件及已登记的输出，PostgreSQL 保存作业和收据。计算节点按输入接口使用内存缓冲区或可寻址的文件。首版以可配置的工作目录验证现有解码和模型路径，优先采用计算节点就近的 SSD／NVMe。S3 保持对象接口，ZFS 可以作 S3 的底层存储。共享文件系统作为可选部署方式，按实测吞吐和多节点复用收益选用。
+
+| 路径 | 数据流 |
+| --- | --- |
+| RAW 解码、代理与普通渲染 | 从 S3 拉取冻结输入并校验。需要文件路径或随机访问的解码器从工作目录打开。支持缓冲区的解码链路可直接消费字节。解码后的像素供 CPU／GPU 算子复用，分块从已准备的源取样。批量按有界并发预取下一项 |
+| Flux／模型前缀 | 部署时将已核验的权重和所需资源准备到模型目录。按模型、权重版本和摘要复用工作节点上的磁盘缓存。进程／显存常驻由实际 CUDA 内存和吞吐测量决定。现有 Mac Flux worker 从文件加载权重，生成阶段使用张量。[权重加载](../../Modules/FluxWorker/src/weights.rs) · [现有生成循环](../../Modules/FluxWorker/src/pipeline.rs) |
+| 输出与恢复 | 需要路径的编码器先写入当前尝试的暂存区。将编码字节或暂存文件上传 S3，校验后按租约登记唯一结果。工作盘可回收或重建。原件缓存按库和内容身份复用，任务临时数据按尝试隔离 |
+
+预留每个可并行尝试的暂存空间，分别限制输入读取、缓存占用、计算和输出上传。空间不足进入等待或失败，已登记的对象不受影响。首轮比较三个条件。冷缓存包含输入取回及模型准备。热磁盘缓存仍记录权重加载与初始化。采用常驻模型时另外记录稳态推理。逐段报告 S3 取回及校验、解码、加载与上传显存、推理或渲染、编码、写回以及作业端到端时间。使用同一批冻结输入和输出规格记录 P50／P95、缓存命中和 GPU 等待，再判断瓶颈所在。[Amazon S3 性能指南](https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance-guidelines.html)
+
 ## 9. 测试
 
 | 层 | 内容 |
@@ -202,6 +211,7 @@ flowchart LR
 | HDR 交付 | AVIF 10 位 Rec.2020／PQ、SDR 派生 JPEG/PNG16、ICC／CICP、色彩门 |
 | 模型前缀 | denoise／superres／segmentation 顺序、身份、provider、预算 |
 | 生成式 | CUDA、模型、显存、许可、取消、结果 |
+| 工作盘与对象 I/O | 冷输入、热磁盘、模型常驻分别测。并发批次核对预取、空间不足、暂存清理与 S3 发布收据 |
 | 协同 | 提交／观察／取消／重试／结果；断线；同 ID；批次 head |
 | 规模 | 10TB／10GbE、20 万对象、队列等待、sceneProxy、final、HDR 编码、Flux；60MP 合成图只作起点 |
 
@@ -211,7 +221,7 @@ flowchart LR
 | --- | --- | --- |
 | Q0 | 代理／队列／scene job 契约、能力清单、色彩门 | 评审通过 |
 | Q1 | display／edit／sceneProxy 预取、缓存、本地生成 | 冷片／HDR 进入编辑无空白；1:1 用原件 |
-| Q2 | `CatalogTaskQueue` + `SceneWorkflowBatch` 扩展 | 前台不被阻塞；批次不丢；head 冲突保留 |
+| Q2 | 042 基础上的远端提交、镜像、核对与取回 | 切库与重启后仍按原作业核对，结果回到原批次／作品 |
 | Q3 | Server 队列 + legacy SDR worker | 作业幂等、公平、重启恢复、发布一次 |
 | Q4 | Linux scene executor + scene worker／HDR | 场景图／HDR 像素与色彩门通过；旧 SDR 不迁移 |
 | Q5 | model prefix + Flux/CUDA | 模型准入；结果候选；取消／重试 |

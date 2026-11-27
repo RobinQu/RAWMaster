@@ -23,6 +23,7 @@ public final class ImportService: @unchecked Sendable {
     self.postIngest = postIngest
   }
   public func cancel() { control.cancel() }
+  public func pause() { control.pause() }
   public func importDirectory(
     source: URL, destination: URL?, projectName: String, mode: ImportMode, projectID: String? = nil, initialScreening: Bool = false,
     stageChanged: @escaping ImportStageCallback = { _, _ in },
@@ -34,11 +35,16 @@ public final class ImportService: @unchecked Sendable {
       guard FileManager.default.fileExists(atPath: root.path, isDirectory: &isDirectory),
         isDirectory.boolValue
       else { throw LibraryError.invalid("源目录不可用：\(root.path)") }
+      let sourceIdentity = try LocalDirectoryIdentity(root)
+      var destinationIdentity: LocalDirectoryIdentity?
       if mode == .copy {
         guard let destination else { throw LibraryError.invalid("请选择复制目标目录") }
         try FileSafety.checkTarget(destination, sources: try store.protectedSourceRoots() + [root])
+        try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+        destinationIdentity = try LocalDirectoryIdentity(destination)
       }
-      let session = try store.prepareImportSession(root: root, destination: destination, mode: mode, projectName: projectName, projectID: projectID, initialScreening: initialScreening)
+      let session = try store.prepareImportSession(root: root, destination: destination, mode: mode, projectName: projectName,
+        projectID: projectID, initialScreening: initialScreening, sourceIdentity: sourceIdentity, destinationIdentity: destinationIdentity)
       return try run(session, stageChanged: stageChanged, progress: progress)
     }
   }
@@ -80,6 +86,7 @@ public final class ImportService: @unchecked Sendable {
   private func run(_ original: ImportSession, stageChanged: @escaping ImportStageCallback, progress: @escaping @Sendable (TaskProgress) -> Void)
     throws -> ImportSession
   {
+    try store.requireLocalTask(.importSession, id: original.id)
     let executionLease = try store.acquireImportLease(original.id)
     defer { executionLease.release() }
     try store.setImportActive(original.id, active: true)
@@ -104,11 +111,35 @@ public final class ImportService: @unchecked Sendable {
       var isDir: ObjCBool = false
       let sourceAvailable =
         FileManager.default.fileExists(atPath: root.path, isDirectory: &isDir) && isDir.boolValue
+      if sourceAvailable {
+        let sourceIdentity = try LocalDirectoryIdentity(root)
+        if let saved = session.sourceDirectoryIdentity, !saved.matches(sourceIdentity) {
+          throw LibraryError.invalid("来源目录或磁盘身份已变化。请接回原设备，或先在导入会话中核验并重新定位原片。")
+        }
+        session.sourceDirectoryIdentity = sourceIdentity
+      }
+      let managedRoot = session.managedContainerURL
       if session.mode == .copy {
-        guard let path = session.effectiveManagedRoot ?? session.destinationPath else {
+        guard let managedRoot else {
           throw LibraryError.invalid("缺少复制目标目录")
         }
-        try FileSafety.checkTarget(URL(fileURLWithPath: path), sources: protectedRoots)
+        try FileSafety.checkTarget(managedRoot, sources: protectedRoots)
+        if session.managedDirectoryIdentity == nil {
+          try FileManager.default.createDirectory(at: managedRoot, withIntermediateDirectories: true)
+        }
+        guard let actual = try? LocalDirectoryIdentity(managedRoot),
+          session.managedDirectoryIdentity?.matches(actual) != false else {
+          throw LibraryError.invalid("复制目标目录或磁盘身份已变化。请接回复制目标，或先核验并重新定位副本。")
+        }
+        session.managedDirectoryIdentity = actual
+      }
+      let expectedSource = sourceAvailable ? session.sourceDirectoryIdentity : nil
+      let expectedManaged = session.managedDirectoryIdentity
+      func verifyDirectory(_ url: URL, _ identity: LocalDirectoryIdentity?, message: String) throws {
+        guard let identity else { return }
+        guard let current = try? LocalDirectoryIdentity(url), identity.matches(current) else {
+          throw LibraryError.invalid(message)
+        }
       }
       if sourceAvailable {
         session.scanCompleted = false
@@ -133,6 +164,7 @@ public final class ImportService: @unchecked Sendable {
         do {
           for case let url as URL in iterator {
             try control.check()
+            if processed % 32 == 0 { try verifyDirectory(root, expectedSource, message: "扫描期间来源目录已变化。") }
             guard Self.extensions.contains(url.pathExtension.lowercased()) else { continue }
             // Resolve both sides: Foundation may enumerate /var while the selected root is /private/var.
             let resolved = FileSafety.canonical(url)
@@ -159,6 +191,7 @@ public final class ImportService: @unchecked Sendable {
                 effectiveSourcePath: resolved.path)
               discoveryBatch.append(record)
               if discoveryBatch.count == 64 {
+                try verifyDirectory(root, expectedSource, message: "扫描期间来源目录已变化。")
                 try store.registerDiscovered(discoveryBatch)
                 discoveryBatch.removeAll(keepingCapacity: true)
               }
@@ -168,9 +201,11 @@ public final class ImportService: @unchecked Sendable {
             }
             processed += 1
           }
+          try verifyDirectory(root, expectedSource, message: "扫描期间来源目录已变化。")
         } catch LibraryError.cancelled {
           // Graceful cancellation retains the already discovered tail as well as
           // complete batches. A crash can simply rediscover that bounded tail.
+          try verifyDirectory(root, expectedSource, message: "扫描期间来源目录已变化。")
           try store.registerDiscovered(discoveryBatch)
           throw LibraryError.cancelled
         }
@@ -188,6 +223,8 @@ public final class ImportService: @unchecked Sendable {
       try store.saveSession(session)
       for i in assets.indices {
         try control.check()
+        try verifyDirectory(root, expectedSource, message: "接入期间来源目录已变化。")
+        if let managedRoot { try verifyDirectory(managedRoot, expectedManaged, message: "接入期间复制目标已变化。") }
         var a = assets[i]
         let sourceFingerprint = LocationIdentity.fingerprint(a, role: .source)
         let managedFingerprint = LocationIdentity.fingerprint(a, role: .managed)
@@ -249,6 +286,7 @@ public final class ImportService: @unchecked Sendable {
               let result = try FileSafety.verifiedCopy(
                 source: source, target: target, expectedHash: a.contentHash,
                 protectedRoots: protectedRoots,
+                beforePublish: { try verifyDirectory(work.deletingLastPathComponent(), expectedManaged, message: "接入期间复制目标已变化。") },
                 cancel: { try self.control.check() })
               a.currentPath = result.0.path
               a.effectiveManagedPath = result.0.path
@@ -301,7 +339,7 @@ public final class ImportService: @unchecked Sendable {
     } catch {
       session.status =
         (error as? LibraryError).map {
-          if case .cancelled = $0 { return "cancelled" }
+          if case .cancelled = $0 { return control.isPausing ? "paused" : "cancelled" }
           return "failed"
         } ?? "failed"
       if let registered = try? store.loadAssets(sessionID: session.id) {
@@ -310,7 +348,7 @@ public final class ImportService: @unchecked Sendable {
         session.failed = registered.filter { $0.importState == .failed }.count
       }
       try? store.saveSession(session)
-      if session.status == "cancelled" { return session }
+      if session.status == "cancelled" || session.status == "paused" { return session }
       throw error
     }
   }

@@ -6,6 +6,7 @@ import RAWMasterImaging
 
 struct ExportWorkspace: View {
     @EnvironmentObject private var model: AppModel
+    @Environment(\.openWindow) private var openWindow
     @State private var values = ExportWorkspaceSettings()
     @State private var basePreset = ExportWorkspacePresetChoice.builtins[0]
     @State private var personal: [ExportWorkspacePresetChoice] = []
@@ -35,7 +36,8 @@ struct ExportWorkspace: View {
     }
 
     private var allPresets: [ExportWorkspacePresetChoice] { ExportWorkspacePresetChoice.builtins + personal }
-    private var running: Bool { model.workbenchPhotoDelivery?.running == true }
+    private var rendering: Bool { model.workbenchPhotoDelivery?.running == true }
+    private var running: Bool { rendering || model.originalDelivery.activeID != nil }
     private var modified: Bool { values != basePreset.settings }
     private var checked: Set<String> { selection.checked }
     private var directory: URL {
@@ -60,7 +62,7 @@ struct ExportWorkspace: View {
     }
 
     var body: some View {
-        let assets = running && model.workbenchPhotoDelivery?.resumedCount == nil
+        let assets = rendering && model.workbenchPhotoDelivery?.resumedCount == nil
             ? (model.workbenchPhotoDelivery?.assets ?? []) : model.workbenchExportCandidates
         let inspected = assets.first { $0.id == selection.focusedID }
         VStack(spacing: 0) {
@@ -237,7 +239,12 @@ struct ExportWorkspace: View {
                     .accessibilityIdentifier("export.workspace.destination")
             }
             Spacer()
-            Button("任务详情") { showingDeliveryDetails = true }
+            Button("任务详情") {
+                if original || model.originalDelivery.activeID != nil {
+                    model.activity.requestTasks()
+                    openWindow(id: "background-activity")
+                } else { showingDeliveryDetails = true }
+            }
                 .focused($deliveryDetailsFocused)
                 .accessibilityIdentifier("export.workspace.deliveryDetails")
             if let delivery, delivery.running {
@@ -247,6 +254,12 @@ struct ExportWorkspace: View {
                     Text("可返回编辑，交付继续").font(.caption2).foregroundStyle(.secondary)
                 }
                 Button("取消导出") { Task { await model.cancelWorkbenchPhotoDelivery() } }
+            } else if let id = model.originalDelivery.activeID, let store = model.store {
+                if let progress = model.originalDelivery.progress {
+                    ProgressView(value: Double(progress.completed), total: Double(max(1, progress.total))).frame(width: 120)
+                    Text(progress.message).font(.caption2).lineLimit(1)
+                }
+                Button("取消导出") { model.originalDelivery.cancel(id, store: store) }
             } else {
                 if let results = delivery?.files, !results.isEmpty {
                     Button("在 Finder 显示 \(results.count) 个文件") {
@@ -407,7 +420,7 @@ struct ExportWorkspace: View {
             }
             rememberSubmission()
             model.export(ids: copy ? ids : [], destination: directory.path, formats: values.originalFormats,
-                         exactAssetIDs: ids, csvLayout: .photoRows)
+                         exactAssetIDs: ids, csvLayout: .photoRows, grantedDestination: directory)
             return
         }
         if values.pqDelivery {

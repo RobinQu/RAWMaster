@@ -29,6 +29,7 @@ binary_dir="$(swift build "${swift_build_options[@]}" --show-bin-path)"
 app="${RAWMASTER_APP_OUTPUT:-$PWD/output/RAWMaster.app}"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary_dir/RAWMaster" "$app/Contents/MacOS/RAWMaster"
+/usr/bin/ditto "$binary_dir/RAWMaster_RAWMaster.bundle" "$app/Contents/Resources/RAWMaster_RAWMaster.bundle"
 /usr/bin/ditto "$binary_dir/PhotoExport_RAWMasterPhotoExport.bundle" "$app/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle"
 depth_resources="$app/Contents/Resources/SceneDepth"
 python3 scripts/build-depth-model.py --destination "$depth_resources"
@@ -214,6 +215,24 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundleIconName</key><string>AppIcon</string>
 <key>NSSupportsAutomaticTermination</key><false/>
+<key>CFBundleDocumentTypes</key>
+<array><dict>
+  <key>CFBundleTypeName</key><string>RAWMaster 资料库</string>
+  <key>CFBundleTypeIconFile</key><string>LibraryFolder.icns</string>
+  <key>CFBundleTypeRole</key><string>Editor</string>
+  <key>LSHandlerRank</key><string>Owner</string>
+  <key>LSItemContentTypes</key><array><string>io.robinqu.rawmaster.library</string></array>
+</dict></array>
+<key>UTExportedTypeDeclarations</key>
+<array><dict>
+  <key>UTTypeIdentifier</key><string>io.robinqu.rawmaster.library</string>
+  <key>UTTypeDescription</key><string>RAWMaster 资料库</string>
+  <key>UTTypeIconFile</key><string>LibraryFolder.icns</string>
+  <key>UTTypeConformsTo</key><array><string>com.apple.package</string><string>public.content</string></array>
+  <key>UTTypeTagSpecification</key><dict>
+    <key>public.filename-extension</key><array><string>rawmasterlibrary</string></array>
+  </dict>
+</dict></array>
 </dict></plist>
 PLIST
 build_version="${RAWMASTER_BUILD_VERSION:-1}"

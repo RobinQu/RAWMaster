@@ -11,6 +11,7 @@ use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
+use std::collections::BTreeSet;
 use std::path::Path;
 use uuid::Uuid;
 
@@ -162,15 +163,20 @@ pub(super) fn digest(bytes: &[u8]) -> String {
 struct Catalog {
     library: String,
     writer: String,
+    historical_libraries: BTreeSet<String>,
 }
 
 impl Catalog {
     fn read(db: &Connection) -> Result<Self> {
         let identity = db.query_row("SELECT l.value,w.value FROM lc_meta l JOIN metadata w
             ON w.key='deviceID' WHERE l.key='libraryID' AND length(l.value)>0 AND length(w.value)>0", [], |r| {
-            Ok(Self { library:r.get(0)?, writer:r.get(1)? })
+            Ok((r.get(0)?, r.get(1)?))
         }).optional()?;
-        identity.ok_or_else(|| "missing catalog library or writer identity".into())
+        let (library, writer) = identity.ok_or("missing catalog library or writer identity")?;
+        let mut statement = db.prepare("SELECT substr(key,length('localPackage.historyLibrary.v1/')+1)
+            FROM lc_meta WHERE key GLOB 'localPackage.historyLibrary.v1/*' AND value='1'")?;
+        let historical_libraries = statement.query_map([], |row| row.get(0))?.collect::<std::result::Result<_, _>>()?;
+        Ok(Self { library, writer, historical_libraries })
     }
 }
 
@@ -190,7 +196,8 @@ impl Control {
         };
         if row.schema != schema
             || row.batch_id != id
-            || row.library_id != catalog.library
+            || (row.library_id != catalog.library
+                && (row.writer_id == catalog.writer || !catalog.historical_libraries.contains(&row.library_id)))
             || row.writer_id.is_empty()
             || row.generation == 0
             || row.created_at_ms < 0
@@ -203,10 +210,13 @@ impl Control {
         Ok(row)
     }
     fn local(&self, catalog: &Catalog) -> Result<()> {
-        if self.writer_id != catalog.writer {
+        if !self.is_local(catalog) {
             return Err("workbench batch belongs to a historical catalog writer".into());
         }
         Ok(())
+    }
+    fn is_local(&self, catalog: &Catalog) -> bool {
+        self.library_id == catalog.library && self.writer_id == catalog.writer
     }
     fn active(&self, now: i64) -> bool {
         self.phase == Phase::Running && self.lease_until_ms.is_some_and(|until| until > now)
@@ -223,7 +233,7 @@ impl Control {
         Ok(())
     }
     fn summary(&self, catalog: &Catalog, now: i64) -> Value {
-        let phase = if self.writer_id != catalog.writer {
+        let phase = if !self.is_local(catalog) {
             "historical"
         } else if self.active(now) {
             "running"
@@ -323,7 +333,7 @@ fn save(db: &Connection, row: &Control) -> Result<()> {
 
 fn displayed(db: &Connection, row: &Control, catalog: &Catalog, now: i64) -> Result<Value> {
     let mut summary = row.summary(catalog, now);
-    if row.writer_id == catalog.writer && row.phase != Phase::Cancelled && items::done(db, row)? {
+    if row.is_local(catalog) && row.phase != Phase::Cancelled && items::done(db, row)? {
         summary["phase"] = "done".into();
     }
     Ok(summary)
@@ -647,7 +657,7 @@ pub(super) fn execute(db: &mut Connection, path: &Path, command: Command) -> Res
             return Ok(Value::Null);
         };
         let stored = stored_manifest(&tx, &row)?;
-        let manifest = if row.writer_id == catalog.writer {
+        let manifest = if row.is_local(&catalog) {
             serde_json::from_str(&stored)?
         } else {
             Value::Null

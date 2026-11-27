@@ -44,6 +44,9 @@ const glyphs = {
   pin: 'M12 22s8-8 8-14a8 8 0 0 0-16 0c0 6 8 14 8 14z M12 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
   layers: 'M4 4h13v12H4z M8 20h13V8',
   bypass: 'M8 8h8v8H8z M2 12h6m8 0h6 M3 7V4h18v3m-3-3 3 3 3-3',
+  nodeSerial: 'M2 12h5m10 0h5M7 8h10v8H7z',
+  nodeParallel: 'M2 12h3m0 0c3 0 3-6 6-6m-6 6c3 0 3 6 6 6M11 3h6v6h-6zm0 12h6v6h-6zm6-9c2 0 2 6 5 6m-5 6c2 0 2-6 5-6',
+  fit: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M7 9h10v6H7z',
   plus: 'M12 4v16M4 12h16',
   undo: 'M8 5 3 10l5 5m-4-5h10a6 6 0 0 1 0 12',
   check: 'm4 12 5 5L20 6',
@@ -269,10 +272,12 @@ function route() {
   quickExitCanvas();
   S.quickView = null;
   const raw = decodeURI(location.hash.slice(1)) || 'library/project/river';
+  const previous = document.body.dataset.route;
   document.body.dataset.route = raw;
   const [page, ...rest] = raw.split('/');
   if (S.page === 'edit' && page !== 'edit') Activity.leavePhoto();
-  S.page = ['library', 'edit', 'export', 'tools', 'settings', 'jobs'].includes(page) ? page : 'library';
+  if (page === 'jobs' && previous && !previous.startsWith('jobs')) S.jobsReturn = previous;
+  S.page = ['library', 'edit', 'export', 'tools', 'settings', 'jobs', 'welcome'].includes(page) ? page : 'library';
   S.sub = rest.join('/');
   if (S.page === 'library') {
     S.scope = S.sub || 'project/river';

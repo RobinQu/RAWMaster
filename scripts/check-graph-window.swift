@@ -36,7 +36,15 @@ func press(_ element: AXUIElement) throws {
     let result = AXUIElementPerformAction(element, kAXPressAction as CFString)
     guard result == .success else { throw Failure("AXPress " + String(result.rawValue)) }
 }
-func drag(_ p: CGPoint, _ delta: CGSize, expectedPID: pid_t) throws {
+func key(_ code: CGKeyCode, flags: CGEventFlags = []) throws {
+    for down in [true, false] {
+        guard let event = CGEvent(keyboardEventSource: nil, virtualKey: code, keyDown: down) else { throw Failure("No key event") }
+        event.flags = flags
+        event.post(tap: .cghidEventTap)
+    }
+    usleep(160_000)
+}
+func drag(_ p: CGPoint, _ delta: CGSize, expectedPID: pid_t, cancel: Bool = false) throws {
     var hit: AXUIElement?
     let located = AXUIElementCopyElementAtPosition(AXUIElementCreateSystemWide(), Float(p.x), Float(p.y), &hit)
     var pid: pid_t = -1
@@ -56,6 +64,7 @@ func drag(_ p: CGPoint, _ delta: CGSize, expectedPID: pid_t) throws {
     try send(.mouseMoved, progress: 0)
     try send(.leftMouseDown, progress: 0)
     for i in 1...12 { try send(.leftMouseDragged, progress: CGFloat(i) / 12) }
+    if cancel { try key(53) }
     try send(.leftMouseUp, progress: 1)
     usleep(180_000)
 }
@@ -95,6 +104,11 @@ func run() throws {
         let b = try bounds(panel), n = try bounds(try wait("graph node") { node(panel) })
         return n.offsetBy(dx: -b.minX, dy: -b.minY)
     }
+    if scene, let fit = find(window, matching: { value($0, "AXIdentifier") == "scene.graph.fit" }),
+       let first = node(window), !original.insetBy(dx: 12, dy: 30).contains(try bounds(first)) {
+        try press(fit)
+        usleep(180_000)
+    }
     func capture(_ frame: CGRect, _ name: String) throws {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
@@ -115,7 +129,7 @@ func run() throws {
     try drag(titlePoint, CGSize(width: dx, height: dy), expectedPID: pid)
     let moved = try bounds(window), n1 = try relativeNode(window)
     guard moved.size == original.size, abs(moved.minX - original.minX - dx) <= 8,
-          abs(moved.minY - original.minY - dy) <= 8, n1 == n0 else {
+          abs(moved.minY - original.minY - dy) <= 8, array(n1) == array(n0) else {
         throw Failure("Bad title drag: " + String(describing: [array(original), array(moved), array(n0), array(n1)]))
     }
     let canvasPoint = CGPoint(x: moved.midX - 14, y: moved.maxY - 58)
@@ -127,8 +141,39 @@ func run() throws {
         guard abs(n2.minX - n1.minX - pan.width) <= 2, abs(n2.minY - n1.minY - pan.height) <= 2 else {
             throw Failure("Graph did not pan by the delivered delta: " + String(describing: [array(n1), array(n2)]))
         }
-    } else if n2 != n1 { throw Failure("Read-only graph changed") }
+    } else if array(n2) != array(n1) { throw Failure("Read-only graph changed") }
     try capture(afterCanvas, "after")
+    var nodeAfterDrag: CGRect?
+    var nodeEvidence: [String: Any] = [:]
+    if scene {
+        let selection = try wait("movable node") { node(window) }
+        let before = try bounds(selection)
+        let anchor = CGPoint(x: before.midX, y: before.midY)
+        let delta = CGSize(width: 37, height: 53)
+        let finalPort = try wait("final port") { find(window) { value($0, "AXIdentifier") == "scene.graph.port.final" } }
+        let portBefore = try bounds(finalPort)
+        try drag(anchor, delta, expectedPID: pid, cancel: true)
+        guard graph() != nil, try bounds(selection) == before, try bounds(finalPort) == portBefore else {
+            throw Failure("Escape did not restore the original node and keep Graph open")
+        }
+        try drag(anchor, delta, expectedPID: pid)
+        let after = try bounds(selection)
+        guard abs(after.minX - before.minX - delta.width) <= 2, abs(after.minY - before.minY - delta.height) <= 2,
+              try bounds(finalPort) == portBefore, try bounds(window) == afterCanvas else {
+            throw Failure("Node drag did not move just the selected card: " + String(describing: [array(before), array(after)]))
+        }
+        try key(124, flags: .maskShift)
+        let keyboard = try bounds(selection)
+        let readable = find(window) { value($0, "AXIdentifier") == "scene.graph.readable" }
+        let zoom = readable.flatMap { Double(value($0, "AXValue").dropLast()) } ?? 100
+        guard abs(keyboard.minX - after.minX - 16 * zoom / 100) <= 2, keyboard.minY == after.minY else {
+            throw Failure("Shift+Right did not move the focused node: " + String(describing: [array(after), array(keyboard)]))
+        }
+        nodeAfterDrag = try relativeNode(window)
+        try capture(afterCanvas, "node-moved")
+        nodeEvidence = ["before": array(before), "cancelled": array(before), "pointer": array(after),
+                        "keyboard": array(keyboard), "fixedOutputPort": array(portBefore)]
+    }
     let rightEdge = CGPoint(x: moved.maxX - 1, y: moved.midY + 52)
     try drag(rightEdge, CGSize(width: -32, height: 0), expectedPID: pid)
     let resized = try bounds(window)
@@ -142,13 +187,24 @@ func run() throws {
     try press(try wait("reopen button") { toggle(owner) })
     let reopened = try wait("reopened graph") { graph() }, final = try bounds(reopened)
     guard final == resized else { throw Failure("Reopen discarded window geometry") }
+    if let nodeAfterDrag {
+        let restored = try relativeNode(reopened)
+        guard array(restored) == array(nodeAfterDrag) else { throw Failure("Reopen discarded node placement") }
+        try press(try wait("organize button") { find(reopened) { value($0, "AXIdentifier") == "scene.graph.organize" } })
+        usleep(180_000)
+        let organized = try relativeNode(reopened)
+        guard organized != restored else { throw Failure("Arrange kept an explicit node placement") }
+        try capture(final, "organized")
+        nodeEvidence["afterReopen"] = array(restored)
+        nodeEvidence["afterOrganize"] = array(organized)
+    }
     let report: [String: Any] = ["title": title, "bundle": app.bundleURL?.lastPathComponent ?? "", "pid": pid, "os": ProcessInfo.processInfo.operatingSystemVersionString,
         "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
         "windowRole": value(reopened, "AXRole"), "windowSubrole": value(reopened, "AXSubrole"), "nativeClose": "AXCloseButton/AXPress",
         "displayID": disp, "ownerFrame": array(ownerBefore), "initial": array(original), "titlePoint": [titlePoint.x, titlePoint.y],
         "requestedTitleDrag": [dx, dy], "observedTitleDrag": [moved.minX-original.minX, moved.minY-original.minY], "afterTitleDrag": array(moved), "canvasDrag": [pan.width, pan.height], "afterCanvasDrag": array(afterCanvas),
         "nodeInitiallyRelative": array(n0), "nodeAfterTitleRelative": array(n1), "nodeAfterCanvasRelative": array(n2), "afterRightEdgeDrag": array(resized), "reopened": array(final),
-        "focusAfterClose": focusedID]
+        "focusAfterClose": focusedID, "nodePlacement": nodeEvidence]
     let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
     try data.write(to: out.appendingPathComponent("graph-window.json"))
     print(title + " passed")

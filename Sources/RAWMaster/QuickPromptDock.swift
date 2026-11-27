@@ -314,9 +314,8 @@ struct QuickPromptDock<CanvasControls: View>: View {
     private func reviewControls(_ review: QuickPromptReview) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 7) {
-                Picker("比较", selection: $showCandidate) {
-                    Text("生成前").tag(false); Text("候选").tag(true)
-                }.labelsHidden().pickerStyle(.segmented).fixedSize()
+                AppTabs(title: "比较", selection: $showCandidate, options: [false, true],
+                        label: { $0 ? "候选" : "生成前" }, stretches: false).fixedSize()
                 if review.job.request.quickPrompt?.selection != nil { Button("100% 边缘", action: inspectPixels) }
                 if let artifact = review.version.artifact {
                     Text("\(artifact.pixelWidth) × \(artifact.pixelHeight)").monospacedDigit().foregroundStyle(.secondary)

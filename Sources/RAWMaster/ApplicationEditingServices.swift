@@ -45,12 +45,16 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     @Published private(set) var modelRoot: URL
     @Published private(set) var borrowedModels: Bool
     @Published private(set) var setupSnapshot: LocalAISetupSnapshot?
-    let repository: ProviderProfileRepository
+    private struct LibraryBinding {
+        let id = UUID()
+        let store: LibraryStore
+        let repository: ProviderProfileRepository
+    }
+    private var library: LibraryBinding?
     let coordinator: LocalAIEnvironmentCoordinator
     /// App-owned model download. Settings views observe it but never own or cancel its task.
     let fluxModel: FluxModelManager
     let runtimeRoot: URL
-    let libraryURL: URL
     let catalog: RuntimeArtifactCatalog?
     let catalogError: String?
     private let modelLicenseSHA256: String?
@@ -60,13 +64,16 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     var runtimeActionOverride: (@Sendable () async throws -> Void)?
     var profileReadHook: (@Sendable () async -> Void)?
     private let defaults: UserDefaults
-    private let profileStore: LibraryStore
+    private let managedModelRoot: URL
     private let credentials: any ProviderCredentialStore
     private let defaultCloudProfiles = ProviderCatalog.examples
     private var preparationTask: Task<Void, Never>?
     private var progressTask: Task<Void, Never>?
     private var runtimeActionTask: Task<Void, Never>?
     private var startupTask: Task<Void, Never>?
+    private var deviceStartupTask: Task<Void, Never>?
+    private var fluxModelObservation: AnyCancellable?
+    private var fluxProfileTask: Task<Void, Never>?
     private var profileMutationTask: Task<Void, Error>?
     private var profileLoadTask: Task<Void, Never>?
     private var environmentReadID = UUID()
@@ -75,12 +82,13 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
 
     init(store: LibraryStore, libraryURL: URL, defaults: UserDefaults = .standard,
          credentials: any ProviderCredentialStore = KeychainCredentialStore()) {
-        self.libraryURL = libraryURL; self.defaults = defaults
-        profileStore = store; self.credentials = credentials
-        repository = ProviderProfileRepository(store: store, credentials: credentials)
-        let base = libraryURL.deletingLastPathComponent()
+        self.defaults = defaults; self.credentials = credentials
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("RAWMaster", isDirectory: true)
+        let managedModels = base.appendingPathComponent("AI Models", isDirectory: true)
+        managedModelRoot = managedModels
         let resolvedRuntime = URL(fileURLWithPath: ProcessInfo.processInfo.environment["RAWMASTER_EDITING_RUNTIME_ROOT"] ?? defaults.string(forKey: "editing.runtimeRoot") ?? base.appendingPathComponent("AI Runtime").path)
-        let resolvedModels = URL(fileURLWithPath: ProcessInfo.processInfo.environment["RAWMASTER_EDITING_MODEL_ROOT"] ?? defaults.string(forKey: "editing.modelRoot") ?? base.appendingPathComponent("AI Models").path)
+        let resolvedModels = URL(fileURLWithPath: ProcessInfo.processInfo.environment["RAWMASTER_EDITING_MODEL_ROOT"] ?? defaults.string(forKey: "editing.modelRoot") ?? managedModels.path)
         runtimeRoot = resolvedRuntime; modelRoot = resolvedModels
         borrowedModels = ProcessInfo.processInfo.environment["RAWMASTER_EDITING_MODEL_ROOT"] != nil || defaults.bool(forKey: "editing.borrowedModels") || defaults.string(forKey: "editing.modelRoot") != nil
         let loadedCatalog = try? RuntimeArtifactCatalog.bundled()
@@ -88,12 +96,41 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
         modelLicenseSHA256 = try? LocalAIModelConsent.currentLicenseSHA256()
         catalogError = loadedCatalog == nil ? "此发行版的固定运行包尚不可用。安装包含运行包的完整 RAWMaster 后可重试。" : nil
         coordinator = LocalAIEnvironmentCoordinator(configuration: .init(runtimeRoot: resolvedRuntime, modelRoot: resolvedModels), catalog: loadedCatalog)
-        fluxModel = FluxModelManager()
+        fluxModel = FluxModelManager(defaults: defaults)
+        bindLibrary(store: store, libraryURL: libraryURL)
+        deviceStartupTask = Task { [weak self] in await self?.refreshEnvironment() }
+        fluxModelObservation = fluxModel.$status.combineLatest(fluxModel.$licenseAccepted).dropFirst()
+            .sink { [weak self] _, _ in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    if fluxModel.isReady && fluxModel.licenseAccepted { await activateFluxProfile() }
+                    else if !fluxModel.licenseAccepted || fluxModel.status == .notInstalled { await deactivateFluxProfile() }
+                }
+            }
+    }
+
+    func bindLibrary(store: LibraryStore, libraryURL: URL) {
+        precondition(library == nil && !shuttingDown, "Release the previous library before binding")
+        library = LibraryBinding(store: store, repository: ProviderProfileRepository(store: store, credentials: credentials))
         startupTask = Task { [weak self] in
             guard let self else { return }
-            await self.reloadProfiles(); await self.refreshEnvironment(); await self.activateFluxProfile()
-            self.startupTask = nil
+            await reloadProfiles()
+            if !Task.isCancelled { await activateFluxProfile() }
+            startupTask = nil
         }
+    }
+
+    /// Drain library writes while device preparation and downloads keep their application lifetime.
+    func releaseLibrary() async {
+        library = nil
+        profiles = []; profileError = nil
+        let startup = startupTask; startup?.cancel()
+        let mutation = profileMutationTask, reading = profileLoadTask, flux = fluxProfileTask
+        _ = try? await mutation?.value
+        await reading?.value
+        await flux?.value
+        await startup?.value
+        startupTask = nil; fluxProfileTask = nil
     }
 
     var busy: Bool { preparing || cancelling || actionBusy }
@@ -137,36 +174,36 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
         // caller return early while a newer request has not populated profiles yet.
         if let mutation = profileMutationTask { _ = try? await mutation.value; return }
         if let reading = profileLoadTask { await reading.value; return }
-        guard !shuttingDown else { return }
-        let reading = Task { await readProfilesAndPublish() }
+        guard !shuttingDown, let library else { return }
+        let reading = Task { await readProfilesAndPublish(library) }
         profileLoadTask = reading
         await reading.value
         profileLoadTask = nil
     }
-    private func readProfilesAndPublish() async {
+    private func readProfilesAndPublish(_ binding: LibraryBinding) async {
         await profileReadHook?()
         do {
-            let saved = try await repository.profiles()
-            guard !shuttingDown else { return }
+            let saved = try await binding.repository.profiles()
+            guard library?.id == binding.id, !shuttingDown else { return }
             let local = AIProviderProfile(id: "local-qwen21-research", kind: .localComfy, displayName: "本机 · Qwen2.1 评估", model: "Qwen-Image-2.1-Turbo", endpoint: URL(string: "http://127.0.0.1")!, capabilities: .init(capabilityID: "rawmaster-comfy-mlx-v1", supportsCancellation: true), experimental: true, configuration: ["licenseScope": "research-evaluation", "resolution": "1024", "decoder": "stock"])
             profiles = saved + ([local] + defaultCloudProfiles).filter { example in !saved.contains { $0.kind == example.kind } }
             profileError = nil
-        } catch { if !shuttingDown { profileError = "无法读取现有服务配置；请检查资料库。" } }
+        } catch { if library?.id == binding.id, !shuttingDown { profileError = "无法读取现有服务配置；请检查资料库。" } }
     }
     func saveProfile(_ profile: AIProviderProfile, secret: String?) async throws {
-        guard !shuttingDown, !providerSaving else { throw AIServiceError.busy }
+        guard !shuttingDown, !providerSaving, let library else { throw AIServiceError.busy }
         providerSaving = true; defer { providerSaving = false }
         let earlierRead = profileLoadTask
         let mutation = Task {
             await earlierRead?.value
-            _ = try await repository.save(profile, secret: secret?.isEmpty == true ? nil : secret)
-            await readProfilesAndPublish()
+            _ = try await library.repository.save(profile, secret: secret?.isEmpty == true ? nil : secret)
+            await readProfilesAndPublish(library)
         }
         profileMutationTask = mutation; defer { profileMutationTask = nil }
         try await mutation.value
     }
     func removeCredential(_ profile: AIProviderProfile) async throws {
-        guard !shuttingDown, !providerSaving else { throw AIServiceError.busy }
+        guard !shuttingDown, !providerSaving, let library else { throw AIServiceError.busy }
         providerSaving = true; defer { providerSaving = false }
         let earlierRead = profileLoadTask
         let mutation = Task {
@@ -175,20 +212,20 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
             // Keychain deletion to be retried. Historical job snapshots are untouched.
             var disabled = profile; disabled.acceptedForUse = false
             do {
-                let database = profileStore, disabledSnapshot = disabled
+                let database = library.store, disabledSnapshot = disabled
                 // Disabling must also work when the old Keychain item is already gone.
                 // No new credential or destination is introduced by this write.
                 try await Task.detached { try database.saveProviderProfile(disabledSnapshot) }.value
-                await readProfilesAndPublish()
+                await readProfilesAndPublish(library)
                 if let reference = profile.credentialReference {
                     let credentialStore = credentials
                     try await Task.detached { try credentialStore.delete(reference: reference) }.value
                 }
                 disabled.credentialReference = nil
-                _ = try await repository.save(disabled)
-                await readProfilesAndPublish()
+                _ = try await library.repository.save(disabled)
+                await readProfilesAndPublish(library)
             } catch {
-                await readProfilesAndPublish()
+                await readProfilesAndPublish(library)
                 throw error
             }
         }
@@ -206,30 +243,39 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     }
 
     func activateFluxProfile() async {
-        guard fluxModel.isReady, fluxModel.licenseAccepted, !shuttingDown else { return }
-        do {
-            let profiles = try await repository.profiles()
-            var profile = profiles.first(where: { LocalFluxProvider.matches($0) }) ?? AIProviderProfile(
-                id: "quick-prompt-flux3-klein", kind: .localComfy, displayName: "FLUX.3 Image Klein · 本机",
-                model: LocalFluxProvider.modelID, endpoint: URL(string: "http://127.0.0.1")!,
-                capabilities: .init(capabilityID: LocalFluxProvider.capabilityID, supportsCancellation: true,
-                                    supportsReconciliation: true, maxInputPixels: 1_048_576))
-            profile.acceptedForUse = true
-            profile.configuration["weightsDirectory"] = fluxModel.root.path
-            _ = try await repository.save(profile)
-            await reloadProfiles()
-        } catch { profileError = "本机模型已就绪，但未能更新本机配置；请重试。" }
+        guard fluxModel.isReady, fluxModel.licenseAccepted else { return }
+        await synchronizeFluxProfile(enabled: true)
     }
 
     func deactivateFluxProfile() async {
-        do {
-            let profiles = try await repository.profiles()
-            guard var profile = profiles.first(where: { LocalFluxProvider.matches($0) }) else { return }
-            profile.acceptedForUse = false
-            profile.configuration.removeValue(forKey: "weightsDirectory")
-            _ = try await repository.save(profile)
-            await reloadProfiles()
-        } catch { profileError = "模型已删除，但本机配置未更新；请在“本机 AI”重试。" }
+        await synchronizeFluxProfile(enabled: false)
+    }
+
+    private func synchronizeFluxProfile(enabled: Bool) async {
+        guard !shuttingDown, let binding = library else { return }
+        let previous = fluxProfileTask
+        let operation = Task {
+            await previous?.value
+            guard library?.id == binding.id, !shuttingDown else { return }
+            do {
+                let saved = try await binding.repository.profiles()
+                let existing = saved.first(where: { LocalFluxProvider.matches($0) })
+                guard enabled || existing != nil, library?.id == binding.id, !shuttingDown else { return }
+                var profile = existing ?? AIProviderProfile(
+                    id: "quick-prompt-flux3-klein", kind: .localComfy, displayName: "FLUX.3 Image Klein · 本机",
+                    model: LocalFluxProvider.modelID, endpoint: URL(string: "http://127.0.0.1")!,
+                    capabilities: .init(capabilityID: LocalFluxProvider.capabilityID, supportsCancellation: true,
+                                        supportsReconciliation: true, maxInputPixels: 1_048_576))
+                profile.acceptedForUse = enabled
+                profile.configuration["weightsDirectory"] = enabled ? fluxModel.root.path : nil
+                if profile != existing { _ = try await binding.repository.save(profile) }
+                await readProfilesAndPublish(binding)
+            } catch {
+                if library?.id == binding.id, !shuttingDown { profileError = "未能更新本机模型配置，请重试。" }
+            }
+        }
+        fluxProfileTask = operation
+        await operation.value
     }
 
     func chooseExistingModels() {
@@ -243,7 +289,7 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     }
     func useManagedModels() {
         guard canPrepare else { return }
-        modelRoot = libraryURL.deletingLastPathComponent().appendingPathComponent("AI Models", isDirectory: true)
+        modelRoot = managedModelRoot
         borrowedModels = false
         defaults.removeObject(forKey: "editing.modelRoot"); defaults.set(false, forKey: "editing.borrowedModels")
         setupMessage = "将下载到应用管理的模型目录。"
@@ -307,17 +353,18 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     func shutdown() async {
         if let shutdownTask { await shutdownTask.value; return }
         shuttingDown = true
-        let startup = startupTask; startup?.cancel()
+        fluxModelObservation = nil
+        let startup = deviceStartupTask; startup?.cancel()
         let action = runtimeActionTask; action?.cancel()
         progressTask?.cancel(); progressTask = nil
-        let preparation = preparationTask, mutation = profileMutationTask, reading = profileLoadTask
+        let preparation = preparationTask
         let shutdown = Task {
             // One coordinator closes admission, joins preparation, then stops its owned runtime.
             await action?.value
+            await releaseLibrary()
+            await fluxModel.pauseAndJoin()
             await coordinator.shutdown()
             await preparation?.value
-            _ = try? await mutation?.value
-            await reading?.value
             await startup?.value
             preparing = false; cancelling = false
         }

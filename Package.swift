@@ -20,6 +20,7 @@ let package = Package(
         // VideoPlayer's SwiftUI overlay needs the Objective-C AVPlayerView superclass at runtime.
         // Importing AVKit alone can autolink only _AVKit_SwiftUI, causing an abort on first preview.
         .executableTarget(name: "RAWMaster", dependencies: ["RAWMasterCore", "RAWMasterImaging", "RAWMasterAI", .product(name: "SimpleToast", package: "SimpleToast"), .product(name: "RAWMasterLibrary", package: "LibraryCatalog"), .product(name: "RAWMasterPhotoExport", package: "PhotoExport")],
+                          resources: [.copy("Resources/LibraryFolder.png")],
                           linkerSettings: [.linkedFramework("AVKit")]),
         .executableTarget(name: "RAWMasterDiagnostics", dependencies: ["RAWMasterCore", "RAWMasterImaging"]),
         .executableTarget(name: "RAWMasterSequenceProbe", dependencies: ["RAWMasterCore", "RAWMasterImaging"]),

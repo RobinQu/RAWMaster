@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import RAWMasterAI
 import RAWMasterCore
 import RAWMasterImaging
 
@@ -61,11 +62,13 @@ struct EditingJobSummary: View {
     @ObservedObject var editing: EditingController
     let job: ProcessingJob
     var body: some View {
+        let historical = editing.isHistoricalProcessing(job)
+        let flux = LocalFluxProvider.matches(job.request.profile)
         VStack(alignment: .leading, spacing: 9) {
             HStack {
-                Text(job.state.editingTitle).font(.caption.weight(.semibold))
+                Text(historical ? job.state.editingTitle + " · 副本历史" : job.state.editingTitle).font(.caption.weight(.semibold))
                 Spacer()
-                if !job.state.isTerminal && job.state != .outcomeUnknown { ProgressView().controlSize(.small) }
+                if !historical && !job.state.isTerminal && job.state != .outcomeUnknown { ProgressView().controlSize(.small) }
             }
             Text(job.request.profile.displayName + " · " + job.request.profile.model).font(.caption2).foregroundStyle(.secondary)
             Text("实际输入 \(job.request.inputArtifact.pixelWidth) × \(job.request.inputArtifact.pixelHeight) · \(job.request.inputArtifact.bitDepth) 位 · \(job.request.inputArtifact.colorSpace)").font(.caption2).foregroundStyle(.secondary)
@@ -83,23 +86,27 @@ struct EditingJobSummary: View {
             if let text = editing.jobMessages[job.id]?.message { Text(text).font(.caption2).foregroundStyle(.secondary) }
             if let error = job.currentAttempt.error { Text(error).font(.caption2).foregroundStyle(AppPalette.warning).textSelection(.enabled) }
             HStack {
-                if editing.canResumeSaving(job), !job.state.isTerminal {
-                    Button("恢复保存") { editing.resumeSaving(job) }
-                    Text("不会重新提交生成").font(.caption2).foregroundStyle(.secondary)
-                } else if job.state == .outcomeUnknown {
-                    Button("核对结果") { editing.reconcile(job) }
-                    if job.currentAttempt.workerJoined && job.request.quickPrompt == nil { Button("重新生成…") { editing.unknownRetryJobID = job.id } }
-                } else if (job.state == .failed || job.state == .cancelled) && job.currentAttempt.workerJoined && job.request.quickPrompt == nil {
-                    Button("重试") { editing.retry(job) }
-                } else if !job.state.isTerminal && job.state != .cancelRequested {
-                    Button("取消") { editing.cancel(job) }
+                if !historical {
+                    if editing.canResumeSaving(job) {
+                        Button("恢复保存") { editing.resumeSaving(job) }
+                    } else if job.state == .outcomeUnknown {
+                        Button("核对结果") { editing.reconcile(job) }
+                        if !flux && job.currentAttempt.workerJoined && job.request.quickPrompt == nil {
+                            Button("重新生成…") { editing.unknownRetryJobID = job.id }
+                        }
+                    } else if (job.state == .failed || job.state == .cancelled) && job.currentAttempt.workerJoined
+                                && (flux || job.request.quickPrompt == nil) {
+                        Button("重试") { editing.retry(job) }
+                    } else if !job.state.isTerminal && job.state != .cancelRequested {
+                        Button("取消") { editing.cancel(job) }
+                    }
                 }
-                if job.request.quickPrompt != nil && job.request.workID == editing.work?.id {
+                if !historical && job.request.quickPrompt != nil && job.request.workID == editing.work?.id {
                     Button("回到本张 Prompt") { editing.reopenQuickPromptTask(job) }.disabled(!editing.canOpenQuickPrompt)
                 }
                 if job.resultVersionID != nil { Text("结果保留为候选").font(.caption2).foregroundStyle(.secondary) }
             }.font(.caption).buttonStyle(.borderless)
-            ForEach(job.attempts.filter { $0.id != job.currentAttempt.id && $0.resultVersionID == nil && ($0.receivedOutput != nil || $0.pendingReceivedOutput != nil) }) { attempt in
+            ForEach(historical ? [] : job.attempts.filter { $0.id != job.currentAttempt.id && $0.resultVersionID == nil && ($0.receivedOutput != nil || $0.pendingReceivedOutput != nil) }) { attempt in
                 HStack {
                     Text("较早尝试 \(attempt.number) · 结果待保存").font(.caption2).foregroundStyle(.secondary)
                     Button("恢复保存") { editing.resumeSaving(job, attemptID: attempt.id) }.font(.caption).buttonStyle(.borderless)

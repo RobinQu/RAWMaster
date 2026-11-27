@@ -378,16 +378,8 @@ function whiteBalancePanel(r) {
   </div>`;
 }
 function flatTabs(title, action, options, current, icons = {}) {
-  return `<div class="flat-tabs" role="group" aria-label="${h(title)}">${options.map(([value, label]) => btn(label, action, value, {pressed: value === current, icon: icons[value]})).join('')}</div>`;
+  return `<div class="button-group button-group--stretch" role="group" aria-label="${h(title)}" data-select-on-arrow>${options.map(([value, label]) => btn(label, action, value, {pressed: value === current, icon: icons[value]})).join('')}</div>`;
 }
-document.addEventListener('keydown', (event) => {
-  if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.defaultPrevented) return;
-  const button = event.target.closest('.flat-tabs button');
-  if (!button || button.closest('.scene-modes')) return;
-  event.preventDefault();
-  const tabs = [...button.parentElement.querySelectorAll('button:not(:disabled)')];
-  tabs[tabs.indexOf(button) + (event.key === 'ArrowLeft' ? -1 : 1)]?.click();
-});
 function colorSamplerPoints() {
   return Studio.data.colorSamplers?.[Studio.data.work] ?? [];
 }
@@ -639,7 +631,7 @@ function savedResultsSheet() {
   dialog('已有编辑结果',`<figure class="result-preview"><div>${preview}${quickCanvasEffect(Studio.data.work,item?.recipe || Studio.freshRecipe(),selected)}</div><figcaption>${h(item?.name || '原片')}</figcaption></figure>
     ${e.versions.length ? '' : '<p class="muted">当前照片还没有已保存的编辑结果。</p>'}<div class="results-list">${rows
     .map((v) => {
-      const issue = v.quickPrompt ? quickAdoptionIssue(quickJobForVersion(v.id)) : '';
+      const issue = v.quickPrompt ? quickAdoptionIssue(quickJobForVersion(v.id)) : serverAdoptionIssue(v, e);
       const adopt = v.id !== e.adopted && !v.discarded ? btn('采用此结果', 'adopt', v.id, { disabled: !!issue, title: issue || '采用此结果' }) : '';
       return `<div class="version-row"><strong>${h(v.name)}</strong><small>${v.id === e.adopted ? '当前采用' : v.discarded ? '已放弃' : v.retained ? '已保留' : '候选'}</small><div class="row wrap">
       ${btn('查看', 'inspect-version', v.id, { pressed: (S.versionView || e.adopted) === v.id })}${adopt}${v.quickPrompt ? '' : btn('从此继续', 'continue-version', v.id)}${btn('导出此版本…', 'version-export', v.id, { disabled: !!v.discarded || (v.quickPrompt && e.conversation?.strict) })}
@@ -724,9 +716,15 @@ actions['inspect-version'] = (id) => {
   savedResultsSheet();
 };
 actions.adopt = (id) => {
-  if (currentEdit().versions.find((v) => v.id === id)?.quickPrompt) {
+  const edit = currentEdit();
+  const version = edit.versions.find((v) => v.id === id);
+  if (version?.quickPrompt) {
     if (!applyQuickVersion(id)) return;
-  } else currentEdit().adopted = id;
+  } else if (version?.serverResult) {
+    const issue = serverAdoptionIssue(version, edit);
+    if (issue) return notify(issue);
+    if (!Studio.adoptCandidateWithHistory(Studio.data.work, id, '采用 Server 候选')) return;
+  } else edit.adopted = id;
   S.versionView = id;
   currentEdit().adoptionBaseline = JSON.stringify(currentEdit().recipe);
   Studio.save();

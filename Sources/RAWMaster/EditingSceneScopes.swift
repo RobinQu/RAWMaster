@@ -114,11 +114,13 @@ struct EditingSceneScopesInspector: View {
     var body: some View {
         DisclosureGroup(isExpanded: $expanded) {
             VStack(alignment: .leading, spacing: 7) {
-                Picker("统计阶段", selection: $stage) {
-                    Text("场景").tag(DevelopmentSceneScopesV1.Stage.scene)
-                    Text("目标输出").tag(DevelopmentSceneScopesV1.Stage.target)
-                    Text("SDR 派生").tag(DevelopmentSceneScopesV1.Stage.derivative)
-                }.pickerStyle(.segmented).labelsHidden().accessibilityIdentifier("editing.scene.scopes.stage")
+                AppTabs(title: "统计阶段", selection: $stage, options: [.scene, .target, .derivative], label: {
+                    switch $0 {
+                    case .scene: "场景"
+                    case .target: "目标输出"
+                    case .derivative: "SDR 派生"
+                    }
+                }).accessibilityIdentifier("editing.scene.scopes.stage")
                 if let report = state.report {
                     if let plot = report.plots[stage] {
                         let white = plot.bins[1...16].reduce(0, +)

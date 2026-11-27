@@ -58,7 +58,7 @@ const SceneEditor = (() => {
       <input id="scene-limit" aria-label="HDR 高光限制" name="sceneLimit" type="range" min="0" max="3.32" step="0.01" value="${c.limitEV}" ${why ? 'disabled':''}></div>
       <div class="scene-previews">${pair}</div>${rendition()}${appearanceInfo()}` : appearanceInfo();
     return `<section class="scene-mode-bar" aria-labelledby="appearance-title"><div class="appearance-heading">${icon('palette',16)}<h3 id="appearance-title">色彩外观</h3></div>
-      <div class="scene-modes flat-tabs" role="group" aria-label="色彩外观">${Object.entries(details).map(([key,[label,symbol]]) =>
+      <div class="scene-modes button-group button-group--stretch" role="group" aria-label="色彩外观">${Object.entries(details).map(([key,[label,symbol]]) =>
         btn(label,'scene-mode',key,{icon:symbol,pressed:current === key})).join('')}</div>${attached}
       ${c && v.failed ? btn('重试 HDR 预览','scene-review-retry'):''}</section>`;
   }
@@ -108,15 +108,6 @@ const SceneEditor = (() => {
       (derivative ? '' : '<path d="M' + screen + ' 0v96" stroke="#e0ae6b" stroke-dasharray="4 3"/><path d="M' + limit + ' 0v96" stroke="#77d2d4"/>') +
       '</svg><figcaption><span>' + name + ' · RGB</span><span>100 nits　+1　+2　+3 EV</span></figcaption></figure>';
   }
-  document.addEventListener('keydown', event => {
-    const group = event.target.closest('.scene-modes');
-    if (!group || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
-    const buttons = [...group.querySelectorAll('button:not(:disabled)')];
-    if (!buttons.length) return;
-    const current = buttons.indexOf(event.target), step = event.key === 'ArrowLeft' ? -1 : 1;
-    const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (current + step + buttons.length) % buttons.length;
-    event.preventDefault(); event.stopPropagation(); buttons[next].focus();
-  });
   function controls() {
     const why = reason();
     const missing = scopesReview && view().screen === 'unknown';
@@ -136,7 +127,7 @@ const SceneEditor = (() => {
   function scope(docked) {
     const why = reason(), v = view(), [label, axes, reading] = scopes[v.scope];
     return `<section class="editing-scopes scene-scopes${docked ? ' docked' : ''}" aria-label="HDR 示波器（模拟）">
-      <div class="row">${Object.entries(scopes).map(([k,[t]]) => btn(t,'scene-scope',k,{pressed:v.scope === k})).join('')}${docked ? btn('在独立窗口显示示波器','scopes','',{icon:'pulse',only:true,cls:'icon-btn'}) : ''}</div>
+      <div class="row">${flatTabs('统计阶段', 'scene-scope', Object.entries(scopes).map(([key, [name]]) => [key, name]), v.scope)}${docked ? btn('在独立窗口显示示波器','scopes','',{icon:'pulse',only:true,cls:'icon-btn'}) : ''}</div>
       ${v.scope === 'output' ? chart(config(), v) : `<div class="scene-axis" role="img" aria-label="${h(label + '：' + axes)}"><span>${h(axes)}</span></div>`}
       <small class="scene-display-key">模拟屏幕余量：${v.screen === 'unknown' ? '未知' : v.screen === 'sdr' ? '0 EV' : '+2 EV'} · 实线可显示／虚线超余量</small>
       <div class="row">${btn(v.sample ? '解除样点' : '锁定中心样点','scene-sample','',{pressed:v.sample,disabled:!!why})}${scopesReview ? btn('在主图取样','scene-pick','',{pressed:!!v.picking,disabled:!!why}) : ''}</div>

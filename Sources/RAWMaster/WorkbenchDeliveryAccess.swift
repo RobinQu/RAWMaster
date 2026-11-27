@@ -71,9 +71,9 @@ final class WorkbenchDeliveryAccess: Sendable {
     }
 
     /// Bookmarks belong to this host's preferences, outside catalog backups.
-    func remember(grantID: String, database: URL, in defaults: UserDefaults) throws {
+    func remember(grantID: String, database: URL, in defaults: UserDefaults, reauthorized: Bool = false) throws {
         let catalog = try CatalogFile(database)
-        if let stored = defaults.data(forKey: Self.key(grantID)) {
+        if !reauthorized, let stored = defaults.data(forKey: Self.key(grantID)) {
             guard try JSONDecoder().decode(Bookmark.self, from: stored).catalog.matches(catalog) else {
                 throw WorkbenchDeliveryIssue.targetOffline
             }

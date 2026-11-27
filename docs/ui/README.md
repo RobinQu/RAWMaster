@@ -4,6 +4,10 @@
 
 在仓库中双击 `docs/ui/prototype/index.html` 即可开始。默认打开「河谷拍摄」，包含 12 次拍摄和 14 个文件。点击照片聚焦，⌘/Ctrl 点选、⇧ 连选或使用「多选」。顶部的资料库、编辑和导出沿用同一组照片。浏览器会在本机保存示例数据，设置 → 通用 → 恢复初始样本可以重置工作台。导出预设由 Spec 032 的预设库管理。
 
+[本地首次打开](prototype/index.html#welcome)可创建或打开已有库包。顶栏「资料库菜单」可打开最近库。「资料库与备份」的 Finder 示例用来走查移动、拷贝、原卷离线和重新打开。顶栏波形图标 → 任务 → 查看全部制作任务，提供当前库的批次、交付与设备任务入口。[042 本地版本](../../specs/042-local-library-workbench/spec.md) · [本地走查](../../specs/042-local-library-workbench/validation.md)
+
+[Server 评审地址](prototype/index.html?serverReview=1#welcome)启用示例连接与独立样例数据。同步「湖岸资料库」后，从 RAWMaster Server 核对当前照片和能力，提交模拟处理，再到「制作任务」核对或取回。[040 接入走查](../../specs/040-server/validation.md#server-资料库接入走查) · [041 作业走查](../../specs/041-server-image-editing/validation.md#制作任务与远端结果走查)
+
 如需分享同机走查地址，可在**仓库根目录**运行以下命令。页面、脚本和授权样片均从仓库加载。
 
 ```sh
@@ -12,7 +16,7 @@ python3 -m http.server 8765 --bind 127.0.0.1
 
 打开 [本机摄影工作台](http://127.0.0.1:8765/docs/ui/prototype/index.html)。文件方式与 HTTP 方式各自保存示例状态。
 
-节点工作流从编辑右栏的节点工具条切入 Graph，也可直接打开 [Node DAG 评审入口](prototype/index.html#edit/dag)。节点下拉整合当前组的节点列表、添加、整理与更多操作；右侧是「忽略该节点」与 Graph 开关，没有「主图 / Graph」双按钮。Graph 选择与下拉及检查器联动，更多菜单折叠高级动作。Graph 是非模态玻璃工具窗，紧凑标题栏可拖，左上关闭，窗口边缘可调整大小。空白画布负责平移节点。矮窗可继续查看节点。Graph 首开按 100% 可读居中，长图保留当前卡可见；「适合全图」可主动缩小，点百分比回到可读取景。主图默认显示完整最终结果，单节点健康终稿不显示提示，查看中间节点时显示作用域，预览失败时在主图顶部显示可关闭的错误通知。Crop、Mask、Remove 从照片底部工具条展开，完成或取消后收回；Mask 始终标出节点拥有者，类型采用原有语义图标，细化按需展开；Remove 用四个图标按钮切换方式，按状态显示取样、生成或重试。左上显示 RAW 摘要，左下排列滤镜、快照、历史；批量工作流和结果在资料库选片底栏「更多」。场景见 [Spec 038](../../specs/038-node-dag-workflow/spec.md) 与 [验证记录](../../specs/038-node-dag-workflow/validation.md#可读-graph-与暗房减项)。这些状态和处理均为本地原型模拟。
+节点工作流从编辑右栏的节点工具条切入 Graph，也可直接打开 [Node DAG 评审入口](prototype/index.html#edit/dag)。节点下拉、检查器和 Graph 共用选择，眼睛可忽略或恢复当前节点。Graph 是共享标题与画布材质的非模态玻璃工具窗，标题可拖，左上关闭，窗口边缘可调整大小。网格内拖节点改变布局，拖空白处平移。右上可添加串行、并行及 Layer，Solo 节点输出、旁路全部调色、整理或适合全图。Graph 首开按 100% 可读居中，点百分比回到可读取景。主图默认显示完整最终结果，单节点健康终稿不显示提示，查看中间节点时显示作用域，预览失败时在主图顶部显示可关闭的错误通知。Crop、Mask、Remove 从照片底部工具条展开，完成或取消后收回；Mask 始终标出节点拥有者，类型采用原有语义图标，细化按需展开；Remove 用四个图标按钮切换方式，按状态显示取样、生成或重试。左上显示 RAW 摘要，左下排列滤镜、快照、历史；批量工作流和结果在资料库选片底栏「更多」。场景见 [Spec 038](../../specs/038-node-dag-workflow/spec.md) 与 [验证记录](../../specs/038-node-dag-workflow/validation.md#可读-graph-与暗房减项)。这些状态和处理均为本地原型模拟。
 
 编辑右栏的「色彩外观」可在 SDR、HDR、B&W 间一键切换，共用摄影调整。HDR 有可拖的超白区、分档可视化、等宽双预览及内联输出文字。[六图对照和走查](../../specs/025-editing-workspace/appearance-parity.md) 主图通知有显示期限，需要回看时从主窗顶部波形图标打开「后台信息」。本张已保存的结果可从左栏「快照」更多进入。[外观、后台信息与已有结果走查](../../specs/025-editing-workspace/appearance-activity.md)
 
@@ -40,6 +44,8 @@ python3 -m http.server 8765 --bind 127.0.0.1
 ```sh
 python3 scripts/check-ui-prototype.py
 ```
+
+用 `python3 scripts/check-ui-prototype.py --local-library-only` 走查 042 的本地库包与任务。`--library-server-only` 用于 040／041 的连接和远端任务。
 
 手工复查时，把窗口从桌面三栏收窄到信息栏变为抽屉。用 Tab 逐项到达操作，用 Escape 收起弹窗，在搜索框内输入 P/X 和数字。逐项核对选中状态、主操作可用性、空结果和返回位置。用设置切换主题，查看画布、选中描边、次要文字与键盘焦点。真实应用中的 VoiceOver、窗口菜单、RAW 像素、GPU 呈现与文件结果由对应原生验收覆盖。[操作场景与验证记录](coverage.md) · [编辑暗房专项走查](../../specs/025-editing-workspace/prototype-review.md)
 

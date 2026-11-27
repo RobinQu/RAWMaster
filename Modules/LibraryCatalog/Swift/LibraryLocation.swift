@@ -57,5 +57,14 @@ public enum LibraryLocation {
         defaults.set(try JSONEncoder().encode(selection), forKey: key)
     }
 
+    public static func hasSelection(defaults: UserDefaults) -> Bool { defaults.data(forKey: key) != nil }
+
+    public static func selectedPath(defaults: UserDefaults) -> URL? {
+        defaults.data(forKey: key).flatMap { data in
+            guard let selection = try? JSONDecoder().decode(Selection.self, from: data) else { return nil }
+            return selection.root.appendingPathComponent(selection.filename)
+        }
+    }
+
     public static func useDefault(defaults: UserDefaults) { defaults.removeObject(forKey: key) }
 }

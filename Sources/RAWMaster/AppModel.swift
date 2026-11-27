@@ -143,6 +143,9 @@ final class AppModel: ObservableObject {
     var workbenchExplicitCancellation: String?
     var workbenchDeliveryCheckpoint: (@Sendable (Int, WorkbenchDeliveryCheckpoint) -> Void)?
     var workbenchExecutionEpoch = UUID()
+    let workbenchDeliveryOperations = LocalLibraryTaskOperations()
+    let originalDelivery: OriginalDeliveryCoordinator
+    private var originalDeliveryObservation: AnyCancellable?
     @Published var externalEditorPreparing = false
     @Published var showGroups = false
     @Published var groupEditingID: String?
@@ -166,6 +169,7 @@ final class AppModel: ObservableObject {
     private var editingObservation: AnyCancellable?
     private var editingServicesObservation: AnyCancellable?
     private var archivePreparation: Task<Void, Never>?
+    private var pendingLibrarySwitchContext: EditingController.LibrarySwitchContext?
     private(set) var store: LibraryStore?
     let catalogGrid: LibraryGridDataSource<AssetRecord, ProjectSearchQuery>?
     let gridPaint: CatalogGridPaintRecorder?
@@ -185,16 +189,45 @@ final class AppModel: ObservableObject {
     private(set) var overview: LibraryOverview?
     @Published var processingGroupID: String?
     @Published var libraryPanel: CatalogPanel?
-    var activateLibrary: ((URL) throws -> Void)?
+    var activateLibrary: ((URL) -> Void)?
+    var chooseLibraryPackage: (() -> Void)?
+    var createLibraryPackage: (() -> Void)?
+    @Published var isLibraryTransitioning = false
+    @Published var isLibraryPackageBusy = false
+    private var importWorkIsRunning = false
+    private var availabilityRefresh: Task<Void, Never>?
     @Published var inspectionWorkIDs: [String] = []
     @Published var sealDraft: CatalogSealDraft?
     var isPagedGrid: Bool { catalogGrid != nil && mode == .grid && (scope == .all || scope == .project) }
     var catalogActions: CatalogActions? { store?.catalogActions }
-    var canSwitchLibrary: Bool { !isBusy && !relocationIsRunning && editing?.saving != true && editing?.localWorkIsRunning != true }
+    var canSwitchLibrary: Bool { !isLibraryTransitioning && librarySwitchBlockReason == nil }
+    var librarySwitchBlockReason: String? {
+        if libraryPanel != nil && libraryPanel != .package { return "请先完成当前资料库面板中的操作并关闭面板。" }
+        return nil
+    }
+
+    var librarySwitchActivities: [LibrarySwitchActivity] {
+        var activities = [LibrarySwitchActivity]()
+        if job != nil {
+            activities.append(.init(title: importWorkIsRunning ? "导入素材" : progress?.title ?? "资料库作业",
+                                    canPause: importWorkIsRunning))
+        }
+        if workbenchPhotoDeliveryTask != nil || workbenchDeliveryOperations.isActive || editing?.hasActiveLibraryExport == true {
+            activities.append(.init(title: "成片交付"))
+        }
+        if originalDelivery.activeID != nil { activities.append(.init(title: "原件或清单交付")) }
+        if sceneWorkflowBatches.running { activities.append(.init(title: "批量工作流")) }
+        if editing?.hasActiveLibraryProcessing == true { activities.append(.init(title: "AI 生成与入库")) }
+        if editing?.saving == true { activities.append(.init(title: "正在保存编辑", canPause: false)) }
+        if isLibraryPackageBusy { activities.append(.init(title: "资料库与备份", canPause: false)) }
+        if qualityTask != nil { activities.append(.init(title: "预览风险检查", canPause: false)) }
+        if timelapseIsRunning { activities.append(.init(title: "延时视频", canPause: false)) }
+        if externalEditorPreparing { activities.append(.init(title: "准备外部编辑", canPause: false)) }
+        return activities
+    }
 
     private var importer: ImportService?
     private var regroupService: AutomaticGroupingService?
-    private var exporter: ExportService?
     private var relocator: RelocationService?
     private var relocationGeneration: UUID?
     private var lastRelocationRefresh = Date.distantPast
@@ -224,35 +257,54 @@ final class AppModel: ObservableObject {
     @Published private(set) var runningImportSessionID: String?
     @Published private(set) var sessionTask: SessionTaskState?
     let libraryURL: URL
+    private var browseDefaultsPrefix = "browse"
     lazy var activity = WorkbenchLibraryActivity(libraryURL: libraryURL, libraryID: try? store?.catalogLibraryIdentity(), defaults: defaults)
     let defaults: UserDefaults
 
+    nonisolated static var defaultLibraryURL: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("RAWMaster", isDirectory: true).appendingPathComponent("library.sqlite")
+    }
+
+    nonisolated static var explicitLibraryURL: URL? {
+        let arguments = ProcessInfo.processInfo.arguments
+        let path = arguments.firstIndex(of: "--library").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil }
+            ?? ProcessInfo.processInfo.environment["RAWMASTER_LIBRARY_PATH"]
+        return path.map { URL(fileURLWithPath: $0) }
+    }
+
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
          regroupAnalyzer: AutomaticGroupingAnalyzer? = nil, editingPreviewBackend: (any EditingPreviewBackend)? = nil,
-         usesPagedLibrary: Bool = false, catalogPaint: ((CatalogGridPaintRecorder.Sample) -> Void)? = nil) {
+         usesPagedLibrary: Bool = false, catalogPaint: ((CatalogGridPaintRecorder.Sample) -> Void)? = nil,
+         opensLibrary: Bool = true, scopeBrowseByLibrary: Bool = false, migrateBrowsePreferences: Bool = false,
+         expectedLibraryID: String? = nil, openedStore: LibraryStore? = nil,
+         applicationEditingServices: ApplicationEditingServices? = nil) {
         let started = DispatchTime.now().uptimeNanoseconds
         firstGridStart = started
         gridPaint = catalogPaint.map { CatalogGridPaintRecorder(receive: $0) }
         self.defaults = defaults
-        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        let arguments = ProcessInfo.processInfo.arguments
-        let explicitPath = arguments.firstIndex(of: "--library").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil } ?? ProcessInfo.processInfo.environment["RAWMASTER_LIBRARY_PATH"]
-        let defaultURL = support.appendingPathComponent("RAWMaster", isDirectory: true).appendingPathComponent("library.sqlite")
-        let explicitURL = overrideURL ?? explicitPath.map { URL(fileURLWithPath: $0) }
-        let location = Result { try LibraryLocation.resolve(defaultURL: defaultURL, defaults: defaults) }
+        originalDelivery = OriginalDeliveryCoordinator(defaults: defaults)
+        let defaultURL = Self.defaultLibraryURL
+        let explicitURL = overrideURL ?? Self.explicitLibraryURL
+        let location = Result { try opensLibrary && explicitURL == nil ? LibraryLocation.resolve(defaultURL: defaultURL, defaults: defaults) : nil }
         if explicitURL == nil { libraryAccess = try? location.get() }
         libraryURL = explicitURL ?? libraryAccess?.database ?? defaultURL
-        catalogGrid = usesPagedLibrary ? LibraryGridDataSource(database: libraryURL) : nil
+        catalogGrid = opensLibrary && usesPagedLibrary ? LibraryGridDataSource(database: libraryURL) : nil
+        guard opensLibrary else { return }
+        originalDeliveryObservation = originalDelivery.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         do {
             if explicitURL == nil { _ = try location.get() }
             if let grid = catalogGrid {
                 gridObservation = grid.$displayedRevision.dropFirst().sink { [weak self] _ in self?.applyCatalogPage() }
             }
-            try FileManager.default.createDirectory(at: libraryURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-            let database = try LibraryStore(databaseURL: libraryURL)
+            let database = try openedStore ?? LibraryStore(databaseURL: libraryURL, requireExisting: expectedLibraryID != nil)
+            if let expectedLibraryID, try database.catalogLibraryIdentity() != expectedLibraryID {
+                throw LibraryEngineError("资料库身份已变化，请重新打开。")
+            }
             store = database
             if catalogPaint != nil { catalogStartupPhases["catalogOpenMs"] = Double(DispatchTime.now().uptimeNanoseconds - started)/1e6 }
-            let services = ApplicationEditingServices(store: database, libraryURL: libraryURL, defaults: defaults)
+            let services = applicationEditingServices ?? ApplicationEditingServices(store: database, libraryURL: libraryURL, defaults: defaults)
+            if applicationEditingServices != nil { services.bindLibrary(store: database, libraryURL: libraryURL) }
             if catalogPaint != nil { catalogStartupPhases["editingServicesReadyMs"] = Double(DispatchTime.now().uptimeNanoseconds - started)/1e6 }
             editingServices = services
             editingServicesObservation = services.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
@@ -266,15 +318,28 @@ final class AppModel: ObservableObject {
             regroupService = AutomaticGroupingService(store: database, analyzer: regroupAnalyzer ?? { input, check, progress in
                 try await liveAnalyzer.analyze(input, check: check, progress: progress)
             })
-            exporter = ExportService(store: database)
             relocator = RelocationService(store: database)
-            scope = Scope(rawValue: defaults.string(forKey: "browse.scope") ?? "all") ?? .all
-            scopeID = defaults.string(forKey: "browse.id") ?? ""
-            focusedID = defaults.string(forKey: "browse.focus")
-            mode = BrowserMode(rawValue: defaults.string(forKey: "browse.mode") ?? "grid") ?? .grid
-            filter = Filter(rawValue: defaults.string(forKey: "browse.filter") ?? "all") ?? .all
-            autoAdvance = defaults.bool(forKey: "browse.autoAdvance")
-            searchQuery.decision = Self.decision(for: filter)
+            if scopeBrowseByLibrary {
+                let identity = try expectedLibraryID ?? database.catalogLibraryIdentity()
+                browseDefaultsPrefix = "browse.library.\(identity)"
+            }
+            let storedBrowse = migrateBrowsePreferences && defaults.object(forKey: browseKey("scope")) == nil
+                ? "browse" : browseDefaultsPrefix
+            scope = Scope(rawValue: defaults.string(forKey: storedBrowse + ".scope") ?? "all") ?? .all
+            scopeID = defaults.string(forKey: storedBrowse + ".id") ?? ""
+            focusedID = defaults.string(forKey: storedBrowse + ".focus")
+            mode = BrowserMode(rawValue: defaults.string(forKey: storedBrowse + ".mode") ?? "grid") ?? .grid
+            filter = Filter(rawValue: defaults.string(forKey: storedBrowse + ".filter") ?? "all") ?? .all
+            autoAdvance = defaults.bool(forKey: storedBrowse + ".autoAdvance")
+            if scopeBrowseByLibrary {
+                selectedIDs = Set(defaults.stringArray(forKey: storedBrowse + ".selection") ?? focusedID.map { [$0] } ?? [])
+            }
+            if scopeBrowseByLibrary, let data = defaults.data(forKey: storedBrowse + ".query"),
+               let saved = try? JSONDecoder().decode(ProjectSearchQuery.self, from: data) {
+                searchQuery = saved
+            } else {
+                searchQuery.decision = Self.decision(for: filter)
+            }
             let readyToBrowse = DispatchTime.now().uptimeNanoseconds
             if catalogPaint != nil { catalogStartupPhases["beforeNavigationMs"] = Double(readyToBrowse - started)/1e6 }
             reload()
@@ -294,10 +359,15 @@ final class AppModel: ObservableObject {
                 searchQuery = ProjectSearchQuery(); filter = .all
             }
             if scope == .project { restoreProjectReviewState(projectID: scopeID, useLegacyFallback: true) }
-            else {
+            else if !scopeBrowseByLibrary || !isPagedGrid {
                 rebuildSearchResults()
-                if let focusedID, scopedAssets.contains(where: { $0.id == focusedID }) { selectedIDs = [focusedID] }
-                else { focusedID = browserAssets.first?.id; if let focusedID { selectedIDs = [focusedID] } }
+                if scopeBrowseByLibrary { selectedIDs.formIntersection(browserAssets.map(\.id)) }
+                if let focusedID, scopedAssets.contains(where: { $0.id == focusedID }) {
+                    if !scopeBrowseByLibrary || selectedIDs.isEmpty { selectedIDs = [focusedID] }
+                } else {
+                    focusedID = selectedIDs.sorted().first ?? browserAssets.first?.id
+                    if selectedIDs.isEmpty, let focusedID { selectedIDs = [focusedID] }
+                }
             }
             if isCatalog || !scopeExists { mode = .grid; actualPixels = false; selectedIDs = []; focusedID = nil }
             if usesPagedLibrary {
@@ -305,7 +375,7 @@ final class AppModel: ObservableObject {
                 let url = libraryURL
                 archivePreparation = Task { [weak self] in
                     let prepared = await Task.detached(priority: .utility) {
-                        try EditingController.openArchive(store: LibraryStore(databaseURL: url), libraryURL: url)
+                        try EditingController.openArchive(store: LibraryStore(databaseURL: url, requireExisting: true), libraryURL: url)
                     }.result
                     guard !Task.isCancelled, let self else { return }
                     self.archivePreparation = nil
@@ -331,7 +401,21 @@ final class AppModel: ObservableObject {
                 self?.renditionPreviewRevisions[work.presentationID] = "\(work.id)/\(work.liveRevision ?? 0)/\(work.adoptionRevision)"
             }
             editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+            restorePendingLibraryEdit()
         } catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
+    }
+
+    func restoreEditingAfterFailedLibrarySwitch(_ context: EditingController.LibrarySwitchContext?) {
+        pendingLibrarySwitchContext = context
+        restorePendingLibraryEdit()
+    }
+
+    private func restorePendingLibraryEdit() {
+        guard let context = pendingLibrarySwitchContext, let editing else { return }
+        pendingLibrarySwitchContext = nil
+        guard focusedID == context.assetID, canOpenNativeEditing else { return }
+        editing.pendingLibrarySwitchContext = context
+        openNativeEditing()
     }
 
     func openApplicationSettings(_ page: ApplicationSettingsPage) {
@@ -409,7 +493,8 @@ final class AppModel: ObservableObject {
         case .group: return activeGroup?.name ?? "拍摄组"
         }
     }
-    var isBusy: Bool { job != nil || qualityAnalysisRunning || timelapseIsRunning }
+    var isBusy: Bool { isLibraryTransitioning || job != nil || originalDelivery.activeID != nil || qualityAnalysisRunning || timelapseIsRunning }
+    var displayedTaskProgress: TaskProgress? { originalDelivery.activeID != nil ? originalDelivery.progress : progress }
     var keptCount: Int {
         if isPagedGrid, let overview { return scope == .project ? overview.projects.first { $0.project.id == scopeID }?.kept ?? 0 : overview.kept }
         return Set(scopedAssets.filter { $0.decision == .keep }.map(\.physicalAssetID)).count
@@ -532,16 +617,22 @@ final class AppModel: ObservableObject {
         }
         if focusedID == nil, let first = browserAssets.first { focusedID = first.id; selectedIDs = [first.id] }
     }
+    private func browseKey(_ key: String) -> String { browseDefaultsPrefix + "." + key }
+
     func saveBrowse() {
-        guard !isRestoringReviewState else { return }
-        defaults.set(scope.rawValue, forKey: "browse.scope")
-        defaults.set(scopeID, forKey: "browse.id")
+        guard !isRestoringReviewState, store != nil else { return }
+        defaults.set(scope.rawValue, forKey: browseKey("scope"))
+        defaults.set(scopeID, forKey: browseKey("id"))
         if scope != .project {
-            defaults.set(focusedID, forKey: "browse.focus")
-            defaults.set(mode.rawValue, forKey: "browse.mode")
-            defaults.set(filter.rawValue, forKey: "browse.filter")
+            defaults.set(focusedID, forKey: browseKey("focus"))
+            defaults.set(mode.rawValue, forKey: browseKey("mode"))
+            defaults.set(filter.rawValue, forKey: browseKey("filter"))
+            if browseDefaultsPrefix != "browse" {
+                defaults.set(selectedIDs.sorted(), forKey: browseKey("selection"))
+                defaults.set(try? JSONEncoder().encode(searchQuery), forKey: browseKey("query"))
+            }
         }
-        defaults.set(autoAdvance, forKey: "browse.autoAdvance")
+        defaults.set(autoAdvance, forKey: browseKey("autoAdvance"))
         scheduleProjectStateSave()
     }
     func selectScope(_ scope: Scope, id: String = "") {
@@ -785,10 +876,14 @@ final class AppModel: ObservableObject {
         } catch { errorMessage = "撤销失败，当前操作仍保留：\(error.localizedDescription)" }
     }
     func refreshAvailability() {
-        guard !isCatalog, let store else { return }
+        guard !isCatalog, !isLibraryTransitioning, availabilityRefresh == nil, let store else { return }
         let ids = Array(Set(scopedAssets.map(\.physicalAssetID)))
-        Task {
-            do { try await Task.detached(priority: .utility) { try store.refreshAvailability(ids: ids) }.value; reload() }
+        availabilityRefresh = Task {
+            defer { availabilityRefresh = nil }
+            do {
+                try await Task.detached(priority: .utility) { try store.refreshAvailability(ids: ids) }.value
+                if !isLibraryTransitioning { reload() }
+            }
             catch { errorMessage = "文件核验失败：\(error.localizedDescription)" }
         }
     }
@@ -810,6 +905,7 @@ final class AppModel: ObservableObject {
         let generation = UUID()
         sessionTask = SessionTaskState(kind: .intake, sessionID: nil, id: generation)
         let mailbox = progressMailbox(generation: generation)
+        importWorkIsRunning = true
         job = Task { [self] in
             var qualitySession: String?
             var importedSessionID: String?
@@ -822,11 +918,12 @@ final class AppModel: ObservableObject {
             } catch { errorMessage = "素材接入未完成：\(error.localizedDescription)" }
             if let last = mailbox.close() { receive(last) }
             await finishBackgroundRefresh(generation: generation)
-            if let importedSessionID { selectScope(.session, id: importedSessionID) }
+            if let importedSessionID, !isLibraryTransitioning { selectScope(.session, id: importedSessionID) }
+            importWorkIsRunning = false
             job = nil; runningImportSessionID = nil; pendingImport = nil
             if sessionTask?.id == generation { sessionTask = nil }
             if let p = progress, p.isRunning { progress = TaskProgress(title: p.title, completed: p.completed, total: p.total, message: errorMessage == nil ? "任务结束" : "任务中断，可从导入会话重试", isRunning: false) }
-            if let qualitySession { startQualityAnalysis(sessionID: qualitySession) }
+            if let qualitySession, !isLibraryTransitioning { startQualityAnalysis(sessionID: qualitySession) }
         }
     }
     private func receive(_ value: TaskProgress) {
@@ -854,6 +951,7 @@ final class AppModel: ObservableObject {
         let generation = UUID()
         sessionTask = SessionTaskState(kind: .intake, sessionID: session.id, id: generation)
         let mailbox = progressMailbox(generation: generation)
+        importWorkIsRunning = true
         job = Task { [self] in
             var qualitySession: String?
             do {
@@ -865,10 +963,11 @@ final class AppModel: ObservableObject {
             catch { errorMessage = "继续接入失败：\(error.localizedDescription)" }
             if let last = mailbox.close() { receive(last) }
             await finishBackgroundRefresh(generation: generation)
+            importWorkIsRunning = false
             job = nil; runningImportSessionID = nil; pendingImport = nil
             if sessionTask?.id == generation { sessionTask = nil }
             if let p = progress, p.isRunning { progress = TaskProgress(title: p.title, completed: p.completed, total: p.total, message: "任务结束，请检查会话状态", isRunning: false) }
-            if let qualitySession { startQualityAnalysis(sessionID: qualitySession) }
+            if let qualitySession, !isLibraryTransitioning { startQualityAnalysis(sessionID: qualitySession) }
         }
     }
     private func receiveImportStage(_ id: String, stage: ImportExecutionStage, generation: UUID) {
@@ -885,14 +984,28 @@ final class AppModel: ObservableObject {
         requestBackgroundRefresh(generation: generation)
     }
     func cancelJob() {
+        if originalDelivery.activeID != nil { originalDelivery.requestPause(); return }
         if sessionTask != nil { sessionTask?.isCancelling = true }
-        job?.cancel(); importer?.cancel(); exporter?.cancel(); relocator?.cancel(); cancelQualityAnalysis(); timelapseComposer?.cancel()
+        job?.cancel(); importer?.cancel(); relocator?.cancel(); cancelQualityAnalysis(); timelapseComposer?.cancel()
+    }
+    func pauseLibraryImportForSwitch() async {
+        guard importWorkIsRunning, let job else { return }
+        importer?.pause()
+        job.cancel()
+        await job.value
+    }
+    func stopRemainingLibraryJobsForTermination() async {
+        let task = job
+        let quality = qualityTask
+        cancelJob()
+        await task?.value
+        await quality?.value
     }
     var workbenchExportStore: LibraryStore? { store }
 
     func export(ids: [String], destination: String, formats: ExportFormats = .allOriginals, exactAssetIDs: [String]? = nil,
-                csvLayout: ExportCSVLayout = .legacy) {
-        guard canExport, let exporter else { return }
+                csvLayout: ExportCSVLayout = .legacy, grantedDestination: URL? = nil) {
+        guard canExport, let store else { return }
         let source: (requested: [String], manifest: [String])
         do { source = try originalExportMembers(ids, exact: exactAssetIDs) }
         catch { errorMessage = error.localizedDescription; return }
@@ -900,19 +1013,22 @@ final class AppModel: ObservableObject {
             errorMessage = "每批最多可交付 \(Self.maximumWorkbenchExportCount) 张照片，请缩小选片范围。"
             return
         }
-        if isPagedGrid, let exportCatalogScope, let store {
+        if isPagedGrid, let exportCatalogScope {
             do { _ = try store.catalogAssets(for: exportCatalogScope) }
             catch { errorMessage = error.localizedDescription; return }
         }
         showExport = false; errorMessage = nil
-        progress = TaskProgress(title: "交付精选原片", completed: 0, total: source.requested.count, message: "准备目标目录与清单…", isRunning: true)
-        job = Task { [self] in
-            do {
-                exportReport = try await exporter.exportAssets(ids: source.requested, destination: URL(fileURLWithPath: destination), manifestIDs: source.manifest, formats: formats, allowedAssetIDs: source.manifest, csvLayout: csvLayout, progress: { [weak self] value in Task { @MainActor in self?.progress = value } })
-                showExportReport = true
-            } catch { errorMessage = "导出未完成：\(error.localizedDescription)" }
-            job = nil
-            if let p = progress, p.isRunning { progress = TaskProgress(title: p.title, completed: p.completed, total: p.total, message: "任务结束，请检查交付报告", isRunning: false) }
+        let folder = grantedDestination ?? URL(fileURLWithPath: destination, isDirectory: true)
+        originalDelivery.submit(store: store, ids: source.requested, manifestIDs: source.manifest,
+                                destination: folder, formats: formats, csvLayout: csvLayout) { [weak self] result in
+            guard let self, !isLibraryTransitioning else { return }
+            switch result {
+            case .success(let finished):
+                exportReport = finished.report
+                showExportReport = finished.phase == .completed
+                errorMessage = finished.error
+            case .failure(let failure): errorMessage = "导出未完成：\(failure.localizedDescription)"
+            }
         }
     }
     var relocationImportSession: ImportSession? { sessions.first { $0.id == relocationTargetSessionID } }
@@ -1093,6 +1209,7 @@ final class AppModel: ObservableObject {
     }
     func reveal(_ path: String) { NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)]) }
     func handleKey(_ event: NSEvent) -> Bool {
+        guard !isLibraryTransitioning else { return false }
         guard editing?.showJobs != true, editing?.showSettings != true, editing?.showExport != true, editing?.unknownRetryJobID == nil else { return false }
         guard !showImport, !showExport, !showTimelapse, !showGroups, !showGroupReview, !showGroupHistory, !showRelocation, !showCompletion, !showQualityReview, !showPairReview, !showTagPreview, !showTagHistory else { return false }
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
@@ -2046,7 +2163,8 @@ extension ImportSession {
         switch status {
         case "completed": return "接入完成"
         case "partial": return "部分完成"
-        case "cancelled": return "已暂停，可继续"
+        case "cancelled": return "已取消，可继续"
+        case "paused": return "已暂停，可继续"
         case "failed": return "接入异常，可重试"
         case "scanning": return "正在扫描"
         case "importing": return "正在接入"
@@ -2077,6 +2195,7 @@ extension AppModel {
     }
     func canContinueIntake(sessionID id: String) -> Bool {
         guard !isBusy, !showTimelapse, !hasBusinessSheet, !intakeIsComplete(id),
+              (try? store?.isHistoricalTask(.importSession, id: id)) == false,
               let session = sessions.first(where: { $0.id == id }) else { return false }
         let unfinishedLegacy = workflows.contains { $0.sessionID == id && $0.phase == .legacyHistory } && session.status != "completed"
         return intakeIsOpen(id) || unfinishedLegacy
@@ -2086,7 +2205,8 @@ extension AppModel {
         resume(session)
     }
     func canRescanSource(sessionID id: String) -> Bool {
-        !isBusy && !showTimelapse && !hasBusinessSheet && intakeIsOpen(id) && intakeIsComplete(id)
+        !isBusy && !showTimelapse && !hasBusinessSheet && intakeIsOpen(id) && intakeIsComplete(id) &&
+            (try? store?.isHistoricalTask(.importSession, id: id)) == false
     }
     func rescanSource(sessionID id: String) {
         guard canRescanSource(sessionID: id), let session = sessions.first(where: { $0.id == id }) else { return }
@@ -2144,22 +2264,43 @@ extension AppModel {
 
 
 extension AppModel {
-    func keepSelectedLibraryLocation() throws {
-        libraryAccess = try LibraryLocation.resolve(defaultURL: libraryURL, defaults: defaults)
+    func stopLibraryIndexing() async {
+        let preparingArchive = archivePreparation
+        preparingArchive?.cancel()
+        libraryIndexDirty = false
+        let indexing = libraryIndexTask
+        indexing?.cancel()
+        await preparingArchive?.value
+        await indexing?.value
+        archivePreparation = nil
+        libraryIndexTask = nil
+        await libraryIndexWorker.close()
     }
 
-    func stopLibraryIndexing() {
-        archivePreparation?.cancel()
-        archivePreparation = nil
-        libraryIndexDirty = false
-        libraryIndexTask?.cancel()
-        libraryIndexTask = nil
-        let worker = libraryIndexWorker
-        Task { await worker.close() }
+    func closeLibraryReads() async {
+        pendingGridExport?.cancel()
+        await pendingGridExport?.value
+        await availabilityRefresh?.value
+        await stopLibraryIndexing()
+        gridObservation = nil
+        await catalogGrid?.close()
+    }
+
+    func releaseLibraryConnections() {
+        // Call after all owners have joined. Old views can still retain AppModel briefly.
+        editingObservation = nil
+        editingServicesObservation = nil
+        editing = nil
+        editingServices = nil
+        importer = nil
+        regroupService = nil
+        relocator = nil
+        store = nil
+        libraryAccess = nil
     }
 
     private func scheduleLibraryIndexing() {
-        guard catalogGrid != nil, let actions = catalogActions else { return }
+        guard !isLibraryTransitioning, catalogGrid != nil, let actions = catalogActions else { return }
         libraryIndexDirty = true
         guard libraryIndexTask == nil else { return }
         let worker = libraryIndexWorker
@@ -2224,7 +2365,7 @@ extension AppModel {
     }
 
     private func submitCatalogPage(force: Bool = false) {
-        guard isPagedGrid, let grid = catalogGrid else { return }
+        guard !isLibraryTransitioning, isPagedGrid, let grid = catalogGrid else { return }
         var request = CatalogGridRequest(query: effectiveSearchQuery, sort: reviewSort.rawValue,
                                          projectID: scope == .project ? scopeID : nil)
         if !libraryCopies.isEmpty { request.level = "work"; request.nativeRenditions = true }

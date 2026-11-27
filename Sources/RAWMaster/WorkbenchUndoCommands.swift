@@ -46,7 +46,7 @@ enum WorkbenchUndoRouting {
             routeText(field.currentEditor()?.undoManager, redo: redo)
             return
         }
-        guard WorkbenchWindowContext.contains(window) else { return }
+        guard WorkbenchWindowContext.contains(window), model?.isLibraryTransitioning != true else { return }
         if let control = window.firstResponder as? DevelopmentEditingControl {
             if model?.isNativeEditing == true {
                 if redo { control.redoAction?() } else { control.undoAction?() }

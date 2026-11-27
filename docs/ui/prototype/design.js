@@ -95,11 +95,16 @@ function designSystemPanel() {
         </div>
 
         <div class="ds-stage">
-          <div class="ds-stage-label">分段标签 · 24 高</div>
-          <div class="ds-tabs" role="tablist" aria-label="示波器">
+          <div class="ds-stage-label">分组按钮 · 24 高</div>
+          <div class="ds-tabs button-group button-group--stretch" role="tablist" aria-label="示波器" data-select-on-arrow>
             <button role="tab" aria-selected="true">直方图</button>
             <button role="tab" aria-selected="false">波形</button>
             <button role="tab" aria-selected="false">矢量</button>
+          </div>
+          <div class="ds-row">
+            <div class="button-group" role="group" aria-label="曲线取样">${['黑点', '中间调', '白点'].map(name =>
+              `<button type="button" data-ds-curve-sample="${name}">${icon('sampler', 13)}${name}</button>`).join('')}</div>
+            <button type="button" class="ds-btn" data-ds-curve-sample="控制点">添加控制点</button>
           </div>
           <div class="ds-stage-label">菜单 · 26 高 / 12 medium</div>
           <label class="ds-field"><span>白平衡</span>
@@ -157,7 +162,7 @@ function designSystemPanel() {
           <tr><td>参数行、滑杆</td><td>检查器已统一；旧初修面板仍用 SwiftUI Slider</td><td>全部改用 <code>PhotosSliderRow</code> / <code>AppSliderRow</code></td></tr>
           <tr><td>数字输入</td><td>检查器有校验；导出仍用 <code>TextField.roundedBorder</code></td><td>全部改用 <code>DevelopmentNumberField</code></td></tr>
           <tr><td>勾选</td><td>三种：14pt 自绘、系统 checkbox、系统 switch</td><td>编辑面用自绘；设置与弹窗保留系统</td></tr>
-          <tr><td>分段</td><td>下划线、系统 segmented、胶囊三种</td><td>编辑面下划线；系统容器用 segmented</td></tr>
+          <tr><td>分组按钮</td><td>共享底板、内部分隔线、强调色选中</td><td>互斥选项与作用一致的短命令</td></tr>
           <tr><td>图标按钮</td><td>24–32pt 五种尺寸，悬停态不一致</td><td>26pt <code>AppIconButton</code></td></tr>
           <tr><td>分组头</td><td>照片检查器 32pt；蒙版 22pt 折叠头</td><td>主分组 32pt，密排折叠 22pt</td></tr>
         </tbody>
@@ -253,21 +258,6 @@ document.addEventListener('change', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  const tabItem = event.target.closest?.('.ds-tabs [role=tab]');
-  if (tabItem) {
-    const tabs = [...tabItem.parentElement.querySelectorAll('[role=tab]')],
-      index = tabs.indexOf(tabItem);
-    let next = index;
-    if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
-    else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
-    else if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = tabs.length - 1;
-    else return;
-    event.preventDefault();
-    tabs[next].click();
-    tabs[next].focus();
-    return;
-  }
   const number = event.target.closest?.('.ds-number');
   if (!number) return;
   const slider = number.closest('[data-ds-slider]');
@@ -295,6 +285,8 @@ document.addEventListener('click', (event) => {
   if (tab) {
     tab.parentElement.querySelectorAll('[role=tab]').forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
   }
+  const sample = event.target.closest?.('[data-ds-curve-sample]');
+  if (sample) notify('已选择取样 ' + sample.dataset.dsCurveSample);
   const toggle = event.target.closest?.('.ds-section-toggle');
   if (toggle) {
     const open = toggle.getAttribute('aria-expanded') !== 'true';

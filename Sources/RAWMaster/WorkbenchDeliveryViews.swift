@@ -81,7 +81,7 @@ private struct WorkbenchDeliveryDetail: View {
                 if let manifest {
                     Text(details.directory?.path ?? manifest.destination.pathHint)
                         .font(.caption2).textSelection(.enabled).lineLimit(2)
-                    if details.directory == nil {
+                    if details.directory == nil && batch.phase != .historical {
                         Text(WorkbenchDeliveryIssue.targetOffline.localizedDescription).font(.caption).foregroundStyle(AppPalette.warning)
                         Button("接回原目标目录") { chooseDirectory(details) }.disabled(busy)
                     }
@@ -95,7 +95,7 @@ private struct WorkbenchDeliveryDetail: View {
                     }
                     HStack {
                         Button("核对已有文件") { refresh() }.disabled(busy || details.directory == nil)
-                        if batch.phase != .cancelled && batch.phase != .done {
+                        if batch.phase != .cancelled && batch.phase != .done && batch.phase != .historical {
                             Button("取消本批交付") { action { try await model.cancelWorkbenchDelivery(batch) } }
                                 .disabled(busy)
                             Spacer()
@@ -133,7 +133,8 @@ private struct WorkbenchDeliveryDetail: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Text("\(item.filename ?? original.stem) · 版本 \(original.versionID.prefix(8))").font(.caption).lineLimit(2)
-            if item.reason == WorkbenchDeliveryIssue.sourceOffline.rawValue && details.receipt.batch.phase != .cancelled {
+            if item.reason == WorkbenchDeliveryIssue.sourceOffline.rawValue,
+               details.receipt.batch.phase != .cancelled && details.receipt.batch.phase != .historical {
                 Button("接回原片") { chooseSource(details, item: item) }.buttonStyle(.link).disabled(busy)
             }
         }

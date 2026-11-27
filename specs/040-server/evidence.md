@@ -4,6 +4,8 @@
 
 ## 1. 本地可复用底座
 
+现有 `.rawmasterlibrary` 命名、App 内选址/打开、最近目录 bookmark 和备份代次可复用。当前启动若没有显式位置会初始化 Application Support 默认库，打包脚本还未注册 Finder 文稿。切库目前由 `canSwitchLibrary` 把关，后台清理异步完成。Finder 打开、每库上下文和关闭屏障由 [042](../042-local-library-workbench/plan.md) 补齐。Server 包实例授权由本规格实现。[LibraryPackagePanel](../../Modules/LibraryCatalog/Swift/LibraryPackagePanel.swift) · [LibraryLocation](../../Modules/LibraryCatalog/Swift/LibraryLocation.swift) · [LibraryWorkspace](../../Sources/RAWMaster/LibraryWorkspace.swift) · [AppModel](../../Sources/RAWMaster/AppModel.swift) · [签名构建](../../scripts/build-app.sh)
+
 | 能力 | 证据 | 用途 |
 | --- | --- | --- |
 | 资料库与设备身份 | `lc_meta.libraryID`、`metadata.deviceID`；[authority_schema.sql](../../Modules/LibraryCatalog/src/authority_schema.sql) · [LibraryStore](../../Sources/RAWMasterCore/LibraryStore.swift) | 库绑定、所有权、恢复换设备 |

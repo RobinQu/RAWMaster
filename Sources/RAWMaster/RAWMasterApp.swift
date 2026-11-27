@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import RAWMasterCore
 import RAWMasterImaging
 
 @main
@@ -10,97 +11,129 @@ struct RAWMasterApp: App {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var appDelegate
+    private var libraryCommandsEnabled: Bool { model.store != nil && !model.isLibraryTransitioning }
     @MainActor @ViewBuilder private var workbenchRoot: some View {
-        if let probe = appDelegate.workbenchTeardown {
-            QAWorkbenchTerminationContent(model: model, probe: probe)
+        if model.store == nil {
+            LibraryWelcomeView(session: librarySession)
+        } else if let probe = appDelegate.workbenchTeardown {
+            QAWorkbenchTerminationContent(model: model, library: librarySession.activePackage, probe: probe)
         } else {
-            WorkbenchView().environmentObject(model)
+            WorkbenchView(library: librarySession.activePackage).environmentObject(model)
         }
     }
     var body: some Scene {
-        WindowGroup("RAWMaster") {
-            workbenchRoot.id(ObjectIdentifier(model))
+        Window("RAWMaster", id: "workbench") {
+            workbenchRoot
+                .id(ObjectIdentifier(model))
                 .modifier(ApplicationSettingsRouting(model: model))
                 .workbenchFocusAppearance()
                 .preferredColorScheme(appearance.preference.preferredColorScheme)
                 .environment(\.resolvedAppAppearance, appearance.resolved)
                 .focusedSceneValue(\.workbenchModel, model)
-                .frame(minWidth: 1100, minHeight: 720)
+                .frame(minWidth: model.store == nil ? 570 : 1100, minHeight: model.store == nil ? 400 : 720)
+                .disabled(model.isLibraryTransitioning)
+                .overlay { libraryTransitionOverlay }
+                .background(WorkbenchWindowAnchor(register: appDelegate.trackWorkbenchWindow).accessibilityHidden(true))
+                .alert("无法打开资料库", isPresented: Binding(
+                    get: { model.store != nil && librarySession.openError != nil },
+                    set: { if !$0 { librarySession.openError = nil } }
+                )) {
+                    Button("好", role: .cancel) { librarySession.openError = nil }
+                } message: { Text(librarySession.openError ?? "") }
                 .onAppear {
                     PreviewPerformancePreferences.apply(stored: UserDefaults.standard.string(forKey: PreviewPerformanceMode.storageKey) ?? "")
-                    appDelegate.model = model; ImageEngines.startPrewarming()
-#if DEBUG
-                    if let raw = ProcessInfo.processInfo.environment["RAWMASTER_OPEN_SETTINGS"],
-                       let page = ApplicationSettingsPage(rawValue: raw) {
-                        model.settingsPage = page
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { openSettings() }
+                    let delegate = appDelegate
+                    let openWorkbench = openWindow
+                    librarySession.focusWorkbench = { [weak delegate] in
+                        delegate?.focusWorkbenchWindow { openWorkbench(id: "workbench") }
                     }
+                    appDelegate.connect(to: librarySession)
+                    ImageEngines.startPrewarming()
+#if DEBUG
+                    openQASettings(for: model)
 #endif
                 }
-                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in model.saveBrowse(); model.flushProjectReviewState(); model.cancelJob() }
+#if DEBUG
+                .onChange(of: ObjectIdentifier(model)) { openQASettings(for: model) }
+#endif
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
         .windowResizability(.contentMinSize)
+        .restorationBehavior(.disabled)
         .defaultLaunchBehavior(.presented)
         .defaultSize(width: QAInitialWindowGeometry.initialSize.width, height: QAInitialWindowGeometry.initialSize.height)
         .commands {
             CommandGroup(replacing: .newItem) {
-                Button("创建导入会话…") { model.openImport() }.keyboardShortcut("i", modifiers: .command).disabled(model.isBusy)
+                Button("创建导入会话…") { model.openImport() }.keyboardShortcut("i", modifiers: .command).disabled(!libraryCommandsEnabled || model.isBusy)
                 Button("导出成片…") { model.openExportWorkspace(.render) }
-                    .keyboardShortcut("e", modifiers: [.command, .shift]).disabled(!model.canExport)
-                Button("复制原文件…") { model.openExportWorkspace(.original) }.disabled(!model.canExport)
-                Button("合成延时视频…") { model.openTimelapse() }.disabled(model.isCatalog || !model.canComposeTimelapse())
+                    .keyboardShortcut("e", modifiers: [.command, .shift]).disabled(!libraryCommandsEnabled || !model.canExport)
+                Button("复制原文件…") { model.openExportWorkspace(.original) }.disabled(!libraryCommandsEnabled || !model.canExport)
+                Button("合成延时视频…") { model.openTimelapse() }.disabled(!libraryCommandsEnabled || model.isCatalog || !model.canComposeTimelapse())
             }
             CommandMenu("资料库") {
-                Button("打开、备份与还原资料库…") { model.libraryPanel = .package }
-                Button("文件夹、集合与作品…") { model.libraryPanel = .organization }.disabled(model.store == nil)
+                Button("新建资料库…") { librarySession.chooseNewLibrary() }
+                    .disabled(model.isLibraryTransitioning)
+                Button("打开资料库包…") { librarySession.chooseLibrary() }
+                    .keyboardShortcut("o", modifiers: .command).disabled(model.isLibraryTransitioning)
+                Menu("最近打开") {
+                    if librarySession.recent.isEmpty { Text("暂无最近打开的资料库") }
+                    ForEach(librarySession.recent) { location in
+                        Button("\(location.name) — \(location.path.path)") { librarySession.openRecent(location) }
+                    }
+                }.disabled(model.isLibraryTransitioning)
+                Divider()
+                Button("资料库与备份…") { model.libraryPanel = .package }.disabled(!libraryCommandsEnabled)
+                if librarySession.activePackage?.kind == .legacy {
+                    Button("迁移到资料库包…") { librarySession.chooseMigrationLocation() }.disabled(!libraryCommandsEnabled)
+                }
+                Button("文件夹、集合与作品…") { model.libraryPanel = .organization }.disabled(!libraryCommandsEnabled)
                 Button("智能检索、地理围栏与人物…") { model.libraryPanel = .discovery }
-                    .keyboardShortcut("f", modifiers:[.command,.option]).disabled(model.store == nil)
-                Button("迁入 Lightroom Classic 目录…") { model.libraryPanel = .migration }.disabled(model.store == nil)
+                    .keyboardShortcut("f", modifiers:[.command,.option]).disabled(!libraryCommandsEnabled)
+                Button("迁入 Lightroom Classic 目录…") { model.libraryPanel = .migration }.disabled(!libraryCommandsEnabled)
                 Button("分组制作与成片…") { if let id = model.activeGroup?.id { model.openGroupProcessing(id) } }
-                    .disabled(model.activeGroup == nil)
-                Button("检查照片与多图总览…") { model.inspectWorks() }.disabled(model.actionAssetIDs.isEmpty)
-                Button("移动或改名受管文件…") { model.libraryPanel = .managedFiles }.disabled(model.actionAssetIDs.isEmpty || model.isBusy)
+                    .disabled(!libraryCommandsEnabled || model.activeGroup == nil)
+                Button("检查照片与多图总览…") { model.inspectWorks() }.disabled(!libraryCommandsEnabled || model.actionAssetIDs.isEmpty)
+                Button("移动或改名受管文件…") { model.libraryPanel = .managedFiles }.disabled(!libraryCommandsEnabled || model.actionAssetIDs.isEmpty || model.isBusy)
             }
             ProjectSearchCommands()
             WorkbenchUndoCommands()
             CommandMenu("编辑") {
                 Button("编辑当前照片") { model.openNativeEditing() }
                     .keyboardShortcut("d", modifiers: [])
-                    .disabled(model.isCatalog || model.isNativeEditing || !model.canOpenNativeEditing)
+                    .disabled(!libraryCommandsEnabled || model.isCatalog || model.isNativeEditing || !model.canOpenNativeEditing)
                 Button("完成编辑") { model.editing?.leaveBrowsingContext() }
                     .keyboardShortcut(.return, modifiers: .command)
-                    .disabled(!model.isNativeEditing || model.editing?.saving == true || model.editing?.quickPromptPresented == true)
+                    .disabled(!libraryCommandsEnabled || !model.isNativeEditing || model.editing?.saving == true || model.editing?.quickPromptPresented == true)
             }
             CommandMenu("选片") {
-                Button("保留 P") { model.decide(.keep) }.disabled(model.isCatalog || model.selectedIDs.isEmpty)
-                Button("排除 X") { model.decide(.reject) }.disabled(model.isCatalog || model.selectedIDs.isEmpty)
-                Button("清除决定 U") { model.decide(.undecided) }.disabled(model.isCatalog || model.selectedIDs.isEmpty)
+                Button("保留 P") { model.decide(.keep) }.disabled(!libraryCommandsEnabled || model.isCatalog || model.selectedIDs.isEmpty)
+                Button("排除 X") { model.decide(.reject) }.disabled(!libraryCommandsEnabled || model.isCatalog || model.selectedIDs.isEmpty)
+                Button("清除决定 U") { model.decide(.undecided) }.disabled(!libraryCommandsEnabled || model.isCatalog || model.selectedIDs.isEmpty)
                 Divider()
-                ForEach(0..<6) { rating in Button("\(rating) 星") { model.decide(rating: rating) }.disabled(model.isCatalog || model.selectedIDs.isEmpty || model.isTriageScope || model.isHistoryScope) }
+                ForEach(0..<6) { rating in Button("\(rating) 星") { model.decide(rating: rating) }.disabled(!libraryCommandsEnabled || model.isCatalog || model.selectedIDs.isEmpty || model.isTriageScope || model.isHistoryScope) }
                 Divider()
-                Button(model.groupSelectionActionTitle) { model.performGroupSelectionAction() }.disabled(!model.canPerformGroupSelectionAction)
-                Toggle("决定后自动前进", isOn: Binding(get: { model.autoAdvance }, set: { model.autoAdvance = $0 })).onChange(of: model.autoAdvance) { model.saveBrowse() }.disabled(model.isCatalog)
+                Button(model.groupSelectionActionTitle) { model.performGroupSelectionAction() }.disabled(!libraryCommandsEnabled || !model.canPerformGroupSelectionAction)
+                Toggle("决定后自动前进", isOn: Binding(get: { model.autoAdvance }, set: { model.autoAdvance = $0 })).onChange(of: model.autoAdvance) { model.saveBrowse() }.disabled(!libraryCommandsEnabled || model.isCatalog)
             }
             CommandMenu("浏览") {
-                Button("网格") { model.setMode(.grid) }.keyboardShortcut("g", modifiers: []).disabled(model.isCatalog)
-                Button("单张") { model.setMode(.single) }.keyboardShortcut("e", modifiers: []).disabled(model.isCatalog)
-                Button("比较") { model.setMode(.compare) }.keyboardShortcut("c", modifiers: []).disabled(model.isCatalog)
+                Button("网格") { model.setMode(.grid) }.keyboardShortcut("g", modifiers: []).disabled(!libraryCommandsEnabled || model.isCatalog)
+                Button("单张") { model.setMode(.single) }.keyboardShortcut("e", modifiers: []).disabled(!libraryCommandsEnabled || model.isCatalog)
+                Button("比较") { model.setMode(.compare) }.keyboardShortcut("c", modifiers: []).disabled(!libraryCommandsEnabled || model.isCatalog)
                 Divider()
                 Button("适合窗口 / 原始像素 Z") {
                     if model.isNativeEditing, let editing = model.editing {
                         if editing.actualPixels { editing.requestCanvasCommand(.fit) }
                         else { editing.setActualPixels(true, nativeEvent: true) }
                     } else { model.actualPixels.toggle() }
-                }.disabled(model.isCatalog)
+                }.disabled(!libraryCommandsEnabled || model.isCatalog)
                 Button("适合可用画面") { model.editing?.requestCanvasCommand(.fit) }
-                    .keyboardShortcut("0", modifiers: .command).disabled(!model.isNativeEditing)
-                Button("放大") { model.editing?.requestCanvasCommand(.zoomIn) }.disabled(!model.isNativeEditing)
-                Button("缩小") { model.editing?.requestCanvasCommand(.zoomOut) }.disabled(!model.isNativeEditing)
-                Button("循环工作视图 Tab / ⇧Tab") { model.cycleWorkflow() }
-                Button("显示 / 收起信息栏") { model.toggleRightSidebar() }.disabled(model.isCatalog || model.mode == .compare)
-                Button("刷新文件可用性") { model.refreshAvailability() }.disabled(model.isCatalog)
+                    .keyboardShortcut("0", modifiers: .command).disabled(!libraryCommandsEnabled || !model.isNativeEditing)
+                Button("放大") { model.editing?.requestCanvasCommand(.zoomIn) }.disabled(!libraryCommandsEnabled || !model.isNativeEditing)
+                Button("缩小") { model.editing?.requestCanvasCommand(.zoomOut) }.disabled(!libraryCommandsEnabled || !model.isNativeEditing)
+                Button("循环工作视图 Tab / ⇧Tab") { model.cycleWorkflow() }.disabled(!libraryCommandsEnabled)
+                Button("显示 / 收起信息栏") { model.toggleRightSidebar() }.disabled(!libraryCommandsEnabled || model.isCatalog || model.mode == .compare)
+                Button("刷新文件可用性") { model.refreshAvailability() }.disabled(!libraryCommandsEnabled || model.isCatalog)
             }
             CommandMenu("诊断") {
                 Button("图像性能监控") { openWindow(id: "image-performance-monitor") }
@@ -135,17 +168,57 @@ struct RAWMasterApp: App {
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 980, height: 700)
-        Settings { RAWMasterSettingsView(appearance: appearance, model: model).workbenchFocusAppearance() }
+        Settings {
+            RAWMasterSettingsView(appearance: appearance, model: model)
+                .workbenchFocusAppearance()
+                .disabled(model.isLibraryTransitioning)
+        }
     }
+
+    @ViewBuilder private var libraryTransitionOverlay: some View {
+        if let message = librarySession.transitionMessage {
+            VStack(alignment: .leading, spacing: 18) {
+                HStack(spacing: 12) {
+                    ProgressView().controlSize(.small)
+                    Text(message).font(.headline).fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("library.switch.status")
+                }
+                HStack {
+                    if model.store != nil {
+                        Button("查看制作任务") {
+                            model.activity.requestTasks()
+                            openWindow(id: "background-activity")
+                        }
+                    }
+                    if librarySession.canCancelTransition {
+                        Button("取消切换") { librarySession.cancelTransition() }.keyboardShortcut(.cancelAction)
+                    }
+                }
+            }
+            .padding(22)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+            .accessibilityIdentifier("library.switch.progress")
+        }
+    }
+
+#if DEBUG
+    private func openQASettings(for model: AppModel) {
+        guard model.store != nil, let raw = ProcessInfo.processInfo.environment["RAWMASTER_OPEN_SETTINGS"],
+              let page = ApplicationSettingsPage(rawValue: raw) else { return }
+        model.settingsPage = page
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { openSettings() }
+    }
+#endif
 }
 
 private struct QAWorkbenchTerminationContent: View {
     let model: AppModel
+    let library: LocalLibraryPackage?
     @ObservedObject var probe: QAWorkbenchTeardown
 
     var body: some View {
         if !probe.unmountRequested {
-            WorkbenchView().environmentObject(model)
+            WorkbenchView(library: library).environmentObject(model)
                 .background(QAWorkbenchTeardownMarker(probe: probe).allowsHitTesting(false).accessibilityHidden(true))
         }
     }
@@ -157,14 +230,19 @@ struct ProjectSearchCommands: Commands {
         CommandGroup(after: .textEditing) {
             Button(model?.currentSearchTitle ?? "搜索照片") { model?.focusCurrentSearch() }
                 .keyboardShortcut("f", modifiers: .command)
-                .disabled(model?.canActivateProjectSearch != true && model?.canSearchCatalog != true)
+                .disabled(model?.isLibraryTransitioning == true || (model?.canActivateProjectSearch != true && model?.canSearchCatalog != true))
         }
     }
 }
 
 @MainActor
 final class ApplicationDelegate: NSObject, NSApplicationDelegate {
-    weak var model: AppModel?
+    private weak var librarySession: ApplicationLibrarySession?
+    private var model: AppModel? { librarySession?.model }
+    private let workbenchWindows = NSHashTable<NSWindow>.weakObjects()
+    private var launchComplete = false
+    private var routingScheduled = false
+    private var pendingOpenURLs: [URL] = []
     private let terminationOwner = ApplicationTerminationOwner()
     let workbenchTeardown: QAWorkbenchTeardown? = {
         guard Bundle.main.bundleIdentifier == "io.robinqu.RAWMaster.preview022",
@@ -173,13 +251,53 @@ final class ApplicationDelegate: NSObject, NSApplicationDelegate {
         return QAWorkbenchTeardown()
     }()
 
+    func connect(to session: ApplicationLibrarySession) {
+        librarySession = session
+        scheduleOpenRequests()
+    }
+
+    func trackWorkbenchWindow(_ window: NSWindow) { workbenchWindows.add(window) }
+
+    func focusWorkbenchWindow(orOpen open: () -> Void) {
+        let windows = workbenchWindows
+        let visible = NSApp.orderedWindows.first { windows.contains($0) && $0.isVisible }
+        if let window = visible ?? windows.allObjects.first(where: \.isMiniaturized) {
+            if window.isMiniaturized { window.deminiaturize(nil) }
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            open()
+        }
+        NSApp.activate()
+    }
+
+    func application(_ application: NSApplication, open urls: [URL]) {
+        pendingOpenURLs.append(contentsOf: urls.filter(\.isFileURL))
+        scheduleOpenRequests()
+    }
+
+    private func scheduleOpenRequests() {
+        guard launchComplete, librarySession != nil, !routingScheduled else { return }
+        routingScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.routingScheduled = false
+            let urls = self.pendingOpenURLs
+            self.pendingOpenURLs.removeAll()
+            self.librarySession?.start(finderURLs: urls)
+        }
+    }
+
 func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
   // Even a failed photo-controller initialization may leave application services alive.
   // Always close the shared preview actor, including the no-library/no-editing branch.
-  let shutdown: @MainActor () async -> Void = { [model, workbenchTeardown] in
-      model?.stopLibraryIndexing()
-      await model?.stopWorkbenchPhotoDelivery()
-      await model?.sceneWorkflowBatches.stopAndJoin()
+  let shutdown: @MainActor () async -> Void = { [librarySession, workbenchTeardown] in
+      await librarySession?.finishPendingOpenForTermination()
+      let model = librarySession?.model
+      model?.saveBrowse()
+      model?.flushProjectReviewState()
+      await model?.quiesceLocalLibraryTasksForSwitch()
+      await model?.stopRemainingLibraryJobsForTermination()
+      await model?.closeLibraryReads()
       await model?.editing?.shutdown(finishPreviews: false)
       var teardownResult: QAWorkbenchTeardown.Result?
       if let workbenchTeardown {
@@ -197,6 +315,7 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
       qaMainPresentationSnapshot(.afterPreviewShutdown, editing: model?.editing)
       await ImageEngines.previewLifecycle.closeAll()
       qaMainPresentationSnapshot(.afterCloseAll, editing: model?.editing)
+      librarySession?.releaseWriterForTermination()
       let trace = InteractionTrace.shared
       if let workbenchTeardown {
           trace.workbenchTeardown("after-closeAll", mounted: workbenchTeardown.mountedCount,
@@ -213,7 +332,14 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
     sender.reply(toApplicationShouldTerminate: true)
   }
 }
-    func applicationDidFinishLaunching(_ notification: Notification) { WorkbenchApplicationLog.shared.event("已启动 RAWMaster"); InteractionTrace.shared.install(); NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        WorkbenchApplicationLog.shared.event("已启动 RAWMaster")
+        InteractionTrace.shared.install()
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate()
+        launchComplete = true
+        scheduleOpenRequests()
+    }
     func applicationWillTerminate(_ notification: Notification) {
         WorkbenchApplicationLog.shared.event("正在退出 RAWMaster")
         qaMainPresentationSnapshot(.applicationWillTerminate, editing: model?.editing)
@@ -221,6 +347,30 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
         InteractionTrace.shared.flush()
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+}
+
+private struct WorkbenchWindowAnchor: NSViewRepresentable {
+    let register: (NSWindow) -> Void
+
+    func makeNSView(context: Context) -> Marker { Marker(register: register) }
+    func updateNSView(_ nsView: Marker, context: Context) {}
+
+    final class Marker: NSView {
+        private let register: (NSWindow) -> Void
+
+        init(register: @escaping (NSWindow) -> Void) {
+            self.register = register
+            super.init(frame: .zero)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) { fatalError() }
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            if let window { register(window) }
+        }
+    }
 }
 
 @MainActor private func qaMainPresentationSnapshot(_ stage: PreviewQAMainPresentationWitness.Stage, editing: EditingController?) {

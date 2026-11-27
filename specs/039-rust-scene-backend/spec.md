@@ -1,6 +1,6 @@
 # 039 · Rust + Metal 场景执行器
 
-本轮在 `main@01c7a075` 上复核并补齐组内监看。macOS 已对有资格的 038 场景图默认尝试 Rust。目标是由 `Modules/ImageEdit` 的 Rust 执行器负责新显影的算子语义、编译、Metal 资源与回执。持久图仍由 [038](../038-node-dag-workflow/spec.md) 定义，工作域及输出由 [037](../037-color-film-hdr/spec.md) 定义。Swift 保留平台呈现、文件授权和验证用参考执行，RAW、模型及编码通过平台适配器接入。[联合实施方案](../035-portable-processing-cores/roadmap.md) · [验证记录](validation.md)
+本轮在 `main@01c7a075` 上复核并补齐组内监看。macOS 已对有资格的 038 场景图默认尝试 Rust。目标是由 `Modules/ImageEdit` 的 Rust 执行器负责新显影的算子语义、编译、Metal 资源与回执。持久图仍由 [038](../038-node-dag-workflow/spec.md) 定义，工作域及输出由 [037](../037-color-film-hdr/spec.md) 定义。Swift 保留平台呈现、文件授权和验证用参考执行，RAW、模型及编码通过平台适配器接入。后续统一 IR、算子注册、资源计划与点段融合见 [043](../043-image-engine-unification/spec.md)。[联合实施方案](../035-portable-processing-cores/roadmap.md) · [验证记录](validation.md)
 
 ## 生产路径
 

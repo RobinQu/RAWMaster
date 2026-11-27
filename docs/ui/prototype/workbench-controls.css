@@ -5,8 +5,8 @@
   --control-focus: color-mix(in srgb,currentColor 68%,transparent);
   --control-height: 26px;
 }
-.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select),
-.app :is(.modes,.foot,.selection-controls,.selection-actions,.settings,.preview-head,.preset-bar) :is(button,select) {
+.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select):not(:where(.button-group > button)),
+.app :is(.foot,.selection-controls,.settings,.preview-head,.preset-bar) :is(button,select) {
   min-height: var(--control-height);
   padding: 3px 8px;
   border: 0;
@@ -17,20 +17,15 @@
   font-size: 12px;
   font-weight: 500;
 }
-.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select):enabled:hover,
-.app :is(.modes,.foot,.selection-controls,.selection-actions,.settings,.preview-head,.preset-bar) :is(button,select):enabled:hover { background-color: var(--control-hover); }
-.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) button:enabled:active,
-.app :is(.foot,.selection-actions,.settings) button:enabled:active {background-color: var(--control-pressed);}
-.library-layout .library-tools .switch, .app .modes {gap:4px;background:transparent;border:0;padding:0;}
-.library-layout .library-tools .switch button, .app .modes button {min-height:24px;border-radius:0;background:transparent;border-bottom:2px solid transparent;}
-.library-layout .library-tools .switch button[aria-pressed=true], .app .modes button[aria-pressed=true] {
-  border-bottom-color:var(--accent);color:var(--text);font-weight:650;background:transparent;
-}
+.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select):not(:where(.button-group > button)):enabled:hover,
+.app :is(.foot,.selection-controls,.settings,.preview-head,.preset-bar) :is(button,select):enabled:hover { background-color: var(--control-hover); }
+.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) button:not(:where(.button-group > button)):enabled:active,
+.app :is(.foot,.settings) button:enabled:active {background-color: var(--control-pressed);}
 .library-layout :is(.actionbar,.view-heading) button.primary, .app .foot button#submit {
   background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--text);font-weight:650;
 }
-.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select):focus-visible,
-.app :is(.modes,.foot,.selection-controls,.selection-actions,.settings,.preview-head,.asset) :is(button,select,input):focus-visible {
+.library-layout :is(.library-tools,.actionbar,.view-heading,.ins-block) :is(button,select):not(:where(.button-group > button)):focus-visible,
+.app :is(.foot,.selection-controls,.settings,.preview-head,.asset) :is(button,select,input):focus-visible {
   outline:2px solid var(--control-focus);outline-offset:1px;
 }
 .library-layout .photo-secondary {display:inline-flex;align-items:center;gap:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}

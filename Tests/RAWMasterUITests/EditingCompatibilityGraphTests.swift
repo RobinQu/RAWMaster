@@ -32,6 +32,9 @@ final class EditingCompatibilityGraphTests: XCTestCase {
         XCTAssertEqual(panel.standardWindowButton(.closeButton)?.isEnabled, true)
         XCTAssertTrue(panel.canBecomeKey)
         XCTAssertEqual(panel.title, "只读兼容图")
+        XCTAssertEqual(ResolvedAppearance.resolve(panel.effectiveAppearance), .light)
+        presenter.setAppearance(.dark)
+        XCTAssertEqual(ResolvedAppearance.resolve(panel.effectiveAppearance), .dark)
         let titleHeight = panel.frame.height - panel.contentLayoutRect.height
         XCTAssertGreaterThan(titleHeight, 0)
         XCTAssertLessThanOrEqual(titleHeight, 38)

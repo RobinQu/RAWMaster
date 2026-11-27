@@ -21,8 +21,11 @@ private actor LibraryPageReader {
     }
 
     func isCurrent(_ selection: CatalogFrozenSelection) throws -> Bool {
-        try LibraryEngine.shared().request("resolveSelection", at: database, payload: selection, as: CatalogJSON.self) != .null
+        try Task.checkCancellation()
+        return try LibraryEngine.shared().request("resolveSelection", at: database, payload: selection, as: CatalogJSON.self) != .null
     }
+
+    func drain() {}
 }
 
 @MainActor
@@ -46,6 +49,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
     private var restoredSelection: CatalogFrozenSelection?
     public private(set) var epoch: UInt64 = 0
     private var task: Task<Void, Never>?
+    private var closed = false
 
     public init(database: URL) {
         let cache = database.deletingLastPathComponent().appendingPathComponent("." + database.lastPathComponent + ".search.sqlite")
@@ -73,7 +77,17 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
         isLoading = false
     }
 
+    public func close() async {
+        closed = true
+        let pending = task
+        cancel()
+        await pending?.value
+        // Reads superseded by a new query use this same serial connection owner.
+        await reader.drain()
+    }
+
     private func start(_ query: CatalogGridRequest<Query>, startedAt: UInt64? = nil, retaining ids: Set<String> = []) {
+        guard !closed else { return }
         cancel()
         var first = query
         first.cursor = nil
@@ -97,7 +111,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
     }
 
     public func loadMore() {
-        guard !isLoading, let nextCursor, var query = request else { return }
+        guard !closed, !isLoading, let nextCursor, var query = request else { return }
         query.cursor = nextCursor
         submit(query, appending: true)
     }
@@ -183,7 +197,7 @@ public final class LibraryGridDataSource<Asset: Decodable & Sendable, Query: Enc
     }
 
     public func readSelectionPage() async throws -> (page: CatalogGridPage<Asset>, selection: CatalogFrozenSelection) {
-        guard var query = request, let libraryID, watermark != nil else {
+        guard !closed, var query = request, let libraryID, watermark != nil else {
             throw LibraryEngineError("请等待资料库完成查询")
         }
         let expected = epoch

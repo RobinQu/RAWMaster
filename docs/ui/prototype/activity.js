@@ -3,7 +3,7 @@
 const Activity = (() => {
   const panel = $('#activity-window');
   const libraryName = () => Studio.catalog().packageName || '本机资料库';
-  const libraryID = () => Studio.catalog().activityID ??= Studio.uid();
+  const libraryID = () => packageLocation().libraryID;
   let current, timer, selected = 'notices', opener;
   const tabs = {notices:'通知', tasks:'任务', logs:'日志'};
   function entries() {
@@ -47,9 +47,9 @@ const Activity = (() => {
     if (!panel.open) return;
     const rows = entries()[selected];
     if (selected === 'tasks') {
-      panel.querySelector('.activity-list').innerHTML = Studio.data.jobs.map(j =>
-        `<div class="activity-row">${icon('clock')}<div><strong>${h(j.kind)}</strong><small>${h([...new Set([jobNames[j.state] || j.state, j.deliveryStatus].filter(Boolean))].join(' · '))}</small></div>${j.delivery || j.quickPrompt || j.group || j.result ? btn('查看详情','job-detail',j.id):''}</div>`
-      ).join('') || '<p class="activity-empty">当前资料库暂无后台任务</p>';
+      const taskSummary = taskRows(true).map(row => '<div class="activity-row">' + row + '</div>').join('');
+      panel.querySelector('.activity-list').innerHTML = (taskSummary || '<p class="activity-empty">当前资料库暂无后台任务</p>')
+        + btn('查看全部制作任务', 'activity-jobs');
     } else {
       panel.querySelector('.activity-list').innerHTML = rows.map(row => {
         const label = selected === 'logs' ? row.source : row.kind === 'error' ? '错误' : '信息';
@@ -82,6 +82,7 @@ const Activity = (() => {
   actions['activity-open'] = () => show();
   actions['activity-window-menu'] = () => { const menu=$('.window-menu'); if(menu)menu.open=false; show(selected,'.window-menu summary'); };
   actions['activity-tab'] = show;
+  actions['activity-jobs'] = () => {close(); go('jobs');};
   actions['activity-close'] = close;
   return {toast,post,dismiss,resolve,refresh,log,leavePhoto:()=>{if(current)dismiss(current.id);}};
 })();

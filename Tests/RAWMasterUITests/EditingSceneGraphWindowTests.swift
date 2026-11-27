@@ -46,12 +46,14 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             }
             XCTAssertNil(window.attachedSheet)
             let initialRecipe = editing.recipe, originalFrame = editing.sceneFrame?.id
+            let originalPixels = try sample(XCTUnwrap(editing.sceneFrame).texture)
             let first = try XCTUnwrap(editing.sceneGraphState.single)
             let transform = editing.canvasCommand?.id
             try await press("editing.scene.graph.toggle", within: window)
             try await wait("nonmodal hover window") { editing.sceneGraphState.open && window.childWindows?.contains(where: { $0.title == "工作流 Graph" }) == true }
             let graphWindow = try XCTUnwrap(window.childWindows?.first(where: { $0.title == "工作流 Graph" }))
-            XCTAssertTrue(graphWindow.styleMask.isSuperset(of: [.titled, .utilityWindow, .closable, .resizable]))
+            XCTAssertTrue(graphWindow.styleMask.isSuperset(of: [.titled, .utilityWindow, .closable, .resizable, .fullSizeContentView]))
+            XCTAssertTrue(graphWindow.titlebarAppearsTransparent)
             XCTAssertTrue(graphWindow.isMovable)
             XCTAssertFalse(graphWindow.isMovableByWindowBackground)
             XCTAssertEqual(graphWindow.standardWindowButton(.closeButton)?.isEnabled, true)
@@ -69,7 +71,8 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             XCTAssertEqual(graphWindow.frame, geometry)
             XCTAssertTrue(editing.sceneGraphState.open)
             try await press("scene.graph.fit", within: graphWindow)
-            editing.addSceneGraphNode(.serial, ticket: try XCTUnwrap(editing.sceneGraphTicket))
+            editing.setSceneExposure(0.75, node: first, ticket: try XCTUnwrap(editing.sceneTicket))
+            try await press("scene.graph.add.serial", within: graphWindow)
             let second = try XCTUnwrap(editing.sceneGraphState.single)
             XCTAssertNotEqual(first, second)
             editing.changeSceneGraphNode(second, ticket: try XCTUnwrap(editing.sceneGraphTicket)) { node in
@@ -79,6 +82,51 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             }
             try await wait("two-node final") { editing.sceneFrame != nil && !editing.scenePreviewBusy }
             let finalPixels = try sample(XCTUnwrap(editing.sceneFrame).texture)
+            let serialRecipe = editing.recipe
+            let undoAvailable = editing.sceneCanUndo
+            try await press("scene.graph.node." + first.uuidString, within: graphWindow)
+            try await press("scene.graph.solo", within: graphWindow)
+            try await wait("first Solo frame") { editing.sceneFrame != nil && !editing.scenePreviewBusy }
+            let firstSolo = try XCTUnwrap(editing.sceneFrame)
+            let firstSoloPixels = try sample(firstSolo.texture)
+            XCTAssertNotEqual(firstSoloPixels, originalPixels)
+            XCTAssertNotEqual(firstSoloPixels, finalPixels)
+            try await press("scene.graph.node." + second.uuidString, within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.preview, .solo(first))
+            XCTAssertEqual(editing.sceneFrame?.id, firstSolo.id)
+            try await press("scene.graph.solo", within: graphWindow)
+            try await wait("second Solo frame") { editing.sceneFrame != nil && !editing.scenePreviewBusy }
+            XCTAssertEqual(try sample(XCTUnwrap(editing.sceneFrame).texture), finalPixels, "Solo evaluates the selected node and its upstream")
+            try await press("scene.graph.bypass", within: graphWindow)
+            try await wait("all-grading bypass frame") { editing.sceneFrame != nil && !editing.scenePreviewBusy }
+            XCTAssertEqual(editing.sceneGraphState.preview, .bypass)
+            XCTAssertEqual(try sample(XCTUnwrap(editing.sceneFrame).texture), originalPixels)
+            try await press("scene.graph.bypass", within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.preview, .final)
+            XCTAssertEqual(editing.recipe, serialRecipe)
+            XCTAssertEqual(editing.sceneCanUndo, undoAvailable)
+            try await press("editing.scene.graph.ignore", within: window)
+            XCTAssertEqual(editing.sceneGraphNode?.operation.sceneEnabled, false)
+            XCTAssertTrue(editing.stepSceneHistory(redo: false))
+            XCTAssertEqual(editing.recipe, serialRecipe)
+
+            try await press("scene.graph.add.parallel", within: graphWindow)
+            let parallel = try XCTUnwrap(editing.sceneGraphScope?.nodes.first { $0.operation.sceneTypeName == "Parallel" })
+            try await press("scene.graph.port." + parallel.id.uuidString + ".base", within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.edge?.port, .base(parallel.id))
+            try await press("scene.graph.port." + parallel.id.uuidString + ".layer.0", within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.edge?.port, .layer(parallel.id, 0))
+            editing.selectSceneNodes([parallel.id], ticket: try XCTUnwrap(editing.sceneGraphTicket))
+            try await press("scene.graph.add.layer", within: graphWindow)
+            let layer = try XCTUnwrap(editing.sceneGraphScope?.nodes.first { $0.operation.sceneTypeName == "Layer" })
+            editing.selectSceneNodes([layer.id], ticket: try XCTUnwrap(editing.sceneGraphTicket))
+            editing.addSceneLayer(layer.id, ticket: try XCTUnwrap(editing.sceneGraphTicket))
+            try await press("scene.graph.organize", within: graphWindow)
+            try await press("scene.graph.port." + layer.id.uuidString + ".layer.1", within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.edge?.port, .layer(layer.id, 1))
+            for _ in 0..<3 { XCTAssertTrue(editing.stepSceneHistory(redo: false)) }
+            XCTAssertEqual(editing.recipe, serialRecipe)
+
             let stale = try XCTUnwrap(editing.sceneGraphTicket)
             try await press("scene.graph.node." + first.uuidString, within: graphWindow)
             XCTAssertEqual(editing.sceneGraphState.single, first)
@@ -94,6 +142,8 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             editing.moveSceneGraphPath([group], ticket: try XCTUnwrap(editing.sceneGraphTicket))
             XCTAssertEqual(editing.sceneGraphScope?.nodes.map(\.id), [first, second])
             editing.selectSceneNodes([first], ticket: try XCTUnwrap(editing.sceneGraphTicket))
+            try await press("scene.graph.bypass", within: graphWindow)
+            XCTAssertEqual(editing.sceneGraphState.viewing, .init(target: .bypass), "bypass targets the photo input even inside a group")
             editing.monitorSceneGraph(.node(first), ticket: try XCTUnwrap(editing.sceneGraphTicket))
             try await wait("fenced group node preview") { editing.sceneGraphMonitorText != nil && editing.sceneFrame != nil && !editing.scenePreviewBusy }
             let monitored = editing.sceneFrame?.id
@@ -134,6 +184,26 @@ final class EditingSceneGraphWindowTests: XCTestCase {
             try await wait("graph closes without altering owner") { !editing.sceneGraphState.open && window.childWindows?.contains(where: { $0.title == "工作流 Graph" }) != true }
             XCTAssertTrue(window.isVisible)
             XCTAssertEqual(editing.recipe.sceneGraph, expected)
+
+            let original = try XCTUnwrap(editing.work?.source.sourceLocation)
+            guard original.resolvingSymlinksInPath().path.hasPrefix(root.resolvingSymlinksInPath().path + "/") else {
+                throw LibraryError.invalid("Only disconnect the test's copied fixture")
+            }
+            let offline = original.deletingLastPathComponent().appendingPathComponent("disconnected.ARW")
+            try await press("editing.scene.graph.toggle", within: window)
+            let reopened = try XCTUnwrap(window.childWindows?.first { $0.title == "工作流 Graph" })
+            try FileManager.default.moveItem(at: original, to: offline)
+            defer { if FileManager.default.fileExists(atPath: offline.path) { try? FileManager.default.moveItem(at: offline, to: original) } }
+            try await press("scene.graph.bypass", within: reopened)
+            try await wait("offline preview fails without changing the graph") { editing.scenePreviewError != nil && !editing.scenePreviewBusy }
+            XCTAssertEqual(editing.recipe.sceneGraph, expected)
+            try FileManager.default.moveItem(at: offline, to: original)
+            try await press("editing.scene.retry", within: window)
+            try await wait("retry restores the bypass preview") { editing.sceneFrame != nil && !editing.scenePreviewBusy }
+            XCTAssertEqual(editing.sceneGraphState.preview, .bypass)
+            XCTAssertNil(editing.scenePreviewError)
+            XCTAssertEqual(editing.recipe.sceneGraph, expected)
+            reopened.close()
             await editing.shutdown()
         } catch {
             XCTFail(error.localizedDescription + " · state open=\(editing.sceneGraphState.open), monitor=\(editing.sceneGraphMonitorText ?? "none"), message=\(editing.message ?? "none")")

@@ -52,9 +52,8 @@ struct ComparisonToolbar: View {
             .background(AppPalette.panel)
     }
     private var modePicker: some View {
-        Picker("对比模式", selection: $model.comparisonMode) {
-            ForEach(ComparisonMode.allCases) { mode in Label(mode.title, systemImage: mode.symbol).tag(mode) }
-        }.pickerStyle(.segmented).labelsHidden().fixedSize().accessibilityLabel("对比模式")
+        AppTabs(title: "对比模式", selection: $model.comparisonMode, options: ComparisonMode.allCases,
+                label: \.title, symbol: \.symbol, stretches: false).fixedSize()
     }
     @ViewBuilder private var imageTools: some View {
         if model.comparisonMode == .rgb {

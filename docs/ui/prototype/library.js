@@ -262,15 +262,15 @@ function libraryView() {
     <div class="view-heading"><div class="crumb">本机资料库 <span>/</span> ${h(info.section)}</div>
       <div class="row between wrap"><h1>${h(info.title)}</h1>${stage ? btn('完成整批初筛…', 'seal', '', { cls: 'primary' }) : g ? btn('分组制作…', 'process', g.id, { icon: 'film' }) : btn('接入素材', 'import', '', { icon: 'import', cls: 'import-top' })}</div>
       <p>${info.ids.length} 次拍摄 <span>·</span> ${fileCount} 个文件 <span>·</span> ${stage ? '待人工初筛' : history ? '已封存' : g ? h(g.kind) : '2026 年 10 月'}</p></div>
-    <div class="library-tools"><div class="row"><div class="switch compact" aria-label="浏览方式">${[
+    <div class="library-tools"><div class="row"><div class="button-group" role="group" aria-label="浏览方式" data-select-on-arrow>${[
       ['grid', '网格', 'grid'],
       ['single', '单张', 'single'],
       ['compare', '比较', 'compare'],
     ]
       .map(([v, n, ic]) =>
         btn(n, 'mode', v, {
-          icon: ic,
-          only: true,
+          icon: stage || history ? ic : undefined,
+          only: stage || history,
           pressed: viewing === v,
           title: n + ' · ' + { grid: 'G', single: 'E', compare: 'C' }[v],
         }),

@@ -13,25 +13,32 @@ public final class LibraryStore: @unchecked Sendable {
   let encoder = JSONEncoder(), decoder = JSONDecoder()
   var deviceID = ""
   public private(set) var lastMigrationBackupURL: URL?
-  public init(databaseURL: URL, migrationBackupDirectory: URL? = nil) throws {
+  public init(databaseURL: URL, migrationBackupDirectory: URL? = nil, requireExisting: Bool = false) throws {
     let canonicalDatabase = databaseURL.standardizedFileURL.resolvingSymlinksInPath()
     self.databaseURL = canonicalDatabase
     importLockDirectory = canonicalDatabase.deletingLastPathComponent().appendingPathComponent("." + canonicalDatabase.lastPathComponent + ".imports", isDirectory: true)
     // Validate first, including active-WAL state. Unknown databases never enter a writer connection.
     let inspected = try DatabaseSchema.inspectAndBackup(
       databaseURL, directory: migrationBackupDirectory)
+    if requireExisting, inspected.0 == 0 { throw LibraryError.invalid("资料库文件已移走或不存在。") }
     lastMigrationBackupURL = inspected.1
     let rehearsal: CatalogJSON?
     if inspected.0 == 7, let snapshot = inspected.1 {
       rehearsal = try LibraryEngine.shared().request("migrationPreview", at: snapshot, payload: LibraryEmpty(), as: CatalogJSON.self)
     } else { rehearsal = nil }
-    try FileManager.default.createDirectory(
-      at: databaseURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+    if !requireExisting {
+      try FileManager.default.createDirectory(at: databaseURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+    }
+    let flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX | (requireExisting ? 0 : SQLITE_OPEN_CREATE)
     guard
       sqlite3_open_v2(
-        databaseURL.path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
+        databaseURL.path, &db, flags,
         nil) == SQLITE_OK
-    else { throw LibraryError.database("无法打开资料库") }
+    else {
+      sqlite3_close(db)
+      db = nil
+      throw LibraryError.database("无法打开资料库")
+    }
     sqlite3_busy_timeout(db, 5000)
     do {
       // The catalog is a single hot file for browsing, editing and export. The SQLite default

@@ -1,6 +1,6 @@
 # 038 · Node DAG 实施与放行计划
 
-2026-11-27 按 `main@b238c0ab` 复核。[功能规格](spec.md) · [摄影工作台](../../docs/ui/prototype/index.html) · [验证记录](validation.md) · [035–039 联合方案](../035-portable-processing-cores/roadmap.md)
+2026-11-27 按 `main@b238c0ab` 复核。[功能规格](spec.md) · [摄影工作台](../../docs/ui/prototype/index.html) · [验证记录](validation.md) · [035–039 联合方案](../035-portable-processing-cores/roadmap.md) · [043 引擎统一与后续性能](../043-image-engine-unification/spec.md)
 
 ## 当前实现与验收边界
 

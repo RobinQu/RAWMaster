@@ -28,7 +28,7 @@ function dagSeed(recipe = currentEdit().recipe) {
 function dagEnabled() { return Boolean(currentEdit().recipe.dag); }
 function dagView() {
   const e = currentEdit();
-  const v = e.dagView ??= { mode: 'photo', path: [], active: 'grade', selection: ['grade'], target: null, views: {}, monitor: true };
+  const v = e.dagView ??= { mode: 'photo', path: [], active: 'grade', selection: ['grade'], target: null, views: {}, monitor: !nativeGraphReview };
   if (S.graphOpen != null) v.mode = S.graphOpen ? 'graph' : 'photo';
   else S.graphOpen = v.mode === 'graph';
   let graph = e.recipe.dag;
@@ -153,14 +153,14 @@ function dagClearPreview() {
   const v = dagView();
   v.target = null; dagPreviewOverrides.delete(v);
 }
-function dagEvaluate(g, target, initial = {}, memo = new Map(), preview = null) {
+function dagEvaluate(g, target, initial = {}, memo = new Map()) {
   const id = target ?? g.nodes.find(n => n.kind === 'output')?.id;
   if (memo.has(id)) return memo.get(id);
   const n = g.nodes.find(n => n.id === id);
   if (!n) return initial;
   const input = slot => {
     const edge = g.edges.find(e => e.to === id && e.slot === slot);
-    return edge ? dagEvaluate(g, edge.from, initial, memo, preview) : initial;
+    return edge ? dagEvaluate(g, edge.from, initial, memo) : initial;
   };
   let result;
   if (n.kind === 'source') result = { ...initial, ...n.params };
@@ -175,8 +175,8 @@ function dagEvaluate(g, target, initial = {}, memo = new Map(), preview = null) 
     }
   } else {
     result = { ...input('image') };
-    if (n.enabled !== false && n.kind === 'group') { const base = result, grouped = dagEvaluate(n.graph, null, base, new Map(), preview), amount = (n.params.nodeAmount ?? 100) / 100; result = {...base,...grouped}; dagScalarKeys.forEach(k=>result[k]=(base[k]??0)*(1-amount)+(grouped[k]??0)*amount); }
-    if (n.enabled !== false && n.kind === 'grade' && !preview?.bypass && (!preview?.solo || preview.solo === n.id)) {
+    if (n.enabled !== false && n.kind === 'group') { const base = result, grouped = dagEvaluate(n.graph, null, base), amount = (n.params.nodeAmount ?? 100) / 100; result = {...base,...grouped}; dagScalarKeys.forEach(k=>result[k]=(base[k]??0)*(1-amount)+(grouped[k]??0)*amount); }
+    if (n.enabled !== false && n.kind === 'grade') {
       const coverage = (!n.mask ? 1 : n.mask.enabled === false ? 0 : (n.mask.opacity ?? 100) / 100 * (n.mask.invert ? 0.55 : 0.45)) * (n.params.nodeAmount ?? 100) / 100;
       dagScalarKeys.forEach(k => result[k] = (result[k] ?? 0) + (n.params[k] ?? 0) * coverage);
       for (const [key,value] of Object.entries(n.params)) if (typeof value === 'number' && key.includes(':') && !key.startsWith('choice:')) { const field = key.split(':')[0]; if (dagScalarKeys.includes(field)) result[field] = (result[field] ?? 0) + value * coverage; }
@@ -191,9 +191,16 @@ function dagEvaluate(g, target, initial = {}, memo = new Map(), preview = null) 
   }
   memo.set(id, result); return result;
 }
-function dagProject(root, preview = null) {
+function dagProject(root, target = null, path = []) {
   const neutral = { ...root.base, ...Studio.freshRecipe(), masks: root.base.masks ?? [], repairs: root.base.repairs ?? [], ...Object.fromEntries(dagScalarKeys.map(k => [k, 0])), filmStock: null, lut: '无' };
-  return { ...neutral, ...dagEvaluate(root, null, root.photographic || {}, new Map(), preview), sceneOutput: root.base.sceneOutput, colorMode: root.base.colorMode, dag: root };
+  let graph = root, base = root.photographic || {};
+  for (const id of path) {
+    const edge = graph.edges.find(e => e.to === id && e.slot === 'image');
+    if (edge) base = dagEvaluate(graph, edge.from, base);
+    graph = graph.nodes.find(n => n.id === id).graph;
+  }
+  const geometry = target ? root.nodes.find(n => n.kind === 'geometry')?.params : {};
+  return { ...neutral, ...dagEvaluate(graph, target, base), ...geometry, sceneOutput: root.base.sceneOutput, colorMode: root.base.colorMode, dag: root };
 }
 function dagPatch(label, fields) {
   return dagCommit(label, (g, root) => {
@@ -253,23 +260,26 @@ function dagReachable(g = dagCurrent()) {
 }
 function dagIgnoreReason(n) {
   if (!dagEnabled()) return '请先开启节点工作流';
-  if (S.canvasTool) return '请先完成或取消画布工具';
-  if (S.dagConnectionDraft) return '请先应用或取消连接草稿';
+  const reason = dagCommandBlockReason();
+  if (reason) return reason;
   if (dagView().selection.length !== 1) return '请选择单个节点';
   if (!n || ['source','geometry','output'].includes(n.kind)) return '固定照片阶段不能忽略';
+  if (nativeGraphReview && dagCurrent().nodes.filter(dagEditable).length <= 1) return '当前组只有一个可编辑节点';
   return '';
 }
 function dagToolbar() {
   const v = dagView(), graph = dagEnabled() ? dagCurrent() : dagSeed(), n = graph.nodes.find(n => n.id === v.active), reason = dagIgnoreReason(n);
   const pickerLabel = v.selection.length > 1 ? '已选 ' + v.selection.length + ' 个节点' : dagEnabled() && !v.selection.length ? '请选择节点' : n?.kind === 'source' ? '基础校正' : n?.name || '基础调色';
-  const nodes = graph.nodes.filter(dagEditable);
+  const nodes = graph.nodes.filter(dagEditable), enabled = n?.enabled !== false;
+  const status = S.dagConnectionDraft ? '请先应用或取消连接草稿' : dagEnabled() && v.selection.length !== 1
+    ? v.selection.length ? '多选仅管理，不广播参数' : '请选择节点编辑参数'
+    : dagEnabled() && (!enabled || n?.mask?.missing || n && !dagReachable(graph).has(n.id)) ? dagStateText(n) : '';
   return `<section class="dag-scope-head" aria-label="节点作用域"><span class="dag-picker-label">当前节点</span><div class="dag-picker-row">
     <button type="button" name="dagNode" data-act="dag-picker" aria-label="当前节点" aria-expanded="false" aria-controls="dag-node-picker"${S.canvasTool ? ' disabled title="请先完成或取消画布工具"' : ''}><span>${h(pickerLabel)}</span>${icon('down',12)}</button>
-    ${btn('忽略该节点','dag-toggle-current',n?.id || '',{icon:'bypass',only:true,cls:'icon-btn',pressed:v.selection.length===1&&n?.enabled===false,disabled:!!reason,title:reason ? '忽略该节点：'+reason : n?.enabled===false ? '恢复该节点（已忽略）' : '忽略该节点'}).replace('<button ','<button data-photo="'+h(Studio.data.work)+'" ')}
+    ${btn(enabled?'忽略该节点':'恢复该节点','dag-toggle-current',n?.id || '',{icon:enabled?'eye':'eyeOff',only:true,cls:'icon-btn',pressed:v.selection.length===1&&!enabled,disabled:!!reason,title:reason || (enabled?'忽略该节点':'恢复该节点（已忽略）')}).replace('<button ','<button data-photo="'+h(Studio.data.work)+'" ')}
     ${btn('Graph 窗口','dag-view-toggle','',{icon:'layers',only:true,cls:'icon-btn',pressed:v.mode==='graph',expanded:v.mode==='graph',controls:'dag-floating-window'})}</div>
     <div id="dag-node-picker" class="dag-picker-popover" popover="auto" role="dialog" aria-label="选择节点与常用图操作">${v.path.length ? '' : `<div class="dag-picker-base">${btn('基础校正','dag-picker-command','base',{icon:'sliders',pressed:n?.kind==='source'})}</div>`}<h3>${v.path.length ? '组内可编辑节点' : '可编辑节点'}</h3><div class="dag-picker-list">${nodes.map(node=>btn(node.name+(node.enabled===false?' · 已忽略':''),'dag-picker-select',node.id,{pressed:v.selection.length===1&&v.active===node.id,icon:node.kind==='group'?'folder':node.kind==='mix'?'mix':'sliders'})).join('') || '<p class="small">暂无可编辑节点</p>'}</div><div class="dag-picker-commands">${btn('添加节点…','dag-picker-command','add',{icon:'plus'})}${btn('自动整理','dag-picker-command','layout',{disabled:!dagEnabled()})}${btn('更多节点操作…','dag-picker-command','more',{icon:'menu'})}</div></div>
-    <small>${h(dagEnabled() ? n ? dagKinds[n.kind] + ' · ' + n.name : '工作流' : SceneEditor.hdr() ? '场景调色 · HDR 摄影调整' : '兼容显影节点 · 输入与基础调整')}</small>
-    ${!['smart', 'agent'].includes(S.tool) && dagEnabled() ? '<small role="status">' + h(v.selection.length===1 ? dagStateText(n) : v.selection.length ? '多选仅管理，不广播参数' : '请选择节点编辑参数') + '</small>' : '<small>智能预设与版本操作作用于整张照片</small>'}</section>`;
+    ${status ? '<small role="status">' + h(status) + '</small>' : ''}</section>`;
 }
 function dagPickerClose() {
   const picker = $('#dag-node-picker');
@@ -342,10 +352,71 @@ function dagMaskInspector(n) {
   const m = n.mask;
   return `<h2>${h(n.name)}／蒙版</h2>${m ? `<p>${h(m.kind)} · ${m.missing ? '素材缺失' : '示例覆盖已就绪'}</p>${check('启用蒙版', 'dagMaskEnabled', m.enabled !== false)}${btn('反转覆盖', 'dag-mask-invert', '', { pressed: !!m.invert })}${dagRange('maskOpacity', '蒙版不透明度', 0, 100, 1, m.opacity ?? 100)}${dagRange('feather', '羽化', 0, 100, 1, m.feather ?? 45)}${btn('在照片上编辑', 'dag-mask-edit', '', { cls: 'primary wide', disabled: !Studio.asset(Studio.data.work).online })}${btn('重新构建素材', 'dag-mask-rebuild', '', { disabled: !Studio.asset(Studio.data.work).online })}${btn('模拟素材缺失', 'dag-mask-missing')}${btn('删除蒙版', 'dag-mask-delete')}` : '<p>空蒙版表示全局作用域。</p>'}${btn('新建蒙版…', 'dag-mask-menu', '', { disabled: !Studio.asset(Studio.data.work).online })}<p class="dag-hint">几何与 AI 覆盖都是模拟，不测量模型或像素质量。</p>`;
 }
-function dagPosition(n, index) {
-  const v = dagView(), key = v.path.join('/');
-  const positions = currentEdit().dagLayout ??= {};
-  return positions[key + ':' + n.id] ?? { x: 40 + index * 235, y: n.kind === 'mix' ? 100 : 75 };
+const dagCardWidth = 132, dagPortSpacing = 20;
+function dagInputs(node, graph, committed = graph) {
+  if (node.kind === 'source') return [];
+  if (node.kind !== 'mix') return ['image'];
+  const edges = graph === committed ? graph.edges : [...graph.edges, ...committed.edges];
+  return [...new Set(['base','layer',...edges.filter(e => e.to === node.id).map(e => e.slot)])]
+    .sort((a,b) => dagSlotRank(a) - dagSlotRank(b));
+}
+function dagCardHeight(node, inputs) {
+  return Math.max(node.mask || node.kind === 'group' ? 88 : 60, (inputs.length - 1) * dagPortSpacing + 24);
+}
+function dagAutoPositions(graph) {
+  const input = new Map(graph.nodes.map(n => [n.id, graph.edges.filter(e => e.to === n.id)]));
+  const outgoing = new Map(graph.nodes.map(n => [n.id, graph.edges.filter(e => e.from === n.id).length]));
+  const depth = new Map(), lanes = new Map(), occupied = new Set(), heights = [];
+  const column = id => {
+    if (!depth.has(id)) depth.set(id, Math.max(-1, ...input.get(id).map(e => column(e.from))) + 1);
+    return depth.get(id);
+  };
+  const branchLane = (id, lane) => {
+    if (lanes.has(id) || outgoing.get(id) > 1 || !input.get(id).length) return;
+    lanes.set(id, lane);
+    for (const e of input.get(id)) if (e.slot === 'base' || e.slot === 'image') branchLane(e.from, lane);
+  };
+  let nextLane = 1;
+  for (const n of graph.nodes.filter(n => n.kind === 'mix')) {
+    const branches = input.get(n.id).filter(e => e.slot !== 'base').sort((a,b) => dagSlotRank(a.slot) - dagSlotRank(b.slot));
+    for (const e of branches) branchLane(e.from, nextLane++);
+  }
+  const cards = graph.nodes.map(n => {
+    const col = column(n.id), height = dagCardHeight(n, dagInputs(n, graph));
+    let row = lanes.get(n.id) ?? 0;
+    while (occupied.has(col + ':' + row)) row++;
+    occupied.add(col + ':' + row);
+    heights[row] = Math.max(heights[row] ?? 0, height);
+    return { id:n.id, col, row, height };
+  });
+  const rows = [];
+  let top = 0;
+  for (const height of heights) { rows.push(top + (height ?? 0)/2); top += (height ?? 0) + 26; }
+  return new Map(cards.map(({id,col,row,height}) => [id, { x:col*190, y:rows[row]-height/2 }]));
+}
+function dagCanvasPositions(graph = dagCurrent()) {
+  const positions = dagAutoPositions(graph), key = dagView().path.join('/');
+  for (const n of graph.nodes) {
+    const saved = currentEdit().dagLayout?.[key + ':' + n.id];
+    if (saved) positions.set(n.id, saved);
+  }
+  return positions;
+}
+function dagPosition(node) { return dagCanvasPositions().get(node.id); }
+function dagCanvasBoxes(graph, committed = graph) {
+  const positions = dagCanvasPositions(committed);
+  return new Map(graph.nodes.map(node => {
+    const inputs = dagInputs(node, graph, committed);
+    return [node.id, { ...positions.get(node.id), inputs, height:dagCardHeight(node, inputs) }];
+  }));
+}
+function dagWirePath(edge, boxes) {
+  const from = boxes.get(edge.from), to = boxes.get(edge.to);
+  if (!from || !to) return '';
+  const x1 = from.x + dagCardWidth, y1 = from.y + from.height/2, x2 = to.x;
+  const y2 = to.y + to.height/2 + (to.inputs.indexOf(edge.slot) - (to.inputs.length - 1)/2)*dagPortSpacing;
+  const bend = Math.max(24, Math.min(88, Math.abs(x2 - x1)*.48));
+  return `M${x1} ${y1} C${x1+bend} ${y1},${x2-bend} ${y2},${x2} ${y2}`;
 }
 function dagTransform() { return dagView().views[dagView().path.join('/')] ??= { x: 0, y: 0, scale: 1, framing: 'readable' }; }
 function dagZoomLabel(scale) { return '可读居中 · ' + Math.round(scale * 100) + '%'; }
@@ -353,31 +424,37 @@ function dagPaintTransform(tr) {
   const stage=$('.dag-stage');
   if (!stage) return;
   stage.style.transform=`translate(${tr.x}px,${tr.y}px) scale(${tr.scale})`;
+  const grid = $('[data-dag-viewport]');
+  const cell = 20 * tr.scale * (tr.scale < .55 ? 4 : 1);
+  grid.style.setProperty('--dag-grid-step', Math.max(9,cell)+'px');
+  grid.style.backgroundPosition=`${tr.x}px ${tr.y}px`;
   for(const label of $$('.dag-floating [data-act=dag-readable]')) {
     label.textContent=Math.round(tr.scale*100)+'%';
     label.setAttribute('aria-label',dagZoomLabel(tr.scale));label.title=dagZoomLabel(tr.scale);
   }
 }
 function dagCanvas() {
-  const v = dagView(), g = S.dagConnectionDraft ?? dagCurrent(), tr = dagTransform(), error = S.dagConnectionDraft ? dagError(g) : '', reached = dagReachable(g);
-  const positions = new Map(g.nodes.map((n, i) => [n.id, dagPosition(n, i)]));
+  const v = dagView(), committed = dagCurrent(), g = S.dagConnectionDraft ?? committed;
+  const tr = dagTransform(), error = S.dagConnectionDraft ? dagError(g) : '', reached = dagReachable(g);
+  const boxes = dagCanvasBoxes(g, committed);
   const wires = g.edges.map(e => {
-    const a = positions.get(e.from), b = positions.get(e.to);
-    if (!a || !b) return '';
-    const x1 = a.x + 176, y1 = a.y + 45, x2 = b.x, y2 = b.y + 45 + (e.slot === 'image' ? 0 : dagSlotRank(e.slot) * 24);
     const label = `${g.nodes.find(n => n.id === e.from).name} → ${g.nodes.find(n => n.id === e.to).name} (${e.slot})`;
-    return `<path class="dag-wire${v.edge === e.to + ':' + e.slot ? ' selected' : ''}" role="button" tabindex="0" aria-label="${h(label)}" data-act="dag-edge" data-val="${h(e.to + ':' + e.slot)}" d="M${x1} ${y1} C${x1 + 70} ${y1},${x2 - 70} ${y2},${x2} ${y2}"/>`;
+    return `<path class="dag-wire${v.edge === e.to + ':' + e.slot ? ' selected' : ''}" role="button" tabindex="0" aria-label="${h(label)}" data-act="dag-edge" data-val="${h(e.to + ':' + e.slot)}" data-from="${h(e.from)}" data-to="${h(e.to)}" data-slot="${h(e.slot)}" d="${dagWirePath(e,boxes)}"/>`;
   }).join('');
-  const cards = g.nodes.map((n, i) => {
-    const p = positions.get(n.id), selected = v.selection.includes(n.id);
-    const inputs = n.kind === 'mix' ? [...new Set(['base','layer',...g.edges.filter(e=>e.to===n.id).map(e=>e.slot)])].sort((a,b)=>dagSlotRank(a)-dagSlotRank(b)) : n.kind === 'source' ? [] : ['image'];
-    const preview = dagPreviewState(), muted = n.kind === 'grade' && (preview.bypass || preview.solo && preview.solo !== n.id);
-    return `<div class="dag-card${selected ? ' selected' : ''}${v.active === n.id ? ' active' : ''}${n.enabled === false ? ' bypass' : ''}${muted ? ' view-muted' : ''}" style="left:${p.x}px;top:${p.y}px;min-height:${n.kind === 'mix' ? Math.max(95,inputs.length*24+30) : 95}px" data-dag-card="${h(n.id)}">
-      <button class="dag-node-title" data-dag-node="${h(n.id)}" data-act="dag-node" data-val="${h(n.id)}" aria-label="${h(n.name)}，${dagKinds[n.kind]}节点" aria-pressed="${selected}">${icon(n.kind === 'group' ? 'folder' : n.kind === 'mix' ? 'mix' : 'sliders', 15)}<b>${h(n.name)}</b></button>
+  const preview = dagPreviewState();
+  const cards = g.nodes.map(n => {
+    const p = boxes.get(n.id), selected = v.selection.includes(n.id);
+    const muted = dagEditable(n) && preview.bypass, solo = preview.solo === n.id;
+    const glyph = {source:'import',geometry:'crop',output:'export',group:'folder',mix:'mix',grade:'sliders'}[n.kind];
+    return `<div class="dag-card${selected ? ' selected' : ''}${v.active === n.id ? ' active' : ''}${n.enabled === false ? ' bypass' : ''}${muted ? ' view-muted' : ''}${solo ? ' solo' : ''}" style="left:${p.x}px;top:${p.y}px;height:${p.height}px" data-dag-card="${h(n.id)}">
+      <button class="dag-node-title" data-dag-node="${h(n.id)}" data-act="dag-node" data-val="${h(n.id)}" aria-label="${h(n.name)}，${dagKinds[n.kind]}节点${solo ? '，Solo' : ''}" aria-pressed="${selected}">${icon(glyph, 14)}<b>${h(n.name)}</b></button>
       <small>${dagKinds[n.kind]} · ${n.enabled === false ? '忽略' : !reached.has(n.id) ? '未接入' : n.mask ? '局部' : '全局'}</small>
       ${n.kind === 'group' ? btn('进入组', 'dag-enter', n.id) : ''}
-      ${inputs.map((s, k) => `<button class="dag-port input-port slot-${k}" style="top:${35+k*24}px" data-act="dag-port" data-val="${h(n.id + ':' + s)}" aria-label="连接到 ${h(n.name)} ${s} 输入" title="${s}">●<span>${s}</span></button>`).join('')}
-      ${n.kind !== 'output' ? `<button class="dag-port output-port" data-act="dag-port" data-val="${h(n.id + ':out')}" aria-label="从 ${h(n.name)} 输出连接">●</button>` : ''}
+      ${p.inputs.map((slot, k) => {
+        const name = slot === 'base' ? '基底' : slot === 'image' ? '图像' : '第 ' + dagSlotRank(slot) + ' 层';
+        return `<button class="dag-port input-port" data-slot-kind="${slot === 'base' || slot === 'image' ? slot : 'layer'}" style="top:calc(50% + ${(k-(p.inputs.length-1)/2)*dagPortSpacing}px)" data-act="dag-port" data-val="${h(n.id + ':' + slot)}" aria-label="连接到 ${h(n.name)} ${name}输入" title="${name}输入"></button>`;
+      }).join('')}
+      ${n.kind !== 'output' ? `<button class="dag-port output-port" data-act="dag-port" data-val="${h(n.id + ':out')}" aria-label="从 ${h(n.name)} 输出连接" title="${h(n.name)}输出"></button>` : ''}
       ${n.mask ? `<button class="dag-mask-chip" data-act="dag-mask-select" data-val="${h(n.id)}">${icon('mask', 12)}${h(n.mask.kind)}${n.mask.missing ? ' · 缺失' : n.mask.enabled === false ? ' · 停用' : ''}</button>` : ''}</div>`;
   }).join('');
   const crumbs = [btn('照片工作流', 'dag-path', '0'), ...v.path.map((id, i) => btn('› ' + dagAllNodes(currentEdit().recipe.dag).find(x => x.node.id === id)?.node.name, 'dag-path', i + 1))].join('');
@@ -388,32 +465,32 @@ function dagCanvas() {
     ${S.dagConnectionDraft ? `<div class="dag-draft-actions">${btn('应用连接', 'dag-connect-apply', '', { cls: 'primary', disabled: !!error })}${btn('取消连接草稿', 'dag-connect-cancel')}</div>` : ''}
     <div class="dag-zoom-controls" aria-label="Graph 缩放"${nativeGraphReview || SceneEditor.hdr() ? ' hidden' : ''}>${btn('−', 'dag-zoom', 'out')}${btn(Math.round(tr.scale * 100) + '%', 'dag-readable', '', {title:dagZoomLabel(tr.scale)})}${btn('＋', 'dag-zoom', 'in')}</div></section>`;
 }
+function dagCommandBlockReason() {
+  if (S.dagConnectionDraft) return '请先应用或取消连接草稿';
+  if (S.canvasTool) return '请先完成或取消画布工具';
+  if (nativeGraphReview && !Studio.asset(Studio.data.work)?.online) return '原片离线，请先接回';
+  return '';
+}
 function dagToolbarCommands(v, graph) {
   const preview = dagPreviewState(), node = graph.nodes.find(n => n.id === v.active);
-  const disabled = !!S.dagConnectionDraft;
-  if (nativeGraphReview || SceneEditor.hdr()) return `<div class="dag-commandbar graph-text-tools" role="toolbar" aria-label="Graph 节点操作">
-    ${btn('添加','dag-add-menu','',{disabled})}${btn('更多','dag-menu')}
-    ${btn(Math.round(dagTransform().scale*100)+'%','dag-readable','',{title:'按 100% 可读居中'})}${btn('适合全图','dag-fit')}</div>`;
+  const reason = dagCommandBlockReason(), solo = v.selection.length === 1 && preview.solo === node?.id;
+  const soloReason = reason || (v.selection.length !== 1 || node?.kind !== 'grade' ? '请选择单个调色节点' : node.enabled === false ? '请先恢复该节点' : '');
+  const availability = {disabled:!!reason, title:reason || undefined};
   const tool = (name, action, glyph, opts = {}, val = '') => btn(name,action,val,{icon:glyph,only:true,...opts});
   return `<div class="dag-commandbar" role="toolbar" aria-label="Graph 节点操作">
-    <div class="dag-tools-group" role="group" aria-label="添加节点">${tool('添加串行调色','dag-add','arrowRight',{disabled},'serial')}${tool('添加并行调色','dag-add','linearMask',{disabled},'parallel')}${tool('添加 Layer 混合','dag-add','layers',{disabled},'layer')}</div>
-    <div class="dag-tools-group" role="group" aria-label="临时查看">${tool('Solo 调色节点','dag-solo','eye',{pressed:!!preview.solo,disabled:!preview.solo && (disabled || !dagSoloCandidate(node))})}${tool('旁路全部调色（仅查看）','dag-preview-bypass','bypass',{pressed:preview.bypass,disabled:disabled && !preview.bypass})}</div>
-    <div class="dag-tools-group" role="group" aria-label="图视图">${tool('自动整理','dag-layout','grid')}${tool('适合全图','dag-fit','single')}${tool('结果监看','dag-monitor','photo',{pressed:v.monitor})}${tool('更多节点或工作流操作','dag-menu','menu')}</div></div>`;
+    <div class="dag-tools-group" role="group" aria-label="添加节点">${tool('添加串行调色','dag-add','nodeSerial',availability,'serial')}${tool('添加并行调色','dag-add','nodeParallel',availability,'parallel')}${tool('添加 Layer 调色','dag-add','layers',availability,'layer')}</div>
+    <div class="dag-tools-group" role="group" aria-label="临时查看">${tool('Solo 调色节点','dag-solo','eye',{pressed:solo,disabled:!solo&&!!soloReason,title:soloReason || 'Solo 调色节点'})}${tool('旁路全部调色（仅查看）','dag-preview-bypass','bypass',{pressed:preview.bypass,disabled:!preview.bypass&&!!reason,title:reason || '旁路全部调色（仅查看）'})}</div>
+    <div class="dag-tools-group" role="group" aria-label="画布取景">${tool('整理画布','dag-layout','grid',{disabled:!!S.dagConnectionDraft,title:S.dagConnectionDraft ? reason : '整理画布'})}${tool('适合全图','dag-fit','fit')}${btn(Math.round(dagTransform().scale*100)+'%','dag-readable','',{cls:'dag-readable',title:'按 100% 可读居中'})}</div>
+    <div class="dag-tools-group">${tool('更多节点或工作流操作','dag-menu','ellipsis')}</div></div>`;
 }
 function dagSoloCandidate(node) {
-  if (node?.kind !== 'grade' || node.enabled === false || dagView().selection.length !== 1) return false;
-  let graph = currentEdit().recipe.dag;
-  for (const id of dagView().path) {
-    const group = graph.nodes.find(n => n.id === id);
-    if (!group || group.enabled === false || !dagReachable(graph).has(id)) return false;
-    graph = group.graph;
-  }
-  return dagReachable(graph).has(node.id);
+  return node?.kind === 'grade' && node.enabled !== false && dagView().selection.length === 1;
 }
 function dagViewRecipe(r) {
   const v = dagView(), preview = dagPreviewState();
-  if (preview.solo || preview.bypass) return dagProject(r.dag, preview);
-  return v.target ? {...r,...dagEvaluate(dagCurrent(),v.target)} : r;
+  if (preview.bypass) return dagProject(r.dag, r.dag.nodes.find(n => n.kind === 'source').id);
+  const target = preview.solo || v.target;
+  return target ? dagProject(r.dag, target, v.path) : r;
 }
 function dagPhotoFilter() {
   return RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(dagViewRecipe(currentEdit().recipe))));
@@ -452,18 +529,18 @@ actions['dag-preview'] = () => { if (sheet.open) closeSheet(); dagEnsure(); dagC
 actions['dag-preview-final'] = () => { dagClearPreview(); render(); ($('.dag-commandbar [data-act=dag-menu]') || $('[data-act=dag-view-toggle]'))?.focus({preventScroll:true}); };
 actions['dag-solo'] = () => {
   const state = dagPreviewState(), node = dagNode();
-  if (state.solo) state.solo = null;
-  else if (!S.dagConnectionDraft && dagSoloCandidate(node)) { state.solo = node.id; state.bypass = false; dagView().target = null; }
+  if (state.solo === node?.id && dagView().selection.length === 1) state.solo = null;
+  else if (!dagCommandBlockReason() && dagSoloCandidate(node)) { state.solo = node.id; state.bypass = false; dagView().target = null; }
   else return;
   if(sheet.open)closeSheet();
-  dagRenderFocus($('.graph-text-tools') ? '.graph-text-tools [data-act=dag-menu]' : '[data-act=dag-solo]');
+  dagRenderFocus('.dag-commandbar [data-act=dag-solo]');
 };
 actions['dag-preview-bypass'] = () => {
   const state = dagPreviewState();
-  if (S.dagConnectionDraft && !state.bypass) return;
+  if (dagCommandBlockReason() && !state.bypass) return;
   state.bypass = !state.bypass; state.solo = null; dagView().target = null;
   if(sheet.open)closeSheet();
-  dagRenderFocus($('.graph-text-tools') ? '.graph-text-tools [data-act=dag-menu]' : '[data-act=dag-preview-bypass]');
+  dagRenderFocus('.dag-commandbar [data-act=dag-preview-bypass]');
 };
 actions['dag-monitor'] = () => { if (sheet.open) closeSheet(); dagView().monitor = !dagView().monitor; dagRenderFocus('.dag-commandbar [data-act=dag-monitor]'); };
 function dagContextMenu(event) {
@@ -530,12 +607,13 @@ actions['dag-add-menu'] = () => {
 function dagInsertion(g) {
   const v = dagView();
   if (v.edge) { const [to, slot] = v.edge.split(':'); return g.edges.find(e => e.to === to && e.slot === slot); }
-  const outgoing = g.edges.filter(e => e.from === v.active);
+  const outgoing = nativeGraphReview ? [] : g.edges.filter(e => e.from === v.active);
   if (outgoing.length === 1) return outgoing[0];
   if (outgoing.length > 1) { notify('当前输出存在分叉，请先选择要插入的连线'); return null; }
   return g.edges.find(e => e.to === g.nodes.find(n => n.kind === 'geometry')?.id) ?? g.edges.find(e => e.to === g.nodes.find(n => n.kind === 'output')?.id);
 }
 actions['dag-add'] = kind => {
+  if (dagCommandBlockReason()) return;
   closeSheet(); dagEnsure(); let added;
   dagCommit(['parallel','layer'].includes(kind) ? '添加 '+kind+' 调色（0%）' : '添加中性调色节点', g => {
     const edge = dagInsertion(g); if (!edge) return;
@@ -545,8 +623,6 @@ actions['dag-add'] = kind => {
     if (['parallel','layer'].includes(kind)) {
       const mix = { id: dagID(), name: kind === 'layer' ? 'Layer Mixer' : 'Parallel Mixer', kind: 'mix', enabled: true, params: { amount: 0, mode:kind } }; g.nodes.splice(index + 1, 0, mix);
       g.edges.push({ from: edge.from, to: added.id, slot: 'image' }, { from: edge.from, to: mix.id, slot: 'base' }, { from: added.id, to: mix.id, slot: 'layer' }, { from: mix.id, to: edge.to, slot: edge.slot });
-      const p = dagPosition(g.nodes.find(n => n.id === edge.from), 0), key = dagView().path.join('/');
-      currentEdit().dagLayout ??= {}; currentEdit().dagLayout[key + ':' + added.id] = { x: p.x + 235, y: p.y + 165 };
     } else g.edges.push({ from: edge.from, to: added.id, slot: 'image' }, { from: added.id, to: edge.to, slot: edge.slot });
   });
   if (added) { dagView().edge = null; dagSelect(added.id); }
@@ -662,19 +738,21 @@ actions['dag-ungroup'] = () => {
 function dagFrameGraph(mode = dagTransform().framing) {
   const tr = dagTransform(); tr.framing = mode || 'readable';
   const viewport = $('[data-dag-viewport]'), cards = $$('.dag-card');
-  if (!viewport || !cards.length || tr.framing==='manual') return;
+  if (!viewport || !cards.length) return;
+  if (tr.framing==='manual') { dagPaintTransform(tr); return; }
   const width = viewport.clientWidth, height = viewport.clientHeight;
+  const clearance = S.dagConnectionDraft ? 74 : 42;
   const boxes = cards.map(card=>({id:card.dataset.dagCard, x:card.offsetLeft, y:card.offsetTop, width:card.offsetWidth, height:card.offsetHeight}));
   const minX = Math.min(...boxes.map(b=>b.x)), maxX = Math.max(...boxes.map(b=>b.x+b.width));
   const minY = Math.min(...boxes.map(b=>b.y)), maxY = Math.max(...boxes.map(b=>b.y+b.height));
-  const fit = Math.max(0.01, Math.min((width-40)/(maxX-minX), (height-40)/(maxY-minY)));
+  const fit = Math.max(0.002, Math.min((width-32)/(maxX-minX), (height-2*clearance)/(maxY-minY)));
   tr.scale = tr.framing==='fit' ? Math.min(1,fit) : 1;
   tr.x = (width-(minX+maxX)*tr.scale)/2;
   tr.y = (height-(minY+maxY)*tr.scale)/2;
   const active = boxes.find(b=>b.id===dagView().active);
   if (tr.framing==='readable' && active) {
     if (maxX-minX>width-40) tr.x = active.width>width-24 ? (width-active.width)/2-active.x : Math.max(12-active.x,Math.min(tr.x,width-12-active.x-active.width));
-    if (maxY-minY>height-40) tr.y = active.height>height-24 ? (height-active.height)/2-active.y : Math.max(12-active.y,Math.min(tr.y,height-12-active.y-active.height));
+    if (maxY-minY>height-2*clearance) tr.y = active.height>height-2*clearance ? (height-active.height)/2-active.y : Math.max(clearance-active.y,Math.min(tr.y,height-clearance-active.y-active.height));
   }
   dagPaintTransform(tr);
 }
@@ -690,30 +768,14 @@ actions['dag-zoom'] = direction => {
   viewport.focus({preventScroll:true});
 };
 actions['dag-layout'] = () => {
+  if (S.dagConnectionDraft) return;
   closeSheet();
-  const g = dagCurrent(), key = dagView().path.join('/'), depths = new Map(), lanes = new Map(), occupied = new Set();
-  const depth = id => {
-    if (!depths.has(id)) depths.set(id, Math.max(-1, ...g.edges.filter(e => e.to === id).map(e => depth(e.from))) + 1);
-    return depths.get(id);
-  };
-  const branchLane = (id, lane, seen = new Set()) => {
-    if (seen.has(id) || g.nodes.find(n => n.id === id)?.kind === 'source' || g.edges.filter(e => e.from === id).length > 1) return;
-    seen.add(id); lanes.set(id, lane);
-    g.edges.filter(e => e.to === id).forEach(e => branchLane(e.from, lane, seen));
-  };
-  g.nodes.filter(n => n.kind === 'mix').forEach((n, i) => {
-    const layer = g.edges.find(e => e.to === n.id && e.slot === 'layer');
-    if (layer) branchLane(layer.from, i + 1);
-  });
-  currentEdit().dagLayout ??= {};
-  g.nodes.forEach(n => {
-    const column = depth(n.id); let lane = lanes.get(n.id) ?? 0;
-    while (occupied.has(column + ':' + lane)) lane++;
-    occupied.add(column + ':' + lane);
-    currentEdit().dagLayout[key + ':' + n.id] = { x: 40 + column * 235, y: 75 + lane * 165 };
-  });
-  dagTransform().framing='readable';
-  Studio.save(); dagRenderFocus('[data-dag-viewport]'); notify('已整理分支布局 · 不改变照片或像素历史');
+  const key = dagView().path.join('/') + ':';
+  for (const id of Object.keys(currentEdit().dagLayout ?? {})) {
+    if (id.startsWith(key)) delete currentEdit().dagLayout[id];
+  }
+  dagTransform().framing='fit';
+  Studio.save(); dagRenderFocus('[data-dag-viewport]');
 };
 actions['dag-connect-menu'] = () => {
   dagEnsure(); const g = S.dagConnectionDraft ?? dagCurrent();
@@ -902,7 +964,7 @@ function dagRunBatch(batch) {
 }
 actions['dag-batch-results'] = id => {
   const b = Studio.data.dagBatches.find(b => b.id === id); S.dagBatchID = id;
-  dialog('批量工作流结果', `<p>${b.running ? '正在处理，可关闭此面板返回编辑' : '本轮已停止'} · ${b.items.filter(i => i.state === 'done').length}/${b.items.length} 成功</p><div class="dag-result-list">${b.items.slice(0, 30).map(i => `<p>${h(Studio.asset(i.id).name)} <b>${h({ pending: '等待', done: '已创建版本', cancelled: '已取消', conflict: '版本冲突', offline: '原片离线', undone: '已撤销' }[i.state])}</b></p>`).join('')}${b.items.length > 30 ? '<p>另有 ' + (b.items.length - 30) + ' 张，以上计数包含整批。</p>' : ''}</div>`, btn('返回选片', 'close') + (nativeBatchReview ? btn('导出成功候选', 'dag-batch-export', id, {disabled:b.running || !b.items.some(i=>i.state==='done')}) : '') + btn('模拟目标修订冲突', 'dag-batch-conflict') + btn('接回离线项', 'dag-batch-relink') + btn('取消待处理项', 'dag-batch-cancel', id, { disabled: !b.running }) + btn('重试离线／取消项', 'dag-batch-retry', id, { disabled: b.running }) + btn('撤销成功项', 'dag-batch-undo', id, { disabled: b.running }));
+  dialog('批量工作流结果', `<p>${b.running ? '正在处理，可关闭此面板返回编辑' : b.paused ? '已暂停' : '本轮已停止'} · ${b.items.filter(i => i.state === 'done').length}/${b.items.length} 成功</p><div class="dag-result-list">${b.items.slice(0, 30).map(i => `<p>${h(Studio.asset(i.id).name)} <b>${h({ pending: '等待', done: '已创建版本', cancelled: '已取消', conflict: '版本冲突', offline: '原片离线', undone: '已撤销' }[i.state])}</b></p>`).join('')}${b.items.length > 30 ? '<p>另有 ' + (b.items.length - 30) + ' 张，以上计数包含整批。</p>' : ''}</div>`, btn('返回选片', 'close') + (nativeBatchReview ? btn('导出成功候选', 'dag-batch-export', id, {disabled:b.running || !b.items.some(i=>i.state==='done')}) : '') + btn('模拟目标修订冲突', 'dag-batch-conflict') + btn('接回离线项', 'dag-batch-relink') + btn('取消待处理项', 'dag-batch-cancel', id, { disabled: !b.running && !b.paused }) + btn(b.paused ? '继续未完成项' : '重试离线／取消项', 'dag-batch-retry', id, { disabled: b.running }) + btn('撤销成功项', 'dag-batch-undo', id, { disabled: b.running }));
   sheet.dataset.dagBatch = id;
 };
 actions['dag-batch-export'] = id => {
@@ -911,11 +973,11 @@ actions['dag-batch-export'] = id => {
   const items = (b?.items || []).filter(i=>i.state==='done').map(i=>Studio.exportItem(i.id,i.version));
   if (!items.length) return;
   closeSheet(); S.delivery = { source:'工作流批次候选', mode:'render', items };
-  sessionStorage.setItem('rawmaster.ui.delivery',JSON.stringify(S.delivery)); go('export');
+  sessionStorage.setItem(deliveryStorageKey,JSON.stringify(S.delivery)); go('export');
 };
-actions['dag-batch-cancel'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.running = false; b.items.filter(i => i.state === 'pending').forEach(i => i.state = 'cancelled'); Studio.save(); actions['dag-batch-results'](id); };
+actions['dag-batch-cancel'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.running = false; b.paused = false; b.items.filter(i => i.state === 'pending').forEach(i => i.state = 'cancelled'); Studio.save(); actions['dag-batch-results'](id); };
 actions['dag-batch-relink'] = () => { const b = Studio.data.dagBatches.find(b => b.id === S.dagBatchID); b.items.filter(i => i.state === 'offline').forEach(i => Studio.asset(i.id).online = true); Studio.save(); actions['dag-batch-results'](b.id); };
-actions['dag-batch-retry'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'cancelled' || i.state === 'offline' && Studio.asset(i.id).online).forEach(i => i.state = 'pending'); b.running = true; dagRunBatch(b); actions['dag-batch-results'](id); };
+actions['dag-batch-retry'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'cancelled' || i.state === 'offline' && Studio.asset(i.id).online).forEach(i => i.state = 'pending'); b.paused = false; b.running = true; dagRunBatch(b); actions['dag-batch-results'](id); };
 actions['dag-batch-conflict'] = () => { const b = Studio.data.dagBatches.find(b => b.id === S.dagBatchID), i = b.items.find(i => ['pending', 'done'].includes(i.state)); if (i) { Studio.patchRecipe(i.id, '模拟后续编辑', { contrast: 31 }); notify('已模拟目标后续修订，重试或撤销不能覆盖'); } };
 actions['dag-batch-undo'] = id => { const b = Studio.data.dagBatches.find(b => b.id === id); b.items.filter(i => i.state === 'done').forEach(i => { if (JSON.stringify(Studio.edit(i.id).recipe) !== i.after) i.state = 'conflict'; else {
   if (nativeBatchReview) { const v=Studio.edit(i.id).versions.find(v=>v.id===i.version); if (v) v.discarded=true; }
@@ -924,7 +986,23 @@ actions['dag-batch-undo'] = id => { const b = Studio.data.dagBatches.find(b => b
 actions['dag-review'] = () => dialog('Node DAG 评审场景', '<ol><li>右侧切节点并修改曝光，查看作用域与历史。</li><li>Graph 下串行／并行添加，混合初始为 0%，换输入并撤销。</li><li>Shift 多选成组，进入／退出，保存模板。</li><li>新建蒙版，拖动覆盖，采用／取消返回 Graph。</li><li>编辑连接：制造回路或断开输入，应用禁用，取消恢复。</li><li>模板批量 20／200 张，取消、重试、版本冲突、撤销。</li><li>保存版本、最终导出；中间预览不改变输出。</li></ol><p>原片离线在输入节点模拟；蒙版素材缺失在蒙版面板模拟；渲染失败在输出节点模拟。设置可切换浅／深色。所有像素、模型与批量结果为本地模拟。</p>', btn('关闭', 'close'));
 
 let dagPointer = null, dagSpace = false;
+function dagSaveCardPosition(id, position) {
+  const layout = currentEdit().dagLayout ??= {};
+  layout[dagView().path.join('/') + ':' + id] = {x:position.x, y:position.y};
+  dagTransform().framing = 'manual';
+  Studio.save();
+}
+function dagCancelPointer() {
+  const p = dagPointer;
+  dagPointer = null;
+  if (!p?.viewport?.isConnected || p.photo !== Studio.data.work) return false;
+  if (p.viewport.hasPointerCapture(p.pointer)) p.viewport.releasePointerCapture(p.pointer);
+  if (p.kind === 'pan') Object.assign(dagTransform(), p.origin);
+  dagRenderFocus('[data-dag-viewport]');
+  return true;
+}
 document.addEventListener('pointerdown', event => {
+  if (dagPointer) return;
   if (event.button !== 0 && event.button !== 1) return;
   if (event.button === 0 && S.dagMaskSession && event.target.closest('.edit-image')) {
     const image = event.target.closest('.edit-image'); dagPointer = { kind: 'mask', rect: image.getBoundingClientRect(), startX: event.clientX, startY: event.clientY }; image.setPointerCapture(event.pointerId); event.preventDefault(); return;
@@ -934,13 +1012,22 @@ document.addEventListener('pointerdown', event => {
   const node = event.target.closest('[data-dag-card]');
   if (node && event.target.closest('button:not(.dag-node-title)')) return;
   if (!node && event.target.closest('.dag-wire')) return;
-  const transform = dagTransform();
-  dagPointer = { kind: dagSpace || event.button === 1 || !node && !event.shiftKey ? 'pan' : node ? 'node' : 'marquee', id: node?.dataset.dagCard, startX: event.clientX, startY: event.clientY, origin: { ...transform }, moved: false, viewport, rect: viewport.getBoundingClientRect(), additive: event.shiftKey || event.ctrlKey || event.metaKey };
-  if (node) { const n = dagCurrent().nodes.find(n => n.id === dagPointer.id); dagPointer.position = { ...dagPosition(n, dagCurrent().nodes.indexOf(n)) }; }
+  const kind = dagSpace || event.button === 1 || !node && !event.shiftKey ? 'pan' : node ? 'node' : 'marquee';
+  if (kind !== 'pan' && dagCommandBlockReason()) return;
+  const p = { kind, photo:Studio.data.work, pointer:event.pointerId, card:node, id:node?.dataset.dagCard, startX:event.clientX, startY:event.clientY, origin:{...dagTransform()}, moved:false, viewport, rect:viewport.getBoundingClientRect(), additive:event.shiftKey || event.ctrlKey || event.metaKey };
+  if (kind === 'node') {
+    p.boxes = dagCanvasBoxes(dagCurrent());
+    p.position = p.boxes.get(p.id);
+    p.wires = $$('.dag-wire').filter(wire => wire.dataset.from === p.id || wire.dataset.to === p.id);
+    viewport.focus({preventScroll:true});
+    event.preventDefault();
+  }
+  dagPointer = p;
   viewport.setPointerCapture(event.pointerId); if (dagPointer.kind === 'pan') event.preventDefault();
 });
 document.addEventListener('pointermove', event => {
   const p = dagPointer; if (!p) return;
+  if (p.viewport && (!p.viewport.isConnected || p.photo !== Studio.data.work || event.pointerId !== p.pointer)) return;
   const dx = event.clientX - p.startX, dy = event.clientY - p.startY; if (Math.abs(dx) + Math.abs(dy) > 5) p.moved = true;
   if (p.kind === 'mask') {
     const m = S.dagMaskSession.draft; m.x = Math.max(0, Math.min(100, ((p.startX + dx / 2) - p.rect.left) / p.rect.width * 100)); m.y = Math.max(0, Math.min(100, ((p.startY + dy / 2) - p.rect.top) / p.rect.height * 100)); m.width = Math.max(8, Math.abs(dx) / p.rect.width * 100); m.height = Math.max(8, Math.abs(dy) / p.rect.height * 100);
@@ -949,23 +1036,30 @@ document.addEventListener('pointermove', event => {
     if (!p.moved) return;
     const tr = dagTransform(); tr.x = p.origin.x + dx; tr.y = p.origin.y + dy; tr.framing = 'manual'; dagPaintTransform(tr);
   } else if (p.kind === 'node' && p.moved) {
-    const pos = { x: p.position.x + dx / p.origin.scale, y: p.position.y + dy / p.origin.scale }; currentEdit().dagLayout ??= {}; currentEdit().dagLayout[dagView().path.join('/') + ':' + p.id] = pos;
-    const card = $('[data-dag-card="' + p.id + '"]'); if (card) Object.assign(card.style, { left: pos.x + 'px', top: pos.y + 'px' });
+    const pos = { ...p.position, x:p.position.x + dx/p.origin.scale, y:p.position.y + dy/p.origin.scale };
+    p.boxes.set(p.id, pos);
+    Object.assign(p.card.style, { left:pos.x+'px', top:pos.y+'px' });
+    for (const wire of p.wires) wire.setAttribute('d', dagWirePath(wire.dataset, p.boxes));
   } else if (p.kind === 'marquee') {
     const marquee = $('.dag-marquee'); marquee.hidden = false; Object.assign(marquee.style, { left: Math.min(p.startX, event.clientX) - p.rect.left + 'px', top: Math.min(p.startY, event.clientY) - p.rect.top + 'px', width: Math.abs(dx) + 'px', height: Math.abs(dy) + 'px' });
   }
 });
 document.addEventListener('pointerup', event => {
-  const p = dagPointer; if (!p) return; dagPointer = null;
+  const p = dagPointer; if (!p || p.viewport && event.pointerId !== p.pointer) return; dagPointer = null;
   if (p.kind === 'mask') return;
+  if (p.photo !== Studio.data.work || !p.viewport.isConnected) return;
   if (p.kind === 'marquee') {
     const left = Math.min(p.startX, event.clientX), right = Math.max(p.startX, event.clientX), top = Math.min(p.startY, event.clientY), bottom = Math.max(p.startY, event.clientY);
     const ids = $$('[data-dag-card]').filter(el => { const r = el.getBoundingClientRect(); return r.left < right && r.right > left && r.top < bottom && r.bottom > top; }).map(el => el.dataset.dagCard);
     dagView().selection = p.additive ? [...new Set([...dagView().selection, ...ids])] : ids; if (ids.length === 1) dagView().active = ids[0]; dagRenderFocus('[data-dag-viewport]');
+  } else if (p.kind === 'node' && p.moved) {
+    dagSaveCardPosition(p.id, p.boxes.get(p.id));
+    if (!p.additive && dagEditable(dagCurrent().nodes.find(n => n.id === p.id))) dagSelect(p.id);
+    else dagRenderFocus('[data-dag-viewport]');
   } else if (p.moved) { Studio.save(); dagRenderFocus('[data-dag-viewport]'); }
   else if (p.kind === 'node') dagSelect(p.id,p.additive);
 });
-document.addEventListener('pointercancel', () => { if (dagPointer?.kind === 'node') currentEdit().dagLayout[dagView().path.join('/') + ':' + dagPointer.id] = dagPointer.position; dagPointer = null; if (S.page === 'edit' && dagEnabled()) render(); });
+document.addEventListener('pointercancel', event => { if (dagPointer?.pointer === event.pointerId || dagPointer?.kind === 'mask') dagCancelPointer(); });
 document.addEventListener('wheel', event => {
   if (!event.target.closest('[data-dag-viewport]')) return;
   event.preventDefault(); const tr = dagTransform(), rect = $('[data-dag-viewport]').getBoundingClientRect();
@@ -982,8 +1076,9 @@ document.addEventListener('keydown', event => {
   }
   if (event.key === 'Escape') {
     if (S.dagMaskSession) { event.preventDefault(); actions['dag-mask-cancel'](); }
+    else if (dagCancelPointer()) event.preventDefault();
     else if (S.dagWireFrom || S.dagConnectionDraft) { event.preventDefault(); actions['dag-connect-cancel'](); }
-    else if (dagView().target) { event.preventDefault(); actions['dag-preview-final'](); }
+    else if (dagView().target || dagPreviewState().solo || dagPreviewState().bypass) { event.preventDefault(); actions['dag-preview-final'](); }
     else if (dagView().mode === 'graph' && event.target.closest('.dag-floating')) { event.preventDefault(); actions['dag-view']('photo'); }
     return;
   }
@@ -996,10 +1091,24 @@ document.addEventListener('keydown', event => {
   else if (key === 'delete' || key === 'backspace') { event.preventDefault(); actions['dag-delete'](); }
   else if (key === '0') { event.preventDefault(); actions['dag-fit'](); }
   else if (['+', '=', '-'].includes(key)) { event.preventDefault(); actions['dag-zoom'](key === '-' ? 'out' : 'in'); }
-  else if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown'].includes(key)) { event.preventDefault(); const g = dagCurrent(), i = g.nodes.findIndex(n => n.id === dagView().active), n = g.nodes[(i + (key === 'arrowleft' || key === 'arrowup' ? -1 : 1) + g.nodes.length) % g.nodes.length]; dagSelect(n.id); }
+  else if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown'].includes(key)) {
+    if (!event.target.closest('[data-dag-viewport]')) return;
+    event.preventDefault();
+    if (event.shiftKey) {
+      const node = dagNode();
+      if (dagCommandBlockReason() || dagView().selection.length !== 1 || !dagEditable(node)) return;
+      const {x,y} = dagPosition(node);
+      dagSaveCardPosition(node.id, {x:x + (key==='arrowleft' ? -16 : key==='arrowright' ? 16 : 0), y:y + (key==='arrowup' ? -16 : key==='arrowdown' ? 16 : 0)});
+      dagRenderFocus('[data-dag-node="'+node.id+'"]');
+    } else {
+      const g = dagCurrent(), i = g.nodes.findIndex(n => n.id === dagView().active);
+      const n = g.nodes[(i + (key === 'arrowleft' || key === 'arrowup' ? -1 : 1) + g.nodes.length) % g.nodes.length];
+      dagSelect(n.id);
+    }
+  }
 });
 document.addEventListener('keyup', event => { if (event.key === ' ') dagSpace = false; });
-window.addEventListener('blur', () => { dagSpace = false; dagPointer = null; });
+window.addEventListener('blur', () => { dagSpace = false; dagCancelPointer(); });
 for (const name of ['open-versions', 'export']) {
   const original = actions[name];
   actions[name] = (...args) => {

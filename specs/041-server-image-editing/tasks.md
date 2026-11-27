@@ -5,7 +5,7 @@
 ## 0. 原则
 
 - **交互不进队列。** 滑杆、曲线、蒙版、撤销不走 Server；队列只服务后台任务。
-- **先代理，后队列，再 scene／HDR，最后生成式。** 没有 sceneProxy，HDR 编辑会降级；没有 Linux scene executor，Server HDR／DAG 不开放。
+- **复用 042。** 本机队列独立交付。040 先提供归档／取回，再以单张代理或已验证 SDR 子集接通作业链。Scene／HDR、生成式各自通过能力门。
 - **先队列正确，后 GPU 规模。** 幂等、取消、重启、公平先通过，再谈 10TB／多模型。
 - **旧 SDR 与场景图分开。** 不自动迁移兼容配方；不把 legacy SDR 结果标成 HDR。
 - **资料库基线不依赖 GPU。** 图像模块关闭时资料库完整可用。
@@ -15,8 +15,8 @@
 - [ ] **IMG01 · 代理契约。** displayProxy、editProxy、sceneProxy、linearProxy、原件；分辨率、位深、色域、编码、几何、方向、HDR 语义、缓存键、失效。[规格](spec.md#31-交互与代理)
 - [ ] **IMG02 · 场景图／输出状态。** `DevelopmentRecipe` schema 4、`DevelopmentSceneGraphV1`、`DevelopmentSceneOutputStateV1`、`DevelopmentSceneModelV1`、模板／批量 head。[038](../038-node-dag-workflow/spec.md) · [039](../039-rust-scene-backend/spec.md)
 - [ ] **IMG03 · 旧 SDR 兼容。** `compatibility_route`、旧配方、兼容显影图与场景图的边界；不自动迁移。
-- [ ] **IMG04 · 客户端队列契约。** `CatalogTaskQueue` + `SceneWorkflowBatch` 扩展；任务类型、优先级、资源类、dedupe、状态、重试、取消、持久化。[queues](queues.md#2-客户端背景队列)
-- [ ] **IMG05 · Server 队列契约。** lane、优先级、能力、租约、状态、发布、公平、配额；scene／legacy／generative 分开。[queues](queues.md#3-server-作业队列)
+- [ ] **IMG04 · 远端任务契约。** 复用 [042](../042-local-library-workbench/plan.md) 的本机记录与恢复。冻结客户端意图、镜像、核对、取回与版本关联。[队列](queues.md#2-客户端的远端任务)
+- [ ] **IMG05 · Server 队列契约。** lane、优先级、能力、租约、状态、发布、公平、配额。按 scene／legacy／generative 准入。[Server 作业与准入](queues.md#3-server-作业和准入)
 - [ ] **IMG06 · 作业 envelope。** jobID、sceneGraph／旧配方、outputState、modelProgram、模板／批次、target head、delivery target、format、幂等、错误码。[plan](plan.md#6-协议)
 - [ ] **IMG07 · 能力清单。** `library_core`、`image_proxy`、`image_sdr_batch`、`image_scene_batch`、`model.prefix`、`generative`、Vulkan／CUDA、scene backend、显存、模型、引擎。
 - [ ] **IMG08 · 色彩门。** 037 契约、ACES 2、SDR／HDR、AVIF PQ、SDR 派生、未过门行为。[037](../037-color-film-hdr/spec.md)
@@ -35,18 +35,18 @@
 
 **Q1 出口。** 冷片／HDR 进入编辑无空白；sceneProxy 语义正确；1:1 用原件；离线可用级别明确。
 
-## Q2 · 客户端背景队列
+## Q2 · 客户端的远端作业接入
 
-- [ ] **IMG20 · `CatalogTaskQueue` 扩展。** 代理、远端作业、缓存任务；持久化、优先级、资源类、dedupe、租约。
-- [ ] **IMG21 · `SceneWorkflowBatch` 集成。** review／register／commit／cancel／retry／undo；候选、head、冲突保留。
-- [ ] **IMG22 · 前台抢占。** 拖动／缩放时暂停 prefetch；GPU／CPU 预算；恢复按优先级。
-- [ ] **IMG23 · 去重与合并。** 同代理键／同 scene batch item／同 jobID 只执行一次。
-- [ ] **IMG24 · 取消／重试／未知。** transient／permanent／uncertain；临时文件清理；同 ID 查询。
-- [ ] **IMG25 · 重启恢复。** running → waiting／重试；批次候选／head 不丢；不假装完成。
-- [ ] **IMG26 · 离线。** 网络任务等待；本地编辑继续；重连恢复。
-- [ ] **IMG27 · 队列 UI。** 场景批次、代理、远端作业；状态、失败、取消、重试；不伪造 ETA。
+- [ ] **IMG20 · 接入持久任务。** 复用 042 执行入口，增加远端提交、代理取回和结果取回。
+- [ ] **IMG21 · 批次映射。** 场景批次项绑定远端 ID、父版本和目标 head，取回后回到原项。
+- [ ] **IMG22 · 资源。** 按需取回提升优先级，后台预取让出前台资源。
+- [ ] **IMG23 · 去重。** 代理缓存键、远端 job ID 和同一批次项各按其身份复用。
+- [ ] **IMG24 · 取消与重试。** 保存取消意图，使用原 ID 核对提交或发布状态。
+- [ ] **IMG25 · 重启及切库。** 持久化镜像与游标，重开后补差，校验事件作用域。
+- [ ] **IMG26 · 离线。** 网络任务等待，已准备的数据仍可在本机使用。
+- [ ] **IMG27 · 任务界面。** 在 042 的详情中标出远端位置、能力不足、待核对和取回动作。
 
-**Q2 出口。** 前台不受影响；批次不丢；去重有效；取消无半成品；重启恢复；head 冲突保留。
+**Q2 出口。** 远端任务恢复和本地工作同时可验收。本机导入、032、Flux 和批次恢复归 [042 发布验证](../042-local-library-workbench/validation.md)。
 
 ## Q3 · Server 队列与 legacy SDR worker
 
@@ -56,7 +56,7 @@
 - [ ] **IMG33 · 租约与恢复。** claim／heartbeat／complete；超时重领；旧 token 拒绝；重启 reconcile。
 - [ ] **IMG34 · 取消与重试。** 协作取消；暂存清理；同 jobID 新 attempt；不重复发布。
 - [ ] **IMG35 · 结果发布。** S3 暂存、SHA-256、target／format／位深／ICC／CICP 登记；唯一发布；不自动采用。
-- [ ] **IMG36 · 客户端协同。** Submit／Watch／Get／Cancel／Retry；断线补 sequence；未知核对；批次 head。
+- [ ] **IMG36 · 客户端协同。** Submit／Watch／Get／Cancel／Retry。补事件、恢复代次与取消发布竞态。切库后晚到结果。按源和 head 登记。
 - [ ] **IMG37 · Legacy SDR worker。** 旧点配方／兼容图；Vulkan／CPU；不参与 HDR。
 - [ ] **IMG38 · 队列公平验收。** 一个库大批量不阻塞另一库；library RPC 不被饿死。
 
@@ -99,9 +99,9 @@
 | --- | --- | --- |
 | 设计门 | IMG01–IMG09 | 代码编译 |
 | 代理门 | IMG10–IMG17 | Server 批处理 |
-| 客户端队列门 | IMG20–IMG27 | Server 队列 |
+| 远端客户端接入门 | IMG20–IMG27 | Server 队列 |
 | Server 队列门 | IMG30–IMG38 | scene／HDR |
-| 1.0 门 | 代理 + 两端队列 + legacy SDR + 色彩门 | scene／HDR、Flux、10TB |
+| 041 首个计算闭环 | 040 传输＋两端队列＋已验收的代理与 SDR 子集 | scene／HDR、Flux、10TB |
 | Scene 门 | IMG40–IMG46 | legacy SDR |
 | 生成式门 | IMG50–IMG55 | 普通编辑 |
 | 规模门 | IMG60–IMG64 | 单一演示环境 |

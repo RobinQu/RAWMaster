@@ -170,53 +170,6 @@ private final class PhotosMenuButton: NSPopUpButton {
 }
 
 
-struct PhotosFlatTabs<Value: Hashable>: View {
-    let title: String
-    @Binding var selection: Value
-    let options: [Value]
-    let label: (Value) -> String
-    var symbol: (Value) -> String? = { _ in nil }
-    @FocusState private var focused: Value?
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(options, id: \.self) { value in
-                Button { selection = value } label: {
-                    HStack(spacing: 5) {
-                        if let symbol = symbol(value) { Image(systemName: symbol).accessibilityHidden(true) }
-                        Text(label(value))
-                    }.font(selection == value ? AppDesign.Typography.tabSelected : AppDesign.Typography.tabLabel)
-                        .lineLimit(1).minimumScaleFactor(0.8)
-                        .frame(maxWidth: .infinity, minHeight: AppDesign.Metric.tabHeight)
-                        .contentShape(Rectangle())
-                        .overlay(alignment: .bottom) {
-                            if selection == value { Capsule().fill(AppPalette.accent).frame(height: 2).padding(.horizontal, 4) }
-                            else if focused == value { Capsule().fill(.secondary).frame(height: 2).padding(.horizontal, 4) }
-                        }
-                        .foregroundStyle(selection == value ? AppPalette.accent : photosAdjustmentTextColor(in: colorScheme))
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(selection == value ? .isSelected : [])
-                .focused($focused, equals: value)
-                .onMoveCommand { direction in
-                    guard let index = options.firstIndex(of: value) else { return }
-                    let next: Int
-                    switch direction {
-                    case .left: next = index - 1
-                    case .right: next = index + 1
-                    default: return
-                    }
-                    guard options.indices.contains(next) else { return }
-                    selection = options[next]
-                    focused = options[next]
-                }
-            }
-        }
-        .accessibilityElement(children: .contain).accessibilityLabel(title)
-    }
-}
-
 struct PhotosRailTooltip: View {
     let title: String
     @Environment(\.colorScheme) private var colorScheme

@@ -9,7 +9,6 @@ struct EditingSceneModeStrip: View {
     }
     @ObservedObject var editing: EditingController
     @State private var trimOpen = false
-    @FocusState private var focus: Mode?
     private var current: Mode {
         if editing.recipe.sceneGraph != nil { return .hdr }
         return editing.recipe.adjustmentsV3?.blackAndWhite.enabled == true ? .bw : .sdr
@@ -23,25 +22,11 @@ struct EditingSceneModeStrip: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
             Label("色彩外观", systemImage: "paintpalette").font(.subheadline.weight(.semibold))
-            HStack(spacing: 3) {
-                ForEach(Mode.allCases, id: \.self) { mode in
-                    Button { choose(mode) } label: {
-                        Label(mode.label, systemImage: mode.symbol)
-                            .font(.system(size: 11, weight: current == mode ? .semibold : .regular))
-                            .lineLimit(1).minimumScaleFactor(0.8)
-                            .frame(maxWidth: .infinity, minHeight: 26)
-                            .background(current == mode ? AppPalette.accent.opacity(0.16) : AppDesign.fill(.rest), in: .rect(cornerRadius: 5))
-                            .foregroundStyle(current == mode ? AppPalette.accent : .primary)
-                    }
-                    .buttonStyle(.plain).accessibilityAddTraits(current == mode ? .isSelected : [])
-                    .accessibilityIdentifier("editing.scene.mode." + mode.rawValue)
-                    .help(reason(mode) ?? mode.label)
-                    .disabled(reason(mode) != nil || editing.sceneStarting)
-                    .focused($focus, equals: mode)
-                    .onKeyPress(.leftArrow) { moveFocus(-1, from: mode) }
-                    .onKeyPress(.rightArrow) { moveFocus(1, from: mode) }
-                }
-            }
+            AppTabs(title: "色彩外观", selection: Binding(get: { current }, set: choose),
+                    options: Mode.allCases, label: \.label, symbol: \.symbol, selectsOnArrow: false,
+                    isDisabled: { editing.sceneStarting || reason($0) != nil },
+                    help: { editing.sceneStarting ? "正在验证场景处理…" : reason($0) ?? $0.label },
+                    identifier: { "editing.scene.mode." + $0.rawValue })
             if editing.sceneStarting {
                 HStack {
                     ProgressView().controlSize(.mini)
@@ -97,13 +82,6 @@ struct EditingSceneModeStrip: View {
             }
         }.font(.caption2).foregroundStyle(.secondary)
             .accessibilityElement(children: .combine).accessibilityIdentifier("editing.scene.outputDetails")
-    }
-
-    private func moveFocus(_ step: Int, from mode: Mode) -> KeyPress.Result {
-        let options = Mode.allCases.filter { reason($0) == nil }
-        guard let index = options.firstIndex(of: mode) else { return .ignored }
-        focus = options[(index + step + options.count) % options.count]
-        return .handled
     }
 
     private func choose(_ mode: Mode) {

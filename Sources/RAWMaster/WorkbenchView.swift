@@ -9,6 +9,7 @@ private let canvasColor = AppPalette.canvas
 private let panelColor = AppPalette.panel
 
 struct WorkbenchView: View {
+    var library: LocalLibraryPackage? = nil
     @EnvironmentObject var model: AppModel
     @Environment(\.openWindow) private var openWindow
     @State private var sidebarBeforeEditing: Bool?
@@ -86,7 +87,7 @@ struct WorkbenchView: View {
     private var toolbarSurface: some View {
         workbenchSurface
         .toolbar {
-            ToolbarItem(placement: .navigation) {
+            ToolbarItemGroup(placement: .navigation) {
                 if !model.isNativeEditing {
                     Button { model.showSidebar.toggle() } label: {
                         Label("资料库导航", systemImage: "sidebar.left")
@@ -94,6 +95,11 @@ struct WorkbenchView: View {
                     .labelStyle(.iconOnly)
                     .help("显示或收起项目栏")
                     .accessibilityIdentifier("workbench.sidebarToggle")
+                }
+                if let library {
+                    WorkbenchLibraryTitle(name: library.name, directory: library.root)
+                        .accessibilityLabel(Text(library.name))
+                        .accessibilityHint(Text("显示资料库路径"))
                 }
             }
             ToolbarItem(placement: .principal) {
@@ -137,10 +143,10 @@ struct WorkbenchView: View {
         .sheet(isPresented: $model.showTagHistory) { TagOperationHistorySheet() }
     }
     private func presentFluxFirstRunIfNeeded() {
-        guard !showFluxFirstRun, let services = model.editingServices else { return }
+        guard !model.isLibraryTransitioning, !showFluxFirstRun, let services = model.editingServices else { return }
         guard services.fluxModel.shouldShowFirstRunPrompt else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            guard !showFluxFirstRun, services.fluxModel.shouldShowFirstRunPrompt else { return }
+            guard !model.isLibraryTransitioning, !showFluxFirstRun, services.fluxModel.shouldShowFirstRunPrompt else { return }
             showFluxFirstRun = true
         }
     }
@@ -250,10 +256,7 @@ struct WorkbenchView: View {
                     } label: { Image(systemName: "arrow.up.arrow.down") }
                         .menuStyle(.borderlessButton).frame(width: 26).help("排序：" + model.reviewSort.title).accessibilityLabel("排序")
                 }
-                AppTabs(title: "浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) }),
-                        options: [.grid, .single, .compare], label: {
-                    switch $0 { case .grid: "网格"; case .single: "单张"; case .compare: "比较" }
-                }).frame(width: 120).help("网格 G · 单张 E · 比较 C")
+                LibraryBrowserModePicker()
             }.frame(height: 26)
             HStack(spacing: 8) {
                 Text(headerCounts).font(.caption2).foregroundStyle(.secondary).fixedSize()
@@ -341,7 +344,7 @@ struct WorkbenchView: View {
                     Text(model.isHistoryScope ? "历史记录只读 · 恢复仅作用当前所选" : "初筛决定作用当前所选 · 整批会话操作见上方")
                         .font(.caption).foregroundStyle(.secondary)
                     Spacer()
-                } else if let progress = model.progress {
+                } else if let progress = model.displayedTaskProgress {
                     if progress.isRunning { ProgressView().controlSize(.small) }
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {

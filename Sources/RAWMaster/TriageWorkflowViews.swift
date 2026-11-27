@@ -124,7 +124,7 @@ struct TriageStatusStrip: View {
                 ForEach(AppModel.TriageFilter.allCases, id: \.self) { Text($0.title).tag($0) }
             }.frame(width: 170).controlSize(.small)
             Spacer(minLength: 0)
-            SessionBrowserModePicker()
+            LibraryBrowserModePicker(iconOnly: true)
         }
     }
 }
@@ -137,19 +137,34 @@ struct SessionHistoryBrowsingControls: View {
                 ForEach(AppModel.TriageFilter.allCases, id: \.self) { Text($0.title).tag($0) }
             }.frame(width: 180).controlSize(.small)
             Spacer(minLength: 0)
-            SessionBrowserModePicker()
+            LibraryBrowserModePicker(iconOnly: true)
         }.padding(.horizontal, 18).padding(.vertical, 10)
     }
 }
 
-struct SessionBrowserModePicker: View {
+struct LibraryBrowserModePicker: View {
     @EnvironmentObject var model: AppModel
+    var iconOnly = false
+
     var body: some View {
-        Picker("浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) })) {
-            Image(systemName: "square.grid.2x2").tag(AppModel.BrowserMode.grid)
-            Image(systemName: "rectangle").tag(AppModel.BrowserMode.single)
-            Image(systemName: "rectangle.split.2x1").tag(AppModel.BrowserMode.compare)
-        }.pickerStyle(.segmented).labelsHidden().accessibilityLabel("浏览").frame(width: 120).help("网格 G · 单张 E · 比较 C")
+        AppTabs(title: "浏览方式", selection: Binding(get: { model.mode }, set: { model.setMode($0) }),
+                options: AppModel.BrowserMode.allCases, label: label, symbol: { iconOnly ? symbol($0) : nil },
+                iconOnly: iconOnly, help: { mode in
+                    label(mode) + " · " + (mode == .grid ? "G" : mode == .single ? "E" : "C")
+                }, identifier: { "library.browse." + $0.rawValue })
+            .frame(width: 120)
+    }
+
+    private func label(_ mode: AppModel.BrowserMode) -> String {
+        switch mode { case .grid: "网格"; case .single: "单张"; case .compare: "比较" }
+    }
+
+    private func symbol(_ mode: AppModel.BrowserMode) -> String {
+        switch mode {
+        case .grid: "square.grid.2x2"
+        case .single: "rectangle"
+        case .compare: "rectangle.split.2x1"
+        }
     }
 }
 

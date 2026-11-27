@@ -80,12 +80,20 @@ struct ExportAssetChecklist: View {
                 Spacer()
                 if filtering { Text("\(rows.count) 项").font(.caption).foregroundStyle(.secondary) }
             }.padding(.horizontal, 12).padding(.vertical, 7)
-            HStack {
-                Button(filtering ? "勾选筛选结果" : "全选") { checked.formUnion(rows.map(\.id)) }
-                    .disabled(rows.isEmpty)
-                Button("清除勾选") { checked.subtract(rows.map(\.id)) }.disabled(checked.isEmpty || rows.isEmpty)
+            AppButtonGroup(title: "选片操作", options: [true, false], stretches: false,
+                           isDisabled: { rows.isEmpty || (!$0 && checked.isEmpty) },
+                           help: { select in
+                               if rows.isEmpty { return "当前筛选无结果" }
+                               if select { return filtering ? "勾选筛选结果" : "全选" }
+                               return checked.isEmpty ? "暂无勾选" : "清除当前列表的勾选"
+                           }, action: { select in
+                               let ids = rows.map(\.id)
+                               if select { checked.formUnion(ids) }
+                               else { checked.subtract(ids) }
+                           }) { select in
+                Text(select ? (filtering ? "勾选筛选结果" : "全选") : "清除勾选")
             }
-            .buttonStyle(AppFlatButtonStyle()).padding(.horizontal, 13).padding(.bottom, 10)
+            .padding(.horizontal, 13).padding(.bottom, 10)
             if selectedCount > limit {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("每批最多 \(limit) 张，当前多选了 \(selectedCount - limit) 张。").font(.caption)

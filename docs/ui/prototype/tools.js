@@ -11,7 +11,7 @@ const toolPages = {
   migration: '迁入 Lightroom',
   process: '分组制作',
   design: '界面规范',
-  server: 'Server · 规划预演',
+  ...(serverReview ? {server: 'RAWMaster Server'} : {}),
 };
 const settingsPages = {
   general: '通用',
@@ -88,7 +88,11 @@ function catalogPanel(key) {
       <section><h3>所选作品</h3>${ids.map((id) => rowCard(Studio.asset(id).name, Studio.photo(id).scene)).join('') || '<p>请先在资料库中选片。</p>'}
       <div class="row wrap">${btn('加入集合…', 'organize', 'add', { disabled: !ids.length })}${btn('重命名作品…', 'organize', 'rename', { disabled: ids.length !== 1 })}${btn('堆叠所选作品…', 'new-group', '', { disabled: ids.length < 2 })}</div></section></div>`;
     case 'package':
-      return `<div class="tool-columns"><section><h3>本地资料库</h3>${rowCard(c.packageName || '本机资料库', '示例目录 · ' + Studio.admitted().length + ' 次拍摄')}<div class="row wrap">${btn('新建 / 打开…', 'package-switch')}${btn('重新定位整卷…', 'volume-review')}${btn('校验与重建索引', 'index-review')}</div></section>
+      return `<div class="tool-columns"><section><h3>本地资料库</h3>${rowCard(packageLabel(Studio.data), packageLocation().path)}
+        <div class="row wrap">${btn('新建资料库…', 'package-new')}${btn('打开资料库包…', 'package-switch')}${btn('重新定位整卷…', 'volume-review')}${btn('校验与重建索引', 'index-review')}</div>
+        <details class="settings-advanced"><summary>走查库包打开、移动与拷贝</summary>
+          <div class="row wrap">${btn('Finder 示例…', 'package-finder')}${btn('预览首次打开', 'goto', 'welcome')}${btn('预览上次地址失效', 'goto', 'welcome/recover')}</div>
+        </details></section>
       <section><h3>备份与还原</h3>${select('备份内容', 'backupMode', ['目录与预览', '包含可用原件与归档', '增量备份'], '包含可用原件与归档')}${btn('预览备份范围…', 'backup-plan', '', { cls: 'primary' })}
       ${c.backup ? rowCard(c.backup, '可校验的示例备份', btn('还原到新资料库…', 'restore-backup') + btn('校验 / 修复', 'backup-verify')) : ''}</section></div>`;
     case 'migration':
@@ -106,18 +110,7 @@ function catalogPanel(key) {
     case 'design':
       return designSystemPanel();
     case 'server':
-      return `<p class="callout">后续立项 · 此页推演客户端与 Server 的协作状态。</p><div class="tool-columns"><section><h3>归档与异机恢复</h3>${factList(
-        [
-          ['原件范围', '已核验且已纳入'],
-          ['归档位置', '模拟 Server'],
-          ['备份', '独立副本'],
-        ],
-      )}${btn('推演归档与恢复…', 'server-demo', 'archive')}</section>
-      <section><h3>离线协同与计算</h3>${factList([
-        ['本机', '可离线选片'],
-        ['同步', '按修订核对冲突'],
-        ['计算', '冻结输入版本'],
-      ])}${btn('推演离线同步…', 'server-demo', 'sync')}${btn('推演远程作业…', 'server-demo', 'job')}</section></div>`;
+      return serverPanel();
   }
 }
 function factList(rows) {
@@ -174,76 +167,6 @@ actions['organize-save'] = (op) => {
   closeSheet();
   render();
   notify('已保存');
-};
-actions['package-switch'] = () => {
-  if (Studio.data.jobs.some((j) => j.state === 'running')) {
-    dialog(
-      '资料库作业进行中',
-      '<p>作业结束或取消后可以切换资料库。</p>',
-      btn('返回', 'close') + btn('查看制作任务', 'goto-close', 'jobs'),
-    );
-    return;
-  }
-  dialog(
-    '选择示例资料库',
-    select('资料库', 'demoPackage', [
-      ['current', Studio.catalog().packageName || '本机资料库'],
-      ['new', '新建空白资料库'],
-      ...Object.keys(Studio.data.libraries || {}).map((n) => [n, n]),
-    ]) + field('新库名称', 'packageName', '旅行资料库'),
-    btn('取消', 'close') + btn('打开', 'package-open'),
-  );
-};
-actions['package-open'] = () => {
-  const choice = value('demoPackage'),
-    d = Studio.data,
-    c = Studio.catalog(),
-    curr = c.packageName || '本机资料库';
-  if (choice === 'current') {
-    closeSheet();
-    return;
-  }
-  const name = choice === 'new' ? value('packageName').trim() : choice;
-  if (!name) return;
-  d.libraries ??= {};
-  if (choice === 'new' && (name === curr || Object.hasOwn(d.libraries, name))) {
-    notify('已有同名资料库');
-    return;
-  }
-  const next =
-    choice === 'new'
-      ? {
-          catalog: {
-            records: Studio.emptyRecords(),
-            projects: [{ id: 'new', name: '新项目', ids: [] }],
-            groups: [],
-            sessions: [],
-            collections: [],
-            folders: [],
-            packageName: name,
-          },
-          edits: {},
-          history: [],
-          browse: {},
-          jobs: [],
-        }
-      : d.libraries[name];
-  if (!next) return;
-  d.libraries[curr] = Object.fromEntries(
-    ['catalog', 'edits', 'history', 'browse', 'jobs', 'backupSnapshot'].map((k) => [k, d[k]]),
-  );
-  delete d.libraries[name];
-  d.backupSnapshot = null;
-  Object.assign(d, next);
-  d.catalog.packageName = name;
-  Activity.log('工作台','已打开资料库');
-  clearDelivery();
-  S.inspectIDs = null;
-  S.processID = null;
-  S.scope = 'project/' + d.catalog.projects[0].id;
-  Studio.save();
-  closeSheet();
-  go('library/' + S.scope);
 };
 actions['volume-review'] = () => {
   const missing = Studio.admitted().filter((k) => !Studio.asset(k).online);
@@ -313,16 +236,19 @@ actions['restore-new'] = () => {
     d = Studio.data,
     snap = d.backupSnapshot;
   if (!name || !snap) return;
-  d.libraries ??= {};
-  if (Object.hasOwn(d.libraries, name) || name === (d.catalog.packageName || '本机资料库')) {
+  if (availablePackages().some((snapshot) => packageLabel(snapshot) === name)) {
     notify('已有同名资料库');
     return;
   }
-  d.libraries[name] = { ...structuredClone(snap), history: [], jobs: [], browse: {} };
+  d.libraries ??= {};
+  const catalog = {...structuredClone(snap.catalog), packageName: name};
+  const id = Studio.uid();
+  d.libraries[id] = { catalog, edits: structuredClone(snap.edits), history: [], jobs: [], browse: {},
+    packageInfo: { id, libraryID: id, path: packagePath(name, '~/Pictures'), recent: false } };
   Studio.save();
   closeSheet();
   render();
-  notify('已建立恢复副本，可在“新建 / 打开”中选择');
+  notify('已建立恢复副本，可在“打开资料库包”中选择');
 };
 actions['migration-plan'] = () =>
   dialog(
@@ -385,7 +311,7 @@ function discoveryPanel() {
   const c = Studio.catalog(),
     tab = S.discoverTab || '搜索',
     q = S.discoveryQuery || '';
-  const tabBar = `<div class="switch">${['搜索', '地理围栏', '人物复核', '本机索引', '跨库检索'].map((t) => btn(t, 'discovery-tab', t, { pressed: tab === t })).join('')}</div>`;
+  const tabBar = `<div class="button-group" role="group" aria-label="智能检索栏目" data-select-on-arrow>${['搜索', '地理围栏', '人物复核', '本机索引', '跨库检索'].map((t) => btn(t, 'discovery-tab', t, { pressed: tab === t })).join('')}</div>`;
   if (tab === '地理围栏')
     return (
       tabBar +
@@ -406,10 +332,10 @@ function discoveryPanel() {
       )
     );
   if (tab === '跨库检索') {
-    const libs = Object.keys(Studio.data.libraries || {});
+    const libs = Object.values(Studio.data.libraries || {});
     return (
       tabBar +
-      `<h3>检索范围</h3>${check(c.packageName || '本机资料库', 'lib-current', true)}${libs.map((l, i) => check(l, 'lib-' + i, true)).join('')}${field('文件名或场景', 'federatedQuery')}${btn('查询勾选的库', 'federated')}<div id="federated-result"></div>`
+      `<h3>检索范围</h3>${check(c.packageName || '本机资料库', 'lib-current', true)}${libs.map((l, i) => check(packageLabel(l), 'lib-' + i, true)).join('')}${field('文件名或场景', 'federatedQuery')}${btn('查询勾选的库', 'federated')}<div id="federated-result"></div>`
     );
   }
   const found = Studio.admitted().filter((id) => {
@@ -463,9 +389,9 @@ actions.federated = () => {
     root = $('#workspace'),
     q = value('federatedQuery', root).toLowerCase(),
     libs = [
-      ...Object.entries(d.libraries || {})
+      ...Object.values(d.libraries || {})
         .filter((_, i) => checked('lib-' + i, root))
-        .map(([n, s]) => [n, s.catalog]),
+        .map((snapshot) => [packageLabel(snapshot), snapshot.catalog]),
     ];
   if (checked('lib-current', root)) libs.unshift([d.catalog.packageName || '本机资料库', d.catalog]);
   $('#federated-result').innerHTML =
@@ -529,28 +455,4 @@ actions['write-meta'] = () => {
       (a.metadata ??= {})[n] = v;
     }),
   );
-};
-actions['server-demo'] = (op) => {
-  const steps = {
-    archive: ['核对逐文件归档资格', '校验归档与独立备份', '从备份恢复到新设备'],
-    sync: ['离线修改项目决定', '核对两端冲突修订', '合并明确选择的修订'],
-    job: ['冻结输入版本与操作', '断线后以任务身份重连', '登记唯一结果与来源'],
-  };
-  S.serverSteps = steps[op];
-  S.serverIndex = 0;
-  serverStep();
-};
-function serverStep() {
-  const i = S.serverIndex,
-    list = S.serverSteps;
-  dialog(
-    'Server 规划预演',
-    `<ol>${list.map((s, j) => `<li>${j < i ? '✓ ' : ''}${h(s)}</li>`).join('')}</ol>`,
-    btn('关闭', 'close') +
-      (i < list.length ? btn(list[i], 'server-next', '', { cls: 'primary' }) : '<strong>推演完成</strong>'),
-  );
-}
-actions['server-next'] = () => {
-  S.serverIndex++;
-  serverStep();
 };

@@ -12,3 +12,9 @@
 验收：构建资源同时含 Aqua / DarkAqua 图标栈，各自只显示对应图案；两版图像内容不同；保留 16–1024 像素后备尺寸；系统渲染预览无概念稿外框或杂点。
 
 2026-10-24 视觉简化：浅深两版保留叠层、配色和交叠关系，移除素材中的顶部强光、发亮描边和厚重玻璃材质；背景接近纯色，只保留平缓的颜色过渡。使用 LightMinimal / DarkMinimal 源图，旧版本保留。系统外框的轻微反光继续遵循原生渲染。
+
+## 资料库文件夹图标
+
+将应用图标的两层青蓝紫叠片放在靛蓝文件夹上，保留顶部页签和 16pt 下可辨认的交叠轮廓。Finder 将其用作 `.rawmasterlibrary` 类型的默认图标。成功打开的工作库和 Application Support 默认旧库也会在文件夹上登记同款图标。Finder 保留已有自定文件夹图标，上级目录使用各自的系统图标。
+
+在[摄影工作台](../../docs/ui/prototype/index.html#library/project/river)右键点击标题栏库名，路径的第一项显示资料库图标。选路径可在 Finder 定位，或拷贝完整路径。用 Escape 关闭回到当前照片。也可从[资料库与备份](../../docs/ui/prototype/index.html#tools/package)进入 Finder 示例。[软件验证](validation.md#资料库文件夹图标)

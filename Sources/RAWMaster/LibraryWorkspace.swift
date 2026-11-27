@@ -1,5 +1,4 @@
 import AppKit
-import Combine
 import RAWMasterCore
 import RAWMasterLibrary
 import SwiftUI
@@ -17,39 +16,6 @@ struct LibraryOverview: Decodable {
 enum CatalogPanel: String, Identifiable {
     case package, organization, migration, inspection, managedFiles, groupProcessing, discovery
     var id: Self { self }
-}
-
-@MainActor
-final class ApplicationLibrarySession: ObservableObject {
-    @Published private(set) var model: AppModel
-    private var observation: AnyCancellable?
-    init() {
-        model = AppModel(usesPagedLibrary: true)
-        observe()
-    }
-    private func observe() {
-        model.activateLibrary = { [weak self] url in try self?.open(url) }
-        observation = model.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
-    }
-    private func open(_ url: URL) throws {
-        guard model.canSwitchLibrary else { throw LibraryEngineError("请等待当前资料库作业完成") }
-        let next = AppModel(libraryURL: url, usesPagedLibrary: true)
-        guard next.store != nil else { throw LibraryEngineError(next.errorMessage ?? "无法打开资料库") }
-        try LibraryLocation.remember(url, defaults: .standard)
-        try next.keepSelectedLibraryLocation()
-        model.flushProjectReviewState()
-        model.stopLibraryIndexing()
-        model.editing?.leaveBrowsingContext()
-        model.catalogGrid?.cancel()
-        let previous = model
-        Task {
-            await previous.stopWorkbenchPhotoDelivery()
-            await previous.editing?.shutdown(finishPreviews:false)
-            await previous.editingServices?.shutdown()
-        }
-        model = next
-        observe()
-    }
 }
 
 extension AppModel {
@@ -74,14 +40,16 @@ struct CatalogWorkspacePanel: View {
         VStack(alignment: .leading) {
             HStack {
                 Spacer()
-                Button("完成") { dismiss() }.keyboardShortcut(.cancelAction)
+                Button("完成") { dismiss() }.keyboardShortcut(.cancelAction).disabled(model.isLibraryPackageBusy)
             }
             switch panel {
             case .package:
-                LibraryPackagePanel(catalog: model.libraryURL, canSwitch: { model.canSwitchLibrary }) { url in
-                    guard let activate = model.activateLibrary else { throw LibraryEngineError("当前窗口无法切换资料库") }
-                    try activate(url)
-                }
+                LibraryPackagePanel(catalog: model.libraryURL, defaults: model.defaults,
+                    canSwitch: { model.canSwitchLibrary },
+                    chooseLibrary: { model.chooseLibraryPackage?() },
+                    createLibrary: { model.createLibraryPackage?() },
+                    workingChanged: { model.isLibraryPackageBusy = $0 },
+                    activate: { model.activateLibrary?($0) })
             case .organization:
                 if let actions = model.catalogActions {
                     LibraryOrganizationBrowser(actions: actions, onOpenWork: { model.inspectWorks([$0]) })
@@ -122,6 +90,7 @@ struct CatalogWorkspacePanel: View {
                 }
             }
         }.padding(18).frame(minWidth: 740, minHeight: 515)
+            .interactiveDismissDisabled(model.isLibraryPackageBusy)
     }
 }
 

@@ -301,8 +301,9 @@ extension LibraryStore {
     try transaction {
       var work = try photoWork(id: workID)
       if enabled, try editingVersion(id: work.adoptedVersionID).kind == .ai { throw EditingError.strictDocumentary }
-      if enabled, try loadProcessingJobs(workID: workID).contains(where: {
-        !$0.state.isTerminal && $0.state != .outcomeUnknown && $0.currentAttempt.submissionIntentAt != nil
+      if enabled, try loadProcessingJobs(workID: workID).contains(where: { job in
+        guard !job.state.isTerminal, job.state != .outcomeUnknown, job.currentAttempt.submissionIntentAt != nil else { return false }
+        return try !isHistoricalTask(.flux, id: job.id)
       }) { throw EditingError.illegalTransition }
       work.strictDocumentary = enabled
       try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
@@ -384,7 +385,10 @@ extension LibraryStore {
       if let quick = request.quickPrompt {
         try quick.validate(input: request.inputArtifact)
         guard quick.matches(work, parent: input, recipe: request.recipe),
-          try loadProcessingJobs(workID: work.id).allSatisfy({ !$0.blocksQuickPromptSubmission }) else {
+          try loadProcessingJobs(workID: work.id).allSatisfy({ other in
+            if !other.blocksQuickPromptSubmission { return true }
+            return try isHistoricalTask(.flux, id: other.id)
+          }) else {
           throw EditingError.staleAdoption
         }
       } else if input.recipe != request.recipe { throw EditingError.invalidParent }
@@ -451,6 +455,7 @@ extension LibraryStore {
   }
   public func acknowledgeQuickPromptOutcome(id: String, attemptID: String) throws {
     try locked {
+      try requireLocalTask(.flux, id: id)
       let archive = try editingArchive()
       for received in try archive.recoverReceivedOutputs() where received.jobID == id { try commitReceivedOutput(received) }
       for publication in try archive.recoverPublications() where publication.jobID == id { _ = try commitArchivePublication(publication) }
@@ -468,6 +473,7 @@ extension LibraryStore {
   public func transitionProcessingJob(id: String, attemptID: String, runID: String, to next: ProcessingJobState,
     remoteID: String? = nil, workerJoined: Bool = false, error: String? = nil) throws -> ProcessingJob {
     try transaction {
+      try requireLocalTask(.flux, id: id)
       var job = try processingJob(id: id), attempt = job.currentAttempt
       guard attempt.id == attemptID, attempt.runID == runID else { throw EditingError.staleAttempt }
       // A terminal failure can precede native worker joining. Permit only an identity-guarded
@@ -508,19 +514,35 @@ extension LibraryStore {
     }
   }
   public func retryProcessingJob(id: String, allowUnknownOutcome: Bool = false) throws -> ProcessingJob {
-    try locked {
+    try requireLocalTask(.flux, id: id)
+    return try locked {
       // A result receipt may have survived even when the DB callback did not. Resolve it before authorizing any resubmission.
       let archive = try editingArchive()
       for received in try archive.recoverReceivedOutputs() where received.jobID == id { try commitReceivedOutput(received) }
       for publication in try archive.recoverPublications() where publication.jobID == id { _ = try commitArchivePublication(publication) }
       return try transaction {
         var job = try processingJob(id: id)
-        guard job.resultVersionID == nil, job.request.quickPrompt == nil else { throw EditingError.illegalTransition }
+        guard job.resultVersionID == nil else { throw EditingError.illegalTransition }
         let old = job.currentAttempt
         guard old.receivedOutput == nil, old.pendingReceivedOutput == nil else { throw EditingError.outputAlreadyReceived }
         guard old.state == .failed || old.state == .cancelled || old.state == .outcomeUnknown else { throw EditingError.illegalTransition }
         guard old.workerJoined else { throw EditingError.workerNotJoined }
         if old.state == .outcomeUnknown && !allowUnknownOutcome { throw EditingError.outcomeUnknown }
+        if let quick = job.request.quickPrompt {
+          // A local retry uses the archived input and requires the original baseline to still apply.
+          // Cloud Prompt submissions keep their existing confirmation path.
+          guard job.request.profile.kind == .localComfy, old.state != .outcomeUnknown else { throw EditingError.illegalTransition }
+          let work = try photoWork(id: job.request.workID), parent = try editingVersion(id: job.request.inputVersionID)
+          guard work.strictDocumentary != true, quick.matches(work, parent: parent, recipe: job.request.recipe) else {
+            throw EditingError.staleAdoption
+          }
+          for other in try loadProcessingJobs(workID: work.id) where other.id != id && other.blocksQuickPromptSubmission {
+            if try !isHistoricalTask(.flux, id: other.id) { throw EditingError.illegalTransition }
+          }
+          _ = try archive.processingInputURL(job.request.inputArtifact)
+          _ = try archive.processingInputURL(quick.basis.artifact)
+          if let matte = quick.matte { _ = try archive.processingInputURL(matte.artifact) }
+        }
         try validateEditingSource(job.request.source)
         job.attempts.append(.init(number: old.number + 1)); try writeJob(job); return job
       }
@@ -530,6 +552,7 @@ extension LibraryStore {
   /// Returned bytes become immutable archive-owned input for retrying publication without network I/O.
   public func recordProcessingOutput(id: String, attemptID: String, runID: String, output: AIEditOutput) throws -> AIEditOutput {
     try locked {
+      try requireLocalTask(.flux, id: id)
       let job = try processingJob(id: id)
       guard let index = job.attempts.firstIndex(where: { $0.id == attemptID && $0.runID == runID }),
         job.attempts[index].submissionIntentAt != nil else { throw EditingError.staleAttempt }
@@ -582,6 +605,7 @@ extension LibraryStore {
       } else { attempt = job.currentAttempt }
       if let received = attempt.receivedOutput { return try editingArchive().resolveReceivedOutput(received) }
       if let pending = attempt.pendingReceivedOutput {
+        guard try !isHistoricalTask(.flux, id: id) else { return nil }
         return try recordProcessingOutput(id: id, attemptID: attempt.id, runID: attempt.runID, output: pending)
       }
       return nil
@@ -589,6 +613,7 @@ extension LibraryStore {
   }
   private func commitReceivedOutput(_ received: ReceivedProcessingOutput) throws {
     try transaction {
+      try requireLocalTask(.flux, id: received.jobID)
       _ = try editingArchive().resolveReceivedOutput(received)
       var job = try processingJob(id: received.jobID)
       guard let index = job.attempts.firstIndex(where: { $0.id == received.attemptID && $0.runID == received.runID }),
@@ -648,6 +673,7 @@ extension LibraryStore {
       let version = receipt.version, work = try photoWork(id: receipt.version.workID)
       try validateVersion(version, work: work)
       if let jobID = receipt.jobID {
+        try requireLocalTask(.flux, id: jobID)
         var job = try processingJob(id: jobID)
         guard job.request.workID == work.id, job.request.inputVersionID == version.parentVersionID,
           version.kind == .ai, version.recipe == job.request.recipe, let index = job.attempts.firstIndex(where: { $0.id == receipt.attemptID && $0.runID == receipt.runID }),
@@ -687,15 +713,20 @@ extension LibraryStore {
   }
   public func recoverEditingArchive() throws -> [ArchivePublicationReceipt] {
     let archive = try editingArchive()
-    for received in try archive.recoverReceivedOutputs() { try commitReceivedOutput(received) }
-    for job in try loadProcessingJobs() {
+    for received in try archive.recoverReceivedOutputs(including: { try !isHistoricalTask(.flux, id: $0.jobID) }) {
+      try commitReceivedOutput(received)
+    }
+    for job in try loadProcessingJobs() where try !isHistoricalTask(.flux, id: job.id) {
       for attempt in job.attempts where attempt.receivedOutput == nil {
         if let pending = attempt.pendingReceivedOutput {
           _ = try recordProcessingOutput(id: job.id, attemptID: attempt.id, runID: attempt.runID, output: pending)
         }
       }
     }
-    let receipts = try archive.recoverPublications()
+    let receipts = try archive.recoverPublications { receipt in
+      guard let jobID = receipt.jobID else { return true }
+      return try !isHistoricalTask(.flux, id: jobID)
+    }
     for receipt in receipts { _ = try commitArchivePublication(receipt) }
     return receipts
   }

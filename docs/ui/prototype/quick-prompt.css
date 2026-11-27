@@ -110,7 +110,7 @@
   font-size: 12px;
   line-height: 1.2;
 }
-.quick-dock .quick-chips button, .quick-dock .quick-buttons button,
+.quick-dock .quick-chips button, .quick-dock .quick-buttons > button,
 .quick-menu summary, .quick-model {
   min-height: 30px;
   padding: 5px 8px;
@@ -123,7 +123,7 @@
   border-radius: 16px;
   background: var(--inset);
 }
-.quick-dock .quick-buttons button[aria-pressed="true"] {
+.quick-dock .quick-buttons > button[aria-pressed="true"] {
   border-color: var(--accent);
   background: var(--active);
   color: var(--accent);

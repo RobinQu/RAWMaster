@@ -30,9 +30,6 @@
     header,.foot {display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 23px;background:var(--panel)}
     header {border-bottom:1px solid var(--line)}
     header .title {display:flex;align-items:baseline;flex-wrap:wrap;gap:12px}
-    .modes {display:flex;gap:3px;background:var(--bg);padding:3px;border-radius:8px;border:1px solid var(--line)}
-    .modes button {border:0;background:transparent;color:var(--sub)}
-    .modes [aria-pressed=true] {background:var(--active);color:var(--accent);font-weight:650}
     .layout {flex:1;display:grid;grid-template-columns:minmax(195px,22%) minmax(245px,1fr) minmax(258px,28%);min-height:0}
     aside,.settings {background:var(--panel);padding:20px 16px}
     aside {border-right:1px solid var(--line)}
@@ -123,7 +120,7 @@
       .asset {min-width:175px;flex:1}.stage {min-height:175px}
     }
     @media(max-width:600px) {
-      header .title {gap:2px;display:grid}header h1 {font-size:18px}.modes button {white-space:nowrap;font-size:12px;padding:6px}
+      header .title {gap:2px;display:grid}header h1 {font-size:18px}
       .layout {display:block}.stage {height:180px;min-height:0}.stage img {max-height:158px}
       .settings {border:0;border-top:1px solid var(--line);padding:16px}.foot {flex-wrap:wrap;gap:5px}.actions {margin-left:auto}
     }
@@ -132,6 +129,7 @@
   <link rel="stylesheet" href="workspace-studio.css">
   <link rel="stylesheet" href="../../docs/ui/prototype/keyboard-focus.css">
   <link rel="stylesheet" href="../../docs/ui/prototype/workbench-controls.css">
+  <link rel="stylesheet" href="../../docs/ui/prototype/grouped-buttons.css">
 </head>
 <body>
 <main class="app">
@@ -147,7 +145,7 @@
         <input id="selection-search" type="search" placeholder="搜索文件名" aria-label="搜索文件名、场景或日期" autocomplete="off">
         <select id="selection-filter" aria-label="选片筛选"><option value="all">全部照片</option><option value="checked">已勾选</option><option value="offline">原片离线</option><option value="raw">RAW</option><option value="jpeg">JPEG</option></select>
       </div>
-      <div class="selection-actions"><button class="link-button" id="select-matches">全选筛选结果</button><button class="link-button" id="clear-matches" aria-label="清除筛选结果的勾选">清除勾选</button></div>
+      <div class="selection-actions button-group" role="group" aria-label="选片操作"><button id="select-matches">全选筛选结果</button><button id="clear-matches" aria-label="清除筛选结果的勾选">清除勾选</button></div>
       <p class="small selection-summary" id="selection-summary" role="status"></p>
       <div class="selection-limit" id="selection-limit" role="status" hidden><p id="limit-count"></p><button class="link-button" id="limit-selection">保留前 200 张已选照片</button></div>
       <p class="small selection-empty" id="empty-selection" hidden>没有符合条件的照片。</p>
@@ -178,7 +176,7 @@
     </section>
     <section class="settings" aria-label="交付设置">
       <div class="section-head"><h2 id="settings-title">成片设置</h2></div>
-      <div class="modes" aria-label="交付方式">
+      <div class="modes button-group button-group--stretch" role="group" aria-label="交付方式" data-select-on-arrow>
       <button id="render" aria-pressed="true">导出成片</button><button id="original" aria-pressed="false">复制原文件</button>
     </div>
       <div class="controls">
@@ -312,6 +310,7 @@
 </dialog>
 <script src="../../docs/ui/prototype/photos.js"></script>
 <script src="../../docs/ui/prototype/scene-output.js"></script>
+<script src="../../docs/ui/prototype/grouped-buttons.js"></script>
 <script src="export-layout.js"></script>
 <script src="export-preset.js"></script>
 <script src="workspace-selection.js"></script>

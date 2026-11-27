@@ -11,12 +11,14 @@
 
 ## S0 · 契约与夹具
 
-- [ ] **SRV01 · gRPC 契约。** 冻结 `LibraryService`、`TransferService`、`MetadataService`、`JobService` proto；操作信封、错误码、幂等、所有权 epoch。[协议](protocol.md)
+- [ ] **SRV01 · gRPC 契约。** 冻结 `LibraryService`、`TransferService`、`MetadataService`，预留 `JobService` 版本。建库收据、操作信封、错误和包实例授权。[协议](protocol.md)
 - [ ] **SRV02 · PostgreSQL schema。** 库、设备、令牌哈希、操作、对象、引用、上传意图、快照、配额、outbox、审计；迁移和版本。[数据模型](data-model.md)
 - [ ] **SRV03 · S3 profile。** RustFS／MinIO／云 S3 的 endpoint、path-style、TLS、presigned、multipart、checksum、part size。[存储](storage.md)
 - [ ] **SRV04 · 元数据备份格式。** manifest、pg_dump、对象清单、checksums、secret bundle 边界、恢复步骤。[元数据备份](metadata-backup.md)
 - [ ] **SRV05 · 证书／令牌模型。** 私有 CA／单证书、客户端固定、令牌哈希／pepper、secret bundle 加密。[安全](security.md)
 - [ ] **SRV06 · UI 状态。** 单客户端所有权、Direct／Relay、元数据备份恢复、证书／令牌状态；更新摄影工作台并走查。[交互](ux.md)
+
+本机客户端的 LIB01–LIB04 归 [042 实施计划](../042-local-library-workbench/plan.md)。
 
 ## S1 · 控制面与身份
 
@@ -27,6 +29,7 @@
 - [ ] **SRV14 · PostgreSQL 接入。** 连接池、迁移、事务、操作日志、收据、outbox。
 - [ ] **SRV15 · gRPC 客户端。** grpc-swift-2、TLS trust roots、令牌、重试、deadline、流式事件。
 - [ ] **SRV16 · 健康与版本。** 在线／离线／证书变化／版本不兼容；`GetServerInfo`、版本握手。
+- [ ] **SRV17 · 新建 Server 库。** 先验证连接和包位置。同命令 ID 核对建库及初始快照，取消或超时留可恢复记录。
 
 **S1 出口。** 错误证书／令牌被拒；第二客户端不能写；所有权转移 fencing 生效；Server 重启后库和令牌恢复；本地离线不受影响。
 
@@ -35,7 +38,7 @@
 - [ ] **SRV20 · 归档计划。** 封存资格、逐文件清单、排除项零引用、重复幂等。[规格](spec.md#62-归档与-s3-对象)
 - [ ] **SRV21 · Direct 上传。** `CreateUpload`、S3 multipart、presigned part、part manifest、过期。
 - [ ] **SRV22 · Relay 回退。** 传输错误触发；同一 upload ID／part 号；流式写 S3；不落完整本地文件。[协议](protocol.md#6-自动-relay)
-- [ ] **SRV23 · 校验与登记。** 完成 multipart、HEAD、SHA-256、字节数；PostgreSQL 事务登记对象和归档引用。
+- [ ] **SRV23 · 校验与登记。** 完成暂存 multipart、验证整对象 SHA-256 和字节数、发布不可变内容对象。PostgreSQL 事务登记归档引用。
 - [ ] **SRV24 · 去重与引用。** 同库内容去重；多引用；删除引用不删对象；跨库不去重。
 - [ ] **SRV25 · 状态与队列。** 待上传、Direct、Relay、校验中、对象可用、引用已登记、待找回、缺失／损坏。
 - [ ] **SRV26 · 五文件端到端。** A.RAW 排除、A.JPG 纳入、B.RAW 仅序列、C.RAW 必要帧排除、D.RAW 失败；S3 对象恰为 A.JPG／B.RAW；恢复 A.RAW 只增一份。
@@ -66,6 +69,7 @@
 - [ ] **SRV44 · 过期。** 本地缓存、代理、垃圾桶、草稿、版本、墓碑、暂存、备份代次；S3 生命周期边界。
 - [ ] **SRV45 · 客户端快照。** 目录快照上传 S3、索引、修订、恢复；不超前。
 - [ ] **SRV46 · 单客户端重连与转移。** 离线队列、补交、fencing、第二客户端只读。
+- [ ] **SRV47 · 同步已有库。** 列库、显示所有权。下载并校验快照、补操作与必要资源。放在用户选择的位置。中断续传、只读及转移。
 
 **S4 出口。** 冷片可切换；释放门槛不可绕过；垃圾桶／版本／墓碑按策略；旧备份不倒带；单客户端所有权正确。
 
@@ -97,6 +101,6 @@
 | 设计门 | SRV01–SRV06 评审通过 | 代码编译、演示 |
 | S1 门 | 证书、令牌、所有权、gRPC、PostgreSQL | 归档、备份 |
 | S2 门 | 五文件、Direct／Relay、校验、去重 | 元数据恢复 |
-| 1.0 门 | S1＋S2＋S3＋S4 | 远程作业、10TB |
+| 1.0 门 | 042 客户端＋S1＋S2＋S3＋S4 | 远程作业、10TB |
 | 运维门 | 10TB／10GbE、证书轮换、备份恢复演练 | 单一演示环境 |
 | 1.1 门 | S5.1 作业重连与单次登记 | 100TB |

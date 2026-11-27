@@ -45,6 +45,7 @@ struct WorkbenchLogEntry: Identifiable, Codable, Equatable {
     }
     @Published private(set) var notices: [EditingWorkspaceNotice]
     @Published private(set) var logs: [WorkbenchLogEntry]
+    @Published private(set) var tasksRequested = false
     private let defaults: UserDefaults
     private let key: String
     private var subscriptions: Set<AnyCancellable> = []
@@ -52,10 +53,11 @@ struct WorkbenchLogEntry: Identifiable, Codable, Equatable {
 
     init(libraryURL: URL, libraryID: String?, defaults: UserDefaults) {
         self.defaults = defaults
-        // A replaced database at the same location and a separate copy of a catalog have independent histories.
-        let identity = (libraryID ?? "") + "|" + libraryURL.standardizedFileURL.resolvingSymlinksInPath().path
-        key = "workbench.activity.v1." + SHA256.hash(data: Data(identity.utf8)).description
-        let archive = defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(Archive.self, from: $0) } ?? Archive()
+        let previousIdentity = (libraryID ?? "") + "|" + libraryURL.standardizedFileURL.resolvingSymlinksInPath().path
+        let previousKey = "workbench.activity.v1." + SHA256.hash(data: Data(previousIdentity.utf8)).description
+        key = libraryID.map { "workbench.activity.v2." + SHA256.hash(data: Data($0.utf8)).description } ?? previousKey
+        let data = defaults.data(forKey: key) ?? defaults.data(forKey: previousKey)
+        let archive = data.flatMap { try? JSONDecoder().decode(Archive.self, from: $0) } ?? Archive()
         notices = archive.notices
         logs = archive.logs
     }
@@ -63,6 +65,13 @@ struct WorkbenchLogEntry: Identifiable, Codable, Equatable {
     func add(_ notice: EditingWorkspaceNotice) {
         notices = Array(notices.suffix(199)) + [notice]
         persist()
+    }
+
+    func requestTasks() { tasksRequested = true }
+    func consumeTasksRequest() -> Bool {
+        guard tasksRequested else { return false }
+        tasksRequested = false
+        return true
     }
 
     func log(_ source: String, _ summary: String, error: Bool = false) {

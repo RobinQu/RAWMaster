@@ -295,3 +295,5 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 ## 任务
 
 见[任务清单](tasks.md)。优先定位 `local-defringe` 后缀重跑、分段缓存和双带 halo，再迁移去雾／brilliance 的有序全局归约。FIT 先保留各路径已测的目标尺寸。相同分辨率和质量时对照旧预览、严格 Rust 和 Swift。区域解码只在冷窗实测节省且通过整幅对应像素判据后接入。使用[联合测量口径](../035-portable-processing-cores/roadmap.md#证据与测量口径)记录交互到 drawable 及实际呈现，同时独立测批次成片和资源峰值。
+
+后续引擎统一、点段融合、tiled 交付复用和空间算子的实施顺序见 [043 图像引擎统一与后续性能优化](../043-image-engine-unification/spec.md)。

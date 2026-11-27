@@ -54,6 +54,7 @@ public final class RelocationService: @unchecked Sendable {
     -> RelocationSession
   {
     try await execute(progress: progress) { [self] in
+      try store.requireLocalTask(.relocation, id: id)
       let saved = try store.relocationSession(id)
       if saved.status == "completed" {
         progress(
@@ -68,12 +69,15 @@ public final class RelocationService: @unchecked Sendable {
   @discardableResult public func chooseCandidate(sessionID: String, assetID: String, path: String?)
     throws -> RelocationSession
   {
-    try store.chooseRelocationCandidate(sessionID: sessionID, assetID: assetID, path: path)
+    try store.requireLocalTask(.relocation, id: sessionID)
+    return try store.chooseRelocationCandidate(sessionID: sessionID, assetID: assetID, path: path)
   }
   public func confirm(sessionID: String, progress: @escaping @Sendable (TaskProgress) -> Void)
     async throws -> RelocationSession
   {
-    try await execute(progress: progress) { [self] in try runConfirm(sessionID, progress: progress)
+    try await execute(progress: progress) { [self] in
+      try store.requireLocalTask(.relocation, id: sessionID)
+      return try runConfirm(sessionID, progress: progress)
     }
   }
   private func execute(

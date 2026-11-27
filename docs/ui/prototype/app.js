@@ -44,12 +44,12 @@ function fluxTick() {
         current.status = '就绪';
         current.file = '';
         Studio.save();
-        if (S.page === 'settings' && S.sub === 'runtime') render();
+        if ((S.page === 'settings' && S.sub === 'runtime') || (S.page === 'jobs' && !sheet.open)) render();
         notify('FLUX.3 Klein 已就绪');
       }, 900);
     }
     Studio.save();
-    if (S.page === 'settings' && S.sub === 'runtime') render();
+    if ((S.page === 'settings' && S.sub === 'runtime') || (S.page === 'jobs' && !sheet.open)) render();
   }, 520);
 }
 function firstRunDialog() {
@@ -380,15 +380,20 @@ function startJob(kind, photo, group = null, agent = null, quickPrompt = null) {
 }
 const jobNames = {
   running: '处理中',
+  paused: '已暂停',
   done: '已完成',
   cancelled: '已取消',
   unknown: '结果待核对',
   failed: '失败',
+  waiting: '等待联网或能力',
+  queued: 'Server 排队',
+  cancelling: '取消待确认',
+  available: '结果可取回',
 };
 function settleJobs() {
   let modified = false, quickChanged = false;
   for (const j of Studio.data.jobs) {
-    if (j.delivery || j.state !== 'running' || Date.now() < j.due) continue;
+    if (j.delivery || j.remote || j.state !== 'running' || Date.now() < j.due) continue;
     j.state = 'done';
     Activity.log('任务', '已完成 · ' + j.kind);
     modified = true;
@@ -408,15 +413,53 @@ function settleJobs() {
     if (sheet.open && sheet.dataset.job) actions['job-detail'](sheet.dataset.job);
   }
 }
+function taskRows(compact = false) {
+  const jobs = Studio.data.jobs.filter((job) => serverReview || !job.remote);
+  const flux = Studio.data.prefs.flux;
+  const rows = [
+    ...jobs.map((job) => {
+      const location = job.remote ? 'Server' : job.agent?.provider ?? (job.quickPrompt?.model === 'seedream' ? promptModels.seedream : '本机');
+      return rowCard(job.kind, [location, job.photo && Studio.asset(job.photo).name, jobNames[job.state], job.deliveryStatus]
+        .filter(Boolean).join(' · '), !compact || job.delivery || job.remote || job.quickPrompt || job.agent || job.group || job.result ? btn('查看详情', 'job-detail', job.id) : '');
+    }),
+    ...Studio.catalog().sessions.map((session) => rowCard('导入 · ' + session.name,
+      '本机 · ' + intakeTaskStatus(session), btn('查看详情', 'intake-task-detail', session.id))),
+    ...(Studio.data.dagBatches ?? []).map((batch) => rowCard('批量工作流',
+      '本机 · ' + (batch.running ? '运行中' : batch.paused ? '已暂停' : '可查看结果'), btn('查看批次', 'dag-batch-results', batch.id))),
+    ...(flux.status === '未安装' ? [] : [rowCard('FLUX 本机模型', '设备 · ' + flux.status,
+      btn('打开本机 AI 设置', 'goto', 'settings/runtime'))]),
+  ];
+  return rows;
+}
+function intakeTaskStatus(session) {
+  return session.taskCancelled ? '已取消，可继续' : session.state === 'paused' ? '已暂停，可继续' : '接入完成';
+}
+actions['intake-task-detail'] = (id) => {
+  const session = Studio.session(id);
+  if (!session) return;
+  const route = 'library/' + (session.state === 'sealed' ? 'history/' : 'triage/') + id;
+  dialog('导入任务', `<dl>${fact('来源', session.name)}${fact('方式', session.mode)}${fact('状态', intakeTaskStatus(session))}</dl>`,
+    btn('返回', 'close') + btn('查看导入会话', 'goto-close', route) + (session.state === 'paused'
+      ? btn('继续', 'intake-task-continue', id, {cls:'primary'}) : ''));
+};
+actions['intake-task-continue'] = (id) => {
+  const session = Studio.session(id);
+  if (session?.state !== 'paused') return;
+  Studio.change('继续接入', () => { session.state = 'open'; session.taskCancelled = false; });
+  render();
+  actions['intake-task-detail'](id);
+};
 function jobsView() {
-  const jobs = Studio.data.jobs;
-  return `<section class="jobs-page"><div class="crumb">RAWMaster <span>/</span> 后台作业</div><h1>制作任务</h1><p class="muted">示例作业保留输入与版本，可在切换照片后继续查看。</p>
-    ${jobs.map((j) => rowCard(j.kind, (j.photo ? Studio.asset(j.photo).name + ' · ' : '') + jobNames[j.state], btn('查看详情', 'job-detail', j.id))).join('') || empty('暂无制作任务', '在编辑中生成候选，或从拍摄组制作成片。')}
+  const rows = taskRows();
+  return `<section class="jobs-page"><div class="crumb">${h(packageLabel(Studio.data))}</div><h1>制作任务</h1>
+    ${S.jobsReturn ? btn('返回原工作区', 'goto', S.jobsReturn, {icon:'previous'}) : ''}
+    ${rows.join('') || empty('暂无制作任务', '导入、交付和生成等任务提交后会出现在这里。')}
     <div class="row wrap">${btn('返回资料库', 'goto', 'library/' + S.scope)}${btn('返回当前照片', 'goto', S.editReturn, { disabled: !Studio.admitted().length })}${S.exportKey ? btn('导出面板与交付记录', 'goto', 'export') : ''}</div></section>`;
 }
 actions['job-detail'] = (id) => {
   const j = Studio.data.jobs.find((x) => x.id === id);
   if (!j) return;
+  if (j.remote) return serverJobDetail(j);
   if (j.delivery) {
     deliveryReceipt(j);
     return;
@@ -459,6 +502,7 @@ actions['job-detail'] = (id) => {
           btn('模拟中断', 'job-change', 'interrupt/' + id) +
           btn('模拟失败', 'job-change', 'fail/' + id)
         : '') +
+      (j.state === 'paused' ? btn('继续任务', 'job-change', 'retry/' + id) : '') +
       (['cancelled', 'failed'].includes(j.state) ? btn('重试', 'job-change', 'retry/' + id) : '') +
       (j.state === 'unknown' ? btn('核对原任务结果', 'job-change', 'reconcile/' + id) : '') +
       (j.result && !j.group ? btn('查看候选', 'job-version', id) : ''),
@@ -494,13 +538,16 @@ actions['job-version'] = (id) => {
 function chrome() {
   const page = S.page,
     part = ['library', 'edit', 'export'].includes(page) ? page : page === 'tools' ? 'library' : '';
+  if (page === 'welcome') return '<strong class="welcome-brand">RAWMaster</strong>';
   const work = Studio.data.work;
   const sidebarVisible = compactLibraryNavigation.matches ? S.drawer : S.librarySidebar;
   const sidebar = page === 'library' ? btn('资料库导航', 'drawer', '', {
     icon: 'sidebar', only: true, cls: 'icon-btn', pressed: sidebarVisible,
   }) : '';
-  return `<div class="chrome-navigation">${sidebar}</div>
-    <nav class="workflow-switch" aria-label="工作流">${[
+  return `<div class="chrome-navigation">${sidebar}${btn('资料库菜单', 'library-menu', '', {
+    icon:'library', only:true, cls:'icon-btn', title:'资料库菜单',
+  })}${packageWindowTitle()}</div>
+    <nav class="workflow-switch button-group" aria-label="工作流">${[
       ['library', '资料库', 'library'],
       ['edit', '编辑', 'sliders'],
       ['export', '导出', 'export'],
@@ -511,7 +558,7 @@ function chrome() {
           pressed: part === k,
           disabled:
             (k === 'edit' && !(page === 'library' ? validWork(libraryEditTarget()) : validWork(work))) ||
-            (k === 'export' && page === 'library' && isTriage()),
+            (k === 'export' && (!Studio.admitted().length || (page === 'library' && isTriage()))),
         }),
       )
       .join('')}</nav>
@@ -548,7 +595,9 @@ function render() {
   const noticeHost = S.page === 'edit' && root.querySelector('.edit-page')?.dataset.photo === Studio.data.work
     ? root.querySelector('.editor-notices') : null;
   root.innerHTML =
-    S.page === 'library'
+    S.page === 'welcome'
+      ? welcomeView()
+      : S.page === 'library'
       ? libraryView()
       : S.page === 'edit'
         ? editorView()
@@ -743,10 +792,17 @@ matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
 });
 S.scope = Studio.data.lastScope || S.scope;
 try {
-  const saved = JSON.parse(sessionStorage.getItem('rawmaster.ui.delivery'));
+  const saved = JSON.parse(sessionStorage.getItem(deliveryStorageKey));
   if (saved?.items?.length && saved.items.every((i) => Studio.asset(i.id.split('@')[0]))) S.delivery = saved;
 } catch {}
 for (const job of Studio.data.jobs) if (job.delivery && job.state === 'running') job.state = 'unknown';
+for (const batch of Studio.data.dagBatches ?? []) {
+  if (batch.running) {
+    batch.running = false;
+    batch.paused = true;
+  }
+}
+Studio.save();
 route();
 render();
 setInterval(settleJobs, 400);

@@ -1,4 +1,5 @@
 import CryptoKit
+import Darwin
 import Foundation
 
 struct FileStamp: Equatable {
@@ -7,6 +8,33 @@ struct FileStamp: Equatable {
   var inode: UInt64
   var device: UInt64
 }
+package struct LocalDirectoryIdentity: Codable, Sendable {
+  private let volume: String?
+  private let device: UInt64
+  private let inode: UInt64
+  private let birth: Date?
+
+  package init(_ directory: URL) throws {
+    let url = FileSafety.canonical(directory)
+    let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+    guard attributes[.type] as? FileAttributeType == .typeDirectory,
+      let device = (attributes[.systemNumber] as? NSNumber)?.uint64Value,
+      let inode = (attributes[.systemFileNumber] as? NSNumber)?.uint64Value, inode != 0 else {
+      throw LibraryError.invalid("找不到可核对身份的目录：\(url.path)")
+    }
+    volume = try url.resourceValues(forKeys: [.volumeUUIDStringKey]).volumeUUIDString
+    self.device = device
+    self.inode = inode
+    birth = attributes[.creationDate] as? Date
+  }
+
+  package func matches(_ current: Self) -> Bool {
+    guard inode == current.inode, birth == current.birth else { return false }
+    if let volume { return volume == current.volume }
+    return current.volume == nil && device == current.device
+  }
+}
+
 enum FileSafety {
   static func canonical(_ url: URL) -> URL {
     let u = url.standardizedFileURL
@@ -72,7 +100,8 @@ enum FileSafety {
   /// Never replaces an existing file, including races. Only this operation's private temporary file is removed.
   static func verifiedCopy(
     source: URL, target: URL, expectedHash: String?, protectedRoots: [URL],
-    cancel: () throws -> Void
+    allowAlternateTarget: Bool = true,
+    beforePublish: () throws -> Void = {}, cancel: () throws -> Void
   ) throws -> (URL, String) {
     try checkTarget(target, sources: protectedRoots)
     try cancel()
@@ -80,12 +109,14 @@ enum FileSafety {
     guard canonical(source).path != canonical(target).path else {
       throw LibraryError.invalid("目标不能指向源文件")
     }
+    try beforePublish()
     try FileManager.default.createDirectory(
       at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
     try checkTarget(target, sources: protectedRoots)
     let temporary = target.deletingLastPathComponent().appendingPathComponent(
       ".rawmaster-\(UUID().uuidString).partial")
     try checkTarget(temporary, sources: protectedRoots)
+    try beforePublish()
     guard FileManager.default.createFile(atPath: temporary.path, contents: nil) else {
       throw LibraryError.invalid("无法创建临时文件，请检查磁盘容量和权限")
     }
@@ -125,6 +156,7 @@ enum FileSafety {
     var suffix = 0
     while true {
       try cancel()
+      try beforePublish()
       try checkTarget(candidate, sources: protectedRoots)
       if FileManager.default.fileExists(atPath: candidate.path) {
         if canonical(candidate).path == canonical(source).path
@@ -134,11 +166,18 @@ enum FileSafety {
           throw LibraryError.invalid("目标与源文件为同一文件")
         }
         if (try? self.hash(candidate, cancel: cancel)) == hash { return (candidate, hash) }
+        guard allowAlternateTarget else { throw LibraryError.invalid("冻结的交付文件名已由不同内容占用。") }
         suffix += 1
         candidate = target.deletingLastPathComponent().appendingPathComponent(
           target.deletingPathExtension().lastPathComponent + "-\(suffix)"
         ).appendingPathExtension(target.pathExtension)
         continue
+      }
+      if !allowAlternateTarget {
+        if renamex_np(temporary.path, candidate.path, UInt32(RENAME_EXCL)) == 0 { return (candidate, hash) }
+        let code = errno
+        if code == EEXIST, FileManager.default.fileExists(atPath: candidate.path) { continue }
+        throw POSIXError(POSIXErrorCode(rawValue: code) ?? .EIO)
       }
       do {
         try FileManager.default.moveItem(at: temporary, to: candidate)
@@ -156,12 +195,14 @@ final class JobControl: @unchecked Sendable {
   private let lock = NSLock()
   private var active = false
   private var cancelled = false
+  private var pausing = false
   func begin() throws {
     lock.lock()
     defer { lock.unlock() }
     guard !active else { throw LibraryError.busy }
     active = true
     cancelled = false
+    pausing = false
   }
   func finish() {
     lock.lock()
@@ -172,6 +213,17 @@ final class JobControl: @unchecked Sendable {
     lock.lock()
     cancelled = true
     lock.unlock()
+  }
+  func pause() {
+    lock.lock()
+    pausing = true
+    cancelled = true
+    lock.unlock()
+  }
+  var isPausing: Bool {
+    lock.lock()
+    defer { lock.unlock() }
+    return pausing
   }
   func check() throws {
     lock.lock()

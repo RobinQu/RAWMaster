@@ -106,26 +106,11 @@ struct FluxLocalAISettings: View {
         }
         .confirmationDialog("删除本机模型？", isPresented: $confirmDelete) {
             Button("删除模型", role: .destructive) {
-                Task {
-                    await model.delete()
-                    await services.deactivateFluxProfile()
-                }
+                Task { await model.delete() }
             }
             Button("取消", role: .cancel) {}
         } message: {
             Text("删除后本机 Quick Prompt 将不可用；已采用的版本、候选和编辑历史不会改变。")
-        }
-        .onChange(of: model.status) { _, status in
-            if status == .ready { Task { await services.activateFluxProfile() } }
-        }
-        .onChange(of: model.licenseAccepted) { _, accepted in
-            Task {
-                if accepted, model.isReady { await services.activateFluxProfile() }
-                else if !accepted { await services.deactivateFluxProfile() }
-            }
-        }
-        .task {
-            if model.status == .ready { await services.activateFluxProfile() }
         }
     }
 
@@ -173,10 +158,7 @@ struct FluxLocalAISettings: View {
             Button("正在校验…") {}.disabled(true)
         case .ready:
             Button("校验模型文件") {
-                Task {
-                    await model.verify()
-                    if model.status == .ready { await services.activateFluxProfile() }
-                }
+                Task { await model.verify() }
             }.buttonStyle(.bordered)
         case .paused:
             Button("继续下载") { model.resume() }

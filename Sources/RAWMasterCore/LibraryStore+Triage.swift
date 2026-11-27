@@ -25,7 +25,9 @@ extension LibraryStore {
     let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
     return try encoder.encode(value)
   }
-  func prepareImportSession(root: URL, destination: URL?, mode: ImportMode, projectName: String, projectID: String?, initialScreening: Bool) throws -> ImportSession {
+  func prepareImportSession(root: URL, destination: URL?, mode: ImportMode, projectName: String, projectID: String?,
+                            initialScreening: Bool, sourceIdentity: LocalDirectoryIdentity? = nil,
+                            destinationIdentity: LocalDirectoryIdentity? = nil) throws -> ImportSession {
     try transaction {
       let project: ProjectRecord
       if let projectID {
@@ -38,12 +40,18 @@ extension LibraryStore {
       let workflows = try loadWorkflows()
       let closed = Set(try rows("SELECT session_id FROM lc_sessions WHERE state='sealed'").map { $0[0] })
       let activeTriage = Set(workflows.filter { $0.phase == .ingesting || $0.phase == .screening }.map(\.sessionID))
-      let existing = try loadSessions().first { !closed.contains($0.id) && (!initialScreening || activeTriage.contains($0.id)) && $0.projectID == project.id && (FileSafety.canonical($0.sourceURL) == root || FileSafety.canonical($0.effectiveSourceURL) == root) }
+      let existing = try loadSessions().first {
+        guard !closed.contains($0.id), !initialScreening || activeTriage.contains($0.id), $0.projectID == project.id,
+          FileSafety.canonical($0.sourceURL) == root || FileSafety.canonical($0.effectiveSourceURL) == root else { return false }
+        return try !isHistoricalTask(.importSession, id: $0.id)
+      }
       if let existing {
         guard existing.mode == mode, (existing.effectiveManagedRoot ?? existing.destinationPath) == destination.map({ FileSafety.canonical($0).path }) else { throw LibraryError.invalid("该来源已存在于此项目，接入方式或目标不同；请恢复原会话，或选择新项目") }
         return existing
       }
-      let session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: root.path, destinationPath: destination.map { FileSafety.canonical($0).path }, mode: mode)
+      var session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: root.path, destinationPath: destination.map { FileSafety.canonical($0).path }, mode: mode)
+      session.sourceDirectoryIdentity = sourceIdentity
+      session.managedDirectoryIdentity = destinationIdentity
       try statement("INSERT INTO sessions VALUES(?,?)", [session.id, try json(session)])
       _ = try catalogWrite("session.open", id: "import-open/" + session.id, fields: ["sessionID": .string(session.id), "projectID": .string(project.id)])
       if initialScreening { try writeWorkflow(SessionWorkflow(sessionID: session.id, projectID: project.id, isNewProject: projectID == nil)) }

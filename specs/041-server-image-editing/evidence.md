@@ -15,6 +15,7 @@
 | 本地交互性能 | [028 规格](../028-filter-experience/spec.md) | 暖滤镜约 16–22ms；canonical 约 2s；不能把全分辨率当每帧 |
 | 显示代理边界 | [024 方案](../024-jpeg-display-proxy/plan.md) | JPEG 仅显示缓存，不是颜色敏感编辑输入；支持 `editProxy` 分层 |
 | 客户端任务调度 | [CatalogTaskQueue.swift](../../Modules/LibraryCatalog/Swift/CatalogTaskQueue.swift) | 持久任务、租约、重试、外部投递；可扩展为背景队列 |
+| 本地领域任务 | [042 客户端异步任务盘点](../042-local-library-workbench/task-inventory.md) | 导入、032、Flux 等各有恢复记录与执行入口。统一任务界面保留各自权威记录 |
 | 场景批次 | [SceneWorkflowBatch.swift](../../Sources/RAWMasterCore/SceneWorkflowBatch.swift) · [LibraryStore+SceneWorkflowBatch.swift](../../Sources/RAWMasterCore/LibraryStore+SceneWorkflowBatch.swift) · [SceneWorkflowBatchView.swift](../../Sources/RAWMaster/SceneWorkflowBatchView.swift) | 已有 review／register／commit／cancel／retry／undo、候选与 head 冲突；041 直接复用 |
 | 编辑作业记录 | [EditingModels.swift](../../Sources/RAWMasterCore/EditingModels.swift) `ProcessingJob` | 已有 queued/preparing/running/reconciling/outcomeUnknown 等；偏向 AI 作业，不是通用跨端队列 |
 | HDR／SDR 交付 | [037 验证](../037-color-film-hdr/validation.md) · [DevelopmentSceneDeliveryServiceV1.swift](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift) | AVIF 10 位 PQ、SDR JPEG/PNG16、CICP；当前 Metal 组件，Server 端口待办 |
@@ -22,7 +23,7 @@
 
 ## 2. 明确缺口
 
-- 没有统一的 **客户端编辑后台队列**：当前没有把代理预取、生成、提交、观察、取回、缓存维护放在同一个持久队列。
+- 本机任务枚举、恢复分派和界面由 [042](../042-local-library-workbench/plan.md) 补齐。041 增加远端作业状态和所需操作。
 - 没有 **Server 图像作业队列**：没有 PostgreSQL jobs、能力准入、Vulkan worker、GPU 配额、租约、结果发布。
 - 没有 **客户端与 Server 队列协同**：jobID 幂等、WatchJob、取消传播、未知结果核对、断线补差尚未实现。
 - 没有 **editProxy 契约**：分辨率、位深、色域、编码、缓存键、失效、存储预算未冻结。

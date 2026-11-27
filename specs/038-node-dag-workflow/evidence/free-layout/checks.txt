@@ -1,0 +1,133 @@
+2026-11-28 · RAWMaster Spec 038
+
+Browser walkthroughs in independent sessions
+python3 scripts/check-ui-prototype.py --native-graph-only
+✓ 038 原生评审：HDR 草稿、插入和节点监看
+✓ 038 原生评审：无效草稿阻止交付，取消后可编辑
+✓ 038 原生评审：窄窗 light 取景及退出
+✓ 038 原生评审：窄窗 dark 取景及退出
+✓ 038 玻璃图窗：Solo 输出、旁路与当前节点眼睛
+✓ 038 玻璃图窗：分支端口、对焦与拖动样本
+✓ 038 玻璃图窗：真实拖动时端口随动，放手前无提交
+✓ 038 玻璃图窗：Escape 恢复拖动前的卡片与连线
+✓ 038 玻璃图窗：缩放下移位、重开、整理、离线和重试
+
+python3 scripts/check-ui-prototype.py --editing-only
+✓ 双击入口与本地照片
+✓ 标题栏与资料库侧栏开关
+✓ 搜索、筛选、多选比较与批量标签
+✓ 导入、续接、分组、初筛封存与历史恢复
+✓ 胶片带对齐、折叠和离线照片
+✓ 暗房布局、智能预设与胶片采用
+✓ 紧凑示波器、白平衡与蒙版分层
+✓ 浮动工具条、邻片、裁切与参考对比
+✓ 快速 Prompt 浮条形变、模板与范围
+✓ 快速 Prompt 本机准备、候选、采用与撤销
+✓ 快速 Prompt 云端确认、换片、未知结果和重试
+✓ 快速 Prompt 过期候选、原版本预览与采用边界
+✓ 快速 Prompt 已有蒙版、严格纪实和窄窗
+✓ 快速 Prompt 浅色窄窗与键盘退出
+✓ 减少动态效果时快速 Prompt 直接展开
+✓ Node DAG 九域作用域、图事务与显示状态
+✓ Node DAG 蒙版、组路径与模板身份
+✓ Node DAG 批量、取消与修订冲突
+✓ Node DAG 悬浮窗口、九域子域与画布工具事务
+✓ Node DAG 单行选择器、精简菜单与忽略撤销
+✓ Node DAG 真实节点点击与键盘选择联动
+✓ Node DAG 鼠标右键打开节点菜单
+✓ Node DAG 短窗保留可操作的画布
+✓ Node DAG 短窗真实关闭
+✓ Node DAG 短窗关闭后恢复工作区
+✓ Node DAG 1440×900 dark 布局、监看与焦点
+✓ Node DAG 1440×900 light 布局、监看与焦点
+✓ Node DAG 390×844 dark 布局、监看与焦点
+✓ Node DAG 390×844 light 布局、监看与焦点
+✓ Node DAG 390px light 紧凑 Mask／Remove
+✓ Node DAG 390px dark 紧凑 Mask／Remove
+
+python3 scripts/check-ui-prototype.py --appearance-parity-only
+✓ 三种外观共享摄影控件，保留当前呈现
+✓ 可重开的光照、自然饱和度、曲线与质感
+✓ 鼠标仅提交所拖的超白档，峰值和其他档位独立
+✓ 伪色退出、派生、1:1 与 FIT 各自独立
+✓ 黑白切彩色并返回 HDR，当前图只调整所选节点
+✓ 标题栏移动图窗，空白平移与关闭返回独立
+✓ 画布平移后保留照片、窗口与配方
+✓ 错误消退，后台可查，重试成功只显示新通知
+✓ 窄窗深色的兼容图和返回焦点
+✓ 只读图窗的菜单收起、展开与 Esc
+✓ HDR 持久样点跟随当前帧与派生，诊断及 1:1 越界停读
+✓ 主体模型覆盖只拦截影响输出的几何，取消或断开后可继续
+✓ 跨照片应用整图模板保留接收方的摄影、裁切和输出
+✓ 双击本地 HTML 也可按照片亮度查看分档
+
+python3 scripts/check-ui-prototype.py --editor-rails-only
+✓ 网格真实选取两张，重开保留范围
+✓ 冷启动选区、独立面板、目录和键盘
+✓ 消息持续、分张关闭、玻璃 Graph 图窗
+✓ 矮窗的图与 Esc 焦点
+✓ 窄窗深色下的兼容画布
+✓ 兼容图回到原选片
+
+python3 scripts/check-ui-prototype.py --compatibility-only
+✓ Node DAG 兼容评审：正常入口、主图和草稿隔离
+✓ Node DAG 兼容评审：键盘调整窗宽不翻片
+✓ Node DAG 兼容评审：Escape 关闭并返还焦点
+✓ Node DAG 兼容评审：390px 浅色布局
+✓ Node DAG 兼容评审：短窗画布与原片离线
+
+python3 scripts/check-ui-prototype.py --hdr-only
+✓ 037 HDR 暗房状态与冻结交付
+✓ 037 HDR 窄窗与外观
+✓ 037 HDR 旧版外观冲突
+✓ 037 色彩模式与 Graph 面板分区
+
+External AX and CGEvent walkthroughs in the locally signed debug application
+Light editable Graph · 工作流 Graph passed
+Dark editable Graph · 工作流 Graph passed
+Read-only compatibility Graph · 只读兼容图 passed
+
+Native test cases with the fixed 24 MP RAW and the authorized 60 MP RAW
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphButtonUsesPrototypePhotoAndRetainsDarkroomState]' passed (5.791 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testCompatibilityGraphPanelKeepsOwnerNonmodalAndClosesOnContextChange]' passed (0.304 seconds).
+Test Case '-[RAWMasterUITests.EditingCompatibilityGraphTests testShippingComponentsExposeHDRModeAndBothGraphEntryPoints]' passed (0.516 seconds).
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (1.358 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testAllThirteenLayerModesMatchLinearAP1CPUReferenceIncludingSignedAndSuperwhite]' passed (0.046 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testCoverageGroupROIAndMonitoringNeverReplaceDeliveryRoot]' passed (0.011 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testDisabledBranchesRequireNoRenderBudgetAndLongChainFreesSurfaces]' passed (0.040 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testParallelUsesWeightedChangesAndLayerOrderIsSignificant]' passed (0.008 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInReal60MPPreviewBudgetAndReturnTo24MP]' passed (6.608 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInRealARWPreviewReuseAndNativeROI]' passed (0.262 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInSnowVisualizeUsesHDRLuminanceOnAnSDRDisplayAndRestoresCachedDerivatives]' passed (0.101 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testRejectsDisplaySourceAndCancelledRequestBeforeGPUWork]' passed (0.000 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testUnreadableRAWIsNotReportedAsMissingDecoder]' passed (0.001 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testAutoFallbackCarriesAReceiptAndReason]' passed (0.010 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testCoverageCacheInvalidatesWhenMaskParametersChange]' passed (0.015 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testNestedGroupMonitorsUseRequestedBackendAndKeepFrozenFinal]' passed (0.019 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testReturnedAndCallerOwnedSurfacesPreserveSourceAndExternalCoverage]' passed (0.008 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustBypassDoesNotAllocateWhenTheGraphIsTheInput]' passed (0.006 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustHonorsTheSurfaceBudget]' passed (0.008 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustOutputFlowsThroughACESDeliveryAndEDRViewing]' passed (0.016 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustRejectsMalformedGraphsAndCoveragePreview]' passed (0.003 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustShadowMatchesAllThirteenBlendModes]' passed (0.028 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustShadowMatchesNodeBypassAndROI]' passed (0.018 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testRustShadowMatchesSwiftForCoverageGroupsAndMixers]' passed (0.013 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testSourceRevisionCacheReusesUnchangedPrefixAfterParameterEdit]' passed (0.008 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testTiledExecutionMatchesUntiledAndReportsReceipt]' passed (0.088 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testAllInsertionKindsKeepExplicitAnchorAndNeutralWeight]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testBudgetsApplyAcrossNestedScopesAndInvalidViewNotPersisted]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testExplicitEdgesGroupRoundTripAndTemplateInsertionIntoNestedScope]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testExternalCoverageRoundTripsAsAProviderPort]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testFrozenModelStagesSurviveGraphEditsTemplatesAndRecipeReopen]' passed (0.001 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testNestedScopeMaskDependenciesAndRecipeRoundTripRemapAsOneValue]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testOnlyUsedModelCoverageRejectsChangesToItsCoordinatesAndOldArchivesRemainReadable]' passed (0.002 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testOutsideRequiresCoverageAndAnExplicitSingleImageEdge]' passed (0.000 seconds).
+Test Case '-[RAWMasterCoreTests.DevelopmentSceneGraphV1Tests testRejectsCyclesPortMismatchAndUnknownFieldsEvenOnUnrenderedBranches]' passed (0.001 seconds).
+
+Separate missing-decoder check
+Test Case '-[RAWMasterImagingTests.DevelopmentScenePreviewV1Tests testOptInMissingRuntimeIsReportedSeparatelyFromRAWCalibration]' passed (0.051 seconds).
+
+Optional performance benchmarks
+Test Case '-[RAWMasterImagingTests.DevelopmentSceneGraphRendererV1Tests testOptInGraphSurfacePerformance]' skipped (0.001 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testOptIn60MegapixelSceneBudgetAndReceipt]' skipped (0.000 seconds).
+Test Case '-[RAWMasterImagingTests.RustSceneGraphRendererTests testOptInRustBackendPerformance]' skipped (0.000 seconds).

@@ -1,19 +1,13 @@
 .scene-badge { flex: none; white-space: nowrap; color: var(--muted); font-size: 11px; }
 .scene-mode-bar { grid-column: 1 / -1; border-bottom: 1px solid var(--line); padding: 8px 10px; }
 .scene-mode-row { display: flex; align-items: center; gap: 8px; }
-.scene-modes { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); flex: 1; gap: 4px; }
-.scene-modes button { min-width: 0; min-height: 24px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; padding: 3px 5px; font-size: 11px; }
-.scene-modes button:not(:disabled):hover { background: var(--active); }
-.scene-modes button[aria-pressed='true'] { border-bottom-color: var(--accent); color: var(--accent); font-weight: 650; }
 .scene-mode-bar { margin-bottom: 10px; padding: 0 0 8px; }
 .appearance-heading { display:flex; align-items:center; gap:6px; margin:0 0 6px; font-size:12px; }
 .appearance-heading h3 { margin:0; font:inherit; font-weight:650; flex:1; }
 .scene-mode-bar .scene-rendition { margin-top:6px; }
 .scene-mode-bar .appearance-range { margin:6px 0 2px; font-size:11px; color:var(--muted); }
 .scene-mode-bar .scene-limit { margin:6px 0; }
-.scene-mode-bar .scene-modes { width:100%; }
-.manual-inspector .scene-mode-bar .scene-modes button { padding:3px 1px;white-space:nowrap; display:flex; align-items:center;justify-content:center;gap:4px; }
-.scene-mode-bar .scene-modes .icon { width:13px;height:13px; }
+.scene-mode-bar .scene-modes button { padding-inline: 2px; }
 .editing-scopes .histogram, .editing-scopes .vector-plot { margin-block:4px 0; }
 .window-menu { position:relative;font-size:12px; }
 .window-menu summary { cursor:pointer;list-style:none;padding:5px; }
@@ -50,7 +44,6 @@
 .editor-toast span {flex:1;overflow-wrap:anywhere}
 .editor-toast button {flex:none;min-height:22px;min-width:22px;padding:3px;border:0;background:transparent;color:inherit}
 .scene-previews {width:100%;margin-top:6px}
-.scene-previews .flat-tabs {display:grid;grid-template-columns:1fr 1fr;width:100%;min-width:0}
 .scene-previews button {width:100%;min-width:0;white-space:normal}
 .appearance-info {display:grid;margin-top:6px;border-top:1px solid var(--line);padding-top:6px;gap:2px;color:var(--muted);font-size:10px;line-height:1.45;overflow-wrap:anywhere}
 .scene-limit input {accent-color:var(--accent)}

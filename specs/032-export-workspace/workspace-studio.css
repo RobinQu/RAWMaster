@@ -13,7 +13,6 @@
 #preset-status:not(:empty) {width:100%;color:var(--sub)}
 #preset-status.warn:not(:empty) {color:var(--warn)}
 .settings .modes {margin-bottom:16px}
-.settings .modes button {flex:1;white-space:nowrap}
 .settings .section-head {margin-bottom:8px}
 .look-section {gap:7px}
 .look-section h3,.studio-inspector h3 {font-size:13px;font-weight:630}

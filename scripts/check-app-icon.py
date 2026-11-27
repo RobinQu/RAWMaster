@@ -15,6 +15,15 @@ def check(app):
         raise ValueError("CFBundleIconName must point to AppIcon")
     if info.get("CFBundleIconFile") != "AppIcon" or not (resources / "AppIcon.icns").is_file():
         raise ValueError("Missing legacy AppIcon.icns fallback")
+    library_icon = "LibraryFolder.icns"
+    library_type = "io.robinqu.rawmaster.library"
+    exported = next((item for item in info.get("UTExportedTypeDeclarations", [])
+                     if item.get("UTTypeIdentifier") == library_type), {})
+    document = next((item for item in info.get("CFBundleDocumentTypes", [])
+                     if library_type in item.get("LSItemContentTypes", [])), {})
+    if (exported.get("UTTypeIconFile") != library_icon or document.get("CFBundleTypeIconFile") != library_icon
+            or not (resources / library_icon).is_file()):
+        raise ValueError("Missing Finder icon for RAWMaster library packages")
     result = subprocess.run(
         ["xcrun", "assetutil", "--info", str(resources / "Assets.car")],
         check=True, capture_output=True, text=True,

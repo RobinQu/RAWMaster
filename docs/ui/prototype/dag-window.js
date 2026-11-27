@@ -106,7 +106,7 @@ function dagFloatingWindow() {
       delete w.framePending;
       if(S.page!=='edit'||photo!==Studio.data.work||dagView().window!==w||dagView().mode!=='graph'||!$('[data-dag-viewport]')||S.canvasTool)return;
       if (w.layoutVersion!==3) { w.layoutVersion=3; dagFrameGraph('readable'); }
-      else if (dagTransform().framing!=='manual') dagFrameGraph();
+      else dagFrameGraph();
     });
   }
   return `<section id="dag-floating-window" class="dag-floating" role="dialog" aria-modal="false" aria-label="工作流 Graph 悬浮窗口 · ${h(Studio.displayName(Studio.data.work))}" style="left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.collapsed ? 30 : w.height}px">${dagWindowHeader('工作流 Graph','dag-view','photo',w)}${w.collapsed ? '' : dagCanvas()+dagWindowResize()}</section>`;
@@ -127,7 +127,7 @@ function compatibilityGraphReason() {
 function compatibilityGraphToolbar() {
   const reason = compatibilityGraphReason();
   return `<section class="dag-scope-head" aria-label="节点作用域"><span class="dag-picker-label">当前节点</span><div class="dag-picker-row"><strong>兼容显影</strong>
-    ${btn('忽略该节点','compatibility-ignore','',{icon:'bypass',only:true,cls:'icon-btn',disabled:true,title:'兼容显影节点不能忽略'})}
+    ${btn('忽略该节点','compatibility-ignore','',{icon:'eye',only:true,cls:'icon-btn',disabled:true,title:'兼容显影节点固定'})}
     ${btn('Graph 窗口','compatibility-graph-toggle','',{icon:'layers',only:true,cls:'icon-btn',pressed:!reason && compatibilityGraphPhoto===Studio.data.work,disabled:!!reason,title:reason || '打开只读兼容图'})}</div>
     <small>${h(reason || '只读兼容图 · 现有调整仍作用于整张照片')}</small></section>`;
 }

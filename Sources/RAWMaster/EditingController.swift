@@ -106,6 +106,7 @@ import RAWMasterLibrary
         didSet { liveRecipeGeneration &+= 1 }
     }
     @Published private(set) var sceneGraphState = EditingSceneGraphState()
+    let sceneGraphFraming = SceneGraphFraming()
     @Published private(set) var sceneFrame: DevelopmentScenePreviewFrameV1?
     @Published private(set) var scenePreviewError: String? {
         didSet { if let scenePreviewError { postNotice(scenePreviewError, kind: .error, action: .scenePreview) } }
@@ -406,7 +407,6 @@ import RAWMasterLibrary
     let previews: EditingPreviewCoordinator
     let exportService: any ImageVersionExporting
     let applicationServices: ApplicationEditingServices
-    var repository: ProviderProfileRepository { applicationServices.repository }
     private var localProvider: LocalComfyProvider
     private let fluxProvider: LocalFluxProvider
     private var runtime: ManagedRuntimeService { applicationServices.runtime }
@@ -460,6 +460,7 @@ import RAWMasterLibrary
     private var tasks: [String: Task<Void, Never>] = [:]
     private var operations: [UUID: Task<Void, Never>] = [:]
     private var pendingRetryJobs = Set<String>()
+    private var processingFollowUps = 0
     private var pendingSaveResumptions = Set<String>()
     private var reconcilingJobs = Set<String>()
     private var exportOperations: [UUID: Task<RenderedPhoto, Error>] = [:]
@@ -598,6 +599,65 @@ import RAWMasterLibrary
         return id
     }
     var isDirty: Bool { recipe != savedRecipe }
+
+    var hasUnsavedLibraryDraft: Bool {
+        isPresented && (isDirty || cropEditing || scenePendingEditReason != nil)
+    }
+
+    struct LibrarySwitchContext {
+        let assetID: String
+        let workID: String?
+        let stage: Stage
+        let versionID: String?
+        let parentID: String?
+        let unsavedRecipe: DevelopmentRecipe?
+        let alternate: DevelopmentAppearanceAlternate?
+    }
+
+    var librarySwitchContext: LibrarySwitchContext? {
+        guard isPresented, let asset else { return nil }
+        return LibrarySwitchContext(assetID: asset.id, workID: work?.id, stage: stage, versionID: selectedVersionID,
+            parentID: draftParentID, unsavedRecipe: isDirty ? recipe : nil, alternate: alternateAppearance)
+    }
+
+    var pendingLibrarySwitchContext: LibrarySwitchContext?
+
+    func settleCurrentLibraryDraft() async {
+        guard let presentationID = work?.presentationID else { return }
+        try? await awaitPendingRenditionWrites(for: presentationID)
+    }
+
+    func saveDraftBeforeLibraryChange() async throws {
+        if cropEditing || scenePendingEditReason != nil {
+            throw LibraryEngineError("请先完成画布中正在进行的操作。")
+        }
+        guard isDirty else { return }
+        let existing = Set(operations.keys)
+        saveDevelopment()
+        guard let save = operations.first(where: { !existing.contains($0.key) })?.value else {
+            throw LibraryEngineError(message ?? "当前编辑无法保存。请完成或放弃编辑后再切换。")
+        }
+        await save.value
+        guard !isDirty else { throw LibraryEngineError(message ?? "编辑未保存，请在工作台中重试。") }
+    }
+
+    private func restoreLibrarySwitchContext(assetID: String) {
+        guard let context = pendingLibrarySwitchContext, context.assetID == assetID else { return }
+        pendingLibrarySwitchContext = nil
+        guard let current = work, current.id == context.workID else { return }
+        if context.stage == .versions, let version = versions.first(where: { $0.id == context.versionID }),
+           sourceReady || version.artifact != nil {
+            stage = .versions
+            selectedVersionID = version.id
+        } else if sourceReady, let unsaved = context.unsavedRecipe, let parent = context.parentID,
+                  versions.contains(where: { $0.id == parent }) {
+            recipe = unsaved
+            draftParentID = parent
+            alternateAppearance = context.alternate
+            drafts[current.id] = (unsaved, savedRecipe, parent, context.alternate)
+        }
+    }
+
     var isDisplayingDevelopmentDraft: Bool { stage == .development && sourceReady }
     var canvasTitle: String { isDisplayingDevelopmentDraft ? "当前编辑" : (selectedVersion?.editingTitle ?? "制作预览") }
     /// A draft may be adopted only when it represents the exact selected saved source recipe.
@@ -627,9 +687,16 @@ import RAWMasterLibrary
     var runtimeStateTitle: String {
         applicationServices.runtimeStateTitle
     }
-    var activeJobCount: Int { jobs.filter { !$0.state.isTerminal }.count }
+    @Published private(set) var historicalProcessingIDs: Set<String> = []
+    var activeJobCount: Int { jobs.filter { !$0.state.isTerminal && !isHistoricalProcessing($0) }.count }
     var runningJobCount: Int { tasks.count }
     var localWorkIsRunning: Bool { jobs.contains { $0.request.profile.kind == .localComfy && tasks[$0.id] != nil } }
+    var hasActiveLibraryProcessing: Bool {
+        !tasks.isEmpty || processingFollowUps > 0 || generationPreparationTask != nil ||
+            !pendingRetryJobs.isEmpty || !pendingQuickPromptCommands.isEmpty || quickPromptEnqueueOperation != nil ||
+            !pendingSaveResumptions.isEmpty || !reconcilingJobs.isEmpty
+    }
+    var hasActiveLibraryExport: Bool { !exportTasks.isEmpty || !exportOperations.isEmpty }
     var canGenerate: Bool {
         guard !shuttingDown, visibleSceneGraph == nil, sourceReady, work != nil, work?.strictDocumentary != true, !isDirty, !saving,
               generationPreparationTask == nil, !quickPromptPreparing, let profile = selectedProfile else { return false }
@@ -754,6 +821,7 @@ import RAWMasterLibrary
                 if let failure = failedRenditionWrites[newAsset.id], failure.workID != loaded.0.id {
                     failedRenditionWrites.removeValue(forKey: newAsset.id)
                 }
+                restoreLibrarySwitchContext(assetID: newAsset.id)
                 sceneGraphState.reconcile(recipe.sceneGraph)
                 loading = false; requestPreview()
                 if pendingExportAssetID == newAsset.id { pendingExportAssetID = nil; openExport() }
@@ -1722,7 +1790,7 @@ import RAWMasterLibrary
         let fallback = model.defaultProfile
         return model.matches(fallback) && fallback.acceptedForUse ? fallback : nil
     }
-    var quickPromptJob: ProcessingJob? { jobs.first { $0.request.workID == work?.id && $0.request.quickPrompt != nil } }
+    var quickPromptJob: ProcessingJob? { jobs.first { $0.request.workID == work?.id && $0.request.quickPrompt != nil && !isHistoricalProcessing($0) } }
     var quickPromptUndoVersion: EditingVersion? {
         guard let work, let version = versions.first(where: { $0.id == work.adoptedVersionID }),
               let job = jobs.first(where: { $0.attempts.contains(where: { $0.resultVersionID == version.id }) }),
@@ -2107,7 +2175,8 @@ import RAWMasterLibrary
         await refreshJobs(); return result
     }
     private func run(_ job: ProcessingJob) {
-        guard !shuttingDown, !pendingRetryJobs.contains(job.id), !pendingQuickPromptCommands.contains(job.commandID), tasks[job.id] == nil else { return }
+        guard !shuttingDown, !isHistoricalProcessing(job), !pendingRetryJobs.contains(job.id),
+              !pendingQuickPromptCommands.contains(job.commandID), tasks[job.id] == nil else { return }
         if job.request.profile.kind == .localComfy && jobs.contains(where: { $0.request.profile.kind == .localComfy && tasks[$0.id] != nil }) { return }
         let provider = provider(for: job.request.profile)
         providers[job.id] = provider
@@ -2115,7 +2184,7 @@ import RAWMasterLibrary
             var returnedBytes = false
             defer {
                 tasks[job.id] = nil; objectWillChange.send()
-                startOperation { [self] in await refreshJobs(); scheduleQueuedJobs() }
+                continueProcessingQueue { [self] in await refreshJobs(); scheduleQueuedJobs() }
             }
             do {
                 try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
@@ -2147,14 +2216,22 @@ import RAWMasterLibrary
                 if let current, current.currentAttempt.id == job.currentAttempt.id, !current.state.isTerminal, current.state != .cancelRequested {
                     var joined = current.request.profile.kind != .localComfy
                     var unknown = returnedBytes || current.currentAttempt.receivedOutput != nil || current.currentAttempt.pendingReceivedOutput != nil || (error as? AIServiceError) == .outcomeUnknown || (error as? EditingError) == .outcomeUnknown
-                    if LocalFluxProvider.matches(current.request.profile) { joined = true }
+                    if LocalFluxProvider.matches(current.request.profile) {
+                        joined = true
+                        if current.currentAttempt.submissionIntentAt != nil { unknown = true }
+                    }
                     else if current.request.profile.kind == .localComfy {
                         do { try await runtime.stop(); joined = true } catch { unknown = true }
                     } else if error is CancellationError { unknown = current.currentAttempt.submissionIntentAt != nil }
-                    _ = try? await transition(current, to: unknown ? .outcomeUnknown : .failed, joined: joined, error: Self.safeError(error))
+                    let reason = error is CancellationError && shuttingDown
+                        ? (unknown ? "执行已中断，请先核对生成结果。" : "尚未开始生成，可从任务继续。")
+                        : Self.safeError(error)
+                    _ = try? await transition(current, to: unknown ? .outcomeUnknown : .failed, joined: joined, error: reason)
                 }
-                postNotice(returnedBytes ? "已收到生成结果，但保存未完成。请在制作任务中恢复保存，不会重新生成。" : "生成未完成，请在制作任务中查看或核对结果。",
-                           kind: .error, for: presentationID(ofWork: job.request.workID))
+                if !shuttingDown {
+                    postNotice(returnedBytes ? "已收到生成结果，但保存未完成。可在制作任务中恢复保存。" : "生成未完成，请在制作任务中查看或核对结果。",
+                               kind: .error, for: presentationID(ofWork: job.request.workID))
+                }
             }
             await refreshJobs(); await refreshWork()
         }
@@ -2180,13 +2257,25 @@ import RAWMasterLibrary
         guard !shuttingDown else { return }
         for next in jobs.reversed() where next.state == .queued && tasks[next.id] == nil { run(next) }
     }
+    private func continueProcessingQueue(_ action: @escaping @MainActor () async -> Void) {
+        guard !shuttingDown else { return }
+        processingFollowUps += 1
+        startOperation { [self] in
+            defer { processingFollowUps -= 1 }
+            await action()
+        }
+    }
     private func receive(_ progress: AIEditProgress, job: ProcessingJob) async {
         guard !shuttingDown, let current = try? store.processingJob(id: job.id), current.currentAttempt.id == job.currentAttempt.id,
               !current.state.isTerminal, current.state != .archiving, current.state != .cancelRequested else { return }
         jobMessages[job.id] = progress
         if progress.state == .running || progress.remoteID != nil { _ = try? await transition(current, to: .running, remoteID: progress.remoteID) }
     }
-    func canResumeSaving(_ job: ProcessingJob) -> Bool { job.currentAttempt.receivedOutput != nil || job.currentAttempt.pendingReceivedOutput != nil || unrecordedOutputs[job.currentAttempt.id] != nil }
+    func isHistoricalProcessing(_ job: ProcessingJob) -> Bool { historicalProcessingIDs.contains(job.id) }
+    func canResumeSaving(_ job: ProcessingJob) -> Bool {
+        !isHistoricalProcessing(job) && job.resultVersionID == nil &&
+            (job.currentAttempt.receivedOutput != nil || job.currentAttempt.pendingReceivedOutput != nil || unrecordedOutputs[job.currentAttempt.id] != nil)
+    }
     private func recordOutput(_ output: AIEditOutput, job: ProcessingJob) async throws -> AIEditOutput {
         let database = store
         return try await Task.detached(priority: .utility) {
@@ -2194,7 +2283,7 @@ import RAWMasterLibrary
         }.value
     }
     func resumeSaving(_ job: ProcessingJob, attemptID: String? = nil) {
-        guard !shuttingDown else { return }
+        guard !shuttingDown, !isHistoricalProcessing(job) else { return }
         let targetID = attemptID ?? job.currentAttempt.id
         if let worker = tasks[job.id] {
             // The catalog can show the received bytes before the worker finishes its final refresh.
@@ -2213,7 +2302,12 @@ import RAWMasterLibrary
             var saved = false
             defer {
                 tasks[job.id] = nil; objectWillChange.send()
-                if saved { startOperation { [self] in await resumeNextReceivedOutput(jobID: job.id); if !recoveringStartup { scheduleQueuedJobs() } } }
+                if saved {
+                    continueProcessingQueue { [self] in
+                        await resumeNextReceivedOutput(jobID: job.id)
+                        if !recoveringStartup { scheduleQueuedJobs() }
+                    }
+                }
             }
             do {
                 try Task.checkCancellation()
@@ -2280,7 +2374,7 @@ import RAWMasterLibrary
         return "操作未完成。请检查服务配置或本机运行环境。"
     }
     func cancel(_ job: ProcessingJob) {
-        guard !shuttingDown else { return }
+        guard !shuttingDown, !isHistoricalProcessing(job), !job.state.isTerminal else { return }
         let provider = providers[job.id] ?? provider(for: job.request.profile)
         startOperation { [self] in
             var requested: ProcessingJob?
@@ -2302,9 +2396,11 @@ import RAWMasterLibrary
         }
     }
     func retry(_ job: ProcessingJob, allowUnknown: Bool = false) {
-        guard !shuttingDown, !pendingRetryJobs.contains(job.id) else { return }
+        guard !shuttingDown, !isHistoricalProcessing(job), !pendingRetryJobs.contains(job.id) else { return }
         guard !canResumeSaving(job) else { resumeSaving(job); return }
-        if job.request.quickPrompt != nil { postNotice("请从该照片的 Prompt 工具条重新提交并核对输入。"); return }
+        let isFlux = LocalFluxProvider.matches(job.request.profile)
+        if isFlux, job.state == .outcomeUnknown { reconcile(job); return }
+        if job.request.quickPrompt != nil, !isFlux { postNotice("请从该照片的 Prompt 工具条重新提交并核对输入。"); return }
         pendingRetryJobs.insert(job.id)
         startOperation { [self] in
             defer { pendingRetryJobs.remove(job.id) }
@@ -2336,7 +2432,7 @@ import RAWMasterLibrary
         _ = try? await transition(current, to: .cancelled, joined: true, error: "退出前尚未提交")
     }
     func reconcile(_ job: ProcessingJob, allowDistinctQuickPrompt: Bool = false) {
-        guard !shuttingDown, !reconcilingJobs.contains(job.id) else { return }
+        guard !shuttingDown, !isHistoricalProcessing(job), !reconcilingJobs.contains(job.id) else { return }
         if canResumeSaving(job) { resumeSaving(job); return }
         reconcilingJobs.insert(job.id)
         startOperation { [self] in
@@ -2357,7 +2453,7 @@ import RAWMasterLibrary
                     _ = try await transition(current, to: .archiving, joined: true); try await archiveOutput(owned, job: current)
                 case .running(let remote):
                     try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
-                    if current.request.quickPrompt != nil && tasks[job.id] == nil {
+                    if (current.request.quickPrompt != nil || LocalFluxProvider.matches(current.request.profile)) && tasks[job.id] == nil {
                         _ = try await transition(current, to: .outcomeUnknown, remoteID: remote, error: "原尝试仍在运行，可稍后再次核对")
                     } else { _ = try await transition(current, to: .running, remoteID: remote) }
                 case .noResult:
@@ -2380,7 +2476,15 @@ import RAWMasterLibrary
     }
     func refreshJobs() async {
         let database = store
-        do { jobs = try await Task.detached { try database.loadProcessingJobs() }.value.sorted { $0.createdAt > $1.createdAt } }
+        do {
+            let snapshot = try await Task.detached {
+                let list = try database.loadProcessingJobs().sorted { $0.createdAt > $1.createdAt }
+                let historical = try list.filter { try database.isHistoricalTask(.flux, id: $0.id) }
+                return (list, Set(historical.map(\.id)))
+            }.value
+            historicalProcessingIDs = snapshot.1
+            jobs = snapshot.0
+        }
         catch { message = "无法读取制作任务。" }
     }
     private func recoverJobs() async {
@@ -2406,7 +2510,7 @@ import RAWMasterLibrary
             }.value
         } catch { message = "部分制作结果需要核对，归档文件已保留。" }
         await refreshJobs()
-        for job in jobs {
+        for job in jobs where !isHistoricalProcessing(job) {
             guard !shuttingDown else { return }
             if let pending = job.attempts.first(where: { $0.resultVersionID == nil && ($0.receivedOutput != nil || $0.pendingReceivedOutput != nil) }) {
                 if pending.id != job.currentAttempt.id && !job.state.isTerminal && job.state != .outcomeUnknown {
@@ -5022,12 +5126,13 @@ extension EditingController {
     }
     var sceneGraphMonitorText: String? {
         guard stage == .development else { return nil }
-        switch sceneGraphState.viewing.target {
+        switch sceneGraphState.preview {
         case .final: return nil
-        case .node(let id):
-            let name = recipe.sceneGraph?.scope(at: sceneGraphState.viewing.groupPath)?.nodes.first { $0.id == id }?.name ?? "节点"
-            return "监看：\(name) · 不用于导出"
-        case .bypass: return "旁路调色 · 不用于导出"
+        case .node(let id), .solo(let id):
+            let name = sceneGraphScope?.nodes.first { $0.id == id }?.name ?? "节点"
+            let mode = sceneGraphState.preview == .solo(id) ? "Solo" : "监看"
+            return "\(mode)：\(name) · 不用于导出"
+        case .bypass: return "旁路全部调色 · 不用于导出"
         }
     }
 
@@ -5061,19 +5166,38 @@ extension EditingController {
     func monitorSceneGraph(_ target: SceneGraph.View.Target, ticket: SceneGraphTicket) {
         guard ticket == sceneGraphTicket else { return }
         switch target {
-        case .final: stopSceneGraphMonitor(); return
-        case .node(let id): guard sceneGraphNode?.id == id else { return }
-        case .bypass: break
+        case .final: stopSceneGraphMonitor()
+        case .node(let id):
+            guard sceneGraphNode?.id == id else { return }
+            presentSceneGraphPreview(.node(id))
+        case .bypass: presentSceneGraphPreview(.bypass)
         }
-        let next = SceneGraph.View(groupPath: sceneGraphState.path, target: target)
-        guard next != sceneGraphState.viewing else { return }
-        sceneFrame = nil // Never label a previously presented final frame as a node's output.
-        sceneGraphState.viewing = next
+    }
+
+    func toggleSceneGraphSolo(ticket: SceneGraphTicket?) {
+        guard let node = sceneGraphNode else { return }
+        if sceneGraphState.preview == .solo(node.id) { stopSceneGraphMonitor(); return }
+        guard let ticket, ticket == sceneGraphTicket, node.operation.allowsSceneSolo else { return }
+        presentSceneGraphPreview(.solo(node.id))
+    }
+
+    func toggleSceneGraphBypass(ticket: SceneGraphTicket?) {
+        if sceneGraphState.preview == .bypass { stopSceneGraphMonitor(); return }
+        guard let ticket, ticket == sceneGraphTicket else { return }
+        monitorSceneGraph(.bypass, ticket: ticket)
+    }
+
+    private func presentSceneGraphPreview(_ preview: EditingSceneGraphState.Preview) {
+        guard preview != sceneGraphState.preview else { return }
+        let previous = sceneGraphState.viewing
+        sceneGraphState.preview = preview
+        guard sceneGraphState.viewing != previous else { return }
+        sceneFrame = nil // Never label the previous frame as a different endpoint's output.
         requestPreview()
     }
+
     func stopSceneGraphMonitor() {
-        guard sceneGraphState.viewing != .init() else { return }
-        sceneFrame = nil; sceneGraphState.viewing = .init(); requestPreview()
+        presentSceneGraphPreview(.final)
     }
     func dismissSceneGraphLayer() -> Bool {
         if sceneGraphState.connection != nil { cancelSceneConnection(); return true }

@@ -151,6 +151,7 @@ pub fn transaction(db: &Connection, envelope: &Value) -> Result<Value> {
             Ok(json!({"schema":CATALOG_SCHEMA_VERSION}))
         }
         "detachRestoredWriter" => Ok(json!({"writerID":backup::detach_restored_writer(db)?})),
+        "detachLocalCopy" => backup::detach_local_copy(db, &envelope["request"]),
         "taskForReceipt" | "completeVerifiedTask" => {
             let body = &envelope["request"];
             let key = body["key"].as_str().ok_or("missing task key")?;

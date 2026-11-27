@@ -144,6 +144,8 @@ public struct ImportSession: Codable, Sendable, Identifiable {
   public var scanCompleted: Bool?
   public var effectiveSourceRoot: String?
   public var effectiveManagedRoot: String?
+  var sourceDirectoryIdentity: LocalDirectoryIdentity?
+  var managedDirectoryIdentity: LocalDirectoryIdentity?
   public var sourceURL: URL { URL(fileURLWithPath: sourcePath) }
   public var effectiveSourceURL: URL { URL(fileURLWithPath: effectiveSourceRoot ?? sourcePath) }
   public var managedContainerURL: URL? {

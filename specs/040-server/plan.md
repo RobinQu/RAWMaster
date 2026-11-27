@@ -77,7 +77,7 @@ flowchart LR
 
 1. `CreateUpload`：PostgreSQL 写 intent；S3 multipart；返回 presigned part URL。
 2. 客户端直传 RustFS／云 S3。
-3. `CompleteUpload`：完成 multipart；HEAD／SHA-256；PostgreSQL 事务登记对象和归档引用。
+3. `CompleteUpload`：完成暂存 multipart，验证整对象 SHA-256，发布不可变对象。PostgreSQL 事务登记对象和归档引用。
 4. 失败 abort／过期；内容寻址幂等。
 
 ### 3.3 Relay
@@ -148,6 +148,7 @@ flowchart LR
 - `/var/log/rawmaster`、`/tmp/rawmaster`、有限 Relay 缓冲。
 - `pg_dump` 流式上传；临时文件清理；日志轮换。
 - 不持久化对象、目录数据库、代理缓存；代理可放 S3。
+- 以上为 040 资料库服务的部署口径。041 即使与资料库服务同机，也单独配置计算节点的媒体暂存与模型缓存。[执行节点的工作存储](../041-server-image-editing/plan.md#81-执行节点的工作存储)
 
 ### 5.4 升级
 
@@ -174,13 +175,15 @@ flowchart LR
 
 ## 7. 阶段
 
+客户端在 [042 本地库包和任务实施计划](../042-local-library-workbench/plan.md) 的交付基础上接入 Server。
+
 | 阶段 | 交付 | 退出条件 |
 | --- | --- | --- |
-| S0 | 契约、proto、schema、S3 profile、备份格式、证书／令牌 | 评审通过；无未决 P0 |
+| S0 | 契约、proto、schema、S3 profile、备份格式、证书／令牌、包实例授权 | 评审通过。无未决 P0 |
 | S1 | gRPC、PostgreSQL、所有权、自签名 CA、令牌 | 错误证书／令牌被拒；第二客户端不能写 |
 | S2 | 归档、Direct、Relay、校验、去重、引用 | 五文件样本；中断续传；Direct／Relay 一致 |
 | S3 | metadata doctor、备份、验证、恢复、secret bundle | 空 PostgreSQL 恢复；对象缺失报告；证书／令牌恢复 |
-| S4 | 冷热、代理、固定、释放、过期、客户端重连 | 冷片切换；释放门槛；旧备份不倒带 |
+| S4 | 已有库快照引导、冷热、固定、释放、过期、客户端重连 | 新位置打开正确修订。冷片切换。旧备份不倒带 |
 | S5 | 10TB／10GbE、证书轮换、演练、容量报告 | 真实基线；未测规模不标完成 |
 | S5.1 | 远程作业 | 按 [041](../041-server-image-editing/spec.md)；场景图／HDR 需 Linux scene executor 和色彩门 |
 

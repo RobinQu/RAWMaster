@@ -36,6 +36,28 @@ pub(crate) fn detach_restored_writer(db: &Connection) -> Result<String> {
     Ok(writer)
 }
 
+/// A package fork retains frozen batch fingerprints as read-only history. Lease grants
+/// must match the new library and writer identities.
+pub(crate) fn detach_local_copy(db: &Connection, body: &Value) -> Result<Value> {
+    let new = Uuid::parse_str(text(body, "libraryID")?)?.to_string();
+    let old = library_id(db)?;
+    if old == new {
+        return Err("copy requires an independent library identity".into());
+    }
+    let writer = detach_restored_writer(db)?;
+    db.execute(
+        "INSERT OR IGNORE INTO lc_meta(key,value) VALUES('localPackage.historyLibrary.v1/'||?1,'1')",
+        [&old],
+    )?;
+    db.execute("UPDATE lc_meta SET value=?1 WHERE key='libraryID'", [&new])?;
+    db.execute_batch("UPDATE lc_task_jobs SET state='cancelled',claim_interest_until=0,submission_token=NULL,
+        token=NULL,lease_until=NULL,last_error='task belongs to the original library'
+        WHERE state IN ('queued','running','cancelling','waiting','reconcile');
+        UPDATE lc_proc_jobs SET state='cancelled',lease_until=NULL,token=NULL,error='task belongs to the original library'
+        WHERE state IN ('queued','preparing','rendering','staged');")?;
+    Ok(json!({"libraryID":new,"writerID":writer}))
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 enum Mode {

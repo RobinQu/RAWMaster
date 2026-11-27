@@ -1,12 +1,16 @@
 import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
+import RAWMasterLibrary
 
 @MainActor final class SceneWorkflowBatchCoordinator: ObservableObject {
     @Published private(set) var result: SceneWorkflowBatch.Review?
-    @Published private(set) var running = false
+    private(set) var runningID: UUID?
     @Published private(set) var problem: String?
+    @Published private(set) var accepting = true
+    @Published private(set) var running = false
     private var worker: Task<Void, Never>?
+    private var cancelPendingOnStop = false
 
     func openLatest(in store: LibraryStore) async {
         guard !running else { return }
@@ -16,42 +20,72 @@ import RAWMasterImaging
         } catch { problem = error.localizedDescription }
     }
     func start(_ review: SceneWorkflowBatch.Review, in store: LibraryStore) {
-        guard !running else { return }
-        execute(review.header.id, store: store, register: review, retry: false)
+        execute(review.header.id, store: store, register: review)
     }
-    func retry(in store: LibraryStore) {
-        guard !running, let id = result?.header.id else { return }
-        execute(id, store: store, register: nil, retry: true)
+    func resume(_ id: UUID, in store: LibraryStore) {
+        execute(id, store: store)
     }
-    func undo(in store: LibraryStore) async {
-        guard !running, let id = result?.header.id else { return }
-        running = true; problem = nil
-        defer { running = false }
-        do { result = try await Task.detached { try store.undoSceneWorkflow(id) }.value }
-        catch { problem = error.localizedDescription }
+    func retry(_ id: UUID, in store: LibraryStore) {
+        execute(id, store: store, retry: true)
     }
-    func stopPending() { worker?.cancel() }
-    func stopAndJoin() async { worker?.cancel(); await worker?.value }
+    func undo(_ id: UUID, in store: LibraryStore) {
+        mutate(id) { try store.undoSceneWorkflow(id) }
+    }
+    func cancel(_ id: UUID, in store: LibraryStore) {
+        guard accepting else { return }
+        if runningID == id { stopPending() }
+        else { mutate(id) { try store.cancelSceneWorkflow(id) } }
+    }
+    func stopPending() {
+        guard accepting, let worker else { return }
+        cancelPendingOnStop = true
+        worker.cancel()
+    }
+    func stopAndJoin() async {
+        accepting = false
+        let active = worker
+        active?.cancel()
+        await active?.value
+    }
+    func reopenAdmission() { accepting = true }
 
-    private func execute(_ id: UUID, store: LibraryStore, register: SceneWorkflowBatch.Review?, retry: Bool) {
-        running = true; problem = nil
+    private func begin(_ id: UUID) -> Bool {
+        guard accepting, !running else { return false }
+        runningID = id; running = true; problem = nil; cancelPendingOnStop = false
+        return true
+    }
+    private func finish() {
+        runningID = nil; running = false; worker = nil; cancelPendingOnStop = false
+    }
+    private func mutate(_ id: UUID, operation: @escaping @Sendable () throws -> SceneWorkflowBatch.Review) {
+        guard begin(id) else { return }
+        worker = Task { [self] in
+            defer { finish() }
+            do { result = try await Task.detached(priority: .utility, operation: operation).value }
+            catch { problem = error.localizedDescription }
+        }
+    }
+
+    private func execute(_ id: UUID, store: LibraryStore, register: SceneWorkflowBatch.Review? = nil, retry: Bool = false) {
+        guard begin(id) else { return }
         if let register { result = register }
         worker = Task { [weak self] in
-            defer { self?.running = false; self?.worker = nil }
+            defer { self?.finish() }
             let native = Task.detached(priority: .utility) {
                 if let register { try store.registerSceneWorkflow(register) }
+                try Task.checkCancellation()
                 let review = try retry ? store.retrySceneWorkflow(id) : store.sceneWorkflow(id: id)
                 await MainActor.run { self?.result = review }
-                // The catalogue rehashes every item. Reuse source format/calibration qualification only for exact verified bytes.
                 var qualified = Set<String>()
                 for item in review.items where item.state == .pending {
-                    try Task.checkCancellation()
-                    let row = try store.commitSceneWorkflowItem(id, assetID: item.id, cancel: { try Task.checkCancellation() }) { source in
-                        if !qualified.contains(source.contentSHA256) {
-                            try SceneWorkflowRawQualification.verify(source)
-                            qualified.insert(source.contentSHA256)
+                    let fingerprint = item.source?.contentSHA256
+                    let cached = fingerprint.map(qualified.contains) == true
+                    let row = try await ProcessingAdmission.shared.withPermit(.library, resources: .init(cpu: 1, io: 1)) {
+                        try store.commitSceneWorkflowItem(id, assetID: item.id, cancel: { try Task.checkCancellation() }) { source in
+                            if !cached { try SceneWorkflowRawQualification.verify(source) }
                         }
                     }
+                    if let fingerprint, row.state == .completed { qualified.insert(fingerprint) }
                     await MainActor.run {
                         guard let self, let current = self.result, current.header.id == id,
                               let slot = current.items.firstIndex(where: { $0.id == row.id }) else { return }
@@ -63,7 +97,12 @@ import RAWMasterImaging
             }
             do { self?.result = try await withTaskCancellationHandler { try await native.value } onCancel: { native.cancel() } }
             catch is CancellationError {
-                do { self?.result = try await Task.detached { try store.cancelSceneWorkflow(id) }.value }
+                let shouldCancel = self?.cancelPendingOnStop == true
+                do {
+                    self?.result = try await Task.detached {
+                        try shouldCancel ? store.cancelSceneWorkflow(id) : store.sceneWorkflow(id: id)
+                    }.value
+                }
                 catch { self?.problem = error.localizedDescription }
             } catch { self?.problem = error.localizedDescription }
         }
@@ -75,6 +114,7 @@ struct SceneWorkflowBatchSheet: View {
     let ids: [String]
     let donor: String?
     let showResults: Bool
+    var batchID: UUID? = nil
     @ObservedObject var coordinator: SceneWorkflowBatchCoordinator
     let export: ([String: String]) -> Void
     @Environment(\.dismiss) private var dismiss
@@ -85,13 +125,15 @@ struct SceneWorkflowBatchSheet: View {
     @State private var donorGraph: DevelopmentSceneGraphV1?
     @State private var templates: [SceneWorkflowTemplate] = []
     @State private var review: SceneWorkflowBatch.Review?
+    @State private var selectedReview: SceneWorkflowBatch.Review?
+    @State private var historical = false
     @State private var preview: DevelopmentScenePreviewFrameV1?
     @State private var problem: String?
     @State private var prepareTask: Task<Void, Never>?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(results ? "最近工作流批次与撤销" : "批量工作流预检").font(.headline)
+            Text(results ? "工作流批次与撤销" : "批量工作流预检").font(.headline)
             if results { resultContent }
             else if let review { reviewContent(review) }
             else { form }
@@ -99,13 +141,21 @@ struct SceneWorkflowBatchSheet: View {
         }.padding(17).frame(minWidth: 370, idealWidth: 560, minHeight: 315, idealHeight: 570)
          .task {
              results = showResults
-             if results { await coordinator.openLatest(in: store) }
+             if let batchID {
+                 do { selectedReview = try await Task.detached { try store.sceneWorkflow(id: batchID) }.value }
+                 catch { problem = error.localizedDescription }
+             } else if results { await coordinator.openLatest(in: store) }
              else {
                  do {
                      let values = try await Task.detached { (try donor.flatMap(store.sceneWorkflowDonor), try store.sceneWorkflowTemplates()) }.value
                      donorGraph = values.0; templates = values.1
                      if donorGraph == nil, let first = templates.first { chosen = first.id.uuidString }
                  } catch { problem = error.localizedDescription }
+             }
+         }
+         .task(id: displayedResult?.header.id) {
+             if let id = displayedResult?.header.id {
+                 historical = (try? store.isHistoricalTask(.sceneWorkflow, id: id.uuidString)) != false
              }
          }
          .onDisappear { prepareTask?.cancel() }
@@ -153,30 +203,45 @@ struct SceneWorkflowBatchSheet: View {
                 Button("返回预检") { self.review = nil; preview = nil }.keyboardShortcut(.cancelAction)
                 Spacer()
                 Button("确认创建批量版本") { results = true; coordinator.start(review, in: store) }
-                    .buttonStyle(.borderedProminent).disabled(ready == 0).accessibilityIdentifier("scene.batch.confirm")
+                    .buttonStyle(.borderedProminent).disabled(ready == 0 || !coordinator.accepting || coordinator.running)
+                    .accessibilityIdentifier("scene.batch.confirm")
             }
         }
     }
+    private var displayedResult: SceneWorkflowBatch.Review? {
+        if let batchID { return coordinator.result?.header.id == batchID ? coordinator.result : selectedReview }
+        return coordinator.result
+    }
     @ViewBuilder private var resultContent: some View {
-        if let result = coordinator.result {
+        if let result = displayedResult {
             let items = result.items, successes = items.filter { $0.state == .completed }
-            Text("已创建 \(successes.count)/\(items.count) 张 · \(coordinator.running ? "正在处理" : "本轮已停止")")
+            let id = result.header.id
+            let active = coordinator.runningID == id
+            let pending = items.contains { $0.state == .pending }
+            Text(result.header.donorName).foregroundStyle(.secondary)
+            Text("已创建 \(successes.count)/\(items.count) 张 · " + (historical ? "副本历史" : active ? "正在处理" : pending ? "等待继续" : "本轮已结束"))
             itemList(items)
             HStack {
                 Button("返回选片") { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
-                if coordinator.running { Button("取消待处理项") { coordinator.stopPending() } }
+                if active { Button("取消待处理项") { coordinator.stopPending() }.disabled(!coordinator.accepting) }
                 else {
                     Menu("更多") {
-                        Button("重试未完成项") { coordinator.retry(in: store) }.disabled(!items.contains { $0.state.retryable || $0.state == .pending })
-                        Button("撤销成功项") { Task { await coordinator.undo(in: store) } }.disabled(successes.isEmpty)
-                    }
+                        if pending {
+                            Button("继续") { coordinator.resume(id, in: store) }
+                            Button("取消待处理项") { coordinator.cancel(id, in: store) }
+                        }
+                        Button("重试未完成项") { coordinator.retry(id, in: store) }.disabled(!items.contains { $0.state.retryable })
+                        Button("撤销成功项") { coordinator.undo(id, in: store) }.disabled(successes.isEmpty)
+                    }.disabled(historical || !coordinator.accepting || coordinator.running)
                     Button("导出成功候选") {
                         let versions = Dictionary(uniqueKeysWithValues: successes.compactMap { item in item.candidate.map { (item.id, $0) } })
                         dismiss(); export(versions)
                     }.disabled(successes.isEmpty)
                 }
             }
+        } else if batchID != nil, problem == nil {
+            ProgressView("正在读取批次…")
         } else {
             ContentUnavailableView("没有工作流批次", systemImage: "square.stack.3d.up")
             Button("返回选片") { dismiss() }.keyboardShortcut(.cancelAction)

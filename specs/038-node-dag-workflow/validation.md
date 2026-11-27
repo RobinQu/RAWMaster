@@ -4,6 +4,14 @@
 
 [现行系统图窗及物理拖动验证](#系统图窗与真实拖动)覆盖可编辑图和只读兼容图。下文保留无标题图窗和较早的矮窗方案，供比对当时的交互。[上一轮工作台走查](../025-editing-workspace/editor-rails.md)
 
+## 玻璃图窗与自由布局
+
+2026-11-28 · 从原型选「岸边的水鸟」→ 编辑 → 色彩外观 HDR → 当前节点 → Graph。运行 `python3 scripts/check-ui-prototype.py --native-graph-only`，9 个场景通过。模拟像素用于检查添加顺序、三个 Mixer 端口的连线落点、Solo 上游、全局旁路、侧栏眼睛与照片撤销。真实指针检查拖动时连线随动、Escape 取消、键盘移动、重开和整理。连接草稿阻止交付，离线提示禁用原因，模拟重试回到同一图。另通过 31 个编辑与 DAG 回归场景。[原型入口](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1) · [390 px 浅色](evidence/free-layout/prototype-390-light.png) · [390 px 深色](evidence/free-layout/prototype-390-dark.png) · [Lightflow 行为依据](lightflow-nodes.md)
+
+从独立资料库选 `snow.ARW`，用同一路径开启本地签名 Debug 应用的 Graph。浅、深色下标题均可独立拖窗，空白处只移动画布。节点拖动在屏幕上实际移动 37 × 53 点，Escape 恢复原坐标，Shift+方向键继续移动选中节点。适合全图和整理分别核对，关闭后焦点回到 Graph 按钮，重开恢复窗框及节点位置。首次收窄曾额外减少 20 点高度，修正横向边缘拖动的约束后，浅色、深色和只读图均从 640 × 392 收窄到 608 × 392。[物理输入与签名回执](evidence/free-layout/native-window.json) · [浅色三输入 Layer](evidence/free-layout/native-light.png) · [深色 Graph](evidence/free-layout/native-dark.png) · [拖动后的分支](evidence/free-layout/native-drag.png)
+
+原生窗口测试抽查真实 RAW 的浮点预览像素。前序与当前节点分别增加曝光后，Solo 第一节点区别于终稿，Solo 第二节点的样点等于串行终稿，全局旁路的样点等于照片图输入。组内旁路仍从照片输入取结果。逐节点忽略可撤销，Layer 新增支路可命中独立端口，连接草稿取消后保留已提交配方。断开并接回复制的测试原片后，通过原生错误通知重试，恢复同一旁路状态。监看期间的 032 输入继续冻结最终根。[原生专项测试](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift) · [验证输出](evidence/free-layout/checks.txt)
+
 ## 系统图窗与真实拖动
 
 2026-11-27，在 macOS 27.0.1 的独立资料库中打开雪景 RAW 的 HDR 草稿和河湾 JPEG 的兼容草稿。两者均从主窗右上「当前节点 → Graph」进入。此次使用单独标识、临时签名的 Debug 应用。文件与可执行文件的 SHA-256、系统版本、屏幕编号、全局窗位、节点局部坐标和 AX 控件记录均在[物理输入回执](evidence/native-window/physical-drag.json)。

@@ -8,7 +8,7 @@
 - 不可变内容寻址对象；整文件 SHA-256；Range 读；断点／并行上传。
 - 默认客户端直传 S3；失败自动 Relay。
 - 多库独立；不做跨库去重和跨库逻辑。
-- Server 本地磁盘只放日志、临时文件和有限中转缓冲；不持久化对象或元数据。
+- 040 资料库服务的本地盘承载日志、临时文件和有限 Relay 缓冲。持久对象存 S3，业务元数据存 PostgreSQL。041 计算节点按各自负载配置[执行节点的工作存储](../041-server-image-editing/plan.md#81-执行节点的工作存储)。
 - PostgreSQL 和 S3 的 HA、RAID、纠删码、跨站点复制由基础设施负责；RAWMaster 只做逻辑一致性、清单和校验。
 - 自建服务只有自签名证书；gRPC 和 S3 直传都必须能工作，不能关闭 TLS 校验。
 
@@ -57,7 +57,7 @@ RustFS 在 TrueNAS 25.04 的 App 目录可安装，提供 S3 兼容 API。其 [S
 ```text
 s3://rawmaster/
   libraries/<libraryID>/objects/<sha256[0:2]>/<sha256>
-  libraries/<libraryID>/staging/<uploadID>/<partNumber>
+  libraries/<libraryID>/staging/<uploadID>/object
   libraries/<libraryID>/manifests/<generationID>.json
   libraries/<libraryID>/catalog-snapshots/<snapshotID>.sqlite
   backups/metadata/<generationID>/
@@ -85,9 +85,9 @@ s3://rawmaster/
 
 ### 4.1 Direct
 
-1. Server `CreateUpload` 创建 S3 multipart，返回 presigned part URL。
+1. Server `CreateUpload` 在上传专属暂存 key 创建 S3 multipart，返回 presigned part URL。
 2. 客户端直传 RustFS／云 S3。
-3. Server 完成 multipart、HEAD／checksum 校验、PostgreSQL 登记。
+3. Server 完成 multipart，验证整对象 SHA-256，再条件发布不可变内容对象并登记 PostgreSQL。验收分别记录直传、暂存整对象校验与发布成本。[完成协议](protocol.md#52-完成)
 4. 10TB 首传默认走此路径；Server 只做控制。
 
 ### 4.2 Relay

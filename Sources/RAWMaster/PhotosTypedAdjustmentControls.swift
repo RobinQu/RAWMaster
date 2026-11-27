@@ -290,18 +290,19 @@ struct PhotosCurveParameterControls: View {
             PhotosFlatMenu(title: "曲线通道", selection: $channel, options: DevelopmentCurveChannel.allCases, label: \.rawValue)
                 .onChange(of: channel) { _, _ in finishGesture(); pointIndex = 0; onChannelChange?() }
             if let pickerAction {
-                HStack(spacing: PhotosControlLayout.spacing) {
-                    ForEach([DevelopmentCurvePickerPointV3.black, .midtone, .white, .addPoint], id: \.self) { point in
-                        Button { finishGesture(); pickerAction(pickerChannel, point) } label: {
-                            VStack(spacing: 0) {
-                                Image(systemName: point == .addPoint ? "plus" : "eyedropper")
-                                Text(pickerTitle(point)).font(.system(size: 8))
-                            }
-                        }.help("在照片上选取" + pickerTitle(point))
-                            .accessibilityLabel(pickerTitle(point))
-                            .disabled(point == .addPoint && curve.curve.points.count >= 16)
+                HStack(spacing: AppDesign.Spacing.inline) {
+                    AppButtonGroup(title: "曲线取样",
+                                   options: [DevelopmentCurvePickerPointV3.black, .midtone, .white],
+                                   help: { "在照片上选取" + pickerTitle($0) },
+                                   action: { point in finishGesture(); pickerAction(pickerChannel, point) }) { point in
+                        Label(pickerTitle(point), systemImage: "eyedropper")
                     }
-                }.buttonStyle(PhotosFlatButtonStyle(stretches: true))
+                    Button { finishGesture(); pickerAction(pickerChannel, .addPoint) } label: {
+                        Label("添加控制点", systemImage: "plus").labelStyle(.iconOnly)
+                    }.buttonStyle(AppFlatButtonStyle())
+                        .help(curve.curve.points.count >= 16 ? "已达到 16 个控制点" : "在照片上取样以添加控制点")
+                        .disabled(curve.curve.points.count >= 16)
+                }
             }
             if let targetedAction {
                 Button { finishGesture();targetedAction(pickerChannel) } label: {

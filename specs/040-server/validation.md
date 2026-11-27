@@ -1,6 +1,19 @@
 # 040 · 规划验证记录
 
-2026-11-27 · 本轮为架构与功能设计，不是产品验收。记录已完成的文档核对、外部调研和进入实现前必须补齐的验证。
+2026-11-27 · 记录设计、浏览器走查和实装验收范围。
+
+## Server 资料库接入走查
+
+独立本机库包及切库验收归 [042](../042-local-library-workbench/validation.md)。Server 使用独立的浏览器样例状态。
+
+| 入口与动作 | 浏览器观察 |
+| --- | --- |
+| [Server 评审开始页](../../docs/ui/prototype/index.html?serverReview=1#welcome) → 连接 Server → 测试 `https://offline.test` → 取消 | 连接失败保持地址表单，取消返回开始页 |
+| 核对指纹 → 新建 Server 库或同步「湖岸资料库」 | 新建打开空库。同步预检显示示例快照修订和可写身份，激活后可浏览照片，原片保留按需取回状态 |
+| 通过 Finder 示例拷贝已绑定库，确认作为独立库打开 | 独立包以新 ID 打开。Server 绑定留在原库 |
+| 1280×800 和 390×844 浅色／深色，Tab／Return／Escape | 连接地址获得焦点，关闭菜单后焦点回到入口 |
+
+Chrome 通过 `python3 scripts/check-ui-prototype.py --library-server-only`。S1／S4 用真实 TLS 与服务端快照复验建库、同步、只读、转移和中断恢复。Direct／Relay 与管理恢复按阶段验收。
 
 ## 1. 本轮完成
 
@@ -29,12 +42,12 @@
 - **没有元数据恢复演练。** 空 PostgreSQL 恢复、对象缺失、客户端重连、所有权 epoch 未执行。
 - **没有 037／038／039 资源恢复。** sceneGraph／输出状态／模型前缀／模板／批量候选、HDR AVIF 与 SDR JPEG/PNG16 元数据尚未在备份恢复中验证。
 - **没有 Linux scene executor。** 039 当前 Metal-only；Server HDR／DAG 批处理不能据此声称可用。
-- **没有 UI 原型更新。** 现有 Server 预演仍是旧的归档／同步／作业模拟；本轮只定义交互。
+- **Server 管理交互待补。** 证书变化、Direct／Relay 实际传输状态、元数据备份恢复、冷片取回与释放按各阶段接入工作台及原生验收。
 - **没有远程作业。** Server 1.1 未开始。
 
 ## 3. 进入 S1 前必须补齐
 
-1. 按 [AGENTS](../../AGENTS.md) 和 [UI 研发流程](../../docs/ui/README.md) 更新摄影工作台，覆盖 [ux.md](ux.md) 第 5 节；记录浏览器、窄窗、浅／深色、键盘、焦点、读屏。
+1. 对 S1 的证书、登记和所有权补齐原型及键盘走查。S2 至 S4 余下界面与真实系统验收在各阶段完成。见 [交互](ux.md#5-原型与走查)。
 2. 冻结 S0 契约：gRPC proto、PostgreSQL schema、S3 profile、备份格式、证书／令牌模型。
 3. 用真实 RustFS 跑 Direct presigned multipart、checksum、Range、TLS、Relay 回退。
 4. 用真实 PostgreSQL 跑 `pg_dump --snapshot`、隔离恢复、doctor、对象清单。

@@ -1,5 +1,8 @@
 'use strict';
 
+const serverReview = new URLSearchParams(location.search).get('serverReview') === '1';
+const deliveryStorageKey = serverReview ? 'rawmaster.ui.server-review.delivery' : 'rawmaster.ui.delivery';
+
 const defaultFlux = () => ({
   status: '未安装',
   progress: 0,
@@ -13,7 +16,7 @@ const defaultFlux = () => ({
 });
 
 const Studio = (() => {
-  const key = 'rawmaster.ui.workbench.v1';
+  const key = serverReview ? 'rawmaster.ui.workbench.server-review.v1' : 'rawmaster.ui.workbench.v1';
   const copy = id => data?.catalog?.virtualCopies?.[id];
   const physicalID = id => copy(id)?.source ?? id;
   const fixtureID = id => data?.catalog?.records[physicalID(id)]?.source || physicalID(id);
@@ -211,10 +214,10 @@ const Studio = (() => {
   }
   const uid = () =>
     globalThis.crypto?.randomUUID?.() ?? String(Date.now()) + Math.random().toString(36).slice(2);
-  function adoptPromptVersion(id, version) {
+  function adoptCandidateWithHistory(id, version, label) {
     const e = edit(id);
-    if (version === e.adopted || !e.versions.some((v) => v.id === version && v.quickPrompt && !v.discarded)) return false;
-    e.past.unshift({ label: '采用快速 Prompt', value: structuredClone(e.recipe), adopted: e.adopted });
+    if (version === e.adopted || !e.versions.some((v) => v.id === version && !v.discarded)) return false;
+    e.past.unshift({ label, value: structuredClone(e.recipe), adopted: e.adopted });
     e.past.length = Math.min(40, e.past.length);
     e.future = [];
     e.adopted = version;
@@ -404,7 +407,7 @@ const Studio = (() => {
     patchRecipe,
     setRecipe,
     stepEdit,
-    adoptPromptVersion,
+    adoptCandidateWithHistory,
     candidate,
     dirty,
     uid,

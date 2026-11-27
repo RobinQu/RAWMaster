@@ -1,0 +1,341 @@
+{
+  "configuration": "locally signed debug",
+  "executableSHA256": "4ce9bb170d7f92a035b2f164100d7b4d4c856742f085b8b3eb17259fcad34a1a",
+  "signature": "6bcb72616d2fba35d04bf1c6de417c1c84cd9c8c",
+  "snowRAWFixtureSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "light": {
+    "afterCanvasDrag": [
+      1044,
+      607,
+      640,
+      392
+    ],
+    "afterRightEdgeDrag": [
+      1044,
+      607,
+      608,
+      392
+    ],
+    "afterTitleDrag": [
+      1044,
+      607,
+      640,
+      392
+    ],
+    "bundle": "RAWMaster Graph QA.app",
+    "canvasDrag": [
+      43,
+      -27
+    ],
+    "displayID": 1,
+    "focusAfterClose": "editing.scene.graph.toggle",
+    "initial": [
+      1116,
+      655,
+      640,
+      392
+    ],
+    "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+    "nativeClose": "AXCloseButton/AXPress",
+    "nodeAfterCanvasRelative": [
+      166,
+      113,
+      74,
+      34
+    ],
+    "nodeAfterTitleRelative": [
+      123,
+      140,
+      74,
+      34
+    ],
+    "nodeInitiallyRelative": [
+      123,
+      140,
+      74,
+      34
+    ],
+    "nodePlacement": {
+      "afterOrganize": [
+        117,
+        144,
+        70,
+        32
+      ],
+      "afterReopen": [
+        212,
+        166,
+        74,
+        34
+      ],
+      "before": [
+        1210,
+        720,
+        74,
+        34
+      ],
+      "cancelled": [
+        1210,
+        720,
+        74,
+        34
+      ],
+      "fixedOutputPort": [
+        1632,
+        732,
+        10,
+        10
+      ],
+      "keyboard": [
+        1256,
+        773,
+        74,
+        34
+      ],
+      "pointer": [
+        1247,
+        773,
+        74,
+        34
+      ]
+    },
+    "observedTitleDrag": [
+      -72,
+      -48
+    ],
+    "os": "Version 27.0.1 (Build 26A434)",
+    "ownerFrame": [
+      288,
+      183,
+      1480,
+      940
+    ],
+    "pid": 51816,
+    "reopened": [
+      1044,
+      607,
+      608,
+      392
+    ],
+    "requestedTitleDrag": [
+      -72,
+      -48
+    ],
+    "title": "工作流 Graph",
+    "titlePoint": [
+      1506.4,
+      664.5
+    ],
+    "windowRole": "AXWindow",
+    "windowSubrole": "AXFloatingWindow"
+  },
+  "dark": {
+    "afterCanvasDrag": [
+      1006,
+      564,
+      640,
+      392
+    ],
+    "afterRightEdgeDrag": [
+      1006,
+      564,
+      608,
+      392
+    ],
+    "afterTitleDrag": [
+      1006,
+      564,
+      640,
+      392
+    ],
+    "bundle": "RAWMaster Graph QA.app",
+    "canvasDrag": [
+      43,
+      -27
+    ],
+    "displayID": 1,
+    "focusAfterClose": "editing.scene.graph.toggle",
+    "initial": [
+      1078,
+      612,
+      640,
+      392
+    ],
+    "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+    "nativeClose": "AXCloseButton/AXPress",
+    "nodeAfterCanvasRelative": [
+      166,
+      113,
+      74,
+      34
+    ],
+    "nodeAfterTitleRelative": [
+      123,
+      140,
+      74,
+      34
+    ],
+    "nodeInitiallyRelative": [
+      123,
+      140,
+      74,
+      34
+    ],
+    "nodePlacement": {
+      "afterOrganize": [
+        117,
+        144,
+        70,
+        32
+      ],
+      "afterReopen": [
+        212,
+        166,
+        74,
+        34
+      ],
+      "before": [
+        1172,
+        677,
+        74,
+        34
+      ],
+      "cancelled": [
+        1172,
+        677,
+        74,
+        34
+      ],
+      "fixedOutputPort": [
+        1594,
+        689,
+        10,
+        10
+      ],
+      "keyboard": [
+        1218,
+        730,
+        74,
+        34
+      ],
+      "pointer": [
+        1209,
+        730,
+        74,
+        34
+      ]
+    },
+    "observedTitleDrag": [
+      -72,
+      -48
+    ],
+    "os": "Version 27.0.1 (Build 26A434)",
+    "ownerFrame": [
+      250,
+      140,
+      1480,
+      940
+    ],
+    "pid": 52811,
+    "reopened": [
+      1006,
+      564,
+      608,
+      392
+    ],
+    "requestedTitleDrag": [
+      -72,
+      -48
+    ],
+    "title": "工作流 Graph",
+    "titlePoint": [
+      1468.4,
+      621.5
+    ],
+    "windowRole": "AXWindow",
+    "windowSubrole": "AXFloatingWindow"
+  },
+  "compatibility": {
+    "afterCanvasDrag": [
+      1012,
+      568,
+      640,
+      392
+    ],
+    "afterRightEdgeDrag": [
+      1012,
+      568,
+      608,
+      392
+    ],
+    "afterTitleDrag": [
+      1012,
+      568,
+      640,
+      392
+    ],
+    "bundle": "RAWMaster Graph QA.app",
+    "canvasDrag": [
+      43,
+      -27
+    ],
+    "displayID": 1,
+    "focusAfterClose": "editing.compatibilityGraph",
+    "initial": [
+      1078,
+      612,
+      640,
+      392
+    ],
+    "input": "CGEvent.cghidEventTap mouseMoved/leftMouseDown/12 leftMouseDragged/leftMouseUp; AXPosition/AXSize read back from independent process",
+    "nativeClose": "AXCloseButton/AXPress",
+    "nodeAfterCanvasRelative": [
+      254,
+      181,
+      132,
+      50
+    ],
+    "nodeAfterTitleRelative": [
+      254,
+      181,
+      132,
+      50
+    ],
+    "nodeInitiallyRelative": [
+      254,
+      181,
+      132,
+      50
+    ],
+    "nodePlacement": {},
+    "observedTitleDrag": [
+      -66,
+      -44
+    ],
+    "os": "Version 27.0.1 (Build 26A434)",
+    "ownerFrame": [
+      250,
+      140,
+      1480,
+      940
+    ],
+    "pid": 52811,
+    "reopened": [
+      1012,
+      568,
+      608,
+      392
+    ],
+    "requestedTitleDrag": [
+      -72,
+      -48
+    ],
+    "title": "只读兼容图",
+    "titlePoint": [
+      1468.4,
+      621.5
+    ],
+    "windowRole": "AXWindow",
+    "windowSubrole": "AXFloatingWindow"
+  }
+}

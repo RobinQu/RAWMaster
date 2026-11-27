@@ -57,7 +57,10 @@ public struct LibraryPackagePanel: View {
     private let defaults: UserDefaults
     private var resumeKey: String { "library.package.resume." + catalog.standardizedFileURL.path }
     private let canSwitch: () -> Bool
-    private let activate: (URL) throws -> Void
+    private let chooseLibrary: () -> Void
+    private let createLibrary: () -> Void
+    private let workingChanged: (Bool) -> Void
+    private let activate: (URL) -> Void
     @State private var mode: PackageMode = .catalog
     @State private var running = false
     @State private var message = ""
@@ -68,10 +71,15 @@ public struct LibraryPackagePanel: View {
     @State private var restored: URL?
     @State private var migration: CatalogJSON?
 
-    public init(catalog: URL, defaults: UserDefaults = .standard, canSwitch: @escaping () -> Bool, activate: @escaping (URL) throws -> Void) {
+    public init(catalog: URL, defaults: UserDefaults = .standard, canSwitch: @escaping () -> Bool,
+                chooseLibrary: @escaping () -> Void, createLibrary: @escaping () -> Void,
+                workingChanged: @escaping (Bool) -> Void, activate: @escaping (URL) -> Void) {
         self.catalog = catalog
         self.defaults = defaults
         self.canSwitch = canSwitch
+        self.chooseLibrary = chooseLibrary
+        self.createLibrary = createLibrary
+        self.workingChanged = workingChanged
         self.activate = activate
     }
 
@@ -80,7 +88,11 @@ public struct LibraryPackagePanel: View {
             Section("当前资料库") {
                 Text(catalog.deletingLastPathComponent().path).textSelection(.enabled)
                 HStack {
-                    Button("在访达显示") { NSWorkspace.shared.activateFileViewerSelecting([catalog]) }
+                    Button("在访达显示") {
+                        let root = catalog.deletingLastPathComponent()
+                        let location = root.pathExtension.caseInsensitiveCompare("rawmasterlibrary") == .orderedSame ? root : catalog
+                        NSWorkspace.shared.activateFileViewerSelecting([location])
+                    }
                     Button("打开其他资料库…", action: chooseLibrary)
                     Button("新建资料库…", action: createLibrary)
                 }
@@ -159,8 +171,11 @@ public struct LibraryPackagePanel: View {
     }
 
     private func loadMigration() {
+        guard !running else { return }
+        setRunning(true)
         let url = catalog
         Task {
+            defer { setRunning(false) }
             do {
                 migration = try await Task.detached(priority: .utility) {
                     try LibraryEngine.shared().request("migrationReport", at: url, payload: LibraryEmpty(), as: CatalogJSON.self)
@@ -186,36 +201,12 @@ public struct LibraryPackagePanel: View {
         return panel.runModal() == .OK ? panel.url : nil
     }
 
-    private func chooseLibrary() {
-        let panel = NSOpenPanel()
-        panel.title = "打开资料库或资料库包"
-        panel.canChooseDirectories = true
-        panel.canChooseFiles = true
-        panel.treatsFilePackagesAsDirectories = true
-        guard panel.runModal() == .OK, let selected = panel.url else { return }
-        let directory = (try? selected.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
-        let database = directory ? selected.appendingPathComponent("library.sqlite") : selected
-        if FileManager.default.fileExists(atPath: database.deletingLastPathComponent().appendingPathComponent("manifest.json").path) {
-            beginRestore(database.deletingLastPathComponent())
-        } else if FileManager.default.fileExists(atPath: database.path) {
-            switchLibrary(database)
-        } else { message = "所选位置没有资料库目录。" }
-    }
-
-    private func createLibrary() {
-        guard canSwitch(), let root = newLocation("新建资料库", name: "照片资料库.rawmasterlibrary") else { return }
-        do {
-            try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
-            switchLibrary(root.appendingPathComponent("library.sqlite"))
-        } catch { message = error.localizedDescription }
-    }
-
     private func maintainIndex(rebuild: Bool) {
         guard !running else { return }
-        running = true
+        setRunning(true)
         let url = catalog
         Task {
-            defer { running = false }
+            defer { setRunning(false) }
             do {
                 let reply = try await Task.detached(priority: .utility) {
                     let index = url.deletingLastPathComponent().appendingPathComponent("." + url.lastPathComponent + ".search.sqlite")
@@ -229,7 +220,7 @@ public struct LibraryPackagePanel: View {
     }
     private func switchLibrary(_ database: URL) {
         guard canSwitch() else { message = "后台作业结束后可以切换资料库。"; return }
-        do { try activate(database) } catch { message = error.localizedDescription }
+        activate(database)
     }
 
     private func backup() {
@@ -276,14 +267,14 @@ public struct LibraryPackagePanel: View {
 
     private func run(_ request: PackageRequest) {
         guard !running else { return }
-        running = true
+        setRunning(true)
         if request.op == "backup" { savePending(request) }
         message = ""
         missing = []
         roots = []
         let location = catalog
         Task {
-            defer { running = false }
+            defer { setRunning(false) }
             do {
                 let result = try await Task.detached(priority: .utility) {
                     try LibraryEngine.shared().request("package", at: location, payload: request, as: PackageReply.self)
@@ -325,6 +316,11 @@ public struct LibraryPackagePanel: View {
                 }
             } catch { message = error.localizedDescription }
         }
+    }
+
+    private func setRunning(_ value: Bool) {
+        running = value
+        workingChanged(value)
     }
 }
 #endif

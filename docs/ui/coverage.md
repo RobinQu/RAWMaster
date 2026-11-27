@@ -6,6 +6,8 @@
 
 在主窗口左上角使用「资料库导航」收起或恢复侧栏。顶栏保留工作流切换，原有项目及选片保持。窄窗口使用同一按钮打开抽屉。[标题栏走查](../../specs/025-editing-workspace/prototype-review.md#主窗口标题栏)
 
+右键点击标题栏的库名，库包首项使用与 Finder 一致的资料库图标。关闭路径菜单回到当前照片。[路径与 Finder 走查](../../specs/003-app-icon/validation.md#资料库文件夹图标)
+
 | 从哪里进入 | 可以走查的动作和结果 | 对照规格 |
 | --- | --- | --- |
 | [资料库](prototype/index.html#library/project/river) → 接入素材 | 选示例卡、引用或复制、新建或追加项目。重复接入同一来源回到已有批次。初筛操作里模拟中断、继续和核验来源 | [本地接入](../../specs/001-local-culling/spec.md) · [渐进导入与性能](../../specs/017-import-performance/validation.md) |
@@ -19,6 +21,9 @@
 | [文件夹、集合与作品](prototype/index.html#tools/organization) / [受管文件](prototype/index.html#tools/files) | 建文件夹、普通或按评分的智能集合，将所选作品加入集合或改名。先预演目标路径与文件名再执行示例移动。操作记录可回退 | [资料库生命周期](../../specs/033-library-lifecycle/spec.md) |
 | [智能检索](prototype/index.html#tools/discovery) / [照片检查器](prototype/index.html#tools/inspection) | 按示例场景查询、叠加围栏/人物筛选、命名人物簇、检查本机索引、跨库检索。单张或多图检查局部、写入人工结论、批改元数据 | [检索与检查器](../../specs/033-library-lifecycle/search.md) |
 | [资料库与备份](prototype/index.html#tools/package) / [迁入 Lightroom](prototype/index.html#tools/migration) | 创建/打开示例库、备份范围、增量前置条件、还原到另一份目录、整卷接回及索引维护。迁入预检、迁入集合、核对并绑定离线原片 | [目录与备份](../../specs/033-library-lifecycle/spec.md) · [Lightroom 迁入](../../specs/033-library-lifecycle/lightroom-migration.md) |
+| [首次打开](prototype/index.html#welcome) → 新建／打开已有资料库 | 选择包名、位置，接回失效地址。取消回到开始页，建库后进入可导入的空库 | [042 规格](../../specs/042-local-library-workbench/spec.md#2-首次打开与资料库菜单) · [原生会话](../../Sources/RAWMaster/ApplicationLibrarySession.swift) |
+| 顶栏「资料库菜单」→ 最近打开／[资料库与备份](prototype/index.html?batchNativeReview=1#tools/package) → Finder 示例 | 确认切库后可等待任务结束，或在检查点暂停后切换。取消等待保留当前工作。卷离线时接回后再打开，移动后保留库身份 | [042 规格](../../specs/042-local-library-workbench/spec.md#4-切库关闭与退出) · [走查](../../specs/042-local-library-workbench/validation.md#切库确认与标题栏路径) |
+| [标题栏左侧的库名](prototype/index.html#library/project/river) → 右键或键盘打开 | 查看当前包和上级目录。切库后标题及路径一起更新 | [042 规格](../../specs/042-local-library-workbench/spec.md#2-首次打开与资料库菜单) · [走查](../../specs/042-local-library-workbench/validation.md#切库确认与标题栏路径) |
 
 [资料库网格](prototype/index.html#library/project/river)多选后用底栏「批量导出」进入 032。返回时保留选片与焦点。若某张照片已离开筛选范围，停留在网格核对余下照片，再次导出。[操作与回归证据](../../specs/032-export-workspace/spec.md#资料库网格直接交付)
 
@@ -30,7 +35,7 @@
 
 | 从哪里进入 | 可以走查的动作和结果 | 对照规格 |
 | --- | --- | --- |
-| 编辑右栏 → 节点工具条 → [Graph](prototype/index.html#edit/dag) | 当前节点下拉整合节点列表、添加、整理及更多操作，右侧只有「忽略该节点」和 Graph 开关；Graph 点击与下拉、检查器及忽略状态联动。更多菜单首层六项，高级图操作折叠；右键或 Shift+F10 按节点、连线和画布区分操作。Solo 和临时旁路互斥，不写历史或导出。按节点能力过滤九类调色域，复位本节点和查看节点输出只在节点菜单。Graph 默认 100% 可读居中，超界优先保留当前节点；「适合全图」可缩小，百分比按钮恢复可读居中。主图用同色系小提示，健康单节点终稿默认不显示，中间及失败仍保留提示和操作。主图与 Liquid Glass 非模态 Graph 同时显示，图窗采用可拖玻璃标题与左上关闭，图内平移独立，矮窗仍可操作节点。[图窗标题与平移](../../specs/025-editing-workspace/appearance-parity.md)。串行、Parallel／Layer、Outside、增删／忽略／分组、连线草稿与监看；本张的工作流模板在高级图操作。左上是 RAW 摘要，左下为滤镜、快照、历史。Crop／Mask／Remove 从画布工具条展开。所有像素与覆盖为模拟，待摄影师确认 | [Node DAG 原型范围](../../specs/038-node-dag-workflow/spec.md) · [走查记录](../../specs/038-node-dag-workflow/validation.md) |
+| 编辑右栏 → 节点工具条 → [Graph](prototype/index.html#edit/dag) | 下拉、Graph 与检查器共用选择，眼睛表示当前节点启用／忽略。玻璃工具窗的标题与网格画布共用一层底板。节点和固定端点可自由拖放，空白拖动平移，按 Shift+方向键移动单选节点。Parallel／Layer 显示各自实际输入。右上可添加串行、并行和 Layer、Solo、旁路全部调色、整理画布和适合全图，点倍率恢复 100%。Solo 保留所选节点的上游，旁路从当前照片回到图输入。更多菜单承接模板、成组和连接草稿。原型处理使用模拟样片。 | [038 图窗规格](../../specs/038-node-dag-workflow/spec.md#玻璃图窗与自由布局) · [浏览器与原生验收](../../specs/038-node-dag-workflow/validation.md#玻璃图窗与自由布局) · [原生图窗与工具栏](../../Sources/RAWMaster/EditingSceneGraphPanel.swift) |
 | [原生工作流批量阶段](prototype/index.html?batchNativeReview=1) → 资料库多选 → 更多 → 批量工作流 | 逐张冻结曝光/模板、底稿和原片；重试待处理项，保留冲突，撤销未被使用的候选。成功候选交给现有 032，不自动采用或更改原选片。Graph「更多」提供独立模板。 | [038 批量规格](../../specs/038-node-dag-workflow/spec.md#本地模板与原生批量阶段走查) · [验证](../../specs/038-node-dag-workflow/validation.md#原生模板与可恢复批量) |
 | [原生 Graph 阶段](prototype/index.html?sceneNativeReview=1&graphNativeReview=1) → 创建 HDR 草稿 → 当前节点 → Graph | 已准入的场景草稿可编辑。单选联动参数，多选管理结构。串行、Parallel、Layer、组、输入连接草稿、监看与返回最终根。非法草稿暂停保存与导出，取消回到已提交图。032 冻结并使用最终根。 | [038 阶段规格](../../specs/038-node-dag-workflow/spec.md#原生可编辑-graph-阶段走查) · [阶段证据](../../specs/038-node-dag-workflow/validation.md#原生可编辑-graph) |
 | [兼容评审工作台](prototype/index.html?compatibilityGraph=1) → 编辑 → 当前节点 → Graph · 评审开关 | 打开只读「照片来源 → 兼容显影 → 最终输出」，主图及旧显影控件保持不变。收起、移动、复位或关闭；Escape 返回 Graph 按钮。离线或画布草案显示原因，查看作品版本、换片和离开编辑时关闭。不会生成可编辑图，不改变导出。普通工作台按旧显影配方自动进入兼容图，原生随 Release 默认显示；`RAWMASTER_EXPERIMENTAL_COMPATIBILITY_GRAPH=0` 仅用于隐藏该只读面板做诊断。 | [038 只读兼容视图](../../specs/038-node-dag-workflow/spec.md#只读兼容视图评审入口) · [验证](../../specs/038-node-dag-workflow/validation.md#原生只读兼容视图) |
@@ -51,13 +56,16 @@
 | [032 PQ 队列评审](prototype/index.html?pqReview=1) → 暗房保存 HDR 候选 → 导出 → HDR 成片 | 逐张核对已保存版本和原片；没有母版或离线时取消并改选，不隐式交付 SDR。此阶段仅全尺寸 AVIF 10 位 Rec.2020/PQ，预览明确为 SDR 代理；提交、任务恢复和回执复用 032。完整多目标和水印仍待验收。 | [037 交互](../../specs/037-color-film-hdr/spec.md#032-pq-原生队列评审) · [原生回读与中断走查](../../specs/037-color-film-hdr/validation.md#032-pq-队列与回读) |
 | 导出 → [任务详情](../../specs/032-export-workspace/prototype.html) / [制作任务](prototype/index.html#jobs) → 查看本批交付 | 接回目录时核对提交时的卷和目录身份。同路径的另一卷仍离线。原卷以新设备号重挂后，先按原票据认领已发布文件，明确继续才写余项。可逐张接回原片、核对同名冲突、取消余项，并返回改选后的照片 | [中断、卷重挂、继续和取消走查](../../specs/032-export-workspace/batch-continuation.md#走查) · [原生重启回执](../../specs/035-portable-processing-cores/evidence/workbench-native-restart.json) · [APFS 重挂回执](../../specs/035-portable-processing-cores/evidence/workbench-apfs-remount-batch13s.json) |
 | [设置](prototype/index.html#settings/general) / [本机 AI](prototype/index.html#settings/runtime) / [诊断](prototype/index.html#settings/diagnostics) | 跟随系统/浅/深外观、存储、编辑与预览、FLUX 模型首次下载与暂停/续传/校验/删除、实验性 Qwen 运行时、云服务启停、诊断摘要、性能监控入口。环境未就绪时从 Quick Prompt 转入设置，再返回同一张照片 | [本机模型设置](../../specs/034-quick-prompt-editing/local-ai-setup.md) · [外观与图标](../../specs/003-app-icon/spec.md) · [图像交互性能](../../specs/002-image-interaction-performance/spec.md) · [显示代理](../../specs/024-jpeg-display-proxy/plan.md) |
-| [Server 规划预演](prototype/index.html#tools/server) | 逐步推演归档、Direct／Relay、外部冷备下的元数据恢复、单客户端所有权与接续、证书／令牌恢复。当前原生交付范围为本地资料库，Server 待立项 | [Server 1.0 功能设计](../../specs/040-server/spec.md) · [Server 图像编辑](../../specs/041-server-image-editing/spec.md) · [现有产品验收](../../specs/033-library-lifecycle/server.md) |
+| 顶栏波形 → 后台信息 → 任务／[工作台任务原型](prototype/index.html#jobs) | 按所属库查看导入、032 成片与原件交付、CSV／JSON、本机 Flux 和工作流批次。重开原库可从详情继续。设备模型状态跨库可查 | [042 制作任务](../../specs/042-local-library-workbench/spec.md#5-制作任务) · [原生任务窗口](../../Sources/RAWMaster/WorkbenchActivityWindow.swift) |
+| [Server 评审](prototype/index.html?serverReview=1#welcome) → 连接／同步 → [RAWMaster Server](prototype/index.html?serverReview=1#tools/server) | 在单独示例状态核对指纹，创建或同步本地副本。可查归档与恢复，或提交远端处理并在制作任务核对结果 | [040 接入走查](../../specs/040-server/validation.md#server-资料库接入走查) · [041 双端队列](../../specs/041-server-image-editing/queues.md) |
 
 [编辑翻片与资料库胶片带走查](../../specs/025-editing-workspace/prototype-review.md#编辑翻片与资料库胶片带) · [滤镜与快照、调整和 Prompt 走查](../../specs/025-editing-workspace/prototype-review.md#胶片带与调整面板)
 
 ## 界面规范
 
 行高、间距、字级、圆角、墨色和控件四态由 [039 界面规范](../../specs/039-design-system/spec.md) 约束。新控件先在画廊登记，再落原生。
+
+顶栏、资料库浏览、编辑模式和 032 交付使用同一分组按钮外观。画廊可并排核对选项组、曲线取样命令组及独立命令。[分组按钮走查](../../specs/039-design-system/grouped-buttons.md)
 
 | 从哪里进入 | 可以走查的动作和结果 | 对照规格 |
 | --- | --- | --- |

@@ -9,7 +9,7 @@
 | 范围 | 规则 |
 | --- | --- |
 | 照片编辑工作区（检查器、左栏、画布工具条、Prompt） | 使用本规范的自绘控件与令牌 |
-| 资料库及 032 导出工作台 | 浏览方式与交付方式使用平面分段，筛选和设置使用平面菜单，选片清单使用平面勾选。列表、照片容器、弹窗与文件选择保留原生语义 |
+| 资料库及 032 导出工作台 | 浏览方式、交付方式与成组选片命令使用共享分组按钮。筛选和设置使用平面菜单，选片清单使用平面勾选 |
 | 拍摄组、导入、设置 | 容器与导航采用系统控件，密集列表可复用共享行高与字级 |
 | 菜单、工具栏、弹窗、表格、系统设置表单 | 沿用 macOS 原生控件与键盘顺序。工作台内的焦点外观遵循下方交互约定 |
 | API 与数据 | 界面规范不改变配方、版本、导出与撤销语义 |
@@ -17,7 +17,7 @@
 ## 三层模型
 
 1. **令牌。** [AppDesign](../../Sources/RAWMaster/DesignLanguage.swift) 管共享的控件尺寸、间距、圆角、字号和墨色。Graph 的最小可操作面积、照片 viewport 及示波器绘图区遵循各自功能与测量规格。
-2. **原语。** 检查器继续复用 `PhotosSliderRow`、`PhotosFlatButtonStyle`、`PhotosFlatCheckboxStyle`、`PhotosFlatTabs`、`PhotosFlatMenu` 和 `DevelopmentNumberField`。共享的 `AppIconButton`、`AppSectionHeader`、`AppHint`、`AppReadout` 见[原生实现](../../Sources/RAWMaster/DesignControls.swift)。
+2. **原语。** 检查器复用 `PhotosSliderRow`、`PhotosFlatButtonStyle`、`PhotosFlatCheckboxStyle`、`PhotosFlatMenu` 和 `DevelopmentNumberField`。成组的选项与命令使用 [AppTabs 与 AppButtonGroup](../../Sources/RAWMaster/AppButtonGroup.swift)。共享的 `AppIconButton`、`AppSectionHeader`、`AppHint`、`AppReadout` 见[原生实现](../../Sources/RAWMaster/DesignControls.swift)。
 3. **界面。** 组合已有控件和语义令牌，照片、节点及批次的作用域由各界面层绑定。
 
 新增控件前先检查原语清单；能组合就不新增类型。
@@ -40,7 +40,7 @@
 | `Metric.scaleHeight` | 6 | 滑杆下方刻度带，始终占位 |
 | `Metric.compactRowHeight` | 22 | 图层、预设、折叠分组 |
 | `Metric.sectionHeaderHeight` | 32 | 面板分组标题 |
-| `Metric.tabHeight` | 24 | 下划线分段标签 |
+| `Metric.tabHeight` | 24 | 分组按钮的整行高度 |
 | `Metric.iconButtonSize` | 26 | 只有图标的按钮命中区 |
 | `Metric.fieldHeight` | 21 | 集成在参数行的数字框 |
 | `Metric.checkboxSize` / `checkboxGlyph` | 14 / 9 | 平面勾选框与对勾 |
@@ -118,12 +118,14 @@
 - **状态**：选中用强调色描边与 12% 填充；悬停不上色，只保留可点光标；键盘聚焦用中性下划线或底色。
 - **代码**：`PhotosFlatCheckboxStyle`；新代码用 `AppFlatCheckboxStyle`。
 
-### 分段标签
+### 分组按钮
 
-- **使用时机**：2–5 个互斥视图切换，例如直方图/波形/矢量。
-- **解剖**：24pt 高、11pt、选中半粗并带 2pt 强调色下划线；间距 4。
-- **边界**：超过 5 项改用菜单；系统容器内的阶段切换可用 `.segmented`，但同一屏不要混用两种形态。
-- **代码**：`PhotosFlatTabs`；新代码用 `AppTabs`。
+- **使用时机**：2–5 个互斥选项，或作用相同的一组短命令。
+- **解剖**：24pt 高、11pt 字号。共用一个 7pt 圆角中性底板，相邻按钮之间用上下内缩的细线分隔，命中区连续。选中项使用强调色底色、文字和半粗字重。
+- **状态**：单项悬停、按压和键盘聚焦均限制在该项。禁用项保留位置与选中状态，方向键跳过禁用项。改变照片内容的选择先移焦，按空格或 Return 提交。
+- **边界**：不同作用的独立命令与分组留出行内间距。系统设置表单和文件面板沿用原生控件。
+- **代码**：`AppButtonGroup` 用于命令，`AppTabs` 用于互斥选项。
+- [分组按钮入口与走查](grouped-buttons.md)
 
 ### 菜单
 
@@ -169,7 +171,7 @@
 | 状态 | 规则 |
 | --- | --- |
 | 悬停 | 只作补充；不得承载唯一信息；无悬停能力的输入设备也能完成操作 |
-| 焦点 | Tab 顺序跟随视觉顺序，方向键在分段与滑块内移动。用中性下划线、底色或刻度提示焦点，文本输入保留插入点。选中态继续使用既有的强调色。详情见[工作台走查](../025-editing-workspace/editor-rails.md) |
+| 焦点 | Tab 顺序跟随视觉顺序，方向键在分组按钮和滑块内移动。分组按钮使用中性内描边，文本输入保留插入点。详情见[工作台走查](../025-editing-workspace/editor-rails.md) |
 | 按下 | 底色 17%；拖动期间只在开始与结束各触发一次手势与一次撤销 |
 | 禁用 | 不透明度 0.45；保留数值；工具提示说明原因 |
 | 非法输入 | 红框 + 范围说明；不写配方；Escape 恢复 |
@@ -214,7 +216,7 @@
 
 ## 资料库及导出控件
 
-浏览方式和交付方式采用 24pt 平面分段，当前项使用文字或可读图标、2pt 下划线。排序和选片筛选保留系统菜单行为，触发区使用 26pt 行高。选片勾选图形 14pt，整行保留鼠标和键盘操作范围。默认、悬停、按下分别使用 7%、12%、17% 中性填充。键盘焦点另有可见的中性轮廓或下划线。窗口收窄时保留主要操作与可读标签。系统文件对话框沿用 macOS 原生控件。
+浏览方式、交付方式和批量勾选命令使用 24pt 的[分组按钮](grouped-buttons.md)。排序和选片筛选保留系统菜单行为，触发区使用 26pt 行高。选片勾选图形 14pt，整行保留鼠标和键盘操作范围。窗口收窄时保留主要操作与可读标签。系统文件对话框沿用 macOS 原生控件。
 
 资料库网格仍可用 G/E/C 切视图、右键或从底栏更多操作，副本名可通过辅助功能读取。项目网格的单选底栏预留空间，VoiceOver 可在卡片上执行加入或移出选片。032 的选片勾选与预览焦点分开，方向键、空格和 Tab 各自执行原有操作。浏览器覆盖深色 390px 与浅色宽窗，原生窗口按产品要求的最小 1100 × 720 点复验。[库与导出的交互和截图](../025-editing-workspace/virtual-copies.md#浏览器验收)
 

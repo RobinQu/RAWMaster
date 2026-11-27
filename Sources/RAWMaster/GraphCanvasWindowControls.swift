@@ -88,9 +88,7 @@ final class GraphWindowMenu: NSPopUpButton {
     }
 }
 
-/// The SwiftUI glass samples its backing inside the panel. The native behind-window
-/// effect supplies the photo/desktop underneath this separate, transparent NSWindow.
-struct GraphPanelBackdrop: NSViewRepresentable {
+private struct GraphPanelBackdrop: NSViewRepresentable {
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
         view.material = .popover
@@ -110,9 +108,38 @@ struct GraphCanvasWindow<Content: View>: View {
             if !folded { content() }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .floatingSelectionSurface(cornerRadius: 0)
-        .background { GraphPanelBackdrop().allowsHitTesting(false).accessibilityHidden(true) }
+        .background {
+            AppPalette.panel.opacity(0.16)
+                .floatingSelectionSurface(cornerRadius: 0)
+                .background { GraphPanelBackdrop() }
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
         .workbenchFocusAppearance()
+    }
+}
+
+struct GraphCanvasGrid: View {
+    var scale: CGFloat = 1
+    var offset: CGSize = .zero
+
+    var body: some View {
+        Canvas { context, size in
+            let step = max(9, 20 * scale * (scale < 0.55 ? 4 : 1))
+            let x = offset.width.truncatingRemainder(dividingBy: step)
+            let y = offset.height.truncatingRemainder(dividingBy: step)
+            var grid = Path()
+            for column in stride(from: x, to: size.width, by: step) {
+                grid.move(to: CGPoint(x: column, y: 0)); grid.addLine(to: CGPoint(x: column, y: size.height))
+            }
+            for row in stride(from: y, to: size.height, by: step) {
+                grid.move(to: CGPoint(x: 0, y: row)); grid.addLine(to: CGPoint(x: size.width, y: row))
+            }
+            context.stroke(grid, with: .color(.primary.opacity(0.12)), lineWidth: 0.5)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 

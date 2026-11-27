@@ -200,7 +200,7 @@ small {
   background: var(--panel);
   border-bottom: 1px solid var(--line);
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   padding: 0 19px;
@@ -208,36 +208,54 @@ small {
   z-index: 2;
 }
 .chrome-navigation {
-  justify-self: start;
-}
-.workflow-switch,
-.switch {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: flex;
   gap: 2px;
-  padding: 3px;
-  border-radius: 8px;
-  background: var(--inset);
-  border: 1px solid var(--line);
+  min-width: 0;
 }
-.workflow-switch button,
-.switch button {
+.chrome-navigation .icon-btn {
+  flex: none;
+}
+.library-window-title {
+  text-align: start;
+  font-weight: 650;
   background: transparent;
-  border: 1px solid transparent;
-  color: var(--muted);
-  border-radius: 5px;
-  min-height: 27px;
+  border-color: transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
-.workflow-switch button {
-  min-width: 88px;
-  padding: 4px 14px;
+.library-package-path {
+  overflow-wrap: anywhere;
+  user-select: text;
 }
-.workflow-switch button[aria-pressed='true'],
-.switch button[aria-pressed='true'] {
-  background: var(--panel);
-  color: var(--accent);
-  box-shadow: 0 1px 3px #0002;
+.library-path-parents {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.library-path-parents li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  overflow-wrap: anywhere;
+}
+.library-folder-icon {
+  flex: none;
+  object-fit: contain;
+}
+.library-finder-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.library-finder-row .record { flex: 1; min-width: 0; }
+.library-switch-note {
+  margin-top: 10px;
+}
+.workflow-switch.button-group > button {
+  min-width: 72px;
 }
 .chrome-actions {
   display: flex;
@@ -1294,6 +1312,35 @@ dialog::backdrop {
 .jobs-page > .row {
   margin-top: 22px;
 }
+.library-welcome {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  overflow: auto;
+  padding: var(--edge);
+}
+.library-welcome .settings-box {
+  width: min(100%, 440px);
+}
+.library-welcome h1 {
+  margin: 0 0 10px;
+}
+.library-welcome .menu-list {
+  margin-top: 20px;
+}
+.record small,
+.library-welcome p {
+  overflow-wrap: anywhere;
+}
+.recent-heading {
+  margin-top: 20px;
+}
+.review-error:empty {
+  display: none;
+}
+.review-error {
+  margin-top: 8px;
+}
 .callout {
   padding: 10px 13px;
   background: var(--active);
@@ -1335,9 +1382,11 @@ dialog::backdrop {
     height: 52px;
     gap: 4px;
   }
-  .workflow-switch button {
+  .workflow-switch.button-group > button {
     min-width: 0;
-    padding: 4px 7px;
+  }
+  .library-window-title {
+    padding-inline: 3px;
     font-size: 12px;
   }
   .workflow-switch .icon {
@@ -1448,9 +1497,6 @@ dialog::backdrop {
   }
   .choice-grid {
     grid-template-columns: 1fr;
-  }
-  .utility-main .switch {
-    flex-wrap: wrap;
   }
   .frame-preview img {
     max-height: 170px;

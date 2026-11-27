@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | 资料库 | `libraryID` | 客户端创建，Server 登记 | 一库一所有者；不跨库引用 |
 | 设备 | `deviceID` | Server 登记 | 恢复副本生成新设备；旧令牌可撤销 |
-| 库所有权 | `libraryID + ownershipEpoch` | Server | 同一时间一个写者；旧 epoch 被 fencing 拒绝 |
+| 库所有权 | `libraryID + ownershipEpoch + recoveryGeneration` | Server | 同时授权一个设备上的一个 `replicaID`，旧授权代次拒绝写入 |
 | 操作 | `libraryID + commandID` | 客户端发起，Server 收据 | 重复只生效一次；同 ID 不同载荷拒绝 |
 | 内容 | `contentID = sha256 + byteCount` | 内容本身 | 不可变；跨库不去重 |
 | 上传意图 | `libraryID + uploadID` | Server | 未完成不可见；过期清理 |
@@ -22,10 +22,10 @@
 
 | 表 | 关键字段 | 说明 |
 | --- | --- | --- |
-| `libraries` | `library_id`、名称、`owner_device_id`、`ownership_epoch`、`quota_bytes`、`used_bytes`、`created_at` | 一库一所有者；`used_bytes` 由对象汇总维护 |
+| `libraries` | `library_id`、名称、`owner_device_id`、`owner_replica_id`、`ownership_epoch`、`quota_bytes`、`used_bytes`、`created_at` | 持久包实例授权。恢复切换使用新的 `recovery_generation`，与瞬态租约分开 |
 | `devices` | `device_id`、名称、`token_key_id`、登记时间、最后在线、撤销时间、客户端版本 | 当前令牌引用在 `device_tokens`；不存明文 |
 | `library_members` | `library_id`、`device_id`、角色 | V1 仅 owner；只读/转移预留 |
-| `library_leases` | `library_id`、`owner_device_id`、`epoch`、`fencing_token`、`acquired_at` | 可重建；恢复后清空或保留 epoch |
+| `library_leases` | `library_id`、`owner_device_id`、`replica_id`、`epoch`、`recovery_generation`、`fencing_token`、`acquired_at` | 瞬态可重建。恢复后清空，核对持久所有权后重新授权 |
 | `server_identity` | `ca_id`、`cert_serial`、`spki_sha256`、`not_before`、`not_after`、`status`、`secret_ref` | 公有证书可入元数据备份；私钥在 secret bundle |
 | `device_tokens` | `token_id`、`device_id`、`token_hash`、`token_key_id`、`created_at`、`last_used_at`、`revoked_at` | 随机不透明令牌；哈希入备份；保留轮换历史 |
 
@@ -40,7 +40,7 @@
 
 **操作语义。** 一条操作是客户端业务命令的不可变描述。Server 校验库所有权、`command_id`、`payload_version`、依赖和配额；在一个 PostgreSQL 事务中写入操作、收据和 outbox。客户端不直连数据库。
 
-**恢复对账。** Server 恢复到修订 `R` 后，客户端可补交 `R+1..N`；重复 `command_id` 去重。Server 有而客户端没有的操作由客户端拉取。单客户端单写者，不需要字段级冲突合并。
+**恢复对账。** 比较恢复代次、共同修订与命令收据。确认共祖后按 ID 补交或拉取，分岔或效果未知保留核对任务。副本身份与本机 bookmark 和文件身份的对应关系见[库包](local-library.md#已同步库的移动与拷贝)。
 
 ## 4. 对象、上传与归档引用
 
@@ -56,7 +56,7 @@
 
 ```text
 libraries/<libraryID>/objects/<sha256[0:2]>/<sha256>
-libraries/<libraryID>/staging/<uploadID>/<partNumber>
+libraries/<libraryID>/staging/<uploadID>/object
 libraries/<libraryID>/manifests/<generationID>.json
 ```
 
@@ -85,7 +85,7 @@ reserved
 
 - `CreateUpload` 在 PostgreSQL 写 intent；Server 创建 S3 multipart；返回 presigned part URL。
 - Direct part 和 Relay part 使用同一 `part_number`；Server 通过 `ListParts` 跳过已存在 part。
-- `CompleteUpload` 完成 multipart，HEAD 校验 key、长度、SHA-256；PostgreSQL 事务登记 `objects` 和 `archive_refs`。
+- `CompleteUpload` 完成暂存 multipart，核对整对象 SHA-256，条件发布到内容 key。PostgreSQL 在核对最新授权后登记 `objects` 和 `archive_refs`。
 - 重复 `CompleteUpload` 返回原收据；失败保留原因；过期 abort multipart。
 - S3 与 PostgreSQL 无分布式事务；用 intent 状态、内容寻址和孤儿对账保证最终一致。
 
@@ -109,7 +109,7 @@ reserved
 | `job_attempts` | `job_id`、`attempt`、`worker_id`、`state`、`error` | 租约与重试 |
 | `job_outputs` | `job_id`、`output_id`、`object_key`、`work_id`、`state` | 唯一发布 |
 
-1.0 只建立身份和表结构，不开放执行；1.1 按 [041](../041-server-image-editing/spec.md) 单独验收。
+1.0 预留身份。实际作业表、领取与发布契约按 [041](../041-server-image-editing/queues.md) 冻结，1.1 独立验收。
 
 ### 7.1 037／038／039 资源
 

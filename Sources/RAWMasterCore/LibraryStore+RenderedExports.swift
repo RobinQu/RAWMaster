@@ -98,6 +98,7 @@ extension LibraryStore {
   /// After this succeeds the renderer must retain this recognized stage on errors/cancellation.
   public func prepareRenderedExport(id: String, artifact: RenderArtifact, stagingURL: URL) throws -> RenderedExportRecord {
     try locked {
+      try requireLocalTask(.renderedExport, id: id)
       var existing = try renderedExport(id: id)
       if existing.preparedArtifact == nil, FileManager.default.fileExists(atPath: existing.targetURL.path) {
         existing.state = .needsAttention; existing.error = "目标文件已存在，未覆盖"; existing.updatedAt = Date()
@@ -131,6 +132,7 @@ extension LibraryStore {
   private func reconcileRenderedExport(id: String, publishStage: Bool) throws -> RenderedExportRecord {
     try transaction {
       var record = try renderedExport(id: id)
+      guard try !isHistoricalTask(.renderedExport, id: id) else { return record }
       do {
         try validateRenderedExportDestination(record)
         let work = try photoWork(id: record.workID), version = try editingVersion(id: record.versionID)
@@ -185,6 +187,7 @@ extension LibraryStore {
   }
   public func cancelRenderedExport(id: String) throws -> RenderedExportRecord {
     try locked {
+      try requireLocalTask(.renderedExport, id: id)
       var record = try reconcileRenderedExport(id: id, publishStage: false)
       if record.state == .succeeded { return record }
       record.state = .cancelled; record.updatedAt = Date()

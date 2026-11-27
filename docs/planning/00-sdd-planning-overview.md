@@ -10,6 +10,8 @@ Server 图像编辑作为独立规格：[041 Server 图像编辑模块](../../sp
 
 040／041 已对齐 main 的 037 色彩／HDR、038 DAG 工作流和 039 Rust scene backend：场景图、输出状态、模型前缀、模板／批次候选进入版本／备份；041 的 `image_scene_batch` 仍受 Linux／Vulkan scene executor 与色彩门约束。039 当前为 macOS Metal-only。
 
+图像引擎的后续统一与性能优化按 [043 图像引擎统一与后续性能优化](../../specs/043-image-engine-unification/spec.md)推进：同一 IR、算子注册、资源计划与回执，先测量与去重，再做点段融合、模型分块和空间算子；不改变 035–038 的持久化、颜色与界面契约。
+
 ## 最新下一批计划（2026-10-30）
 
 [20 原生制作工作台与可替换AI后端](20-native-ai-editing-next-batch.md)是结合本机实验后的最新提案：RAWMaster使用原生SwiftUI/AppKit界面，ComfyUI仅作为受管后台服务；按制作版本/任务底座、原生初修与AI候选、本地运行时、三家云编辑、成片导出/外部回流分段交付。复用已有工作台/外部副本/序列与延时功能，不按早期计划重复建设。具体证据见[18](18-comfyui-ai-backend-evaluation.md)，安装/供应商设计见[19](19-ai-runtime-and-cloud-providers.md)。

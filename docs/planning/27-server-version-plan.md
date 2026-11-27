@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-Server 托管多个互相独立的资料库，每个库只服务一个所有者客户端；不做共享库多端写，也不做跨库逻辑。客户端仍然是完整离线主工作区，Server 是长期归档、冷热访问、元数据备份和后续远程计算的节点。
+Server 托管多个独立资料库，每库授权一个可写副本。客户端是离线工作区，可在多个用户选址的库包之间逐一切换。Server 提供长期归档、冷热访问、元数据备份和后续远程计算。[042 本地客户端](../../specs/042-local-library-workbench/spec.md)
 
 > **gRPC 控制面 + S3 对象面 + PostgreSQL 元数据 + 自签名身份。**
 
@@ -25,7 +25,8 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 
 | 能力 | 用户结果 | 关键边界 |
 | --- | --- | --- |
-| 身份与所有权 | 自签名证书可信；一库一客户端；可转移 | 私有 CA／单证书；令牌哈希；epoch fencing |
+| 本机库包 | Finder 双击、选址创建、移动、拷贝、应用切换 | 单活动库，独立拷贝分配新身份 |
+| 身份与所有权 | 自签名身份和可转移的单写绑定 | 设备、包实例、所有权 epoch 和恢复代次 |
 | 归档 | 逐文件 S3 对象、引用、校验 | 只从封存纳入／恢复纳入；排除项零引用 |
 | Direct／Relay | 默认客户端直传 S3，失败自动 Relay | 同一 upload ID／part；Relay 不落完整本地文件 |
 | 冷热 | 代理浏览、按需取回、固定、释放 | 释放需对象可用、外部冷备、未固定、未同步、非唯一 |
@@ -36,14 +37,14 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 
 ## 4. 关键设计选择
 
-1. **一库一客户端。** 每库 `ownerDeviceID + ownershipEpoch`；第二客户端只读或申请转移。V1 不做共享库冲突合并。
-2. **gRPC 事务，S3 内容，PostgreSQL 元数据。** 客户端不直连 PostgreSQL；文件字节不进入 gRPC。
+1. **本机单活动库，Server 单写者。** 首次启动可创建本地库，或连接 Server 后新建／同步到选定位置。Server 写授权绑定设备和包实例。
+2. **gRPC 控制，S3 内容，PostgreSQL 元数据。** Direct 走 S3，Relay 传有界分块，业务事务由 PostgreSQL 提交。
 3. **Direct 默认，Relay 回退。** Direct 直传 RustFS／云 S3；传输失败按 part 自动 Relay；两种路径同一 upload ID 和 S3 multipart。
 4. **全 Server 全量元数据备份。** PostgreSQL 一致快照 + 对象清单 + checksums；恢复到隔离数据库，`metadata doctor` + 对象 HEAD；按库恢复后续。
 5. **自签名证书是正式方案。** 私有 CA + leaf，客户端固定 CA／SPKI；证书、令牌哈希入元数据备份；私钥、pepper、S3 凭据入加密 secret bundle。
 6. **存储可靠性外部化。** RAWMaster 不做 RAID／EC／跨站复制；TrueNAS 冷备负责介质与灾难恢复；RAWMaster 只做逻辑清单、哈希、引用和恢复。
 7. **Server 本地磁盘只放日志／临时。** PostgreSQL、S3 外部；Server 可容器化；Relay 流式，不落完整文件。
-8. **编辑／导出云端后置。** 本轮只做资料库；编辑云端见 [041 Server 图像编辑模块](../../specs/041-server-image-editing/spec.md)，导出后续单独设计。
+8. **先资料库协同，随后远端计算。** 040 先做传输和恢复，041 委派代理、渲染及生成式任务，交付写盘仍由 032 在本机完成。[双端队列](../../specs/041-server-image-editing/queues.md)
 
 2026-11-27 已把 main 的 [037 色彩／HDR](../../specs/037-color-film-hdr/spec.md)、[038 DAG 工作流](../../specs/038-node-dag-workflow/spec.md) 和 [039 Rust scene backend](../../specs/039-rust-scene-backend/spec.md) 纳入 040／041：场景图、输出状态、模型前缀、模板／批次候选随元数据保存；041 的 `image_scene_batch` 仍受 Linux／Vulkan scene executor 与色彩门约束。039 当前为 macOS Metal-only。
 
@@ -55,11 +56,11 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 | S1 · 控制面 | 自签名 CA、令牌、所有权、gRPC、PostgreSQL | 错误证书／令牌被拒；第二客户端不能写 |
 | S2 · 对象面 | 归档、Direct、Relay、校验、去重、引用 | 五文件样本；Direct／Relay 一致；断点不重复 |
 | S3 · 元数据备份 | doctor、快照、dump、对象清单、验证、隔离恢复 | 空 PostgreSQL 恢复；对象缺失报告；证书／令牌恢复 |
-| S4 · 冷热与过期 | 代理、取回、固定、释放、垃圾桶、客户端重连 | 冷片切换；释放门槛；旧备份不倒带 |
+| S4 · 同步与冷热 | 同步已有库、代理、取回、固定、释放、垃圾桶、客户端重连 | 选择位置并打开正确修订，冷片与恢复通过 |
 | S5 · 规模与运维 | 10TB／10GbE、证书轮换、secret bundle、演练 | 真实基线；未测规模不标完成 |
 | S5.1 · 远程作业 | 作业、能力、队列、结果 | Server 1.1 独立验收 |
 
-**Server 1.0 = S1 + S2 + S3 + S4。** 元数据恢复是 1.0 发布门，不是可选项。
+**本地客户端按 042 独立发布。** Server 客户端在该版本上接入，服务端需要 S1 至 S4 通过。
 
 ## 6. 用户可见入口
 
@@ -69,7 +70,7 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 - **照片／组／项目上下文**：归档状态、固定离线、取回原件、释放本地副本。
 - **导入完成摘要**：本次纳入／排除／仅序列／失败、可归档数量与字节、开始归档。
 
-现有预演：[资料库工具 → Server](../ui/prototype/index.html#tools/server)。原生实现前按 [AGENTS](../../AGENTS.md) 更新同一工作台并走查。
+预演从[首次打开](../ui/prototype/index.html?serverReview=1#welcome)开始。连接已有库后可查看 [RAWMaster Server](../ui/prototype/index.html?serverReview=1#tools/server) 和[制作任务](../ui/prototype/index.html?serverReview=1#jobs)。
 
 ## 7. 验收主线
 

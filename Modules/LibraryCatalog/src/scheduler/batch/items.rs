@@ -597,12 +597,18 @@ impl Request {
         let tx = db.transaction_with_behavior(TransactionBehavior::Deferred)?;
         let catalog = Catalog::read(&tx)?;
         let row = super::require(&tx, id, &catalog)?;
-        let available = row.writer_id == catalog.writer && target(&tx, &row)?.is_some();
+        let historical = !row.is_local(&catalog);
+        let available = !historical && target(&tx, &row)?.is_some();
         let now = super::super::now_ms()?;
         let entries = if available {
             (1..=row.item_count)
                 .map(|n| Ok(Item::load(&tx, &row, n)?.view(&row, now)))
                 .collect::<Result<Vec<_>>>()?
+        } else if historical {
+            let entries = (1..=row.item_count)
+                .map(|n| Item::load(&tx, &row, n))
+                .collect::<Result<Vec<_>>>()?;
+            entries.into_iter().filter(Item::terminal).map(|item| item.view(&row, now)).collect()
         } else {
             vec![]
         };

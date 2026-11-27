@@ -132,7 +132,7 @@ public final class EditingArchive: @unchecked Sendable {
     guard stored == receipt else { throw EditingError.archiveMismatch }
     try validateBytes(artifact, at: artifactURL(artifact))
   }
-  public func recoverPublications() throws -> [ArchivePublicationReceipt] {
+  public func recoverPublications(including eligible: (ArchivePublicationReceipt) throws -> Bool = { _ in true }) throws -> [ArchivePublicationReceipt] {
     lock.lock(); defer { lock.unlock() }
     let folder = try safeURL("receipts")
     var result: [ArchivePublicationReceipt] = []
@@ -144,6 +144,7 @@ public final class EditingArchive: @unchecked Sendable {
         url.lastPathComponent == id + ".json" else { continue }
       // Once recognized by its outer identity, a future/damaged recipe is an error, not junk.
       let receipt = try JSONDecoder().decode(ArchivePublicationReceipt.self, from:data)
+      guard try eligible(receipt) else { continue }
       try finishPublication(receipt); try validate(receipt); result.append(receipt)
     }
     return result
@@ -218,14 +219,14 @@ public final class EditingArchive: @unchecked Sendable {
     try validateBytes(received.artifact, at: url)
     return AIEditOutput(fileURL: url, artifact: received.artifact, configuration: received.configuration, remoteID: received.remoteID)
   }
-  func recoverReceivedOutputs() throws -> [ReceivedProcessingOutput] {
+  func recoverReceivedOutputs(including eligible: (ReceivedProcessingOutput) throws -> Bool = { _ in true }) throws -> [ReceivedProcessingOutput] {
     lock.lock(); defer { lock.unlock() }
     let directory = try safeURL("received-receipts")
     var result: [ReceivedProcessingOutput] = []
     for url in try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil).sorted(by: { $0.path < $1.path }) {
       guard url.pathExtension == "json", let data = try? Data(contentsOf: url),
         let received = try? JSONDecoder().decode(ReceivedProcessingOutput.self, from: data),
-        url.lastPathComponent == received.id + ".json" else { continue }
+        url.lastPathComponent == received.id + ".json", try eligible(received) else { continue }
       _ = try resolveReceivedOutput(received); result.append(received)
     }
     return result

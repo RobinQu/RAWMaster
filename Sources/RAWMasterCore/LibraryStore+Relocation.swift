@@ -148,10 +148,13 @@ extension LibraryStore {
           && FileSafety.canonical(base.appendingPathComponent(a.relativePath)).path == path
       }
       if canUseRoot {
+        let identity = try LocalDirectoryIdentity(selectedRoot)
         if result.role == .source {
           updated.effectiveSourceRoot = selectedRoot.path
+          updated.sourceDirectoryIdentity = identity
         } else {
           updated.effectiveManagedRoot = selectedRoot.path
+          updated.managedDirectoryIdentity = identity
         }
         try statement("UPDATE sessions SET data=? WHERE id=?", [try json(updated), updated.id])
       }

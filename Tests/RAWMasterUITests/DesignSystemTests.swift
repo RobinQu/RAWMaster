@@ -11,6 +11,8 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertEqual(AppDesign.Metric.compactRowHeight, 22)
         XCTAssertEqual(AppDesign.Metric.sectionHeaderHeight, 32)
         XCTAssertEqual(AppDesign.Metric.tabHeight, 24)
+        XCTAssertEqual(AppDesign.Metric.segmentDividerHeight, 14)
+        XCTAssertEqual(AppDesign.Metric.segmentDividerWidth, 1)
         XCTAssertEqual(AppDesign.Metric.iconButtonSize, 26)
         XCTAssertEqual(AppDesign.Metric.fieldHeight, 21)
         XCTAssertEqual(AppDesign.Spacing.row, 4)
@@ -49,6 +51,16 @@ final class DesignSystemTests: XCTestCase {
         host.layoutSubtreeIfNeeded()
         XCTAssertEqual(host.fittingSize.width, AppDesign.Metric.iconButtonSize, accuracy: 0.5)
         XCTAssertEqual(host.fittingSize.height, AppDesign.Metric.iconButtonSize, accuracy: 0.5)
+    }
+
+    @MainActor func testGroupedTabsKeepPublishedHeightAtLibraryWidth() {
+        let host = NSHostingView(rootView: AppTabs(title: "浏览方式", selection: .constant("单张"),
+                                                   options: ["网格", "单张", "比较"], label: { $0 })
+            .frame(width: 120))
+        host.frame = NSRect(x: 0, y: 0, width: 120, height: 64)
+        host.layoutSubtreeIfNeeded()
+        XCTAssertEqual(host.fittingSize.height, AppDesign.Metric.tabHeight, accuracy: 0.5)
+        XCTAssertEqual(host.fittingSize.width, 120, accuracy: 0.5)
     }
 
     /// 可选证据：设置 RAWMASTER_DESIGN_GALLERY_OUTPUT 后写出浅色与深色画廊截图。

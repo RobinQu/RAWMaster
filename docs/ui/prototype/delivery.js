@@ -27,7 +27,7 @@ function handoffDelivery(ids, source, { version, mode = 'render', companions = f
   if (!items.length) return;
   S.delivery = { source: Studio.scopeInfo(S.scope).title + ' / ' + source, mode, items };
   try {
-    sessionStorage.setItem('rawmaster.ui.delivery', JSON.stringify(S.delivery));
+    sessionStorage.setItem(deliveryStorageKey, JSON.stringify(S.delivery));
   } catch {}
   go('export');
 }
@@ -154,7 +154,7 @@ function clearDelivery() {
   S.delivery = null;
   S.exportKey = '';
   try {
-    sessionStorage.removeItem('rawmaster.ui.delivery');
+    sessionStorage.removeItem(deliveryStorageKey);
   } catch {}
   const blank = document.createElement('iframe');
   blank.id = 'export-frame';

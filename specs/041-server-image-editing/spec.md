@@ -1,10 +1,10 @@
 # 041 · Server 图像编辑模块
 
-2026-11-27 · **规划中，未开始实现。** 本文把 Server 图像编辑收窄为**非交互批处理**：客户端负责全部交互编辑；Server 负责代理生成、场景图／HDR／SDR 最终与批量渲染、确定性模型前缀和 Flux 等生成式任务。不做 Server 交互预览，不做客户端与 Server 同请求并行渲染。
+2026-11-27 · **规划中。** 编辑交互在本机。Server 可按能力接手确定的后台计算，包括代理、场景图／HDR／SDR 渲染、确定性模型前缀与 Flux。归档与同步由 040 交付。客户端复用 [042 本地队列](../042-local-library-workbench/spec.md#5-制作任务)，增加远端提交、回执核对与结果取回。
 
 Server 图像模块是资料库 Server 的可选能力：资料库基础始终可用；图像模块需要兼容 CUDA 的 NVIDIA GPU 作为硬件准入，影像渲染和计算使用 Vulkan 后端；生成式模型使用 CUDA AI 推理栈。客户端与 Server 队列语义见 [queues.md](queues.md)，技术方案见 [plan.md](plan.md)，任务见 [tasks.md](tasks.md)。
 
-[040 Server](../040-server/spec.md) · [037 色彩／胶片／HDR](../037-color-film-hdr/spec.md) · [038 Node DAG](../038-node-dag-workflow/spec.md) · [039 Rust scene backend](../039-rust-scene-backend/spec.md) · [035 可移植处理内核](../035-portable-processing-cores/spec.md) · [024 显示代理](../024-jpeg-display-proxy/plan.md) · [现有基础](evidence.md)
+[本机任务盘点](../042-local-library-workbench/task-inventory.md) · [Server 作业原型](../../docs/ui/prototype/index.html?serverReview=1#tools/server) · [走查](validation.md#制作任务与远端结果走查) · [040 Server](../040-server/spec.md) · [037 色彩／胶片／HDR](../037-color-film-hdr/spec.md) · [038 Node DAG](../038-node-dag-workflow/spec.md) · [039 Rust scene backend](../039-rust-scene-backend/spec.md) · [035 可移植处理内核](../035-portable-processing-cores/spec.md) · [024 显示代理](../024-jpeg-display-proxy/plan.md) · [现有基础](evidence.md)
 
 ## 1. 结论
 
@@ -14,8 +14,9 @@ Server 图像模块是资料库 Server 的可选能力：资料库基础始终�
 4. **场景图与旧 SDR 兼容路线分开。** `DevelopmentRecipe` schema 4 `sceneGraph`、输出状态、模型前缀和模板／批量候选必须随版本保存；旧 SDR 兼容配方不得静默迁移为场景图。
 5. **色彩门。** Server final／batch 必须消费 037 的色彩管理契约；HDR AVIF 10 位 Rec.2020／PQ 与 SDR JPEG/PNG16 分别求值。未过门的 Server final 只作候选／诊断，不自动采用。
 6. **CUDA 准入、Vulkan 影像。** 图像模块要求 NVIDIA CUDA GPU；`rawmaster-image` 在 Linux 使用 Vulkan；Flux 使用 CUDA AI 栈。**039 的 Rust scene executor 当前是 macOS Metal-only，Linux／Vulkan scene executor 尚未实现。**
-7. **队列各自持久化。** 客户端复用 `CatalogTaskQueue` 与 `SceneWorkflowBatch` 语义并扩展为背景队列；Server 使用 PostgreSQL 作业队列；通过 gRPC 协同，不共享队列数据库。
-8. **资料库与图像能力解耦。** 没有 GPU 的 Server 仍完整提供归档、取回、元数据和恢复；客户端隐藏图像批处理入口，不静默降级。
+7. **队列各自持久化。** 客户端以已有的会话、032 交付、`ProcessingJob` 和场景批次为业务记录，复用 `CatalogTaskQueue` 的租约和外部发布语义。Server 用 PostgreSQL 保存执行状态，通过 gRPC 同步状态和收据。
+8. **资料库与计算分别准入。** 无 GPU 的 Server 仍支持归档、取回、元数据和恢复。用户选择 Server 执行时可看到相应能力与禁用原因。本机操作继续可用。
+9. **交付由本机完成。** 已验收的远端渲染可返回成片字节。032 负责本地命名、目录授权、文件发布及逐项交付回执。生成结果和场景批次结果进入对应来源的候选。
 
 ## 2. 用户故事
 
@@ -46,6 +47,8 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 ### US5 · 队列可见、可取消、可恢复（P0）
 
 用户能看到客户端背景任务、`SceneWorkflowBatch` 批次和 Server 作业的状态、队列位置、取消和重试。关闭窗口、断网、重启后任务不丢失；不确定结果先核对，不重复提交。
+
+从资料库、编辑或导出进入顶栏「制作任务」，看到当前库中的导入、交付、分组、AI 与远端作业。模型安装标出设备作用域。查看详情、取消或核对后回到原选片／编辑／交付。切到另一库时远端已接收的作业继续，同库重开再补差。[队列界面与状态](queues.md#5-可见性与验收)
 
 **独立验收。** 客户端重启恢复本地任务；场景批量批次保留候选／head 冲突；Server 重启后作业可续／重试；重复提交同 ID 只生效一次；取消不产生半成品；未知结果不自动重发。
 
@@ -79,9 +82,9 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 ### 3.3 批处理作业
 
 - **IMG-R20 · 作业类型。** `proxy.generate`、`scene.proxy`、`scene.render.final`、`scene.render.batch`、`legacy.render.final`、`model.prefix`、`generative`；交互编辑不是作业类型。
-- **IMG-R21 · 冻结输入。** 作业冻结原件 `contentID`、场景图／旧配方、输出状态、SDR 派生、模型前缀、模板／批量身份、目标 head、引擎／模型和交付规格；输入变化即过期。
+- **IMG-R21 · 冻结输入。** 作业冻结原件 `contentID`、场景图／旧配方、输出状态、SDR 派生、模型前缀、模板／批量身份、目标 head、引擎／模型和交付规格。之后的编辑使结果成为原输入的旧候选。
 - **IMG-R22 · 幂等提交。** 客户端 `jobID` 稳定；Server 按 `(libraryID, jobID)` 去重；同 ID 不同请求拒绝。
-- **IMG-R23 · 结果发布。** 输出先写 S3 暂存、校验、再登记派生资源／版本；同一作业只发布一次；HDR AVIF 与 SDR JPEG/PNG16 分别记录 target、format、位深、ICC／CICP；场景输出附 execution receipt（tiles、cache hits、dispatches、budget、peak bytes、CPU time）。
+- **IMG-R23 · 结果发布。** 输出经 S3 暂存与校验后登记远端作业收据，同一逻辑作业只发布一次。HDR AVIF 与 SDR JPEG/PNG16 分别记录 target、format、位深、ICC／CICP。场景输出附 execution receipt（tiles、cache hits、dispatches、budget、peak bytes、CPU time）。客户端校验后登记所属业务结果。
 - **IMG-R24 · 候选采用。** 结果不自动改变当前采用版本；用户明确采用或导出；旧结果可回看；`SceneWorkflowBatch` 的候选／head 冲突保留。
 - **IMG-R25 · 取消与重试。** 取消协作式；未发布暂存可清理；重试沿用原输入；不确定结果先核对。
 - **IMG-R26 · 队列公平。** 每库配额、加权公平、优先级；一个库的大批任务不能占满所有 GPU；library lane 保留。
@@ -89,12 +92,12 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 
 ### 3.4 队列与协同
 
-- **IMG-R28 · 客户端背景队列。** 复用／扩展 `CatalogTaskQueue` 的持久任务、租约、重试和 `SceneWorkflowBatch` 的 review／register／commit／cancel／retry／undo；不另造不兼容批次。
+- **IMG-R28 · 远端任务入口。** 在 [042 本地队列](../042-local-library-workbench/spec.md#5-制作任务) 上增加持久提交意图、远端作业状态、核对与取回，复用批次和结果登记。
 - **IMG-R29 · Server 作业队列。** 持久化、能力匹配、租约、心跳、重试、取消、发布、过期；资料库、scene／legacy、generative 分 lane。
 - **IMG-R30 · 两边不共享队列。** 客户端只保存本地任务、场景批次和作业镜像；Server 是作业执行状态权威；不直连数据库。
 - **IMG-R31 · 状态同步。** gRPC 提交／查询／watch；客户端按事件更新本地；重复事件幂等；断线重连补差。
 - **IMG-R32 · 背压。** Server 队列满、显存不足、能力缺失返回明确错误；客户端延后或提示，不无限重试。
-- **IMG-R33 · 取消传播。** 客户端取消 → Server 协作取消 → 结果不发布；Server 已完成则按核对流程处理。
+- **IMG-R33 · 取消传播。** Server 用同一作业记录裁决取消和发布。离线保留取消意图，发布先完成时取原收据。
 - **IMG-R34 · 结果取回。** 结果通过 S3 presigned／Relay 下载；客户端校验 SHA-256 后登记候选；不把预览当母版。
 - **IMG-R35 · 可见性。** 用户能看到本地任务、场景批次和 Server 作业的队列、运行、失败、待核对；不伪造 ETA。
 
@@ -113,11 +116,13 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 | --- | --- | --- |
 | Q0 · 契约 | 代理契约、客户端／Server 队列、场景图／输出状态／模型前缀作业信封、能力清单、色彩门 | 评审通过；无未决 P0 |
 | Q1 · 代理无感 | displayProxy／editProxy／sceneProxy 预取、缓存、本地生成、离线 | 冷片／HDR 进入编辑无空白；1:1 用原件 |
-| Q2 · 客户端队列 | `CatalogTaskQueue` + `SceneWorkflowBatch` 扩展、优先级、去重、取消、重试、重启恢复 | 前台不受影响；批次不丢；取消无半成品 |
+| Q2 · 远端作业的客户端接入 | 复用 042，增加提交意图、镜像、断线核对和结果取回 | 同一任务可在关闭和重开库后核对，回到原批次或照片 |
 | Q3 · Server 队列 | PostgreSQL 作业、能力匹配、scene／legacy lane、租约、发布 | 作业幂等、公平、重启恢复 |
 | Q4 · scene／HDR 批处理 | Linux scene executor（或明确关闭）、tiling／前缀缓存／receipt、`scene.render.*`、模型前缀、HDR AVIF／SDR 派生 | 场景图／HDR 输出候选；色彩门通过；旧 SDR 不迁移；60MP 基线 |
 | Q5 · 生成式 | Flux/CUDA 队列、模型能力、结果候选 | 缺模型禁用；结果绑定；取消／重试 |
 | Q6 · 运维 | 10TB／10GbE、GPU 配额、监控、恢复、feature flags | 真实基线；未测能力不标完成 |
+
+[042](../042-local-library-workbench/spec.md) 可独立发布并负责本机任务验收。040 先交付归档／取回。Q3 以已归档的单张照片作为首条远端计算闭环，Q4 与 Q5 各自验收所需能力。
 
 ## 5. 验收场景
 
@@ -148,7 +153,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 
 - Server 交互编辑、逐滑杆 RPC、帧流、会话级 GPU 缓存。
 - 客户端与 Server 同一编辑请求并行渲染。
-- 跨库队列共享、团队调度、多租户公平。
+- 跨库共享任务记录、团队作业协作。
 - 在色彩门通过前把 Server scene final 自动采用为当前版本。
 - 无 NVIDIA CUDA GPU 时启用 Server 图像模块。
 - 用 SDR displayProxy 代替颜色敏感或 HDR 编辑。
@@ -175,6 +180,7 @@ Server 在线或离线都不改变本地滑杆、曲线、蒙版、裁切、撤�
 ## 9. 参考
 
 - [Server 图像编辑队列语义](queues.md)
+- [本机异步任务盘点](../042-local-library-workbench/task-inventory.md)
 - [技术方案](plan.md)
 - [任务与发布门](tasks.md)
 - [现有基础与缺口](evidence.md)

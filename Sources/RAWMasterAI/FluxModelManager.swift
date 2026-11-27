@@ -228,6 +228,12 @@ public final class FluxModelManager: ObservableObject {
         status = .paused
     }
 
+    public func pauseAndJoin() async {
+        let current = task
+        pause()
+        await current?.value
+    }
+
     public func resume() {
         guard status == .paused else { return }
         start()

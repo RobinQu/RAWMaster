@@ -17,6 +17,7 @@
 | [037 色彩、胶片与 HDR](../037-color-film-hdr/spec.md) | 来源准入、颜色空间和成像、版本与查看状态、显示诊断及文件信号。 |
 | [038 DAG 工作流](../038-node-dag-workflow/spec.md) | 版本化图、命令、预览与最终根、模板及批量。 |
 | [039 Rust 场景后端](../039-rust-scene-backend/spec.md) | 038 图的 Rust 编译和执行、Metal 资源、严格模式与回执。 |
+| [043 图像引擎统一](../043-image-engine-unification/spec.md) | 035–039 的后续统一 IR、算子注册、资源计划、点段融合与性能演进；不改变既有持久化、颜色和 UI 契约。 |
 | [039 界面规范](../039-design-system/spec.md) | HDR、Graph 和 032 使用的控件、焦点、状态、辅助功能与原型证据。保留现有目录名，引用 039 时写明全名。 |
 
 当前产品把 SDR、HDR 和黑白放在同一照片的「色彩外观」内。当前图、显示目标和交付输入各有独立身份。编辑和资料库都能冻结自动保存的 HDR 草稿。显式查看旧结果时可导出该结果。检查器、示波器与 032 的本次实拍交付共用这一约定。[编辑与成片复验](../025-editing-workspace/appearance-acceptance.md) · [两条管线的参数覆盖](../037-color-film-hdr/evidence/appearance-roundtrip-20261127.md)

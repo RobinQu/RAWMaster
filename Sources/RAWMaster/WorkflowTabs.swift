@@ -86,37 +86,22 @@ struct WorkflowTabs: View {
     @EnvironmentObject var model: AppModel
 
     var body: some View {
-        HStack(spacing: 3) {
-            ForEach(WorkbenchWorkflow.allCases, id: \.self) { workflow in
-                let selected = model.activeWorkbenchWorkflow == workflow
-                Button { model.activateWorkflow(workflow) } label: {
-                    Text(workflow.title)
-                        .font(.system(size: 12, weight: selected ? .semibold : .medium))
-                        .foregroundStyle(selected ? Color.primary : Color.secondary)
-                        .padding(.horizontal, 15)
-                        .frame(minHeight: 28)
-                        .background {
-                            if selected {
-                                Capsule()
-                                    .fill(AppPalette.accent.opacity(0.14))
-                                    .overlay(Capsule().stroke(AppPalette.accent.opacity(0.20), lineWidth: 0.5))
-                            }
-                        }
-                        .contentShape(Capsule())
-                        .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
-                }
-                .buttonStyle(.plain)
-                .disabled(workflow == .edit && !model.isNativeEditing && !model.canOpenNativeEditing && model.focusedAsset == nil
-                    || workflow == .export && !model.canOpenWorkbenchExport)
-                .accessibilityLabel(workflow.title)
-                .accessibilityIdentifier("workflow." + workflow.rawValue)
-                .accessibilityAddTraits(selected ? .isSelected : [])
-            }
+        AppButtonGroup(title: "工作流", options: WorkbenchWorkflow.allCases, selection: model.activeWorkbenchWorkflow,
+                       stretches: false, isDisabled: { disabledReason($0) != nil },
+                       help: { disabledReason($0) ?? $0.title }, identifier: { "workflow." + $0.rawValue },
+                       action: model.activateWorkflow) { workflow in
+            Text(workflow.title)
         }
-        .padding(3)
-        .background(.regularMaterial, in: Capsule())
-        .overlay(Capsule().stroke(AppPalette.boundary.opacity(0.55), lineWidth: 0.5))
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("工作流")
+    }
+
+    private func disabledReason(_ workflow: WorkbenchWorkflow) -> String? {
+        switch workflow {
+        case .edit where !model.isNativeEditing && !model.canOpenNativeEditing && model.focusedAsset == nil:
+            return "选择一张照片后进入编辑"
+        case .export where !model.canOpenWorkbenchExport:
+            return "打开可用的资料库后进入导出"
+        default:
+            return nil
+        }
     }
 }

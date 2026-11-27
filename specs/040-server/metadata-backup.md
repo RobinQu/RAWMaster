@@ -161,7 +161,7 @@ backups/metadata/<generationID>/
 4. 按对象清单 HEAD S3：检查 key、长度、SHA-256；分类 `present`、`missing`、`corrupt`。
 5. 重置瞬态：
    - `upload_intents` 全部 `expired`，abort multipart；
-   - `library_leases` 清空或保留 epoch；
+   - 清空 `library_leases`，保留备份的逻辑所有权记录用于核对。生产切换时生成全新 `recoveryGeneration`，使已签发的旧 token 与 worker lease 失效。
    - 运行中 `jobs` → `reconcile`；
    - `outbox` 重建；
    - `objects.state` 按 S3 核对结果更新。
@@ -173,10 +173,9 @@ backups/metadata/<generationID>/
 
 一库一客户端，不需要多写冲突合并：
 
-- Server 恢复到修订 `R`；客户端有 `R+1..N` 未发送操作：按 `command_id` 补交，Server 顺序接受。
-- Server 有客户端没有的操作：客户端拉取到最新修订。
-- 重复 `command_id` 去重；不重复产生效果。
-- `ownership_epoch` 不匹配：拒绝写入，要求显式转移。
+- 比较恢复代次、设备、包实例、授权 epoch 和共同修订的收据摘要。先完成只读对账。备份点后发生过转移或撤销时，由管理员按保留的记录确认当前设备与包实例后再开放写授权。
+- 确认共同修订 `R` 后，纯目录操作可按 `command_id` 逐项证明并补交，Server 领先时客户端拉取。重复 ID 同载荷去重，历史分岔进待核对。
+- 归档、生成或其他外部效果使用原命令／对象／作业收据核对。找不到备份点后的作业仍可能已发生。未确定效果前保留待核对。[041 双端协同](../041-server-image-editing/queues.md#4-双端协同)
 - 客户端也丢失：恢复到备份点；报告丢失窗口，不假装完整。
 
 ### 6.4 对象缺失与重绑定
@@ -235,7 +234,7 @@ backups/metadata/<generationID>/
 7. 换 bucket／endpoint：重绑定后对象全部 HEAD 通过；缺项列出。
 8. 场景图／HDR：恢复含 `sceneGraph`、输出状态、模型前缀、模板／批量候选的版本；HDR AVIF 与 SDR JPEG/PNG16 的 target／format／位深／ICC／CICP 保留；旧 SDR 兼容记录不变。
 9. 10TB 级：记录备份、恢复、doctor、全量 HEAD 时长和临时磁盘占用；不以单次结果外推 100TB。
-9. 加密：备份静态加密；错误密钥不能解密；日志不含密钥／令牌。
+10. 加密：备份静态加密。错误密钥不能解密。日志不含密钥／令牌。
 
 ## 10. 待决
 

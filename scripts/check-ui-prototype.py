@@ -43,6 +43,8 @@ def main():
     parser.add_argument("--native-graph-only", action="store_true", help="Walk through the editable scene DAG native-review slice.")
     parser.add_argument("--workflow-batch-only", action="store_true", help="Walk the native-template/batch review entry in the workbench.")
     parser.add_argument("--scene-scopes-only", action="store_true", help="Walk through HDR scopes and diagnostics in the native-review prototype.")
+    parser.add_argument("--local-library-only", action="store_true", help="Walk through local library packages and task recovery without the Server review.")
+    parser.add_argument("--library-server-only", action="store_true", help="Walk through library packages, first startup, and client/Server job recovery.")
     args = parser.parse_args()
     editing_only = args.editing_only
     cli = shutil.which("agent-browser")
@@ -69,6 +71,8 @@ def main():
       const hash=async path=>{location.hash=path;await wait(()=>location.hash==='#'+path);await new Promise(ok=>setTimeout(ok,35));};
       const page=async selector=>wait(()=>document.body.dataset.route===(decodeURI(location.hash.slice(1))||'library/project/river')&&el(selector)?.checkVisibility());
       const modal=()=>el('#sheet');
+      const confirmLibrarySwitch=(choice='pause')=>act('package-switch-confirm',choice,modal());
+      const openTaskBoard=()=>{act('activity-open');act('activity-tab','tasks');act('activity-jobs',null,el('#activity-window'));};
       const openResults=()=>{if(!el('.results-menu').open)tap('.results-menu summary');act('open-versions',null,el('.results-menu'));};
       const showDiagnostics=()=>{if(!el('.scope-native-review').open)tap('.scope-native-review summary');};
       const hdrView=value=>act('scene-view',value,el('.scene-previews'));
@@ -115,6 +119,278 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.local_library_only:
+                browser(*options, "open", host + ENTRY + "?batchNativeReview=1#welcome")
+                browser("set", "viewport", "1280", "800")
+                scenario("本机首次打开、选址与空任务", """
+                  await page('.library-welcome');assert(!el('[data-act=package-server]')&&!el('.workflow-switch'),'local startup without a connected service');
+                  const opener=el('[data-act=package-new]');opener.focus();act('package-new');
+                  assert(document.activeElement.name==='packageName','new package receives keyboard focus');
+                  act('close','',el('.dialog-foot',modal()));await wait(()=>document.activeElement===opener);
+                  act('package-new');set('[name=packageFolder]','invalid');act('package-create','');
+                  assert(el('[role=alert]',modal()).textContent.includes('本机目录'),'invalid path is reported');
+                  set('[name=packageFolder]','/Volumes/照片盘');act('package-create','');await page('.empty');
+                  assert(packageLocation().path==='/Volumes/照片盘/旅行资料库.rawmasterlibrary','chosen location');
+                  assert(el('[data-act=workflow][data-val=edit]').disabled&&el('[data-act=workflow][data-val=export]').disabled,'empty library controls');
+                  openTaskBoard();await page('.jobs-page .empty');
+                  act('library-menu');assert(!el('[data-act=package-server]',modal()),'local library menu');
+                  act('package-recent','本机资料库');
+                  assert(el('#sheet-title').textContent==='切换资料库？'&&modal().textContent.includes('旅行资料库')&&packageLabel(Studio.data)==='旅行资料库','confirmation keeps the current library');
+                  act('close',null,el('.dialog-foot',modal()));await wait(()=>document.activeElement.dataset.act==='library-menu');
+                  act('library-menu');act('package-recent','本机资料库');confirmLibrarySwitch();await page('.photo-card');act('photo','b1');
+                """)
+                scenario("库包离线、移动与 Finder 双击", """
+                  const travel=availablePackages().find(p=>packageLabel(p)==='旅行资料库');
+                  act('library-menu');act('package-recent',packageLocation(travel).id);confirmLibrarySwitch();await page('.empty');
+                  await hash('tools/package');tap('.utility-main summary');act('package-finder');
+                  act('package-file','move/本机资料库');set('[name=finderFolder]','/Volumes/样片 SSD');act('package-file-apply','move/本机资料库');
+                  act('package-volume','本机资料库');act('package-finder-open','本机资料库');
+                  assert(el('#sheet-title').textContent==='资料库包不可用'&&packageLabel(Studio.data)==='旅行资料库','offline keeps current library');
+                  act('close',null,modal());act('package-finder');act('package-volume','本机资料库');
+                  el('[data-act=package-finder-open][data-val="本机资料库"]',modal()).dispatchEvent(new MouseEvent('dblclick',{bubbles:true,detail:2}));
+                  confirmLibrarySwitch();
+                  await page('.photo-card');
+                  assert(packageLocation().libraryID==='本机资料库'&&packageLocation().path.startsWith('/Volumes/样片 SSD/')&&activeBrowser().focus==='b1','moved library retains identity and focus');
+                  await hash('tools/server');await page('.utility-main');
+                  assert(el('.utility-main h1').textContent==='资料库与备份'&&!el('[data-val="tools/server"]'),'review route disabled in local workbench');
+                """)
+                scenario("本机批次切库暂停、继续和撤销", """
+                  await hash('library/project/river');await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
+                  const selected=activeIDs().join();
+                  act('selection-menu');act('dag-batch-menu',null,modal());tap('.dag-menu-advanced summary',modal());
+                  act('dag-batch-samples','20',modal());act('dag-batch-preflight',null,modal());act('dag-batch-start',null,modal());
+                  const batch=Studio.data.dagBatches.at(-1), firstVersion=batch.items[0].version;
+                  act('close',null,modal());act('library-menu');
+                  const travel=availablePackages().find(p=>packageLabel(p)==='旅行资料库');act('package-recent',packageLocation(travel).id);
+                  assert(modal().textContent.includes('批量工作流')&&document.activeElement.dataset.val==='wait','wait is the first choice');
+                  confirmLibrarySwitch('wait');assert(el('.library-switch-tasks',modal()).textContent==='批量工作流'&&batch.running,'original runs while waiting');
+                  act('close',null,el('.dialog-foot',modal()));
+                  assert(batch.running&&activeIDs().join()===selected,'cancel waiting preserves the library and task');
+                  act('library-menu');act('package-recent',packageLocation(travel).id);confirmLibrarySwitch();
+                  await page('.empty');assert(batch.paused&&!batch.running&&batch.items.some(i=>i.state==='pending'),'checkpoint before switch');
+                  openTaskBoard();await page('.jobs-page .empty');
+                  act('library-menu');act('package-recent','本机资料库');confirmLibrarySwitch();await page('.photo-card');
+                  assert(activeIDs().join()===selected,'restores selection before batch');
+                  openTaskBoard();await page('.jobs-page');
+                  assert(el('.jobs-page').textContent.includes('已暂停')&&el('[data-act=intake-task-detail][data-val="card-b"]'),'task list projects batch and import');
+                  const intake=Studio.session('card-b');intake.state='paused';
+                  act('intake-task-detail','card-b');
+                  assert(modal().textContent.includes('已暂停')&&el('[data-val="library/triage/card-b"]',modal()),'import detail shows checkpoint and session link');
+                  act('intake-task-continue','card-b',modal());assert(intake.state==='open'&&modal().textContent.includes('接入完成'),'continue original import session');
+                  act('close',null,modal());
+                  act('dag-batch-results',batch.id);assert(el('[data-act=dag-batch-retry]',modal()).textContent.includes('继续未完成项'));
+                  act('dag-batch-retry',batch.id,modal());await wait(()=>!batch.running);
+                  assert(batch.items.every(i=>i.state==='done')&&batch.items[0].version===firstVersion,'reuses original completed item');
+                  act('dag-batch-undo',batch.id,modal());
+                  assert(batch.items.every(i=>i.state==='undone'),'batch undo stays with original library');
+                  act('close',null,modal());act('goto','library/project/river',el('.jobs-page'));await page('.photo-card');
+                  assert(activeIDs().join()===selected,'returns to the original work area');
+                """)
+                scenario("已关闭库的独立拷贝与设备任务", """
+                  await hash('settings/runtime');await page('[name=fluxLicense]');set('[name=fluxLicense]',true);act('flux-start');act('flux-pause');
+                  const travel=availablePackages().find(p=>packageLabel(p)==='旅行资料库');
+                  act('library-menu');act('package-recent',packageLocation(travel).id);confirmLibrarySwitch();await page('.empty');
+                  await hash('tools/package');tap('.utility-main summary');act('package-finder');
+                  act('package-file','copy/本机资料库');act('package-file-apply','copy/本机资料库');
+                  const copy=availablePackages().find(p=>packageLocation(p).copyOf==='本机资料库'), copyID=packageLocation(copy).id;
+                  act('package-finder-open',copyID);assert(el('#sheet-title').textContent.includes('独立本地库'),'explicit copy action');
+                  act('package-fork',copyID);confirmLibrarySwitch();await page('.photo-card');
+                  assert(packageLocation().libraryID!=='本机资料库'&&!Studio.data.dagBatches.length,'copy has no runnable batches');
+                  assert(availablePackages().find(p=>packageLocation(p).id==='本机资料库').dagBatches.length===1,'source retains its records');
+                  openTaskBoard();await page('.jobs-page');
+                  assert(el('.jobs-page').textContent.includes('设备 · 已暂停'),'device task crosses libraries');
+                """)
+                scenario("等待批次完成才切库，标题路径随库切换", """
+                  await hash('library/project/river');await page('.photo-card');
+                  act('photo','r1');act('multi');act('photo','b1');
+                  act('selection-menu');act('dag-batch-menu',null,modal());tap('.dag-menu-advanced summary',modal());
+                  act('dag-batch-samples','20',modal());act('dag-batch-preflight',null,modal());act('dag-batch-start',null,modal());
+                  const batch=Studio.data.dagBatches.at(-1), source=packageLocation().id;
+                  act('close',null,modal());act('library-menu');
+                  const travel=availablePackages().find(p=>packageLabel(p)==='旅行资料库');
+                  act('package-recent',packageLocation(travel).id);confirmLibrarySwitch('wait');
+                  assert(packageLocation().id===source&&batch.running&&!batch.paused,'only the original stays open while waiting');
+                  await page('.empty');
+                  assert(!batch.running&&!batch.paused&&batch.items.every(i=>i.state==='done'),'batch finished before activation');
+                  const title=el('.library-window-title');
+                  assert(title.textContent==='旅行资料库','title follows the active library');
+                  title.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,button:2}));
+                  assert(modal().open&&el('.library-package-path',modal()).textContent===packageLocation().path
+                    &&el('.library-path-parents',modal()).textContent.includes('照片盘'),'right-click lists package and enclosing locations');
+                  const folderIcon=el('.library-path-parents li:first-child img');
+                  await wait(()=>folderIcon?.naturalWidth>0);
+                  assert(all('.library-path-parents img').length===1&&el('.library-path-parents li:nth-child(2) svg'),
+                    'only the active library has the branded folder icon');
+                  act('close',null,el('.dialog-foot',modal()));await wait(()=>document.activeElement===title);
+                  act('library-menu');act('package-recent',source);confirmLibrarySwitch();await page('.photo-card');
+                """)
+                scenario("提交本机批次并保留逐项检查点", """
+                  await hash('library/project/river');await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
+                  act('selection-menu');act('dag-batch-menu',null,modal());tap('.dag-menu-advanced summary',modal());
+                  act('dag-batch-samples','200',modal());act('dag-batch-preflight',null,modal());act('dag-batch-start',null,modal());
+                  assert(Studio.data.dagBatches.at(-1).items[0].state==='done','first output persisted');
+                  act('close',null,modal());openTaskBoard();await page('.jobs-page');
+                """)
+                browser("reload")
+                scenario("重开后查看并取消本机批次余项", """
+                  await page('.jobs-page');
+                  const batch=Studio.data.dagBatches.at(-1);
+                  assert(batch.paused&&!batch.running&&batch.items.some(i=>i.state==='pending'),'running attempt becomes paused after reload');
+                  act('dag-batch-results',batch.id);assert(modal().textContent.includes('已暂停'),'paused detail');
+                  const version=batch.items[0].version;act('dag-batch-cancel',batch.id,modal());
+                  assert(batch.items[0].state==='done'&&batch.items[0].version===version&&batch.items.some(i=>i.state==='cancelled'),'cancellation holds completed citations');
+                  act('close',null,modal());
+                """)
+                browser("set", "viewport", "390", "844")
+                for theme in ("light", "dark"):
+                    browser("set", "media", theme)
+                    browser("focus", "[data-act=library-menu]")
+                    browser("press", "Enter")
+                    scenario(f"本地菜单 390px {theme} 与键盘焦点", """
+                      assert(modal().open&&modal().getBoundingClientRect().right<=innerWidth,'library menu fits narrow viewport');
+                      assert(document.activeElement.dataset.act==='package-new'&&document.documentElement.scrollWidth<=innerWidth,'initial focus and no overflow');
+                    """)
+                    browser("press", "Tab")
+                    browser("press", "Escape")
+                    scenario(f"本地菜单 {theme} 关闭后返回入口", """
+                      assert(!modal().open&&document.activeElement.dataset.act==='library-menu','keyboard focus restored');
+                    """)
+                    browser("focus", "[data-act=package-title-path]")
+                    browser("press", "Enter")
+                    scenario(f"资料库标题路径 390px {theme}", """
+                      assert(modal().open&&el('.library-package-path',modal()).textContent===packageLocation().path,
+                             'title is available to keyboard and displays the current path');
+                      assert(modal().getBoundingClientRect().right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth,
+                             'path stays inside the narrow window');
+                    """)
+                    browser("press", "Escape")
+                    scenario(f"资料库标题 {theme} 关闭路径后恢复焦点", """
+                      assert(!modal().open&&document.activeElement.dataset.act==='package-title-path','path dismissal restores title focus');
+                    """)
+                check_browser_errors()
+                return
+            if args.library_server_only:
+                browser(*options, "open", host + ENTRY + "?serverReview=1#welcome")
+                browser("set", "viewport", "1280", "800")
+                scenario("首次打开、连接失败、取消和本地建库", """
+                  await page('.library-welcome');assert(!el('.workflow-switch'),'no open library on welcome');
+                  const opener=el('[data-act=package-server]');opener.focus();act('package-server');
+                  assert(document.activeElement.name==='serverAddress','address receives focus');
+                  set('[name=serverAddress]','https://offline.test');act('package-server-test');
+                  assert(el('[role=alert]',modal()).textContent.includes('无法连接'),'failed connection');
+                  act('close','',el('.dialog-foot',modal()));await wait(()=>document.activeElement===opener);
+                  act('package-new');set('[name=packageFolder]','relative');act('package-create','');
+                  assert(el('[role=alert]',modal()).textContent.includes('本机目录'),'invalid destination');
+                  set('[name=packageFolder]','/Volumes/照片盘');act('package-create','');
+                  await page('.empty');assert(packageLocation().path==='/Volumes/照片盘/旅行资料库.rawmasterlibrary','chosen package path');
+                  assert(el('[data-act=workflow][data-val=edit]').disabled&&el('[data-act=workflow][data-val=export]').disabled,'empty library controls');
+                  openTaskBoard();await page('.jobs-page');assert(el('.jobs-page .empty').textContent.includes('暂无制作任务'),'empty jobs');
+                  act('goto','library/project/new',el('.jobs-page'));await page('.view-heading');
+                """)
+                scenario("最近打开、Finder 移动／卷离线／双击和独立拷贝", """
+                  act('library-menu');act('package-recent','本机资料库');confirmLibrarySwitch();await page('.photo-card');act('photo','b1');
+                  act('library-menu');act('package-server');act('package-server-test');act('package-server-choice');
+                  act('package-server-path','new');set('[name=packageName]','服务器空白库');act('package-create','server');confirmLibrarySwitch();
+                  await page('.empty');assert(!!packageLocation().server,'created bound package');
+                  await hash('tools/package');tap('.utility-main summary');act('package-finder');
+                  act('package-file','move/本机资料库');set('[name=finderFolder]','/Volumes/样片 SSD');act('package-file-apply','move/本机资料库');
+                  act('package-volume','本机资料库');act('package-finder-open','本机资料库');
+                  assert(el('#sheet-title').textContent==='资料库包不可用'&&packageLabel(Studio.data)==='服务器空白库','offline retains current library');
+                  act('package-reconnect','本机资料库');confirmLibrarySwitch();await page('.photo-card');
+                  assert(packageLocation().libraryID==='本机资料库'&&activeBrowser().focus==='b1','same ID and focus after move');
+                  await hash('tools/package');tap('.utility-main summary');act('package-finder');
+                  const origin=availablePackages().find(p=>packageLabel(p)==='服务器空白库');
+                  const originID=packageLocation(origin).id;
+                  act('package-file','copy/'+originID);act('package-file-apply','copy/'+originID);
+                  const copy=availablePackages().find(p=>packageLocation(p).copyOf===originID);
+                  const copyID=packageLocation(copy).id;
+                  const open=el('[data-act=package-finder-open][data-val="'+copyID+'"]',modal());
+                  open.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,detail:2}));
+                  assert(el('#sheet-title').textContent==='作为独立本地库打开？','Finder event leads to copy confirmation');
+                  act('package-fork',copyID);confirmLibrarySwitch();await page('.empty');
+                  assert(packageLocation().libraryID!==packageLocation(origin).libraryID&&!packageLocation().server,'new ID and detached binding');
+                  assert(packageLocation(origin).server,'original still bound');
+                """)
+                scenario("同步已有库、能力禁用和提交回执丢失", """
+                  await hash('welcome/recover');await page('.library-welcome');
+                  assert(el('h1').textContent.includes('找不到')&&el('[data-act=package-switch]').checkVisibility(),'last address recovery');
+                  act('package-server');act('package-server-test');act('package-server-choice');act('package-server-path','sync');
+                  assert(modal().textContent.includes('修订 24')&&modal().textContent.includes('原片按需取回'),'snapshot and cold file scope');
+                  act('package-create','server');await page('.photo-card');
+                  assert(packageLabel(Studio.data)==='湖岸资料库'&&Studio.admitted().length===4,'hydrated sample catalog');
+                  assert(!Studio.asset('r2').online,'raw kept cold');
+                  await hash('tools/server');act('server-job-review','r1');
+                  assert(el('[data-act=server-job-submit]').disabled&&modal().textContent.includes('图像节点未就绪'),'disabled reason');
+                  act('close','',el('.dialog-foot',modal()));tap('.utility-main .settings-advanced summary');set('[name=serverImage]',true);
+                  act('server-job-review','r1');set('[name=remoteKind]','flux');act('server-job-submit','r1');
+                  assert(el('[role=alert]',modal()).textContent.includes('填写生成指令'),'Flux input required');
+                  set('[name=remotePrompt]','减弱天空的高光');tap('summary',modal());set('[name=remoteLostAck]',true);
+                  act('server-job-submit','r1');await page('.jobs-page');
+                  const job=Studio.data.jobs[0];act('job-detail',job.id);
+                  assert(job.state==='unknown'&&modal().textContent.includes('减弱天空的高光'),'frozen request awaiting reconciliation');
+                  assert(!el('[data-val="retry/'+job.id+'"]',modal()),'retry hidden while unknown');
+                  act('server-job-action','check/'+job.id);assert(job.state==='queued'&&job.remote.attempt===1,'same job and attempt');
+                  tap('summary',modal());act('server-job-action','fail/'+job.id);
+                  act('server-job-action','retry/'+job.id);assert(job.state==='queued'&&Studio.data.jobs.length===1&&job.remote.attempt===2,'retry original job');
+                  act('close','',el('.dialog-foot',modal()));
+                  await wait(()=>document.activeElement.dataset.val===job.id);
+                  act('goto','tools/server',el('.jobs-page'));await page('.utility-main');
+                """)
+                scenario("离线取消、切库隔离、发布竞争及取回重试", """
+                  tap('.utility-main .settings-advanced summary');set('[name=serverOnline]',false);
+                  act('goto','jobs',el('.utility-main'));await page('.jobs-page');
+                  const job=Studio.data.jobs[0];act('job-detail',job.id);act('server-job-action','cancel/'+job.id);
+                  assert(job.state==='cancelling'&&modal().textContent.includes('Server 离线'),'offline cancel intent');
+                  tap('summary',modal());act('server-job-action','publish/'+job.id);
+                  assert(job.state==='cancelling','server publication not yet observed');
+                  act('close','',el('.dialog-foot',modal()));act('library-menu');act('package-recent','本机资料库');confirmLibrarySwitch();
+                  await page('.photo-card');assert(Studio.data.jobs.length===0&&activeBrowser().focus==='b1','old job absent from new package');
+                  const synced=availablePackages().find(p=>packageLocation(p).libraryID==='server-lakeside');
+                  act('library-menu');act('package-recent',packageLocation(synced).id);confirmLibrarySwitch();
+                  await page('.photo-card');assert(Studio.data.jobs[0].id===job.id,'same job on reopening');
+                  await hash('tools/server');tap('.utility-main .settings-advanced summary');set('[name=serverOnline]',true);
+                  act('goto','jobs',el('.utility-main'));await page('.jobs-page');act('job-detail',job.id);
+                  act('server-job-action','check/'+job.id);assert(job.state==='available'&&modal().textContent.includes('发布先于取消'),'published result survives cancel race');
+                  tap('summary',modal());set('[name=remoteCorrupt]',true);act('server-job-action','fetch/'+job.id);
+                  assert(job.state==='available'&&!job.result&&modal().textContent.includes('校验失败'),'corrupt bytes produce no candidate');
+                  act('server-job-action','fetch/'+job.id);
+                  assert(job.state==='done'&&Studio.edit('r1').versions.length===1&&Studio.edit('r1').adopted==='original','verified once as candidate');
+                  act('job-version',job.id);await page('.version-row');assert(el('[data-act=adopt][data-val="'+job.result+'"]'),'candidate available for explicit adoption');
+                  act('adopt',job.result);assert(Studio.edit('r1').adopted===job.result,'explicit adoption');
+                  act('return-adjustments');await page('.canvas-dock');key(el('#workspace'),'z',{metaKey:true});
+                  assert(Studio.edit('r1').adopted==='original'&&Studio.edit('r1').versions.length===1,'undo adoption retains candidate');
+                """)
+                scenario("离线排队后取消未发送的处理", """
+                  await hash('tools/server');tap('.utility-main .settings-advanced summary');set('[name=serverOnline]',false);
+                  act('server-job-review','r1');set('[name=remoteKind]','proxy');act('server-job-submit','r1');await page('.jobs-page');
+                  const job=Studio.data.jobs[0];act('job-detail',job.id);
+                  assert(job.state==='waiting'&&job.remote.attempt===0&&modal().textContent.includes('离线'),'local intent only');
+                  act('server-job-action','cancel/'+job.id);
+                  assert(job.state==='cancelled'&&job.remote.attempt===0,'cancelled before submit');
+                  act('close','',el('.dialog-foot',modal()));
+                """)
+                browser("set", "viewport", "390", "844")
+                for theme in ("light", "dark"):
+                    browser("set", "media", theme)
+                    scenario(f"390px {theme} 的库菜单与任务详情", """
+                      await hash('jobs');await page('.jobs-page');
+                      assert(document.documentElement.scrollWidth<=innerWidth,'jobs fit narrow viewport');
+                      act('library-menu');const menu=modal().getBoundingClientRect();
+                      assert(menu.left>=0&&menu.right<=innerWidth&&document.activeElement.dataset.act==='package-new','visible dialog and initial focus');
+                      act('close','',el('.dialog-foot',modal()));await wait(()=>document.activeElement.dataset.act==='library-menu');
+                      act('job-detail',Studio.data.jobs.find(job=>job.state==='done').id);
+                      assert(modal().getBoundingClientRect().right<=innerWidth,'details fit narrow viewport');
+                      act('close','',el('.dialog-foot',modal()));
+                    """)
+                browser("focus", "[data-act=library-menu]")
+                browser("press", "Enter")
+                browser("press", "Tab")
+                browser("press", "Escape")
+                scenario("键盘菜单关闭后回到入口", """
+                  assert(!modal().open&&document.activeElement.dataset.act==='library-menu','keyboard Escape restores focus');
+                """)
+                check_browser_errors()
+                return
             if args.appearance_parity_only:
                 folder = Path(os.environ["RAWMASTER_PARITY_EVIDENCE"]) if os.environ.get("RAWMASTER_PARITY_EVIDENCE") else None
                 if folder:
@@ -139,7 +415,7 @@ def main():
                   assert(count()===9&&!el('.scene-hud')&&!el('.scene-entry')&&!modal().open);
                   assert(all('.scene-previews button').map(b=>b.textContent).join('|')==='预览 SDR 派生|预览 HDR 派生'&&!el('.scene-previews svg'));
                   assert(el('.appearance-info').textContent.includes('Rec.2020 PQ')&&el('.appearance-info').textContent.includes('SDR 派生回退'));
-                  const l=el('.scene-limit'),p=el('.scene-previews .flat-tabs');assert(Math.abs(l.clientWidth-p.clientWidth)<=2,'full width');
+                  const l=el('.scene-limit'),p=el('.scene-previews .button-group');assert(Math.abs(l.clientWidth-p.clientWidth)<=2,'full width');
                   window.noticeHost=el('.editor-notices');set('[data-adjustment=wbTemperature]','6250');showLight();
                   set('[data-adjustment=shadow]','15');set('[data-adjustment=ev]','0.25');
                   assert(currentEdit().recipe.ev===.25&&currentEdit().recipe.wbTemperature===6250&&currentEdit().recipe.shadow===15&&el('.editor-notices')===window.noticeHost,'same photo notice host');
@@ -201,7 +477,7 @@ def main():
                   set('.photo-node-scope [name=dagNumber][data-key=ev]','.4');assert(dagNode().params.ev===.4&&e.recipe.shadow===before);
                   set('[data-adjustment=ev]','.75');assert(e.recipe.dag.photographic.ev===.75&&dagNode().params.ev===.4,'photographic and node values separate');
                   el('.inspector-content').scrollTop=0;act('dag-fit');
-                  assert(el('.dag-window-title').textContent==='工作流 Graph'&&el('.graph-text-tools').innerText.includes('适合全图'));
+                  assert(el('.dag-window-title').textContent==='工作流 Graph'&&el('.dag-commandbar [data-act=dag-fit]').getAttribute('aria-label')==='适合全图');
                   sessionStorage.setItem('parity.graph',JSON.stringify({x:el('.dag-floating').offsetLeft,y:el('.dag-floating').offsetTop,history:e.past.length,zoom:dagTransform().scale}));
                 """)
                 capture("05-scene-graph")
@@ -303,7 +579,7 @@ def main():
                   act('canvas-crop');set('[name=crop]','4:5');act('canvas-tool-done');
                   const e=currentEdit(), before=JSON.stringify(e.recipe);
                   if(!el('.dag-floating')?.checkVisibility())act('dag-view-toggle');
-                  await page('.graph-text-tools');menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());
+                  await page('.dag-commandbar');menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());
                   assert(!modal().open&&e.recipe.wbTemperature===7250&&e.recipe.crop==='4:5'&&e.recipe.sceneOutput.limitEV===2.21&&
                          e.recipe.dag.nodes.find(n=>n.kind==='grade').params.ev===.4,'apply graph nodes with receiving photo properties');
                   assert(JSON.stringify(Studio.edit('b1').recipe)===source,'source unchanged');act('edit-step','undo');
@@ -355,7 +631,7 @@ def main():
                 browser("wait","6100")
                 scenario("通知到点消退，消息和错误各有记录，日志取自工作台", """
                   assert(!el('.editor-toast')&&el('.activity-list').innerText.includes('HDR 预览失败'));
-                  act('activity-tab','tasks');assert(el('.activity-list').innerText.includes('暂无后台任务'));
+                  act('activity-tab','tasks');assert(!Studio.data.jobs.length&&!el('.activity-list').innerText.includes('准备本机 AI 环境'));
                   act('activity-tab','logs');assert(el('.activity-list').innerText.includes('切换到 HDR'));
                   act('activity-close');act('scene-mode','sdr');assert(el('.editor-toast.info'));
                 """)
@@ -397,9 +673,10 @@ def main():
                   assert(el('.activity-list').innerText.includes('准备本机 AI 环境')&&!el('.activity-list [data-act=job-detail]'));
                   await wait(()=>el('.activity-list').innerText.includes('已完成'));
                   act('activity-tab','logs');assert(el('.activity-list').innerText.includes('已完成 · 准备本机 AI 环境'));
-                  act('activity-close');await hash('tools/package');await page('[data-act=package-switch]');act('package-switch');
-                  set('[name=demoPackage]','new',modal());set('[name=packageName]','走查空库',modal());act('package-open',null,modal());await page('.workflow-switch');
+                  act('activity-close');act('library-menu');act('package-new');
+                  set('[name=packageName]','走查空库',modal());act('package-create','',modal());confirmLibrarySwitch();await page('.workflow-switch');
                   act('activity-open');act('activity-tab','notices');assert(el('.activity-library').textContent==='走查空库'&&el('.activity-list').innerText.includes('暂无通知')&&!el('.activity-list').innerText.includes('HDR 预览失败'));
+                  act('activity-tab','tasks');assert(el('.activity-list').innerText.includes('暂无后台任务'));
                 """)
                 check_browser_errors()
                 return
@@ -644,6 +921,92 @@ def main():
                         browser("eval", "actions['dag-view-toggle']();actions['dag-fit']();")
                         browser("screenshot", str(Path(native_graph_evidence) / f"graph-scene-390-{theme}.png"))
                         browser("eval", "actions['dag-view-toggle']();")
+                browser("set", "viewport", "1280", "800")
+                scenario("038 玻璃图窗：Solo 输出、旁路与当前节点眼睛", """
+                  act('dag-view-toggle');await page('.dag-commandbar');
+                  const tools=()=>el('.dag-commandbar'), command=selector=>el('[data-act='+selector+']',tools());
+                  const e=currentEdit(), r=()=>e.recipe;
+                  const order=all('button',tools()).map(b=>b.dataset.act+':'+b.dataset.val);
+                  assert(order.slice(0,7).join()===['dag-add:serial','dag-add:parallel','dag-add:layer','dag-solo:','dag-preview-bypass:','dag-layout:','dag-fit:'].join(),'ordered visible commands');
+                  pickNode('grade');set('[name=dagNumber][data-key=ev]',.8);
+                  const second=dagCurrent().nodes.filter(dagEditable).at(-1).id;
+                  const base=dagProject(r().dag,'source').ev;
+                  const before=JSON.stringify(r()), history=e.past.length;
+                  act('dag-solo',null,tools());
+                  assert(Math.abs(dagViewRecipe(r()).ev-base-.8)<.001&&command('dag-solo').ariaPressed==='true','Solo shows first output');
+                  pickNode(second);assert(dagPreviewState().solo==='grade'&&command('dag-solo').ariaPressed==='false','Solo remains bound after another selection');
+                  act('dag-solo',null,tools());
+                  assert(Math.abs(dagViewRecipe(r()).ev-dagProject(r().dag,second).ev)<.001&&dagViewRecipe(r()).ev>base+.8,'Solo includes earlier grade');
+                  act('dag-preview-bypass',null,tools());
+                  assert(dagViewRecipe(r()).ev===base&&!dagPreviewState().solo&&command('dag-preview-bypass').ariaPressed==='true','global bypass retains base');
+                  key(command('dag-preview-bypass'),'Escape');
+                  assert(el('.dag-floating')&&JSON.stringify(r())===before&&e.past.length===history,'Escape only exits preview');
+                  const eye=()=>el('[data-act=dag-toggle-current]');
+                  assert(eye().querySelector('path').getAttribute('d')===glyphs.eye&&!el('.dag-scope-head > small'),'one current node label');
+                  act('dag-toggle-current');assert(eye().querySelector('path').getAttribute('d')===glyphs.eyeOff&&command('dag-solo').disabled,'closed eye and disabled Solo');
+                  act('edit-step','undo');assert(JSON.stringify(r())===before&&eye().ariaPressed==='false','photo undo restores the node');
+                """)
+                scenario("038 玻璃图窗：分支端口、对焦与拖动样本", """
+                  const bar=()=>el('.dag-commandbar');act('dag-add','parallel',bar());act('dag-add','layer',bar());
+                  const mix=dagCurrent().nodes.filter(n=>n.kind==='mix'&&n.params.mode==='layer').at(-1);
+                  pickNode(mix.id);act('dag-add-input');
+                  act('dag-layout',null,bar());
+                  await new Promise(requestAnimationFrame);
+                  const card=el('[data-dag-card="'+mix.id+'"]'), ports=all('.input-port',card), wire=slot=>el('.dag-wire[data-to="'+mix.id+'"][data-slot="'+slot+'"]');
+                  assert(ports.length===3&&ports[0].dataset.slotKind==='base'&&ports.slice(1).every(p=>p.dataset.slotKind==='layer'),'ordered distinct port shapes');
+                  for(const port of ports){
+                    const edge=wire(port.dataset.val.split(':')[1]), end=edge.getPointAtLength(edge.getTotalLength());
+                    const endOnScreen=new DOMPoint(end.x,end.y).matrixTransform(edge.getScreenCTM()), p=port.getBoundingClientRect();
+                    assert(Math.hypot(endOnScreen.x-p.left-p.width/2,endOnScreen.y-p.top-p.height/2)<1.2,'wire terminates at each corresponding port');
+                  }
+                  assert(getComputedStyle(el('.dag-viewport')).backgroundImage.includes('linear-gradient')&&getComputedStyle(el('.dag-window-head')).borderBottomWidth==='0px','grid and one continuous surface');
+                  const node=dagCurrent().nodes.find(n=>n.kind==='grade'&&n.id!=='grade'&&dagCurrent().edges.some(e=>e.from===n.id&&e.to===mix.id));
+                  const p=dagPosition(node), recipe=JSON.stringify(currentEdit().recipe), history=currentEdit().past.length;
+                  sessionStorage.setItem('graph-drag',JSON.stringify({id:node.id,p,recipe,history,scale:dagTransform().scale,wire:wire('layer').getAttribute('d')}));
+                """)
+                drag_point = json.loads(browser("eval", """(() => {
+                  const {id} = JSON.parse(sessionStorage.getItem('graph-drag'));
+                  const card = document.querySelector(`[data-dag-node="${CSS.escape(id)}"]`);
+                  const bounds = card.getBoundingClientRect();
+                  return [Math.round(bounds.x + bounds.width/2), Math.round(bounds.y + bounds.height/2)];
+                })()"""))
+                def begin_card_drag():
+                    x, y = drag_point
+                    browser("mouse", "move", str(x), str(y))
+                    browser("mouse", "down", "left")
+                    browser("mouse", "move", str(x + 40), str(y + 26))
+                begin_card_drag()
+                scenario("038 玻璃图窗：真实拖动时端口随动，放手前无提交", """
+                  const sample=JSON.parse(sessionStorage.getItem('graph-drag'));
+                  const wire=el('.dag-wire[data-from="'+sample.id+'"][data-slot=layer]');
+                  assert(wire.getAttribute('d')!==sample.wire&&dagPosition(dagCurrent().nodes.find(n=>n.id===sample.id)).x===sample.p.x,'live wires follow provisional position');
+                """)
+                browser("press", "Escape")
+                browser("mouse", "up", "left")
+                scenario("038 玻璃图窗：Escape 恢复拖动前的卡片与连线", """
+                  const sample=JSON.parse(sessionStorage.getItem('graph-drag')), node=dagCurrent().nodes.find(n=>n.id===sample.id);
+                  const wire=el('.dag-wire[data-from="'+sample.id+'"][data-slot=layer]');
+                  assert(el('.dag-floating')&&JSON.stringify(dagPosition(node))===JSON.stringify(sample.p)&&wire.getAttribute('d')===sample.wire,'Escape discards the uncommitted drag');
+                """)
+                begin_card_drag()
+                browser("mouse", "up", "left")
+                scenario("038 玻璃图窗：缩放下移位、重开、整理、离线和重试", """
+                  const sample=JSON.parse(sessionStorage.getItem('graph-drag')), node=dagCurrent().nodes.find(n=>n.id===sample.id), p=dagPosition(node);
+                  assert(Math.abs((p.x-sample.p.x)*sample.scale-40)<1&&Math.abs((p.y-sample.p.y)*sample.scale-26)<1,'scale-correct drag '+JSON.stringify({from:sample.p,to:p,scale:sample.scale,actual:dagTransform().scale}));
+                  assert(JSON.stringify(currentEdit().recipe)===sample.recipe&&currentEdit().past.length===sample.history,'layout stays outside pixel history');
+                  act('dag-view-toggle');act('dag-view-toggle');await page('.dag-viewport');
+                  assert(dagPosition(node).x===p.x,'reopen restores position');
+                  act('dag-fit',null,el('.dag-commandbar'));assert(dagPosition(node).y===p.y,'fit only reframes');
+                  key(el('.dag-viewport'),'ArrowUp',{shiftKey:true});assert(dagPosition(node).y===p.y-16,'keyboard positions the selected branch');
+                  act('dag-layout',null,el('.dag-commandbar'));assert(dagPosition(node).x===sample.p.x&&dagPosition(node).y===sample.p.y,'organize restores dependency layout');
+                  assert(JSON.stringify(currentEdit().recipe)===sample.recipe&&currentEdit().past.length===sample.history);
+                  pickNode('source');set('[name=dagOffline]',true);
+                  assert(el('.dag-commandbar [data-act=dag-add]').disabled&&el('.dag-commandbar [data-act=dag-preview-bypass]').title.includes('离线'),'offline reason');
+                  set('[name=dagOffline]',false);pickNode('output');act('dag-failure');
+                  act('dag-retry',null,el('.editor-toast'));assert(!S.dagRenderFailed&&JSON.stringify(currentEdit().recipe)===sample.recipe,'retry preserves the same graph');
+                """)
+                if native_graph_evidence:
+                    browser("screenshot", str(Path(native_graph_evidence) / "graph-ports-1280.png"))
                 check_browser_errors()
                 return
             if args.pq_queue_only:
@@ -1142,8 +1505,9 @@ def main():
             scenario("紧凑示波器、白平衡与蒙版分层", """
               assert(el('.docked .histogram svg').getBoundingClientRect().height===96,'shared scope plot height');
               const scope=el('[data-act=scope-plot][data-val=histogram]');scope.focus();key(scope,'ArrowRight');
-              const selectedStyle=getComputedStyle(document.activeElement);
-              assert(selectedStyle.backgroundColor==='rgba(0, 0, 0, 0)'&&selectedStyle.boxShadow==='none'&&selectedStyle.borderBottomWidth==='2px','flat selected tab with no raised background');
+              const selectedStyle=getComputedStyle(document.activeElement),restStyle=getComputedStyle(el('[data-act=scope-plot][data-val=histogram]'));
+              assert(selectedStyle.backgroundColor!==restStyle.backgroundColor&&selectedStyle.boxShadow==='none'&&selectedStyle.borderBottomWidth==='0px',
+                'selected tab fills its segment without raising it or underlining the label');
               assert(el('.docked .vector-plot').getBoundingClientRect().height===96&&document.activeElement.dataset.val==='vector','shared vector plot height and keyboard selection');
               act('scopes');assert(el('.vector-plot',modal()).getBoundingClientRect().height===96,'detached plot height');
               act('scope-plot','histogram',modal());act('close',null,modal());
@@ -1323,12 +1687,14 @@ def main():
               assert(document.documentElement.scrollWidth<=innerWidth,'horizontal overflow');
             """)
             scenario("空白资料库、恢复与重新打开", """
-              await hash('tools/package');act('package-switch');set('[name=demoPackage]','new');act('package-open',null,modal());
+              await hash('tools/package');act('package-new');act('package-create','',modal());confirmLibrarySwitch();
               await page('.empty');assert(el('.view-heading h1').textContent==='新项目','new empty library');
               assert(el('[data-act=workflow][data-val=edit]').disabled,'empty edit unavailable');
-              await hash('tools/package');act('package-switch');set('[name=demoPackage]','本机资料库');act('package-open',null,modal());
-              await page('.photo-card');await hash('tools/package');act('restore-backup');act('restore-new',null,modal());act('package-switch');
-              assert(all('[name=demoPackage] option',modal()).some(o=>o.value==='河谷 · 恢复副本'),'backup restored to separate catalog');act('close',null,modal());
+              await hash('tools/package');act('package-switch');set('[name=demoPackage]','本机资料库');act('package-open',null,modal());confirmLibrarySwitch();
+              await page('.empty');assert(el('.view-heading h1').textContent==='全部素材'&&activeBrowser().tag==='零匹配','prior browse scope and filter');
+              act('clear-filters',null,el('.empty'));await page('.photo-card');
+              await hash('tools/package');act('restore-backup');act('restore-new',null,modal());act('package-switch');
+              assert(all('[name=demoPackage] option',modal()).some(o=>o.textContent.includes('河谷 · 恢复副本')),'backup restored to separate catalog');act('close',null,modal());
             """)
             browser("set", "viewport", "1440", "900")
             scenario("快速 Prompt 浮条形变、模板与范围", """
@@ -1648,6 +2014,14 @@ def main():
               assert(number.value==='0.35'&&number.getAttribute('aria-invalid')==='false','escape restores value');
               const check=el('.ds-check');tap('.ds-check');assert(check.getAttribute('aria-checked')==='false','flat checkbox toggles');
               tap('.ds-tabs [role=tab]:nth-child(2)');assert(all('.ds-tabs [role=tab]')[1].getAttribute('aria-selected')==='true','tabs switch');
+              const tabs=all('.ds-tabs [role=tab]');
+              tabs[1].focus();key(tabs[1],'ArrowRight');
+              assert(document.activeElement===tabs[2]&&tabs[2].ariaSelected==='true','arrow selects the adjacent tab');
+              const samplers=all('.button-group [data-ds-curve-sample]');
+              samplers[0].focus();key(samplers[0],'ArrowRight');
+              assert(document.activeElement===samplers[1]&&samplers.length===3,'curve sample arrows move focus within the group');
+              assert(getComputedStyle(samplers[0].parentElement).gap==='0px'&&getComputedStyle(samplers[1],'::before').width==='1px',
+                'segments are contiguous with a separator');
               tap('.ds-section-toggle');assert(el('.ds-section-body').hidden===true,'section collapses');
               await hash('settings/general');await page('select[name=theme]');set('[name=theme]','dark');
               await hash('tools/design');await page('.ds-page');

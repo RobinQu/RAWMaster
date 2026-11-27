@@ -375,3 +375,30 @@ fn restored_database_retains_only_history_and_export_tokens_do_not_cross_catalog
     assert!(register(copy, &m)?.get("token").is_none());
     Ok(())
 }
+
+#[test]
+fn independent_package_keeps_batch_history_after_its_library_id_changes() -> Result<()> {
+    let l = fixture()?;
+    let old = descriptor(&l, 1)?;
+    let lease = register(&l.path, &old)?;
+    l.db.execute_batch("PRAGMA wal_checkpoint(TRUNCATE)")?;
+    let root = tempfile::tempdir()?;
+    let copy = root.path().join("library.sqlite");
+    std::fs::copy(&l.path, &copy)?;
+    let mut db = rusqlite::Connection::open(&copy)?;
+    let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+    let new_id = "cad9cbab-f0eb-4940-9924-8591360e5bd7";
+    rawmaster_library::transaction(&tx, &json!({"operation":"detachLocalCopy","request":{"libraryID":new_id}}))?;
+    tx.commit()?;
+    let history = batch(&copy, json!({"action":"load","batchID":old["batchID"]}))?;
+    assert_eq!(history["batch"]["phase"], "historical");
+    assert!(history["manifest"].is_null());
+    let check = json!({"action":"check","batchID":old["batchID"],"generation":1,"token":lease["token"]});
+    assert!(batch(&copy, check.clone()).is_err());
+    batch(&l.path, check)?;
+    assert!(register(&copy, &old).is_err());
+    let mut fresh = descriptor(&l, 2)?;
+    fresh["libraryID"] = json!(new_id);
+    assert!(register(&copy, &fresh)?["token"].is_string());
+    Ok(())
+}

@@ -3,8 +3,9 @@ set -euo pipefail
 cd "${0:A:h:h}"
 resources="${1:?Usage: scripts/build-icons.sh /absolute/path/to/Contents/Resources}"
 mkdir -p "$resources"
-partial_plist="$(mktemp -t rawmaster-icon-info).plist"
-trap 'rm -f "$partial_plist" "${partial_plist%.plist}"' EXIT
+icon_tmp="$(mktemp -d -t rawmaster-icons)"
+trap 'rm -rf -- "$icon_tmp"' EXIT
+partial_plist="$icon_tmp/AppIcon.plist"
 xcrun actool assets/AppIcon.icon \
   --compile "$resources" \
   --platform macosx --minimum-deployment-target 15.0 --target-device mac \
@@ -26,3 +27,14 @@ fi
 # Runtime replacement bypasses the system's macOS icon layout. Add its outer
 # canvas space here; keep the native catalog and source layers full-bleed.
 swift scripts/prepare-dock-icons.swift "$resources/DockIcon-Light.png" "$resources/DockIcon-Dark.png"
+
+# Finder and the path menu share the same library artwork.
+library_source="Sources/RAWMaster/Resources/LibraryFolder.png"
+library_iconset="$icon_tmp/LibraryFolder.iconset"
+mkdir "$library_iconset"
+for size in 16 32 128 256 512; do
+  retina=$((size * 2))
+  sips -z "$size" "$size" "$library_source" --out "$library_iconset/icon_${size}x${size}.png" >/dev/null
+  sips -z "$retina" "$retina" "$library_source" --out "$library_iconset/icon_${size}x${size}@2x.png" >/dev/null
+done
+iconutil -c icns -o "$resources/LibraryFolder.icns" "$library_iconset"

@@ -20,8 +20,11 @@ enum AppDesign {
         static let fieldHeight: CGFloat = 21
         /// 只有图标、没有文字的按钮命中区。
         static let iconButtonSize: CGFloat = 26
-        /// 下划线分段标签的高度。
+        /// 分组按钮的高度与内部分隔线尺寸。
         static let tabHeight: CGFloat = 24
+        static let segmentDividerHeight: CGFloat = 14
+        static let segmentDividerWidth: CGFloat = 1
+        static let segmentFocusInset: CGFloat = 2
         /// 扁平勾选框的方框边长。
         static let checkboxSize: CGFloat = 14
         /// 勾选框内对勾符号的字号。
@@ -94,6 +97,11 @@ enum AppDesign {
         static let disabledFill = Color.primary.opacity(0.04)
         static let hoverWash = Color.primary.opacity(0.04)
         static let selectionFill = AppPalette.accent.opacity(0.13)
+        static let segmentBackground = Color.primary.opacity(0.10)
+        static let segmentSelection = AppPalette.accent.opacity(0.16)
+        static let segmentDivider = Color.primary.opacity(0.24)
+        static let segmentHover = Color.primary.opacity(0.06)
+        static let segmentPressed = Color.primary.opacity(0.11)
 
         /// 滑杆轨道在停用、刻度与指针上的固定层级，来自照片检查器的实测值。
         static let sliderTrack = Color.primary.opacity(0.07)
@@ -132,6 +140,6 @@ enum AppDesign {
 typealias AppFlatButtonStyle = PhotosFlatButtonStyle
 typealias AppFlatCheckboxStyle = PhotosFlatCheckboxStyle
 typealias AppMenu<Value: Hashable> = PhotosFlatMenu<Value>
-typealias AppTabs<Value: Hashable> = PhotosFlatTabs<Value>
+typealias PhotosFlatTabs<Value: Hashable> = AppTabs<Value>
 typealias AppSliderRow = PhotosSliderRow
 typealias AppNumberField = DevelopmentNumberField

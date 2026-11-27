@@ -21,25 +21,31 @@
 .dag-breadcrumb { display: flex; gap: 2px; flex-wrap: wrap; padding: 8px; border-bottom: 1px solid var(--line); }
 .dag-breadcrumb button { border: none; background: none; padding: 3px; min-height: 25px; font-size: 12px; }
 .dag-breadcrumb small { margin-left: auto; color: var(--muted); align-self: center; }
-.dag-viewport { position: relative; overflow: hidden; flex: 1; min-height: 260px; touch-action: none; background-color: var(--inset); background-image: radial-gradient(var(--line) 1px,transparent 1px); background-size: 20px 20px; }
+.dag-viewport { position: relative; overflow: hidden; flex: 1; min-height: 260px; touch-action: none; }
+.dag-viewport,.dag-compat-canvas { --dag-grid-ink:light-dark(#27334718,#d3dce519); background-image:linear-gradient(to right,var(--dag-grid-ink) 1px,transparent 1px),linear-gradient(to bottom,var(--dag-grid-ink) 1px,transparent 1px); background-size:var(--dag-grid-step,20px) var(--dag-grid-step,20px); }
 .dag-stage { transform-origin: 0 0; position: absolute; inset: 0; width: 5000px; height: 3000px; pointer-events: none; }
-.dag-card { position: absolute; width: 176px; min-height: 95px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 3px 8px #0002; padding: 8px 10px; pointer-events: auto; }
-.dag-card.selected { outline: 2px solid var(--accent); outline-offset: 3px; }
+.dag-card { box-sizing:border-box; position:absolute; display:flex; flex-direction:column; justify-content:center; width:132px; border:1px solid var(--line); border-radius:8px; background:var(--panel); box-shadow:0 3px 8px #0002; padding:5px 11px; pointer-events:auto; cursor:grab; }
+.dag-card.selected { outline:2px solid var(--accent); outline-offset:-1px; }
+.dag-card.solo { box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent); }
 .dag-card.active .dag-node-title { color: var(--accent); }
 .dag-card.bypass { opacity: .6; border-style: dashed; }
 .dag-card.view-muted { opacity: .55; }
-.dag-node-title { width: 100%; text-align: left; justify-content: flex-start; padding: 3px 0; background: transparent; border: 0; cursor: grab; font-size: 12px; }
+.dag-node-title { width:100%; min-height:20px; text-align:left; justify-content:flex-start; padding:2px 0; background:transparent; border:0; cursor:inherit; font-size:12px; }
+.dag-node-title .icon { flex:none; }
 .dag-node-title b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dag-card > small { display: block; color: var(--muted); font-size: 10px; margin: 3px 0; }
 .dag-card > button:not(.dag-node-title,.dag-port) { font-size: 10px; padding: 3px; min-height: 23px; }
-.dag-port { position: absolute; padding: 0; min-width: 16px; min-height: 20px; width: 16px; top: 35px; border: 0; background: var(--panel); color: var(--accent); }
-.dag-port span { position: absolute; left: 17px; font-size: 8px; color: var(--muted); }
-.dag-port.input-port { left: -8px; }
-.dag-port.output-port { right: -8px; }
-.dag-port.slot-1 { top: 59px; }
+.dag-card .dag-port { position:absolute; display:grid; place-items:center; transform:translateY(-50%); padding:0; min-width:20px; min-height:20px; width:20px; height:20px; top:50%; border:0; background:transparent; color:var(--muted); }
+.dag-port::before { content:''; display:block; width:8px; height:8px; border-radius:50%; background:var(--panel); border:1px solid currentColor; }
+.dag-port[data-slot-kind=base]::before { border-radius:2px; }
+.dag-port[data-slot-kind=layer]::before { border-radius:1px; transform:rotate(45deg); }
+.dag-port.output-port::before { background:currentColor; }
+.dag-port:is(:hover,:focus-visible) { color:var(--accent); }
+.dag-port.input-port { left:-11px; }
+.dag-port.output-port { right:-11px; }
 .dag-wires { position: absolute; overflow: visible; pointer-events: none; }
-.dag-wire { fill: none; stroke: var(--muted); stroke-width: 3px; pointer-events: stroke; cursor: pointer; }
-.dag-wire.selected,.dag-wire:focus { stroke: var(--accent); stroke-width: 5px; outline: none; }
+.dag-wire { fill:none; stroke:var(--muted); stroke-width:1.6px; vector-effect:non-scaling-stroke; pointer-events:stroke; cursor:pointer; }
+.dag-wire.selected,.dag-wire:focus { stroke:var(--accent); stroke-width:2.4px; outline:none; }
 .dag-mask-chip { margin-top: 6px; border-style: dashed; color: var(--accent); width: 100%; }
 .dag-monitor { position: absolute; bottom: 10px; right: 10px; width: min(155px, 32%); background: var(--panel); border: 1px solid var(--line); padding: 4px; pointer-events: none; }
 .dag-monitor img { display: block; width: 100%; height: 75px; object-fit: cover; }

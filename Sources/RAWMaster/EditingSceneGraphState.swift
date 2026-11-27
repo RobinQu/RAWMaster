@@ -7,11 +7,23 @@ struct EditingSceneGraphState {
     var path: [UUID] = []
     var selection: Set<UUID> = []
     var edge: Graph.Edge?
-    var viewing = Graph.View()
+    var preview: Preview = .final
     var connection: Connection?
     var generation = UUID()
     var open = false
     var single: UUID? { selection.count == 1 ? selection.first : nil }
+
+    enum Preview: Equatable {
+        case final, node(UUID), solo(UUID), bypass
+    }
+
+    var viewing: Graph.View {
+        switch preview {
+        case .final: return .init()
+        case .node(let id), .solo(let id): return .init(groupPath: path, target: .node(id))
+        case .bypass: return .init(target: .bypass)
+        }
+    }
 
     struct Connection {
         let port: Graph.Edge
@@ -31,14 +43,14 @@ struct EditingSceneGraphState {
 
     mutating func reconcile(_ graph: Graph?) {
         guard let graph else { self = .init(); return }
+        let previousPath = path
         while graph.scope(at: path) == nil { path.removeLast() }
         guard let scope = graph.scope(at: path) else { return }
         let valid = Set(scope.nodes.lazy.filter { !$0.operation.isCoverage }.map(\.id))
         if let edge, !scope.imageEdges.contains(edge) { self.edge = nil }
         selection.formIntersection(valid)
         if selection.isEmpty, edge == nil { resetSelection(in: scope) }
-        if viewing.groupPath != path { viewing = .init() }
-        if case let .node(id) = viewing.target, !valid.contains(id) { viewing = .init() }
+        reconcilePreview(in: scope, pathChanged: path != previousPath)
         generation = UUID()
     }
     mutating func reconcileTopology(from before: Graph?, to after: Graph?) {
@@ -46,12 +58,33 @@ struct EditingSceneGraphState {
         // presentation state and force a second SwiftUI layout on every exposure edit.
         func layout(_ scope: Graph.Scope) -> [Graph.Port] { scope.imageEdges.map(\.port) }
         if let before, let after, let left = before.scope(at: path), let right = after.scope(at: path),
-           left.nodes.map(\.id) == right.nodes.map(\.id), layout(left) == layout(right), left.imageEdges == right.imageEdges { return }
+           left.nodes.map(\.id) == right.nodes.map(\.id), layout(left) == layout(right), left.imageEdges == right.imageEdges {
+            let previous = preview
+            reconcilePreview(in: right, pathChanged: false)
+            if preview != previous { generation = UUID() }
+            return
+        }
         reconcile(after)
+    }
+
+    private mutating func reconcilePreview(in scope: Graph.Scope, pathChanged: Bool) {
+        if pathChanged { preview = .final; return }
+        switch preview {
+        case .node(let id):
+            if !scope.nodes.contains(where: { $0.id == id && !$0.operation.isCoverage }) { preview = .final }
+        case .solo(let id):
+            if !scope.nodes.contains(where: { $0.id == id && $0.operation.allowsSceneSolo }) { preview = .final }
+        case .final, .bypass: break
+        }
     }
 }
 
 extension DevelopmentSceneGraphV1.Operation {
+    var allowsSceneSolo: Bool {
+        if case .corrector(_, _, _, _, _, true) = self { return true }
+        return false
+    }
+
     var sceneTypeName: String {
         switch self {
         case .corrector: return "调色"
