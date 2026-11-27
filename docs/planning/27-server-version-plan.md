@@ -43,7 +43,7 @@ PostgreSQL 和 S3 的高可用由基础设施负责；RAWMaster 负责自身**�
 5. **自签名证书是正式方案。** 私有 CA + leaf，客户端固定 CA／SPKI；证书、令牌哈希入元数据备份；私钥、pepper、S3 凭据入加密 secret bundle。
 6. **存储可靠性外部化。** RAWMaster 不做 RAID／EC／跨站复制；TrueNAS 冷备负责介质与灾难恢复；RAWMaster 只做逻辑清单、哈希、引用和恢复。
 7. **Server 本地磁盘只放日志／临时。** PostgreSQL、S3 外部；Server 可容器化；Relay 流式，不落完整文件。
-8. **编辑／导出云端后置。** 本轮只做资料库；编辑和导出后续单独设计。
+8. **编辑／导出云端后置。** 本轮只做资料库；编辑云端见 [041 Server 图像编辑模块](../../specs/041-server-image-editing/spec.md)，导出后续单独设计。
 
 ## 5. 交付阶段
 

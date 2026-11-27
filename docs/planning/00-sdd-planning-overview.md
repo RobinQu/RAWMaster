@@ -6,6 +6,8 @@
 
 2026-11-27 Server 1.0 架构修订为 gRPC + PostgreSQL + S3，见[总览计划](27-server-version-plan.md)与[040 规格](../../specs/040-server/spec.md)：一库一客户端，先交付归档、Direct／Relay、元数据逻辑备份与恢复、冷热数据，远程 AI／批处理作为 1.1。S3／ZFS 存储可靠性由现有 TrueNAS 冷备承担；RAWMaster 负责自身元数据一致性、备份和恢复。**本轮仅规划，未开始服务端实现。**
 
+Server 图像编辑作为独立规格：[041 Server 图像编辑模块](../../specs/041-server-image-editing/spec.md)。交互编辑留在客户端；Server 只做代理、批处理、Final/Batch render 和 Flux 等生成式任务；客户端与 Server 队列分别持久化，通过 gRPC 协同。CUDA GPU 是图像模块硬件准入，影像计算走 Vulkan。
+
 ## 最新下一批计划（2026-10-30）
 
 [20 原生制作工作台与可替换AI后端](20-native-ai-editing-next-batch.md)是结合本机实验后的最新提案：RAWMaster使用原生SwiftUI/AppKit界面，ComfyUI仅作为受管后台服务；按制作版本/任务底座、原生初修与AI候选、本地运行时、三家云编辑、成片导出/外部回流分段交付。复用已有工作台/外部副本/序列与延时功能，不按早期计划重复建设。具体证据见[18](18-comfyui-ai-backend-evaluation.md)，安装/供应商设计见[19](19-ai-runtime-and-cloud-providers.md)。
