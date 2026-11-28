@@ -88,7 +88,7 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
     XCTAssertEqual(stride(from: 3, to: alpha.rgba.count, by: 4).filter { alpha.rgba[$0] > 0 }.count, 64,
                    "The range kernel should select the red half before local exposure")
     let recipe = DevelopmentRecipe(adjustmentsV3: .init(masks: [range, right, radial, subject, inverted]))
-    var cache: DevelopmentDisplayHistogramEngineV1.CacheEntry?
+    var cache: [DevelopmentDisplayHistogramEngineV1.CacheEntry] = []
     func read(_ id: UUID?) throws -> DevelopmentDisplayHistogramV1 {
       let r = try request(id.map(DevelopmentAnalysisOperation.displayMaskHistogram) ?? .displayHistogram, recipe: recipe)
       let result = try DevelopmentDisplayHistogramEngineV1.run(capture: url, request: r, sourceBinding: source,
@@ -98,12 +98,12 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
       return histogram
     }
     XCTAssertEqual(try read(nil).visibleSamples, 128)
-    let red = try read(range.id), first = cache?.key
+    let red = try read(range.id), first = cache.first?.key
     XCTAssertEqual(red.visibleSamples, 64)
     XCTAssertEqual(red.green[0], 64)
     XCTAssertEqual(red.red[255], 0, "Selected original red pixels must be measured after the exposure edit")
     let green = try read(right.id)
-    XCTAssertNotEqual(first, cache?.key)
+    XCTAssertNotEqual(first, cache.first?.key)
     XCTAssertEqual(green.visibleSamples, 64)
     XCTAssertEqual(green.red[0], 64)
     let center = try read(radial.id)
@@ -116,17 +116,28 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
   func testDisplayHasVersionedSeparateCacheAndCannotEnterExactEngine()throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let display=try request(.displayHistogram),b=binding(source)
-    var cache:DevelopmentDisplayHistogramEngineV1.CacheEntry?,exactCache:DevelopmentAnalysisCacheEntry?
+    var cache: [DevelopmentDisplayHistogramEngineV1.CacheEntry] = []
+    var exactCache: DevelopmentAnalysisCacheEntry?
     XCTAssertThrowsError(try DevelopmentAnalysisEngine.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&exactCache))
     XCTAssertNil(exactCache)
-    let first=try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&cache,sourceAuthority:{})
+    var nativePasses = 0
+    func run(_ request: DevelopmentAnalysisRequest) throws -> DevelopmentAnalysisResult {
+      try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:request,sourceBinding:b,
+        memoryHint:512,cache:&cache,prepareNativeWork:{nativePasses += 1},sourceAuthority:{})
+    }
+    let first = try run(display)
     XCTAssertEqual(first.samplingVersion,DevelopmentDisplayHistogramV1.samplingVersion);guard case .displayHistogram=first.value else{return XCTFail("Display-only DTO required")}
-    let saved=try XCTUnwrap(cache)
-    let second=try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&cache,sourceAuthority:{})
-    XCTAssertEqual(first,second);XCTAssertEqual(cache,saved);XCTAssertNil(exactCache)
+    let saved = try XCTUnwrap(cache.first)
     let next=try request(.displayHistogram,recipe:display.preview.recipe,generation:2)
-    _=try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:next,sourceBinding:b,memoryHint:512,cache:&cache,sourceAuthority:{})
-    XCTAssertEqual(cache?.key.generation,2);XCTAssertNotEqual(cache?.key,saved.key)
+    _ = try run(next)
+    XCTAssertEqual(cache.first?.key.generation,2)
+    XCTAssertNotEqual(cache.first?.key,saved.key)
+    XCTAssertEqual(try run(display),first)
+    XCTAssertEqual(cache.first,saved)
+    XCTAssertEqual(nativePasses,2,"A rebound histogram must not start new native work")
+    let third = try request(.displayHistogram,recipe:display.preview.recipe,generation:3)
+    _ = try run(third)
+    XCTAssertEqual(cache.map(\.key.generation),[3,1])
   }
   func testDisplayThenAutomaticAndExactHistogramPreserveOriginalResults()throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
@@ -144,9 +155,10 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
     XCTAssertThrowsError(try DevelopmentDisplayHistogramEngineV1.renderProxy(image(37,53),roi:.init(),context:context(),checkCancellation:{checks+=1;if checks==2{throw DevelopmentPreviewError.superseded}}))
     XCTAssertEqual(checks,2,"No second tile starts after the first joined tile is revoked")
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
-    var cache:DevelopmentDisplayHistogramEngineV1.CacheEntry?;let cancellation=DevelopmentAnalysisCancellation();var authorityChecks=0
+    var cache: [DevelopmentDisplayHistogramEngineV1.CacheEntry] = []
+    let cancellation=DevelopmentAnalysisCancellation();var authorityChecks=0
     XCTAssertThrowsError(try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:request(.displayHistogram),sourceBinding:binding(source),memoryHint:512,cache:&cache,cancellation:cancellation,sourceAuthority:{authorityChecks+=1;if authorityChecks==2{cancellation.cancel()}}))
-    XCTAssertEqual(authorityChecks,2);XCTAssertNil(cache)
+    XCTAssertEqual(authorityChecks,2);XCTAssertTrue(cache.isEmpty)
   }
   func testServiceRejectsWrongDisplayValueVersionAndPopulation()async throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}

@@ -77,7 +77,7 @@ final class PreviewNativeSource: @unchecked Sendable {
   let lensMetadata: DevelopmentLensMetadata?
   var hasRAWFilter: Bool { raw != nil }
   private var v3AnalysisCache: DevelopmentAnalysisCacheEntry?
-  private var displayHistogramCache: DevelopmentDisplayHistogramEngineV1.CacheEntry?
+  private var displayHistogramCache: [DevelopmentDisplayHistogramEngineV1.CacheEntry] = []
   private var v3DecoderDefaultsFingerprint: String?
   let rawDetailsCapability: DevelopmentRawDetails?
   let aiDenoiseCapability: DevelopmentAIDenoiseV1.Model?
@@ -979,19 +979,21 @@ final class PreviewNativeSource: @unchecked Sendable {
   }
 
   func analyze(_ request: DevelopmentAnalysisRequest, sourceContentID: String, cancellation: DevelopmentAnalysisCancellation? = nil, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "", residentObserver: DevelopmentBWSummaryResidentV3.Observer? = nil, analysisImages: DevelopmentAnalysisImageCache? = nil) throws -> DevelopmentAnalysisResult {
-    try validateCaptureAuthority(); retireIdleCanonicalContextForIndependentWork()
+    try validateCaptureAuthority()
     let binding = DevelopmentLocalEditSourceBinding(sourceContentID:sourceContentID,exifOrientation:originalEXIFOrientation,
       orientedWidth:Int(nativeSize.width),orientedHeight:Int(nativeSize.height))
     do {
-      let dehaze:DevelopmentDehazeContextV1?
-      if case .prepareDehaze=request.operation { dehaze=try dehazeContext(source:binding,generation:request.preview.sourceGeneration) }
-      else { dehaze=nil }
       if request.operation.isDisplayHistogram {
         let result = try DevelopmentDisplayHistogramEngineV1.run(capture:capture,request:request,sourceBinding:binding,
           memoryHint:contextMemoryLimitMiB,cache:&displayHistogramCache,cancellation:cancellation,
+          prepareNativeWork:{self.retireIdleCanonicalContextForIndependentWork()},
           sourceAuthority:{ try self.validateCaptureAuthority() })
         try validateCaptureAuthority();return result
       }
+      retireIdleCanonicalContextForIndependentWork()
+      let dehaze:DevelopmentDehazeContextV1?
+      if case .prepareDehaze=request.operation { dehaze=try dehazeContext(source:binding,generation:request.preview.sourceGeneration) }
+      else { dehaze=nil }
       if request.sampling == .blackAndWhiteSummaryResident32V3 {
         guard let rawBasePool, !sourceKey.isEmpty else { throw DevelopmentV3Error.unsupportedAnalysis }
         var pendingCache = v3AnalysisCache

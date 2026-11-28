@@ -35,6 +35,7 @@ public struct DevelopmentDisplayHistogramV1: Equatable, Sendable {
 /// Separate versioned display contract. Old exact histogram/scalar cache and operators are untouched.
 enum DevelopmentDisplayHistogramEngineV1 {
   static let version=DevelopmentDisplayHistogramV1.samplingVersion
+  private static let cacheCapacity = 2
   struct CacheKey:Equatable {
     let source:DevelopmentLocalEditSourceBinding
     let generation:UInt64
@@ -116,7 +117,8 @@ enum DevelopmentDisplayHistogramEngineV1 {
     try value.validate();return value
   }
   static func run(capture:URL,request:DevelopmentAnalysisRequest,sourceBinding:DevelopmentLocalEditSourceBinding,memoryHint:Int,
-                  cache:inout CacheEntry?,cancellation:DevelopmentAnalysisCancellation?=nil,sourceAuthority:()throws->Void)throws->DevelopmentAnalysisResult {
+                  cache:inout [CacheEntry],cancellation:DevelopmentAnalysisCancellation?=nil,
+                  prepareNativeWork: () -> Void = {},sourceAuthority:()throws->Void)throws->DevelopmentAnalysisResult {
     guard request.operation.isDisplayHistogram else{throw DevelopmentPreviewError.invalidRequest}
     try request.validate();try sourceBinding.validate();try check(cancellation);try sourceAuthority()
     let isRAW=PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased())
@@ -125,9 +127,13 @@ enum DevelopmentDisplayHistogramEngineV1 {
     let filterIdentity=try DevelopmentPhotoFilterEngineV3.activeResourceIdentity(sampling)
     let samplingVersion=try DevelopmentAnalysisEngine.validatedSamplingVersion(request)
     let key=CacheKey(source:sourceBinding,generation:request.preview.sourceGeneration,recipeFingerprint:fingerprint,stage:request.stage,roi:request.roi,filterIdentity:filterIdentity,samplingVersion:samplingVersion)
+    let hit = cache.firstIndex { $0.key == key }
     let value:DevelopmentDisplayHistogramV1
-    if let entry=cache,entry.key==key {try entry.value.validate();value=entry.value}
-    else {
+    if let hit {
+      value = cache[hit].value
+      try value.validate()
+    } else {
+      prepareNativeWork()
       let context=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
       defer{context.clearCaches()}
       let selected = request.operation.scopeMaskID.flatMap { id in sampling.adjustmentsV3?.masks.first { $0.id == id } }
@@ -143,11 +149,14 @@ enum DevelopmentDisplayHistogramEngineV1 {
       }
       value=try histogram(pixels, coverage: coverage)
       try check(cancellation);try sourceAuthority();try check(cancellation)
-      cache = .init(key:key,value:value)
     }
     try check(cancellation);try sourceAuthority();try check(cancellation)
     let binding=DevelopmentAnalysisBinding(sourceContentID:sourceBinding.sourceContentID,sourceGeneration:request.preview.sourceGeneration,expectedRecipeFingerprint:request.expectedRecipeFingerprint,stage:request.stage)
     let geometry=request.preview.recipe.adjustmentsV3?.geometry ?? DevelopmentGeometryV3(version:request.preview.recipe.schemaVersion==2 ? .legacyV2:.legacyV1,straightenDegrees:request.preview.recipe.straightenDegrees,crop:request.preview.recipe.crop)
-    return .init(operationID:request.operationID,sessionID:request.preview.sessionID,consumerID:request.preview.consumerID,revision:request.preview.revision,role:request.preview.role,quality:request.preview.quality,actualRecipe:request.preview.recipe,clientCorrelation:request.preview.clientCorrelation,binding:binding,sourceBinding:sourceBinding,presentedRecipeFingerprint:request.presentedRecipeFingerprint,roi:request.roi,samplingRecipeFingerprint:fingerprint,samplingVersion:samplingVersion,geometryMapping:try geometry.mapping(sourceSize:sourceBinding.sourceSize),value:.displayHistogram(value))
+    let result = DevelopmentAnalysisResult(operationID:request.operationID,sessionID:request.preview.sessionID,consumerID:request.preview.consumerID,revision:request.preview.revision,role:request.preview.role,quality:request.preview.quality,actualRecipe:request.preview.recipe,clientCorrelation:request.preview.clientCorrelation,binding:binding,sourceBinding:sourceBinding,presentedRecipeFingerprint:request.presentedRecipeFingerprint,roi:request.roi,samplingRecipeFingerprint:fingerprint,samplingVersion:samplingVersion,geometryMapping:try geometry.mapping(sourceSize:sourceBinding.sourceSize),value:.displayHistogram(value))
+    if let hit { cache.remove(at: hit) }
+    cache.insert(.init(key: key, value: value), at: 0)
+    if cache.count > cacheCapacity { cache.removeLast() }
+    return result
   }
 }
