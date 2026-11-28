@@ -1,6 +1,6 @@
 # 043 · 图像引擎统一与后续性能优化
 
-2026-11-28 · **Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 通过 wgpu 的 Metal 后端运行，Linux 通过 Vulkan 运行。两端共用算子语义、编译和资源计划。032 V1 回执和原生分项基线已通过验证，外部对标继续采集。首条 WGSL 场景 DAG 在两端实机对照。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
+2026-11-28 · **Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 选用 Metal 后端，Linux 选用 Vulkan 后端。两端共用算子语义、编译和资源计划。032 V1 回执和原生分项基线已通过验证，首条 WGSL 场景 DAG 组件已在两端实机通过。外部产品对标和原生产品路由继续按验收矩阵推进。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
 
 ## 1. 为什么需要单独一条规格
 

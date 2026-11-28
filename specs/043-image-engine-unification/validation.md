@@ -62,14 +62,16 @@ M1-01 在相同实拍与 FlashRaw 运行库上完成三条路径各一次首轮�
 | 验收项 | 必须提供的证据 |
 | --- | --- |
 | 固定输入 | 同一源码提交、锁定依赖、算子版本、冻结场景图和资源摘要。固定实拍 RAW 及其校准产生的 AP1 F32 夹具，记录 AP1 表面、全图及非居中 ROI。首条包含曝光、EV 曲线、coverage 和有序 Layer |
-| macOS 实机 | 物理 GPU，执行回执 `executor=wgpu`、`graphicsAPI=metal`，严格 WGSL 段回退为零。记录型号、系统、图形驱动环境和设备能力 |
-| Linux 实机 | 物理 GPU，执行回执 `executor=wgpu`、`graphicsAPI=vulkan`，严格 WGSL 段回退为零。记录 GPU、驱动版本和设备能力。软件 Vulkan 结果作为额外正确性证据 |
+| macOS 实机 | Apple M4 Max，系统构建 26A434。`executor=wgpu`、`graphicsAPI=metal`，严格 WGSL 段零回退。[Metal 回执](evidence/m2-ap1-real-metal.json) |
+| Linux 实机 | NVIDIA RTX 6000 Ada，PCI ID `10de:26b1`，驱动 `610.43.02`，设备 Vulkan 1.4.341。`executor=wgpu`、`graphicsAPI=vulkan`，严格 WGSL 段零回退。[Vulkan 回执](evidence/m2-ap1-real-vulkan.json) |
 | 两端像素 | 参考 CPU、039 原生 Metal 和两端 WGSL 的同输入对照。覆盖负值、超白、alpha、零覆盖、禁用、非居中 ROI 与整幅裁块；核对监看根与冻结最终根 |
 | macOS 产品路径 | 24/60 MP 原生 FIT 到 drawable、组内监看、原寸取景与 032。核对同设备纹理借用、同步、等待、整帧上传/读回和实际峰值 |
 
 首条场景路径必须有以上双端实机证据再启用。M5 继续签收 Linux 的 RAW 到成片产品闭环。
 
-macOS 组件在 Apple M4 Max 实体 GPU 通过，系统构建为 26A434。冻结源 RAW 9504×6336 生成 2400×1600 线性 AP1，非居中 ROI 为 `(1771, 1093, 629, 507)`。最终根和监看根各跑整幅与 ROI，四次回执均为 wgpu/Metal、一次派发和零回退。相对 CPU 及 039 Rust Metal 的最大缩放 RGB 误差为 `2.53×10⁻⁷`，alpha 位模式相同，同后端的两个 ROI 与整幅裁块逐位相同。合成硬件测试补齐部分 alpha、透明像素、零 coverage、禁用和参数重绑定。该证据覆盖 CPU 上传的 AP1 缓冲区组件。Linux 实体 Vulkan 与 macOS 产品同设备纹理路由继续按上表验收。 [Metal 实机回执](evidence/m2-ap1-real-metal.json)
+冻结源 RAW 9504×6336 生成 2400×1600 线性 AP1，非居中 ROI 为 `(1771, 1093, 629, 507)`。最终根和监看根各跑整幅与 ROI，两端共八次，均为一次派发与零回退。独立复算的双端缩放 RGB 误差最大 `2.65×10⁻⁷`，alpha 逐位相同。对 CPU 和 039 的误差均在门槛内。两端各自的 ROI 对整幅裁块四通道逐位相同。两台机器的合成硬件测试覆盖部分 alpha、透明像素、零 coverage、禁用和参数重绑定。该证据签收 CPU 上传的 AP1 缓冲区组件。 [双端证据](evidence/m2-ap1-cross-device-receipt.json)
+
+Linux 使用同一 Rust 工具链和经 PAX 提交 ID、SHA-256 校验的源码归档。工作站的物理 GPU 身份另经 PCI 和 `vulkaninfo` 核对。Vulkan loader 与 NVIDIA EGL ICD 配置位于独立测试目录，调用现有 610.43.02 驱动。 [NVIDIA EGL ICD 说明](https://download.nvidia.com/XFree86/Linux-x86_64/620.70.06/README/installedcomponents.html)
 
 首条组件的冻结输入来自 `DevelopmentSceneRAWV1Tests/testOptInFrozenAP1SceneWGSLFixture`。用 `RAWMASTER_SCENE_60MP_ARW` 指定本节同源授权原片，`RAWMASTER_SCENE_WGSL_FIXTURE_DIR` 指定新目录。夹具写入 2400×1600 线性 AP1 F32、校准、冻结 039 图、右下 ROI 和四份严格 Rust Metal 参考。`manifest.json` 保存输入、输出及校准摘要。两端用同一份冻结输入。
 
@@ -174,7 +176,7 @@ LightFlow 的 24.35/25.92 ms 为 74 配方 2400×1600 RGBA8 精确读回的首�
 - 回滚用同一配方、来源和目标重放，回执记录实际执行。旧 V1 票据及已发布目标能通过目录重开验证。
 - 035、036、037、038 既有验收门继续按对应产品路径复验。M2 以双端实机的首条 WGSL DAG 签收执行器，M5 按完整 RAW 到文件链路开放 041 能力。
 
-2026-11-28 的本机 Release `20261128.104222` 已安装到 `/Applications/RAWMaster.app`。构建和安装包均通过严格签名校验，应用与三个运行库摘要一致。用隔离资料库启动至主窗口并验证数据库。旧应用、偏好及默认目录数据库已备份。本包交付 032 回执修复、031 滤镜与当前原生性能改动，后续阶段按本页矩阵继续签收。[安装与构建证据](evidence/m0-release-checkpoint.json)
+2026-11-28 的本机 Release `20261128.114819` 已安装到 `/Applications/RAWMaster.app`。构建和安装包均通过严格签名校验，应用与三个运行库摘要一致。隔离资料库启动至主窗口，SQLite `quick_check` 通过，上一版应用包已保存。当前包交付 032 回执修复、031 滤镜、逐行直方图与单目标瓦片程序复用。[现行安装回执](evidence/m1-release-checkpoint.json) · [M0 安装回执](evidence/m0-release-checkpoint.json)
 
 ## 6. 现有原生基线复现
 
@@ -218,7 +220,7 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 - [x] M0 6 MP 5 次预热、每执行器 30 次，原生 FIT/监看及 1:1 复跑
 - [ ] M0 Camera Raw 当前版本的同机基线与三产品外部通过
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
-- [ ] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机回执
+- [x] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机组件回执
 - [ ] M2 6 MP、96 节点、60 MP A/B 和 macOS 原生产品路径
 - [ ] M3 模型、5K/6K 原寸窗口、异步取消与峰值
 - [ ] M4 空间和输出算子证据、50 配方矩阵及 035 封存复跑

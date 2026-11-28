@@ -1,6 +1,6 @@
 # 043 · 实施计划
 
-2026-11-28 · **M0 外部对标继续采集，M1 目标内程序复用已实测。** 032 的 V1 回执和原生分项基线已通过验证。首条 Rust + wgpu/WGSL 场景 DAG 在 macOS Metal 和 Linux 实体 Vulkan 上对照。[规格](spec.md) · [任务清单](tasks.md) · [验收基线](validation.md)
+2026-11-28 · **M0 外部对标继续采集。** M1 目标内程序复用已实测。首条 Rust + wgpu/WGSL 场景 DAG 组件已通过 macOS Metal 和 Linux 实体 Vulkan 对照。[规格](spec.md) · [任务清单](tasks.md) · [验收基线](validation.md)
 
 ## 1. 当前代码边界
 
@@ -64,7 +64,7 @@ Modules/ImageEdit/src/
 ### M2 · 首条 WGSL 场景 DAG 与融合
 
 1. **先接一条实际场景链。** 首条独立组件已经接入 `DevelopmentSceneGraphV1.Scope` 对应的 039 文档，覆盖 AP1 F32 曝光、EV 曲线、线性 coverage 和有序 normal Layer，含零覆盖、禁用、顶层监看与冻结最终根。用 CPU 参考和同一 WGSL 融合计划绑定不同参数，Apple M4 Max 已实测。摄影前缀、ACES 2、组内监看和原生纹理传输从产品适配段接入。[实机结果与复跑](validation.md#m2--首条-wgsl-场景-dag-与融合)
-2. **两端实机首验。** 用同一提交、依赖锁、冻结图、校准实拍产生的 AP1 夹具及资源摘要，在 macOS 的 wgpu/Metal 和 Linux 的 wgpu/Vulkan 实体 GPU 运行同一条锁定场景路径。比较两端和参考的 F32 像素、全图及非居中 ROI，记录 GPU、驱动、能力与 `executor`/`graphicsAPI`，严格模式的 WGSL 段零回退。此项是首条场景路径启用的前置证据。[设备与样本矩阵](validation.md#m2--首条-wgsl-场景-dag-与融合)
+2. **两端实机首验。** 同一提交、依赖锁、冻结图和校准 AP1 在 Apple M4 Max 的 wgpu/Metal 与 NVIDIA RTX 6000 Ada 的 wgpu/Vulkan 上通过。整幅和非居中 ROI 均覆盖监看与最终根，双端四通道、设备、驱动和零回退回执已经归档。原生纹理传输和端到端资源按 24/60 MP 产品用例验收。[双端回执](evidence/m2-ap1-cross-device-receipt.json)
 3. **实现算子级优化。** 验证后裁剪恒等和禁用分支。同域、同精度和几何的点段生成有固定求值顺序的 WGSL。为曲线、coverage 及参数绑定设设备上限，超限时切段。改变计算顺序的代数折叠逐项验收，结构化 pipeline 缓存让改参只更新缓冲。
 4. **验证产品传输。** 用 macOS 的同设备纹理接入 24/60 MP 原生预览、监看及 032 冻结交付，核对实际 GPU 驻留、同步、整帧往返和端到端预算。Linux 的首条 DAG 使用固定 AP1 输入验证执行器，完整 RAW 和目标文件在 M5 签收。
 5. **扩大算子覆盖并复测。** 迁移其他场景节点、混合模式及有证据的 V3 点段。对比融合/未融合及 039 当前执行器，记录 6 MP 六节点、96 节点合成图和 60 MP 三节点的性能。
@@ -91,7 +91,7 @@ Modules/ImageEdit/src/
 
 ### M5 · 041 产品放行
 
-1. 在已通过 M2 的 Linux 实体 Vulkan 上增加实拍 RAW 的完整链路。固定 FlashRaw 和相机校准，验证 mosaic 到 AP1、场景图、每目标一次 ACES 2、编码与独立回读。型号、模型、配方和输出按能力逐项放行。
+1. 在已通过 M2-04 组件验收的 Linux 实体 Vulkan 上增加实拍 RAW 的完整链路。固定 FlashRaw 和相机校准，验证 mosaic 到 AP1、场景图、每目标一次 ACES 2、编码与独立回读。型号、模型、配方和输出按能力逐项放行。
 2. 将内存准入、取消、重试、续跑及执行回执接入 040/041 队列。按通过的组合启用 `image_scene_batch`，不可用的组合返回缺失的能力和原因。
 
 退出条件为实机完整链路、文件信号和目录回执可核对，041 服务端能力表与实际支持一致。[041 验收](../041-server-image-editing/spec.md#5-验收场景)

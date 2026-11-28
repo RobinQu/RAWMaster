@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-28",
+  "scope": "M2-04 frozen input AP1 buffer component on physical wgpu Metal and Vulkan",
+  "sourceCommit": "3145356fb73fcbcb46af5bcb6c662e8bb2c27d72",
+  "sourceCommitBoundByGitArchiveOnLinux": true,
+  "sourceArchiveSHA256": "3e450a916e485555193a35a44ef7f982b476d9875213a0921fa611f77f7bef19",
+  "fixtureTransferArchiveSHA256": "20b744439266dfbf71d1c8170fa4c58acbf650b4bf0c2eaa5c2463e70024d95b",
+  "compiler": {
+    "nightly": "2026-08-08",
+    "rustcCommit": "1a98b1e135b254f209c67d447b6d8bcd56a859e0",
+    "metalHost": "aarch64-apple-darwin",
+    "vulkanHost": "x86_64-unknown-linux-gnu"
+  },
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "ap1SHA256": "411585e7f2b05d1b16fbbe2d4317df0a791c1a886dc80b534e003ab6e9d840b9",
+  "graphSHA256": "d8523e5d2b9ab95ee75e83b38d2c4865bdf45a2672469ad4bd77b383a3c4b162",
+  "calibrationSHA256": "35aa0357ba7fc15b544031f0ff5daa9d07d48a936d3e6397f900b1d2b0ae16ff",
+  "cargoLockSHA256": "2b86ee9258eae5956ee77ff5a4a64991c0cf9296e804c5adfa29b0ac8bbc5bb6",
+  "engineSourceSHA256": "498cd63108a92b5320d980f80530366ca685fc526047563875091bdf405235e7",
+  "full": {
+    "extent": [
+      2400,
+      1600
+    ],
+    "full": [
+      2400,
+      1600
+    ],
+    "origin": [
+      0,
+      0
+    ]
+  },
+  "roi": {
+    "extent": [
+      629,
+      507
+    ],
+    "full": [
+      2400,
+      1600
+    ],
+    "origin": [
+      1771,
+      1093
+    ]
+  },
+  "monitorNode": "04300000-0000-4000-8000-000000000002",
+  "metalReportSHA256": "2b0c712767ff3b8a682bcee1f8e8c15df20a09fb8d4475eb16c8a269111f973f",
+  "vulkanReportSHA256": "778571d06d33c8920a99c6a7f6a68fbe7a03b6cabe973fbb91252b6dfe68db77",
+  "metal": {
+    "device": "Apple M4 Max",
+    "macOSBuild": "26A434",
+    "hardwareTestPassed": true,
+    "fallbackCount": 0
+  },
+  "vulkan": {
+    "device": "NVIDIA RTX 6000 Ada Generation",
+    "driver": "610.43.02",
+    "vendorID": "0x10de",
+    "deviceID": "0x26b1",
+    "pciBusID": "0000:41:00.0",
+    "distribution": "Ubuntu 22.04",
+    "vulkanDeviceAPIVersion": "1.4.341",
+    "vulkanLoaderInstanceVersion": "1.3.204",
+    "nvidiaICDLibrary": "libEGL_nvidia.so.0",
+    "userScopedLoader": true,
+    "vulkaninfoSHA256": "04a6144ae211b19d7626cf11ab069852c608d606339ff6aee6d1a04e03b355ef",
+    "pciEvidenceSHA256": "1fbbe9382691467eac289a6e577918cd3851bc31e4de0b293c90f3432825151d",
+    "hardwareTestPassed": true,
+    "fallbackCount": 0
+  },
+  "independentlyVerifiedBothDevicesROICropsAreBitExact": true,
+  "independentF32ReadbackChecks": {
+    "final-full": {
+      "vulkanVsMetalMaxScaledRGB": 2.3347180156764642e-07,
+      "metalVs039MaxScaledRGB": 2.3042010885506784e-07,
+      "vulkanVs039MaxScaledRGB": 2.384185791015625e-07,
+      "alphaBitsIdentical": true,
+      "metalOutputSHA256": "888513ce78dc7981fc855ef73fbc07b74519ba5e42419c96c4c46ed3f2ac1e98",
+      "vulkanOutputSHA256": "c7904aaf18192881e7a57519e672fee20f676ebff57bbceff4984c50192ccfa2"
+    },
+    "final-roi": {
+      "vulkanVsMetalMaxScaledRGB": 2.9802322387695312e-08,
+      "metalVs039MaxScaledRGB": 1.050092896468086e-07,
+      "vulkanVs039MaxScaledRGB": 1.050092896468086e-07,
+      "alphaBitsIdentical": true,
+      "metalOutputSHA256": "327a08cf81c7b32c4ee1d11ae605cb59fc6430396d652e2d5c6006b3f75e9ced",
+      "vulkanOutputSHA256": "ca0b09b61e54fef4f3477bc2d92291a65e3b866a4e771f3ce3d8eecb22dd0516"
+    },
+    "monitor-full": {
+      "vulkanVsMetalMaxScaledRGB": 2.649606966134667e-07,
+      "metalVs039MaxScaledRGB": 2.528657912284397e-07,
+      "vulkanVs039MaxScaledRGB": 2.6526673033952415e-07,
+      "alphaBitsIdentical": true,
+      "metalOutputSHA256": "55e933537df4adbd2be6eb754192abe9e53d8337960c33cb83dcd48e7ceefb25",
+      "vulkanOutputSHA256": "c9aa7036c79186736f48e49f69cc4dc0c16dc5f9a6361e4f2ef473002d861513"
+    },
+    "monitor-roi": {
+      "vulkanVsMetalMaxScaledRGB": 5.960464477539063e-08,
+      "metalVs039MaxScaledRGB": 7.375699548223651e-08,
+      "vulkanVs039MaxScaledRGB": 8.940696716308594e-08,
+      "alphaBitsIdentical": true,
+      "metalOutputSHA256": "2277a048035e5ebad53a1eb2f59c51e73c6975ae763815459d603102bfa2cb82",
+      "vulkanOutputSHA256": "deac798aa03e38569bd25700a5d2c8f0453defcb144442454446cc8376782dd5"
+    }
+  }
+}

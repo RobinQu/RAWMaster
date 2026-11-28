@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Installed native M1 frozen tile preparation and display histogram Release checkpoint",
+  "sourceCommit": "2e3786aec75ecfcd819c8825f0b0e837ebbf3be1",
+  "build": "20261128.114819",
+  "mode": "Swift Release, ad-hoc signed",
+  "installedPath": "/Applications/RAWMaster.app",
+  "builtAndInstalledSHA256": {
+    "Contents/MacOS/RAWMaster": "19b4cceb4cc77d7fa47963739761d03db05cc8edcf3392b567967d831ad82cb5",
+    "Contents/Frameworks/librawmaster_library.dylib": "441a4a52c9eb8fbcf1a8e2affd0f3382755075f3fa204cd9e0d47c56a0c2e043",
+    "Contents/Frameworks/librawmaster_image.dylib": "3b83341d1c889e7d3011c5bcd8959509acd928a20080b0dfd23d569e01b634dd",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "strictCodeSignBoth": true,
+  "cdhash": "c07e670c5d217599f738083d2462c8e30abbe134",
+  "previousBuild": "20261128.104222",
+  "previousBundlePreserved": true,
+  "smoke": {
+    "openedIsolatedLibrary": true,
+    "window": "RAWMaster",
+    "sqliteQuickCheck": "ok"
+  },
+  "verification": {
+    "nativeReleaseTestsPassed": 39,
+    "nativeFilterChecksPassed": 17,
+    "priorBrowserChecksPassed": 48,
+    "currentLightFlowVisibleControlsWithinTolerance": 6,
+    "warmSamplesPerControl": 30,
+    "native60MPProfileRoutes": 3,
+    "native60MPWarmSamplesPerRoute": 30
+  }
+}
