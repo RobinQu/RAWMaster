@@ -2,12 +2,12 @@
 
 ## 状态与目的
 
-- 状态：**Validating；固定滤镜、生命周期、hover 与收藏已实现，canonical/暖缩略图门已通过，AppKit 性能与实际 VoiceOver 验收未关闭，不宣称 M0/M1 Converged**。
+- 状态为 **Validating**。固定滤镜、生命周期、hover 与收藏已实现。canonical、暖缩略图和 Classic Filters 的原生 AppKit 暖态门已通过。物理键盘与 VoiceOver 走查仍待验收。[当前验证](validation.md#11-月-28-日联合构建复验)
 - 目的：在保留 canonical 保存、导出和最终质量契约的前提下，让固定滤镜的主图交互接近 LightFlow 的暖路径体验，并消除滤镜缩略图的可复现布局失败、过度失效和重复生成。
 - 输入证据：[`docs/research/lightflow-camera-raw-filter-rendering.md`](../../docs/research/lightflow-camera-raw-filter-rendering.md)、本目录 `validation.md`、`FilterPerformanceValidationTests`。
 - 规格结构：本文件定义交付契约，`plan.md` 定义实施顺序，`tasks.md` 定义可勾选任务，`validation.md` 定义已验证事实和未验证边界。
 
-**2026-11-22 范围更新。** 028 的十候选网格是固定滤镜的既有交付和回归样本。后续默认左栏采用 031 的无缩略图预设目录，原片与九个 Delta64 风格仍可从 Classic Filters 访问。目录复用本规格的主图临时预览、撤销和收藏行为。028 的真实窗口性能、物理键盘与 VoiceOver 验收继续跟踪。[031 预设产品规格](../031-preset-browser/spec.md) · [联合研发次序](../../docs/planning/24-mask-preset-retouch-roadmap.md)
+**2026-11-22 范围更新。** 028 的十候选网格是固定滤镜的既有交付和回归样本。默认左栏采用 031 的无缩略图预设目录，原片与九个 Delta64 风格可从 Classic Filters 访问。目录复用本规格的主图临时预览、撤销和收藏行为。[031 预设产品规格](../031-preset-browser/spec.md) · [联合研发次序](../../docs/planning/24-mask-preset-retouch-roadmap.md)
 
 ## 问题陈述
 

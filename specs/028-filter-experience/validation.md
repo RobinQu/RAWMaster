@@ -4,11 +4,17 @@ Camera Raw 交付版本上的 Classic 窗口、十候选及全尺寸导出实测
 
 2026-11-22 更新。031 的独立开发版已将左栏风格入口接入元数据目录，并保留经典滤镜。以下数值对应 028 历史构建；后续联合窗口验证沿用相同绘制边界。[031 交付](../031-preset-browser/feature-validation.md) · [对齐后验收](../031-preset-browser/integration-validation.md)
 
+## 11 月 28 日联合构建复验
+
+同一 9504×6336 RAW 和 2400×1600 实绘位图，关闭阶段跟踪的两轮 Classic Filters 各有 19 个暖样本。两轮从输入到 AppKit 绘制返回的 p50/p95 分别为 16.31/25.80 和 14.47/17.31 ms，均通过 20/33 ms 门槛。暖阶段解码与 fallback 计数无增长。先前两组独立窗口的结果和原始报告保留在 031。[窗口逐样本](../031-preset-browser/evidence/camera-raw-integration/viewport-worker-phases.json) · [联合记录](../031-preset-browser/integration-validation.md#11-月-28-日画布回执与窗口复测)
+
+028 T-021 仍需实际 VoiceOver 朗读和物理键盘验收。031 普通预设按 SC-02 与同字段手调独立对照。[028 任务](tasks.md) · [031 验收门](../031-preset-browser/spec.md#成功标准)
+
 ## 028 独立版本的结论
 
 固定九滤镜 + 原片的交互代理、独立缩略图、内容键、last-known-good、有界恢复、hover、收藏和键盘导航已经实施。真实 RAW 的十组 canonical settled、全尺寸 PNG16 导出、暖十候选吞吐、滤镜相关 Debug/Release 回归均通过。
 
-**M0/M1 尚未 Converged**：真实 AppKit 暖路径仍为 p50 27.367 ms、p95 34.061 ms，未达到 p50 ≤ 20 ms、p95 ≤ 33 ms；实际 VoiceOver／物理键盘窗口验收未完成。不得用 Service 成绩或模型层零空白替代这两个门。
+028 独立构建的 AppKit 暖路径曾测得 p50 27.367 ms、p95 34.061 ms，高于 20/33 ms 门槛。联合构建复验取得 T-023 通过所需的原生绘制结果，实际 VoiceOver 和物理键盘仍按 T-021 签收。
 
 ## 固定样本与版本证据
 
