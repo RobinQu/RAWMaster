@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-27",
+  "source": "9504x6336 acr-benchmark.ARW; test host CIRAW (FlashRaw unavailable)",
+  "rf_transport": {
+    "path_brilliance_ms": {
+      "before": [
+        8465.7,
+        8398.1,
+        8657.0,
+        8390.8,
+        8461.1
+      ],
+      "after_mmap": [
+        6115.8,
+        6060.2,
+        6150.3,
+        6183.1,
+        6236.0
+      ]
+    },
+    "rf_write_total_ms_5_runs": {
+      "before": 9618.1,
+      "after": 697.9
+    },
+    "rf_context_total_ms_5_runs": {
+      "before": 4267.8,
+      "after": 4206.3
+    },
+    "rf_render_total_ms_5_runs": {
+      "before": 10298.2,
+      "after": 9907.6
+    },
+    "dehaze_v2_ms": {
+      "pwrite": 3687.1,
+      "mmap": 3471.0
+    },
+    "fallback_env": "RAWMASTER_RF_PWRITE=1"
+  },
+  "brilliance_map_cache": {
+    "map_ms_first": 663.4,
+    "map_ms_repeat": 0.0,
+    "total_ms_after": [
+      6379.0,
+      5966.2,
+      5740.4,
+      5991.7,
+      5943.3
+    ]
+  },
+  "advanced_detail_tiled": {
+    "status": "byte-exact, no performance win, default inline",
+    "window_4800": {
+      "inline": {
+        "texture": 1322,
+        "clarity": 1365,
+        "local_texture_clarity": 2806,
+        "adaptive_brilliance": 8573
+      },
+      "tiled": {
+        "texture": 1341,
+        "clarity": 1321,
+        "local_texture_clarity": 2727,
+        "adaptive_brilliance": 8332
+      }
+    },
+    "window_2400": {
+      "tiled": 101.8,
+      "inline": "25-40"
+    },
+    "whole_tiled_ms": 1339
+  },
+  "tests": {
+    "imaging": {
+      "executed": 1107,
+      "skipped": 94,
+      "failures": 0
+    }
+  }
+}

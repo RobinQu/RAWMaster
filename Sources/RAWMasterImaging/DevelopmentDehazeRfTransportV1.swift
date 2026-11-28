@@ -6,6 +6,9 @@ import RAWMasterCore
 
 /// Same original guide/scalar/restore math, with the qualified fixed256 file transport.
 enum DevelopmentDehazeRfTransportV1 {
+  private static let mappedWritesEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_RF_MMAP"] == "1"
+    && ProcessInfo.processInfo.environment["RAWMASTER_RF_PWRITE"] != "1"
+  private static let profileWrites = ProcessInfo.processInfo.environment["RAWMASTER_RF_PROFILE"] == "1"
   static let version="dehaze-positive-v2-rf256-v1"
   static let scalarMetal = #"""
 #include <metal_stdlib>
@@ -109,26 +112,55 @@ extern "C" { namespace coreimage {
     let fd=open(scratch.plane.path,O_CREAT|O_EXCL|O_RDWR|O_NOFOLLOW|O_CLOEXEC,0o600)
     guard fd>=0 else{throw DevelopmentError.invalidEncoding};var closed=false
     defer{if !closed{_=Darwin.close(fd)}}
+    // A sparse file may fault during a mapped write when the volume is full. Map only a
+    // fully reserved plane; unsupported preallocation or mapping uses checked pwrite.
+    var reserved = false
+    if mappedWritesEnabled {
+      var store = fstore_t(fst_flags: UInt32(F_ALLOCATEALL), fst_posmode: F_PEOFPOSMODE,
+        fst_offset: 0, fst_length: off_t(scratch.planeBytes), fst_bytesalloc: 0)
+      reserved = fcntl(fd, F_PREALLOCATE, &store) == 0 && store.fst_bytesalloc >= scratch.planeBytes
+    }
     guard ftruncate(fd,off_t(scratch.planeBytes))==0 else{throw DevelopmentError.invalidEncoding}
+    let mapping = reserved ? mmap(nil,scratch.planeBytes,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0) : nil
+    let mapped = mapping == MAP_FAILED ? nil : mapping
+    defer { if let mapped { _ = munmap(mapped,scratch.planeBytes) } }
     for y in stride(from:0,to:height,by:bandRows){
       for x in stride(from:0,to:width,by:columns){
         let outcome:Result<Void,Error> = autoreleasepool{
           Result{
+            let trace = profileWrites
+            let contextStart = DispatchTime.now().uptimeNanoseconds
             let context=try makeContext()
             defer{context.clearCaches()}
+            let contextMs = Double(DispatchTime.now().uptimeNanoseconds - contextStart) / 1_000_000
             try request.requireCurrent()
+            let graphStart = DispatchTime.now().uptimeNanoseconds
             let graph=try makeGraph()
+            let graphMs = Double(DispatchTime.now().uptimeNanoseconds - graphStart) / 1_000_000
             guard graph.extent==CGRect(x:0,y:0,width:width,height:height) else{throw DevelopmentV3Error.invalidGraph}
             let w=min(columns,width-x),h=min(bandRows,height-y),rect=CGRect(x:x,y:y,width:w,height:h)
+            let renderStart = DispatchTime.now().uptimeNanoseconds
             let buffer=try render(graph,rect:rect,components:components,context:context,request:request)
+            let renderMs = Double(DispatchTime.now().uptimeNanoseconds - renderStart) / 1_000_000
+            let writeStart = DispatchTime.now().uptimeNanoseconds
             let top=height-y-h,rowValues=w*components
             for row in 0..<h{
               try request.requireCurrent()
               let values=buffer.pointer.advanced(by:row*buffer.rowBytes).assumingMemoryBound(to:Float.self)
               guard (0..<rowValues).allSatisfy({values[$0].isFinite}) else{throw DevelopmentError.invalidEncoding}
-              var n:Int
-              repeat{n=pwrite(fd,values,rowValues*4,off_t(((top+row)*width+x)*components*4))}while n<0 && errno==EINTR
-              guard n==rowValues*4 else{throw DevelopmentError.invalidEncoding}
+              if let mapped {
+                let offset=((top+row)*width+x)*components*4
+                let destination=mapped.advanced(by:offset).assumingMemoryBound(to:Float.self)
+                destination.update(from:values,count:rowValues)
+              } else {
+                var n:Int
+                repeat{n=pwrite(fd,values,rowValues*4,off_t(((top+row)*width+x)*components*4))}while n<0 && errno==EINTR
+                guard n==rowValues*4 else{throw DevelopmentError.invalidEncoding}
+              }
+            }
+            let writeMs = Double(DispatchTime.now().uptimeNanoseconds - writeStart) / 1_000_000
+            if trace {
+              print("RF-TILE x=\(x) y=\(y) context=\(String(format:"%.1f",contextMs)) graph=\(String(format:"%.1f",graphMs)) render=\(String(format:"%.1f",renderMs)) write=\(String(format:"%.1f",writeMs))")
             }
           }
         }
@@ -141,6 +173,7 @@ extern "C" { namespace coreimage {
         try outcome.get()
       }
     }
+    if let mapped, msync(mapped,scratch.planeBytes,MS_SYNC) != 0 { throw DevelopmentError.invalidEncoding }
     guard fsync(fd)==0 else{throw DevelopmentError.invalidEncoding}
     var info=stat()
     guard fstat(fd,&info)==0,info.st_size==scratch.planeBytes,fchmod(fd,0o400)==0 else{throw DevelopmentError.invalidEncoding}

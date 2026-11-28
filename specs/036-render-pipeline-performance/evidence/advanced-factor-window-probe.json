@@ -137,5 +137,27 @@
     },
     "policy": "single-band 1:1 default; both-band falls back to the inline path",
     "tradeoff": "whole 1:1 recomputes all tiles (about 2.9x inline at 60 MP); window is 4.6x faster and amount changes reuse factor tiles"
+  },
+  "tiled_verification": {
+    "source": "9504x6336 acr-benchmark.ARW, test host CIRAW (FlashRaw unavailable)",
+    "window": "4800x3200 (shipped 50% margin)",
+    "inline_ms": {
+      "texture": 1322,
+      "clarity": 1365,
+      "local_texture_clarity": 2806,
+      "adaptive_brilliance": 8573
+    },
+    "tiled_ms": {
+      "texture": 1341,
+      "clarity": 1321,
+      "local_texture_clarity": 2727,
+      "adaptive_brilliance": 8332
+    },
+    "small_window": {
+      "tiled": 101.8,
+      "inline": "25-40"
+    },
+    "whole_tiled_ms": 1339,
+    "conclusion": "byte-exact but no performance win on the shipped window; default reverted to inline"
   }
 }

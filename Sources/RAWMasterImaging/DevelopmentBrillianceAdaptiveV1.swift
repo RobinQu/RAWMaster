@@ -9,7 +9,7 @@ import RAWMasterCore
 enum DevelopmentBrillianceAdaptiveV1 {
   static let version = "rawmaster-adaptive-brilliance-v1/native-prefix-map31/straight-linear-rgb"
   /// Only immutable 31x31 maps are shared. The caller's key binds source, proxy and every
-  /// upstream parameter; settled/save/export do not supply a key and retain canonical evaluation.
+  /// upstream parameter. The native 1:1 QA path uses a separate namespace.
   private static let interactiveMaps:NSCache<NSString,MapRows> = {
     let cache=NSCache<NSString,MapRows>();cache.countLimit=4;return cache
   }()
@@ -143,10 +143,13 @@ enum DevelopmentBrillianceAdaptiveV1 {
       var old=light;old.brillianceVersion=nil;old.shadows=0;old.highlights=0
       return try DevelopmentSpatialEngineV3.applyLight(old,to:image)
     }
+    let profile = ProcessInfo.processInfo.environment["RAWMASTER_BRILLIANCE_PROFILE"] == "1"
+    let start = DispatchTime.now().uptimeNanoseconds
     let kernels=try alphaKernels.get()
     guard let straight=kernels.straight.apply(extent:image.extent,roiCallback:{_,r in r},arguments:[image]) else {
       throw DevelopmentV3Error.invalidGraph
     }
+    let afterStraight = DispatchTime.now().uptimeNanoseconds
     let rows:MapRows
     if let interactiveMapKey,let cached=interactiveMaps.object(forKey:interactiveMapKey as NSString) {
       rows=cached
@@ -154,6 +157,7 @@ enum DevelopmentBrillianceAdaptiveV1 {
       rows=try MapRows(makeMap(straight,check:check),width:31,height:31)
       if let interactiveMapKey{interactiveMaps.setObject(rows,forKey:interactiveMapKey as NSString)}
     }
+    let afterMap = DispatchTime.now().uptimeNanoseconds
     let processed:CIImage
     if !interactiveProxy,let materialized=try DevelopmentBrillianceNativeRGV1.apply(straight,rows:rows,strength:light.brilliance,sourceIsRAW:sourceIsRAW,context:context,check:check) {
       processed=materialized
@@ -162,10 +166,15 @@ enum DevelopmentBrillianceAdaptiveV1 {
     } else {
       processed=try PublicBrilliance.graph(image:straight,provider:rows,local:light.brilliance,shadow:0)
     }
+    let afterNative = DispatchTime.now().uptimeNanoseconds
     guard let result=kernels.restore.apply(extent:image.extent,roiCallback:{_,r in r},arguments:[processed,image]) else {
       throw DevelopmentV3Error.invalidGraph
     }
     try check()
+    if profile {
+      let ms: (UInt64) -> Double = { Double($0) / 1_000_000 }
+      print("BRILLIANCE-STAGE straight=\(String(format:"%.1f",ms(afterStraight-start))) map=\(String(format:"%.1f",ms(afterMap-afterStraight))) native=\(String(format:"%.1f",ms(afterNative-afterMap))) restore=\(String(format:"%.1f",ms(DispatchTime.now().uptimeNanoseconds-afterNative)))")
+    }
     return result
   }
   /// Bounded source-native statistics. The only CPU raster is a <=16 MiB proxy; the immutable

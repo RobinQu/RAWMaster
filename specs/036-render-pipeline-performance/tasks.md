@@ -61,6 +61,11 @@
 ## 待办
 
 - [ ] **区域解码（`use_region`）配合 1:1 窗口。** 画布已接窗口。先在冷窗测实际被节省的解码和上传，确认 CFA、方向、边缘及校准与整幅一致后才接入。热窗继续复用驻留源。
+- [ ] **RF 映射写入。** 历史 CIRAW 样本 60 MP brilliance 8.4→6.1 s、dehaze 3.69→3.47 s。已合入有预分配与清理的 QA 路径，当前 Release 复验逐像素、取消、预算和实拍性能后决定默认值。
+- [ ] **Brilliance map 缓存。** 历史 CIRAW 夹具首帧 map 0.66 s，随后缓存命中。QA 按来源捕获和上游配方复用，复验缓存失效和像素后决定默认值。
+- [ ] **Brilliance 上下文池 / tile 调度。** 当前 context 0.85 s/帧、render ~2 s/帧；先做 2–4 上下文池的 QA A/B，验证内存上限。
+- [ ] **Dehaze guide 缓存。** scalar guide 与 amount 无关；按 source/upstream/airlight 缓存单通道 plane。
+- [ ] **Texture/clarity guided filter / domain transform PoC。** 用 O(N) 边缘保持滤波替代大半径 Gaussian，先测 9504 画质与 4 配方。
 - [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
@@ -71,9 +76,8 @@
 - [x] **窗口化冻结原型：否决。** 探针证明高斯本身矩形无关（整幅 vs 窗口最大差 0.0），但整条 band 图不是（最大差 5.7e-4，11.5M/15.4M 分量有差异）——CI 对子窗口的内部分块改变了取样。要 ROI 安全必须同时自写高斯与 band 合成，属算子级重写。[探针](evidence/advanced-detail-freeze-probe.json)
 - [x] **factor/restore 窗口化 PoC：通过。** 真实 9504×6336 ARW：整幅 factor/restore、窗口 restore、texture→clarity 串联、窗口内重算 factor 全部 0 差异（240.9M / 15.36M 分量）。窗口 factor + restore：texture 31.4+43.2 ms，clarity 64.8+50.0 ms；对比整幅 531/609 ms，首帧 5.3–7.1×、改参数约 12×。整幅 factor/restore 只省 15%，因为整幅 materialize 仍在，所以生产化必须窗口化 factor。证据 [advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
 - [x] **严格全幅 factor 服务级验收。** 整幅/窗口共用全幅 factor，texture band 先物化；3000×2000 TIFF whole vs window 0 差异，9504 ARW 引擎级 0；首次整幅 114 ms、窗口 48 ms（6 MP）。双 band 首帧约 2×，因此仍由 QA 开关控制。
-- [x] **固定输出 tile（单 band）。** 1024² tile 的 restore 单独物化，整幅/窗口共享 tile 纹理；60 MP ARW 0 差异，窗口 101.8 ms（inline 471 ms，4.6×），整幅 1375 ms。单 band 1:1 默认启用。
-- [ ] **双 band 的固定 tile。** texture→clarity 串联需要 tile 化的 texture 输出与 clarity factor；当前双 band 回退 inline，避免首帧回退。
-- [ ] **扩展 factor 与窗口 restore 的覆盖。** 符合条件的单带缓存和固定瓦片已默认接入。双带需验证 texture 结果到 clarity 的依赖与失效，并补蒙版、边缘和 50 配方矩阵。交付仍以整幅等价验证为切换前提。
+- [x] **固定输出 tile（仅 QA）。** 逐字节 0 差异。真实 4800×3200 窗口 inline/tiled 为 texture 1322/1341、clarity 1365/1321、local 2806/2727 ms，2400 窗口 tiled 更慢。生产继续用 inline，固定 tile 用于像素对照。
+- [ ] **扩展 factor 与窗口 restore 的覆盖。** 键包含来源、band、半径和窗口加 halo。双带验证 texture 到 clarity 的依赖与失效，并补蒙版、边缘和 50 配方矩阵。切换以像素等价和同窗收益为条件。
 - [ ] **dehaze / adaptive-brilliance 的分块确定性归约。** 先 profile 整幅归约占比，再做带 halo 的分块统计 PoC；不要假设 factor/restore 可直接复用。
 - [ ] **1:1 的算子成本（下一步的主战场，需要算子重写）。** `DevelopmentAdvancedDetailEngineV3.materialize` 的注释写明它是为了「让 Core Image 对同一个图只选一条 Gaussian 路径」——也就是说这张整幅 F32 纹理是**像素一致性**的前提，窗口帧与整幅帧逐字节相同正依赖它。因此不能靠缩小或改存储模式来省：`.private` 与 `.shared` 实测无差异（`texture` 576/475 → 553/470 ms，噪声内）。要压缩它必须把模糊改成可确定复现的分带实现并带 halo，属于算子级工程。三次连测已经稳定复现：`texture` 480 ms、`dehaze-v2` 1.5 s、`adaptive-brilliance` 3.9 s，热态不降；`dehaze` 与 `adaptive-brilliance` 各自有同形的整幅归约，需要同样的处理。
 - [x] **1:1 首次进入的冷启动。** 已由极速模式的空闲预热解决（182 → 82 ms）。剩余约 50 ms 是规范上下文首次创建与内核编译，属一次性成本。

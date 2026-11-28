@@ -225,6 +225,16 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 用 `FLASHRAW_DEMOSAIC_HALF_SIZE` 解码代理基图（4752×3168 再采样到 2400）只省一次性 34 ms（neutral 首次帧 130.1 → 96.5 ms），却永久改变基图像素（相对均衡基图 p99 2–4、最大 72–99/255 的高对比边缘差异）。一次性收益换永久画质代价，不采纳。
 
+## RF 传输与 adaptive-brilliance 缓存（2026-11-27）
+
+历史 CIRAW 分项测量中，主要成本来自逐行 `pwrite`、逐瓦片创建 CIContext 和重复构建 map。
+
+- 历史 A/B 中，60 MP brilliance 五样本中位 **8.4→6.1 s**，RF 写入合计 9.6→0.7 s，dehaze-v2 单个样本 3.69→3.47 s。合入后使用 `RAWMASTER_QA_RF_MMAP=1` 试用，先预分配完整文件再映射，完成时执行 `msync(MS_SYNC)` 和 `fsync`。预分配或映射不可用时沿用检查返回值的 `pwrite`。`RAWMASTER_RF_PWRITE=1` 强制旧传输用于 A/B。[Darwin 文件分配接口](https://github.com/apple/darwin-xnu/blob/main/bsd/sys/fcntl.h)
+- 31×31 brilliance map 依赖 strength 之前的输入。历史样本中首帧 map 0.66 s，后续缓存命中，整段为 **5.7–6.0 s**。`RAWMASTER_QA_BRILLIANCE_MAP_CACHE=1` 在原寸 CIRAW 路径用来源、捕获和上游配方的键试用。该路径和 RF 映射写入在当前 Release 的实拍回归通过后再评估默认值。
+- 高级细节的固定输出 tile 逐字节正确，但出厂 4800×3200 窗口无收益，默认回退 inline；细节见[再调研文档](../../docs/research/operator-optimization-2026-11.md)与[证据](evidence/operator-transport-20261127.json)。
+
+下一步优先级：brilliance 上下文池（0.85 s/帧）、tile 调度/有限值分带、dehaze guide 缓存、texture/clarity 的 guided filter/domain transform PoC。
+
 ## 交互与像素契约
 
 | 从哪里进入 | 对象、完成与退出 |
@@ -281,7 +291,7 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 渲染器接线时发现一个边界：3000×2000 TIFF 上“窗口内 factor”与整幅 factor 的 crop 有 **1 LSB / 0.55% 分量** 差异，而整幅重复渲染为 0。9504 ARW 探针恰好为 0，但这是数据相关的 1 ULP。
 
-**严格全幅 factor 模式通过服务级逐字节验收：** 整幅与窗口都用同一张全幅 factor，并在 texture band 后先物化全幅 texture 输出；3000×2000 TIFF 的 whole vs window crop 为 **0**，9504 ARW 引擎级也为 0。3000×2000 首次整幅 114 ms、随后窗口 48 ms。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。该模式仍由 QA 开关控制。**固定输出 tile 已实施并默认用于单 band 1:1：** 每个 1024² 输出 tile 单独物化，整幅和窗口共享 tile 纹理；60 MP ARW 整幅/窗口 **0 差异**，窗口 **101.8 ms**（inline 471 ms，4.6×），整幅 1375 ms（全 tile 重建）。单 band 默认启用；双 band 仍走原 inline 路径，下一步再 tile 化 texture→clarity 串联。
+**严格全幅 factor 模式通过服务级逐字节验收：** 整幅与窗口都用同一张全幅 factor，并在 texture band 后先物化全幅 texture 输出；3000×2000 TIFF 的 whole vs window crop 为 **0**，9504 ARW 引擎级也为 0。3000×2000 首次整幅 114 ms、随后窗口 48 ms。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。该模式仍由 QA 开关控制。**固定输出 tile 已验证但未采纳为默认：** 60 MP 整幅/窗口 0 差异，但出厂 4800×3200 窗口上 inline/tiled 为 texture 1322/1341 ms、clarity 1365/1321 ms、local-texture-clarity 2806/2727 ms，差异在 ±3% 内；2400×1600 窗口 tiled 101.8 ms 对 inline 25–40 ms 更慢。之前 4.6× 是拿 tiled 窗口对比整幅 inline，不是同一窗口。生产默认回退 inline，tile 仅保留 QA。
 
 证据：[advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [再调研与下一步规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
 
