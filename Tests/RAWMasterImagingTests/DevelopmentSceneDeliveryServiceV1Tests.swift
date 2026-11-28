@@ -155,14 +155,20 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
   }
 
   func testOptInPhotographic60MPFrozenGraphPublishesPQTogetherWithTheEditedSDRDerivative() async throws {
-    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_60MP_ARW"] else {
+    let environment = ProcessInfo.processInfo.environment
+    guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else {
       throw XCTSkip("Supply the authorized 60 MP DSC05995 ARW")
     }
+    let repeats = Int(environment["RAWMASTER_SCENE_DELIVERY_PROFILE_REPEATS"] ?? "1") ?? 0
+    guard (1...64).contains(repeats) else { return XCTFail("Profile repeats must be from 1 through 64") }
     var adjustments = DevelopmentAdjustmentsV3()
     adjustments.light = .init(enabled: true, exposure: 0.25)
     adjustments.color = .init(enabled: true, saturation: 0.32, vibrance: -0.15)
-    try await verifyFrozenGraph(path: path, hash: "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
-      name: "DSC05995-photographic", width: 9504, height: 6336, photographic: adjustments)
+    for run in 0..<repeats {
+      let name = repeats == 1 ? "DSC05995-photographic" : "DSC05995-photographic-\(run)"
+      try await verifyFrozenGraph(path: path, hash: "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        name: name, width: 9504, height: 6336, photographic: adjustments)
+    }
   }
 
   private func verifyFrozenGraph(path: String, hash: String, name: String, width: Int, height: Int, photographic: DevelopmentAdjustmentsV3? = nil) async throws {

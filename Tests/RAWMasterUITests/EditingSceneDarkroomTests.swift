@@ -56,15 +56,21 @@ final class EditingSceneDarkroomTests: XCTestCase {
     }
 
     @MainActor func testOptIn60MPPhotographicPublishedBatchReceipts() async throws {
-        try await verify60MPEditorAndPublishedBatchReceipts(photographic: true)
+        let environment = ProcessInfo.processInfo.environment
+        let repeats = Int(environment["RAWMASTER_SCENE_DELIVERY_PROFILE_REPEATS"] ?? "1") ?? 0
+        guard (1...64).contains(repeats) else { return XCTFail("Profile repeats must be from 1 through 64") }
+        for run in 0..<repeats {
+            try await verify60MPEditorAndPublishedBatchReceipts(photographic: true, run: repeats > 1 ? run : nil)
+        }
     }
 
-    @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool) async throws {
+    @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, run: Int? = nil) async throws {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
         let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { path in
-            let directory = URL(fileURLWithPath: path)
-            return photographic ? directory.appendingPathComponent("photographic", isDirectory: true) : directory
+            let root = URL(fileURLWithPath: path)
+            let directory = photographic ? root.appendingPathComponent("photographic", isDirectory: true) : root
+            return run.map { directory.appendingPathComponent("run-\($0)", isDirectory: true) } ?? directory
         }
         let directory = retained ?? FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -86,22 +92,37 @@ final class EditingSceneDarkroomTests: XCTestCase {
             try await wait("60 MP rendered preview") { editing.sceneFrame?.execution != nil }
             XCTAssertTrue(editing.photoNotices.contains { $0.kind == .information })
             XCTAssertFalse(editing.photoNotices.contains { $0.kind == .error }, editing.message ?? "")
+            if photographic {
+                // Match the 60 MP component's coverage → corrector → ordered Layer workload.
+                typealias Graph = DevelopmentSceneGraphV1
+                let mask = Graph.Node(name: "Snow to dusk", operation: .linearCoverage(start: .init(0.15, 0), end: .init(0.85, 0)))
+                let lift = Graph.Node(name: "Lift", operation: .corrector(image: .input, mask: mask.id, exposureEV: 0.5,
+                    curve: [], strength: 1, enabled: true))
+                let layer = Graph.Node(name: "Layer", operation: .layer(base: .input,
+                    layers: [.init(.node(lift.id), weight: 0.5)], enabled: true))
+                let template = try SceneWorkflowTemplate(name: "60 MP scene baseline", kind: .whole,
+                    scope: .init(nodes: [lift, layer, mask], output: .node(layer.id)))
+                XCTAssertTrue(editing.applySceneWorkflowTemplate(template, ticket: try XCTUnwrap(editing.sceneGraphTicket)))
+                XCTAssertEqual(editing.recipe.sceneGraph?.graph.nodes.count, 3)
+            }
             let node = try XCTUnwrap(editing.recipe.sceneGraph?.graph.nodes.first?.id)
-            editing.setSceneExposure(0.5, node: node, ticket: try XCTUnwrap(editing.sceneTicket))
+            editing.setSceneExposure(photographic ? 1 : 0.5, node: node, ticket: try XCTUnwrap(editing.sceneTicket))
             try await wait("60 MP exposure dispatch") {
                 !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
             }
             if photographic {
                 editing.beginDevelopmentInterface()
                 try await wait("60 MP photographic controls") { editing.developmentContext != nil }
-                let context = try XCTUnwrap(editing.developmentContext)
                 let session = editing.developmentSession
-                let control = EditingControlID(group: .color, name: "饱和度")
-                var color = session.parameters.color
-                color.enabled = true
-                color.saturation = 0.23
-                XCTAssertTrue(try session.apply(.setParameters(.color(color)), event: .init(context: context, control: control)))
-                XCTAssertEqual(editing.recipe.sceneGraph?.photographic?.color.saturation, 0.23)
+                let light = DevelopmentLightV3(enabled: true, exposure: 0.25)
+                XCTAssertTrue(try session.apply(.setParameters(.light(light)),
+                    event: .init(context: try XCTUnwrap(editing.developmentContext), control: .init(group: .light, name: "曝光"))))
+                let color = DevelopmentColorV3(enabled: true, saturation: 0.32, vibrance: -0.15)
+                XCTAssertTrue(try session.apply(.setParameters(.color(color)),
+                    event: .init(context: try XCTUnwrap(editing.developmentContext), control: .init(group: .color, name: "饱和度"))))
+                XCTAssertEqual(editing.recipe.sceneGraph?.photographic?.light.exposure, 0.25)
+                XCTAssertEqual(editing.recipe.sceneGraph?.photographic?.color.saturation, 0.32)
+                XCTAssertEqual(editing.recipe.sceneGraph?.photographic?.color.vibrance, -0.15)
                 try await wait("60 MP photographic preview") {
                     !editing.scenePreviewBusy && editing.sceneFrame?.execution?.photographicEngine != nil
                 }

@@ -193,6 +193,7 @@ final class FlashRawSource {
     pixelCount = area
     byteCount = bytes
     statistics = result.statistics
+    if output == .rawU16 { SceneDeliveryTrace.flashRawNative(statistics) }
     outcome = .succeeded
     return result
   }

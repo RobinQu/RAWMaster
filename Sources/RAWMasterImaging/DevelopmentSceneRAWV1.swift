@@ -82,8 +82,11 @@ final class DevelopmentSceneRAWV1 {
   }
 
   func prepare(_ url: URL) throws -> Mosaic {
-    let (frame, sensor) = try Self.sensorFrame(url)
-    return try upload(frame.data(), sensor: sensor)
+    let (frame, sensor) = try SceneDeliveryTrace.measure(.sensorFrame) { try Self.sensorFrame(url) }
+    let data = try SceneDeliveryTrace.measure(.mosaicData) { try frame.data() }
+    let mosaic = try SceneDeliveryTrace.measure(.mosaicUpload) { try upload(data, sensor: sensor) }
+    SceneDeliveryTrace.sampleMemory(device: device)
+    return mosaic
   }
 
   func decode(_ url: URL, region: MTLRegion? = nil) throws -> Result {
@@ -181,7 +184,8 @@ final class DevelopmentSceneRAWV1 {
     encoder.dispatchThreads(MTLSize(width:width,height:height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,selected.maxTotalThreadsPerThreadgroup/lanes),depth:1))
     encoder.endEncoding()
-    command.commit(); command.waitUntilCompleted()
+    command.commit()
+    SceneDeliveryTrace.wait(command, host: .rawDevelopWait, gpu: .rawDevelopGPU)
     guard command.status == .completed else { throw command.error ?? Color.Failure.gpuExecutionFailed }
     try Task.checkCancellation()
     return Result(image:.init(texture:rgb,port:.working,origin:.init(x,y)),sensorSaturation:saturation)

@@ -171,7 +171,9 @@ final class DevelopmentSceneGraphRendererV1 {
         branch = try exposure.render(image, exposureEV: Float(trim.exposureEV))
       }
     } else { branch = image }
-    let stage = try outputStages[target] ?? DevelopmentSceneOutputV1(device: device, target: target)
+    let stage = try outputStages[target] ?? SceneDeliveryTrace.measure(.drtInitialize) {
+      try DevelopmentSceneOutputV1(device: device, target: target)
+    }
     outputStages[target] = stage
     return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV,
                             bandExposure: output.hdrBandExposureEV, visualizeHDR: visualizeHDR)
@@ -414,7 +416,8 @@ final class DevelopmentSceneGraphRendererV1 {
       sourceOrigin: .init(x: origin.x, y: origin.y, z: 0),
       sourceSize: .init(width: width, height: height, depth: 1), to: texture,
       destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init())
-    blit.endEncoding(); command.commit(); command.waitUntilCompleted()
+    blit.endEncoding(); command.commit()
+    SceneDeliveryTrace.wait(command, host: .dagSwiftWait, gpu: .dagSwiftGPU)
     guard command.status == .completed else { throw DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
     return result
   }
@@ -463,7 +466,8 @@ final class DevelopmentSceneGraphRendererV1 {
     let lanes = pipeline.threadExecutionWidth
     encoder.dispatchThreads(.init(width: texture.width, height: texture.height, depth: 1),
       threadsPerThreadgroup: .init(width: lanes, height: min(8, pipeline.maxTotalThreadsPerThreadgroup / lanes), depth: 1))
-    encoder.endEncoding(); cmd.commit(); cmd.waitUntilCompleted()
+    encoder.endEncoding(); cmd.commit()
+    SceneDeliveryTrace.wait(cmd, host: .dagSwiftWait, gpu: .dagSwiftGPU)
     guard cmd.status == .completed else { throw cmd.error ?? DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
     try Task.checkCancellation()
     guard invalid.pointee == 0 else { throw Failure.invalidPixel }

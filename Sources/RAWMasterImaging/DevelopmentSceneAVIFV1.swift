@@ -46,6 +46,33 @@ final class DevelopmentSceneAVIFV1 {
           quality.isFinite, (0...1).contains(quality), source.width*source.height <= 65_000_000 else { throw Failure.invalidInput }
     let row=source.width * 8
     let length=row * source.height
+    let pixels = try SceneDeliveryTrace.measure(.avifRaster) { try rasterize(source, length: length) }
+    SceneDeliveryTrace.sampleMemory(device: device, avifStagingBytes: pixels.length)
+    let data=Data(bytesNoCopy:pixels.contents(),count:length,deallocator:.custom { [pixels] _,_ in _=pixels })
+    let destination=NSMutableData()
+    guard let color=CGColorSpace(name:CGColorSpace.itur_2100_PQ),
+          let provider=CGDataProvider(data:data as CFData),
+          let bitmap=CGImage(width:source.width,height:source.height,bitsPerComponent:16,bitsPerPixel:64,bytesPerRow:row,
+            space:color,bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.noneSkipLast.rawValue).union(.byteOrder16Little),
+            provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent),
+          let encoder=CGImageDestinationCreateWithData(destination,Self.identifier,1,nil) else { throw Failure.unsupportedEncoder }
+    let encodedFile = SceneDeliveryTrace.measure(.avifEncode) {
+      CGImageDestinationAddImage(encoder,bitmap,[kCGImageDestinationLossyCompressionQuality:quality,kCGImagePropertyDepth:10] as CFDictionary)
+      return CGImageDestinationFinalize(encoder)
+    }
+    guard encodedFile else { throw Failure.unsupportedEncoder }
+    SceneDeliveryTrace.sampleMemory(device: device)
+    try Task.checkCancellation()
+    let encoded=destination as Data
+    let signal=try Self.readSignal(encoded)
+    guard let decoded=CGImageSourceCreateWithData(encoded as CFData,nil), CGImageSourceGetCount(decoded) == 1,
+          let props=CGImageSourceCopyPropertiesAtIndex(decoded,0,nil) as? [CFString:Any],
+          props[kCGImagePropertyPixelWidth] as? Int == source.width,
+          props[kCGImagePropertyPixelHeight] as? Int == source.height else { throw Failure.invalidContainer }
+    return Encoded(bytes:encoded,signal:signal,width:source.width,height:source.height)
+  }
+
+  private func rasterize(_ source: MTLTexture, length: Int) throws -> MTLBuffer {
     guard let pixels=device.makeBuffer(length:length,options:.storageModeShared),
           let flag=device.makeBuffer(length:4,options:.storageModeShared),
           let command=queue.makeCommandBuffer(),let encoder=command.makeComputeCommandEncoder() else {
@@ -57,28 +84,12 @@ final class DevelopmentSceneAVIFV1 {
     let lanes=pipeline.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:source.width,height:source.height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
-    encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
+    encoder.endEncoding(); command.commit()
+    SceneDeliveryTrace.wait(command, host: .avifRasterWait, gpu: .avifRasterGPU)
     guard command.status == .completed else { throw command.error ?? MetalFailure.gpuExecutionFailed }
     try Task.checkCancellation()
     guard invalid.pointee == 0 else { throw Failure.invalidPixel }
-    let data=Data(bytesNoCopy:pixels.contents(),count:length,deallocator:.custom { [pixels] _,_ in _=pixels })
-    let destination=NSMutableData()
-    guard let color=CGColorSpace(name:CGColorSpace.itur_2100_PQ),
-          let provider=CGDataProvider(data:data as CFData),
-          let bitmap=CGImage(width:source.width,height:source.height,bitsPerComponent:16,bitsPerPixel:64,bytesPerRow:row,
-            space:color,bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.noneSkipLast.rawValue).union(.byteOrder16Little),
-            provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent),
-          let encoder=CGImageDestinationCreateWithData(destination,Self.identifier,1,nil) else { throw Failure.unsupportedEncoder }
-    CGImageDestinationAddImage(encoder,bitmap,[kCGImageDestinationLossyCompressionQuality:quality,kCGImagePropertyDepth:10] as CFDictionary)
-    guard CGImageDestinationFinalize(encoder) else { throw Failure.unsupportedEncoder }
-    try Task.checkCancellation()
-    let encoded=destination as Data
-    let signal=try Self.readSignal(encoded)
-    guard let decoded=CGImageSourceCreateWithData(encoded as CFData,nil), CGImageSourceGetCount(decoded) == 1,
-          let props=CGImageSourceCopyPropertiesAtIndex(decoded,0,nil) as? [CFString:Any],
-          props[kCGImagePropertyPixelWidth] as? Int == source.width,
-          props[kCGImagePropertyPixelHeight] as? Int == source.height else { throw Failure.invalidContainer }
-    return Encoded(bytes:encoded,signal:signal,width:source.width,height:source.height)
+    return pixels
   }
 
   // These item properties are required; a successful ImageIO call alone is not an HDR receipt.

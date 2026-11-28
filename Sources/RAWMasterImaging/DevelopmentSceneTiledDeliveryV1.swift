@@ -25,13 +25,18 @@ final class DevelopmentSceneTiledDeliveryV1 {
     guard let queue = mosaic.texture.device.makeCommandQueue() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
     if let program = models ?? graph.models, !program.stages.isEmpty {
       guard graph.photographic != nil else { throw DevelopmentSceneModelPipelineV1.Failure.surfaceBudget }
+      let provider = try SceneDeliveryTrace.measure(.modelInitialize) {
+        try DevelopmentSceneProductionModelProvider(device: mosaic.texture.device)
+      }
       modelPrefix = try DevelopmentSceneModelPreviewV1(program: program, mosaic: mosaic, decoder: decoder,
-        provider: DevelopmentSceneProductionModelProvider(device: mosaic.texture.device), budget: surfaceBudget)
+        provider: provider, budget: surfaceBudget)
     } else { modelPrefix = nil }
     if let parameters = graph.photographic {
       guard let capture else { throw DevelopmentSceneColorV1.Failure.invalidTexture }
-      photographic = try DevelopmentScenePhotographicV1(parameters, capture: capture, mosaic: mosaic, decoder: decoder,
-        modeled: modelPrefix?.native.image)
+      let modeled = modelPrefix?.native.image
+      photographic = try SceneDeliveryTrace.measure(.photographicInitialize) {
+        try DevelopmentScenePhotographicV1(parameters, capture: capture, mosaic: mosaic, decoder: decoder, modeled: modeled)
+      }
     } else { photographic = nil }
     self.decoder = decoder; self.mosaic = mosaic; self.graph = graph; self.queue = queue
     self.budget = surfaceBudget; self.maximumTileEdge = maximumTileEdge
@@ -56,7 +61,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
     let resident = destination.allocatedSize + fixedBytes
     let hasTrim = target == .sdr709 && graph.output.sdrTrim.exposureEV != 0
     let edge = min(maximumTileEdge, max(width, height))
-    let outputRenderer = try Renderer(device: device, backend: .swift)
+    let outputRenderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) { try Renderer(device: device, backend: .swift) }
     var total: Receipt?
     var display: Display?
     for y in stride(from: 0, to: height, by: edge) {
@@ -67,7 +72,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
           let source: DevelopmentSceneMetalV1.Image
           let sensorBytes: Int
           if let photographic {
-            source = try photographic.render(.native(rect), maximumBytes: budget - resident)
+            source = try SceneDeliveryTrace.measure(.photographicRender) { try photographic.render(.native(rect), maximumBytes: budget - resident) }
             sensorBytes = 0
           } else {
             let raw = try decoder.develop(mosaic, sampling: .native(rect), maximumBytes: budget - destination.allocatedSize)
@@ -85,7 +90,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
           guard graphBudget >= 2 * colorBytes else { throw Renderer.Failure.surfaceBudget }
           // One-shot delivery never revisits a tile. Drop its analytic and node caches before
           // the next region, while retaining the pinned ACES output transform across regions.
-          let renderer = try Renderer(device: device, surfaceBudget: graphBudget)
+          let renderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) { try Renderer(device: device, surfaceBudget: graphBudget) }
           let master = try renderer.prepareFinalInput(source, geometry: geometry, graph: graph, masks: photographic?.alignsWithSensor == false ? [:] : modelPrefix?.native.masks ?? [:],
             modelScale: modelPrefix?.native.scale ?? 1, tileEdge: edge)
           guard let current = renderer.lastReceipt else { throw Renderer.Failure.invalidImage }
@@ -94,7 +99,9 @@ final class DevelopmentSceneTiledDeliveryV1 {
                 let cmd = queue.makeCommandBuffer(), let blit = cmd.makeBlitCommandEncoder() else { throw Renderer.Failure.invalidImage }
           blit.copy(from: tile.texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(), sourceSize: rect.size,
             to: destination, destinationSlice: 0, destinationLevel: 0, destinationOrigin: rect.origin)
-          blit.endEncoding(); cmd.commit(); cmd.waitUntilCompleted()
+          blit.endEncoding(); cmd.commit()
+          SceneDeliveryTrace.wait(cmd, host: .blitWait, gpu: .blitGPU)
+          SceneDeliveryTrace.sampleMemory(device: device)
           guard cmd.status == .completed else { throw cmd.error ?? DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
           try Task.checkCancellation()
           if display == nil { display = Display(assembled: destination, like: tile) }

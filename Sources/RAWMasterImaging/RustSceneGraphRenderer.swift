@@ -33,17 +33,19 @@ final class RustSceneGraphRenderer {
       -> (texture: any MTLTexture, receipt: RAWMasterImageKernel.SceneProgram.SceneReceipt) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
-        let data = try encoder.encode(Document(graph: graph.graph))
+        let data = try SceneDeliveryTrace.measure(.dagBridgeEncode) { try encoder.encode(Document(graph: graph.graph)) }
         let key = Self.topology(graph.graph)
         let program: RAWMasterImageKernel.SceneProgram
         if let cached = programs[key] {
             // Same node identity and scope nesting: swap parameters in place so the Rust prefix
             // cache can keep unchanged nodes across an edit.
-            try cached.update(graph: data)
+            try SceneDeliveryTrace.measure(.dagUpdate) { try cached.update(graph: data) }
             program = cached
         } else {
             if programs.count >= 8 { programs.removeAll(keepingCapacity: true) }
-            let created = try RAWMasterImageKernel.SceneProgram(graph: data, device: device)
+            let created = try SceneDeliveryTrace.measure(.dagOpen) {
+                try RAWMasterImageKernel.SceneProgram(graph: data, device: device)
+            }
             programs[key] = created
             program = created
         }
@@ -53,10 +55,12 @@ final class RustSceneGraphRenderer {
         case .node(let id): .node(id.uuidString)
         }
         do {
-            let texture = try program.renderSurface(input: input, view: sceneView, groupPath: view.groupPath,
-                               origin: origin, geometry: geometry, surfaceBudget: surfaceBudget,
-                               tileEdge: tileEdge, sourceRevision: sourceRevision,
-                               coverages: coverages)
+            let texture = try SceneDeliveryTrace.measure(.dagDispatch) {
+                try program.renderSurface(input: input, view: sceneView, groupPath: view.groupPath,
+                    origin: origin, geometry: geometry, surfaceBudget: surfaceBudget,
+                    tileEdge: tileEdge, sourceRevision: sourceRevision, coverages: coverages)
+            }
+            SceneDeliveryTrace.sampleMemory(device: device)
             guard let receipt = program.receipt() else { throw RAWMasterImageKernel.Failure.renderFailed }
             return (texture, receipt)
         } catch RAWMasterImageKernel.Failure.surfaceBudget {

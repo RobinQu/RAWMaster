@@ -127,7 +127,9 @@ final class DevelopmentScenePhotographicV1 {
     destination.isClamped = false; destination.isFlipped = true
     let bounds = CGRect(x: 0, y: 0, width: region.size.width, height: region.size.height)
     let task = try context.startTask(toRender: selected, from: bounds, to: destination, at: .zero)
-    do { _ = try task.waitUntilCompleted() } catch { try rawSource?.check(); throw error }
+    do { _ = try SceneDeliveryTrace.measure(.photographicWait) { try task.waitUntilCompleted() } }
+    catch { try rawSource?.check(); throw error }
+    SceneDeliveryTrace.sampleMemory(device: device)
     try rawSource?.check()
     try Task.checkCancellation()
     return .init(texture: texture, port: .working, origin: .init(region.origin.x, region.origin.y))

@@ -125,7 +125,9 @@ public actor PhotoBatchRenderExporter {
         let protected = protectedURLs + [work.source.sourceLocation, version.source.sourceLocation, archive.root]
         try RenderFiles.check(final, protected: protected)
         let temporary = directory.appendingPathComponent(".rawmaster-export-" + UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+        try SceneDeliveryTrace.measure(.stageDirectory) {
+            try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+        }
         var retainPreparedStage = false
         defer { if !retainPreparedStage { try? FileManager.default.removeItem(at: temporary) } }
         let stage = temporary.appendingPathComponent("pixels").appendingPathExtension(configuration.format.filenameExtension)
@@ -162,12 +164,17 @@ public actor PhotoBatchRenderExporter {
                 defer { try? FileManager.default.removeItem(at: capture.url.deletingLastPathComponent()) }
                 return try capture.withCurrent(at: capture.url) {
                     let (image, receipt) = try DevelopmentSceneDeliveryServiceV1.renderSDRForComposition(capture: capture.url, graph: graph)
-                    return (try Self.rasterize(image, source: capture.url, configuration: configuration), receipt)
+                    let raster = try SceneDeliveryTrace.measure(.sdrRaster) {
+                        try Self.rasterize(image, source: capture.url, configuration: configuration)
+                    }
+                    return (raster, receipt)
                 }
             }
             if needsMetadata {
                 stagingCapture = try await renderingTask(lane: .export, resources: .init(cpu: 1, io: 1)) {
-                    try RenderFiles.capture(version.source, synchronize: false)
+                    try SceneDeliveryTrace.measure(.metadataSourceCopy) {
+                        try RenderFiles.capture(version.source, synchronize: false)
+                    }
                 }
             }
         } else if let artifactURL, let artifact = version.artifact {
@@ -375,7 +382,9 @@ public actor PhotoBatchRenderExporter {
             CGImageSourceCreateWithURL(metadataURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary)
         let payload: URL
         if configuration.metadataPolicy != .none, metadata != nil {
-            try copyMetadata(from: metadata, policy: configuration.metadataPolicy, gps: configuration.includeGPS, on: stage, to: tagged)
+            try SceneDeliveryTrace.measure(.sdrMetadata) {
+                try copyMetadata(from: metadata, policy: configuration.metadataPolicy, gps: configuration.includeGPS, on: stage, to: tagged)
+            }
             payload = tagged
         } else {
             payload = stage
@@ -387,7 +396,8 @@ public actor PhotoBatchRenderExporter {
     /// Source metadata and layout do not participate in this path.
     static func encodeSceneSDRPixels(_ image: CIImage, format: PhotoRenderFormat, to stage: URL, context: CIContext) throws {
         guard format == .jpeg8 || format == .png16 else { throw DevelopmentError.invalidEncoding }
-        try encodePixels(bitmap(image, jpeg: format == .jpeg8, context: context), format: format, quality: 0.95, to: stage)
+        let raster = try SceneDeliveryTrace.measure(.sdrRaster) { try bitmap(image, jpeg: format == .jpeg8, context: context) }
+        try encodePixels(raster, format: format, quality: 0.95, to: stage)
     }
 
     private static func encodePixels(_ raster: DeliveryRaster, format: PhotoRenderFormat, quality: Double, to stage: URL) throws {
@@ -395,10 +405,16 @@ public actor PhotoBatchRenderExporter {
         let jpeg = format == .jpeg8
         let codec: PhotoExportKernel.Codec = jpeg ? .jpeg : (format == .png16 ? .png : .tiff)
         let size = PhotoExportKernel.Dimensions(width: UInt32(raster.width), height: UInt32(raster.height))
-        try raster.bitmap.withUnsafeBytes { bytes in
-            try PhotoExportKernel.encode(to: stage, size: size, pixels: bytes, stride: raster.stride,
-                pixelFormat: jpeg ? .rgbx8 : .rgba16, codec: codec, quality: UInt8((quality * 100).rounded()))
+        // The native SDR codec writes directly to the stage. These two measurements overlap.
+        try SceneDeliveryTrace.measure(.stageFile) {
+            try SceneDeliveryTrace.measure(.sdrEncode) {
+                try raster.bitmap.withUnsafeBytes { bytes in
+                    try PhotoExportKernel.encode(to: stage, size: size, pixels: bytes, stride: raster.stride,
+                        pixelFormat: jpeg ? .rgbx8 : .rgba16, codec: codec, quality: UInt8((quality * 100).rounded()))
+                }
+            }
         }
+        SceneDeliveryTrace.sampleMemory(sdrBitmapBytes: raster.bitmap.count)
     }
 
     private static func bitmap(_ image: CIImage, jpeg: Bool, context: CIContext = bitmapContext) throws -> DeliveryRaster {
@@ -425,6 +441,7 @@ public actor PhotoBatchRenderExporter {
 
             }
         }
+        SceneDeliveryTrace.sampleMemory(sdrBitmapBytes: bitmap.count)
         return DeliveryRaster(bitmap: bitmap, width: width, height: height, stride: stride)
     }
 

@@ -136,23 +136,27 @@ PixelCacheKey
 
 ### 4.3 ReceiptV2
 
-M0 先修复 V1。V2 使用明确版本，读取端保留旧 V1 的恢复逻辑。下面的字段与发布票据中的冻结版本、目标和文件摘要关联。现行路径在计划生成前可记录缺少 `planHash` 的原因。
+旧 V1 沿用无 `schemaVersion` 的对象格式，其中摄影字段缺省或为 `null` 时按可选值读取。V2 使用 `schemaVersion: 2` 显式分流，缺少必要字段或出现未知版本时拒绝准备票据。Swift 和 Rust 同时支持 V2 准备、重开及恢复后才启用写入。已准备或已发布的 V1 保持原序列化身份及发布权限。V2 仍与 032 的冻结版本、目标和文件摘要关联。
 
 ```text
 ReceiptV2
   schemaVersion = 2
-  planHash, compilerVersion
-  sourceDigest, workflowDigest, target
-  elapsedMilliseconds, queuedMilliseconds
-  stages: [{id, opVersions, executor, graphicsAPI, wallMilliseconds,
-            gpuMilliseconds?, gpuTimingUnavailableReason?, waitMilliseconds,
+  planHash?, planUnavailableReason?, compilerVersion
+  route, sourceDigest, calibrationDigest?, workflowDigest, target
+  wallClock: {scope, elapsedMilliseconds, queuedMilliseconds?, queueUnavailableReason?}
+  stages: [{id, opVersions, executor, graphicsAPI, observations, wallMilliseconds,
+            gpuMilliseconds?, gpuTimingUnavailableReason?, waitMilliseconds?, timingSource,
             tiles, dispatches, fallbackReason?}]
-  rendererBuildCount, programCompileCount, libraryCompileCount
+  rendererBuildCount?, programCompileCount?, libraryCompileCount?
   peakWorkingBytes, peakIntermediateBytes, peakCacheBytes, peakModelBytes
-  peakOutputBytes, peakEncodeBytes, peakTotalBytes, budgets, memoryMeasurement
+  peakOutputBytes, peakEncodeBytes, peakTotalBytes?, budgets, memoryMeasurement
   cacheHits: coverage / node / segment / pipeline
   fallbackCount
 ```
+
+- V2 以顶层区间统计总墙钟。多个阶段可以重叠，GPU 执行、CPU 等待和嵌套回执各自按边界记录。不可见的时间以缺值和原因表达。图执行 ABI 返回的 `cpuMilliseconds` 归为执行墙钟。
+- 图预算核算、Metal 分配边界采样和进程 footprint 分别记录。总峰值以同一时点的全工作集测量为准。无法观测时留缺值，保留已知的预算与范围。
+- 派发、编译和缓存只在有执行证据时计数。片段执行者和图形 API 来自运行设备。计划外选用其他执行者时记回退段、理由及次数。
 
 ## 5. 迁移顺序
 

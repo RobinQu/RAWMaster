@@ -71,7 +71,8 @@ enum DevelopmentSceneModelPipelineV1 {
       try check()
       guard provider.supports(stage) else { throw Failure.unsupportedStage }
       let expectedWidth = width * stage.scale, expectedHeight = height * stage.scale
-      let output = try provider.render(stage, input: current, check: check)
+      let output = try SceneDeliveryTrace.measure(.modelRun) { try provider.render(stage, input: current, check: check) }
+      SceneDeliveryTrace.sampleMemory(device: output.device)
       try Task.checkCancellation()
       guard output.device === image.texture.device else { throw Failure.invalidTexture }
       if stage.kind == .segmentation {

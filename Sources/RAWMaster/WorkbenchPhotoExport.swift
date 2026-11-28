@@ -791,7 +791,9 @@ extension AppModel {
                                     attempt.beginPreparation()
                                     checkpoint?(item.ordinal, .beforePrepare)
                                     let prepareStarted = DispatchTime.now().uptimeNanoseconds
-                                    let ticket = try await queue.prepare(lease, directory: directory, stage: stage, suffix: suffix, sceneExecution: receipt)
+                                    let ticket = try await SceneDeliveryTrace.measureAsync(.prepare) {
+                                        try await queue.prepare(lease, directory: directory, stage: stage, suffix: suffix, sceneExecution: receipt)
+                                    }
                                     ExportTiming.shared.add("prepare",
                                         Double(DispatchTime.now().uptimeNanoseconds - prepareStarted) / 1_000_000)
                                     if ticket.status == "destinationExists" { throw DevelopmentError.outputExists }
@@ -800,7 +802,9 @@ extension AppModel {
                                     return {
                                         let publishStarted = DispatchTime.now().uptimeNanoseconds
                                         do {
-                                            let reply = try queue.publish(lease, directory: directory)
+                                            let reply = try SceneDeliveryTrace.measure(.publish) {
+                                                try queue.publish(lease, directory: directory)
+                                            }
                                             ExportTiming.shared.add("publish",
                                                 Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
                                             // Publish now delivers in the same transaction, so the
@@ -814,17 +818,22 @@ extension AppModel {
                                         checkpoint?(item.ordinal, .published)
                                     }
                                 }
-                                _ = try await exporter.export(work: work, version: version, archive: archive, directory: directory,
-                                    filename: stem, configuration: configuration, protectedURLs: protected, execution: deliveryExecution,
-                                    preparePublication: nil)
-                                ExportTiming.shared.add("export",
-                                    Double(DispatchTime.now().uptimeNanoseconds - exportStarted) / 1_000_000)
-                                ExportTiming.shared.item()
-                                let acknowledgeStarted = DispatchTime.now().uptimeNanoseconds
-                                let delivered = try await Self.acknowledgedFile(queue, parent: parent, ordinal: item.ordinal, directory: directory)
-                                ExportTiming.shared.add("acknowledge",
-                                    Double(DispatchTime.now().uptimeNanoseconds - acknowledgeStarted) / 1_000_000)
-                                return delivered
+                                return try await SceneDeliveryTrace.workbench(version: version, format: configuration.format,
+                                    batchID: parent.batchID, ordinal: item.ordinal) {
+                                    _ = try await exporter.export(work: work, version: version, archive: archive, directory: directory,
+                                        filename: stem, configuration: configuration, protectedURLs: protected, execution: deliveryExecution,
+                                        preparePublication: nil)
+                                    ExportTiming.shared.add("export",
+                                        Double(DispatchTime.now().uptimeNanoseconds - exportStarted) / 1_000_000)
+                                    ExportTiming.shared.item()
+                                    let acknowledgeStarted = DispatchTime.now().uptimeNanoseconds
+                                    let delivered = try await SceneDeliveryTrace.measureAsync(.acknowledge) {
+                                        try await Self.acknowledgedFile(queue, parent: parent, ordinal: item.ordinal, directory: directory)
+                                    }
+                                    ExportTiming.shared.add("acknowledge",
+                                        Double(DispatchTime.now().uptimeNanoseconds - acknowledgeStarted) / 1_000_000)
+                                    return delivered
+                                }
                             } catch where retry < 2 && attempt.canRetry(error) {
                                 try await Task.sleep(for: .milliseconds(250 << retry))
                             }

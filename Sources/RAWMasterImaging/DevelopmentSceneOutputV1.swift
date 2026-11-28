@@ -127,8 +127,8 @@ final class DevelopmentSceneOutputV1 {
       guard (0...DevelopmentSceneOutputStateV1.Version.maximumHDRLimitEV).contains(hdrLimitEV) else { throw Failure.invalidInput }
       peak = Float(exp2(hdrLimitEV))
     }
-    return DisplayImage(texture: try evaluate(image, peak: peak, bands: bands, visualizeHDR: visualizeHDR),
-                        target: visualizeHDR ? .sdr709 : target, origin: image.origin)
+    let texture = try SceneDeliveryTrace.measure(.drtRender) { try evaluate(image, peak: peak, bands: bands, visualizeHDR: visualizeHDR) }
+    return DisplayImage(texture: texture, target: visualizeHDR ? .sdr709 : target, origin: image.origin)
   }
 
   struct TargetEvidence { let texture: MTLTexture }
@@ -164,7 +164,8 @@ final class DevelopmentSceneOutputV1 {
     let lanes=pipeline.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:source.width,height:source.height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
-    encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
+    encoder.endEncoding(); command.commit()
+    SceneDeliveryTrace.wait(command, host: .drtWait, gpu: .drtGPU)
     guard command.status == .completed else { throw command.error ?? MetalFailure.gpuExecutionFailed }
     try Task.checkCancellation()
     guard invalid.pointee == 0 else { throw Failure.invalidPixel }

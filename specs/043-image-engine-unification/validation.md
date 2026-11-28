@@ -22,6 +22,7 @@
 - **协议回归。** 修复前，原生目录接口解析旧 V1 `prepareItem`，带 `photographicEngine` 或 `dagBackend` 的同一请求在打开目录前被拒绝。修复后 Rust 队列 Release 35 项通过，覆盖旧 V1、带摄影字段的 V1、未知字段以及准备、发布、确认后的 `SIGKILL`。恢复时复核同一执行回执并拒绝替换已冻结的 DAG 后端。[Swift 编码入口](../../Sources/RAWMaster/WorkbenchDeliveryCatalog.swift#L437) · [Rust 反序列化](../../Modules/LibraryCatalog/src/scheduler/batch/items.rs#L53) · [Rust 恢复测试](../../Modules/LibraryCatalog/tests/scheduled_processing/workbench_item_delivery.rs#L196)
 - **产品回归。** 在 `main@e419c425` 的原生 Release 中，固定 60 MP 原片的 HDR 场景以全图饱和度 0.23 和 DAG 曝光 +0.5 EV 冻结。032 分两个批次发布 PQ AVIF 与 SDR JPEG，重新打开目录并核对版本、文件摘要和 9504×6336 尺寸。每个目标实际执行 35 个瓦片和 35 次 DAG 派发，回执保留 `backend=mixed`、`photographicEngine=scene-photographic-v1-f32-metal`、`dagBackend=rust`。联合原生回归 19 项通过。实际 032 成片与进程中断状态机分别提供产品输出和恢复证据。[原生队列用例](../../Tests/RAWMasterUITests/EditingSceneDarkroomTests.swift#L54) · [目录提取回执](evidence/m0-032-photographic-receipt.json)
 - **同构建计量。** 60 MP 分别测量 032 单目标和双目标组件，拆分来源校验/读取、FlashRaw 解码、mosaic 上传、摄影/模型、DAG 准备及执行、DRT/blit、编码读回、发布和等待。每段记录墙钟、可用 GPU 时间、纹理分配、瓦片、派发和编译计数。另记录工作集、缓存、模型、输出、编码和总峰值。
+- **分项记录口径。** 原生队列与双目标组件现在可以写隔离 JSON。032 从新编码尝试计到发布确认，独立组件共享一次来源捕获和 mosaic。Swift Metal 只从现有完成点读取 GPU 时间戳。Core Image、ImageIO、模型提供者和 Rust ABI 的不可见阶段注明原因。每项 CPU 墙钟、阻塞和 GPU 区间可能重叠。进程 footprint 和 Metal 已分配大小在现有阶段边界采样，图预算保持单独的保守核算。[分项记录](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryTraceV1.swift) · [复跑脚本](../../scripts/performance/measure-043-scene-delivery.py)
 - **基线报告。** 取得 6 MP 六节点、038 FIT/监看和 036 1:1 的同构建基线。记录提交、锁定依赖、构建与运行库摘要、样片和校准 SHA、设备/驱动/屏幕及阶段时间边界，说明缺失或跳过的量。V2 草案应有版本、实际执行者、图形 API 和旧票据兼容策略。[回执草案](plan.md#43-receiptv2)
 
 M0 以带摄影调整的真实 032 队列发布、重开与恢复通过，并能复现同构建的分项基线为完成条件。
@@ -131,6 +132,11 @@ export RAWMASTER_SCENE_DELIVERY_EVIDENCE="$(mktemp -d)"
 export RAWMASTER_EDITOR_ACCEPTANCE_DIR="$(mktemp -d)"
 RAWMASTER_SCENE_BACKEND=rust swift test -c release --jobs 4 -Xswiftc -enable-testing \
   --filter 'testOptInPhotographic60MPFrozenGraphPublishesPQTogetherWithTheEditedSDRDerivative|testOptIn60MP(EditorAndPublishedBatchReceipts|PhotographicPublishedBatchReceipts)'
+
+# 同一三节点工作负载。032 的 PQ/JPEG 与双目标组件各取一次首跑、五次预热和三十次计量。
+python3 scripts/performance/measure-043-scene-delivery.py \
+  --raw "$RAWMASTER_SCENE_60MP_ARW" --flashraw-library "$RAWMASTER_FLASHRAW_LIBRARY" \
+  --output "$PWD/output/spec043-stage-profile-$(date +%Y%m%d-%H%M%S)"
 
 # Rust 场景解析器/执行器
 cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.toml --lib scene::tests

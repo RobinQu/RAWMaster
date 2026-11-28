@@ -52,6 +52,14 @@ package enum DevelopmentSceneDeliveryServiceV1 {
     guard source.sourceLocation.pathExtension.lowercased() == "arw" else { throw Failure.unsupportedSource }
     let protected = protectedURLs + [source.sourceLocation]
     let fingerprint = try frozen.program.fingerprint()
+    return try await SceneDeliveryTrace.component(delivery: frozen, formats: renditions.map { $0.delivery.format }, workflowSHA256: fingerprint) {
+      try await renderTogether(renditions, frozen: frozen, protected: protected, fingerprint: fingerprint)
+    }
+  }
+
+  private static func renderTogether(_ renditions: [Rendition], frozen: DevelopmentSceneDeliveryV1, protected: [URL],
+                                     fingerprint: String) async throws -> [Result<Receipt, Error>] {
+    let source = frozen.source
     return try await renderingTask(lane: .export) {
       let canonicalPaths = renditions.filter { $0.destination.isFileURL }.map { RenderFiles.canonical($0.destination).path }
       guard Set(canonicalPaths).count == canonicalPaths.count else { throw Failure.incompatibleRenditions }
@@ -73,27 +81,30 @@ package enum DevelopmentSceneDeliveryServiceV1 {
       }
       return zip(renditions, preflight).map { item, failure in
         if let failure { return .failure(failure) }
-        return Result {
-          try autoreleasepool {
-            // Keep the requested path: resolving it once would hide a subsequent symlink/volume replacement.
-            let target = item.destination.standardizedFileURL
-            let delivery = item.delivery
-            let (display, execution) = try prepared.render(delivery.target)
-            let artifact: RenderArtifact, matrix: Int?
-            let beforePublish = { try RenderFiles.verify(source) }
-            switch delivery.format {
-            case .avif10:
-              let encoded = try DevelopmentSceneAVIFV1(device: display.texture.device).encode(display)
-              artifact = try publishHDR(encoded, to: target, protected: protected, beforePublish: beforePublish, preparePublication: item.preparePublication)
-              matrix = encoded.signal.matrix
-            case .jpeg8, .png16:
-              let format: PhotoRenderFormat = delivery.format == .jpeg8 ? .jpeg8 : .png16
-              artifact = try writeSDR(display, format: format, to: target, protected: protected,
-                preparePublication: item.preparePublication, beforePublish: beforePublish).artifact
-              matrix = nil
+        return SceneDeliveryTrace.rendition(item.delivery.format) {
+          Result {
+            try autoreleasepool {
+              // Keep the requested path: resolving it once would hide a subsequent symlink/volume replacement.
+              let target = item.destination.standardizedFileURL
+              let delivery = item.delivery
+              let (display, execution) = try prepared.render(delivery.target)
+              SceneDeliveryTrace.graph(execution)
+              let artifact: RenderArtifact, matrix: Int?
+              let beforePublish = { try RenderFiles.verify(source) }
+              switch delivery.format {
+              case .avif10:
+                let encoded = try encodeAVIF(display)
+                artifact = try publishHDR(encoded, to: target, protected: protected, beforePublish: beforePublish, preparePublication: item.preparePublication)
+                matrix = encoded.signal.matrix
+              case .jpeg8, .png16:
+                let format: PhotoRenderFormat = delivery.format == .jpeg8 ? .jpeg8 : .png16
+                artifact = try writeSDR(display, format: format, to: target, protected: protected,
+                  preparePublication: item.preparePublication, beforePublish: beforePublish).artifact
+                matrix = nil
+              }
+              return Receipt(versionID: delivery.versionID, sourceSHA256: capture.contentSHA256, workflowSHA256: fingerprint,
+                target: delivery.target, format: delivery.format, artifact: artifact, matrix: matrix, execution: execution)
             }
-            return Receipt(versionID: delivery.versionID, sourceSHA256: capture.contentSHA256, workflowSHA256: fingerprint,
-              target: delivery.target, format: delivery.format, artifact: artifact, matrix: matrix, execution: execution)
           }
         }
       }
@@ -116,13 +127,18 @@ package enum DevelopmentSceneDeliveryServiceV1 {
 
   static func encodeHDR(_ capturedARW: URL, workflow: DevelopmentSceneWorkflowV1) throws -> DevelopmentSceneAVIFV1.Encoded {
     let display = try prepare(capturedARW, program: .serial(workflow)).render(.hdr2020).display
-    return try DevelopmentSceneAVIFV1(device: display.texture.device).encode(display)
+    return try encodeAVIF(display)
+  }
+
+  private static func encodeAVIF(_ display: DevelopmentSceneOutputV1.DisplayImage) throws -> DevelopmentSceneAVIFV1.Encoded {
+    let encoder = try SceneDeliveryTrace.measure(.avifInitialize) { try DevelopmentSceneAVIFV1(device: display.texture.device) }
+    return try encoder.encode(display)
   }
 
   private static func prepare(_ capturedARW: URL, program: DevelopmentSceneDeliveryV1.Program) throws -> Prepared {
     try Task.checkCancellation()
     guard let device = MTLCreateSystemDefaultDevice() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
-    let decoder = try DevelopmentSceneRAWV1(device: device)
+    let decoder = try SceneDeliveryTrace.measure(.rawInitialize) { try DevelopmentSceneRAWV1(device: device) }
     let mosaic = try decoder.prepare(capturedARW)
     switch program {
     case .serial(let workflow):
@@ -134,9 +150,11 @@ package enum DevelopmentSceneDeliveryServiceV1 {
         return .tiled(try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, models: graph.models, capture: capturedARW))
       }
       let raw = try decoder.develop(mosaic, sampling: .native(nil)).image
-      let renderer = try DevelopmentSceneGraphRendererV1(device: device)
+      let renderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) { try DevelopmentSceneGraphRendererV1(device: device) }
       let geometry = DevelopmentSceneGraphRendererV1.Geometry(width: raw.texture.width, height: raw.texture.height)
-      let provider = try graph.models.map { _ in try DevelopmentSceneProductionModelProvider(device: device) }
+      let provider = try graph.models.map { _ in
+        try SceneDeliveryTrace.measure(.modelInitialize) { try DevelopmentSceneProductionModelProvider(device: device) }
+      }
       return .graph(renderer, try renderer.prepareFinal(raw, geometry: geometry, graph: graph, models: graph.models, provider: provider))
     }
   }
@@ -151,16 +169,20 @@ package enum DevelopmentSceneDeliveryServiceV1 {
     defer { try? FileManager.default.removeItem(at: capture.url.deletingLastPathComponent()) }
     let (encoded, execution) = try capture.withCurrent(at: capture.url) {
       let (display, execution) = try autoreleasepool { try prepare(capture.url, program: ticket.program).render(.hdr2020) }
-      return (try DevelopmentSceneAVIFV1(device: display.texture.device).encode(display), execution)
+      SceneDeliveryTrace.graph(execution)
+      return (try encodeAVIF(display), execution)
     }
     try Task.checkCancellation()
     // Preserve CICP/bit depth and compressed image data; do not publish invented picture levels.
-    try DevelopmentSceneAVIFV1.leavingLightLevelsUnspecified(encoded.bytes).write(to: stage, options: .withoutOverwriting)
+    try SceneDeliveryTrace.measure(.stageFile) {
+      try DevelopmentSceneAVIFV1.leavingLightLevelsUnspecified(encoded.bytes).write(to: stage, options: .withoutOverwriting)
+    }
     return execution
   }
 
   static func renderSDRForComposition(capture: URL, graph: DevelopmentSceneGraphV1) throws -> (image: CIImage, execution: DevelopmentSceneExecutionReceiptV1?) {
     let (display, execution) = try prepare(capture, program: .graph(graph)).render(.sdr709)
+    SceneDeliveryTrace.graph(execution)
     return (try linearSDRImage(display.texture), execution)
   }
 
@@ -206,17 +228,19 @@ package enum DevelopmentSceneDeliveryServiceV1 {
       encoding: "public.avif", bitDepth: encoded.signal.bitDepth,
       colorSpace: "Rec.2020 PQ (CICP 9/16/\(encoded.signal.matrix), full range)", alphaPolicy: .opaque)
     return try withPublicationStage(to: target, protected: protected, beforePublish: beforePublish, preparePublication: preparePublication) { stage in
-      let fd = Darwin.open(stage.path, O_CREAT | O_EXCL | O_WRONLY | O_NOFOLLOW | O_CLOEXEC, 0o600)
-      guard fd >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-      let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
-      do {
-        try handle.write(contentsOf: encoded.bytes)
-        try handle.close()
-        return artifact
-      } catch {
-        try? handle.close()
-        try? FileManager.default.removeItem(at: stage)
-        throw error
+      try SceneDeliveryTrace.measure(.stageFile) {
+        let fd = Darwin.open(stage.path, O_CREAT | O_EXCL | O_WRONLY | O_NOFOLLOW | O_CLOEXEC, 0o600)
+        guard fd >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+        do {
+          try handle.write(contentsOf: encoded.bytes)
+          try handle.close()
+          return artifact
+        } catch {
+          try? handle.close()
+          try? FileManager.default.removeItem(at: stage)
+          throw error
+        }
       }
     }
   }
@@ -236,7 +260,7 @@ package enum DevelopmentSceneDeliveryServiceV1 {
     try Task.checkCancellation()
     let handle = try FileHandle(forWritingTo: stage)
     defer { try? handle.close() }
-    try handle.synchronize()
+    try SceneDeliveryTrace.measure(.stageSync) { try handle.synchronize() }
     try handle.close()
     try beforePublish()
     try Task.checkCancellation()
@@ -244,12 +268,14 @@ package enum DevelopmentSceneDeliveryServiceV1 {
     if let preparePublication {
       // The callback can have committed the intent before reporting failure. The caller owns reconciliation.
       preservePreparedStage = true
-      try preparePublication(stage, target, artifact)
+      try SceneDeliveryTrace.measure(.prepare) { try preparePublication(stage, target, artifact) }
     }
-    guard renamex_np(stage.path, target.path, UInt32(RENAME_EXCL)) == 0 else {
-      let code = errno
-      if code == EEXIST { throw DevelopmentError.outputExists }
-      throw POSIXError(POSIXErrorCode(rawValue: code) ?? .EIO)
+    try SceneDeliveryTrace.measure(.publish) {
+      guard renamex_np(stage.path, target.path, UInt32(RENAME_EXCL)) == 0 else {
+        let code = errno
+        if code == EEXIST { throw DevelopmentError.outputExists }
+        throw POSIXError(POSIXErrorCode(rawValue: code) ?? .EIO)
+      }
     }
     return artifact
   }

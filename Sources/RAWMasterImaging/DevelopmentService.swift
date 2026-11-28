@@ -132,8 +132,14 @@ func renderingTask<T: Sendable>(
   _ operation: @escaping @Sendable () throws -> T
 ) async throws -> T {
   try await ProcessingAdmission.shared.withPermit(lane, resources: resources) {
+    let deliveryTrace = SceneDeliveryTrace.binding
     let task = Task.detached(priority: .userInitiated) {
       try Task.checkCancellation()
+      if let deliveryTrace {
+        return try SceneDeliveryTrace.$binding.withValue(deliveryTrace) {
+          try DevelopmentDehazeNativeResources.run(operation)
+        }
+      }
       return try DevelopmentDehazeNativeResources.run(operation)
     }
     return try await withTaskCancellationHandler(operation: { try await task.value }, onCancel: { task.cancel() })
@@ -164,8 +170,10 @@ enum RenderFiles {
     }
 
     func requireCurrent(at capture: URL) throws {
-      guard capture == url, (try? PreviewFileStamp.read(descriptor: anchor.fileDescriptor)) == stamp,
-            (try? PreviewFileStamp.read(url, noFollow: true)) == stamp else { throw PreviewCaptureFault(captureID: id) }
+      try SceneDeliveryTrace.measure(.captureStamp) {
+        guard capture == url, (try? PreviewFileStamp.read(descriptor: anchor.fileDescriptor)) == stamp,
+              (try? PreviewFileStamp.read(url, noFollow: true)) == stamp else { throw PreviewCaptureFault(captureID: id) }
+      }
     }
 
     func withCurrent<T>(at capture: URL, _ body: () throws -> T) throws -> T {
@@ -189,18 +197,22 @@ enum RenderFiles {
     return hash.finalize().map { String(format: "%02x", $0) }.joined()
   }
   static func verify(_ source: EditingSourceSnapshot) throws {
-    let attributes = try FileManager.default.attributesOfItem(atPath: source.sourceLocation.resolvingSymlinksInPath().path)
-    guard attributes[.type] as? FileAttributeType == .typeRegular,
-      (attributes[.size] as? NSNumber)?.int64Value == source.byteCount,
-      try hash(source.sourceLocation) == source.contentSHA256 else { throw EditingError.staleSource }
+    try SceneDeliveryTrace.measure(.sourceReverify) {
+      let attributes = try FileManager.default.attributesOfItem(atPath: source.sourceLocation.resolvingSymlinksInPath().path)
+      guard attributes[.type] as? FileAttributeType == .typeRegular,
+        (attributes[.size] as? NSNumber)?.int64Value == source.byteCount,
+        try hash(source.sourceLocation) == source.contentSHA256 else { throw EditingError.staleSource }
+    }
   }
   static func capture(_ source: EditingSourceSnapshot, synchronize: Bool = true) throws -> URL {
     try writeCapture(source, synchronize: synchronize, exclusive: false) { url, _, _ in url }
   }
 
   static func verifiedPreviewCapture(_ source: EditingSourceSnapshot) throws -> VerifiedCapture {
-    try writeCapture(source, synchronize: true, exclusive: true) { url, output, digest in
-      try VerifiedCapture(writtenTo: output, at: url, digest: digest, byteCount: source.byteCount)
+    try SceneDeliveryTrace.measure(.verifiedSourceCopy) {
+      try writeCapture(source, synchronize: true, exclusive: true) { url, output, digest in
+        try VerifiedCapture(writtenTo: output, at: url, digest: digest, byteCount: source.byteCount)
+      }
     }
   }
 
