@@ -192,16 +192,16 @@ v7 的 2.4 s 是更老 schema 的一次性迁移；v8 升级约 0.7–1.0 s，�
 
 差异在噪声/±3% 内；2400×1600 窗口时 tiled 101.8 ms 对比 inline 25–40 ms，反而更慢。之前说的 4.6× 是拿 tiled 窗口对比**整幅** inline（471 ms），不是同一个窗口的 inline。整幅 tiled 也要 1339 ms，比 inline 471 ms 慢 2.8×。
 
-因此生产默认已回退到 inline，tile 代码仅保留为 QA 实验；**下一步不再沿 tile 方向投入**，算子的真正杠杆是减少整幅归约本身（dehaze/adaptive-brilliance）或更好的邻域算法。
+因此生产默认使用 inline，固定 tile 用作像素对照。后续优先测量整幅归约（dehaze/adaptive-brilliance）和邻域滤波。
 
-下一步仍可继续做**双 band 固定 tile**：
+历史**双 band 固定 tile**候选保留以下设计供像素对照：
 
 1. 把 factor 按固定原点/尺寸的 tile（例如 1024/2048 + halo）计算并缓存；
 2. 整幅帧和窗口帧都从同一组 tile 取样，窗口只计算覆盖它的 tile；
 3. 每个像素只属于一个 tile，窗口与整幅的 factor 像素完全相同，避免 1 ULP 差异；
 4. tile 边界用 halo，边缘 clamp；缓存键含 source generation、band、radius、tile 坐标。
 
-在全幅 factor 与固定 tile 之间，固定 tile 是首选；它保留 5–7× 首帧潜力，同时满足逐字节硬门。若 tile 边界仍出现 1 LSB，再退回全幅 factor（窗口 restore 仍可省下游 materialize，但首帧约慢 10–20%）。
+全幅 factor 与固定 tile 都须在同一出厂窗口测首帧和热态，并在整幅、窗口和导出中核对像素。上述实拍结果作为后续算子的对照。
 
 ### 生产化规划
 

@@ -1,0 +1,1334 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "sourceCommitAtStart": "1ebf4e0ac728d34a2ceee300bcb05eed2f597887",
+  "worktreeChangesAtStart": [
+    "M docs/research/library-first-screen-and-operator-next-steps.md",
+    " M specs/043-image-engine-unification/plan.md"
+  ],
+  "testBundleSHA256": {
+    "RAWMasterUITests": "669ea26f3dfa1d047ec32a4d437b629470bf1db52908a954e5faeeda59a05452",
+    "RAWMasterImagingTests": "560230d1406fb4873621cdabc068e7ab960c473841561ac9f0eb7ee5dd25cbaa"
+  },
+  "configuration": "Swift Release with testability, Rust scene, 9504×6336 Bayer fixture",
+  "warmups": 5,
+  "measuredSamplesPerRoute": 30,
+  "firstRunBoundary": "first delivery of this route in the test process with system file caches intact",
+  "stageTotals": "nested CPU wall, host waits and GPU intervals overlap; timings are per-run stage sums",
+  "memory": "sampled process/device and logical graph accounting, each reported independently",
+  "workbenchMemoryOutsideTimedRegions": {
+    "beforeSweep": {
+      "metalAllocatedBytes": 5531205632,
+      "processPhysFootprintBytes": 3352233352
+    },
+    "afterEachTargetPair": [
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2159053248
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2141424160
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2178173496
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2187414096
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2197801504
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2209778232
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2209761848
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2227128936
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2228128360
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2232666680
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2241874536
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2245495376
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2270759504
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2267531856
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2275838568
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2099661440
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2101693056
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2099628624
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2087225960
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2087176832
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2083342952
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2089159272
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2089896552
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2092124752
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2100021816
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2105019008
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2104920704
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2105870976
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2108721744
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2108918400
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2112752256
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2109770368
+      },
+      {
+        "metalAllocatedBytes": 5613453312,
+        "processPhysFootprintBytes": 2109803136
+      },
+      {
+        "metalAllocatedBytes": 5617647616,
+        "processPhysFootprintBytes": 2114013824
+      },
+      {
+        "metalAllocatedBytes": 5617647616,
+        "processPhysFootprintBytes": 2131479192
+      },
+      {
+        "metalAllocatedBytes": 5617647616,
+        "processPhysFootprintBytes": 2142882432
+      }
+    ],
+    "afterClosingLibraryOwners": {
+      "metalAllocatedBytes": 138166272,
+      "processPhysFootprintBytes": 1942260232
+    }
+  },
+  "routes": {
+    "component": {
+      "firstRunWallMs": 1785.869959,
+      "elapsedWall": {
+        "n": 30,
+        "p50Ms": 1732.948604,
+        "p95Ms": 1804.679708
+      },
+      "targets": {
+        "avif10": {
+          "stages": {
+            "assembly.blit.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.0477715,
+                "p95Ms": 4.765521
+              }
+            },
+            "assembly.blit.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 30.577728999999998,
+                "p95Ms": 34.079172
+              }
+            },
+            "avif.encode": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 924.1986255,
+                "p95Ms": 947.951375
+              }
+            },
+            "avif.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.091542,
+                "p95Ms": 0.131625
+              }
+            },
+            "avif.raster": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.185833500000001,
+                "p95Ms": 16.346875
+              }
+            },
+            "avif.raster.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 3.0971659999999996,
+                "p95Ms": 4.056041
+              }
+            },
+            "avif.raster.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.133375000000001,
+                "p95Ms": 16.27475
+              }
+            },
+            "dag.rust.dispatch_and_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 56.7958335,
+                "p95Ms": 60.197876
+              }
+            },
+            "dag.rust.open": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.120585,
+                "p95Ms": 4.678751
+              }
+            },
+            "dag.swift_bridge.encode": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 1.391813,
+                "p95Ms": 1.655586
+              }
+            },
+            "dag.swift_bridge.init": {
+              "observedRuns": 30,
+              "stageSamples": 1080,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 12.598455999999999,
+                "p95Ms": 14.260834
+              }
+            },
+            "drt.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.5242525,
+                "p95Ms": 22.923442
+              }
+            },
+            "drt.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 37.4312475,
+                "p95Ms": 47.103249
+              }
+            },
+            "drt.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.42581199999999997,
+                "p95Ms": 0.507
+              }
+            },
+            "drt.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 38.356145,
+                "p95Ms": 48.562249
+              }
+            },
+            "photographic.ci_host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 29.010604999999998,
+                "p95Ms": 31.728955
+              }
+            },
+            "photographic.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 54.11877,
+                "p95Ms": 60.72617
+              }
+            },
+            "publication.publish": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.119979,
+                "p95Ms": 0.131625
+              }
+            },
+            "source.reverify": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.8097505,
+                "p95Ms": 28.32575
+              }
+            },
+            "staging.file": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.4133745,
+                "p95Ms": 7.079917
+              }
+            },
+            "staging.sync": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.323584,
+                "p95Ms": 0.636
+              }
+            }
+          },
+          "exampleGraphReceipt": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          },
+          "memoryMaxima": {
+            "avifStagingBufferBytes": 481738752,
+            "maxSampledMetalDeviceAllocatedBytes": 2088845312,
+            "maxSampledProcessPhysFootprintBytes": 3585477080
+          }
+        },
+        "jpeg8": {
+          "stages": {
+            "assembly.blit.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.2946279999999994,
+                "p95Ms": 5.824272
+              }
+            },
+            "assembly.blit.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 34.764565,
+                "p95Ms": 38.482461
+              }
+            },
+            "dag.rust.dispatch_and_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 58.5434385,
+                "p95Ms": 61.582958
+              }
+            },
+            "dag.rust.open": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.240855,
+                "p95Ms": 4.464374
+              }
+            },
+            "dag.swift_bridge.encode": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 1.4511655,
+                "p95Ms": 1.625334
+              }
+            },
+            "dag.swift_bridge.init": {
+              "observedRuns": 30,
+              "stageSamples": 1080,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 13.170289,
+                "p95Ms": 14.015752
+              }
+            },
+            "drt.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 21.078750999999997,
+                "p95Ms": 25.947441
+              }
+            },
+            "drt.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 43.9224575,
+                "p95Ms": 49.33341
+              }
+            },
+            "drt.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.45264550000000003,
+                "p95Ms": 0.57775
+              }
+            },
+            "drt.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 44.8751245,
+                "p95Ms": 50.332495
+              }
+            },
+            "photographic.ci_host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 33.7576245,
+                "p95Ms": 44.521294
+              }
+            },
+            "photographic.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 60.464000999999996,
+                "p95Ms": 71.001543
+              }
+            },
+            "publication.publish": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.1181665,
+                "p95Ms": 0.129042
+              }
+            },
+            "sdr.encode": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 102.725438,
+                "p95Ms": 104.144875
+              }
+            },
+            "sdr.raster": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 31.946041,
+                "p95Ms": 33.615583
+              }
+            },
+            "source.reverify": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.666354,
+                "p95Ms": 27.041041
+              }
+            },
+            "staging.file": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 102.7297915,
+                "p95Ms": 104.150291
+              }
+            },
+            "staging.sync": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.0018124999999999999,
+                "p95Ms": 0.002584
+              }
+            }
+          },
+          "exampleGraphReceipt": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          },
+          "memoryMaxima": {
+            "maxSampledMetalDeviceAllocatedBytes": 1729789952,
+            "maxSampledProcessPhysFootprintBytes": 3422554776,
+            "sdrBitmapBytes": 240869376
+          }
+        },
+        "shared": {
+          "stages": {
+            "flashraw.metal_init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.32606250000000003,
+                "p95Ms": 0.345
+              }
+            },
+            "flashraw.mosaic_data": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.002188,
+                "p95Ms": 0.028041
+              }
+            },
+            "flashraw.mosaic_upload": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 12.027708,
+                "p95Ms": 12.568333
+              }
+            },
+            "flashraw.sensor_frame": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 27.9743125,
+                "p95Ms": 30.758916
+              }
+            },
+            "photographic.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 49.541292,
+                "p95Ms": 62.541917
+              }
+            },
+            "source.capture_stamp": {
+              "observedRuns": 30,
+              "stageSamples": 90,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.10968800000000001,
+                "p95Ms": 0.120751
+              }
+            },
+            "source.verified_copy": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 32.1562295,
+                "p95Ms": 32.453292
+              }
+            }
+          },
+          "exampleGraphReceipt": null,
+          "memoryMaxima": {
+            "maxSampledMetalDeviceAllocatedBytes": 135954432,
+            "maxSampledProcessPhysFootprintBytes": 1414400472
+          }
+        }
+      }
+    },
+    "032-avif10": {
+      "firstRunWallMs": 1377.682209,
+      "elapsedWall": {
+        "n": 30,
+        "p50Ms": 1354.6690210000002,
+        "p95Ms": 1409.240708
+      },
+      "targets": {
+        "avif10": {
+          "stages": {
+            "assembly.blit.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 3.860796,
+                "p95Ms": 4.246691
+              }
+            },
+            "assembly.blit.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 30.538581999999998,
+                "p95Ms": 32.843417
+              }
+            },
+            "avif.encode": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 877.124771,
+                "p95Ms": 910.249042
+              }
+            },
+            "avif.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.1216665,
+                "p95Ms": 0.180916
+              }
+            },
+            "avif.raster": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.519104,
+                "p95Ms": 16.981708
+              }
+            },
+            "avif.raster.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 3.1382909999999997,
+                "p95Ms": 4.754583
+              }
+            },
+            "avif.raster.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.455896,
+                "p95Ms": 16.912958
+              }
+            },
+            "dag.rust.dispatch_and_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 55.7323105,
+                "p95Ms": 59.462539
+              }
+            },
+            "dag.rust.open": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.119024,
+                "p95Ms": 4.802961
+              }
+            },
+            "dag.swift_bridge.encode": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 1.4028960000000001,
+                "p95Ms": 1.797499
+              }
+            },
+            "dag.swift_bridge.init": {
+              "observedRuns": 30,
+              "stageSamples": 1080,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 12.6935635,
+                "p95Ms": 15.003458
+              }
+            },
+            "drt.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 14.729236,
+                "p95Ms": 21.169235
+              }
+            },
+            "drt.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 36.897272,
+                "p95Ms": 43.738041
+              }
+            },
+            "drt.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.4265415,
+                "p95Ms": 0.602709
+              }
+            },
+            "drt.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 37.8566235,
+                "p95Ms": 44.726337
+              }
+            },
+            "flashraw.metal_init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.327417,
+                "p95Ms": 0.352292
+              }
+            },
+            "flashraw.mosaic_data": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.0022915,
+                "p95Ms": 0.002958
+              }
+            },
+            "flashraw.mosaic_upload": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 12.0280625,
+                "p95Ms": 12.72775
+              }
+            },
+            "flashraw.sensor_frame": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 27.603749999999998,
+                "p95Ms": 29.6065
+              }
+            },
+            "photographic.ci_host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 28.788186500000002,
+                "p95Ms": 31.267547
+              }
+            },
+            "photographic.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 42.94485400000001,
+                "p95Ms": 54.84825
+              }
+            },
+            "photographic.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 54.1489165,
+                "p95Ms": 61.003
+              }
+            },
+            "publication.acknowledge": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.144854000000002,
+                "p95Ms": 26.955417
+              }
+            },
+            "publication.prepare": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 33.4680625,
+                "p95Ms": 39.883459
+              }
+            },
+            "publication.publish": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 30.711604,
+                "p95Ms": 32.652834
+              }
+            },
+            "source.capture_stamp": {
+              "observedRuns": 30,
+              "stageSamples": 90,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.1207715,
+                "p95Ms": 0.141375
+              }
+            },
+            "source.reverify": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.6690835,
+                "p95Ms": 27.550709
+              }
+            },
+            "source.verified_copy": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 32.4676045,
+                "p95Ms": 33.84
+              }
+            },
+            "staging.directory": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.0865005,
+                "p95Ms": 0.098084
+              }
+            },
+            "staging.file": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 6.4969375,
+                "p95Ms": 8.969916
+              }
+            }
+          },
+          "exampleGraphReceipt": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          },
+          "memoryMaxima": {
+            "avifStagingBufferBytes": 481738752,
+            "maxSampledMetalDeviceAllocatedBytes": 7333937152,
+            "maxSampledProcessPhysFootprintBytes": 3721087592
+          }
+        }
+      }
+    },
+    "032-jpeg8": {
+      "firstRunWallMs": 566.624208,
+      "elapsedWall": {
+        "n": 30,
+        "p50Ms": 588.699771,
+        "p95Ms": 601.354292
+      },
+      "targets": {
+        "jpeg8": {
+          "stages": {
+            "assembly.blit.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 3.994589,
+                "p95Ms": 4.440524
+              }
+            },
+            "assembly.blit.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 30.605104,
+                "p95Ms": 32.209455
+              }
+            },
+            "dag.rust.dispatch_and_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 56.284166,
+                "p95Ms": 58.160705
+              }
+            },
+            "dag.rust.open": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 4.124435,
+                "p95Ms": 4.517043
+              }
+            },
+            "dag.swift_bridge.encode": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 1.3972915000000001,
+                "p95Ms": 1.609084
+              }
+            },
+            "dag.swift_bridge.init": {
+              "observedRuns": 30,
+              "stageSamples": 1080,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 12.566582499999999,
+                "p95Ms": 14.145834
+              }
+            },
+            "drt.gpu": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 15.113794500000001,
+                "p95Ms": 17.671025
+              }
+            },
+            "drt.host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 37.587394,
+                "p95Ms": 40.458751
+              }
+            },
+            "drt.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.4309375,
+                "p95Ms": 0.61175
+              }
+            },
+            "drt.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 38.530229,
+                "p95Ms": 41.395954
+              }
+            },
+            "flashraw.metal_init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.351271,
+                "p95Ms": 0.372542
+              }
+            },
+            "flashraw.mosaic_data": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.0023125000000000003,
+                "p95Ms": 0.002708
+              }
+            },
+            "flashraw.mosaic_upload": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 11.9945625,
+                "p95Ms": 12.763459
+              }
+            },
+            "flashraw.sensor_frame": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 27.611728999999997,
+                "p95Ms": 28.605541
+              }
+            },
+            "photographic.ci_host_wait": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 28.5394175,
+                "p95Ms": 30.269754
+              }
+            },
+            "photographic.init": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 51.786917,
+                "p95Ms": 61.249167
+              }
+            },
+            "photographic.render": {
+              "observedRuns": 30,
+              "stageSamples": 1050,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 53.7478965,
+                "p95Ms": 57.500916
+              }
+            },
+            "publication.acknowledge": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 19.456041,
+                "p95Ms": 19.744167
+              }
+            },
+            "publication.prepare": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.4214585,
+                "p95Ms": 28.911
+              }
+            },
+            "publication.publish": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 23.8760415,
+                "p95Ms": 28.047792
+              }
+            },
+            "sdr.encode": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 104.9398955,
+                "p95Ms": 106.04875
+              }
+            },
+            "sdr.raster": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 40.073750000000004,
+                "p95Ms": 42.426042
+              }
+            },
+            "source.capture_stamp": {
+              "observedRuns": 30,
+              "stageSamples": 90,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.11781249999999999,
+                "p95Ms": 0.136583
+              }
+            },
+            "source.reverify": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 26.637125,
+                "p95Ms": 26.971083
+              }
+            },
+            "source.verified_copy": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 32.505354499999996,
+                "p95Ms": 34.40675
+              }
+            },
+            "staging.directory": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 0.08806249999999999,
+                "p95Ms": 0.101833
+              }
+            },
+            "staging.file": {
+              "observedRuns": 30,
+              "stageSamples": 30,
+              "unavailableSamples": 0,
+              "perRunTotals": {
+                "n": 30,
+                "p50Ms": 104.94456199999999,
+                "p95Ms": 106.05375
+              }
+            }
+          },
+          "exampleGraphReceipt": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          },
+          "memoryMaxima": {
+            "maxSampledMetalDeviceAllocatedBytes": 7333937152,
+            "maxSampledProcessPhysFootprintBytes": 3372600008,
+            "sdrBitmapBytes": 240869376
+          }
+        }
+      }
+    }
+  }
+}
