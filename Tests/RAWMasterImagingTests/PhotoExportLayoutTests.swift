@@ -173,6 +173,41 @@ final class PhotoExportLayoutTests: XCTestCase {
         }
     }
 
+    func testSonyRAWCaptureOffsetSurvivesRealPhotoPolicy() async throws {
+        guard let path = ProcessInfo.processInfo.environment["RAWMASTER_TEST_SONY_A7III_ARW"] else {
+            throw XCTSkip("Requires the public PIXLS.US Sony A7III RAW, archive entry 2414")
+        }
+        let source = URL(fileURLWithPath: path)
+        let expectedHash = "250784580ea527442c09004417bb0eead484f2bf3ee8f9121a776ac65bb50d0f"
+        XCTAssertEqual(try RenderFiles.hash(source), expectedHash)
+
+        for format in [PhotoRenderFormat.jpeg8, .png16] {
+            let policies: [PhotoExportMetadataPolicy] = format == .jpeg8 ? [.photo, .rights, .none] : [.photo, .none]
+            var referencePixels: [UInt8]?
+            for policy in policies {
+                let output = try await export(source, stem: "raw-\(format)-\(policy)", format: format, limit: 512, policy: policy)
+                let props = try properties(output)
+                let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
+                XCTAssertEqual(exif?[kCGImagePropertyExifDateTimeOriginal] as? String,
+                               policy == .photo ? "2018:03:13 16:38:13" : nil, "\(format) / \(policy)")
+                XCTAssertEqual(exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String,
+                               policy == .photo ? "+01:00" : nil, "\(format) / \(policy)")
+                XCTAssertNil(exif?[kCGImagePropertyExifBodySerialNumber])
+                XCTAssertNil(exif?[kCGImagePropertyExifMakerNote])
+                XCTAssertNil(props[kCGImagePropertyGPSDictionary])
+                XCTAssertEqual((props[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 512)
+                XCTAssertEqual((props[kCGImagePropertyDepth] as? NSNumber)?.intValue, format == .jpeg8 ? 8 : 16)
+                let source = try XCTUnwrap(CGImageSourceCreateWithURL(output as CFURL, nil))
+                let decoded = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil))
+                XCTAssertNotNil(decoded.colorSpace?.copyICCData())
+                let pixels = pixelBytes(try image(output), in: CGRect(x: 0, y: 0, width: decoded.width, height: decoded.height))
+                if let referencePixels { XCTAssertTrue(pixels == referencePixels, "\(format) / \(policy)") }
+                else { referencePixels = pixels }
+            }
+        }
+        XCTAssertEqual(try RenderFiles.hash(source), expectedHash)
+    }
+
     func testOfflineArchivedSourceAndTiledOutputCarryTheirOwnTagsAndFullExtent() async throws {
         let input = try writeInput("wide-source", size: CGSize(width: 16432, height: 48), date: "2023:08:09", camera: "Archive")
         let (work, original, archive) = try job(input)

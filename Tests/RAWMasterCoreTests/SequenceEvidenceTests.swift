@@ -81,6 +81,51 @@ final class SequenceEvidenceTests: XCTestCase {
     }
   }
 
+  func testPrimaryTIFFCaptureClockReadsBothByteOrdersAndRejectsAnOutOfBoundsTag() throws {
+    let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: url) }
+    for littleEndian in [true, false] {
+      var fixture = Data(littleEndian ? [0x49, 0x49] : [0x4d, 0x4d])
+      func field(_ value: Int, bytes: Int) {
+        let parts = (0..<bytes).map { UInt8(truncatingIfNeeded: value >> ($0 * 8)) }
+        fixture.append(contentsOf: littleEndian ? parts : Array(parts.reversed()))
+      }
+      func entry(_ tag: Int, type: Int, count: Int) {
+        field(tag, bytes: 2); field(type, bytes: 2); field(count, bytes: 4)
+      }
+      field(42, bytes: 2); field(8, bytes: 4)
+      field(1, bytes: 2)
+      entry(0x8769, type: 4, count: 1); field(26, bytes: 4)
+      field(0, bytes: 4)
+      field(3, bytes: 2)
+      entry(0x9003, type: 2, count: 20); field(68, bytes: 4)
+      entry(0x9011, type: 2, count: 7); field(88, bytes: 4)
+      entry(0x9291, type: 2, count: 4); fixture.append(contentsOf: [0x30, 0x30, 0x35, 0])
+      field(0, bytes: 4)
+      fixture.append(contentsOf: "2026:10:24 12:34:56\0-07:30\0".utf8)
+      try fixture.write(to: url)
+
+      let clock = try XCTUnwrap(TIFFCaptureTimeTags.read(from: url))
+      XCTAssertEqual(clock.dateTimeOriginal, "2026:10:24 12:34:56")
+      XCTAssertEqual(clock.subsecTimeOriginal, "005")
+      XCTAssertEqual(clock.offsetTimeOriginal, "-07:30")
+      let date = "2026-10-24T12:34:56"
+      let missingOffset = try XCTUnwrap(clock.supplementing(imageIODate: date, imageIOSubseconds: "0050", imageIOOffset: nil))
+      XCTAssertEqual(missingOffset.offsetTimeOriginal, "-07:30")
+      XCTAssertNil(missingOffset.subsecTimeOriginal)
+      XCTAssertEqual(clock.supplementing(imageIODate: date, imageIOSubseconds: nil, imageIOOffset: "-07:30")?.subsecTimeOriginal, "005")
+      XCTAssertNil(clock.supplementing(imageIODate: date, imageIOSubseconds: "006", imageIOOffset: nil))
+      XCTAssertNil(clock.supplementing(imageIODate: date, imageIOSubseconds: nil, imageIOOffset: "+08:00"))
+      XCTAssertNil(clock.supplementing(imageIODate: "2026-10-24T12:34:55", imageIOSubseconds: nil, imageIOOffset: nil))
+
+      fixture.removeLast(1)
+      try fixture.write(to: url)
+      let truncated = try XCTUnwrap(TIFFCaptureTimeTags.read(from: url))
+      XCTAssertEqual(truncated.subsecTimeOriginal, "005")
+      XCTAssertNil(truncated.offsetTimeOriginal)
+    }
+  }
+
   func testCivilArithmeticAcrossGregorianBoundariesAndNoTimezoneFallback() throws {
     func time(_ text: String) throws -> SequenceCivilTime {
       try XCTUnwrap(SequenceTimestampParser.parse(original: text, subseconds: nil, offset: nil).local)

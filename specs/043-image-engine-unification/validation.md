@@ -258,6 +258,8 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 
 对照的 24 次回零都遇到尚未返回的显影图。开启后有 10 次纹理或清晰度回零在显影图返回后仍等待直方图。开启时去雾的 8 次回零全部仍在等待显影图。纹理和清晰度后续可分别核对已物化图的同步采样时间，去雾优先核对原引导与全域验证。性能继续使用可见画布与完整精确两项独立验收。[真实提交与任务时序](evidence/m0-histogram-resident-f16-abba.json)
 
+另用签名发布包的 FlashRaw 0.3.1 和全尺寸 F32 显影测试横向合并采样块。两张 60 MP、24 MP 的实拍 RAW 分别跑纹理、清晰度、全幅和分数 ROI，共 64 次，RGBAf 与所有直方图分箱逐位一致。宽度从 16 增至 128 时，采样 p50 由 65.71 降至 42.91 ms，新建显影任务从进入到析构的 p50 由 515.59 降至 503.45 ms。观察到的最长同步返回由 7.04 增至 8.20 ms。首块返回时取消的单次对照为 4.89、6.85 ms。生产路径仍用 16 像素块，本试验只签收组件计时，画布性能沿用原实测记录。[逐组计时与位比较](evidence/m0-display-histogram-horizontal-batches.json)
+
 37 项精确读回以同一实拍、同机 2400×1600 不透明 sRGB RGBA8 重测。RAWMaster 用显式 canonical 定稿，LightFlow 用锁定的 `2d41ab1`。每项 20 个暖态样本，首次变化、首个精确和最终读回三列均进入 LightFlow 容差。37 组输入各取两次首次状态。RAWMaster 首次变化 p50/p95 为 5.50/18.75 ms，LightFlow 为 7.19/175.22 ms。RAWMaster 首个精确与最终同为 87.36/413.02 ms，LightFlow 同为 24.77/184.44 ms，这两项仍超线。[分项与首次状态](evidence/m0-lightflow-canonical-readback.json)
 
 同一测试构建试用既有的局部蒙版分带、点蒙版区域、锐化分带和去雾分组开关后，首个精确 p50/p95 降到 80.23/355.12 ms。全部 814 对首次与最终 RGBA8 摘要相同，试验进程峰值约 5.26 GB。分项追踪还记录了冷去雾引导生成、局部锐化与降噪的全幅归约。正式口径使用 `RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical`。生产视口定稿返回带近似标记的结果，按自己的像素和时延口径验收。[试验数据](evidence/m0-lightflow-canonical-readback.json) · [精确读回入口](../../Tests/RAWMasterImagingTests/PanelDisplayReadbackTests.swift)

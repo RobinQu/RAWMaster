@@ -265,8 +265,11 @@ public actor PhotoBatchRenderExporter {
         }
         // The GPU permit ends after the joined bitmap render. Encoding and metadata may overlap a different frame.
         let frozenMetadataURL = stagingCapture ?? metadataURL
+        // ImageIO's metadata-only copy preserves these capture fields for JPEG and PNG.
+        let originalCapture = configuration.format == .jpeg8 || configuration.format == .png16 ? stagingCapture : nil
         let payload = try await renderingTask(lane: .export, resources: .init(cpu: 1, io: 1)) {
-            try Self.encode(raster, source: frozenMetadataURL, configuration: configuration, stage: stage, tagged: tagged)
+            try Self.encode(raster, source: frozenMetadataURL, originalCapture: originalCapture,
+                            configuration: configuration, stage: stage, tagged: tagged)
         }
         if execution.retainStageForRecovery {
             // Keep just the deliverable in the private folder for the durable receipt.
@@ -375,15 +378,16 @@ public actor PhotoBatchRenderExporter {
         return try bitmap(image, jpeg: configuration.format == .jpeg8)
     }
 
-    private static func encode(_ raster: DeliveryRaster, source metadataURL: URL,
+    private static func encode(_ raster: DeliveryRaster, source metadataURL: URL, originalCapture: URL?,
                                configuration: PhotoBatchExportConfiguration, stage: URL, tagged: URL) throws -> URL {
         try encodePixels(raster, format: configuration.format, quality: configuration.jpegQuality, to: stage)
         let metadata = configuration.metadataPolicy == .none ? nil :
             CGImageSourceCreateWithURL(metadataURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary)
         let payload: URL
-        if configuration.metadataPolicy != .none, metadata != nil {
+        if let metadata {
             try SceneDeliveryTrace.measure(.sdrMetadata) {
-                try copyMetadata(from: metadata, policy: configuration.metadataPolicy, gps: configuration.includeGPS, on: stage, to: tagged)
+                try copyMetadata(from: metadata, originalCapture: originalCapture, policy: configuration.metadataPolicy,
+                                 gps: configuration.includeGPS, on: stage, to: tagged)
             }
             payload = tagged
         } else {
@@ -447,10 +451,10 @@ public actor PhotoBatchRenderExporter {
 
     /// Replace descriptive tags without recompressing the newly rendered image. ICC and the encoded pixel payload
     /// belong to the output. Never import source orientation, dimensions, thumbnails, serial numbers or edit history.
-    private static func copyMetadata(from original: CGImageSource?, policy: PhotoExportMetadataPolicy,
-                                     gps: Bool, on pixels: URL, to target: URL) throws {
+    private static func copyMetadata(from original: CGImageSource, originalCapture: URL?,
+                                     policy: PhotoExportMetadataPolicy, gps: Bool, on pixels: URL, to target: URL) throws {
         let newTags = CGImageMetadataCreateMutable()
-        if policy != .none, let original, let originalTags = CGImageSourceCopyMetadataAtIndex(original, 0, nil) {
+        if let originalTags = CGImageSourceCopyMetadataAtIndex(original, 0, nil) {
             func copy(_ dict: CFString, _ keys: [CFString]) throws {
                 for key in keys {
                     guard let tag = CGImageMetadataCopyTagMatchingImageProperty(originalTags, dict, key),
@@ -469,6 +473,9 @@ public actor PhotoBatchRenderExporter {
                     kCGImagePropertyExifSubsecTimeOriginal, kCGImagePropertyExifLensMake, kCGImagePropertyExifLensModel,
                     kCGImagePropertyExifFocalLength, kCGImagePropertyExifFocalLenIn35mmFilm, kCGImagePropertyExifFNumber,
                     kCGImagePropertyExifExposureTime, kCGImagePropertyExifISOSpeedRatings, kCGImagePropertyExifExposureBiasValue])
+                if let originalCapture, CGImageSourceGetType(original) == "com.sony.arw-raw-image" as CFString {
+                    try supplementCaptureTime(in: newTags, from: originalTags, at: originalCapture)
+                }
                 if gps {
                     // ImageIO's XMP coordinate tags carry N/S and E/W together with the value.
                     try copy(kCGImagePropertyGPSDictionary, [kCGImagePropertyGPSLatitude, kCGImagePropertyGPSLongitude,
@@ -489,6 +496,31 @@ public actor PhotoBatchRenderExporter {
         }
     }
 
+    private static func supplementCaptureTime(in output: CGMutableImageMetadata, from original: CGImageMetadata, at url: URL) throws {
+        let exif = kCGImagePropertyExifDictionary
+        let offsetKey = kCGImagePropertyExifOffsetTimeOriginal
+        let subsecKey = kCGImagePropertyExifSubsecTimeOriginal
+        let offsetTag = CGImageMetadataCopyTagMatchingImageProperty(original, exif, offsetKey)
+        let subsecTag = CGImageMetadataCopyTagMatchingImageProperty(original, exif, subsecKey)
+        func string(_ tag: CGImageMetadataTag?) -> String? { tag.flatMap { CGImageMetadataTagCopyValue($0) as? String } }
+        let offset = string(offsetTag)
+        let subsec = string(subsecTag)
+        guard offsetTag == nil || subsecTag == nil,
+              offsetTag == nil || offset != nil, subsecTag == nil || subsec != nil,
+              let date = string(CGImageMetadataCopyTagMatchingImageProperty(original, exif, kCGImagePropertyExifDateTimeOriginal))
+        else { return }
+
+        try Task.checkCancellation()
+        guard let physical = try? TIFFCaptureTimeTags.read(from: url),
+              let supplemental = physical.supplementing(imageIODate: date, imageIOSubseconds: subsec, imageIOOffset: offset)
+        else { return }
+        if let value = supplemental.offsetTimeOriginal {
+            _ = CGImageMetadataSetValueMatchingImageProperty(output, exif, offsetKey, value as CFString)
+        }
+        if let value = supplemental.subsecTimeOriginal {
+            _ = CGImageMetadataSetValueMatchingImageProperty(output, exif, subsecKey, value as CFString)
+        }
+    }
 }
 
 extension RenderExportService {

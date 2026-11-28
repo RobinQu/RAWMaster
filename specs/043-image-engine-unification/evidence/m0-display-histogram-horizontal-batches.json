@@ -1,0 +1,1334 @@
+{
+  "schemaVersion": 1,
+  "dateLocal": "2026-11-29",
+  "sourceCommit": "9bb0d7dbdf641afa885ad19c31968ac0fe79890c",
+  "unchangedMeteredProductionFiles": true,
+  "host": {
+    "model": "Mac16,5",
+    "gpu": "Apple M4 Max",
+    "macOS": "27.0.1 (26A434)"
+  },
+  "scope": "Component-level native measurements. No rendered window input-to-draw comparison in this trial.",
+  "program": "Release XCTest using the packaged FlashRaw 0.3.1 plus full-resolution Core Image F32 graph.",
+  "sources": {
+    "60mp": {
+      "size": [
+        9504,
+        6336
+      ],
+      "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "24mp": {
+      "size": [
+        6000,
+        4000
+      ],
+      "sha256": "250784580ea527442c09004417bb0eead484f2bf3ee8f9121a776ac65bb50d0f"
+    }
+  },
+  "controls": {
+    "texture": 25,
+    "clarity": 25
+  },
+  "rois": {
+    "full": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "fractional": [
+      0.13,
+      0.07,
+      0.43,
+      0.83
+    ]
+  },
+  "orderPerSourceControlROI": [
+    16,
+    32,
+    64,
+    128,
+    128,
+    64,
+    32,
+    16
+  ],
+  "tileHeight": 16,
+  "clearCachesAfterEachBand": true,
+  "bitwiseRGBAfAndAllHistogramBinsIdenticalInAllSamples": true,
+  "cancellationTest": "60 MP clarity, checks throw superseded immediately after first synchronous native return; one measurement per width.",
+  "cancellation": [
+    {
+      "batchWidth": 16,
+      "cancelAtFirstNativeReturn": true,
+      "elapsedMilliseconds": 4.893791
+    },
+    {
+      "batchWidth": 32,
+      "cancelAtFirstNativeReturn": true,
+      "elapsedMilliseconds": 5.141416
+    },
+    {
+      "batchWidth": 64,
+      "cancelAtFirstNativeReturn": true,
+      "elapsedMilliseconds": 5.8435
+    },
+    {
+      "batchWidth": 128,
+      "cancelAtFirstNativeReturn": true,
+      "elapsedMilliseconds": 6.848916
+    }
+  ],
+  "arms": [
+    {
+      "width": 16,
+      "samples": 16,
+      "medianSamplingMS": 65.713396,
+      "medianFreshRenderOwnerMS": 515.591624,
+      "maximumJoinedBlockMS": 7.041625
+    },
+    {
+      "width": 32,
+      "samples": 16,
+      "medianSamplingMS": 55.784959,
+      "medianFreshRenderOwnerMS": 532.335104,
+      "maximumJoinedBlockMS": 7.886333
+    },
+    {
+      "width": 64,
+      "samples": 16,
+      "medianSamplingMS": 46.056792,
+      "medianFreshRenderOwnerMS": 508.6985,
+      "maximumJoinedBlockMS": 7.631625
+    },
+    {
+      "width": 128,
+      "samples": 16,
+      "medianSamplingMS": 42.908645,
+      "medianFreshRenderOwnerMS": 503.445104,
+      "maximumJoinedBlockMS": 8.199334
+    }
+  ],
+  "conclusion": "Sampling is shorter at larger widths, but the fresh render owner remains dominated by graph development. Maximum joined readback and cancellation at the first return rise. The default width remains 16.",
+  "experimentSourceSHA256": "096e703b7b43f910b81d169c53cf47b00440870c0f99ad4bf831f224c968fa22",
+  "unabridgedReportSHA256": "ac02bb9a0bfe2c88aefba47530457decf6ddd1ae304096963d17259a8c7ac69a",
+  "samples": [
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 825.887666,
+      "phase": 0,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 914.603042,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 66.165208,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 7.041625
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 665.317208,
+      "phase": 1,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 746.644666,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 56.210875,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 7.518791
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 630.08,
+      "phase": 2,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 703.307333,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 48.431458,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 7.631625
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 635.448875,
+      "phase": 3,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 703.316125,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 42.354875,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.621542
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 627.921583,
+      "phase": 4,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 694.254375,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 43.462416,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.959917
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 625.362834,
+      "phase": 5,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 690.221416,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 42.240959,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 6.51
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 636.016833,
+      "phase": 6,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 714.641792,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 52.494875,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 6.881958
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 643.723125,
+      "phase": 7,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 732.412708,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 64.403292,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 6.969625
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 621.597041,
+      "phase": 0,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 716.794834,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 72.585625,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.790792
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 628.667666,
+      "phase": 1,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 709.313416,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 59.488083,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 6.13225
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 625.994208,
+      "phase": 2,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 695.350709,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 46.999292,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 5.628792
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 626.735416,
+      "phase": 3,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 693.400958,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 44.137916,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 6.048666
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 651.833959,
+      "phase": 4,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 718.932334,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 44.955958,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 5.979375
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 647.959417,
+      "phase": 5,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 728.396791,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 58.014458,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 7.587
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 630.580083,
+      "phase": 6,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 711.375333,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 57.56,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 5.642166
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 626.290041,
+      "phase": 7,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 719.4055,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 70.438167,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.807541
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 585.987666,
+      "phase": 0,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 668.890916,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 61.008625,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 6.333292
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 599.470292,
+      "phase": 1,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 670.842625,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 50.691125,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 6.412291
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 616.633041,
+      "phase": 2,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 679.484292,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 41.549583,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 6.364
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 599.553625,
+      "phase": 3,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 660.509333,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 39.487125,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.116083
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 583.656792,
+      "phase": 4,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 646.811458,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 40.444292,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.426292
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 591.038125,
+      "phase": 5,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 653.530459,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 40.923375,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 6.585292
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 601.588416,
+      "phase": 6,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 666.622,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 45.032333,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 5.643542
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 588.132458,
+      "phase": 7,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 669.959291,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 60.139834,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 5.994417
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 633.289167,
+      "phase": 0,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 728.8315,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 74.670834,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.890375
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 606.30925,
+      "phase": 1,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 683.669459,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 57.636917,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 5.614666
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 598.846125,
+      "phase": 2,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 662.75975,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 44.244959,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 5.552416
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 595.927625,
+      "phase": 3,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 655.505708,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 39.335834,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 5.483583
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 603.396709,
+      "phase": 4,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 663.639333,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 40.336708,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 5.322292
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 621.003459,
+      "phase": 5,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 687.524042,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 45.962875,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 5.425417
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 626.36125,
+      "phase": 6,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 704.900334,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 58.198375,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 5.69375
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 621.62475,
+      "phase": 7,
+      "photo": "60mp",
+      "renderOwnerCompleteMilliseconds": 717.6695,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        127
+      ],
+      "samplingMilliseconds": 75.47575,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.814167
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 277.735959,
+      "phase": 0,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 359.556834,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 59.967125,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 6.487917
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 314.616167,
+      "phase": 1,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 398.048208,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 54.590041,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 7.245875
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 290.189834,
+      "phase": 2,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 362.120375,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 46.150708,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 7.5955
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 284.63525,
+      "phase": 3,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 349.852708,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 42.211791,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.237083
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 276.416708,
+      "phase": 4,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 346.78625,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 46.101625,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 8.199334
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 282.363416,
+      "phase": 5,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 350.534292,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 44.470166,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 7.145625
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 281.262208,
+      "phase": 6,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 352.219458,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 48.142208,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 6.451459
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 269.349917,
+      "phase": 7,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 352.235833,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 60.797208,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 7.015875
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 266.296,
+      "phase": 0,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 353.727292,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 68.359542,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.813917
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 266.534292,
+      "phase": 1,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 344.484208,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 57.15,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 6.058834
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 268.504666,
+      "phase": 2,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 336.851166,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 48.431875,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 5.927084
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 266.33825,
+      "phase": 3,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 330.769125,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 44.681875,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 5.882083
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "texture",
+      "graphMilliseconds": 263.67775,
+      "phase": 4,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 326.89525,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 43.535959,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 5.750459
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "texture",
+      "graphMilliseconds": 268.036625,
+      "phase": 5,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 336.725875,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 49.383833,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 5.816667
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "texture",
+      "graphMilliseconds": 270.097458,
+      "phase": 6,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 346.765958,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 55.359042,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 6.20325
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "texture",
+      "graphMilliseconds": 272.519,
+      "phase": 7,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 360.6215,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 66.769375,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.793833
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 278.381709,
+      "phase": 0,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 362.292333,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 61.8375,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 6.340625
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 268.614875,
+      "phase": 1,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 337.371208,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 46.25575,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 6.514042
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 270.293417,
+      "phase": 2,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 335.386875,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 44.014292,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 7.060542
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 265.151792,
+      "phase": 3,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 325.274041,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 38.467417,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 7.015875
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 263.755667,
+      "phase": 4,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 325.179666,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 38.343875,
+      "joinedReadbacks": 6,
+      "maximumJoinedBlockMS": 6.671458
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 264.007416,
+      "phase": 5,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 324.977208,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 40.459667,
+      "joinedReadbacks": 12,
+      "maximumJoinedBlockMS": 6.459041
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 265.516292,
+      "phase": 6,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 333.149416,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 45.62,
+      "joinedReadbacks": 24,
+      "maximumJoinedBlockMS": 5.934416
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 261.816125,
+      "phase": 7,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 340.947542,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "full",
+      "sampleDimensions": [
+        128,
+        85
+      ],
+      "samplingMilliseconds": 57.605209,
+      "joinedReadbacks": 48,
+      "maximumJoinedBlockMS": 5.977583
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 264.910416,
+      "phase": 0,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 351.651583,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 68.461875,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 6.587
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 288.737667,
+      "phase": 1,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 385.51875,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 72.97425,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 7.886333
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 279.183792,
+      "phase": 2,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 355.85925,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 51.661417,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 6.442542
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 291.473125,
+      "phase": 3,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 360.07875,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 47.92125,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 6.198334
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 128,
+      "control": "clarity",
+      "graphMilliseconds": 286.380959,
+      "phase": 4,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 357.076083,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 50.146833,
+      "joinedReadbacks": 8,
+      "maximumJoinedBlockMS": 6.7825
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 64,
+      "control": "clarity",
+      "graphMilliseconds": 292.026708,
+      "phase": 5,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 363.866541,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 51.601833,
+      "joinedReadbacks": 16,
+      "maximumJoinedBlockMS": 6.30475
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 32,
+      "control": "clarity",
+      "graphMilliseconds": 284.265292,
+      "phase": 6,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 360.9305,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 56.906083,
+      "joinedReadbacks": 32,
+      "maximumJoinedBlockMS": 6.19475
+    },
+    {
+      "allHistogramBinsIdentical": true,
+      "batchWidth": 16,
+      "control": "clarity",
+      "graphMilliseconds": 271.166083,
+      "phase": 7,
+      "photo": "24mp",
+      "renderOwnerCompleteMilliseconds": 355.2785,
+      "rgbaBitDifferences": 0,
+      "rgbaMaxAbsoluteDifference": 0,
+      "roi": "fractional",
+      "sampleDimensions": [
+        99,
+        128
+      ],
+      "samplingMilliseconds": 65.261583,
+      "joinedReadbacks": 56,
+      "maximumJoinedBlockMS": 5.675834
+    }
+  ]
+}

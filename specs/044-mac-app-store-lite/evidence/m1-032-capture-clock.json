@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "dateLocal": "2026-11-29",
+  "macOS": "27.0.1 (26A434)",
+  "independentReader": "ExifTool 13.59",
+  "original": {
+    "archive": "PIXLS.US 2414",
+    "camera": "Sony ILCE-7M3",
+    "bits": 14,
+    "sha256": "250784580ea527442c09004417bb0eead484f2bf3ee8f9121a776ac65bb50d0f",
+    "exifIFD": {
+      "DateTimeOriginal": "2018:03:13 16:38:13",
+      "OffsetTimeOriginal": "+01:00"
+    },
+    "imageIOOffset": null
+  },
+  "receiptSource": "Published files copied from the opt-in Release XCTest using the 032 production exporter.",
+  "targetedReleaseTests": 13,
+  "originalUnchanged": true,
+  "imageIOReopen": {
+    "jpeg8": [
+      "photo",
+      "rights",
+      "none"
+    ],
+    "png16": [
+      "photo",
+      "none"
+    ],
+    "decodedDimensions": [
+      512,
+      341
+    ],
+    "iccPresent": true,
+    "decodedRGBA8SameWithinFormat": true
+  },
+  "jpegScanBytesIdenticalAcrossPolicies": true,
+  "independentFileChecks": [
+    {
+      "file": "raw-jpeg8-none.jpg",
+      "bytes": 79090,
+      "sha256": "72f85522dea35fbbd20faa8e814f33cefc91fd49fa5b69c64255f9f747b25c7c",
+      "fields": {
+        "ICC_Profile:ProfileDescription": "sRGB built-in"
+      },
+      "jpegScanAndEndSHA256": "7db1f28e50bf0a64687846291d2a7f512c7ce5157d28413813d95340de7430ef"
+    },
+    {
+      "file": "raw-jpeg8-photo.jpg",
+      "bytes": 82251,
+      "sha256": "ad4c35c35fa32ed836d36aaf60c7cadaf4d528b5cc5d538105735d541b77aa85",
+      "fields": {
+        "ExifIFD:DateTimeOriginal": "2018:03:13 16:38:13",
+        "XMP-photoshop:DateCreated": "2018:03:13 16:38:13",
+        "ExifIFD:OffsetTimeOriginal": "+01:00",
+        "XMP-exif:OffsetTimeOriginal": "+01:00",
+        "ICC_Profile:ProfileDescription": "sRGB built-in"
+      },
+      "jpegScanAndEndSHA256": "7db1f28e50bf0a64687846291d2a7f512c7ce5157d28413813d95340de7430ef"
+    },
+    {
+      "file": "raw-jpeg8-rights.jpg",
+      "bytes": 81429,
+      "sha256": "66afe55aa20cd802d01144fee068e765ef796a39518f0824a5cab10755711730",
+      "fields": {
+        "ICC_Profile:ProfileDescription": "sRGB built-in"
+      },
+      "jpegScanAndEndSHA256": "7db1f28e50bf0a64687846291d2a7f512c7ce5157d28413813d95340de7430ef"
+    },
+    {
+      "file": "raw-png16-photo.png",
+      "bytes": 1254399,
+      "sha256": "39cb4f9c8498055816c0d7be43f7f6dc7264327611265db6be036be8c9ea278f",
+      "fields": {
+        "XMP-photoshop:DateCreated": "2018:03:13 16:38:13",
+        "XMP-exif:OffsetTimeOriginal": "+01:00",
+        "ICC_Profile:ProfileDescription": "sRGB built-in"
+      },
+      "dimensions": [
+        512,
+        341
+      ],
+      "bitsPerChannel": 16,
+      "hasPNGExifChunk": false
+    }
+  ],
+  "tiff16": "ImageIO metadata-only copy did not persist OffsetTimeOriginal in the real TIFF16 trial. Direct AddImageFromSource wrote the physical tag in an isolated probe."
+}
