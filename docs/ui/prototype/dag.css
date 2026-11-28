@@ -22,7 +22,7 @@
 .dag-breadcrumb button { border: none; background: none; padding: 3px; min-height: 25px; font-size: 12px; }
 .dag-breadcrumb small { margin-left: auto; color: var(--muted); align-self: center; }
 .dag-viewport { position: relative; overflow: hidden; flex: 1; min-height: 260px; touch-action: none; }
-.dag-viewport,.dag-compat-canvas { --dag-grid-ink:light-dark(#27334718,#d3dce519); background-image:linear-gradient(to right,var(--dag-grid-ink) 1px,transparent 1px),linear-gradient(to bottom,var(--dag-grid-ink) 1px,transparent 1px); background-size:var(--dag-grid-step,20px) var(--dag-grid-step,20px); }
+.dag-viewport,.dag-compat-canvas { --dag-grid-ink:#d3dce519; background-image:linear-gradient(to right,var(--dag-grid-ink) 1px,transparent 1px),linear-gradient(to bottom,var(--dag-grid-ink) 1px,transparent 1px); background-size:var(--dag-grid-step,20px) var(--dag-grid-step,20px); }
 .dag-stage { transform-origin: 0 0; position: absolute; inset: 0; width: 5000px; height: 3000px; pointer-events: none; }
 .dag-card { box-sizing:border-box; position:absolute; display:flex; flex-direction:column; justify-content:center; width:132px; border:1px solid var(--line); border-radius:8px; background:var(--panel); box-shadow:0 3px 8px #0002; padding:5px 11px; pointer-events:auto; cursor:grab; }
 .dag-card.selected { outline:2px solid var(--accent); outline-offset:-1px; }

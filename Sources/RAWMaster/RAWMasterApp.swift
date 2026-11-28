@@ -7,9 +7,7 @@ import RAWMasterImaging
 struct RAWMasterApp: App {
     @StateObject private var librarySession = ApplicationLibrarySession()
     private var model: AppModel { librarySession.model }
-    @StateObject private var appearance = AppearanceController()
     @Environment(\.openWindow) private var openWindow
-    @Environment(\.openSettings) private var openSettings
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var appDelegate
     private var libraryCommandsEnabled: Bool { model.store != nil && !model.isLibraryTransitioning }
     @MainActor @ViewBuilder private var workbenchRoot: some View {
@@ -22,13 +20,14 @@ struct RAWMasterApp: App {
         }
     }
     var body: some Scene {
+        let workbenchPresentation = openWindow
+        let _ = appDelegate.prepareInitialWorkbench { workbenchPresentation(id: "workbench") }
         Window("RAWMaster", id: "workbench") {
             workbenchRoot
                 .id(ObjectIdentifier(model))
                 .modifier(ApplicationSettingsRouting(model: model))
                 .workbenchFocusAppearance()
-                .preferredColorScheme(appearance.preference.preferredColorScheme)
-                .environment(\.resolvedAppAppearance, appearance.resolved)
+                .preferredColorScheme(AppAppearance.colorScheme)
                 .focusedSceneValue(\.workbenchModel, model)
                 .frame(minWidth: model.store == nil ? 570 : 1100, minHeight: model.store == nil ? 400 : 720)
                 .disabled(model.isLibraryTransitioning)
@@ -64,6 +63,10 @@ struct RAWMasterApp: App {
         .defaultLaunchBehavior(.presented)
         .defaultSize(width: QAInitialWindowGeometry.initialSize.width, height: QAInitialWindowGeometry.initialSize.height)
         .commands {
+            CommandGroup(replacing: .appSettings) {
+                Button("设置…") { openWindow(id: ApplicationSettingsRouting.windowID) }
+                    .keyboardShortcut(",", modifiers: .command)
+            }
             CommandGroup(replacing: .newItem) {
                 Button("创建导入会话…") { model.openImport() }.keyboardShortcut("i", modifiers: .command).disabled(!libraryCommandsEnabled || model.isBusy)
                 Button("导出成片…") { model.openExportWorkspace(.render) }
@@ -143,7 +146,7 @@ struct RAWMasterApp: App {
         }
         Window("后台信息", id: "background-activity") {
             WorkbenchActivityWindow(model: model).id(ObjectIdentifier(model))
-                .preferredColorScheme(appearance.preference.preferredColorScheme)
+                .preferredColorScheme(AppAppearance.colorScheme)
                 .workbenchFocusAppearance()
         }
         .defaultSize(width: 445, height: 420)
@@ -158,21 +161,30 @@ struct RAWMasterApp: App {
                 } else {
                     Text("打开一张照片进行调整以查看示波器。").foregroundStyle(.secondary)
                 }
-            }.frame(minWidth: 240, minHeight: 180).workbenchFocusAppearance()
+            }.frame(minWidth: 240, minHeight: 180)
+                .preferredColorScheme(AppAppearance.colorScheme)
+                .workbenchFocusAppearance()
         }
         .windowLevel(.floating)
         .windowResizability(.contentMinSize)
         .defaultSize(width: 360, height: 280)
         Window("图像性能监控", id: "image-performance-monitor") {
-            PerformanceMonitorWindow().workbenchFocusAppearance()
+            PerformanceMonitorWindow()
+                .preferredColorScheme(AppAppearance.colorScheme)
+                .workbenchFocusAppearance()
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 980, height: 700)
-        Settings {
-            RAWMasterSettingsView(appearance: appearance, model: model)
+        Window("RAWMaster 设置", id: ApplicationSettingsRouting.windowID) {
+            RAWMasterSettingsView(model: model)
+                .preferredColorScheme(AppAppearance.colorScheme)
                 .workbenchFocusAppearance()
                 .disabled(model.isLibraryTransitioning)
         }
+        .windowResizability(.contentMinSize)
+        .defaultSize(AppDesign.Metric.settingsWindowSize)
+        .restorationBehavior(.disabled)
+        .defaultLaunchBehavior(.suppressed)
     }
 
     @ViewBuilder private var libraryTransitionOverlay: some View {
@@ -205,8 +217,9 @@ struct RAWMasterApp: App {
     private func openQASettings(for model: AppModel) {
         guard model.store != nil, let raw = ProcessInfo.processInfo.environment["RAWMASTER_OPEN_SETTINGS"],
               let page = ApplicationSettingsPage(rawValue: raw) else { return }
-        model.settingsPage = page
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { openSettings() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak model] in
+            model?.openApplicationSettings(page)
+        }
     }
 #endif
 }
@@ -240,6 +253,7 @@ final class ApplicationDelegate: NSObject, NSApplicationDelegate {
     private weak var librarySession: ApplicationLibrarySession?
     private var model: AppModel? { librarySession?.model }
     private let workbenchWindows = NSHashTable<NSWindow>.weakObjects()
+    private var openInitialWorkbench: (() -> Void)?
     private var launchComplete = false
     private var routingScheduled = false
     private var pendingOpenURLs: [URL] = []
@@ -257,6 +271,10 @@ final class ApplicationDelegate: NSObject, NSApplicationDelegate {
     }
 
     func trackWorkbenchWindow(_ window: NSWindow) { workbenchWindows.add(window) }
+
+    func prepareInitialWorkbench(_ open: @escaping () -> Void) {
+        if !launchComplete { openInitialWorkbench = open }
+    }
 
     func focusWorkbenchWindow(orOpen open: () -> Void) {
         let windows = workbenchWindows
@@ -332,6 +350,10 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
     sender.reply(toApplicationShouldTerminate: true)
   }
 }
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSApp.appearance = AppAppearance.native
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         WorkbenchApplicationLog.shared.event("已启动 RAWMaster")
         InteractionTrace.shared.install()
@@ -339,6 +361,13 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
         NSApp.activate()
         launchComplete = true
         scheduleOpenRequests()
+        // An old Settings restoration entry can suppress the default launch even when no window is restored.
+        if let open = openInitialWorkbench {
+            openInitialWorkbench = nil
+            DispatchQueue.main.async { [weak self] in
+                if self?.workbenchWindows.allObjects.isEmpty == true { open() }
+            }
+        }
     }
     func applicationWillTerminate(_ notification: Notification) {
         WorkbenchApplicationLog.shared.event("正在退出 RAWMaster")
@@ -385,12 +414,14 @@ struct KeyboardMonitor: NSViewRepresentable {
     var searchHasOwnership: () -> Bool = { false }
     var keyUpHandler: (NSEvent) -> Bool = { _ in false }
     var focusChanged: (Bool) -> Void = { _ in }
+    @FocusedValue(\.appButtonGroupFocused) private var buttonGroupFocused
     func makeCoordinator() -> Coordinator { Coordinator(handler: handler, searchOwnership: searchOwnership, searchHasOwnership: searchHasOwnership, keyUpHandler: keyUpHandler, focusChanged: focusChanged) }
     func makeNSView(context: Context) -> NSView { let view = WorkbenchKeyAnchor(); context.coordinator.view = view; context.coordinator.install(); return view }
     func updateNSView(_ nsView: NSView, context: Context) {
         context.coordinator.handler = handler; context.coordinator.searchOwnership = searchOwnership
         context.coordinator.searchHasOwnership = searchHasOwnership
         context.coordinator.keyUpHandler = keyUpHandler; context.coordinator.focusChanged = focusChanged
+        context.coordinator.buttonGroupFocused = buttonGroupFocused == true
     }
     static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) { coordinator.remove() }
     final class Coordinator {
@@ -399,6 +430,7 @@ struct KeyboardMonitor: NSViewRepresentable {
         var searchHasOwnership: () -> Bool
         var keyUpHandler: (NSEvent) -> Bool
         var focusChanged: (Bool) -> Void
+        var buttonGroupFocused = false
         var monitor: Any?
         private var focusObservers: [NSObjectProtocol] = []
         weak var view: NSView?
@@ -448,6 +480,13 @@ struct KeyboardMonitor: NSViewRepresentable {
         }
         func shouldHandle(_ event: NSEvent, keyWindow: NSWindow?, isActive: Bool) -> Bool {
             guard ownsWindowEvent(event, keyWindow: keyWindow, isActive: isActive), let ownWindow = view?.window else { return false }
+            // Let the focused segment handle navigation and activation before photo and workflow shortcuts.
+            if [36, 48, 49, 115, 119, 123, 124].contains(event.keyCode),
+               event.modifierFlags.intersection([.command, .control, .option]).isEmpty {
+                if buttonGroupFocused { return false }
+                if let responder = ownWindow.firstResponder as? NSView, let content = ownWindow.contentView,
+                   responder !== content, !responder.isDescendant(of: content) { return false }
+            }
             return MainActor.assumeIsolated {
                 !(ownWindow.firstResponder is NSTextView) && !(ownWindow.firstResponder is NSControl)
                     && !SearchInteractionRegions.containsResponder(in: ownWindow)

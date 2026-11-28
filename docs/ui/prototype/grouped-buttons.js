@@ -3,7 +3,7 @@
 document.addEventListener('keydown', (event) => {
   if (event.defaultPrevented || event.altKey || event.metaKey || event.ctrlKey) return;
   if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-  const button = event.target.closest('.button-group > button');
+  const button = event.target.closest('.button-group > button, .workflow-switch > button');
   if (!button) return;
   const group = button.parentElement;
   const buttons = Array.from(group.querySelectorAll(':scope > button:enabled'));

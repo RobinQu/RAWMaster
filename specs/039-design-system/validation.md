@@ -4,6 +4,8 @@
 
 2026-11-27 在 `main@b238c0ab` 复跑 5 个 Release `DesignSystemTests`，含浅深色离屏画廊截图。现有摄影工作台 60 个浏览器场景通过，含界面画廊。真实产品焦点、VoiceOver、降低透明度和 macOS 15 证据仍按[联动验收](spec.md#hdrgraph-与-032-的验收)补齐。[本次复验](../035-portable-processing-cores/roadmap.md#本次-main-复验)
 
+2026-11-28 的共享分组按钮与真实键盘、浅深色截图见[分组按钮验收](grouped-buttons.md#2026-11-28-验证)。
+
 ## 已落地
 
 | 内容 | 位置 |

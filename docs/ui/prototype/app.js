@@ -73,17 +73,7 @@ function settingsPanel(key) {
     p = d.prefs,
     back = btn('返回当前照片', 'goto', S.editReturn, { disabled: !Studio.admitted().length });
   if (key === 'general')
-    return `<section class="settings-box"><h3>外观</h3>${select(
-      '界面外观',
-      'theme',
-      [
-        ['system', '跟随系统'],
-        ['light', '浅色'],
-        ['dark', '深色'],
-      ],
-      p.theme,
-    )}
-    <h3>照片编辑</h3><p>色彩外观随照片的调整保存。AI 与外部编辑结果可从「快照 → 更多 → 已有编辑结果」查看和采用。</p>
+    return `<section class="settings-box"><h3>照片编辑</h3><p>色彩外观随照片的调整保存。AI 与外部编辑结果可从「快照 → 更多 → 已有编辑结果」查看和采用。</p>
     <h3>原型样本</h3><p>本机浏览器保存示例选片、版本和设置。可以恢复到初始拍摄项目。</p>${btn('重置示例工作台…', 'reset-demo')}</section>`;
   if (key === 'storage')
     return `<section class="settings-box">${factList([
@@ -172,11 +162,6 @@ function settingsPanel(key) {
   ])}
     ${btn('打开性能监控', 'monitor', '', { icon: 'pulse' })}${btn('导出诊断摘要', 'diagnostic-export')}</section>`;
 }
-changes.theme = (el) => {
-  Studio.data.prefs.theme = el.value;
-  Studio.save();
-  render();
-};
 changes.performance = (el) => {
   Studio.data.prefs.performance = el.value;
   Studio.save();
@@ -339,7 +324,7 @@ actions['diagnostic-export'] = () =>
   demoDownload('rawmaster-demo-diagnostics.json', {
     prototype: true,
     jobs: Studio.data.jobs.length,
-    appearance: Studio.data.prefs.theme,
+    appearance: 'dark',
   });
 actions['reset-demo'] = () =>
   dialog(
@@ -547,14 +532,13 @@ function chrome() {
   return `<div class="chrome-navigation">${sidebar}${btn('资料库菜单', 'library-menu', '', {
     icon:'library', only:true, cls:'icon-btn', title:'资料库菜单',
   })}${packageWindowTitle()}</div>
-    <nav class="workflow-switch button-group" aria-label="工作流">${[
-      ['library', '资料库', 'library'],
-      ['edit', '编辑', 'sliders'],
-      ['export', '导出', 'export'],
+    <nav class="workflow-switch" aria-label="工作流">${[
+      ['library', '资料库'],
+      ['edit', '编辑'],
+      ['export', '导出'],
     ]
-      .map(([k, n, ic]) =>
+      .map(([k, n]) =>
         btn(n, 'workflow', k, {
-          icon: ic,
           pressed: part === k,
           disabled:
             (k === 'edit' && !(page === 'library' ? validWork(libraryEditTarget()) : validWork(work))) ||
@@ -569,9 +553,7 @@ function render() {
   const details = $$('.mask-group[data-mask-group]');
   if (details.length) S.maskGroups = new Set(details.filter((group) => group.open).map((group) => group.dataset.maskGroup));
   const root = $('#workspace'),
-    exp = S.page === 'export',
-    p = Studio.data.prefs;
-  document.documentElement.dataset.theme = p.theme;
+    exp = S.page === 'export';
   $('#chrome').innerHTML = chrome();
   Activity.refresh();
   root.hidden = exp;
@@ -786,9 +768,6 @@ document.addEventListener('keydown', (event) => {
 compactLibraryNavigation.addEventListener('change', () => {
   S.drawer = false;
   render();
-});
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
-  if (Studio.data.prefs.theme === 'system') render();
 });
 S.scope = Studio.data.lastScope || S.scope;
 try {

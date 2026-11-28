@@ -9,7 +9,7 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .general: return "通用与外观"
+        case .general: return "通用"
         case .storage: return "资料库与存储"
         case .editing: return "编辑与性能"
         case .localAI: return "本机 AI"

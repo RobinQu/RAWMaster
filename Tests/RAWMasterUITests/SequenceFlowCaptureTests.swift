@@ -139,7 +139,7 @@ final class SequenceFlowCaptureTests: XCTestCase {
     @MainActor private func capture(_ model: AppModel, output: URL, width: Double, dark: Bool, name: String) async throws {
         let size = NSSize(width: width, height: 900)
         let host = NSHostingView(rootView: WorkbenchView().environmentObject(model)
-            .preferredColorScheme(dark ? .dark : .light).environment(\.resolvedAppAppearance, dark ? .dark : .light)
+            .preferredColorScheme(dark ? .dark : .light)
             .frame(width: size.width, height: size.height))
         host.sizingOptions = []; host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)

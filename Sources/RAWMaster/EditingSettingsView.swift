@@ -5,16 +5,18 @@ import RAWMasterAI
 import RAWMasterImaging
 
 struct ApplicationSettingsRouting: ViewModifier {
+    static let windowID = "application-settings"
     @ObservedObject var model: AppModel
-    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
     func body(content: Content) -> some View {
-        content.onChange(of: model.settingsRequestID) { _, _ in openSettings() }
+        content.onChange(of: model.settingsRequestID) { _, request in
+            if request != nil { openWindow(id: Self.windowID) }
+        }
     }
 }
 
 /// A single application Settings window; photo entry points request a page in this scene.
 struct RAWMasterSettingsView: View {
-    @ObservedObject var appearance: AppearanceController
     @ObservedObject var model: AppModel
     var body: some View {
         HStack(spacing: 0) {
@@ -30,14 +32,12 @@ struct RAWMasterSettingsView: View {
                 pageContent.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
-        .frame(minWidth: 720, idealWidth: 820, minHeight: 560, idealHeight: 660)
+        .frame(minWidth: 720, minHeight: 560)
         .background(AppPalette.panel)
-        .preferredColorScheme(appearance.preference.preferredColorScheme)
-        .environment(\.resolvedAppAppearance, appearance.resolved)
     }
     @ViewBuilder private var pageContent: some View {
         switch model.settingsPage {
-        case .general: GeneralApplicationSettings(appearance: appearance)
+        case .general: GeneralApplicationSettings()
         case .storage: ApplicationStorageSettings(libraryURL: model.libraryURL, archiveRoot: model.editing?.archive.root, services: model.editingServices)
         case .editing: EditingPerformanceSettings()
         case .localAI:
@@ -52,7 +52,7 @@ struct RAWMasterSettingsView: View {
     private var unavailable: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("资料库服务不可用", systemImage: "externaldrive.badge.exclamationmark").font(.headline)
-            Text("配置保存在现有资料库中。请先恢复资料库访问；应用不会创建替代资料库。外观与诊断仍可使用。")
+            Text("恢复当前资料库的访问后可以修改配置。也可查看诊断。")
                 .foregroundStyle(.secondary)
             if let error = model.errorMessage { Text(error).font(.caption).textSelection(.enabled) }
             Button("查看诊断") { model.settingsPage = .diagnostics }
@@ -61,16 +61,8 @@ struct RAWMasterSettingsView: View {
 }
 
 private struct GeneralApplicationSettings: View {
-    @ObservedObject var appearance: AppearanceController
     var body: some View {
         Form {
-            Section("外观") {
-                Picker("界面外观", selection: Binding(get: { appearance.preference }, set: { appearance.setPreference($0) })) {
-                    ForEach(AppearancePreference.allCases) { Text($0.title).tag($0) }
-                }.pickerStyle(.radioGroup)
-                Text("更改立即保存。跟随系统时使用 macOS 的外观。Dock 图标按系统外观或手动选择更新。")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
             Section("照片编辑") {
                 Text("色彩外观随照片的调整保存。AI 与外部编辑结果可从「快照 → 更多 → 已有编辑结果」查看和采用。")
                 Text("设置云服务或准备本机环境不会上传照片，也不会自动生成。")

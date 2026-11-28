@@ -25,7 +25,7 @@ git -C output/tools/exiftool checkout --detach 2200871d9cef988051d2a99d67df3bda6
 
 ## 使用
 
-“RAWMaster → 设置…（⌘,）”可选择浅色、深色或跟随 macOS，首次默认跟随系统（含系统自动日夜切换）。浅色使用 C2，深色使用 C1；手动档联动应用界面、应用内图标与运行中 Dock。Finder / Spotlight / 退出后的图标仍按 macOS 的图标外观偏好；macOS 15 使用静态浅色后备资源，不代表旧系统已完成兼容验收。见 [图标规格](specs/003-app-icon/spec.md)。
+RAWMaster 固定采用深色界面。启动后进入工作台或资料库开始页。用「RAWMaster → 设置…」或 ⌘, 主动打开设置。Finder、Spotlight 与 Dock 的应用图标由 macOS 管理。[界面与启动](specs/025-editing-workspace/workbench-chrome.md) · [图标规格](specs/003-app-icon/spec.md)
 
 1. 点击“接入素材”，选择来源、原地引用或复制方式，以及新建/追加目标项目。新批次先进入“导入与初筛”，尚未纳入的素材不出现在常规项目。
 2. 首批登记即可浏览，`G`看网格、`E`看单张、`C`比较2–4张，⌘多选、⇧连续选择，Space切换当前照片选中，⇧+方向键扩展选择。初筛中`P`通过、`X`排除、`U`清除处置，不设置项目精选或星级。初筛操作自动保存，可撤销和从操作记录恢复。

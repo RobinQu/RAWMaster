@@ -116,7 +116,7 @@ final class AppModelTests: XCTestCase {
             styleMask: [.titled, .resizable], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         defer { window.close() }
-        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, darkEditing: true)
+        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, isEditing: true)
         XCTAssertEqual(window.title, "RAWMaster – " + browsingTitle)
         XCTAssertEqual(window.titleVisibility, .hidden)
         XCTAssertEqual(window.appearance?.name, .darkAqua)
@@ -124,8 +124,8 @@ final class AppModelTests: XCTestCase {
         XCTAssertTrue(window.styleMask.contains(.resizable))
         XCTAssertEqual(window.minSize, CGSize(width: 1100, height: 720))
         XCTAssertEqual(window.standardWindowButton(.zoomButton)?.isEnabled, true)
-        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, darkEditing: false)
-        XCTAssertNil(window.appearance)
+        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, isEditing: false)
+        XCTAssertEqual(window.appearance?.name, .darkAqua)
     }
 
     @MainActor func testShiftSelectionAndManualGroupPreserveShotOrder() async throws {

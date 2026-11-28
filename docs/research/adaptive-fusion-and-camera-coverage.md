@@ -47,10 +47,12 @@ yellowmoon 对这三台机器的**实测配置覆盖是 0/3**：A7R5、A1 II 用
 
 | 样本 | 文件数 | `color_matrices.source` | ColorMatrix 数 | Forward／Calibration | 结论 |
 | --- | ---: | --- | ---: | --- | --- |
-| Sony ILCE-7RM5（A7R5） | 556（抽样 1,200 个 ARW） | `camera-db` | 1（D65） | 无 | 当前 037 色彩资格可通过 |
-| Sony ILCE-1M2（A1 II） | 644（同一抽样） | `camera-db` | 1（D65） | 无 | 当前 037 色彩资格可通过 |
-| Leica Q3 43 | 1,078（全部 2,200 个 DNG） | `file` | 2（Standard Light A 2,856 K + D65） | 无 | 当前 037 **拒绝**（file source + 双矩阵） |
-| DJI FC9313 | 1,122（同一 DNG 扫描） | `file` | 2（Standard Light A + D65） | 无 | 当前 037 **拒绝**；另带 DNG 内嵌 profile、tone curve、HueSatMap、噪声 profile |
+| Sony ILCE-7RM5（A7R5） | 4,502（全库 ARW） | `camera-db` | 1（D65） | 无 | 色彩资格可过；其余几何／黑白检查另验 |
+| Sony ILCE-1M2（A1 II） | 8,810（全库 ARW） | `camera-db` | 1（D65） | 无 | 色彩资格可过；其余几何／黑白检查另验 |
+| Leica Q3 43 | 1,078（全库 DNG） | `file` | 2（Standard Light A 2,856 K + D65） | 无 | 当前 037 **拒绝**（file source + 双矩阵） |
+| DJI FC9313 | 1,122（全库 DNG） | `file` | 2（Standard Light A + D65） | 无 | 当前 037 **拒绝**；另带 DNG 内嵌 profile、tone curve、HueSatMap、噪声 profile |
+
+全库口径：**13,312 个 ARW + 2,200 个 DNG = 15,512 个文件**。ARW 占 85.8%，DNG 占 14.2%；当前场景路径的 DNG 缺口影响全部 Q3／DJI 文件。
 
 首轮结论：
 
@@ -58,7 +60,7 @@ yellowmoon 对这三台机器的**实测配置覆盖是 0/3**：A7R5、A1 II 用
 - **Leica Q3 和 DJI 不是“没数据”，而是“数据在文件里被资格检查挡住”。** 两份 DNG 都带双照度 ColorMatrix 和 AsShotNeutral；接受 `FLASHRAW_COLOR_SOURCE_FILE` + 双矩阵，就能零测量覆盖它们。
 - 因此，**最低成本的覆盖顺序是：T0a/T0c（文件矩阵 + 双照度）→ T1（DCP）→ T3（用户色卡）→ T2（同传感器）→ T4（SSF）**，而不是先测 SSF。
 
-> 样本边界：DNG 是全部 2,200 个；ARW 是前 1,200 个（占 13,312 个的约 9%）。这不是全库统计，但足以证明“文件矩阵被拒”是系统性问题，不是个别机型。
+> 样本边界：这是本机授权库的全量元数据扫描，不代表所有用户；但足以证明“文件矩阵被拒”是系统性问题，不是个别机型。[元数据审计原始记录](evidence/camera-color-source-audit-20261128.json)
 
 
 ### 1.3 覆盖不是一列，是六个维度
@@ -77,10 +79,46 @@ yellowmoon 对这三台机器的**实测配置覆盖是 0/3**：A7R5、A1 II 用
 ### 1.4 DNG 文件矩阵的接入要点
 
 - 接受 `FLASHRAW_COLOR_SOURCE_FILE`，不再只认 `CAMERA_DB`。
-- 接受 2–3 张 ColorMatrix；用 `CalibrationIlluminant` 和 `AsShotNeutral` 选择或按 mired 插值。Q3／DJI 的两张是 Standard Light A（2,856 K）和 D65，正好覆盖钨丝与日光。
+- 接受 2–3 张 ColorMatrix；用 `CalibrationIlluminant` 和 `AsShotNeutral` 选择或按 mired 插值。Q3／DJI 的两张是 Standard Light A（2,856 K）和 D65，正好覆盖钨丝与日光。两张矩阵的最大系数差：Q3 0.2908、DJI 0.3900；只取 D65 会在钨丝下明显偏色。
 - 接受 `ForwardMatrix`／`CameraCalibration` 时按 DNG 规范顺序应用：Calibration → ColorMatrix → ForwardMatrix；不要把它们当噪声丢掉。
 - 记录 `BaselineExposure`、`ProfileToneCurve`、`HueSatMap`、`NoiseProfile` 的存在与处理策略。DJI 的 DNG 带内嵌 profile 和 tone curve；忽略它会改变对比，套用它会改变“场景线性”的语义，必须先定政策再接线。
 - `source`、矩阵数量、illuminant、是否应用 profile 都写进照片/导出元数据；用户能看到“这张照片的色彩依据是什么”。
+
+### 1.5 T0c 最小验证（C 桥接）
+
+在隔离 worktree `scene-dng-spike` 做了一个 opt-in 的最小改动，不改默认行为：
+
+- C 桥接：`RAWMASTER_SCENE_DNG=1` 时接受 `FILE` 色彩来源、1–2 张 ColorMatrix、illuminant 17/21；`RAWMASTER_SCENE_MATRIX=0|1` 选择矩阵。
+- Swift 入口：同一环境变量下允许 `.dng` 后缀。
+- 先用独立 C 探针（链接修改后的 `CFlashRaw.c` 和 FlashRaw 0.3.1）验证场景元数据：
+
+| 文件 | `scene_bayer` | 尺寸 | CFA | 黑/白 | As-shot WB | 矩阵 |
+| --- | ---: | --- | --- | --- | --- | --- |
+| Q3 43 DNG | 1 | 9536×6344 | RGGB | 512 / 16383 | 1.8125, 1, 2.3906 | 0 = A，1 = D65 |
+| DJI FC9313 DNG | 1 | 8192×4608 | BGGR | 4096 / 65472 | 2.2727, 1, 1.59375 | 0 = A，1 = D65 |
+| A7R5 ARW（对照） | 1 | 9728×6656 | RGGB | 512 / 16383 | 2.5391, 1, 1.7510 | 数据库 D65（单张） |
+
+C 桥接层面已经证明：**Q3／DJI 的 DNG 不是“不能解码”，而是被色彩资格检查挡住；放宽后元数据完整，矩阵选择可控。**
+
+Swift/Metal 渲染也已跑通（9 个 256×256 瓦片，覆盖画面 15%／50%／85% 位置；只切换矩阵，其他不变）：
+
+| 文件 | 平均绝对差 | p95 | 最大 | >0.01 像素 |
+| --- | ---: | ---: | ---: | ---: |
+| Q3 43 DNG（A vs D65） | 0.00166 | 0.00621 | 0.2660 | 8,457 / 589,824（1.43%） |
+| DJI FC9313 DNG（A vs D65） | 0.00139 | 0.00309 | 0.0133 | 86 / 589,824（0.015%） |
+| A7R5 ARW（对照，单矩阵） | 0 | 0 | 0 | 0 |
+
+解读：
+
+- **全局平均差异不大**（0.1–0.2% AP1），说明两张样本的整体色调不会因为矩阵选择而剧变；如果真的只看均值，容易得出“单张 D65 也够”的错误结论。
+- **局部差异真实存在**：Q3 的 p95 为 0.0062、最大 0.266，1.4% 的像素超过 0.01。最大差像素的 AP1 值：A 矩阵 (1.482, 0.517, 2.925) vs D65 (1.748, 0.591, 3.138)，是超白高蓝像素；差异集中在高亮饱和色，不是随机噪声。DJI 的局部差异小得多（最大 0.0133，最大差像素是暖色中间调）。
+- 两张 DNG 的 AP1 均值约 0.04，样本整体偏暗；高调、天空或舞台场景可能给出不同的分布，V1 必须补。
+- 因此，T0c 的双照度选择是**值得做、但需要按内容验证**的：不能宣称“换了矩阵就明显更准”，也不能用一张图的均值代替色卡验收。
+- 下一步应该把这两张样本的差异区域（最大差像素、饱和色、肤色、天空）和 24 色卡 ΔE 对齐，再决定 v1 是“选最近照度”还是“按 mired 插值”。
+
+测试入口：`Tests/RAWMasterImagingTests/DevelopmentSceneDNGSpikeTests.swift`，环境变量 `RAWMASTER_SCENE_DNG=1`、`RAWMASTER_SCENE_MATRIX=0|1`、`RAWMASTER_SCENE_DNG_FIXTURES`、`RAWMASTER_FLASHRAW_LIBRARY`。隔离 worktree 为 `scene-dng-spike`；改动不进入主工作区。[T0c spike 补丁](evidence/t0c-dng-spike.patch) · [Spike 测试源码](evidence/DevelopmentSceneDNGSpikeTests.swift)
+
+回归：`DevelopmentSceneRAWV1Tests` 5 项（1 项 opt-in 实拍跳过）0 失败；spike 1 项通过。
 
 ## 2. 覆盖阶梯
 
@@ -175,6 +213,15 @@ L0 可信输入        L1 场景自适应基础        L2 风格与局部
 - L1b 复用现有掩膜和 030 的参数语言，验证成本最低，用户能看懂。
 - L1c 只解决“没有掩膜的大光比”，不抢 L1b 的职责。
 - 不追求 Adobe 的 12k 曲线；追求“可解释的 80% 效果”。
+
+### 3.5 RAWMaster 的差异点
+
+- **输入可信度可见**：每张照片知道自己的色彩来源（T0a/T0b/T1/T2/T3/T4）、版本和置信度；yellowmoon 只有“Sony 档 + 代打”，Adobe 不暴露。
+- **自适应基础可编辑**：L1b 输出的是区域曲线／冷暖偏移，不是不可见的 PGTM/RGBT；用户可以改掩膜、改参数、关掉。
+- **系列一致**：Series Lock 锁定参考张的全局曝光／WB，掩膜逐张重算；避免逐图自适应闪烁。
+- **离线可复现**：L0/L1 端上计算，固定版本、固定输入；重开／导出不调用模型，和 030 的验收口径一致。
+
+这三条合起来，才是“RAWMaster 自己的 Adaptive”：**可信输入 + 可解释的场景自适应 + 可编辑的局部/风格**，而不是 yellowmoon 的固定 cinema look，也不是 Adobe 的黑盒 Profile。
 
 ## 4. 产品形态
 

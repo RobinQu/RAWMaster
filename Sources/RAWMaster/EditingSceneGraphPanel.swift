@@ -6,7 +6,6 @@ struct EditingSceneGraphToolbar: View {
     @ObservedObject var editing: EditingController
     private var photoTools: GraphPhotoTools
     @StateObject private var presenter = EditingCompatibilityGraphPanel()
-    @Environment(\.resolvedAppAppearance) private var appearance
     private var framing: SceneGraphFraming { editing.sceneGraphFraming }
     @FocusState private var graphFocused: Bool
     @AccessibilityFocusState private var graphAccessibilityFocused: Bool
@@ -66,7 +65,6 @@ struct EditingSceneGraphToolbar: View {
         .onChange(of: editing.sceneGraphState.open) { _, open in if !open { presenter.close(restoreFocus: false) } }
         .onChange(of: editing.sceneGraphState.connection != nil) { _, draft in presenter.setExtraMinimumHeight(draft ? 44 : 0) }
         .onChange(of: photoTools.isActive) { _, active in presenter.setCanvasToolActive(active) }
-        .onChange(of: appearance) { _, appearance in presenter.setAppearance(appearance) }
         .onDisappear { presenter.close(restoreFocus: false) }
     }
 
@@ -82,7 +80,7 @@ struct EditingSceneGraphToolbar: View {
         if presenter.panel != nil { presenter.close(); return }
         guard let work = editing.sceneGraphTicket?.draft.workID else { return }
         editing.showSceneGraph(true)
-        presenter.show(workID: work, title: "工作流 Graph", appearance: appearance, returnFocus: {
+        presenter.show(workID: work, title: "工作流 Graph", returnFocus: {
             graphFocused = true; graphAccessibilityFocused = true
         }, onClose: { [weak editing] in editing?.showSceneGraph(false) }, onEscape: { [weak editing, weak framing] in
             if framing?.cancelDrag() == true { return true }

@@ -1,5 +1,15 @@
 # 验收记录 · 2026-10-23
 
+## 资料库文件夹图标
+
+2026-11-28 · macOS 27.0.1。图稿提取了现有应用图标的两层青蓝紫叠片，置于靛蓝带页签的文件夹。用同一张图编译多尺寸 ICNS 并提供给路径菜单。注册声明、图标资源和原有 AppIcon 资源由 `scripts/check-app-icon.py` 在打包时检查。
+
+1. 在[工作台原型](../../docs/ui/prototype/index.html#library/project/river)右键点当前库名。从首项与上级项分别读出当前库和普通目录。用 Escape 关闭，再从标题用 Enter 打开。390px 下分别以浅色和深色复验，在 Finder 示例也能看到同款库包图标。[浏览器路径](evidence/browser-library-path.png)
+2. 在隔离的原生工作库「分组验证」中检查系统识别的 `io.robinqu.rawmaster.library` 包。首次成功打开后，Finder 通过 `NSWorkspace` 读到靛蓝图标，重开仍使用同一个图标文件。用相同打包声明另注册独立测试类型，未打开的库包也显示同款默认图标。[Finder 实际图标](evidence/finder-library.png)
+3. 在真实原生窗口的标题栏右键点「分组验证」。首项是彩色资料库图标，上级项保留系统文件夹和卷图标，底部仍可拷贝路径。按 Escape 返回原工作区。原生测试核对首项图稿、16pt 尺寸、上级项和拷贝命令。[原生路径菜单](evidence/native-library-path.png)
+
+## 自适应应用图标
+
 环境：M4 Max / macOS 27.0.1，本机 Xcode 工具链。
 
 - 发布构建成功，签名严格校验通过，Info.plist 校验通过。

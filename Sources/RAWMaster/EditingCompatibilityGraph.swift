@@ -29,17 +29,16 @@ import RAWMasterCore
     private var pendingScreenFit: Task<Void, Never>?
     private var sideResize: (axis: Axis, frame: NSRect)?
 
-    func show(_ graph: DevelopmentCompatibilityGraphV1, photoName: String, appearance: ResolvedAppearance = .light,
-              returnFocus: @escaping () -> Void) {
+    func show(_ graph: DevelopmentCompatibilityGraphV1, photoName: String, returnFocus: @escaping () -> Void) {
         guard let id = graph.nodes.first?.workID else { return }
         let zoom = compatibilityZoom[id] ?? CompatibilityGraphZoom()
         compatibilityZoom[id] = zoom
-        show(workID: id, title: "只读兼容图", appearance: appearance, returnFocus: returnFocus) {
+        show(workID: id, title: "只读兼容图", returnFocus: returnFocus) {
             AnyView(CompatibilityPanelContent(nodes: graph.nodes.map(\.stage), photoName: photoName, zoom: zoom))
         }
     }
 
-    func show(workID id: String, title: String, appearance: ResolvedAppearance, returnFocus: @escaping () -> Void, onClose: (() -> Void)? = nil,
+    func show(workID id: String, title: String, returnFocus: @escaping () -> Void, onClose: (() -> Void)? = nil,
               onEscape: (() -> Bool)? = nil, content: @escaping () -> AnyView) {
         guard let owner = anchor?.window else { return }
         guard panel == nil else { close(); return }
@@ -57,7 +56,7 @@ import RAWMasterCore
         window.isReleasedWhenClosed = false
         window.title = title
         window.setAccessibilityLabel(title)
-        window.appearance = NSAppearance(named: appearance == .dark ? .darkAqua : .aqua)
+        window.appearance = AppAppearance.native
         window.isOpaque = false
         window.backgroundColor = .clear
         window.isMovable = true
@@ -106,10 +105,6 @@ import RAWMasterCore
         guard let panel else { return }
         if active { panel.orderOut(nil) }
         else if owner?.isVisible == true { panel.orderFront(nil) }
-    }
-
-    func setAppearance(_ appearance: ResolvedAppearance) {
-        panel?.appearance = NSAppearance(named: appearance == .dark ? .darkAqua : .aqua)
     }
 
     func setExtraMinimumHeight(_ value: CGFloat) {
@@ -389,7 +384,6 @@ struct EditingCompatibilityGraphToolbar: View {
     @ObservedObject var editing: EditingController
     private var photoTools: GraphPhotoTools
     @StateObject private var presenter = EditingCompatibilityGraphPanel()
-    @Environment(\.resolvedAppAppearance) private var appearance
     @FocusState private var graphFocused: Bool
     @AccessibilityFocusState private var graphAccessibilityFocused: Bool
 
@@ -432,7 +426,6 @@ struct EditingCompatibilityGraphToolbar: View {
         .background(CompatibilityGraphAnchor { presenter.anchor = $0 })
         .onChange(of: availableWorkID) { _, id in presenter.fitToContext(id) }
         .onChange(of: photoTools.isActive) { _, active in presenter.setCanvasToolActive(active) }
-        .onChange(of: appearance) { _, appearance in presenter.setAppearance(appearance) }
         .onDisappear { presenter.close(restoreFocus: false) }
     }
 
@@ -442,7 +435,7 @@ struct EditingCompatibilityGraphToolbar: View {
         let version = EditingVersion(id: editing.draftParentID ?? work.originalVersionID, workID: id,
             parentVersionID: nil, kind: .development, source: work.source, recipe: editing.recipe)
         guard let graph = try? DevelopmentCompatibilityGraphV1(version) else { return }
-        presenter.show(graph, photoName: editing.asset?.editingDisplayName ?? "当前照片", appearance: appearance) {
+        presenter.show(graph, photoName: editing.asset?.editingDisplayName ?? "当前照片") {
             graphFocused = true
             graphAccessibilityFocused = true
         }

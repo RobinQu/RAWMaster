@@ -87,7 +87,7 @@ struct WorkflowTabs: View {
 
     var body: some View {
         AppButtonGroup(title: "工作流", options: WorkbenchWorkflow.allCases, selection: model.activeWorkbenchWorkflow,
-                       stretches: false, isDisabled: { disabledReason($0) != nil },
+                       stretches: false, usesToolbarCapsule: true, isDisabled: { disabledReason($0) != nil },
                        help: { disabledReason($0) ?? $0.title }, identifier: { "workflow." + $0.rawValue },
                        action: model.activateWorkflow) { workflow in
             Text(workflow.title)

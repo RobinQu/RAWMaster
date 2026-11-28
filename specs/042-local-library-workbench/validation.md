@@ -26,6 +26,8 @@
 
 切库后，在标题栏库名上右键检查路径和上级目录。以 390 px 浅色和深色外观用 Enter 打开路径、用 Escape 关闭，确认焦点返回库名。带确认、取消、等待、暂停和路径的浏览器专项共 15 个场景通过。
 
+库包在 Finder 与标题栏路径菜单的图标见[原生与浏览器证据](../003-app-icon/validation.md#资料库文件夹图标)。
+
 签名构建 4209 在浅色与深色外观下通过原生走查。用 Launch Services 打开临时包 Alpha 和 Beta，重复打开 Alpha 时仍只有一个工作台。打开 Beta 出现确认，取消后仍是 Alpha，再确认后在同一进程打开 Beta。两库均通过真实右键检查左侧库名、包和上级目录，菜单中有「拷贝资料库路径」。用 Escape 关闭菜单后可重新操作标题。辅助功能读取的库名随切换更新。[原生标题](../../Sources/RAWMaster/WorkbenchLibraryTitle.swift) · [切库入口](../../Sources/RAWMaster/ApplicationLibrarySession.swift)
 
 原生会话测试在成片交付等待期间检查两库的锁和旧库连接。取消等待后任务继续，目标库仍可取得锁。再次等待至任务完成后，才释放旧库并打开目标库。另有覆盖最近库确认、取消及恢复原选片的用例。[会话回归](../../Tests/RAWMasterUITests/ApplicationLibrarySessionTests.swift)

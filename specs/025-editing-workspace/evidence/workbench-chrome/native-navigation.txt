@@ -1,0 +1,15 @@
+最终 Release 冷启动
+Role=AXWindow Identifier=workbench Title=RAWMaster – Portrait.ARW — 本地资料库 Focused=1
+
+从资料库按右方向键移焦，不改变选片
+after 124 Role=AXButton Identifier=workflow.edit Description=编辑 Help=编辑 Enabled=1 Focused=1
+     Role=AXStaticText Value=已选 2 张 Enabled=1
+
+按 Return 进入当前 RAW
+after 36 Role=AXButton Identifier=workflow.edit Description=编辑 Help=编辑 Enabled=1 Selected=1 Focused=1
+     Role=AXStaticText Identifier=editing.rawSummary Value=Portrait.ARW Enabled=1 Focused=0
+
+打开导出，按空格返回资料库
+  Role=AXStaticText Value=2 / 2 Enabled=1
+after 49 Role=AXButton Identifier=workflow.library Description=资料库 Help=资料库 Enabled=1 Selected=1 Focused=1
+     Role=AXStaticText Value=操作应用到已选 2 张 Enabled=1

@@ -13,7 +13,6 @@ struct WorkbenchView: View {
     @EnvironmentObject var model: AppModel
     @Environment(\.openWindow) private var openWindow
     @State private var sidebarBeforeEditing: Bool?
-    @State private var appearanceBeforeEditing: NSAppearance?
     @State private var showFluxFirstRun = false
     private var workbenchSurface: some View {
         VStack(spacing: 0) {
@@ -21,7 +20,6 @@ struct WorkbenchView: View {
                 ExportWorkspace()
             } else if model.isNativeEditing, let editing = model.editing {
                 EditingWorkspace(editing: editing)
-                    .environment(\.colorScheme, .dark)
             } else {
                 HSplitView {
                     if model.showSidebar { SidebarView().frame(minWidth: 185, idealWidth: 215, maxWidth: 280) }
@@ -115,11 +113,11 @@ struct WorkbenchView: View {
         }
         .navigationTitle("RAWMaster")
         .navigationSubtitle(model.windowContextTitle)
-        .toolbarColorScheme(model.isNativeEditing ? .dark : nil, for: .windowToolbar)
+        .toolbarColorScheme(AppAppearance.colorScheme, for: .windowToolbar)
         .toolbarBackground(model.isNativeEditing ? AppPalette.panel : Color(nsColor: .windowBackgroundColor), for: .windowToolbar)
         .toolbarBackgroundVisibility(.visible, for: .windowToolbar)
         .toolbarVisibility(.visible, for: .windowToolbar)
-        .background(WorkbenchWindowTitleSynchronizer(contextTitle: model.windowContextTitle, darkEditing: model.isNativeEditing))
+        .background(WorkbenchWindowTitleSynchronizer(contextTitle: model.windowContextTitle, isEditing: model.isNativeEditing))
     }
     private var workflowSheets: some View {
         toolbarSurface
@@ -153,7 +151,6 @@ struct WorkbenchView: View {
 
     var body: some View {
         workflowSheets
-        .preferredColorScheme(model.isNativeEditing ? .dark : nil)
         .onDrop(of: [UTType.fileURL], isTargeted: nil) { providers in
             guard !model.isBusy, let provider = providers.first else { return false }
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
@@ -181,15 +178,9 @@ struct WorkbenchView: View {
             if editing {
                 if sidebarBeforeEditing == nil { sidebarBeforeEditing = model.showSidebar }
                 model.showSidebar = false
-                if appearanceBeforeEditing == nil { appearanceBeforeEditing = NSApp.appearance }
-                NSApp.appearance = NSAppearance(named: .darkAqua)
-            } else {
-                if let previous = sidebarBeforeEditing {
-                    model.showSidebar = previous
-                    sidebarBeforeEditing = nil
-                }
-                NSApp.appearance = appearanceBeforeEditing
-                appearanceBeforeEditing = nil
+            } else if let previous = sidebarBeforeEditing {
+                model.showSidebar = previous
+                sidebarBeforeEditing = nil
             }
         }
         .onExitCommand {
@@ -941,9 +932,9 @@ struct InspectorView: View {
 /// Maintains the context shown by the Window menu and the editor's native chrome.
 struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
     let contextTitle: String
-    var darkEditing = false
+    var isEditing = false
 
-    static func apply(to window: NSWindow?, contextTitle: String, darkEditing: Bool = false) {
+    static func apply(to window: NSWindow?, contextTitle: String, isEditing: Bool = false) {
         guard let window else { return }
         let title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
         if window.title != title { window.title = title }
@@ -955,19 +946,18 @@ struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
         }
         let minimumSize = CGSize(width: 1100, height: 720)
         if window.minSize != minimumSize { window.minSize = minimumSize }
-        let appearance = darkEditing ? NSAppearance(named: .darkAqua) : nil
+        let appearance = AppAppearance.native
         if window.appearance?.name != appearance?.name { window.appearance = appearance }
-        // The unified toolbar may retain its light background on entry to the editor.
-        if window.titlebarAppearsTransparent != darkEditing {
-            window.titlebarAppearsTransparent = darkEditing
+        if window.titlebarAppearsTransparent != isEditing {
+            window.titlebarAppearsTransparent = isEditing
         }
-        let backgroundColor = darkEditing ? AppPalette.panelNSColor : NSColor.windowBackgroundColor
+        let backgroundColor = isEditing ? AppPalette.panelNSColor : NSColor.windowBackgroundColor
         if window.backgroundColor != backgroundColor { window.backgroundColor = backgroundColor }
     }
 
     final class AnchorView: NSView {
         var contextTitle = ""
-        var darkEditing = false
+        var isEditing = false
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
@@ -982,7 +972,7 @@ struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
         @objc private func windowBecameKey(_ notification: Notification) { apply() }
 
         func apply() {
-            WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: contextTitle, darkEditing: darkEditing)
+            WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: contextTitle, isEditing: isEditing)
         }
     }
 
@@ -990,7 +980,7 @@ struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
 
     func updateNSView(_ view: AnchorView, context: Context) {
         view.contextTitle = contextTitle
-        view.darkEditing = darkEditing
+        view.isEditing = isEditing
         view.apply()
     }
 }

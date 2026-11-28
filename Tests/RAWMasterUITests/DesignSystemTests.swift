@@ -11,6 +11,7 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertEqual(AppDesign.Metric.compactRowHeight, 22)
         XCTAssertEqual(AppDesign.Metric.sectionHeaderHeight, 32)
         XCTAssertEqual(AppDesign.Metric.tabHeight, 24)
+        XCTAssertEqual(AppDesign.Metric.workflowTabHeight, 28)
         XCTAssertEqual(AppDesign.Metric.segmentDividerHeight, 14)
         XCTAssertEqual(AppDesign.Metric.segmentDividerWidth, 1)
         XCTAssertEqual(AppDesign.Metric.iconButtonSize, 26)
@@ -63,31 +64,38 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertEqual(host.fittingSize.width, 120, accuracy: 0.5)
     }
 
-    /// 可选证据：设置 RAWMASTER_DESIGN_GALLERY_OUTPUT 后写出浅色与深色画廊截图。
+    @MainActor func testWorkflowCapsuleKeepsToolbarHeight() {
+        let group = AppButtonGroup(title: "工作流", options: WorkbenchWorkflow.allCases,
+                                   selection: .library, stretches: false, usesToolbarCapsule: true, action: { _ in }) {
+            Text($0.title)
+        }
+        let host = NSHostingView(rootView: group)
+        host.frame = NSRect(x: 0, y: 0, width: 300, height: 60)
+        host.layoutSubtreeIfNeeded()
+        XCTAssertEqual(host.fittingSize.height, 34, accuracy: 0.5)
+    }
+
+    /// 可选证据：设置 RAWMASTER_DESIGN_GALLERY_OUTPUT 后写出深色画廊截图。
     @MainActor func testOptionalGalleryCaptures() throws {
         guard let path = ProcessInfo.processInfo.environment["RAWMASTER_DESIGN_GALLERY_OUTPUT"] else {
             throw XCTSkip("Set RAWMASTER_DESIGN_GALLERY_OUTPUT to render the design gallery")
         }
         let output = URL(fileURLWithPath: path, isDirectory: true)
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
-        for dark in [false, true] {
-            let host = NSHostingView(rootView: DesignGallery().preferredColorScheme(dark ? .dark : .light))
-            host.appearance = NSAppearance(named: dark ? .darkAqua : .aqua)
-            let size = NSSize(width: 760, height: 1_500)
-            host.frame = NSRect(origin: .zero, size: size)
-            let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-            window.contentView = host
-            host.layoutSubtreeIfNeeded()
-            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
-            let rep = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
-            host.cacheDisplay(in: host.bounds, to: rep)
-            let png = try XCTUnwrap(rep.representation(using: .png, properties: [:]))
-            try png.write(to: output.appendingPathComponent("gallery-\(dark ? "dark" : "light").png"))
-            XCTAssertGreaterThan(rep.pixelsHigh, 800)
-            let luminance = averageLuminance(rep)
-            if dark { XCTAssertLessThan(luminance, 0.5) } else { XCTAssertGreaterThan(luminance, 0.5) }
-            window.contentView = nil
-        }
+        let host = NSHostingView(rootView: DesignGallery().preferredColorScheme(AppAppearance.colorScheme))
+        host.appearance = AppAppearance.native
+        host.frame = NSRect(x: 0, y: 0, width: 760, height: 1_500)
+        let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
+        window.contentView = host
+        defer { window.contentView = nil }
+        host.layoutSubtreeIfNeeded()
+        RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        let rep = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+        host.cacheDisplay(in: host.bounds, to: rep)
+        let png = try XCTUnwrap(rep.representation(using: .png, properties: [:]))
+        try png.write(to: output.appendingPathComponent("gallery-dark.png"))
+        XCTAssertGreaterThan(rep.pixelsHigh, 800)
+        XCTAssertLessThan(averageLuminance(rep), 0.5)
     }
 
     private func averageLuminance(_ rep: NSBitmapImageRep) -> Double {

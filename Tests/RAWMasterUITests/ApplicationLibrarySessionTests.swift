@@ -49,6 +49,7 @@ final class ApplicationLibrarySessionTests: XCTestCase {
         fresh.start()
         await fresh.awaitTransition()
         XCTAssertNil(fresh.model.store)
+        XCTAssertNil(fresh.model.settingsRequestID)
         XCTAssertFalse(FileManager.default.fileExists(atPath: f.legacy.path))
 
         let last = try f.package("最近")
@@ -59,6 +60,7 @@ final class ApplicationLibrarySessionTests: XCTestCase {
         await session.awaitTransition()
         XCTAssertEqual(session.activePackage?.libraryID, selected.libraryID)
         XCTAssertEqual(session.recent.first?.libraryID, selected.libraryID)
+        XCTAssertNil(session.model.settingsRequestID)
         let current = session.model
         session.start(finderURLs: [selected.root])
         await session.awaitTransition()
@@ -98,6 +100,8 @@ final class ApplicationLibrarySessionTests: XCTestCase {
         session.start(finderURLs: [a.root])
         await session.awaitTransition()
         let original = session.model
+        original.openApplicationSettings(.diagnostics)
+        XCTAssertNotNil(original.settingsRequestID)
         try await waitForGrid(original)
         let chosen = try XCTUnwrap(photos.last)
         original.select(chosen)
@@ -120,6 +124,7 @@ final class ApplicationLibrarySessionTests: XCTestCase {
         session.open(b.root)
         await session.awaitTransition()
         XCTAssertEqual(session.activePackage?.libraryID, b.libraryID)
+        XCTAssertNil(session.model.settingsRequestID)
         XCTAssertNil(original.store)
         XCTAssertTrue(session.model.selectedIDs.isEmpty)
         XCTAssertNoThrow(try a.acquireWriter())

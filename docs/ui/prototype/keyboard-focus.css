@@ -1,5 +1,5 @@
 /* Shared by the workbench and the standalone export workspace. */
-:root { --focus-ink: light-dark(#515456,#d8dadb); }
+:root { --focus-ink: #d8dadb; }
 :focus-visible {
   outline: none;
   box-shadow: inset 0 -2px var(--focus-ink);

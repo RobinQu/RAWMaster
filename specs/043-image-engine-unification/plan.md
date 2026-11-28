@@ -1,22 +1,19 @@
 # 043 · 实施计划
 
-2026-11-28 · 基于 `main@90b3780f`。本计划把[规格](spec.md)拆成可独立验收的工程阶段。每阶段先保留旧路径，再按实际回执切换；不把“组件通过”当作产品放行。[任务清单](tasks.md) · [验收基线](validation.md)
+2026-11-28 · 基于 `main@90b3780f`，**待实施**。先修复 032 回执并建立同构建基线，再将场景图接入 Rust + wgpu/WGSL 主干。首条 WGSL 场景 DAG 同时在 macOS Metal 和 Linux 实体 Vulkan 上复验。[规格](spec.md) · [任务清单](tasks.md) · [验收基线](validation.md)
 
 ## 1. 当前代码边界
 
 | 层 | 现有入口 | 043 的改动方式 |
 | --- | --- | --- |
-| 旧 V3 点配方 | `Modules/ImageEdit/src/graph.rs`、`gpu.rs`、`metal_ffi.rs` | 保留 C ABI；新增 IR lower，先让已支持的 point 段共用融合/缓存；未支持算子继续走 Core Image |
-| 场景 DAG | `scene.rs`、`scene/metal_exec.rs`、`scene_ffi.rs` | 保留现有 JSON 文档 ABI；在执行器内部改为“先编译 plan，再按 plan 执行”，输出像素不变 |
-| 摄影前缀 | `DevelopmentScenePhotographicV1`、`DevelopmentRendererV3.develop(scenePhotographicInput:)` | 短期作为 adapter 段进入 plan；中期把可融合点算子 lower 到 IR，空间/几何/蒙版/模型逐步迁移 |
-| 预览/交付 | `DevelopmentScenePreviewV1`、`DevelopmentSceneTiledDeliveryV1`、`DevelopmentSceneDeliveryServiceV1` | 统一 source/plan/target 生命周期；tiled 交付复用 renderer；双目标共享一次图执行 |
-| Swift 参考 | `DevelopmentSceneGraphRendererV1` | 保留为测试 oracle；产品路径只通过 actual receipt 判定后端 |
+| 旧 V3 点配方 | `graph.rs`、`gpu.rs`、`metal_ffi.rs` | 沿用 C ABI，按 035 等价证据共用 WGSL、融合与缓存。其余组合经 Core Image 适配段执行 |
+| 场景 DAG | `scene.rs`、`scene/metal_exec.rs`、`scene_ffi.rs` | 沿用 JSON 文档 ABI，执行计划优先使用 WGSL，039 原生 Metal 和 Swift 提供对照与等价回退 |
+| RAW 输入 | `DevelopmentSceneRAWV1`、`CFlashRaw` | 固定 FlashRaw C ABI 提供 Bayer mosaic 和传感器事实。RAWMaster 维护 037 校准和 AP1 输入。按实测评估后续同设备解码 |
+| 摄影/模型 | `DevelopmentScenePhotographicV1`、`DevelopmentRendererV3`、模型提供者 | 先用适配段记录资源、域和几何，随后迁移有等价证据的摄影点段和空间算子 |
+| 预览与输出 | `DevelopmentScenePreviewV1`、`DevelopmentSceneTiledDeliveryV1`、`DevelopmentSceneOutputV1` | 绑定来源、视图、计划和资源生命期。ACES 2 先作为适配段，随后使用同版本 WGSL 输出段。Swift 管理呈现、授权及编码适配 |
+| 交付持久化 | `WorkbenchDeliveryCatalog.prepare` 和 Rust 目录 `SceneExecution` | M0 先补齐 Swift/Rust 的 V1 摄影字段与旧票据读回，之后引入版本化 V2 记录计划和资源 |
 
-不改变：
-
-- `DevelopmentSceneGraphV1` 的持久化 schema 与 038 的节点/命令语义；schema 3 的 `photographic` 仍由 038 定义。
-- 037 的 AP1/ACES 2 输出契约和 035 的 v1–v3 回放语义。
-- AppKit 呈现、文件发布、授权和模型适配边界。
+持久配方、图文档、颜色/输出含义、既有交互及 032 发布事务沿用 035、037 和 038 的契约。
 
 ## 2. 目标模块
 
@@ -24,80 +21,79 @@
 Modules/ImageEdit/src/
   engine/
     ir.rs           EngineGraph / EngineNode / PortDomain / OpID
-    registry.rs     OpDescriptor、参数 schema、CPU/Metal/WGSL 注册
+    registry.rs     OpDescriptor、参数、CPU 参考和 WGSL 注册
     lower.rs        V3 recipe / SceneGraph / Photographic → IR
-    passes.rs       validate / fold / prune / domain / liveness
-    fuse.rs         点段融合与切段
-    tile.rs         halo、tileEdge、预算与目标布局
-    plan.rs         ExecutionPlan、SegmentPlan、CacheKey、BackendPlan
-    receipt.rs      ReceiptV2 与阶段计时
-  scene/           现有解析器与兼容入口
-  graph.rs         现有 V3 点配方入口
-  gpu.rs           wgpu 后端
-  metal_ffi.rs     Metal 点配方 ABI
-  scene_ffi.rs     Scene ABI
+    passes.rs       校验、域转换、裁剪与生存期
+    fuse.rs         WGSL 点段融合与切段
+    tile.rs         ROI、halo、设备上限和目标预算
+    plan.rs         ExecutionPlan、SegmentPlan、PipelineKey、PixelCacheKey
+    receipt.rs      版本化回执和阶段计量
+  scene.rs          现行场景 JSON 解析和校验
+  scene/metal_exec.rs  039 原生 Metal 对照与迁移回退
+  graph.rs         现行 V3 点配方入口
+  gpu.rs           wgpu 执行、资源和 WGSL 编译复用
+  gpu/metal_surface.rs  Apple 原生纹理借用边界
+  metal_ffi.rs / scene_ffi.rs  现有 ABI 入口
 ```
 
-原则：
-
-- `engine` 不依赖 Swift/UI；只依赖图像域、资源和后端 trait。
-- 现有 `scene.rs` 的 JSON 解析与校验保留；`parse` 之后 lower 到 IR，避免一次重写所有调用方。
-- 现有 ABI 不破坏；新增 `rm_scene_program_plan_v2` / `rm_scene_program_render_plan_v2` 或等价入口，旧入口内部走同一 plan。
-- `OpDescriptor` 的 CPU 参考和 Metal 内核放在同一个注册项，避免 Rust/Swift/CI 三份语义长期漂移。
+- `engine` 依赖图像端口、资源和设备能力声明。Swift 通过现有 ABI 交付冻结输入，通过版本化接口传入适配段表面或接收结果。
+- `scene.rs` 校验后的图转入 IR。`OpDescriptor` 将 CPU 参考、WGSL 内核、参数和像素判据绑定到同一版本。平台段在同一计划声明域、ROI、资源与执行者。
+- FlashRaw 第一阶段复用固定 0.3.1 C ABI。直接同设备驻留需先统一 FlashRaw 与 ImageEdit 的 wgpu 依赖，再验证设备、队列、纹理描述、同步和 GPU 驻留收益。[接入边界](spec.md#32-flashraw-与宿主边界)
 
 ## 3. 阶段设计
 
-### M0 · 基线（约 1 周）
+### M0 · 032 回执修复与基线
 
-1. 在 60 MP 摄影+3 节点 DAG 上加入分项回执：摄影前缀、DAG segment、DRT、blit、decode、encode、等待。
-2. 记录当前 tile 数、dispatch、峰值、`backend/dagBackend/photographicEngine`。
-3. 对 6 MP 六节点图、038 FIT/组内监看、036 1:1 矩阵各留一份同机构建基线。
-4. 先不做算法改动；只加观测和可复现脚本。
+1. **修复 V1。** Swift 的 `DevelopmentSceneExecutionReceiptV1` 已编码 `photographicEngine` 和 `dagBackend`。在 Rust 目录 `SceneExecution` 添加同类型的可选字段，保留严格字段校验和旧票据读回。确认阶段比较、已持久化票据和重开回传保持字段语义。
+2. **原生队列回归。** 用非中性 `photographic` 和有实际派发的 DAG 冻结场景，分别通过 032 提交 PQ AVIF 与 SDR JPEG，验证准备、发布、摘要、混合段回执、旧票据读取和中断续跑。两目标分别核对冻结输入，成功文件重开后沿用原回执和摘要。[M0 回归](validation.md#m0--回执修复与基线)
+3. **分项计量。** 把来源校验/读取、FlashRaw 解码、mosaic 上传、摄影/模型、DAG 准备和求值、DRT、blit、编码读回、发布和等待纳入同一次报告。记录队列与端到端墙钟、各阶段 CPU 墙钟及可用的 GPU 计时。分别核算阶段峰值与同一时刻的总峰值。
+4. **固定复现口径。** 60 MP 记录 032 的 PQ/SDR 单目标及双目标组件，6 MP 六节点、038 FIT/监看和 036 的 1:1 矩阵各留同构建基线。固定输入和校准版本、运行库摘要、驱动/屏幕及实测区间。定稿 V2 字段与旧票据兼容方式。
 
-退出：同一构建可重复得到基线；能回答“1.75 s 中图执行、编码、等待各占多少”。
+退出条件为摄影场景已通过真实 032 队列与旧票据回归，同构建的 60 MP 分项样本可复现，能据此决定编译、图执行、同步和编码的优先级。
 
-### M1 · P0 去重（约 1–2 周）
+### M1 · 去重
 
-1. **Tiled renderer 复用**：`DevelopmentSceneTiledDeliveryV1.render` 在 tile 循环外创建一次 `Renderer`（以及其 Rust `SceneProgram`），每个 tile 只换 input/origin；`outputRenderer` 继续复用 DRT stage。
-2. **双目标单次图**：每个 tile 的 scene master 只算一次；SDR/HDR 各自 `renderDelivery` 到两个目标，再分别 blit。若编码器要求整帧，保留两个 destination，但不再重跑图/解码。
-3. **单 command buffer**：为 decoder/photographic/graph/DRT/blit 增加“编码到给定 command buffer”的内部接口；先合并 graph+DRT+blit，再评估 decode 合并。
-4. **pipeline 形状缓存**：`RustSceneGraphRenderer.topology` 改为不含 UUID 的结构哈希；program 缓存 LRU；同一设备复用 `MTLLibrary`/pipeline。
-5. **回执**：记录 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`，防止重复准备再次出现。
+1. **复用瓦片准备。** 同设备复用已编译 pipeline、验证后的 SceneProgram 与输出阶段。瓦片单独绑定纹理、原点和预算，交付只保留有复用价值的缓存。计数 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`。
+2. **同输入共享。** 当前双目标组件已共用一次 mosaic 读取和上传。评估共享逐瓦片显影与 DAG，再各跑 DRT。两张全幅 F32 终端纹理已超过当前 1.5 GiB 图预算，先验证有界暂存和输出/编码峰值，再给通过的路由启用共享并核对 032 的独立目标、取消与续跑。其余路由沿用逐目标渲染。
+3. **合并提交。** 从同队列的图、DRT 和 blit 开始。Swift/CI/编码等跨边界沿生产者完成信号和消费者生命期交接。逐段核对完成状态、像素、迟到结果及真实等待下降。
+4. **形状缓存。** 规范化节点形状、依赖与输出选择。设备级缓存复用 `MTLLibrary`/pipeline，并与每次绑定、结果缓存和资源身份解耦，为 M2 的 wgpu pipeline 接入保留同一键规则。
 
-退出：像素不变；60 MP 双目标不慢于 1.751 s ±5%；tile/dispatch 不增加；重复编译计数下降；严格 Rust 回执可核对。
+退出条件为等价像素，60 MP 暖态端到端 p95 ≤同路由 M0 的 105%，同渲染意图的瓦片和 DAG 派发计数至多等于基线，重复准备计数下降。满足条件的共享路由还要核对发布和重开。[M1 验收](validation.md#m1--去重)
 
-### M2 · IR 与点段融合 PoC（约 3–5 周）
+### M2 · 首条 WGSL 场景 DAG 与融合
 
-1. **IR 定义**：`EngineGraph`、`EngineNode`、`PortDomain`、`OpID`；先覆盖现有 9 种 scene operation 和 V3 已支持点算子。
-2. **Lower**：`DevelopmentSceneGraphV1.Scope` → `EngineGraph`；`DevelopmentAdjustmentsV3` 的已支持点段 → `EngineGraph`；摄影前缀保留 adapter 节点。
-3. **Passes**：validation、neutral/零权重裁剪、曝光链/ normal layer 折叠、域转换插入、liveness。
-4. **Fusion**：同域同精度同几何的 pointwise 段合成一个 segment；分支在点段内内联，否则在分支边界切段；每段最多 24–32 节点，超限自动切段。
-5. **Metal codegen**：生成 straight-line MSL 或参数化 kernel；参数放 buffer；curve/coverage 作为输入；`fast_math=false`/`mathMode=.safe` 保持。
-6. **Pipeline cache**：结构哈希 → `MTLComputePipelineState`；参数变化只更新 buffer，不重编译。
-7. **Shadow test**：每个 segment 与当前 Rust/Swift 逐位对照；整图与旧执行器对照；96 节点合成图做性能 A/B。
+1. **先接一条实际场景链。** 从 `DevelopmentSceneGraphV1.Scope` 转入 `EngineGraph`。首条覆盖 AP1 F32 曝光、EV 曲线、coverage 和有序 Layer，含零覆盖、禁用、监看与冻结最终根。摄影前缀、现用 ACES 2 和其他未迁移段先作为适配段进入计划。复用 035 的 WGSL 编译与参数布局基础，保留旧 V3 的域和语义。
+2. **两端实机首验。** 用同一提交、依赖锁、冻结图、校准实拍产生的 AP1 夹具及资源摘要，在 macOS 的 wgpu/Metal 和 Linux 的 wgpu/Vulkan 实体 GPU 运行同一条锁定场景路径。比较两端和参考的 F32 像素、全图及非居中 ROI，记录 GPU、驱动、能力与 `executor`/`graphicsAPI`，严格模式的 WGSL 段零回退。此项是首条场景路径启用的前置证据。[设备与样本矩阵](validation.md#m2--首条-wgsl-场景-dag-与融合)
+3. **实现算子级优化。** 验证后裁剪恒等和禁用分支。同域、同精度和几何的点段生成有固定求值顺序的 WGSL。为曲线、coverage 及参数绑定设设备上限，超限时切段。改变计算顺序的代数折叠逐项验收，结构化 pipeline 缓存让改参只更新缓冲。
+4. **验证产品传输。** 用 macOS 的同设备纹理接入 24/60 MP 原生预览、监看及 032 冻结交付，核对实际 GPU 驻留、同步、整帧往返和端到端预算。Linux 的首条 DAG 使用固定 AP1 输入验证执行器，完整 RAW 和目标文件在 M5 签收。
+5. **扩大算子覆盖并复测。** 迁移其他场景节点、混合模式及有证据的 V3 点段。对比融合/未融合及 039 当前执行器，记录 6 MP 六节点、96 节点合成图和 60 MP 三节点的性能。
 
-退出：96 节点合成图吞吐 ≥2×、峰值 ≤50%；点段逐位一致；60 MP 三节点图阶段 ≥15%；038 门槛不退。
+退出条件为两端严格 wgpu 实机、像素与 ROI 通过，macOS 产品路由通过。6 MP 暖态图 p95 至少 1.3× 提速，固定 96 节点图的吞吐 ≥2× 且峰值中间工作集 ≤50%，60 MP 图阶段 p50 较 M1 至少降 15%，038 既有门槛保持。
 
-### M3 · 资源与模型（约 4–8 周）
+### M3 · 资源、模型与原寸窗口
 
-1. **MTLHeap/别名**：按 liveness 为 segment 边界 surface 分配/别名；预算按实际 allocation 记账；保留无 heap 回退。
-2. **模型分块**：`DevelopmentSceneModelPreviewV1` 接受 tile+halo；分割 mask 按全图坐标拼装或按 tile 视图绑定；不可分块模型显式拒绝并说明。
-3. **1:1 大窗口**：`DevelopmentScenePreviewV1.sampled(.pixels)` 改为按预算/显示分辨率决定 tile；去掉 1,000 万像素硬上限；保证窗口帧与整幅 crop 等价。
-4. **异步双缓冲**：一个 in-flight tile/frame + 一个 pending；decode/graph/encode 重叠；取消/迟到结果按请求身份拒绝。
-5. **缓存分离**：working/cache/coverage/model/encode 分开；禁止因缓存挤占工作区而整批清空重试。
+1. **复用和准入。** 用计划生存期管理 wgpu 纹理/缓冲池，分开记账 working、cache、coverage、model、output 和 encode，报告总驻留的计算口径。平台特化单独验证所有权、释放与性能。
+2. **模型分块。** 按每个模型的能力选择 tile+halo 或整幅路径，全图坐标拼装或绑定 coverage。超预算或未准入的组合给出可定位原因。
+3. **1:1 取景。** 用设备上限、ROI、采样和预算确定瓦片。替换固定像素数准入，复验 5K/6K、非居中原点与整幅对应像素。
+4. **异步与交互。** 画布合并到一个在途帧和一个最新待处理帧，交付在预算内排流水。切图、取消及迟到结果按身份拒绝，GPU 资源保留到最后一个消费者完成。
 
-退出：60 MP 峰值下降；模型 60 MP 可用或明确拒绝；5K/6K 1:1 可用；取消与竞态回归通过。
+退出条件为 60 MP 总峰值下降，5K/6K 1:1 可用，受支持的 60 MP 模型通过，其他组合按阶段诊断，取消及竞态回归通过。
 
-### M4 · 空间算子与能力（季度级）
+### M4 · 空间与输出算子
 
-1. texture/clarity：显式 halo 的可分离高斯 + band 合成；替换 CI factor/restore/tile 的整幅 materialize；窗口/整幅/导出三组证据。
-2. dehaze/brilliance：分块确定性归约；先 profile 整幅归约占比，再做 halo PoC；不假设 factor/restore 可复用。
-3. 九类调色：按算子注册表逐类 lower；点段先融合，空间/全图单独切段；每类单独像素/性能门。
-4. 几何/蒙版/修饰：几何作为显式边界；coverage 保持独立端口；模型遮罩与几何冲突沿用 `validatePhotographicCoverage` 拒绝。
-5. LUT/胶片/OCIO：声明域/参考白/峰值；每支路只成像一次；不把 SDR-only 资产静默套到 HDR。
-6. Linux/041：按能力表接入 CPU/Vulkan 场景执行；不复用 macOS 证据。
+1. 从 036 固定输出瓦片起步，验证 `texture → clarity` 串联，再评估 WGSL halo、可分离滤波和 band 合成。用窗口、整幅及导出的像素和时间分别验收。
+2. 测量 `dehaze`/`brilliance` 全幅阶段，给统计与应用定义归约顺序和输入域，再验证分块方案。
+3. 九类调色按算子注册表逐类迁入。几何、蒙版和修饰沿用显式坐标与独立 coverage。模型＋几何通过 `validatePhotographicCoverage` 准入。
+4. 将 ACES 2 输出数学和固定表按版本迁入 WGSL。LUT/胶片/OCIO 资源声明域、参考白和峰值，每个目标从同一母版成像一次。用 037 的像素及 CICP/ICC 基线验证实际输出。
 
-退出：逐算子窗口/整幅/导出证据；50 配方矩阵 P95 至少 1.5×；产品入口同动作验收。
+退出条件为逐算子窗口、整幅、导出的证据齐备，50 配方矩阵 p95 至多为同路由 M0 的三分之二，产品入口通过。旧 V3 默认切换须通过 035 旧片回放及封存性能门。
+
+### M5 · 041 产品放行
+
+1. 在已通过 M2 的 Linux 实体 Vulkan 上增加实拍 RAW 的完整链路。固定 FlashRaw 和相机校准，验证 mosaic 到 AP1、场景图、每目标一次 ACES 2、编码与独立回读。型号、模型、配方和输出按能力逐项放行。
+2. 将内存准入、取消、重试、续跑及执行回执接入 040/041 队列。按通过的组合启用 `image_scene_batch`，不可用的组合返回缺失的能力和原因。
+
+退出条件为实机完整链路、文件信号和目录回执可核对，041 服务端能力表与实际支持一致。[041 验收](../041-server-image-editing/spec.md#5-验收场景)
 
 ## 4. 关键数据结构
 
@@ -105,7 +101,7 @@ Modules/ImageEdit/src/
 
 ```text
 ExecutionPlan
-  sourceRevision, roi, fullGeometry
+  sourceRevision, calibrationVersion, roi, fullGeometry
   segments: [SegmentPlan]
   output: SegmentOutput
   budget: BudgetPlan
@@ -113,75 +109,79 @@ ExecutionPlan
   producedBy: compilerVersion
 
 SegmentPlan
-  id, opIDs, domain, precision, tilePolicy
+  id, opVersions, domain, precision, tilePolicy
   inputs: [SurfaceRef]
   outputs: [SurfaceRef]
-  backend: metal | wgpu | coreImage | cpu
-  halo: Int
+  executor: wgpu | legacyMetal | coreImage | cpuReference | host | passthrough
+  graphicsAPI: metal | vulkan | none
+  roiMapping, halo, requiredCapabilities
   estimatedBytes, estimatedDispatches
 ```
 
-### 4.2 CacheKey
+### 4.2 编译与像素缓存键
 
 ```text
-CacheKey
-  sourceContentDigest
-  roi (origin/size, normalized where applicable)
-  domain (encoding/primaries/white/transfer/alpha/precision)
-  segmentStructureHash
-  parameterHash
-  resourceDigests (LUT/film/model)
-  engine/compiler version
+PipelineKey
+  deviceIdentity, graphicsAPI, requiredCapabilities, compilerVersion
+  segmentStructureHash, opVersions, domain, precision, bindingLayout
+
+PixelCacheKey
+  sourceContentDigest, sourceRevision, calibrationVersion
+  roi, fullGeometry, domain, precision
+  segmentIdentity, upstreamContentKeys, parameterHash, resourceDigests
 ```
 
-结构哈希只包含节点种类、连接、分段和输出位置，不含 UUID/名称；内容键包含 UUID 以区分不同节点身份。
+结构按算子、连接、分段和输出位置规范化。节点 UUID 用于配方和运行时参数绑定。有效参数、上游图和 LUT/模型摘要改变时，对应像素缓存失效。编译期特化参数进入 pipeline 键，其余参数保持独立缓冲。
 
 ### 4.3 ReceiptV2
 
+M0 先修复 V1。V2 使用明确版本，读取端保留旧 V1 的恢复逻辑。下面的字段与发布票据中的冻结版本、目标和文件摘要关联。现行路径在计划生成前可记录缺少 `planHash` 的原因。
+
 ```text
 ReceiptV2
+  schemaVersion = 2
   planHash, compilerVersion
-  backend, dagBackend, photographicEngine
-  tiles, segments, dispatches
-  gpuMilliseconds, decodeMilliseconds, encodeMilliseconds, waitMilliseconds
-  peakWorkingBytes, peakCacheBytes, peakModelBytes, budgetBytes
-  cacheHits: coverage/node/segment/pipeline
-  fallbackReason
+  sourceDigest, workflowDigest, target
+  elapsedMilliseconds, queuedMilliseconds
+  stages: [{id, opVersions, executor, graphicsAPI, wallMilliseconds,
+            gpuMilliseconds?, gpuTimingUnavailableReason?, waitMilliseconds,
+            tiles, dispatches, fallbackReason?}]
+  rendererBuildCount, programCompileCount, libraryCompileCount
+  peakWorkingBytes, peakIntermediateBytes, peakCacheBytes, peakModelBytes
+  peakOutputBytes, peakEncodeBytes, peakTotalBytes, budgets, memoryMeasurement
+  cacheHits: coverage / node / segment / pipeline
+  fallbackCount
 ```
 
 ## 5. 迁移顺序
 
-1. 先让 scene DAG 走 plan（不改变执行），确认回执与像素不变。
-2. 让摄影前缀作为 adapter segment 进入 plan，统一预算/回执/tile 生命周期。
-3. 先融合 scene DAG 的点段（曝光/曲线/强度/coverage/mixer），再接摄影前缀的点段。
-4. 空间算子按 texture/clarity → dehaze/brilliance → 其余的顺序；每类先单独放行。
-5. 九类调色在融合和资源计划稳定后接入；不要先加 UI 再补引擎。
-6. Linux/041 最后接入，按能力表逐项放行。
+1. 先完成 032 兼容修复与原生分项基线，再按基线去重。
+2. 让现有场景、摄影与输出经过同一计划，用首条 AP1 WGSL 场景链签收 macOS Metal 与 Linux 实体 Vulkan。通过的路径再切换默认执行。
+3. 从场景点段扩展到摄影点段、模型和原寸取景。空间算子从 `texture/clarity` 到 `dehaze/brilliance` 逐类放行。
+4. 将已签收的输出数学接入共用计划，在 041 用完整 RAW → 文件链路验证服务端能力。
 
 ## 6. 测试策略
 
-- **单元**：IR 校验、pass 折叠、融合切段、缓存键、预算、回执字段。
-- **逐位**：点算子/coverage/13 blend/零权重/中性节点；与当前 Rust 和 Swift 参考对照。
-- **ROI**：1:1 窗口 vs 整幅 crop；空间算子按容差；接缝/halo。
-- **旧配方**：v1–v3 固定成片回放；035 封存矩阵。
-- **产品路径**：资料库→编辑→HDR→Graph→监看→冻结→032；同一签名包。
-- **性能**：同机同源，预热 5、30 样本；冷/暖分开；记录 p50/p95、峰值、tile/dispatch、fallback。
-- **故障**：预算不足、模型缺失、源离线、取消、迟到结果、命令缓冲失败、编码失败。
+- 单元测试覆盖 IR、域和参数校验、切段、缓存键、预算、回执版本及旧票据读取。
+- 像素测试覆盖有符号 AP1、超白、alpha、恒等、coverage、13 种 blend 和非居中 ROI。按 [像素判据](validation.md#3-像素判据) 对照 CPU/039、两端严格 wgpu、空间接缝及旧配方。
+- 队列测试由 032 工作台分别提交 PQ 与 SDR，覆盖摄影回执、文件摘要、重开、断点续跑及已发布目标。原生编辑测试从资料库进入 HDR Graph，打开监看后冻结最终根，核对 24/60 MP 的 FIT、ROI 和交付。
+- 性能 A/B 固定同机、同源、构建、质量和测量区间，暖测前预热 5 次并记录至少 30 个样本。冷启动和实际峰值单列。两端各自提交 GPU、驱动及执行回执。
+- 故障测试覆盖源离线、能力/预算不足、模型缺失、取消、设备/命令失败、迟到结果和编码失败。
 
 ## 7. 回滚
 
-每个 segment/路由保留旧执行入口；通过环境变量或内部特性开关切回。回滚必须保持同一配方、同一源、同一目标，不改变持久化格式。回滚后回执标记实际后端，不能把旧路径结果冒充新路径。
+按路由用内部开关切回已验证的执行段。回滚沿用同一冻结源、配方和目标，回执记录该次实际执行者和原因。恢复按旧票据继续或重试，保留已发布文件和其摘要。
 
 ## 8. 交付检查表
 
-- [ ] 基线回执包含摄影/DAG/DRT/编码/等待分项
-- [ ] tiled 交付不再每 tile 新建 Renderer
-- [ ] 双目标共享一次图执行
-- [ ] pipeline 缓存不含 UUID，批量复用
-- [ ] 点段融合 shadow test 通过
+- [ ] 摄影场景通过 032 准备、发布、重开与恢复，旧 V1 回执可读
+- [ ] 同构建原生基线有来源、摄影/DAG/DRT/编码/等待和峰值分项
+- [ ] 逐瓦片复用编译产物，验证双目标共享的预算和失败恢复
+- [ ] pipeline 与像素缓存分别通过改参和源变更回归
+- [ ] 首条 WGSL 场景 DAG 在 macOS Metal 和 Linux 实体 Vulkan 运行且零回退
 - [ ] 96 节点/60 MP 性能门通过
-- [ ] 模型分块或明确拒绝
+- [ ] 模型分块通过或有具体能力/预算诊断
 - [ ] 5K/6K 1:1 可用
-- [ ] 空间算子逐类放行
-- [ ] 严格 Rust 受支持组合零回退
-- [ ] 旧 v1–v3 成片回放不变
+- [ ] 空间和 ACES 2 输出段逐类放行
+- [ ] 旧 v1–v3 通过原语义回放及 035 封存性能门
+- [ ] 041 完整 RAW → 文件和队列恢复按能力验收

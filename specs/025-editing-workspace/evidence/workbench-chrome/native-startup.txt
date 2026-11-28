@@ -1,0 +1,23 @@
+旧版构建冷启动
+Role=AXWindow Identifier=workbench Title=RAWMaster – 本地资料库 – 本地资料库 Focused=1
+Role=AXWindow Identifier=com_apple_SwiftUI_Settings_window Title=RAWMaster设置 Focused=0
+
+沿用旧版保存的设置窗口状态，升级后冷启动
+window=0x0 savedIdentifier=com_apple_SwiftUI_Settings_window
+Role=AXWindow Identifier=workbench Title=RAWMaster – 本地资料库 Focused=1
+
+设置保持打开后退出，再启动
+Role=AXWindow Identifier=workbench Title=RAWMaster – 本地资料库 Focused=1
+
+资料库不可用时先显示开始页，收到 Finder 打开库包请求后进入资料库
+  Role=AXStaticText Identifier=library.welcome Value=找不到资料库。请接回磁盘或重新定位。 Enabled=1 Focused=0
+Role=AXWindow Identifier=workbench Title=RAWMaster – 本地资料库 Focused=1
+
+主动按 ⌘,
+Role=AXWindow Identifier=application-settings Title=RAWMaster 设置 Focused=1
+      Role=AXStaticText Value=通用 Enabled=1
+  Role=AXStaticText Value=通用 Enabled=1
+
+从快速 Prompt 的模型配置打开本机 AI 设置
+Role=AXWindow Identifier=application-settings Title=RAWMaster 设置 Focused=1
+  Role=AXScrollArea Identifier=editing.settings.localAI Focused=0

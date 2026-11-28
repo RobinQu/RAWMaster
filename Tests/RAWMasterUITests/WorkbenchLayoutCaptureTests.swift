@@ -87,7 +87,6 @@ final class WorkbenchLayoutCaptureTests: XCTestCase {
         let size = NSSize(width: 1100, height: 720)
         let content = WorkbenchView().environmentObject(model)
             .preferredColorScheme(dark ? .dark : .light)
-            .environment(\.resolvedAppAppearance, dark ? .dark : .light)
             .frame(width: size.width, height: size.height)
         let host = NSHostingView(rootView: content)
         host.sizingOptions = []

@@ -4,7 +4,7 @@
 
 ## 资料库与作品管理
 
-在主窗口左上角使用「资料库导航」收起或恢复侧栏。顶栏保留工作流切换，原有项目及选片保持。窄窗口使用同一按钮打开抽屉。[标题栏走查](../../specs/025-editing-workspace/prototype-review.md#主窗口标题栏)
+在主窗口左上角使用「资料库导航」收起或恢复侧栏。顶栏胶囊在当前项目及选片上切换工作流。窄窗口使用同一按钮打开抽屉。[顶栏、启动与深色走查](../../specs/025-editing-workspace/workbench-chrome.md)
 
 右键点击标题栏的库名，库包首项使用与 Finder 一致的资料库图标。关闭路径菜单回到当前照片。[路径与 Finder 走查](../../specs/003-app-icon/validation.md#资料库文件夹图标)
 
@@ -55,7 +55,7 @@
 | [统一导出](prototype/index.html#export) / [专项大批量样本](../../specs/032-export-workspace/prototype.html) | 从选片、编辑草稿或采用版本进入同一面板。成片/原件/仅清单，JPEG/TIFF/PNG、尺寸与质量、模板与重名、EXIF/GPS、水印边框、预设保存/导入/分享、独立目的地。逐项预检、接回、取消、重试和结果。提交成片后可关闭任务详情并返回原视图，交付继续。200 张可提交，201 张显示超额并保留勾选。1,200 张可筛选与分批 | [导出规格](../../specs/032-export-workspace/spec.md) · [批量范围与早期实测](../../specs/032-export-workspace/batch-limits.md) |
 | [032 PQ 队列评审](prototype/index.html?pqReview=1) → 暗房保存 HDR 候选 → 导出 → HDR 成片 | 逐张核对已保存版本和原片；没有母版或离线时取消并改选，不隐式交付 SDR。此阶段仅全尺寸 AVIF 10 位 Rec.2020/PQ，预览明确为 SDR 代理；提交、任务恢复和回执复用 032。完整多目标和水印仍待验收。 | [037 交互](../../specs/037-color-film-hdr/spec.md#032-pq-原生队列评审) · [原生回读与中断走查](../../specs/037-color-film-hdr/validation.md#032-pq-队列与回读) |
 | 导出 → [任务详情](../../specs/032-export-workspace/prototype.html) / [制作任务](prototype/index.html#jobs) → 查看本批交付 | 接回目录时核对提交时的卷和目录身份。同路径的另一卷仍离线。原卷以新设备号重挂后，先按原票据认领已发布文件，明确继续才写余项。可逐张接回原片、核对同名冲突、取消余项，并返回改选后的照片 | [中断、卷重挂、继续和取消走查](../../specs/032-export-workspace/batch-continuation.md#走查) · [原生重启回执](../../specs/035-portable-processing-cores/evidence/workbench-native-restart.json) · [APFS 重挂回执](../../specs/035-portable-processing-cores/evidence/workbench-apfs-remount-batch13s.json) |
-| [设置](prototype/index.html#settings/general) / [本机 AI](prototype/index.html#settings/runtime) / [诊断](prototype/index.html#settings/diagnostics) | 跟随系统/浅/深外观、存储、编辑与预览、FLUX 模型首次下载与暂停/续传/校验/删除、实验性 Qwen 运行时、云服务启停、诊断摘要、性能监控入口。环境未就绪时从 Quick Prompt 转入设置，再返回同一张照片 | [本机模型设置](../../specs/034-quick-prompt-editing/local-ai-setup.md) · [外观与图标](../../specs/003-app-icon/spec.md) · [图像交互性能](../../specs/002-image-interaction-performance/spec.md) · [显示代理](../../specs/024-jpeg-display-proxy/plan.md) |
+| [设置](prototype/index.html#settings/general) / [本机 AI](prototype/index.html#settings/runtime) / [诊断](prototype/index.html#settings/diagnostics) | 主动打开设置可检查存储、编辑与预览、FLUX 模型、实验性 Qwen 运行时、云服务、诊断和性能。所有应用界面固定深色。环境未就绪时从 Quick Prompt 转到本机 AI 设置，再返回同一张照片 | [启动与深色](../../specs/025-editing-workspace/workbench-chrome.md) · [本机模型设置](../../specs/034-quick-prompt-editing/local-ai-setup.md) · [图像交互性能](../../specs/002-image-interaction-performance/spec.md) · [显示代理](../../specs/024-jpeg-display-proxy/plan.md) |
 | 顶栏波形 → 后台信息 → 任务／[工作台任务原型](prototype/index.html#jobs) | 按所属库查看导入、032 成片与原件交付、CSV／JSON、本机 Flux 和工作流批次。重开原库可从详情继续。设备模型状态跨库可查 | [042 制作任务](../../specs/042-local-library-workbench/spec.md#5-制作任务) · [原生任务窗口](../../Sources/RAWMaster/WorkbenchActivityWindow.swift) |
 | [Server 评审](prototype/index.html?serverReview=1#welcome) → 连接／同步 → [RAWMaster Server](prototype/index.html?serverReview=1#tools/server) | 在单独示例状态核对指纹，创建或同步本地副本。可查归档与恢复，或提交远端处理并在制作任务核对结果 | [040 接入走查](../../specs/040-server/validation.md#server-资料库接入走查) · [041 双端队列](../../specs/041-server-image-editing/queues.md) |
 
@@ -65,11 +65,11 @@
 
 行高、间距、字级、圆角、墨色和控件四态由 [039 界面规范](../../specs/039-design-system/spec.md) 约束。新控件先在画廊登记，再落原生。
 
-顶栏、资料库浏览、编辑模式和 032 交付使用同一分组按钮外观。画廊可并排核对选项组、曲线取样命令组及独立命令。[分组按钮走查](../../specs/039-design-system/grouped-buttons.md)
+资料库浏览、编辑模式和 032 交付使用共享分组按钮。画廊可并排核对选项组、曲线取样命令组及独立命令。[分组按钮走查](../../specs/039-design-system/grouped-buttons.md) · [顶栏胶囊](../../specs/025-editing-workspace/workbench-chrome.md)
 
 | 从哪里进入 | 可以走查的动作和结果 | 对照规格 |
 | --- | --- | --- |
-| 资料库工具 → [界面规范](prototype/index.html#tools/design) | 核对行高、间距、字级、四态与检查器版式。操作滑杆、非法数值、勾选、分段、菜单与分组折叠；浅色、深色与 390pt 窄窗下版式不重叠 | [039 界面规范](../../specs/039-design-system/spec.md) · [原生证据](../../specs/039-design-system/validation.md) |
+| 资料库工具 → [界面规范](prototype/index.html#tools/design) | 核对行高、间距、字级、四态与检查器版式。操作滑杆、非法数值、勾选、分段、菜单与分组折叠。桌面与 390pt 窄窗采用深色，版式无重叠 | [039 界面规范](../../specs/039-design-system/spec.md) · [原生证据](../../specs/039-design-system/validation.md) |
 
 ## 可重复的评审路线
 

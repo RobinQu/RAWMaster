@@ -408,7 +408,7 @@ def main():
                 browser(*options,"open",host + ENTRY + "?sceneNativeReview=1&scopesNativeReview=1&graphNativeReview=1")
                 browser("set","viewport","1440","1000")
                 scenario("三种外观共享摄影控件，保留当前呈现", """
-                  await page('.photo-card');await hash('settings/general');await page('[name=theme]');set('[name=theme]','light');
+                  await page('.photo-card');
                   await hash('library/project/river');await page('.photo-card');act('photo','b1');act('workflow','edit');await page('.scene-modes');
                   const count=()=>all('.hist-band').length;
                   assert(count()===5&&!el('.scene-hud'));act('scene-mode','hdr');
@@ -510,7 +510,6 @@ def main():
                 browser("open",host + ENTRY)
                 browser("set","viewport","390","844")
                 scenario("窄窗深色的兼容图和返回焦点", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
                   await hash('library/project/river');await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.scene-modes');
                   act('scene-mode','hdr');assert(el('.editor-toast.error')&&!SceneEditor.hdr()&&!modal().open);
                   act('editor-notice-dismiss',null,el('.editor-toast'));act('compatibility-graph-toggle');await page('.dag-compat-canvas');
@@ -750,7 +749,6 @@ def main():
                   assert(el('.dag-viewport').offsetHeight>=238&&el('.dag-viewport').checkVisibility(),'short window keeps full canvas');
                   el('.dag-viewport').focus();key(document.activeElement,'Escape');
                   assert(!el('.dag-floating')&&document.activeElement===el('[data-act=dag-view-toggle]'),'Esc returns to Graph');
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
                 """)
                 browser("set", "viewport", "390", "844")
                 browser("open", host + ENTRY + "?compatibilityGraph=1")
@@ -774,9 +772,9 @@ def main():
             if args.grid_export_only:
                 browser(*options, "open", host + ENTRY + "?pqReview=1")
                 for theme, width in [("light", "1280"), ("dark", "390")]:
+                    browser("set", "media", theme)
                     browser("set", "viewport", width, "844")
                     scenario("032 网格直达、选区变更与重试 · " + theme, """
-                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
                       await hash('library/project/river');await page('.photo-card');
                       if(S.multi)act('multi');act('photo','b1');act('multi');act('photo','r1');
                       const grid=()=>el('.actionbar [data-act=export]'), project=Studio.project('river');
@@ -856,7 +854,6 @@ def main():
                 """)
                 browser("set", "viewport", "390", "844")
                 scenario("038 批量：窄窗深色取消、重试及复现冲突", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
                   await hash('library/project/river');await page('.photo-card');act('photo','r1');act('multi');act('photo','b1');
                   act('selection-menu');act('dag-batch-menu',null,modal());
                   tap('.dag-menu-advanced summary',modal());act('dag-batch-samples','20',modal());
@@ -908,9 +905,9 @@ def main():
                   act('dag-view-toggle');assert(!el('.dag-floating')&&el('.developed')?.checkVisibility(),'close graph only');
                 """)
                 for theme in ['light','dark']:
+                    browser("set", "media", theme)
                     browser("set", "viewport", "390", "844")
                     scenario("038 原生评审：窄窗 "+theme+" 取景及退出", """
-                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
                       await hash('edit/basic');await page('.scene-mode-bar');act('dag-view-toggle');await page('.dag-viewport');
                       act('dag-fit');const frame=el('.dag-floating').getBoundingClientRect();
                       assert(frame.left>=0&&frame.right<=innerWidth&&el('.dag-viewport').offsetHeight>=240);
@@ -1088,9 +1085,9 @@ def main():
                     Path(scene_evidence).mkdir(parents=True, exist_ok=True)
                     browser("screenshot", str(Path(scene_evidence) / "scene-review-fit.png"))
                 for theme in ['light', 'dark']:
+                    browser("set", "media", theme)
                     browser("set", "viewport", "390", "844")
                     scenario(f"037 原生评审：390px {theme}、回退原因和离线", """
-                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
                       await hash('edit/basic');await page('.scene-mode-bar');
                       assert(document.documentElement.scrollWidth<=innerWidth,'no horizontal overflow');
                       hdrView('target');
@@ -1109,7 +1106,6 @@ def main():
                 browser(*options, "open", host + ENTRY + "?compatibilityGraph=1")
                 browser("set", "viewport", "1440", "900")
                 scenario("Node DAG 兼容评审：正常入口、主图和草稿隔离", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');
                   await hash('library/project/river');
                   await page('.photo-card');act('photo','r1');act('workflow','edit');await page('.dag-scope-head');
                   act('edit-tool','basic');await page('.scene-mode-bar');
@@ -1149,7 +1145,6 @@ def main():
                 """)
                 browser("set", "viewport", "390", "844")
                 scenario("Node DAG 兼容评审：390px 浅色布局", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','light');
                   await hash('edit/basic');await page('.dag-scope-head');
                   act('compatibility-graph-toggle','',el('.dag-scope-head'));
                   const frame=el('.dag-compat').getBoundingClientRect();
@@ -1243,15 +1238,11 @@ def main():
                 """)
                 browser("set", "viewport", "390", "844")
                 scenario("037 HDR 窄窗与外观", """
-                  const options=['light','dark'];
-                  for(const theme of options){
-                    await hash('settings/general');await page('[name=theme]');set('[name=theme]',theme);
-                    await hash('edit/basic');await page('.scene-mode-bar');
-                    const bounds=el('.edit-right').getBoundingClientRect();
-                    assert(bounds.left>=0&&bounds.right<=innerWidth&&all('.scene-modes button').length===3,'mode bar fits '+theme);
-                    showLab();assert(!modal().open&&document.documentElement.dataset.theme===theme&&el('.appearance-info').getBoundingClientRect().width<=innerWidth,'inline details fit '+theme);
-                    assert(el('[data-act=scene-screen][data-val=hdr]',el('.scene-lab')).checkVisibility(),'screen control reachable at 390px');
-                  }
+                  await hash('edit/basic');await page('.scene-mode-bar');
+                  const bounds=el('.edit-right').getBoundingClientRect();
+                  assert(bounds.left>=0&&bounds.right<=innerWidth&&all('.scene-modes button').length===3,'mode bar fits');
+                  showLab();assert(!modal().open&&getComputedStyle(document.documentElement).colorScheme==='dark'&&el('.appearance-info').getBoundingClientRect().width<=innerWidth,'inline details fit');
+                  assert(el('[data-act=scene-screen][data-val=hdr]',el('.scene-lab')).checkVisibility(),'screen control reachable at 390px');
                 """)
                 browser("set", "viewport", "1440", "900")
                 scenario("037 HDR 旧版外观冲突", """
@@ -1319,8 +1310,16 @@ def main():
             """)
             browser("open", host + ENTRY)
             browser("set", "viewport", "1440", "900")
+            browser("set", "media", "light")
             scenario("标题栏与资料库侧栏开关", """
               await page('.photo-card');
+              assert(matchMedia('(prefers-color-scheme: light)').matches&&getComputedStyle(document.documentElement).colorScheme==='dark',
+                'workbench uses dark UI under the light system preference');
+              const capsule=el('.workflow-switch'), options=all('.workflow-switch > button');
+              assert(options.length===3&&getComputedStyle(capsule).borderRadius==='999px'&&options.every(b=>b.getBoundingClientRect().height>=28),
+                'workflow tabs use the full-size capsule');
+              options[0].focus();key(options[0],'ArrowRight');
+              assert(document.activeElement===options[1]&&options[0].ariaPressed==='true','arrow moves focus without leaving the library');
               const toggle=()=>el('#chrome [data-act=drawer]');
               assert(!el('#chrome .brand,.brandmark')&&!el('#chrome').textContent.includes('RAWMaster'),'no duplicate app identity');
               assert(toggle().getAttribute('aria-pressed')==='true'&&el('.rail').checkVisibility({visibilityProperty:true}),'sidebar initially visible');
@@ -1593,8 +1592,8 @@ def main():
               tap('#cancel-job',doc);assert(el('#retry',doc).hidden&&el('#job-title',doc).textContent.includes('已取消'),'cancel ends this batch');
               tap('#close-job',doc);tap('#submit',doc);assert(f.contentWindow.location.hash!==cancelled,'new submission gets its own receipt');
               await wait(()=>el('#job-title',doc).textContent==='本批交付结果');
-              act('workflow','library');await page('.contact-grid');act('goto','settings/general');await page('[name=theme]');
-              set('[name=theme]','light');assert(document.documentElement.dataset.theme==='light','theme');set('[name=theme]','dark');
+              act('workflow','library');await page('.contact-grid');act('goto','settings/general');await page('.settings-box');
+              assert(!el('[name=theme]')&&getComputedStyle(document.documentElement).colorScheme==='dark','settings opens explicitly with a fixed dark UI');
             """)
             scenario("资料库备份、迁移、检索、检查与组片来源", """
               await hash('tools/package');act('backup-plan');act('backup-create',null,modal());assert(el('.utility-main').textContent.includes('河谷备份'),'backup');
@@ -1655,8 +1654,8 @@ def main():
             """)
             browser("set", "viewport", "390", "844")
             scenario("窄窗暗房、外观与键盘", """
-              await hash('settings/general');set('[name=theme]','light');await hash('edit/development');await page('.scene-modes');act('edit-tool','smart');await page('.smart-panel');
-              assert(document.documentElement.scrollWidth<=innerWidth&&document.documentElement.dataset.theme==='light','narrow light darkroom');
+              await hash('edit/development');await page('.scene-modes');act('edit-tool','smart');await page('.smart-panel');
+              assert(document.documentElement.scrollWidth<=innerWidth&&getComputedStyle(document.documentElement).colorScheme==='dark','narrow darkroom under the light system preference');
               const dock=el('.canvas-dock').getBoundingClientRect();
               assert(dock.left>=0&&dock.right<=innerWidth&&dock.bottom<=innerHeight,'all dock controls fit');
               const icons=all('.rail-tool');assert(icons.every(b=>b.offsetLeft===icons[0].offsetLeft)&&icons.at(-1).offsetTop>icons[0].offsetTop,'narrow vertical rail');
@@ -1666,7 +1665,6 @@ def main():
               icons[1].dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));
               el('[data-act=edit-tool][data-val=agent]').scrollIntoView();act('edit-tool','agent');await page('.agent-panel');
               const box=el('[name=aiPrompt]');box.focus();key(box,'b');assert(!el('.canvas-popover'),'typing stays in field');
-              await hash('settings/general');set('[name=theme]','dark');await hash('edit/agent');assert(el('.chat-turn')&&document.documentElement.dataset.theme==='dark','same photo across themes');
               await hash('edit/basic');await page('[data-adjustment-section=light] .adjustment-disclosure');
               if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');
               set('[data-adjustment=ev]','-0.35');
@@ -1818,11 +1816,12 @@ def main():
               conversation().strict=false;act('quick-close');
             """)
             browser("set", "viewport", "390", "844")
-            scenario("快速 Prompt 浅色窄窗与键盘退出", """
-              await hash('settings/general');set('[name=theme]','light');await hash('edit/development');await page('.canvas-dock');
+            browser("set", "media", "light")
+            scenario("快速 Prompt 深色窄窗与键盘退出", """
+              await hash('edit/development');await page('.canvas-dock');
               act('quick-open');await wait(()=>!el('.canvas-dock').classList.contains('quick-morphing'));
               const dock=el('#quick-prompt').getBoundingClientRect(), primary=el('[data-act=quick-submit]').getBoundingClientRect();
-              assert(document.documentElement.dataset.theme==='light'&&dock.left>=0&&dock.right<=innerWidth&&primary.right<=dock.right,'light narrow view');
+              assert(getComputedStyle(document.documentElement).colorScheme==='dark'&&dock.left>=0&&dock.right<=innerWidth&&primary.right<=dock.right,'dark narrow view');
               key(document.activeElement,'Escape');assert(document.activeElement.dataset.act==='quick-open'&&!el('#quick-prompt'),'keyboard exit');
             """)
             browser("set", "media", "light", "reduced-motion")
@@ -2023,10 +2022,8 @@ def main():
               assert(getComputedStyle(samplers[0].parentElement).gap==='0px'&&getComputedStyle(samplers[1],'::before').width==='1px',
                 'segments are contiguous with a separator');
               tap('.ds-section-toggle');assert(el('.ds-section-body').hidden===true,'section collapses');
-              await hash('settings/general');await page('select[name=theme]');set('[name=theme]','dark');
               await hash('tools/design');await page('.ds-page');
               assert(getComputedStyle(el('.ds-page')).color==='rgb(232, 232, 232)','dark ink applied');
-              await hash('settings/general');await page('select[name=theme]');set('[name=theme]','system');
             """)
             browser("open", host + ENTRY)
             tabs = json.loads(browser("tab", "list", "--json"))["data"]["tabs"]
@@ -2235,7 +2232,7 @@ def main():
                 """)
                 for kind in ["crop", "mask", "remove"]:
                     scenario(f"Node DAG {kind} 工具视觉与返回上下文", """
-                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
+                      await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
                       const before=JSON.stringify(Studio.edit(Studio.data.work).recipe),kind='""" + kind + """';sessionStorage.setItem('qa.canvas.before',before);
                       if(kind==='crop'){act('canvas-crop');set('[name=canvasCropwidth]',80);}
                       if(kind==='mask'){act('edit-tool','masks');maskType('颜色范围');act('canvas-mask-component');set('[name=canvasMaskOpacity]',70);foldTool('mask-refine');const scroller=el('.canvas-tool-body');scroller.scrollTop=scroller.scrollHeight;assert(el('.canvas-tool-scope').getBoundingClientRect().top>=scroller.getBoundingClientRect().top-1,'mask owner remains visible while scrolling');scroller.scrollTop=0;act('canvas-tool-fold','mask-refine');}
@@ -2248,16 +2245,16 @@ def main():
                     browser("screenshot", str(Path(dag_evidence) / f"canvas-{kind}-desktop.png"))
                     browser("eval", "actions['canvas-tool-cancel'](); if(JSON.stringify(Studio.edit(Studio.data.work).recipe)!==sessionStorage.getItem('qa.canvas.before'))throw Error('cancel changed recipe');")
             for width, height, theme in [(1440, 900, "dark"), (1440, 900, "light"), (390, 844, "dark"), (390, 844, "light")]:
+                browser("set", "media", theme)
                 browser("set", "viewport", str(width), str(height))
                 scenario(f"Node DAG {width}×{height} {theme} 布局、监看与焦点", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
                   await hash('edit/dag');await page('.dag-workspace');act('dag-fit');
                   pickNode('grade');
                   const graph=JSON.stringify(currentEdit().recipe.dag),history=currentEdit().past.length;
                   const box=el('.dag-workspace').getBoundingClientRect();
                   assert(!el('.inspector-content [data-act=dag-reset],.inspector-content [data-act=dag-preview]'),'inspector contains parameters, not duplicate graph commands');
                   assert(document.documentElement.scrollWidth<=innerWidth&&box.left>=0&&box.right<=innerWidth,'Graph fits viewport without horizontal document overflow');
-                  assert(document.documentElement.dataset.theme==='""" + theme + """','requested theme');
+                  assert(getComputedStyle(document.documentElement).colorScheme==='dark','fixed dark scheme');
                   const floating=el('.dag-floating'),windowBox=floating.getBoundingClientRect();
                   assert(getComputedStyle(floating).position==='fixed'&&floating.getAttribute('aria-modal')==='false'&&el('.edit-center .developed').checkVisibility(),'non-modal floating Graph keeps primary photo visible');
                   assert(windowBox.left>=0&&windowBox.right<=innerWidth&&windowBox.top>=0&&windowBox.bottom<=innerHeight,'floating window remains reachable within viewport');
@@ -2289,8 +2286,9 @@ def main():
                         browser("screenshot", str(Path(dag_evidence) / "node-menu-desktop.png"))
                         browser("press", "Escape")
             for theme in ['light', 'dark']:
+                browser("set", "media", theme)
                 scenario(f"Node DAG 390px {theme} 紧凑 Mask／Remove", """
-                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
+                  await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
                   const before=JSON.stringify(currentEdit().recipe),past=currentEdit().past.length;
                   const bounds=()=>{const dock=el('.canvas-compact-tool').getBoundingClientRect(),canvas=el('.dark-canvas').getBoundingClientRect();assert(dock.left>=0&&dock.right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth&&canvas.height>=150&&canvas.bottom<=dock.top+1,'narrow compact panel keeps photo space without overlap or horizontal overflow');};
                   tap('[data-canvas-tool=mask] button');await wait(()=>el('.canvas-tool-dock').getAnimations().every(a=>a.playState==='finished'));bounds();

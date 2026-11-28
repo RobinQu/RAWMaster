@@ -20,10 +20,10 @@
   display: block;
   width: min(672px, calc(100% - 24px));
   padding: 10px 12px;
-  border: 1px solid light-dark(#fff, #b9d1da60);
+  border: 1px solid #b9d1da60;
   border-radius: 22px;
-  background: light-dark(#f7faf6e9, #20292de8);
-  box-shadow: inset 0 1px 0 light-dark(#fff8, #ffffff12), 0 8px 34px #0005;
+  background: #20292de8;
+  box-shadow: inset 0 1px 0 #ffffff12, 0 8px 34px #0005;
   backdrop-filter: blur(20px) saturate(135%);
 }
 .quick-morphing {
@@ -72,11 +72,11 @@
   width: 100%;
   min-height: 108px;
   padding: 10px 11px;
-  border: 1px solid light-dark(#a3b0ac, #677b80);
+  border: 1px solid #677b80;
   border-radius: 10px;
   resize: vertical;
   max-height: 180px;
-  background: light-dark(#ffffffe5, #141c20ed);
+  background: #141c20ed;
   color: var(--text);
   font: inherit;
 }

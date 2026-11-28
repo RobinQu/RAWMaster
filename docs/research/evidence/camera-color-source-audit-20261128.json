@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-28",
+  "tool": "FlashRaw 0.3.1 read_metadata via output/tools/flashraw-python (Python 3.12)",
+  "root": "/Volumes/SM9100-8T/RAW Dumps",
+  "scope": "Full metadata scan of all ARW and DNG files under the authorized library root; no pixel decode.",
+  "files": {
+    "arw": 13312,
+    "dng": 2200,
+    "total": 15512,
+    "arwShare": 0.8582,
+    "dngShare": 0.1418
+  },
+  "models": [
+    {
+      "model": "ILCE-1M2",
+      "display": "Sony A1 II",
+      "format": "ARW",
+      "files": 8810,
+      "colorSource": "camera-db",
+      "colorMatrixCount": 1,
+      "illuminants": ["D65"],
+      "forwardMatrix": false,
+      "calibration": false,
+      "dngProfileToneCurve": null,
+      "dngHueSatMap": null,
+      "dngNoiseProfile": null,
+      "currentSceneColorGate": "pass"
+    },
+    {
+      "model": "ILCE-7RM5",
+      "display": "Sony A7R V",
+      "format": "ARW",
+      "files": 4502,
+      "colorSource": "camera-db",
+      "colorMatrixCount": 1,
+      "illuminants": ["D65"],
+      "forwardMatrix": false,
+      "calibration": false,
+      "dngProfileToneCurve": null,
+      "dngHueSatMap": null,
+      "dngNoiseProfile": null,
+      "currentSceneColorGate": "pass"
+    },
+    {
+      "model": "LEICA Q3 43",
+      "display": "Leica Q3 43",
+      "format": "DNG 1.4.0.0",
+      "files": 1078,
+      "colorSource": "file",
+      "colorMatrixCount": 2,
+      "illuminants": ["Standard Light A (2856 K)", "D65 (6500 K)"],
+      "forwardMatrix": false,
+      "calibration": false,
+      "asShotNeutral": [0.5517241379310345, 1.0, 0.41830065359477125],
+      "dngProfileToneCurve": false,
+      "dngHueSatMap": false,
+      "dngNoiseProfile": false,
+      "currentSceneColorGate": "reject: file source and two color matrices"
+    },
+    {
+      "model": "FC9313",
+      "display": "DJI FC9313",
+      "format": "DNG 1.4.0.0",
+      "files": 1122,
+      "colorSource": "file",
+      "colorMatrixCount": 2,
+      "illuminants": ["Standard Light A (2856 K)", "D65 (6500 K)"],
+      "forwardMatrix": false,
+      "calibration": false,
+      "asShotNeutral": [0.4400042969169621, 1.0, 0.6274509803921569],
+      "baselineExposure": 1.5,
+      "dngProfileName": "Embedded",
+      "dngProfileToneCurve": true,
+      "dngHueSatMapDims": [36, 10, 1],
+      "dngHueSatMapCount": 2,
+      "dngNoiseProfile": [8.069488261e-05, 2.238967267e-07],
+      "currentSceneColorGate": "reject: file source and two color matrices"
+    }
+  ],
+  "currentScenePath": {
+    "gate": "Sources/CFlashRaw/CFlashRaw.c:261-270",
+    "conditions": [
+      "file_color_source == FLASHRAW_COLOR_SOURCE_CAMERA_DB",
+      "frame_color_matrix_count(COLOR) == 1",
+      "matrix.illuminant == 21 (D65)",
+      "no ForwardMatrix",
+      "no CameraCalibration"
+    ],
+    "implication": "ARW samples carry a database matrix and pass the color gate; all DNG samples carry a file matrix with two illuminants and are rejected before decode."
+  },
+  "spike": {
+    "worktree": "scene-dng-spike",
+    "test": "Tests/RAWMasterImagingTests/DevelopmentSceneDNGSpikeTests.swift",
+    "method": "Scene Bayer decode with RAWMASTER_SCENE_DNG=1; nine 256x256 native tiles at 15/50/85% of the crop; only the selected file ColorMatrix changes (0 = Standard Light A, 1 = D65).",
+    "results": [
+      {
+        "file": "L1080058.DNG",
+        "camera": "LEICA Q3 43",
+        "meanAbsDifference": 0.0016571203,
+        "p95": 0.0062115295,
+        "max": 0.26597738,
+        "pixelsAbove0_01": 8457,
+        "pixels": 589824,
+        "maxPairAP1": {
+          "matrix0": [1.4817066, 0.5165318, 2.9250314],
+          "matrix1": [1.747684, 0.5910908, 3.1380093]
+        }
+      },
+      {
+        "file": "DJI_20260929165142_0052_D.DNG",
+        "camera": "DJI FC9313",
+        "meanAbsDifference": 0.0013932186,
+        "p95": 0.0030918196,
+        "max": 0.0133009255,
+        "pixelsAbove0_01": 86,
+        "pixels": 589824,
+        "maxPairAP1": {
+          "matrix0": [0.20723827, 0.17706914, 0.07830402],
+          "matrix1": [0.21000664, 0.16376822, 0.065847434]
+        }
+      },
+      {
+        "file": "DSC03738.ARW",
+        "camera": "Sony ILCE-7RM5",
+        "meanAbsDifference": 0.0,
+        "p95": 0.0,
+        "max": 0.0,
+        "pixelsAbove0_01": 0,
+        "pixels": 589824,
+        "note": "Control: one database matrix, matrix index 1 falls back to 0."
+      }
+    ],
+    "interpretation": "The global mean is small, but the Q3 p95 and maximum show locally meaningful changes on saturated or bright pixels; a colour-chart comparison is still needed before choosing between nearest-illuminant and mired interpolation."
+  },
+  "limitations": [
+    "Only the cameras present in the local library were scanned; other brands and file modes are not represented.",
+    "Metadata only: black/white level, CFA geometry, orientation and crop were not re-qualified in this scan.",
+    "A pass of the color gate does not prove color accuracy; it only means the current qualification accepts the file.",
+    "The DNG profile tone curve and HueSatMap are recorded but their rendering policy is not decided."
+  ]
+}

@@ -1,18 +1,18 @@
 :root {
-  color-scheme: light dark;
-  --paper: light-dark(#f7f8f7, #181b1d);
-  --panel: light-dark(#fcfcfb, #202427);
-  --rail: light-dark(#eff1f0, #1c2023);
-  --inset: light-dark(#e8ebea, #15191b);
-  --text: light-dark(#20282a, #edf1f1);
-  --muted: light-dark(#586568, #acb7ba);
-  --line: light-dark(#d6ddda, #394044);
-  --accent: light-dark(#056477, #87d8e8);
-  --active: light-dark(#d9edef, #203e45);
-  --primary: light-dark(#14687a, #8bd5e3);
-  --on-primary: light-dark(#fff, #0c3139);
-  --warn: light-dark(#8d511e, #f0b986);
-  --shade: light-dark(#ffffff82, #0002);
+  color-scheme: dark;
+  --paper: #181b1d;
+  --panel: #202427;
+  --rail: #1c2023;
+  --inset: #15191b;
+  --text: #edf1f1;
+  --muted: #acb7ba;
+  --line: #394044;
+  --accent: #87d8e8;
+  --active: #203e45;
+  --primary: #8bd5e3;
+  --on-primary: #0c3139;
+  --warn: #f0b986;
+  --shade: #0002;
   --edge: clamp(18px, 2.2vw, 38px);
   font:
     14px/1.5 -apple-system,
@@ -23,12 +23,6 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
-}
-:root[data-theme='light'] {
-  color-scheme: light;
-}
-:root[data-theme='dark'] {
-  color-scheme: dark;
 }
 * {
   box-sizing: border-box;
@@ -254,8 +248,38 @@ small {
 .library-switch-note {
   margin-top: 10px;
 }
-.workflow-switch.button-group > button {
-  min-width: 72px;
+.workflow-switch {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--inset);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.workflow-switch > button {
+  min-height: 28px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.workflow-switch > button:enabled:hover {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+.workflow-switch > button[aria-pressed='true'] {
+  background: var(--active);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+  color: var(--text);
+  font-weight: 650;
+}
+.workflow-switch > button:focus-visible {
+  outline: 1.5px solid var(--focus-ink);
+  outline-offset: -2px;
+  text-decoration: none;
 }
 .chrome-actions {
   display: flex;
@@ -1382,15 +1406,12 @@ dialog::backdrop {
     height: 52px;
     gap: 4px;
   }
-  .workflow-switch.button-group > button {
-    min-width: 0;
+  .workflow-switch > button {
+    padding-inline: 9px;
   }
   .library-window-title {
     padding-inline: 3px;
     font-size: 12px;
-  }
-  .workflow-switch .icon {
-    display: none;
   }
   .chrome-actions {
     gap: 1px;

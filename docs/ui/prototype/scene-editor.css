@@ -38,9 +38,9 @@
 .edit-center { position: relative; }
 .editor-notices { position: absolute; z-index: 12; top: 8px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 16px); max-height: 42%; overflow: auto; display: grid; gap: 4px; }
 .editor-notices:empty { display: none; }
-.editor-notices .editor-toast {display:flex;align-items:center;gap:6px;max-width:min(370px,100%);padding:4px 6px 4px 9px;border:1px solid light-dark(#0002,#fff3);border-radius:10px;background:light-dark(#f6f6f2ec,#333438eb);color:var(--text);font-size:11px;line-height:1.35;box-shadow:0 2px 8px #0002;backdrop-filter:blur(14px);}
+.editor-notices .editor-toast {display:flex;align-items:center;gap:6px;max-width:min(370px,100%);padding:4px 6px 4px 9px;border:1px solid #fff3;border-radius:10px;background:#333438eb;color:var(--text);font-size:11px;line-height:1.35;box-shadow:0 2px 8px #0002;backdrop-filter:blur(14px);}
 .editor-toast .icon {flex:none;width:13px;height:13px}
-.editor-toast.error > .icon {color:light-dark(#a95219,#efae70)}
+.editor-toast.error > .icon {color:#efae70}
 .editor-toast span {flex:1;overflow-wrap:anywhere}
 .editor-toast button {flex:none;min-height:22px;min-width:22px;padding:3px;border:0;background:transparent;color:inherit}
 .scene-previews {width:100%;margin-top:6px}

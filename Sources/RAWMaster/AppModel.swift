@@ -165,7 +165,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var editing: EditingController?
     @Published private(set) var editingServices: ApplicationEditingServices?
     @Published var settingsPage: ApplicationSettingsPage = .general
-    @Published private(set) var settingsRequestID = UUID()
+    @Published private(set) var settingsRequestID: UUID?
     private var editingObservation: AnyCancellable?
     private var editingServicesObservation: AnyCancellable?
     private var archivePreparation: Task<Void, Never>?

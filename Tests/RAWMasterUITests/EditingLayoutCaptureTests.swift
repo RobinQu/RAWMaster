@@ -49,7 +49,7 @@ final class EditingLayoutCaptureTests: XCTestCase {
         await editing.shutdown()
     }
     @MainActor private func capture<V: View>(_ view: V, size: NSSize, dark: Bool, output: URL, name: String) async throws -> [String: String] {
-        let root = view.background(AppPalette.panel).preferredColorScheme(dark ? .dark : .light).environment(\.resolvedAppAppearance, dark ? .dark : .light).frame(width: size.width, height: size.height)
+        let root = view.background(AppPalette.panel).preferredColorScheme(dark ? .dark : .light).frame(width: size.width, height: size.height)
         let host = NSHostingView(rootView: root); host.sizingOptions = []; host.frame = NSRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false; window.appearance = NSAppearance(named: dark ? .darkAqua : .aqua)

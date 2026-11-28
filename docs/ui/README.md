@@ -47,7 +47,7 @@ python3 scripts/check-ui-prototype.py
 
 用 `python3 scripts/check-ui-prototype.py --local-library-only` 走查 042 的本地库包与任务。`--library-server-only` 用于 040／041 的连接和远端任务。
 
-手工复查时，把窗口从桌面三栏收窄到信息栏变为抽屉。用 Tab 逐项到达操作，用 Escape 收起弹窗，在搜索框内输入 P/X 和数字。逐项核对选中状态、主操作可用性、空结果和返回位置。用设置切换主题，查看画布、选中描边、次要文字与键盘焦点。真实应用中的 VoiceOver、窗口菜单、RAW 像素、GPU 呈现与文件结果由对应原生验收覆盖。[操作场景与验证记录](coverage.md) · [编辑暗房专项走查](../../specs/025-editing-workspace/prototype-review.md)
+手工复查时，把窗口从桌面三栏收窄到信息栏变为抽屉。用 Tab 逐项到达操作，用 Escape 收起弹窗，在搜索框内输入 P/X 和数字。逐项核对选中状态、主操作可用性、空结果和返回位置。工作台固定深色，可用浏览器模拟不同系统外观，核对画布、选中描边、次要文字与键盘焦点。真实应用中的 VoiceOver、窗口菜单、RAW 像素、GPU 呈现与文件结果由对应原生验收覆盖。[操作场景与验证记录](coverage.md) · [顶栏、启动与深色界面](../../specs/025-editing-workspace/workbench-chrome.md)
 
 ## 文件归属
 

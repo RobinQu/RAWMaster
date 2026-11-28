@@ -193,7 +193,6 @@ final class LibraryCatalogCaptureTests: XCTestCase {
         let observation = AccessibilityObservation()
         let content = WorkbenchView().environmentObject(model)
             .preferredColorScheme(dark ? .dark : .light)
-            .environment(\.resolvedAppAppearance, dark ? .dark : .light)
             .background(AccessibilityProbe(observation: observation))
             .frame(width: size.width, height: size.height)
         let host = NSHostingView(rootView: content)
@@ -250,7 +249,7 @@ final class LibraryCatalogCaptureTests: XCTestCase {
         }
         .padding(28).frame(width: size.width, height: size.height, alignment: .leading)
         .background(AppPalette.canvas).environmentObject(model)
-        .preferredColorScheme(.light).environment(\.resolvedAppAppearance, .light)
+        .preferredColorScheme(.light)
         .background(AccessibilityProbe(observation: observation))
         let host = NSHostingView(rootView: content)
         host.sizingOptions = []; host.frame = NSRect(origin: .zero, size: size)

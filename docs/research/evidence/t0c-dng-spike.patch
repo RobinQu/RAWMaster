@@ -1,0 +1,76 @@
+diff --git a/Sources/CFlashRaw/CFlashRaw.c b/Sources/CFlashRaw/CFlashRaw.c
+index c2e07c73..50a72cc7 100644
+--- a/Sources/CFlashRaw/CFlashRaw.c
++++ b/Sources/CFlashRaw/CFlashRaw.c
+@@ -215,6 +215,18 @@ rm_flashraw_frame_info rm_flashraw_frame_get_info(rm_flashraw_frame *frame) {
+     return info;
+ }
+ 
++static int rm_scene_dng_opt_in(void) {
++    const char *enabled = getenv("RAWMASTER_SCENE_DNG");
++    return enabled && enabled[0] == '1' && enabled[1] == '\0';
++}
++
++static uint32_t rm_scene_matrix_index(uint32_t count) {
++    const char *value = getenv("RAWMASTER_SCENE_MATRIX");
++    long index = value ? strtol(value, NULL, 10) : 0;
++    if (index < 0 || (uint32_t)index >= count) return 0;
++    return (uint32_t)index;
++}
++
+ int rm_flashraw_scene_dimensions(const rm_flashraw_context *context, uint32_t *width, uint32_t *height) {
+     if (!context || !width || !height) return 0;
+     __typeof__(&flashraw_file_format_name) format = symbol(context->library, "flashraw_file_format_name");
+@@ -222,7 +234,7 @@ int rm_flashraw_scene_dimensions(const rm_flashraw_context *context, uint32_t *w
+     __typeof__(&flashraw_file_raw_height) raw_height = symbol(context->library, "flashraw_file_raw_height");
+     if (!format || !raw_width || !raw_height) return 0;
+     const char *name = format(context->file);
+-    if (!name || strcmp(name, "ARW") != 0) return 0;
++    if (!name || (strcmp(name, "ARW") != 0 && !(rm_scene_dng_opt_in() && strcmp(name, "DNG") == 0))) return 0;
+     *width = raw_width(context->file);
+     *height = raw_height(context->file);
+     return *width > 0 && *height > 0;
+@@ -258,16 +270,24 @@ int rm_flashraw_frame_scene_bayer(rm_flashraw_frame *frame, rm_flashraw_scene_ba
+     float black_levels[4];
+     float white_balance[4];
+     uint32_t white_level;
++    const int dng_opt_in = rm_scene_dng_opt_in();
++    int32_t color_source = file_color_source(c->file);
++    uint32_t color_count = frame_color_matrix_count(f, FLASHRAW_MATRIX_COLOR);
+     if (c->frame_origin(f, &x, &y) != FLASHRAW_OK || x != 0 || y != 0 ||
+         !rm_flashraw_scene_dimensions(c, &width, &height) || c->frame_width(f) != width || c->frame_height(f) != height ||
+         file_active_area(c->file, &active) != FLASHRAW_OK || file_crop(c->file, &crop) != FLASHRAW_OK ||
+-        file_color_source(c->file) != FLASHRAW_COLOR_SOURCE_CAMERA_DB ||
+-        frame_color_matrix_count(f, FLASHRAW_MATRIX_COLOR) != 1 || frame_color_matrix_count(f, FLASHRAW_MATRIX_FORWARD) != 0 ||
++        !(color_source == FLASHRAW_COLOR_SOURCE_CAMERA_DB ||
++          (dng_opt_in && color_source == FLASHRAW_COLOR_SOURCE_FILE)) ||
++        color_count < 1 || color_count > (dng_opt_in ? 2u : 1u) ||
++        frame_color_matrix_count(f, FLASHRAW_MATRIX_FORWARD) != 0 ||
+         frame_color_matrix_count(f, FLASHRAW_MATRIX_CALIBRATION) != 0 ||
+-        frame_color_matrix(f, FLASHRAW_MATRIX_COLOR, 0, &matrix) != FLASHRAW_OK || matrix.rows != 3 || matrix.cols != 3 || matrix.illuminant != 21 ||
+         !frame_cfa(f, &cfa) || cfa.width != 2 || cfa.height != 2 ||
+         !frame_white_balance(f, white_balance) || frame_white_balance_applied(f) ||
+         frame_white_level(f, &white_level, 1) != 1) return 0;
++    uint32_t color_index = dng_opt_in ? rm_scene_matrix_index(color_count) : 0;
++    if (frame_color_matrix(f, FLASHRAW_MATRIX_COLOR, color_index, &matrix) != FLASHRAW_OK ||
++        matrix.rows != 3 || matrix.cols != 3 ||
++        !(matrix.illuminant == 21 || (dng_opt_in && matrix.illuminant == 17))) return 0;
+     size_t nblack = frame_black_level(f, &black_info, black_levels, 4);
+     if (nblack == 0 || nblack > 4 || black_info.has_deltas || black_info.samples != 1 ||
+         (black_info.rows != 1 && black_info.rows != 2) || (black_info.cols != 1 && black_info.cols != 2) ||
+diff --git a/Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift b/Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift
+index af06806a..0be3b012 100644
+--- a/Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift
++++ b/Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift
+@@ -92,7 +92,10 @@ final class DevelopmentSceneRAWV1 {
+ 
+   private static func sensorFrame(_ url: URL) throws -> (FlashRawFrame, Sensor) {
+     try Task.checkCancellation()
+-    guard url.isFileURL, url.pathExtension.lowercased() == "arw" else {
++    let dngOptIn = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DNG"] == "1"
++    let extensionOK = url.pathExtension.lowercased() == "arw" ||
++      (dngOptIn && url.pathExtension.lowercased() == "dng")
++    guard url.isFileURL, extensionOK else {
+       throw Calibration.Failure.unqualifiedSource
+     }
+     let source = try FlashRawSource.open(url)

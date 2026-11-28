@@ -22,6 +22,7 @@ enum AppDesign {
         static let iconButtonSize: CGFloat = 26
         /// 分组按钮的高度与内部分隔线尺寸。
         static let tabHeight: CGFloat = 24
+        static let workflowTabHeight: CGFloat = 28
         static let segmentDividerHeight: CGFloat = 14
         static let segmentDividerWidth: CGFloat = 1
         static let segmentFocusInset: CGFloat = 2
@@ -29,8 +30,8 @@ enum AppDesign {
         static let checkboxSize: CGFloat = 14
         /// 勾选框内对勾符号的字号。
         static let checkboxGlyph: CGFloat = 9
-        /// 设置窗口的固定内容尺寸。
-        static let settingsFormSize = CGSize(width: 510, height: 325)
+        /// 设置窗口的初始内容尺寸。
+        static let settingsWindowSize = CGSize(width: 820, height: 660)
     }
 
     /// 间距只有四档，另外两档是面板内边距，避免出现 3、5、9 这类一次性数值。
@@ -47,6 +48,8 @@ enum AppDesign {
         static let inspectorInset: CGFloat = 12
         /// 弹窗、旧版检查器和导出面板的内边距。
         static let panelInset: CGFloat = 14
+        static let workflowCapsulePadding: CGFloat = 3
+        static let workflowTabInset: CGFloat = 15
     }
 
     /// 圆角按“图形—控件—容器—输入区”四档使用，不允许为单个视图另立数值。
