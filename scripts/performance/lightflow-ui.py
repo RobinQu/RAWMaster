@@ -27,7 +27,8 @@ from urllib.request import urlopen
 
 import websocket
 
-from canvas_latency import POLICY, load_frames, score, warmup_states
+from canvas_latency import (NATIVE_ROI_PROTOCOL, NATIVE_ROI_SCOPE, POLICY, capture_native_roi_screenshot,
+                            load_frames, native_roi_geometry, score, warmup_states)
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CHROME = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
@@ -37,6 +38,7 @@ DEFAULT_SHELL = (
 )
 EDITOR = "assets/index-zP4kU_H7.js"
 EDITOR_SHA = "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e"
+NATIVE_ROI_SOURCE_SHA256 = "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
 
 
 class DevTools:
@@ -432,6 +434,49 @@ def set_zoom(cdp, photo_width):
     return wait_for(matched, "requested displayed photo size")
 
 
+def wait_for_native_roi(cdp, window, source_roi):
+    last_error = None
+
+    def matched():
+        nonlocal last_error
+        view = view_geometry(cdp)
+        if view is None:
+            return None
+        view["developView"] = cdp.evaluate("""(() => {
+          const {zoom,center,status} = window.__lightflow.stores.develop.get();
+          const canvas=document.querySelector('lightflow-viewer canvas');
+          return {zoom,center,viewerIdle:!!canvas && canvas.dataset.busy!=='1' && !status.decoding};
+        })()""")
+        if not view["developView"]["viewerIdle"]:
+            return None
+        try:
+            return view, native_roi_geometry(view, window, source_roi)
+        except ValueError as error:
+            last_error = error
+            return None
+
+    try:
+        return wait_for(matched, "a settled 1:1 frame with the requested source ROI")
+    except TimeoutError as error:
+        if last_error:
+            raise ValueError(f"Could not capture the requested native ROI: {last_error}") from error
+        raise
+
+
+def set_native_roi(cdp, window, source_roi):
+    frame = wait_for(lambda: view_geometry(cdp), "full-resolution source before setting native zoom")["frame"]
+    x, y, width, height = source_roi
+    if [frame["frameW"], frame["frameH"]] != [9504, 6336] or x + width > frame["frameW"] or y + height > frame["frameH"]:
+        raise ValueError("Native ROI requires the uncropped 9504×6336 Sony source and an in-bounds rectangle")
+    center = {"x": (x + width / 2) / frame["frameW"], "y": (y + height / 2) / frame["frameH"]}
+    cdp.evaluate("""((center) => {
+      const app=window.__lightflow;
+      app.develop.setZoom(1);
+      app.stores.develop.set({center});
+    })(""" + json.dumps(center) + ")")
+    return wait_for_native_roi(cdp, window, source_roi)
+
+
 def commit_control(cdp, locator, label, value):
     prepare(cdp, label, value, locator)
     timing = commit(cdp)
@@ -603,10 +648,17 @@ def capture(cdp, session, args):
         raise ValueError(
             "new output file, at least two measured samples, nonnegative warmup and 0.5 s settle required"
         )
+    source_roi = getattr(args, "source_roi", None)
+    if source_roi and (not args.frames or not session.get("electron") or args.operations not in (None, ["light-exposure"])
+                       or min(source_roi[:2]) < 0 or min(source_roi[2:]) <= 0):
+        raise ValueError("1:1 source ROI needs the isolated Electron window, --frames and one in-bounds exposure operation")
     warmup_order = warmup_states(args.warmup)
     with args.raw.open("rb") as source:
-        if hashlib.file_digest(source, "sha256").hexdigest() != session["sourceSHA256"]:
+        source_sha = hashlib.file_digest(source, "sha256").hexdigest()
+        if source_sha != session["sourceSHA256"]:
             raise ValueError("Photo changed since the stock editor opened it")
+        if source_roi and source_sha != NATIVE_ROI_SOURCE_SHA256:
+            raise ValueError("The native ROI workload requires the authorized 8f96…91e1c Sony ARW")
     bundle = session.get("windowBundle", "com.google.Chrome")
     windows = json.loads(subprocess.check_output([args.binary, "list", bundle]))
     matches = [w for w in windows if w["title"] == session["title"] and
@@ -616,23 +668,20 @@ def capture(cdp, session, args):
             f"exact LightFlow window unavailable, title {session['title']}"
         )
     (window,) = matches
-    scale = args.photo_width / float(view_geometry(cdp)["frame"]["frameW"])
-    cdp.evaluate("window.__lightflow.develop.setZoom(" + json.dumps(scale) + ")")
-
-    def matched():
-        v = view_geometry(cdp)
-        return v if v and abs(v["metrics"]["scale"] - scale) < 1e-4 else None
-
-    view = wait_for(matched, "requested display size")
-    bounds, roi = photo_roi(view, window)
-    expected_height = args.photo_width * view["frame"]["frameH"] / view["frame"]["frameW"]
-    if abs(bounds[2] - args.photo_width) > 1 or abs(bounds[3] - expected_height) > 1:
-        raise ValueError("Visible photo does not match the requested real RAW display size")
+    if source_roi:
+        view, geometry = set_native_roi(cdp, window, source_roi)
+        roi = geometry["sampleROINormalized"]
+    else:
+        view = set_zoom(cdp, args.photo_width)
+        bounds, roi = photo_roi(view, window)
+        expected_height = args.photo_width * view["frame"]["frameH"] / view["frame"]["frameW"]
+        if abs(bounds[2] - args.photo_width) > 1 or abs(bounds[3] - expected_height) > 1:
+            raise ValueError("Visible photo does not match the requested real RAW display size")
     with args.binary.open("rb") as binary:
         recorder_hash = hashlib.file_digest(binary, "sha256").hexdigest()
     result = {
         "schemaVersion": 1,
-        "protocol": "screen-photo-response-v1",
+        "protocol": NATIVE_ROI_PROTOCOL if source_roi else "screen-photo-response-v1",
         "application": "LightFlow",
         "build": session["build"],
         "uiSHA256": session["uiSHA256"],
@@ -650,12 +699,15 @@ def capture(cdp, session, args):
         "startedAt": datetime.now(timezone.utc).isoformat(),
         "sourceSHA256": session["sourceSHA256"],
         "window": window,
-        "photoRectPixels": bounds,
         "roi": roi,
         "policy": POLICY,
         "operations": {},
         "viewport": view,
     }
+    if source_roi:
+        result["nativeROI"] = geometry
+    else:
+        result["photoRectPixels"] = bounds
     args.output.parent.mkdir(parents=True, exist_ok=True)
     frame_folder = getattr(args,"frames",None)
     if frame_folder:
@@ -667,32 +719,46 @@ def capture(cdp, session, args):
         pending.replace(args.output)
 
     with tempfile.TemporaryDirectory(prefix="rawmaster-lightflow-frames-") as temp:
-        for identity in args.operations or CASES:
+        for identity in args.operations or (["light-exposure"] if source_roi else CASES):
             group, key, first, second = CASES[identity]
             try:
                 locator, control = select_control(cdp, group, key)
 
                 def set_value(value):
                     prepare(cdp, control["label"], value, locator)
+                    focus = None
+                    if source_roi:
+                        focus = cdp.evaluate(f"""(() => {{
+                          const slider=document.querySelector({locator}), input=document.activeElement;
+                          return slider?.contains(input) && input.tagName==='INPUT'
+                            ? {{slider:slider.dataset.id,label:input.getAttribute('aria-label'),prepared:input.value}} : null;
+                        }})()""")
+                        if focus != {"slider": "base.exposure", "label": control["label"], "prepared": str(value)}:
+                            raise ValueError("The committed input was not focused on the prepared Exposure field")
                     timing = commit(cdp)
                     actual = cdp.evaluate(f"""(async () => {{
                       await new Promise(requestAnimationFrame);
                       const track = document.querySelector({locator}).querySelector('[role=slider]');
                       return Number(track.getAttribute('aria-valuenow'));
                     }})()""")
-                    return {
+                    event = {
                         **timing,
                         "value": value,
                         "actual": actual,
                         "accepted": actual is not None
                         and abs(actual - float(value)) < 1e-4,
                     }
+                    if source_roi:
+                        event["focus"] = focus
+                    return event
 
                 # Both calibration targets must be real transitions, even when the initial UI contains zero.
                 seed = (first, second)[1 - warmup_order[0]] if warmup_order else second
                 if not set_value(seed)["accepted"] and warmup_order:
                     raise ValueError("Could not prepare the initial state for warmup")
                 time.sleep(args.settle)
+                if source_roi and wait_for_native_roi(cdp, window, source_roi)[1] != geometry:
+                    raise ValueError("The native ROI moved while preparing Exposure")
                 file = Path(temp) / f"{identity}.bin"
                 stream = subprocess.Popen(
                     [
@@ -739,11 +805,36 @@ def capture(cdp, session, args):
                     time.sleep(args.settle)
                 if stream.returncode:
                     raise ValueError("ScreenCaptureKit stopped unexpectedly")
-                if photo_roi(view_geometry(cdp), window)[0] != bounds:
+                if source_roi:
+                    if wait_for_native_roi(cdp, window, source_roi)[1] != geometry:
+                        raise ValueError("The native ROI moved during the measured input sequence")
+                elif photo_roi(view_geometry(cdp), window)[0] != bounds:
                     raise ValueError("displayed image bounds changed during the test")
                 row = score(load_frames(file), events, end)
                 if not all(event["accepted"] for event in warmup):
                     row.update(status="inconclusive", reason="An unscored warmup did not commit its requested value")
+                if source_roi and not all(event["accepted"] for event in events[:2]):
+                    row.update(status="inconclusive", reason="A native ROI calibration input did not commit its requested value")
+                if source_roi and row["status"] == "measured":
+                    snapshots = []
+                    try:
+                        for state, value in enumerate((first, second)):
+                            event = set_value(value)
+                            if not event["accepted"]:
+                                raise ValueError("A screenshot reference exposure did not commit")
+                            time.sleep(args.settle)
+                            witnessed_view, witnessed_geometry = wait_for_native_roi(cdp, window, source_roi)
+                            if witnessed_geometry != geometry:
+                                raise ValueError("The native ROI moved during a screenshot witness")
+                            image = frame_folder / f"{identity}-1to1-{state}.png"
+                            snapshot = capture_native_roi_screenshot(image, window, geometry)
+                            snapshots.append(dict(snapshot, state=state, event=event, viewport=witnessed_view))
+                    finally:
+                        set_value(control["value"])
+                        time.sleep(args.settle)
+                    if snapshots[0]["rgbSHA256"] == snapshots[1]["rgbSHA256"] or snapshots[0]["meanLuma"] >= snapshots[1]["meanLuma"]:
+                        raise ValueError("The full-resolution ROI screenshots did not witness brighter Exposure B pixels")
+                    row["nativeScreenshots"] = snapshots
                 if frame_folder:
                     shutil.copyfile(file,frame_folder/(identity+".bin"))
                     markers = {"events": events, "warmup": warmup, "endNs": end}
@@ -752,7 +843,7 @@ def capture(cdp, session, args):
                     values=[first, second],
                     displayLabel=control["label"],
                     calibration=events[:2],
-                    scope="central 60% of displayed photo",
+                    scope=NATIVE_ROI_SCOPE if source_roi else "central 60% of displayed photo",
                 )
                 if args.warmup:
                     row["warmup"] = warmup
@@ -810,9 +901,12 @@ def main():
     run.add_argument("--output", type=Path, required=True)
     run.add_argument("--frames",type=Path,help="Retain the sampled screen pixels and committed input markers")
     run.add_argument("--operations", nargs="+", choices=CASES)
-    run.add_argument("--photo-width", type=int, default=2368)
-    run.add_argument("--samples", type=int, default=10)
-    run.add_argument("--warmup", type=int, default=0, help="Unscored alternating changes before A/B calibration")
+    framing = run.add_mutually_exclusive_group()
+    framing.add_argument("--photo-width", type=int, default=2368)
+    framing.add_argument("--source-roi", type=int, nargs=4, metavar=("X", "Y", "W", "H"),
+                         help="Use a noncentral source-pixel ROI at 1:1 on the pinned Sony RAW (Exposure only)")
+    run.add_argument("--samples", type=int, help="Measured changes, default 10 for FIT or 30 for source ROI")
+    run.add_argument("--warmup", type=int, help="Unscored changes before A/B calibration, default 0 for FIT or 5 for source ROI")
     run.add_argument("--settle", type=float, default=0.8)
     compositor = commands.add_parser("compositor")
     compositor.add_argument("--session", type=Path, required=True)
@@ -869,6 +963,10 @@ def main():
         from lightflow_jpeg_wb import capture_rendered_wb
         capture_rendered_wb(cdp, session, args, (select_control, commit_control, compositor_geometry, set_zoom, view_geometry))
     elif args.cmd == "capture":
+        if args.samples is None:
+            args.samples = 30 if args.source_roi else 10
+        if args.warmup is None:
+            args.warmup = 5 if args.source_roi else 0
         capture(cdp, session, args)
     elif args.cmd == "inspect":
         print(json.dumps(view_geometry(cdp), indent=2))

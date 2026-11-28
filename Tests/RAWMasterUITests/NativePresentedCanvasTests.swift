@@ -226,6 +226,13 @@ final class NativePresentedCanvasTests: XCTestCase {
         throw XCTSkip("The presented canvas benchmark requires Release")
         #endif
         let diagnostics = env["RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS"] == "1"
+        let requestedROI: [Int]?
+        if let encodedROI = env["RAWMASTER_PRESENTED_CANVAS_SOURCE_ROI"] {
+            let pixels = encodedROI.split(separator: ",").compactMap { Int($0) }
+            guard pixels.count == 4, pixels.prefix(2).allSatisfy({ $0 >= 0 }),
+                  pixels.suffix(2).allSatisfy({ $0 > 0 }) else { throw Failure.invalid("Source ROI") }
+            requestedROI = pixels
+        } else { requestedROI = nil }
         _ = NSApplication.shared
         // A foreground editor receives normal interactive scheduling. Keep the deliberately
         // background test host out of App Nap without taking focus or preventing idle sleep.
@@ -264,21 +271,79 @@ final class NativePresentedCanvasTests: XCTestCase {
                 editing.previews.primary.currentFrameWasDrawn && editing.previews.primary.frame?.quality != .interactive
             }
             host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
+            let canvas = try XCTUnwrap(findCanvas(host)), factor = window.backingScaleFactor
+            let sourceWidth = try XCTUnwrap(asset.width), sourceHeight = try XCTUnwrap(asset.height)
+            func capturedPixels(_ rect: CGRect) -> [Int] {
+                let inWindow = canvas.convert(rect, to: nil)
+                return [inWindow.minX, window.frame.height - inWindow.maxY, inWindow.width, inWindow.height]
+                    .map { Int(($0 * factor).rounded()) }
+            }
+            var captureRect: [Int]?
+            func detailCapture(_ requested: [Int]) throws -> [Int] {
+                let snapshot = canvas.viewportSnapshot
+                let frame = try XCTUnwrap(editing.previews.primary.frame)
+                guard editing.actualPixels, frame.quality == .detail, !frame.approximate,
+                      frame.nativeSize == CGSize(width: sourceWidth, height: sourceHeight),
+                      snapshot.backingScale == factor,
+                      abs(snapshot.imageRect.width * factor / Double(sourceWidth) - 1) < 0.0001,
+                      abs(snapshot.imageRect.height * factor / Double(sourceHeight) - 1) < 0.0001 else {
+                    throw Failure.invalid("No exact source pixels at physical 1:1")
+                }
+                let unit = CGRect(x: Double(requested[0]) / Double(sourceWidth), y: Double(requested[1]) / Double(sourceHeight),
+                    width: Double(requested[2]) / Double(sourceWidth), height: Double(requested[3]) / Double(sourceHeight))
+                if let window = frame.window, !ImageViewportGeometry.window(window, covers: unit) {
+                    throw Failure.invalid("Requested ROI falls outside the exact detail bitmap")
+                }
+                let roi = ImageViewportGeometry.windowRect(unit, in: snapshot.imageRect)
+                guard canvas.bounds.contains(roi), screenRect.contains(window.convertToScreen(canvas.convert(roi, to: nil))) else {
+                    throw Failure.invalid("Source ROI fell outside the physical canvas")
+                }
+                let physical = capturedPixels(roi)
+                guard Array(physical.suffix(2)) == Array(requested.suffix(2)) else {
+                    throw Failure.invalid("ROI geometry mismatch: \(physical)")
+                }
+                return physical
+            }
+            if let requestedROI {
+                guard requestedROI[0] <= sourceWidth - requestedROI[2], requestedROI[1] <= sourceHeight - requestedROI[3] else {
+                    throw Failure.invalid("ROI falls outside the source")
+                }
+                let canvasRect = canvas.viewportSnapshot.imageRect
+                let x = Double(requestedROI[0]) + Double(requestedROI[2]) / 2
+                let y = Double(requestedROI[1]) + Double(requestedROI[3]) / 2
+                let anchor = NSPoint(x: canvasRect.minX + x * canvasRect.width / Double(sourceWidth),
+                                     y: canvasRect.minY + y * canvasRect.height / Double(sourceHeight))
+                let doubleClick = try XCTUnwrap(NSEvent.mouseEvent(with: .leftMouseDown,
+                    location: canvas.convert(anchor, to: nil), modifierFlags: [],
+                    timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+                    eventNumber: 1, clickCount: 2, pressure: 1))
+                canvas.mouseDown(with: doubleClick)
+                try await waitFor("exact detail at the requested source ROI") {
+                    window.displayIfNeeded()
+                    return editing.previews.primary.currentFrameWasDrawn && ((try? detailCapture(requestedROI)) != nil)
+                }
+                captureRect = try detailCapture(requestedROI)
+            }
             let context = try XCTUnwrap(editing.developmentContext), frame = try XCTUnwrap(editing.previews.primary.frame)
             guard let decoder = editing.recipe.adjustmentsV3?.rawDecoder, decoder == .flashRaw031 else {
                 throw Failure.invalid("The fresh RAW work did not select the packaged FlashRaw decoder")
             }
-            let canvas = try XCTUnwrap(findCanvas(host)), factor = window.backingScaleFactor
             guard !window.isKeyWindow, !window.isMainWindow,
                   NSWorkspace.shared.frontmostApplication?.processIdentifier != ProcessInfo.processInfo.processIdentifier else {
                 throw Failure.invalid("Benchmark window must stay in the background")
             }
-            let fitted = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: canvas.bounds.size,
-                transform: .init(), backingScale: factor, fitInsets: insets)
-            let windowPhoto = canvas.convert(fitted, to: nil)
-            let capturedPhoto = [windowPhoto.minX, window.frame.height - windowPhoto.maxY, windowPhoto.width, windowPhoto.height].map { Int(($0 * factor).rounded()) }
-            guard abs(capturedPhoto[2] - 2368) <= 1, abs(capturedPhoto[3] - 1579) <= 1,
-                  screenRect.contains(window.convertToScreen(windowPhoto)) else { throw Failure.invalid("Photo bounds: \(capturedPhoto), screen \(screenRect)") }
+            let capturedPhoto: [Int]
+            if requestedROI != nil {
+                capturedPhoto = capturedPixels(canvas.viewportSnapshot.imageRect)
+            } else {
+                let fitted = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: canvas.bounds.size,
+                    transform: .init(), backingScale: factor, fitInsets: insets)
+                capturedPhoto = capturedPixels(fitted)
+                guard abs(capturedPhoto[2] - 2368) <= 1, abs(capturedPhoto[3] - 1579) <= 1,
+                      screenRect.contains(window.convertToScreen(canvas.convert(fitted, to: nil))) else {
+                    throw Failure.invalid("Photo bounds: \(capturedPhoto), screen \(screenRect)")
+                }
+            }
             let testBinary = try XCTUnwrap(Bundle(for: Self.self).executableURL)
             var meta: [String: Any] = ["id": window.windowNumber, "title": window.title, "pid": ProcessInfo.processInfo.processIdentifier,
                 "bundle": NSRunningApplication.current.bundleIdentifier ?? "", "photoRectPixels": capturedPhoto,
@@ -286,6 +351,12 @@ final class NativePresentedCanvasTests: XCTestCase {
                 "sourcePixels": [asset.width ?? 0, asset.height ?? 0], "sourceSHA256": context.sourceContentID,
                 "testBundleSHA256": try FileSafety.hash(testBinary), "decoder": decoder.rawValue,
                 "recipe": try JSONSerialization.jsonObject(with: JSONEncoder().encode(editing.recipe)), "scale": factor]
+            if let requestedROI, let captureRect {
+                meta["sourceROIPixels"] = requestedROI
+                meta["sourceROIWindowPixels"] = captureRect
+                meta["physicalMagnification"] = 1
+                meta["approximate"] = frame.approximate
+            }
             if diagnostics { meta["diagnosticsEnabled"] = true }
             try write(meta, to: job.appendingPathComponent("ready.json"))
             var sequence = 1
@@ -329,6 +400,9 @@ final class NativePresentedCanvasTests: XCTestCase {
                                 editing.previews.primary.frameRecipe == expected && editing.previews.primary.currentFrameWasDrawn &&
                                     editing.previews.primary.frame?.quality != .interactive
                             }
+                        }
+                        if accepted, let requestedROI, try detailCapture(requestedROI) != captureRect {
+                            throw Failure.invalid("Physical ROI changed after edit")
                         }
                         var response: [String: Any] = ["sentNs": sent, "actual": actual.map { $0 as Any } ?? NSNull(),
                             "accepted": accepted, "mapping": mapping, "recipeFingerprint": try EditingFingerprint.of(expected)]

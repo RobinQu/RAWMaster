@@ -15,7 +15,8 @@ import subprocess
 import tempfile
 import time
 
-from canvas_latency import POLICY, load_frames, score, warmup_states
+from canvas_latency import (NATIVE_ROI_PROTOCOL, NATIVE_ROI_SCOPE, POLICY, capture_native_roi_screenshot,
+                            load_frames, score, warmup_states)
 
 ROOT = Path(__file__).resolve().parents[2]
 # Use the same published operation IDs and A/B settings as Adobe's driver.
@@ -45,6 +46,8 @@ def main():
                         help="FlashRaw dylib shipped in the release app (XCTest has its own bundle)")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
+    parser.add_argument("--source-roi", type=int, nargs=4, metavar=("X", "Y", "WIDTH", "HEIGHT"),
+                        help="Capture these source pixels at physical 1:1 using the Exposure A/B workflow")
     parser.add_argument("--diagnostics", action="store_true",
                         help="Record clock anchors, accepted AppKit draws and a final image telemetry sidecar")
     parser.add_argument("--samples", default=10, type=int)
@@ -60,6 +63,9 @@ def main():
     if (args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5
             or not args.binary.is_file() or not args.source.is_file()):
         parser.error("Provide an existing RAW and recorder, a new output, a nonnegative warmup and sufficient repetitions/settle interval")
+    if args.source_roi and (min(args.source_roi[:2]) < 0 or min(args.source_roi[2:]) < 1 or
+                            not args.frames or args.operations not in (None, ["Exposure"])):
+        parser.error("Source ROI requires nonnegative origin, positive extent, --frames and the Exposure case")
     if not args.flashraw_library.is_file():
         parser.error("Supply the packaged FlashRaw library using --flashraw-library")
     telemetry_output = args.output.with_name(args.output.stem + ".telemetry.json") if args.diagnostics else None
@@ -70,7 +76,7 @@ def main():
     if frame_folder:
         frame_folder.mkdir(parents=True, exist_ok=False)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    result = {"schemaVersion": 1, "protocol": "screen-photo-response-v1",
+    result = {"schemaVersion": 1, "protocol": NATIVE_ROI_PROTOCOL if args.source_roi else "screen-photo-response-v1",
               "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
               "trialEnd": "native canvas acknowledged the target settled recipe, followed by the recorded quiet interval",
               "testHostActivity": "userInitiatedAllowingIdleSystemSleep",
@@ -82,6 +88,8 @@ def main():
               "requestedWarmSamples": args.samples, "requestedWarmupInputs": args.warmup,
               "recorderSHA256": digest(args.binary), "flashRawLibrarySHA256": digest(args.flashraw_library),
               "policy": POLICY, "operations": {}}
+    if args.source_roi and result["sourceSHA256"] != "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c":
+        parser.error("The physical 1:1 fixture requires the authorized 9504×6336 Sony RAW")
     if telemetry_output:
         result["diagnostics"] = {
             "enabled": True,
@@ -104,6 +112,9 @@ def main():
         environment = dict(os.environ, RAWMASTER_PRESENTED_CANVAS_SOURCE=str(args.source), RAWMASTER_PRESENTED_CANVAS_JOB=work,
                            RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS="1" if args.diagnostics else "0",
                            RAWMASTER_FLASHRAW_LIBRARY=str(args.flashraw_library))
+        environment.pop("RAWMASTER_PRESENTED_CANVAS_SOURCE_ROI", None)
+        if args.source_roi:
+            environment["RAWMASTER_PRESENTED_CANVAS_SOURCE_ROI"] = ",".join(map(str, args.source_roi))
         log = args.output.with_name(args.output.stem + ".log")
         with log.open("x") as output_log:
             host = subprocess.Popen(cmd, cwd=ROOT, env=environment, stdout=output_log,
@@ -141,15 +152,29 @@ def main():
                     raise ValueError(f"ScreenCaptureKit could not find the fixture's window {meta['id']} for {scope}")
                 window = matched_windows[0]
                 w, h = [round(v * window["scale"]) for v in window["frame"][2:]]
-                x, y, pw, ph = meta["photoRectPixels"]
+                if args.source_roi:
+                    if (meta.get("sourceROIPixels") != args.source_roi or meta.get("physicalMagnification") != 1
+                            or meta.get("approximate") is not False):
+                        raise ValueError("Native fixture did not present the requested exact physical source ROI")
+                    x, y, pw, ph = meta["sourceROIWindowPixels"]
+                    if [pw, ph] != args.source_roi[2:]:
+                        raise ValueError("One source pixel must occupy one captured backing pixel")
+                    roi = [(x + pw * 0.2) / w, (y + ph * 0.2) / h, pw * 0.6 / w, ph * 0.6 / h]
+                    geometry = {"sourceROIPixels": args.source_roi, "roiWindowRectPixels": meta["sourceROIWindowPixels"],
+                                "windowBackingPixels": [w, h], "sampleROINormalized": roi,
+                                "backingPixelsPerSourcePixel": [1, 1]}
+                    result.update(nativeROI=geometry, approximate=meta["approximate"])
+                else:
+                    x, y, pw, ph = meta["photoRectPixels"]
+                    roi = [(x + pw * 0.2) / w, (y + ph * 0.2) / h, pw * 0.6 / w, ph * 0.6 / h]
                 if min(x, y) < 0 or x + pw > w + 1 or y + ph > h + 1:
-                    raise ValueError(f"Native photo bounds exceed captured window: {meta['photoRectPixels']}")
-                roi = [(x + pw * 0.2) / w, (y + ph * 0.2) / h, pw * 0.6 / w, ph * 0.6 / h]
+                    raise ValueError(f"Native sampling bounds exceed captured window: {[x, y, pw, ph]}")
                 result.update(window=window, photoRectPixels=meta["photoRectPixels"], roi=roi,
                               sourcePixels=meta["sourcePixels"], previewPixels=meta["previewPixels"],
                               initialRecipe=meta["recipe"], decoder=meta["decoder"], testBundleSHA256=meta["testBundleSHA256"])
                 write(args.output, result)
-                for label in args.operations or CASES:
+                cases = ["Exposure"] if args.source_roi else args.operations or CASES
+                for label in cases:
                     key, a, b = CASES[label]
                     try:
                         request("reset")
@@ -213,6 +238,21 @@ def main():
                         shutil.copyfile(raw, frame_folder / (key + ".bin"))
                         write(frame_folder / (key + ".json"), {"events": events, "warmup": warmup, "endNs": end})
                     raw.unlink(missing_ok=True)
+                    if args.source_roi:
+                        row["scope"] = NATIVE_ROI_SCOPE
+                        if row["status"] == "measured":
+                            snapshots = []
+                            for state, value in enumerate((a, b)):
+                                witness = request("set", key=key, value=value)
+                                if not witness["accepted"]:
+                                    raise ValueError("The requested native screenshot exposure was not accepted")
+                                time.sleep(args.settle)
+                                png = frame_folder / f"{key}-1to1-{state}.png"
+                                snapshots.append({**capture_native_roi_screenshot(png, window, geometry),
+                                                  "state": state, "value": value, "event": witness})
+                            if snapshots[0]["meanLuma"] >= snapshots[1]["meanLuma"]:
+                                raise ValueError("Physical screenshot pixels did not brighten with Exposure")
+                            row["nativeScreenshots"] = snapshots
                     result["operations"][key] = row
                     write(args.output, result)
                     print(key, row["status"], flush=True)
