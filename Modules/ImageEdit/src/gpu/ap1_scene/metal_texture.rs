@@ -139,8 +139,8 @@ impl MetalProgram {
         Ok(Self {
             gpu,
             native,
-            low_latency_join: std::env::var_os("RAWMASTER_AP1_METAL_LOW_LATENCY_JOIN")
-                .is_some_and(|value| value == "1"),
+            low_latency_join: !std::env::var_os("RAWMASTER_AP1_METAL_LOW_LATENCY_JOIN")
+                .is_some_and(|value| value == "0"),
             layout,
             pipeline_layout,
             graphs: VecDeque::new(),
