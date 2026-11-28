@@ -132,6 +132,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var analysisWorkerIdentity: (token: UUID, request: DevelopmentAnalysisRequest)?
   private var cache: [String: Cached] = [:]
   private static let replaysExactDisplay = ProcessInfo.processInfo.environment["RAWMASTER_INTERACTIVE_EXACT_REPLAY"] != "0"
+  private static let qaSettledLocalGrainReplay = ProcessInfo.processInfo.environment["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] == "1"
   private var tick: UInt64 = 0
   private var stats = PreviewStatistics()
   private var latest: [PreviewConsumerID: (DevelopmentPreviewSessionID, UInt64, UInt64)] = [:]
@@ -866,11 +867,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     // Look up the full canonical key, including source, viewport, recipe and active filter resources.
     // Only a settled primary result can supply a revisited value. The reverse lookup never occurs.
     let settledDisplay: (key:String, pixels:PreviewPixels)?
-    // A settled pure sharpening-mask recipe already contains the native-resolution
-    // grayscale visualization. Reopening it can use the exact fitted display raster.
     if Self.replaysExactDisplay, let plan = item.interactivePlan, plan.isProxy,
-       (plan.sourceOverlayVersion == nil ||
-        request.recipe.adjustmentsV3.map({ PreviewInteractiveDetailGuide.isPureSharpen($0,maskPreview:true) }) == true),
+       (plan.sourceOverlayVersion == nil || prefersSettledSourceOverlay(request, sourceKey: item.key)),
        item.nativePointwisePlan == nil, let fingerprint = latestRecipeFingerprint[request.consumerID],
        cache.values.contains(where: { $0.sourceKey == item.key && $0.settledRecipeFingerprint == fingerprint }),
        let exactKey = try? pixelKey(request,sourceKey:item.key,settledHalfFITReplay:true), let exact = cache[exactKey], exact.settledRecipeFingerprint == fingerprint,
@@ -998,7 +996,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         insert(pixels,key:actualOutputKey,sourceKey:item.key,settledRecipe:settled ? item.request.recipe:nil,
                nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true)
         if settled, !pixels.managedPresentation, pixels.approximation == nil, cache[actualOutputKey]?.settledRecipeFingerprint != nil {
-          retireEarlierSharpenMaskProxy(item.request,sourceKey:item.key)
+          retireEarlierSourceOverlayProxy(item.request, sourceKey: item.key)
         }
       }
       deliver(item, .success(frame(item.request, key: actualOutputKey, pixels: pixels,sharedFITRequested:requestsSharedFIT(item.nativePointwisePlan))))
@@ -1506,11 +1504,21 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     do { try scope.requireOpenAdmission();try ticket.requireOpenAdmission();return true }
     catch { return false }
   }
-  /// A subsequent request for this exact overlay must not return its older approximate
-  /// bitmap ahead of the native mask that was just accepted at the same display size.
-  private func retireEarlierSharpenMaskProxy(_ request:DevelopmentPreviewRequest,sourceKey:String) {
+  private func prefersSettledSourceOverlay(_ request: DevelopmentPreviewRequest, sourceKey: String) -> Bool {
+    guard let p = request.recipe.adjustmentsV3 else { return false }
+    if PreviewInteractiveDetailGuide.isPureSharpen(p, maskPreview: true) { return true }
+    guard Self.qaSettledLocalGrainReplay, policy.settledTransport == .canonical,
+          request.role == .primary, request.viewport.maxPixel == 2400,
+          (p.masks.first?.adjustments.grain ?? 0) > 0,
+          let native = sources[sourceKey]?.native, native.hasRAWFilter, native.originalEXIFOrientation == 1 else { return false }
+    return DevelopmentMaskEngineV3.CanonicalValidation.qualifies(p, extent: native.orientedNativeExtent,
+      transport: .spatialTileRegion, spatialTiles: .includingGrain)
+  }
+
+  /// Prefer the canonical raster to the earlier approximate overlay at the same viewport.
+  private func retireEarlierSourceOverlayProxy(_ request: DevelopmentPreviewRequest, sourceKey: String) {
     guard Self.replaysExactDisplay, policy.interactiveEvaluation == .proxyV1,
-          let p=request.recipe.adjustmentsV3, PreviewInteractiveDetailGuide.isPureSharpen(p,maskPreview:true) else { return }
+          prefersSettledSourceOverlay(request, sourceKey: sourceKey) else { return }
     let earlier = DevelopmentPreviewRequest(sessionID:request.sessionID,sourceGeneration:request.sourceGeneration,
       consumerID:request.consumerID,role:request.role,revision:request.revision,recipe:request.recipe,
       quality:.interactive,viewport:request.viewport)

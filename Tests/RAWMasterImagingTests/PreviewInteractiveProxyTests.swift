@@ -1,6 +1,7 @@
 import XCTest
 import AppKit
 import CoreImage
+import CryptoKit
 import ImageIO
 import Metal
 import RAWMasterCore
@@ -232,6 +233,70 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     await service.closeAll()
     XCTAssertEqual(try bytes(replay.image), try bytes(exact.image))
   }
+
+  func testOptInSettledLocalGrainReplayRequiresACompletedSameState() async throws {
+    let env = ProcessInfo.processInfo.environment
+    guard env["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] == "1", let path = env["RAWMASTER_PANEL_READBACK_RAW"] else {
+      throw XCTSkip("Enable local grain replay and supply the authorized paired photo operators RAW")
+    }
+    let url = URL(fileURLWithPath: path)
+    let sha = try RenderFiles.hash(url)
+    guard sha == "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c" else {
+      return XCTFail("Expected the fixed paired photo operators RAW")
+    }
+    let size = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+    let source = EditingSourceSnapshot(projectID: "local-grain-replay", assetID: "sony", contentSHA256: sha,
+      byteCount: Int64(size), admissionFingerprint: "canonical-grain", sourceLocation: url)
+    let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .canonical))
+    let consumer = PreviewConsumerID()
+    let buffer = UnsafeMutableRawBufferPointer.allocate(byteCount: 2400 * 1600 * 4, alignment: 64)
+    defer { buffer.deallocate() }
+    func digest(_ frame: DevelopmentPreviewFrame) throws -> SHA256.Digest {
+      try frame.copyDisplayRGBA8(into: buffer)
+      return SHA256.hash(data: Data(bytesNoCopy: buffer.baseAddress!, count: buffer.count, deallocator: .none))
+    }
+    do {
+      let lease = try await service.open(source: .raw(source))
+      var parameters = DevelopmentAdjustmentsV3()
+      parameters.rawDecoder = .flashRaw031
+      parameters.masks = [.init(kind: .radial, radiusX: 0.35, radiusY: 0.30, feather: 0,
+        adjustments: .init(grain: 0.15, grainSize: 0.25, grainRoughness: 0.5))]
+      let a = DevelopmentRecipe(adjustmentsV3: parameters)
+      parameters.masks[0].adjustments.grain = 0.55
+      let b = DevelopmentRecipe(adjustmentsV3: parameters)
+
+      let first = try await service.render(request(lease, consumer, a, 1))
+      XCTAssertTrue(first.approximate)
+      let settled = try await service.render(request(lease, consumer, a, 2, quality: .settled))
+      XCTAssertFalse(settled.approximate)
+      XCTAssertNotEqual(try digest(first), try digest(settled))
+      let replay = try await service.render(request(lease, consumer, a, 3))
+      XCTAssertFalse(replay.approximate)
+      XCTAssertEqual(replay.quality, .interactive)
+      XCTAssertEqual(replay.outputKey, settled.outputKey)
+      XCTAssertEqual(replay.outputPixelSize, settled.outputPixelSize)
+      XCTAssertEqual(try digest(replay), try digest(settled))
+
+      let newState = try await service.render(request(lease, consumer, b, 4))
+      XCTAssertTrue(newState.approximate)
+      XCTAssertNotEqual(newState.outputKey, settled.outputKey)
+      await service.handleMemoryPressure()
+      let afterEviction = try await service.render(request(lease, consumer, a, 5))
+      XCTAssertTrue(afterEviction.approximate)
+      XCTAssertEqual(try digest(afterEviction), try digest(first))
+
+      await service.invalidate(lease.id)
+      do {
+        _ = try await service.render(request(lease, consumer, a, 6))
+        XCTFail("An invalidated source supplied a preview")
+      } catch DevelopmentPreviewError.sourceInvalidated {}
+    } catch {
+      await service.closeAll()
+      throw error
+    }
+    await service.closeAll()
+  }
+
   func testActualEXIFCropStraightenAndLateD4StayRegisteredAgainstCanonical()async throws {
     for orientation in [1,6,8] {
       let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}
