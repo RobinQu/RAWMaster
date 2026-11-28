@@ -36,7 +36,7 @@ Camera Raw 交付上的 Classic 窗口性能和目录缩略图请求数已分别
 - [x] **T-018** 实现 transient hover token 与主图临时预览，不写 committed recipe/历史/持久化。依赖：T-008。
 - [x] **T-019** 完成 hover 退出恢复、交叉 hover、比较/裁切/原片按住和晚到帧防护；返回时复核 revision、presentation 和交互状态。依赖：T-018。
 - [x] **T-020** 实现版本化收藏偏好、稳定排序、损坏 ID 清理回写、键盘方向键和辅助功能标签。依赖：T-012。
-- [ ] **T-021** 原生窗口验收 hover、确认、Escape、收藏持久化和 VoiceOver 标签。依赖 T-019、T-020。签名沙盒的实拍暗房已通过「鲜明」采用、收藏标签切换及重开持久化。实际 VoiceOver 和物理键盘走查仍待签收。[原生回执](../044-mac-app-store-lite/evidence/m0-local-distribution-checkpoint.json)
+- [ ] **T-021** 原生窗口验收 hover、确认、Escape、收藏持久化和 VoiceOver 标签。依赖 T-019、T-020。签名沙盒的实拍暗房已通过方向键试看、Escape 恢复、回车采用、收藏标签切换及重开持久化。键盘测量使用系统级事件，实际 VoiceOver 朗读和物理键盘走查仍待签收。[原生回执](../044-mac-app-store-lite/evidence/m0-local-distribution-checkpoint.json)
 
 ## F. 交付门
 

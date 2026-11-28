@@ -69,6 +69,48 @@
     "com.apple.security.files.user-selected.read-write": true
   },
   "sharedPayloadDigests": 87,
+  "nativePickerWorkflow": {
+    "dateLocal": "2026-11-29",
+    "store": {
+      "testedArtifact": "strictly verified App Store local app",
+      "createdNewLibraryFromNativeDirectoryPicker": true,
+      "authorizedIncomingWithNativeDirectoryPicker": true,
+      "managedCopyByteIdenticalToOriginal": true,
+      "admittedIntoProjectAfterIntakeReview": true,
+      "exposureEVBeforeExportAndAfterNormalReopen": [0.5, 0.5],
+      "authorizedDeliveryWithNativeDirectoryPicker": true,
+      "nativeWrittenFileReceipt": "已写入 1 个文件。",
+      "sqliteQuickCheck": "ok",
+      "reopenedNewLibraryWithoutDocumentArgument": true,
+      "reopenedHistogramSamples": 10880,
+      "mappedPackagedPhotoExportLibrary": true
+    },
+    "website": {
+      "testedArtifact": "strictly verified app expanded from the website installer payload",
+      "createdNewLibraryFromNativeDirectoryPicker": true,
+      "authorizedIncomingWithNativeDirectoryPicker": true,
+      "managedCopyByteIdenticalToOriginal": true,
+      "admittedIntoProjectAfterIntakeReview": true,
+      "exposureEVBeforeExportAndAfterNormalReopen": [0.5, 0.5],
+      "authorizedDeliveryWithNativeDirectoryPicker": true,
+      "nativeWrittenFileReceipt": "已写入 1 个文件。",
+      "sqliteQuickCheck": "ok",
+      "reopenedNewLibraryWithoutDocumentArgument": true,
+      "reopenedHistogramSamples": 10880
+    },
+    "managedCopyDestinationEnteredAsPathUnderAuthorizedLibraryParent": true,
+    "publishedJPEG": {
+      "countPerChannel": 1,
+      "format": "JPEG",
+      "bitsPerChannel": 8,
+      "profile": "sRGB built-in",
+      "dimensions": [2048, 1365],
+      "bytes": 1051854,
+      "decodedFromPublishedFileOnBothChannels": true,
+      "crossChannelBytesIdentical": true,
+      "sha256": "c550e7c2cf6d0ec840680b49f11cb206ea523a8762c13ce8c01b28e1ba79610d"
+    }
+  },
   "distributionCandidates": {
     "store": {
       "bundleIdentifier": "io.robinqu.RAWMaster.app-store-local",
@@ -116,6 +158,23 @@
     "appliedClassicFilter": "vivid",
     "filterStrength": 100,
     "favoriteChangedAccessibilityLabelAndSurvivedRestart": true,
+    "nativeFilterKeyboard": {
+      "input": "system keyboard events after accessibility focus on Original",
+      "downFocusedVividWithoutEnablingFilter": true,
+      "returnEnabledVividAt100Percent": true,
+      "windowSize": [1480, 940],
+      "pixelComparisonRectXYWH": [666, 376, 162, 150],
+      "baseline": "stable committed picture before focusing a filter row",
+      "previewMeanAbsoluteRGBDifferenceOn255Scale": 25.399822,
+      "committedAndAfterEscapeRGBSHA256": "c19ef1b0e3ff63148d51d1734d3695e693b0f5bb8ddd8a6457d681f07d7ff7f2",
+      "previewRGBSHA256": "7b4dbe35f47a7b904fcb1085398498ac0244af7066ad24d6808d0fb204cd103e",
+      "physicalKeyboardWalkthroughPending": true
+    },
+    "nativeVoiceOver": {
+      "systemReaderProcessStarted": true,
+      "filterLabelAndCancelFavoriteLabelSpeechCaptureVerified": false,
+      "systemVoiceOverRestoredToOff": true
+    },
     "mappedBundleLibraries": [
       "libflashraw_capi.dylib",
       "librawmaster_image.dylib",
@@ -154,7 +213,6 @@
     "optInNetworkTestsSkipped": 3
   },
   "openAcceptances": [
-    "real panel create, select source, copy intake and JPEG destination",
     "repeat on Mac without development environment"
   ]
 }

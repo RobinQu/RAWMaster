@@ -12,6 +12,8 @@ Camera Raw 交付版本上的 Classic 窗口、十候选及全尺寸导出实测
 
 签名沙盒的 6000 × 4000 实拍暗房已通过「基础滤镜 → 鲜明」采用及 100% 强度回执。原生 AX 控件从「收藏鲜明」切换为「取消收藏鲜明」，同一签名应用退出并重开后仍保留。[原生回执](../044-mac-app-store-lite/evidence/m0-local-distribution-checkpoint.json)
 
+11 月 29 日，在同一签名包中以复位后、滤镜行获得焦点前的稳定画面为参照。系统键盘事件使向下键从「原片」移到「鲜明」并试看，滤镜保持未启用。对同一原生窗口的中央 `162 × 150` 像素采样，试看平均绝对 RGB 差为 `25.40/255`，Escape 后 RGB 字节与参照一致。回车采用后滤镜启用、强度为 100%。本机 VoiceOver 进程已启动，未取得两条预期朗读的回执，验收后已恢复为关闭。[键盘与辅助功能回执](../044-mac-app-store-lite/evidence/m0-local-distribution-checkpoint.json)
+
 ## 028 独立版本的结论
 
 固定九滤镜 + 原片的交互代理、独立缩略图、内容键、last-known-good、有界恢复、hover、收藏和键盘导航已经实施。真实 RAW 的十组 canonical settled、全尺寸 PNG16 导出、暖十候选吞吐、滤镜相关 Debug/Release 回归均通过。
