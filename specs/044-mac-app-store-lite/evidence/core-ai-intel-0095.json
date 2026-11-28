@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-28",
+  "state": "Intel embedding and ABI qualified in an isolated Apple Development App Sandbox",
+  "sourceCommit": "4e2897c82e7b4b78eb92e030541a65e234f482f2",
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "comparison": "Swift worker through C and Rust, using frozen upright bytes and landmarks from the existing Discovery Python/OpenCV path; excludes YuNet and indexing",
+  "referenceORT": "1.23.2",
+  "referenceOpenCV": "4.12.0",
+  "testedORT": "1.27.0",
+  "testedORTAPI": 27,
+  "testedRustORT": "2.0.0-rc.15",
+  "runtimeOpenWithApplicationSealMs": 37.259375,
+  "processMaximumRSSBytes": 73973760,
+  "referenceBinding": {
+    "path": "output/spec044-core-ai.65gYDJ/frozen/frozen-faces.json",
+    "sha256": "4e588a24e387d4499000250924c3a37d8e0cfe1a42b4e4e3a79b6ad366b76df2"
+  },
+  "swiftSignedMeasurements": {
+    "path": "output/spec044-core-ai.65gYDJ/sandbox-mutex-real.json",
+    "sha256": "c71b7a368caee0ebcd4b488b92968907468ec1738124c882e44054c11aa50331"
+  },
+  "frozenComparisons": [
+    {
+      "inputKind": "frozen still from existing Native QA",
+      "inputPixels": [
+        1365,
+        2048
+      ],
+      "sourceSHA256": "1beceab8d2c5e49a73da63701cd73cfb605f1ad6673eb143641f2d0ce2331d04",
+      "uprightRGBA8SHA256": "98369af971e762a8be2063218b2dbd2b7b7db51c617d5dcdc40aa4c73f5e1da9",
+      "alignedBGR8SHA256": "d92daf41bb4a8ebfcdf7a05d09a114ffe6b639f220bf555ebf2aa8d5a5658502",
+      "matchedAlignmentChannelCount": 49152,
+      "changedAlignmentChannelCount": 0,
+      "embeddingDimensions": 256,
+      "referenceCosine": 0.9999999999995233,
+      "sessionFirstEmbeddingMs": 21.147375,
+      "warmP50Ms": 3.1248335000000003,
+      "warmP95Ms": 3.243416,
+      "warmMs": [
+        3.131625,
+        3.222458,
+        3.292875,
+        3.202583,
+        3.174375,
+        3.243416,
+        3.024625,
+        3.100917,
+        3.000458,
+        3.058541,
+        3.095125,
+        3.019791,
+        3.133417,
+        3.215334,
+        3.069209,
+        3.147667,
+        3.119791,
+        3.094375,
+        3.159917,
+        2.988584,
+        3.054459,
+        3.121792,
+        3.046833,
+        3.14175,
+        3.127875,
+        3.128,
+        3.155708,
+        3.102375,
+        3.077625,
+        3.132667
+      ],
+      "repeatedValuesAndRetryExact": true
+    },
+    {
+      "inputKind": "frozen still from existing Native QA",
+      "inputPixels": [
+        1024,
+        1024
+      ],
+      "sourceSHA256": "a459f17a5a4466b6156ebbd7f44c3f0285654e30c9fc09878527869d8c84e63c",
+      "uprightRGBA8SHA256": "29cea9906e4431f66ef3825dcb8fe58d706659d6fb82ad559a8f961e551f68b3",
+      "alignedBGR8SHA256": "0a83d7ca61e786c60d420607ee53331f2d6ec9baa052f8fd259bd7dc415d9f58",
+      "matchedAlignmentChannelCount": 49152,
+      "changedAlignmentChannelCount": 0,
+      "embeddingDimensions": 256,
+      "referenceCosine": 0.9999999999994178,
+      "sessionFirstEmbeddingMs": 16.202292,
+      "warmP50Ms": 3.0740410000000002,
+      "warmP95Ms": 3.198167,
+      "warmMs": [
+        3.19475,
+        3.217458,
+        3.069916,
+        3.10025,
+        3.02975,
+        3.123,
+        3.039667,
+        3.060375,
+        3.063167,
+        3.005708,
+        3.12825,
+        3.035125,
+        3.055875,
+        3.100209,
+        3.127125,
+        3.084042,
+        3.088625,
+        3.117625,
+        3.138166,
+        3.085,
+        2.988125,
+        3.198167,
+        3.052708,
+        3.08125,
+        3.05625,
+        3.03575,
+        3.056666,
+        3.078166,
+        3.063333,
+        3.053084
+      ],
+      "repeatedValuesAndRetryExact": true
+    }
+  ],
+  "syntheticAlignment": {
+    "cases": 32,
+    "matchedChannelValues": 1572864,
+    "differences": 0
+  },
+  "appSandbox": {
+    "arm64": true,
+    "signedApplication": {
+      "sha256": "3f2775d0d62b22b81ed772733904ad16feb1c56074f15dad65a5c9fe0b1edad2",
+      "cdHash": "0726dd819c43dd67d3447d452e1fc1e7516af228",
+      "hardenedRuntime": true
+    },
+    "signedRuntime": {
+      "sha256": "471a3c10b923fcb78fdadcb33cc7607ec28d19c94a9725d61d8cb40f0f1ab779",
+      "cdHash": "0e7246cd68c04ada24337bebf9f927ab047ecba9",
+      "hardenedRuntime": true
+    },
+    "signedBridge": {
+      "sha256": "6c19887b2039e1632c9d9f6d0ae12868fe93ca53daff9aee25824a31fbb75695",
+      "cdHash": "b61a09e627d31d8f39b3924c9dfc6a4cd23dc36b",
+      "hardenedRuntime": true
+    },
+    "entitlements": {
+      "path": "output/spec044-core-ai.65gYDJ/sandbox-mutex-entitlements.plist",
+      "sha256": "f8b4cfc5e7c5076be716c5a3e37f8f6b03db3f5c47220215175e9ea3cd9ef6f0"
+    },
+    "externalPrivateFileDenied": true,
+    "missingFrameworkWithExternalEnvironmentOverrideRejected": {
+      "path": "output/spec044-core-ai.65gYDJ/sandbox-no-runtime.log",
+      "sha256": "eb3285d17d00ed9aa9cad092b68a676a2cc1379801d6b0d961d48ccbbad126af"
+    },
+    "individuallySignedReplacementRejectedByOuterSeal": {
+      "path": "output/spec044-core-ai.65gYDJ/sandbox-nested-seal-rejection.log",
+      "sha256": "eb3285d17d00ed9aa9cad092b68a676a2cc1379801d6b0d961d48ccbbad126af"
+    },
+    "wrongModelInValidlySignedAppRejected": {
+      "path": "output/spec044-core-ai.65gYDJ/sandbox-bad-model.log",
+      "sha256": "26b6f3d2724660a1153e7aa23b4628a55afb90c352ec19f799913493c0422e26"
+    }
+  },
+  "assetStagingNegatives": {
+    "incorrectManifest": {
+      "path": "output/spec044-core-ai.65gYDJ/pack-manifest-rejection.log",
+      "sha256": "728da8d778167a01c5c8199995ea8ec42c92388ebceb1a45681e9548b023e5ba"
+    },
+    "incorrectWheel": {
+      "path": "output/spec044-core-ai.65gYDJ/pack-wheel-rejection.log",
+      "sha256": "a26ed4c1efc3c4f6cc77c30df641b51816b844f24dda2cb5485b60c7b17c9b6e"
+    }
+  },
+  "nativeABI": {
+    "abi": 1,
+    "failuresDidNotWriteOutput": {
+      "duplicateEngineRejected": true,
+      "wrongOutputLength": 1,
+      "wrongLandmarkCount": 5,
+      "nonFullROI": 4,
+      "outOfBoundsFinalPixel": 4,
+      "invalidStride": 4,
+      "largeImageBudget": 7,
+      "preCancelled": 8,
+      "nonfiniteLandmarks": 5
+    },
+    "lateCancelAndReopenExact": true
+  },
+  "unitTests": {
+    "passed": 7,
+    "report": {
+      "path": "output/spec044-core-ai.65gYDJ/core-ai-rust-final.log",
+      "sha256": "c0ec80c138a18da5f75988e1e38d14829e1fcac10310ad2e814eaa78beb81cb7"
+    }
+  },
+  "attachedNativeCancellation": {
+    "passed": 1,
+    "sessionHeldUntilReturn": true,
+    "retriedValuesExact": true,
+    "report": {
+      "path": "output/spec044-core-ai.65gYDJ/active-cancel-final.log",
+      "sha256": "c122502791891f316babffff09ea61ce80e91807098304a13984a0e7b2cc4910"
+    }
+  }
+}
