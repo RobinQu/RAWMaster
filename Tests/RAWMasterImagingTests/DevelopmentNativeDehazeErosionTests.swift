@@ -1,3 +1,4 @@
+import CoreImage
 import Foundation
 import Metal
 import RAWMasterCore
@@ -46,6 +47,40 @@ final class DevelopmentNativeDehazeErosionTests: XCTestCase {
     for invalid in [Double(Float(0.25).nextDown), 0, -.infinity, .infinity, .nan] {
       XCTAssertFalse(DevelopmentNativeDehazeErosion.supportsAirlight(light(invalid)))
     }
+  }
+
+  func testRequestRejectsARetiredSourceEvenWhileTheCaptureIsCurrent() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let size = DevelopmentPixelSize(width: 9504, height: 6336)
+    guard DevelopmentNativeDehazeErosion.enabled,
+          DevelopmentNativeDehazeErosion.Layout(device: device, size: size) != nil else {
+      throw XCTSkip("Requires the enabled native erosion on its qualified device")
+    }
+    let digest = String(repeating: "a", count: 64)
+    let extent = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+    let image = CIImage(color: .black).cropped(to: extent)
+    let pool = FlashRawCanonicalTexturePool()
+    let key = FlashRawCanonicalTextureKey(sourceKey: digest,
+      captureStamp: .init(device: 1, inode: 2, size: 3, seconds: 4, nanoseconds: 5,
+                          changedSeconds: 6, changedNanoseconds: 7),
+      contract: "dehaze-source-retirement", width: size.width, height: size.height)
+    let pin = try pool.acquire(key) { image }
+    defer { pin.release() }
+    var adjustments = DevelopmentAdjustmentsV3()
+    adjustments.rawDecoder = .flashRaw031
+    adjustments.advancedDetail.dehaze = .init(enabled: true, amount: 25)
+    adjustments.advancedDetail.preparedDehaze = .init(
+      sourceBinding: .init(sourceContentID: digest, exifOrientation: 1, orientedWidth: size.width, orientedHeight: size.height),
+      inputFingerprint: digest, airlight: .init(red: 0.5, green: 0.75, blue: 1),
+      algorithmVersion: DevelopmentDehazeAlgorithm.positiveColorGuideV2.rawValue)
+    let request = try XCTUnwrap(DevelopmentNativeDehazeErosion.Request(pin: pin, image: image, device: device,
+      adjustments: adjustments, checkAuthority: {}))
+    try request.requireCurrent()
+    pool.retire(sourceKey: digest)
+    XCTAssertThrowsError(try request.requireCurrent()) {
+      XCTAssertEqual($0 as? PreviewPresentationError, .allocationProtocol)
+    }
+    XCTAssertGreaterThan(pool.statistics().pinnedBytes, 0)
   }
 
   func testUnobservedGridsAndReservationsOutsideWorkingSetDecline() throws {

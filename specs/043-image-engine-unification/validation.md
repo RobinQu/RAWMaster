@@ -203,7 +203,7 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 | 黑色 | 22.30 / 29.50 | 28.86 / 40.36 | 98.13 / 138.86 |
 | 色调 | 22.88 / 26.89 | 28.89 / 35.60 | 104.91 / 145.59 |
 
-2026-11-28 在 Mac16,5、macOS 27.0.1（26A434）重跑这六项。RAWMaster Release `e419c425` 与 LightFlow `2d41ab1` 各有 5 次未计分预热、2 次 A/B 校准及 30 次暖测，照片 2368×1579。两份原始像素时间戳均通过离线复算。Camera Raw 当前仍用上表的历史样本，等独立测试副本完成新采集后再判定三产品结果。[逐次样本、回放摘要与构建指纹](evidence/m0-screen-photo-response.json) · [验收比较器](../../scripts/performance/compare-043-visible-canvas.py)
+2026-11-28 在 Mac16,5、macOS 27.0.1（26A434）重跑这六项。RAWMaster Release `e419c425` 与 LightFlow `2d41ab1` 各有 5 次未计分预热、2 次 A/B 校准及 30 次暖测，照片 2368×1579。两份原始像素时间戳均通过离线复算。该次 Camera Raw 沿用上表的历史样本。[逐次样本、回放摘要与构建指纹](evidence/m0-screen-photo-response.json) · [验收比较器](../../scripts/performance/compare-043-visible-canvas.py)
 
 | 控件 | RAWMaster p50 / p95 | LightFlow p50 / p95 | 对本轮 LightFlow |
 | --- | ---: | ---: | --- |
@@ -218,7 +218,7 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 
 将清缓存从每块移到每行末尾后，高光和阴影完整直方图的 48 次同步采样分别从 735.84、747.32 ms 降到 226.33、219.43 ms。三组实拍采样的 RGBAf 和全量分箱摘要相同，分数 ROI 的 RGB 与蒙版夹具逐位相同。配对样本的内存采样高水维持约 2.81 GB Metal、3.70 GB 进程 footprint。每块同步返回与取消检查继续生效。0.8 秒短跑中，两项分别各三次回零均未与旧直方图重叠。 [逐行 A/B](evidence/m0-display-histogram-row-ab.json)
 
-`1ebf4e0a` 先复用了两个最近的直方图结果，四项进入 LightFlow 容差，高光、阴影 p95 分别为 75.13 和 77.75 ms。逐行采样落地后，关闭诊断按 0.8 秒、五次预热和三十次计量重新采集。全部 180 次独立复算通过，十二个稳定目标像素摘要与上一构建相同，六项的 p50 和 p95 均进入 LightFlow 容差。三方验收还需要当前 Camera Raw 样本。 [上次复测](evidence/m0-screen-photo-response-retest.json) · [逐行后正式复测](evidence/m0-screen-photo-response-row-retest.json)
+`1ebf4e0a` 先复用了两个最近的直方图结果，四项进入 LightFlow 容差，高光、阴影 p95 分别为 75.13 和 77.75 ms。逐行采样落地后，关闭诊断按 0.8 秒、五次预热和三十次计量重新采集。全部 180 次独立复算通过，十二个稳定目标像素摘要与上一构建相同，六项的 p50 和 p95 均进入 LightFlow 容差。[上次复测](evidence/m0-screen-photo-response-retest.json) · [逐行后正式复测](evidence/m0-screen-photo-response-row-retest.json)
 
 | 控件 | RAWMaster 复测 p50 / p95 | LightFlow p50 / p95 | 对本轮 LightFlow |
 | --- | ---: | ---: | --- |
@@ -228,6 +228,17 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 | 阴影 | 25.69 / 39.11 | 28.66 / 39.02 | 两项均在容差内 |
 | 黑色 | 25.45 / 34.50 | 29.03 / 35.62 | 两项均在容差内 |
 | 色调 | 27.13 / 39.04 | 27.93 / 36.83 | 两项均在容差内 |
+
+当前三方 FIT 使用同一 9504×6336 RAW、同一 Mac16,5 和 2368×1579 物理画布。RAWMaster Release 候选、LightFlow `2d41ab1` 和 Camera Raw 19.0 每个控件各有 5 次预热、2 次校准和 30 次暖测，540 个正式样本都经原始像素及时间戳回放。六项的较快对手均为 LightFlow，RAWMaster 各项 p50/p95 均进入容差。共同终点为首次达到目标像素变化 20% 的帧。Camera Raw 从首字符发送起计时，包含逐字符输入及 Tab。LightFlow 从已填入完整值的 Return 起计时，RAWMaster 从原生控制器提交完整值起计时。[当前三方报告、逐样本与回放摘要](evidence/m0-current-fit-three-way.json)
+
+| FIT 控件 | RAWMaster p50 / p95，ms | LightFlow p50 / p95，ms | Camera Raw p50 / p95，ms |
+| --- | ---: | ---: | ---: |
+| 曝光 | 25.85 / 40.29 | 27.40 / 47.78 | 90.18 / 113.73 |
+| 对比度 | 24.46 / 36.14 | 29.41 / 39.77 | 90.34 / 122.08 |
+| 高光 | 27.06 / 37.05 | 29.58 / 37.78 | 90.55 / 122.00 |
+| 阴影 | 25.77 / 37.55 | 28.66 / 39.02 | 99.55 / 127.82 |
+| 黑色 | 25.60 / 39.28 | 29.03 / 35.62 | 87.67 / 115.78 |
+| 色调 | 28.55 / 40.78 | 27.93 / 36.83 | 90.06 / 127.15 |
 
 37 项精确读回以同一实拍、同机 2400×1600 不透明 sRGB RGBA8 重测。RAWMaster 用显式 canonical 定稿，LightFlow 用锁定的 `2d41ab1`。每项 20 个暖态样本，首次变化、首个精确和最终读回三列均进入 LightFlow 容差。37 组输入各取两次首次状态。RAWMaster 首次变化 p50/p95 为 5.50/18.75 ms，LightFlow 为 7.19/175.22 ms。RAWMaster 首个精确与最终同为 87.36/413.02 ms，LightFlow 同为 24.77/184.44 ms，这两项仍超线。[分项与首次状态](evidence/m0-lightflow-canonical-readback.json)
 
@@ -274,6 +285,10 @@ M4 Max 的 9504×6336 和 8640×5760 已验证 FlashRaw 主画布在 2400 canoni
 同机两轮 37/37 项暖态各达到 LightFlow 容差。每轮 1184 对正式帧及 222 对预热帧的完整定稿摘要与归档一致。74 个首次精确状态的 p50/p95 分别为 70.44/297.78 和 68.44/294.47 ms。同机 LightFlow 为 9.52/58.97 ms，首次精确仍超出门槛。[正式端到端比较](evidence/m0-grouped-local-validation.json)
 
 Release `20261128.182855` 已安装并通过严格验签。48 项蒙版、归约与请求回归、4 项显式回滚、24 项锐化与有限值、17 项滤镜和实拍自由缩放均通过。隔离资料库 SQLite 自检、AppKit 窗口启动与安装前后的 40+4 次 Metal C ABI 完成点检查通过。[安装回执](evidence/m0-grouped-local-validation-release-checkpoint.json)
+
+正向去雾 V2 在已验证的 M4 Max、9504×6336 和 8640×5760、原方向不透明 FlashRaw RGBA16F 及有限空气光范围内启用半浮点最小值和四带 Metal 提交。生成的 R32F 引导和两档全幅 RGBAf 恢复均逐位匹配。原片和引导的 pin 在 FIT 前后均须有效。实机覆盖四带提交后撤销、冷引导发布前失效、暖引导在 FIT 前失效和同源重新取得 pin。硬件、内存和数值准入仍执行实际检查，超出准入时使用原引导路径。两项原生优化分别可用 `RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION=0` 和 `RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION=0` 回滚。[原生阶段及完整数值证据](evidence/m0-native-dehaze-default.json)
+
+同构建按原路径、默认、默认、原路径采四轮，60 MP 的 296 个定稿与 50 MP 的 16 个定稿均匹配完整 RGBA8。冷去雾请求到读回 p50 分别从 985.91、815.09 ms 降至 600.80、452.26 ms，60 MP 的引导图从 640.85 降至 256.06 ms。60 MP 全阶段矩阵 p50/p95 为 68.58/286.38 和 67.90/293.21 ms。正式两轮仍各有 37/37 项暖态达到 LightFlow 容差，分别验证 1184 对正式帧和 222 对预热帧。74 个首次状态的首个精确 p50/p95 分别为 73.96/336.88 和 77.45/298.62 ms，当前首次精确仍超出同机 LightFlow 的 9.52/58.97 ms。[逐状态时钟、阶段及回滚](evidence/m0-native-dehaze-default.json)
 
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
@@ -364,7 +379,8 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 - [x] M0 摄影场景 032 准备、发布、目录重开与队列中断恢复
 - [x] M0 60 MP 三路同构建分项，固定校准和运行库
 - [x] M0 6 MP 5 次预热、每执行器 30 次，原生 FIT/监看及 1:1 复跑
-- [ ] M0 Camera Raw 当前版本的同机基线与三产品外部通过
+- [x] M0 当前 Camera Raw 和 LightFlow 的同机 FIT 六项，各 30 次暖测进入最快对手容差
+- [ ] M0 冷态首个精确、完整可比的原寸与等保真成片外部验收
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
 - [x] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机组件回执
 - [x] M2 6 MP、96 节点、60 MP A/B 和已覆盖算子的 macOS 原生产品路径

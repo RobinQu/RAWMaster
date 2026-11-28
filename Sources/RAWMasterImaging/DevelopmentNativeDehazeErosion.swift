@@ -5,8 +5,8 @@ import RAWMasterCore
 
 /// Native erosion measured on the two supported grids of this Core Image / Metal combination.
 enum DevelopmentNativeDehazeErosion {
-  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION"] == "1"
-  private static let groupedSubmissions = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION"] == "1"
+  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION"] != "0"
+  private static let groupedSubmissions = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION"] != "0"
   private static let ringRequested = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_RING_EROSION"] == "1"
   private static let slabRows = 64
   private static let maximumBytes = 512 * 1024 * 1024
@@ -42,6 +42,7 @@ enum DevelopmentNativeDehazeErosion {
     func requireCurrent() throws {
       try Task.checkCancellation()
       try checkAuthority()
+      guard pin.isCurrent(for:pin.image) else { throw PreviewPresentationError.allocationProtocol }
     }
 
     func erodedImage(for image: CIImage, device: MTLDevice, reserve: Int) throws -> CIImage? {

@@ -129,10 +129,12 @@ final class DevelopmentResidentDehazeGuide {
     guard Self.headroom(device) >= Self.sharedTextureDisplayBytes else { throw PreviewPresentationError.displayCapacity }
   }
   func check() throws {
-    try activeHalfErosion?.requireCurrent()
+    if let half = activeHalfErosion {
+      try half.requireCurrent()
+      guard let pin, pin.isCurrent(for:pin.image) else { throw PreviewPresentationError.allocationProtocol }
+    }
     if requiresLiveRestorePair {
-      guard let half = activeHalfErosion, half.pin.isCurrent(for:half.pin.image),
-            let pin, pin.isCurrent(for:pin.image), let plane, ScalarPlane.backing(for:pin.image) === plane,
+      guard let half = activeHalfErosion, let pin, let plane, ScalarPlane.backing(for:pin.image) === plane,
             plane.certifies(half.pin.image, airlight:half.airlight) else { throw PreviewPresentationError.allocationProtocol }
     }
     try plane?.state.check()
@@ -215,11 +217,9 @@ final class DevelopmentResidentDehazeGuide {
           do {
             guard direct ? DevelopmentDirectDehazeTexture.owns(image) : backing != nil else { throw PreviewPresentationError.allocationProtocol }
             try backing?.state.check()
-            try layout.halfErosion?.requireCurrent()
-            if let half = layout.halfErosion, backing?.certifies(half.pin.image,airlight:airlight) == true {
-              guard half.pin.isCurrent(for:half.pin.image), acquired.isCurrent(for:image) else {
-                throw PreviewPresentationError.allocationProtocol
-              }
+            if let half = layout.halfErosion {
+              try half.requireCurrent()
+              guard acquired.isCurrent(for:image) else { throw PreviewPresentationError.allocationProtocol }
             }
             try Task.checkCancellation()
             try check?()
