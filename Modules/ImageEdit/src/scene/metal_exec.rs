@@ -260,64 +260,6 @@ fn tile_ranges(width: u32, height: u32, edge: u32) -> Vec<(u32, u32, u32, u32)> 
     tiles
 }
 
-/// A group monitor takes each enclosing group's input through its own child graph at
-/// full strength. The stored final output and the enclosing groups' bypass flags stay intact.
-fn monitor_graph<'a>(
-    root: &'a Scope,
-    view: &ViewSpec,
-) -> Result<(std::borrow::Cow<'a, Scope>, Endpoint), SceneError> {
-    fn endpoint(scope: &Scope, view: &ViewSpec) -> Result<Endpoint, SceneError> {
-        match view.target.as_str() {
-            "final" | "" => Ok(scope.output.clone()),
-            "bypass" => Ok(Endpoint::Input),
-            "node" => {
-                let id = view
-                    .id
-                    .as_ref()
-                    .ok_or_else(|| SceneError::Invalid("node view has no id".into()))?;
-                let node = scope
-                    .nodes
-                    .iter()
-                    .find(|n| &n.id == id)
-                    .ok_or_else(|| SceneError::Invalid(format!("unknown scene node {id}")))?;
-                if node.operation.is_coverage() {
-                    return Err(SceneError::Invalid(format!(
-                        "coverage node {id} is not previewable"
-                    )));
-                }
-                Ok(Endpoint::Node(id.clone()))
-            }
-            other => Err(SceneError::Invalid(format!(
-                "unknown scene view target {other}"
-            ))),
-        }
-    }
-    if view.group_path.is_empty() {
-        return Ok((std::borrow::Cow::Borrowed(root), endpoint(root, view)?));
-    }
-    let mut projected = root.clone();
-    let mut scope = &mut projected;
-    for id in &view.group_path {
-        let node = scope.nodes.iter_mut().find(|n| &n.id == id);
-        let Some(Operation::Group {
-            graph,
-            enabled,
-            strength,
-            ..
-        }) = node.map(|n| &mut n.operation)
-        else {
-            return Err(SceneError::Invalid(format!("unknown scene group {id}")));
-        };
-        scope.output = Endpoint::Node(id.clone());
-        *enabled = true;
-        *strength = 1.0;
-        scope = graph;
-    }
-    scope.output = endpoint(scope, view)?;
-    let output = projected.output.clone();
-    Ok((std::borrow::Cow::Owned(projected), output))
-}
-
 pub struct SceneProgram {
     device: metal::Device,
     queue: metal::CommandQueue,

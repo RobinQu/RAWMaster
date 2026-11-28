@@ -4,6 +4,7 @@
 //! image/coverage ports, groups, and ordered mixers. The public entry points are in `scene_ffi.rs`.
 
 use serde::Deserialize;
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 
 pub mod ap1;
@@ -234,6 +235,65 @@ impl Default for ViewSpec {
     }
 }
 
+/// Select a root from a previously validated persisted graph. For a group monitor,
+/// each ancestor supplies its own input and forwards its selected child at full strength.
+/// The projected scope may leave nodes unreachable and is used only for execution.
+fn monitor_graph<'a>(
+    root: &'a Scope,
+    view: &ViewSpec,
+) -> Result<(Cow<'a, Scope>, Endpoint), SceneError> {
+    fn endpoint(scope: &Scope, view: &ViewSpec) -> Result<Endpoint, SceneError> {
+        match view.target.as_str() {
+            "final" | "" => Ok(scope.output.clone()),
+            "bypass" => Ok(Endpoint::Input),
+            "node" => {
+                let id = view
+                    .id
+                    .as_ref()
+                    .ok_or_else(|| SceneError::Invalid("node view has no id".into()))?;
+                let node = scope
+                    .nodes
+                    .iter()
+                    .find(|n| &n.id == id)
+                    .ok_or_else(|| SceneError::Invalid(format!("unknown scene node {id}")))?;
+                if node.operation.is_coverage() {
+                    return Err(SceneError::Unsupported(format!(
+                        "coverage node {id} is not previewable"
+                    )));
+                }
+                Ok(Endpoint::Node(id.clone()))
+            }
+            other => Err(SceneError::Invalid(format!(
+                "unknown scene view target {other}"
+            ))),
+        }
+    }
+    if view.group_path.is_empty() {
+        return Ok((Cow::Borrowed(root), endpoint(root, view)?));
+    }
+    let mut projected = root.clone();
+    let mut scope = &mut projected;
+    for id in &view.group_path {
+        let node = scope.nodes.iter_mut().find(|n| &n.id == id);
+        let Some(Operation::Group {
+            graph,
+            enabled,
+            strength,
+            ..
+        }) = node.map(|n| &mut n.operation)
+        else {
+            return Err(SceneError::Invalid(format!("unknown scene group {id}")));
+        };
+        scope.output = Endpoint::Node(id.clone());
+        *enabled = true;
+        *strength = 1.0;
+        scope = graph;
+    }
+    scope.output = endpoint(scope, view)?;
+    let output = projected.output.clone();
+    Ok((Cow::Owned(projected), output))
+}
+
 impl Operation {
     fn is_coverage(&self) -> bool {
         matches!(
@@ -341,10 +401,13 @@ impl Scope {
                 )));
             }
             validate_operation(&node.operation)?;
+            by_id.insert(node.id.as_str(), &node.operation);
+        }
+        // Charge all siblings before entering any child scope, as Swift does.
+        for node in &self.nodes {
             if let Operation::Group { graph, .. } = &node.operation {
                 graph.validate_inner(depth + 1, all)?;
             }
-            by_id.insert(node.id.as_str(), &node.operation);
         }
         let mut active: HashSet<String> = HashSet::new();
         let mut resolved: HashSet<String> = HashSet::new();
@@ -532,6 +595,61 @@ mod tests {
     #[test]
     fn accepts_a_bounded_image_and_coverage_graph() {
         parse_str(VALID).unwrap();
+    }
+
+    #[test]
+    fn counts_all_group_and_sibling_nodes_independent_of_order() {
+        fn corrector(id: String, image: Endpoint) -> Node {
+            Node {
+                name: id.clone(),
+                id,
+                operation: Operation::Corrector {
+                    image,
+                    mask: None,
+                    exposure_ev: 0.5,
+                    curve: vec![],
+                    strength: 1.0,
+                    enabled: true,
+                },
+            }
+        }
+
+        for children_first in [true, false] {
+            for count in [MAX_NODES, MAX_NODES + 1] {
+                let group = Node {
+                    id: "group".into(),
+                    name: "Group".into(),
+                    operation: Operation::Group {
+                        image: Endpoint::Input,
+                        graph: Scope {
+                            nodes: vec![
+                                corrector("inner-a".into(), Endpoint::Input),
+                                corrector("inner-b".into(), Endpoint::Node("inner-a".into())),
+                            ],
+                            output: Endpoint::Node("inner-b".into()),
+                        },
+                        strength: 1.0,
+                        enabled: true,
+                    },
+                };
+                let mut output = Endpoint::Node(group.id.clone());
+                let mut nodes = Vec::new();
+                for index in 0..count - 3 {
+                    let id = format!("outer-{index}");
+                    nodes.push(corrector(id.clone(), output));
+                    output = Endpoint::Node(id);
+                }
+                if children_first {
+                    nodes.insert(0, group);
+                } else {
+                    nodes.push(group);
+                }
+                assert_eq!(
+                    Scope { nodes, output }.validate().is_ok(),
+                    count == MAX_NODES
+                );
+            }
+        }
     }
 
     #[test]

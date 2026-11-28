@@ -1,5 +1,5 @@
 use rawmaster_image::scene::ap1::{render_cpu, Prepared, Region, Root, OPERATORS};
-use rawmaster_image::scene::SceneError;
+use rawmaster_image::scene::{SceneError, ViewSpec};
 use rawmaster_image::Pixel;
 use serde_json::{json, Value};
 
@@ -44,6 +44,218 @@ fn six_mp_scene() -> Value {
         {"id":"mix","name":"Mix","operation":{"kind":"parallel","base":"$input","enabled":true,
             "layers":[{"image":"light","weight":0.65,"mode":"normal"},{"image":"dark","weight":0.35,"mode":"normal"}]}}
     ]}})
+}
+
+fn nested_scene() -> Value {
+    serde_json::from_str(r#"{"schemaVersion":1,"graph":{"output":"tail","nodes":[
+        {"id":"root-mask","name":"Horizontal","operation":{"kind":"linearCoverage","start":[0,0],"end":[1,0]}},
+        {"id":"root-grade","name":"Parent input","operation":{"kind":"corrector","image":"$input","mask":"root-mask",
+            "exposureEV":1,"curve":[],"strength":1,"enabled":true}},
+        {"id":"outer","name":"Outer group","operation":{"kind":"group","image":"root-grade","strength":0.5,"enabled":false,
+            "graph":{"output":"after-inner","nodes":[
+                {"id":"child-input","name":"Inner input","operation":{"kind":"corrector","image":"$input","mask":null,
+                    "exposureEV":1,"curve":[],"strength":1,"enabled":true}},
+                {"id":"inner","name":"Inner group","operation":{"kind":"group","image":"child-input","strength":0.25,"enabled":true,
+                    "graph":{"output":"inner-final","nodes":[
+                        {"id":"inner-mask","name":"Vertical","operation":{"kind":"linearCoverage","start":[0,0],"end":[0,1]}},
+                        {"id":"inner-grade","name":"Inner grade","operation":{"kind":"corrector","image":"$input","mask":"inner-mask",
+                            "exposureEV":1,"curve":[],"strength":1,"enabled":true}},
+                        {"id":"inner-final","name":"Inner final","operation":{"kind":"corrector","image":"inner-grade","mask":null,
+                            "exposureEV":-1,"curve":[],"strength":1,"enabled":true}}
+                    ]}}},
+                {"id":"after-inner","name":"Outer final","operation":{"kind":"corrector","image":"inner","mask":null,
+                    "exposureEV":1,"curve":[],"strength":1,"enabled":true}}
+            ]}}},
+        {"id":"tail","name":"Tail","operation":{"kind":"corrector","image":"outer","mask":"root-mask",
+            "exposureEV":-1,"curve":[],"strength":1,"enabled":true}}
+    ]}}"#)
+    .unwrap()
+}
+
+fn group_view(path: &[&str], target: &str, id: Option<&str>) -> ViewSpec {
+    ViewSpec {
+        group_path: path.iter().map(|&id| id.into()).collect(),
+        target: target.into(),
+        id: id.map(str::to_owned),
+        ..Default::default()
+    }
+}
+
+fn assert_group_pixels(prepared: &Prepared, steps: usize, gain: impl Fn(f32, f32) -> f32) {
+    assert_eq!(prepared.plan().step_count(), steps);
+    let full = Region::new([8, 4], [0, 0], [8, 4]).unwrap();
+    let roi = Region::new([8, 4], [3, 1], [5, 1]).unwrap();
+    let colors = [
+        [1.0, -0.25, 0.125, 0.5],
+        [-0.5, 0.25, 1.5, 1.0],
+        [-0.0, 0.25, -0.25, 0.0],
+    ];
+    let input: Vec<_> = colors
+        .into_iter()
+        .cycle()
+        .take(full.pixel_count())
+        .collect();
+    let pixels = render_cpu(prepared, full, &input).unwrap();
+    for (i, (&source, &output)) in input.iter().zip(&pixels).enumerate() {
+        let x = (i as u32 % 8) as f32 / 8.0 + 1.0 / 16.0;
+        let y = (i as u32 / 8) as f32 / 4.0 + 1.0 / 8.0;
+        let [r, g, b, a] = source;
+        let scale = gain(x, y);
+        let expected = if a == 0.0 {
+            [0.0; 4]
+        } else {
+            [r * scale, g * scale, b * scale, a]
+        };
+        assert_eq!(output.map(f32::to_bits), expected.map(f32::to_bits));
+    }
+    let cropped = render_cpu(prepared, roi, &roi.crop(&input).unwrap()).unwrap();
+    for (a, b) in cropped.iter().zip(roi.crop(&pixels).unwrap()) {
+        assert_eq!(a.map(f32::to_bits), b.map(f32::to_bits));
+    }
+}
+
+#[test]
+fn cpu_group_final_and_monitors_use_their_own_input_and_strength() {
+    let mut document = nested_scene();
+    let encoded = serde_json::to_vec(&document).unwrap();
+    let prepare = |path: &[&str], target, id| {
+        Prepared::from_039_view(&encoded, &group_view(path, target, id)).unwrap()
+    };
+    let outer = ["outer"];
+    let inner = ["outer", "inner"];
+    let root_gain = |x: f32| 1.0 + x;
+    let tail_gain = |x: f32| 1.0 - 0.5 * x;
+
+    let final_plan = Prepared::from_039(&encoded, Root::Final).unwrap();
+    assert_group_pixels(&final_plan, 3, |x, _| root_gain(x) * tail_gain(x));
+    assert_group_pixels(&prepare(&outer, "final", None), 8, |x, y| {
+        root_gain(x) * (3.5 + 0.5 * y)
+    });
+    assert_group_pixels(&prepare(&outer, "node", Some("inner")), 7, |x, y| {
+        root_gain(x) * (1.75 + 0.25 * y)
+    });
+    assert_group_pixels(&prepare(&outer, "bypass", None), 2, |x, _| root_gain(x));
+    assert_group_pixels(&prepare(&inner, "final", None), 6, |x, y| {
+        root_gain(x) * (1.0 + y)
+    });
+    assert_group_pixels(&prepare(&inner, "node", Some("inner-grade")), 5, |x, y| {
+        2.0 * root_gain(x) * (1.0 + y)
+    });
+    assert_group_pixels(&prepare(&inner, "bypass", None), 3, |x, _| {
+        2.0 * root_gain(x)
+    });
+    assert_eq!(
+        prepare(&[], "final", None).plan(),
+        final_plan.plan(),
+        "projection must leave the persisted final unchanged"
+    );
+
+    document["graph"]["nodes"][2]["operation"]["enabled"] = json!(true);
+    let enabled = Prepared::from_039(&serde_json::to_vec(&document).unwrap(), Root::Final).unwrap();
+    // The tail still reads the original horizontal mask after the group's vertical mask.
+    assert_group_pixels(&enabled, 10, |x, y| {
+        root_gain(x) * (2.25 + 0.25 * y) * tail_gain(x)
+    });
+    document["graph"]["nodes"][2]["operation"]["strength"] = json!(0);
+    let zero = Prepared::from_039(&serde_json::to_vec(&document).unwrap(), Root::Final).unwrap();
+    assert_group_pixels(&zero, 3, |x, _| root_gain(x) * tail_gain(x));
+}
+
+#[test]
+fn cpu_group_selection_checks_persisted_graph_and_local_ports() {
+    let mut document = nested_scene();
+    let prepare = |doc: &Value, path: &[&str], target, id| {
+        Prepared::from_039_view(
+            &serde_json::to_vec(doc).unwrap(),
+            &group_view(path, target, id),
+        )
+    };
+    let inner = ["outer", "inner"];
+    for path in [
+        &["missing"][..],
+        &["root-grade"],
+        &["inner"],
+        &["outer", "root-grade"],
+    ] {
+        assert!(matches!(
+            prepare(&document, path, "final", None),
+            Err(SceneError::Invalid(message)) if message.contains("unknown scene group")
+        ));
+    }
+    assert!(matches!(
+        prepare(&document, &inner, "node", Some("root-grade")),
+        Err(SceneError::Invalid(message)) if message.contains("unknown scene node")
+    ));
+    assert!(matches!(
+        prepare(&document, &inner, "node", Some("inner-mask")),
+        Err(SceneError::Unsupported(message)) if message.contains("not previewable")
+    ));
+    document["graph"]["output"] = json!("root-grade");
+    assert!(matches!(
+        prepare(&document, &inner, "node", Some("inner-grade")),
+        Err(SceneError::Invalid(message)) if message.contains("disconnected scene nodes")
+    ));
+    document["graph"]["output"] = json!("tail");
+    document["graph"]["nodes"][2]["operation"]["graph"]["nodes"][1]["operation"]["graph"]
+        ["nodes"][2]["operation"]["image"] = json!("root-grade");
+    assert!(matches!(
+        prepare(&document, &inner, "bypass", None),
+        Err(SceneError::Invalid(message)) if message.contains("missing node root-grade")
+    ));
+}
+
+#[test]
+fn cpu_group_elides_inactive_and_identity_branches_and_rejects_active_unsupported_operations() {
+    let mut document = nested_scene();
+    let inner = group_view(&["outer", "inner"], "final", None);
+    fn child_nodes(doc: &mut Value) -> &mut Value {
+        &mut doc["graph"]["nodes"][2]["operation"]["graph"]["nodes"][1]["operation"]["graph"]
+            ["nodes"]
+    }
+    child_nodes(&mut document)[0]["operation"] =
+        json!({"kind":"externalCoverage","id":"model-mask"});
+    let encoded = serde_json::to_vec(&document).unwrap();
+    assert_eq!(
+        Prepared::from_039(&encoded, Root::Final)
+            .unwrap()
+            .plan()
+            .step_count(),
+        3
+    );
+    assert!(matches!(
+        Prepared::from_039_view(&encoded, &inner),
+        Err(SceneError::Unsupported(message)) if message.contains("inner-mask")
+    ));
+    let bypass = group_view(&["outer", "inner"], "bypass", None);
+    assert_eq!(
+        Prepared::from_039_view(&encoded, &bypass)
+            .unwrap()
+            .plan()
+            .step_count(),
+        3
+    );
+
+    child_nodes(&mut document)[0]["operation"] =
+        json!({"kind":"linearCoverage","start":[0,0],"end":[0,1]});
+    child_nodes(&mut document)[2]["operation"] = json!({"kind":"layer","base":"$input","enabled":true,
+        "layers":[{"image":"inner-grade","weight":0.5,"mode":"screen"}]});
+    assert!(matches!(
+        Prepared::from_039_view(&serde_json::to_vec(&document).unwrap(), &inner),
+        Err(SceneError::Unsupported(message)) if message.contains("inner-final")
+    ));
+
+    let identity = br#"{"schemaVersion":1,"graph":{"output":"group","nodes":[
+      {"id":"group","name":"Identity","operation":{"kind":"group","image":"$input","strength":0.25,"enabled":true,
+        "graph":{"output":"$input","nodes":[]}}}
+    ]}}"#;
+    let prepared = Prepared::from_039(identity, Root::Final).unwrap();
+    assert_eq!(prepared.plan().step_count(), 0);
+    let pixel = [-0.0, 0.125, -0.25, 0.0];
+    let region = Region::new([1, 1], [0, 0], [1, 1]).unwrap();
+    assert_eq!(
+        render_cpu(&prepared, region, &[pixel]).unwrap()[0].map(f32::to_bits),
+        pixel.map(f32::to_bits)
+    );
 }
 
 #[test]

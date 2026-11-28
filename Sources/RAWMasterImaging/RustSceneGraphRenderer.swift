@@ -78,7 +78,7 @@ final class RustSceneGraphRenderer {
         ap1 = program
         do {
             let result = try SceneDeliveryTrace.measure(.dagWGPURender) {
-                try program.render(graph: document, input: input, view: Self.selector(view), origin: origin,
+                try program.render(graph: document, input: input, view: Self.selector(view), groupPath: view.groupPath, origin: origin,
                     geometry: geometry, surfaceBudget: surfaceBudget, isCurrent: { _ in !Task.isCancelled })
             }
             SceneDeliveryTrace.recordWGPU(result.receipt)

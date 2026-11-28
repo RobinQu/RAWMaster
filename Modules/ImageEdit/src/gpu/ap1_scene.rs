@@ -486,4 +486,33 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn buffer_shader_retains_the_six_node_final_and_monitor_shapes() {
+        // Same active topology as the 6 MP Metal/Vulkan comparison.
+        let document = br#"{"schemaVersion":1,"graph":{"output":"mix","nodes":[
+          {"id":"ramp","name":"Ramp","operation":{"kind":"linearCoverage","start":[0.1,0],"end":[0.9,1]}},
+          {"id":"ellipse","name":"Ellipse","operation":{"kind":"radialCoverage","center":[0.5,0.5],"radii":[0.4,0.6],"feather":0.2}},
+          {"id":"mask","name":"Intersection","operation":{"kind":"combineCoverage","base":"ramp","other":"ellipse","mode":"intersect"}},
+          {"id":"light","name":"Light","operation":{"kind":"corrector","image":"$input","mask":"mask","exposureEV":1.2,"curve":[],"strength":0.8,"enabled":true}},
+          {"id":"dark","name":"Dark","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":-0.7,"curve":[],"strength":1,"enabled":true}},
+          {"id":"mix","name":"Mix","operation":{"kind":"parallel","base":"$input","enabled":true,"layers":[{"image":"light","weight":0.65,"mode":"normal"},{"image":"dark","weight":0.35,"mode":"normal"}]}}
+        ]}}"#;
+        for (root, pinned) in [
+            (
+                Root::Final,
+                "e18c81bf5d6ae8c02749580ea07cbf24e62ce949c9dca7349e2d9a3817bc48a8",
+            ),
+            (
+                Root::Monitor("light"),
+                "7508ec03b8c29052bed6b7279bd2d733ef9cb3aa48802018478cb5cd332f862a",
+            ),
+        ] {
+            let prepared = Prepared::from_039(document, root).unwrap();
+            assert_eq!(
+                format!("{:x}", Sha256::digest(wgsl(prepared.plan()))),
+                pinned
+            );
+        }
+    }
 }

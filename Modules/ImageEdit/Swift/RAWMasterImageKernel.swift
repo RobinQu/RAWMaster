@@ -433,11 +433,12 @@ public enum RAWMasterImageKernel {
             program = handle
         }
 
-        public func render(graph: Data, input: any MTLTexture, view: SceneView,
+        public func render(graph: Data, input: any MTLTexture, view: SceneView, groupPath: [UUID] = [],
                            origin: SIMD2<Int>, geometry: SIMD2<Int>, surfaceBudget: Int,
                            revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true })
             throws -> (texture: any MTLTexture, receipt: Receipt) {
             var payload = view.selector
+            if !groupPath.isEmpty { payload["groupPath"] = groupPath.map(\.uuidString) }
             payload["origin"] = [origin.x, origin.y]
             payload["geometry"] = [geometry.x, geometry.y]
             payload["surfaceBudget"] = surfaceBudget

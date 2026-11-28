@@ -241,6 +241,8 @@ final class EditingSceneGraphWindowTests: XCTestCase {
         editing.setSceneViewingHDR(false)
         editing.selectSceneNodes([first], ticket: try XCTUnwrap(editing.sceneGraphTicket))
         var nodeSamples: [Double] = [], finalSamples: [Double] = []
+        var sceneExecutors = Set<String>()
+        let strictWGPU = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]?.lowercased() == "wgpu"
         func elapsed(node: Bool) async throws -> Double {
             let previous = editing.sceneFrame?.id
             let start = DispatchTime.now().uptimeNanoseconds
@@ -251,7 +253,14 @@ final class EditingSceneGraphWindowTests: XCTestCase {
                 guard ContinuousClock.now < timeout else { throw LibraryError.invalid("Timed out: Graph monitor drawable") }
                 try await Task.sleep(for: .milliseconds(2))
             }
-            return Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
+            let milliseconds = Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
+            let execution = editing.sceneFrame?.execution
+            if let execution { sceneExecutors.insert(execution.backend.rawValue) }
+            if strictWGPU {
+                XCTAssertEqual(execution?.backend, .wgpu)
+                XCTAssertNil(execution?.fallbackReason)
+            }
+            return milliseconds
         }
         editing.stopSceneGraphMonitor()
         try await wait("starting final drawable") { canvas.presentedFrameID == editing.sceneFrame?.id && editing.sceneFrame != nil && !editing.scenePreviewBusy }
@@ -263,6 +272,7 @@ final class EditingSceneGraphWindowTests: XCTestCase {
         let (nodeP50, nodeP95) = stats(nodeSamples), (finalP50, finalP95) = stats(finalSamples)
         let json: [String: Any] = ["scope": "open floating Graph: warm interim Corrector and final grouped serial output monitor switching to joined SDR drawable",
             "asset": editing.work?.source.contentSHA256 ?? "unknown", "device": editing.sceneFrame?.texture.device.name ?? "unknown",
+            "executors": sceneExecutors.sorted(), "warmups": 5, "measuredSamplesPerRoot": nodeSamples.count,
             "os": ProcessInfo.processInfo.operatingSystemVersionString, "pixels": [canvas.bounds.width, canvas.bounds.height], "backingScale": canvas.window?.backingScaleFactor ?? 0,
             "nodeP50Ms": nodeP50, "nodeP95Ms": nodeP95, "finalP50Ms": finalP50, "finalP95Ms": finalP95, "nodeSamplesMs": nodeSamples, "finalSamplesMs": finalSamples]
         try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]).write(to: URL(fileURLWithPath: report), options: [.withoutOverwriting])

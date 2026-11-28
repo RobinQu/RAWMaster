@@ -1,7 +1,9 @@
 //! The first portable scene contract. The 039 document stays authoritative for validation.
 //! This component accepts native pixel rectangles. Each supported operator is pointwise.
 
-use super::{parse, Blend, CoverageCombine, Endpoint, Operation, SceneError, Scope};
+use super::{
+    monitor_graph, parse, Blend, CoverageCombine, Endpoint, Operation, SceneError, Scope, ViewSpec,
+};
 use crate::Pixel;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -239,21 +241,19 @@ pub struct Prepared {
 
 impl Prepared {
     pub fn from_039(document: &[u8], root: Root<'_>) -> Result<Self, SceneError> {
-        let (_, scope) = parse(document)?;
-        let lowering = Lowering::new(&scope);
-        let endpoint = match root {
-            Root::Final => scope.output.clone(),
-            Root::Monitor(id) => {
-                // The 039 top-level monitor takes this image root. Group paths are outside v1.
-                if lowering.operation(id)?.is_coverage() {
-                    return Err(SceneError::Unsupported(format!(
-                        "coverage node {id} is not previewable"
-                    )));
-                }
-                Endpoint::Node(id.into())
-            }
-        };
-        lowering.finish(&endpoint)
+        let mut view = ViewSpec::default();
+        if let Root::Monitor(id) = root {
+            view.target = "node".into();
+            view.id = Some(id.into());
+        }
+        Self::from_039_view(document, &view)
+    }
+
+    /// Validate the persisted document before selecting a root and lowering the reachable graph.
+    pub fn from_039_view(document: &[u8], view: &ViewSpec) -> Result<Self, SceneError> {
+        let (_, root) = parse(document)?;
+        let (scope, endpoint) = monitor_graph(&root, view)?;
+        Lowering::prepare(&scope, &endpoint)
     }
 
     pub fn parameters(&self) -> &Parameters {
@@ -271,18 +271,17 @@ impl Plan {
     }
 }
 
-struct Lowering<'a> {
+struct ScopeSlots<'a> {
+    input: Image,
     nodes: HashMap<&'a str, &'a Operation>,
     images: HashMap<String, Image>,
     coverages: HashMap<String, Coverage>,
-    steps: Vec<Step>,
-    rows: Vec<[f32; 4]>,
-    next_image: usize,
 }
 
-impl<'a> Lowering<'a> {
-    fn new(scope: &'a Scope) -> Self {
+impl<'a> ScopeSlots<'a> {
+    fn new(scope: &'a Scope, input: Image) -> Self {
         Self {
+            input,
             nodes: scope
                 .nodes
                 .iter()
@@ -290,23 +289,7 @@ impl<'a> Lowering<'a> {
                 .collect(),
             images: HashMap::new(),
             coverages: HashMap::new(),
-            steps: Vec::new(),
-            rows: Vec::new(),
-            next_image: 1,
         }
-    }
-
-    fn finish(mut self, endpoint: &Endpoint) -> Result<Prepared, SceneError> {
-        let output = self.image(endpoint)?;
-        Ok(Prepared {
-            plan: Plan {
-                steps: self.steps,
-                output,
-                images: self.next_image,
-                coverages: self.coverages.len(),
-            },
-            parameters: Parameters { rows: self.rows },
-        })
     }
 
     fn operation(&self, id: &str) -> Result<&'a Operation, SceneError> {
@@ -314,6 +297,33 @@ impl<'a> Lowering<'a> {
             .get(id)
             .copied()
             .ok_or_else(|| SceneError::Invalid(format!("unknown scene node {id}")))
+    }
+}
+
+#[derive(Default)]
+struct Lowering {
+    steps: Vec<Step>,
+    rows: Vec<[f32; 4]>,
+    next_image: usize,
+    next_coverage: usize,
+}
+
+impl Lowering {
+    fn prepare(scope: &Scope, endpoint: &Endpoint) -> Result<Prepared, SceneError> {
+        let mut lowering = Self::default();
+        let input = lowering.next_image();
+        let output = lowering.image(&mut ScopeSlots::new(scope, input), endpoint)?;
+        Ok(Prepared {
+            plan: Plan {
+                steps: lowering.steps,
+                output,
+                images: lowering.next_image,
+                coverages: lowering.next_coverage,
+            },
+            parameters: Parameters {
+                rows: lowering.rows,
+            },
+        })
     }
 
     fn row(&mut self, value: [f32; 4]) -> usize {
@@ -328,14 +338,35 @@ impl<'a> Lowering<'a> {
         slot
     }
 
-    fn coverage(&mut self, id: &str) -> Result<Coverage, SceneError> {
-        if let Some(slot) = self.coverages.get(id) {
+    fn next_coverage(&mut self) -> Coverage {
+        let slot = Coverage(self.next_coverage);
+        self.next_coverage += 1;
+        slot
+    }
+
+    fn normal_layer(&mut self, bottom: Image, top: Image, weight: f32) -> Image {
+        if bottom == top || weight == 1.0 {
+            return top;
+        }
+        let row = self.row([weight, 0.0, 0.0, 0.0]);
+        let output = self.next_image();
+        self.steps.push(Step::NormalLayer {
+            bottom,
+            top,
+            output,
+            row,
+        });
+        output
+    }
+
+    fn coverage(&mut self, scope: &mut ScopeSlots<'_>, id: &str) -> Result<Coverage, SceneError> {
+        if let Some(slot) = scope.coverages.get(id) {
             return Ok(*slot);
         }
-        let (output, step) = match self.operation(id)? {
+        let (output, step) = match scope.operation(id)? {
             Operation::LinearCoverage { start, end } => {
                 let row = self.row([start[0], start[1], end[0], end[1]]);
-                let output = Coverage(self.coverages.len());
+                let output = self.next_coverage();
                 (output, Step::LinearCoverage { output, row })
             }
             Operation::RadialCoverage {
@@ -350,7 +381,7 @@ impl<'a> Lowering<'a> {
                 }
                 let row = self.row([center[0], center[1], radii[0], radii[1]]);
                 self.row([*feather, 0.0, 0.0, 0.0]);
-                let output = Coverage(self.coverages.len());
+                let output = self.next_coverage();
                 (output, Step::RadialCoverage { output, row })
             }
             Operation::CombineCoverage {
@@ -358,9 +389,9 @@ impl<'a> Lowering<'a> {
                 other,
                 mode: CoverageCombine::Intersect,
             } => {
-                let left = self.coverage(base)?;
-                let right = self.coverage(other)?;
-                let output = Coverage(self.coverages.len());
+                let left = self.coverage(scope, base)?;
+                let right = self.coverage(scope, other)?;
+                let output = self.next_coverage();
                 (
                     output,
                     Step::IntersectCoverage {
@@ -373,18 +404,22 @@ impl<'a> Lowering<'a> {
             _ => return Err(unsupported(id)),
         };
         self.steps.push(step);
-        self.coverages.insert(id.into(), output);
+        scope.coverages.insert(id.into(), output);
         Ok(output)
     }
 
-    fn image(&mut self, endpoint: &Endpoint) -> Result<Image, SceneError> {
+    fn image(
+        &mut self,
+        scope: &mut ScopeSlots<'_>,
+        endpoint: &Endpoint,
+    ) -> Result<Image, SceneError> {
         let Endpoint::Node(id) = endpoint else {
-            return Ok(Image(0));
+            return Ok(scope.input);
         };
-        if let Some(slot) = self.images.get(id) {
+        if let Some(slot) = scope.images.get(id) {
             return Ok(*slot);
         }
-        let output = match self.operation(id)? {
+        let output = match scope.operation(id)? {
             Operation::Corrector {
                 image,
                 mask,
@@ -393,14 +428,14 @@ impl<'a> Lowering<'a> {
                 strength,
                 enabled,
             } => {
-                let input = self.image(image)?;
+                let input = self.image(scope, image)?;
                 let neutral = *exposure_ev == 0.0 && curve.iter().all(|point| point[0] == point[1]);
                 if !enabled || *strength == 0.0 || neutral {
                     input
                 } else {
                     let coverage = mask
                         .as_deref()
-                        .map(|mask| self.coverage(mask))
+                        .map(|mask| self.coverage(scope, mask))
                         .transpose()?;
                     let row = self.row([
                         libm::exp2f(*exposure_ev),
@@ -426,29 +461,14 @@ impl<'a> Lowering<'a> {
                 layers,
                 enabled,
             } => {
-                let mut current = self.image(base)?;
+                let mut current = self.image(scope, base)?;
                 if *enabled {
                     for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
                         if layer.mode != Blend::Normal {
                             return Err(unsupported(id));
                         }
-                        let branch = self.image(&layer.image)?;
-                        if branch == current {
-                            continue;
-                        }
-                        if layer.weight == 1.0 {
-                            current = branch;
-                            continue;
-                        }
-                        let row = self.row([layer.weight, 0.0, 0.0, 0.0]);
-                        let output = self.next_image();
-                        self.steps.push(Step::NormalLayer {
-                            bottom: current,
-                            top: branch,
-                            output,
-                            row,
-                        });
-                        current = output;
+                        let branch = self.image(scope, &layer.image)?;
+                        current = self.normal_layer(current, branch, layer.weight);
                     }
                 }
                 current
@@ -458,13 +478,13 @@ impl<'a> Lowering<'a> {
                 layers,
                 enabled,
             } => {
-                let base = self.image(base)?;
+                let base = self.image(scope, base)?;
                 let mut current = base;
                 if *enabled {
                     for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
                         // 039 validates Parallel's normal mode and skips the original base
                         // before its weight-one replacement. A repeated non-base still adds.
-                        let branch = self.image(&layer.image)?;
+                        let branch = self.image(scope, &layer.image)?;
                         if branch == base {
                             continue;
                         }
@@ -486,9 +506,23 @@ impl<'a> Lowering<'a> {
                 }
                 current
             }
+            Operation::Group {
+                image,
+                graph,
+                strength,
+                enabled,
+            } => {
+                let base = self.image(scope, image)?;
+                if !enabled || *strength == 0.0 {
+                    base
+                } else {
+                    let child = self.image(&mut ScopeSlots::new(graph, base), &graph.output)?;
+                    self.normal_layer(base, child, *strength)
+                }
+            }
             _ => return Err(unsupported(id)),
         };
-        self.images.insert(id.clone(), output);
+        scope.images.insert(id.clone(), output);
         Ok(output)
     }
 }

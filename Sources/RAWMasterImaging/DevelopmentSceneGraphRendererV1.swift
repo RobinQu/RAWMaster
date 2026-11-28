@@ -219,8 +219,8 @@ final class DevelopmentSceneGraphRendererV1 {
         }
       }
       if backend == .wgpu {
-        guard view.groupPath.isEmpty, externalCoverages.isEmpty else { throw RAWMasterImageKernel.Failure.unsupportedScene }
-        let (texture, raw) = try rust.renderWGSL(input: t, scope: scope, view: view, origin: image.origin,
+        guard externalCoverages.isEmpty else { throw RAWMasterImageKernel.Failure.unsupportedScene }
+        let (texture, raw) = try rust.renderWGSL(input: t, scope: graph.graph, view: view, origin: image.origin,
           geometry: .init(geometry.width, geometry.height), surfaceBudget: maximum)
         lastReceipt = .init(backend: .wgpu, tiles: raw.dispatches == 0 ? 0 : 1, nodes: raw.nodes,
           dispatches: raw.dispatches, coverageCacheHits: 0, nodeCacheHits: 0,

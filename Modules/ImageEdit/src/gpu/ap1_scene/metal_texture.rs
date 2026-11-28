@@ -3,7 +3,7 @@
 use super::{parameter_rows, write_additional_operators, write_steps, GROUP_EDGE};
 use crate::gpu::metal_surface::{NativeJoin, SurfaceFrame};
 use crate::gpu::Gpu;
-use crate::scene::ap1::{Plan, Prepared, Region, Root};
+use crate::scene::ap1::{Plan, Prepared, Region};
 use crate::scene::{SceneError, ViewSpec};
 use foreign_types::{ForeignType, ForeignTypeRef};
 use metal::{MTLPixelFormat, MTLResourceOptions, MTLStorageMode, MTLTextureType, MTLTextureUsage};
@@ -44,8 +44,30 @@ pub struct MetalReceipt {
 
 struct GraphEntry {
     document: Vec<u8>,
-    monitor: Option<String>,
+    group_path: Vec<String>,
+    target: String,
+    id: Option<String>,
     prepared: Arc<Prepared>,
+}
+
+impl GraphEntry {
+    fn new(document: &[u8], view: &ViewSpec) -> Result<Self, SceneError> {
+        let prepared = Arc::new(Prepared::from_039_view(document, view)?);
+        Ok(Self {
+            document: document.to_vec(),
+            group_path: view.group_path.clone(),
+            target: view.target.clone(),
+            id: view.id.clone(),
+            prepared,
+        })
+    }
+
+    fn matches(&self, document: &[u8], view: &ViewSpec) -> bool {
+        self.document == document
+            && self.group_path == view.group_path
+            && self.target == view.target
+            && self.id == view.id
+    }
 }
 
 struct PipelineEntry {
@@ -122,30 +144,23 @@ impl MetalProgram {
         })
     }
 
-    fn prepared(&mut self, document: &[u8], root: Root<'_>) -> Result<Arc<Prepared>, SceneError> {
-        let monitor = match root {
-            Root::Final => None,
-            Root::Monitor(id) => Some(id),
-        };
+    fn prepared(&mut self, document: &[u8], view: &ViewSpec) -> Result<Arc<Prepared>, SceneError> {
         if let Some(index) = self
             .graphs
             .iter()
-            .position(|entry| entry.document == document && entry.monitor.as_deref() == monitor)
+            .position(|entry| entry.matches(document, view))
         {
             let hit = self.graphs.remove(index).unwrap();
             let prepared = hit.prepared.clone();
             self.graphs.push_front(hit);
             return Ok(prepared);
         }
-        let prepared = Arc::new(Prepared::from_039(document, root)?);
+        let entry = GraphEntry::new(document, view)?;
+        let prepared = entry.prepared.clone();
         if self.graphs.len() == CACHE_ENTRIES {
             self.graphs.pop_back();
         }
-        self.graphs.push_front(GraphEntry {
-            document: document.to_vec(),
-            monitor: monitor.map(str::to_owned),
-            prepared: prepared.clone(),
-        });
+        self.graphs.push_front(entry);
         Ok(prepared)
     }
 
@@ -192,7 +207,7 @@ impl MetalProgram {
         view: &ViewSpec,
         input: &metal::TextureRef,
     ) -> Result<(metal::Texture, MetalReceipt), SceneError> {
-        let root = root(view)?;
+        validate_view(view)?;
         let input_device = input.device();
         if input_device.as_ptr() != self.native.as_ptr()
             || input_device.registry_id() != self.native.registry_id()
@@ -230,7 +245,7 @@ impl MetalProgram {
             ));
         }
 
-        let prepared = self.prepared(document, root)?;
+        let prepared = self.prepared(document, view)?;
         let rows = parameter_rows(&prepared, region);
         let parameters = bytemuck::cast_slice(&rows);
         let minimum_texture = region.pixel_count() as u64 * 16;
@@ -470,22 +485,23 @@ pub(crate) unsafe fn admits_source(input: *mut c_void) -> bool {
     !input.is_null() && rm_is_private_half_root(input)
 }
 
-fn root(view: &ViewSpec) -> Result<Root<'_>, SceneError> {
-    if !view.group_path.is_empty() {
-        return Err(SceneError::Unsupported(
-            "AP1 normal delivery and top-level monitor have no group path".into(),
-        ));
-    }
-    match view.target.as_str() {
-        "final" if view.id.is_none() => Ok(Root::Final),
-        "final" => Err(SceneError::Invalid(
-            "AP1 final root cannot specify a monitor ID".into(),
-        )),
+fn validate_view(view: &ViewSpec) -> Result<(), SceneError> {
+    let target = view.target.as_str();
+    match target {
+        "final" | "bypass" if target == "final" || !view.group_path.is_empty() => {
+            if view.id.is_none() {
+                Ok(())
+            } else {
+                Err(SceneError::Invalid(format!(
+                    "AP1 {target} root cannot specify a monitor ID"
+                )))
+            }
+        }
         "node" => view
             .id
             .as_deref()
             .filter(|id| !id.is_empty())
-            .map(Root::Monitor)
+            .map(|_| ())
             .ok_or_else(|| SceneError::Invalid("AP1 node monitoring requires a node ID".into())),
         _ => Err(SceneError::Unsupported(
             "unsupported native AP1 scene root".into(),
@@ -568,6 +584,16 @@ fn run_ap1_texture(@builtin(global_invocation_id) gid: vec3<u32>) {
 mod tests {
     use super::*;
 
+    const GROUP_DOCUMENT: &[u8] = br#"{"schemaVersion":1,"graph":{"output":"outer","nodes":[
+      {"id":"outer","name":"Outer","operation":{"kind":"group","image":"$input","strength":0.25,"enabled":false,
+        "graph":{"output":"inner","nodes":[
+          {"id":"inner","name":"Inner","operation":{"kind":"group","image":"$input","strength":0.5,"enabled":true,
+            "graph":{"output":"grade","nodes":[
+              {"id":"grade","name":"Grade","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":1,"curve":[],"strength":1,"enabled":true}}
+            ]}}}
+        ]}}}
+    ]}}"#;
+
     #[test]
     fn native_geometry_and_root_contract_are_distinct_from_the_probe() {
         let full = [9_504, 6_336];
@@ -581,15 +607,69 @@ mod tests {
         );
         assert!(Region::native(full, [9_503, 6_335], [2, 1]).is_err());
         let mut view = ViewSpec::default();
-        assert!(matches!(root(&view), Ok(Root::Final)));
+        assert!(validate_view(&view).is_ok());
         view.target = "bypass".into();
-        assert!(matches!(root(&view), Err(SceneError::Unsupported(_))));
+        assert!(matches!(
+            validate_view(&view),
+            Err(SceneError::Unsupported(_))
+        ));
         view.target = "node".into();
-        assert!(matches!(root(&view), Err(SceneError::Invalid(_))));
+        assert!(matches!(validate_view(&view), Err(SceneError::Invalid(_))));
         view.id = Some("monitor".into());
-        assert!(matches!(root(&view), Ok(Root::Monitor("monitor"))));
+        assert!(validate_view(&view).is_ok());
         view.group_path.push("group".into());
-        assert!(matches!(root(&view), Err(SceneError::Unsupported(_))));
+        assert!(validate_view(&view).is_ok());
+        view.target = "bypass".into();
+        assert!(matches!(validate_view(&view), Err(SceneError::Invalid(_))));
+        view.id = None;
+        assert!(validate_view(&view).is_ok());
+    }
+
+    #[test]
+    fn native_prepared_graph_matches_full_selector_independent_of_region() {
+        let document = GROUP_DOCUMENT;
+        let mut view = ViewSpec {
+            group_path: vec!["outer".into(), "inner".into()],
+            target: "node".into(),
+            id: Some("grade".into()),
+            ..Default::default()
+        };
+        let entry = GraphEntry::new(document, &view).unwrap();
+        view.origin = Some([9, 12]);
+        view.geometry = Some([25, 25]);
+        view.surface_budget = Some(1_000_000);
+        assert!(entry.matches(document, &view));
+        assert!(!entry.matches(b"", &view));
+        view.group_path.pop();
+        assert!(!entry.matches(document, &view));
+        view.group_path.push("inner".into());
+        view.id = Some("other".into());
+        assert!(!entry.matches(document, &view));
+        view.id = Some("grade".into());
+        view.target = "final".into();
+        assert!(!entry.matches(document, &view));
+    }
+
+    #[test]
+    fn grouped_monitor_generates_valid_texture_and_buffer_wgsl() {
+        use wgpu::naga::{
+            front::wgsl::parse_str,
+            valid::{Capabilities, ValidationFlags, Validator},
+        };
+
+        let view = ViewSpec {
+            group_path: vec!["outer".into()],
+            ..Default::default()
+        };
+        let prepared = Prepared::from_039_view(GROUP_DOCUMENT, &view).unwrap();
+        let plan = prepared.plan();
+        assert_eq!(plan.step_count(), 2);
+        for shader in [texture_wgsl(plan), super::super::wgsl(plan)] {
+            let module = parse_str(&shader).unwrap();
+            Validator::new(ValidationFlags::all(), Capabilities::empty())
+                .validate(&module)
+                .unwrap();
+        }
     }
 
     #[test]
