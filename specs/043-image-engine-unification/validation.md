@@ -209,6 +209,10 @@ RTX 实机曾在全权重 Add 溢出后被后续 normal 替换时返回有效的
 
 另用同一阶段探针按关、开、开、关复测正向去雾的半浮点最小值。两次开启均实际命中原生算子，冷引导图由关闭时的 562 和 874 ms 降至 225 和 369 ms。四轮两档定稿均匹配归档的完整 RGBA8 摘要。此为单控件阶段诊断，37 项首次精确和定稿仍按完整矩阵验收。[实机阶段样本](evidence/m0-native-erosion-qualification.json)
 
+正式 37 项用同一原片、2400×1600 RGBA8 和 LightFlow `2d41ab1` 重跑。每项计两次首次态、保留六次预热和三十次暖测。36 项的三阶段暖态达到容差。局部颗粒的首次变化和首个精确 p95 分别为 7.97、8.61 ms，目标均为 6.73 ms。74 个首次精确状态的 RAWMaster p50/p95 为 86.63/417.86 ms，LightFlow 为 9.52/58.97 ms。收窄试验开关后，RAWMaster 首次精确为 70.79/283.84 ms，局部颗粒首个精确 p95 为 6.92 ms。1184 对首次或计量帧与 222 对预热帧的两份完整 RGBA8 摘要全部一致。[30 次暖测与试验回执](evidence/m0-lightflow-exact-warm30.json)
+
+60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
+
 Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 Camera Raw 同口径精确读回、三方 1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
 
 ## 5. 放行边界

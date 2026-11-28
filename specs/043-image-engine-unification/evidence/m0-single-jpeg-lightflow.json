@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "scope": "Single 60 MP RAW +0.5 EV SDR JPEG through the two ordinary export workbenches",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "exposureEV": 0.5,
+  "outputPixels": [
+    9504,
+    6336
+  ],
+  "requestedJPEGQuality": 95,
+  "matchingActualJPEGFields": [
+    "dimensions",
+    "bitsPerComponent",
+    "subsampling",
+    "progressive",
+    "sofComponents"
+  ],
+  "iccGridMaxRGBCodeDeltaToSRGB": 0,
+  "boundary": "Host monotonic clock from one product submission to first independent 15 ms polling observation of exactly one final JPEG with EOI and no temporary file. Queue receipts and full decode are checked.",
+  "native": {
+    "binarySHA256": "b90ceb78c1fde320207809b70e77e038e8cad34a84255c8494842789cb0954de",
+    "recipeSHA256": "89c87d77105ddaa627436c214bd5f053dfe3f80f27b4d5cd1d23bd42533897b7",
+    "gpu": "Apple M4 Max",
+    "system": "Version 27.0.1 (Build 26A434)",
+    "jpeg": {
+      "name": "acr-benchmark.jpg",
+      "sha256": "1b07b66c5c80ffa4973b41b89aea4eb94ce21ec39d171789749194724392ca83",
+      "bytes": 7330990,
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "format": "JPEG",
+      "bitsPerComponent": 8,
+      "subsampling": "4:2:0",
+      "progressive": false,
+      "sofComponents": [
+        [
+          1,
+          2,
+          2,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          1
+        ],
+        [
+          3,
+          1,
+          1,
+          1
+        ]
+      ],
+      "dqt": {
+        "0": {
+          "entries": 64,
+          "min": 1,
+          "max": 12,
+          "sha256": "e9252bc777b1ccd43b106c90336e4f721b02b32d460be45dec9e76a99eb0b822"
+        },
+        "1": {
+          "entries": 64,
+          "min": 2,
+          "max": 10,
+          "sha256": "af8969b8f6caf0190b100a4f698ffc46665c0209c79c27b414b56ac671168648"
+        }
+      },
+      "iccName": "sRGB built-in",
+      "iccBytes": 588,
+      "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+      "witnessRGBSHA256": "5edd17db2b5ed1a1be70370b5836a61e3bea997940aac9977f3efa2d89ee39dc",
+      "witnessMeanLuma": 48.870768229166664
+    },
+    "observedFileWarmStats": {
+      "n": 30,
+      "p50Ms": 441.6575835,
+      "p95Ms": 463.920084
+    },
+    "observedNativeQueueWarmStats": {
+      "n": 30,
+      "p50Ms": 431.67025,
+      "p95Ms": 461.807375
+    },
+    "firstExportMs": 539.86575,
+    "warmupMs": [
+      444.078583,
+      429.270083,
+      427.188292,
+      441.4715,
+      447.671458
+    ],
+    "warmMs": [
+      435.503042,
+      457.118833,
+      443.922583,
+      450.00225,
+      432.363792,
+      442.736708,
+      435.883625,
+      424.021625,
+      460.212167,
+      463.920084,
+      425.263958,
+      427.397625,
+      428.157791,
+      434.22825,
+      434.674083,
+      476.410917,
+      446.507333,
+      454.635416,
+      443.774584,
+      445.7485,
+      436.176541,
+      440.380792,
+      443.877958,
+      441.612459,
+      440.0595,
+      453.423459,
+      441.358792,
+      441.702708,
+      454.607333,
+      430.474083
+    ],
+    "actualExecution": {
+      "backend": "rust",
+      "budgetBytes": 1610612736,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 24.215336999999998,
+      "dispatches": 35,
+      "nodeCacheHits": 0,
+      "nodes": 35,
+      "peakBytes": 1212776448,
+      "tiles": 35
+    }
+  },
+  "lightflow": {
+    "build": "20261111155800-2d41ab1",
+    "availableWebGPUAdapter": {
+      "vendor": "apple",
+      "architecture": "metal-3",
+      "device": "",
+      "description": "",
+      "isFallbackAdapter": false
+    },
+    "actualExportPaths": [
+      "rust web-mt 12t"
+    ],
+    "jpeg": {
+      "name": "source.jpg",
+      "sha256": "5e6ed630578d80cf559657be6fa25d57a407bf425afe2619ade8ec17b7b1a26f",
+      "bytes": 9511460,
+      "dimensions": [
+        9504,
+        6336
+      ],
+      "format": "JPEG",
+      "bitsPerComponent": 8,
+      "subsampling": "4:2:0",
+      "progressive": false,
+      "sofComponents": [
+        [
+          1,
+          2,
+          2,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          1
+        ],
+        [
+          3,
+          1,
+          1,
+          1
+        ]
+      ],
+      "dqt": {
+        "0": {
+          "entries": 64,
+          "min": 2,
+          "max": 42,
+          "sha256": "55a21b1cb7be535e6babe7d6dc26777f95227b5eb465e5a57fa71ea8ea0b5d09"
+        },
+        "1": {
+          "entries": 64,
+          "min": 2,
+          "max": 42,
+          "sha256": "55a21b1cb7be535e6babe7d6dc26777f95227b5eb465e5a57fa71ea8ea0b5d09"
+        }
+      },
+      "iccName": "sRGB",
+      "iccBytes": 520,
+      "iccSHA256": "7b6524d739687d6f3849960743b613ce4d040be81376cef23b032eb8761d2737",
+      "witnessRGBSHA256": "6f06b25fbff05439a5f84193dd586c16fd9ebb6d1e40894acd5f1e2f51706720",
+      "witnessMeanLuma": 105.9970703125
+    },
+    "firstExportMs": 3099.091125,
+    "warmupMs": [
+      1821.976542,
+      1815.725166,
+      1822.86425,
+      1810.180292,
+      1819.937125
+    ],
+    "warmMs": [
+      1826.959916,
+      1827.88725,
+      1801.886625,
+      1816.6485,
+      1815.486209,
+      1822.340667,
+      1817.844334,
+      1825.513708,
+      1811.621416,
+      1815.660917,
+      1818.60775,
+      1816.309375,
+      1815.389125,
+      1828.140791,
+      1859.817125,
+      1861.725667,
+      1833.319333,
+      1819.383125,
+      1814.581708,
+      1828.959708,
+      1819.084959,
+      1819.800041,
+      1827.446125,
+      1815.862375,
+      1831.965375,
+      1827.550209,
+      1857.266584,
+      1817.755625,
+      1814.326042,
+      1829.418625
+    ],
+    "observedFileWarmStats": {
+      "n": 30,
+      "p50Ms": 1819.591583,
+      "p95Ms": 1859.817125
+    },
+    "neutralWitnessMinimumLumaIncrease": 17.68375651041667
+  },
+  "relativeObservedFileSpeedupP95": 4.008917029339045
+}
