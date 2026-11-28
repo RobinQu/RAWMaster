@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "scope": "Two runs per arm of the isolated cold canonical dehaze stage profile, ABBA order",
+  "sourceCommit": "49f5f088",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "binarySHA256": "ae3476790e57e121675454b8af10b311d7dd19e5cb8977cf282f9206a623ef94",
+  "expectedPixelsReportSHA256": "e1aa42cb949793cd0e96a7d0ed3e324e8bac450311189833c590e7371fb03f5b",
+  "gpu": "Apple M4 Max",
+  "os": "Version 27.0.1 (Build 26A434)",
+  "pixels": [
+    2400,
+    1600
+  ],
+  "sourceSize": [
+    9504,
+    6336
+  ],
+  "commonControls": {
+    "RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION": 1,
+    "RAWMASTER_QA_NATIVE_DEHAZE_RING_EROSION": 0,
+    "RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF": 0,
+    "RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT": 0
+  },
+  "runs": [
+    {
+      "halfErosionEnabled": false,
+      "reportSHA256": "e6f71d99a26c8440be88855b785ea52ceecee0d43586660f4f0d2702f1418f49",
+      "settled": [
+        {
+          "state": 0,
+          "ms": 2289.372583,
+          "opaqueRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "每两带清理的原生 R32F 透射率",
+              "ms": 873.877292,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 874.019625,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        },
+        {
+          "state": 1,
+          "ms": 270.443416,
+          "opaqueRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 0.002333,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "halfErosionEnabled": true,
+      "reportSHA256": "256c387e6b606a427309f0141256c2b256d85cee2ccd175321c6508cfd79cd34",
+      "settled": [
+        {
+          "state": 0,
+          "ms": 747.810875,
+          "opaqueRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeHalfErosion",
+              "stage": "原生半浮点去雾最小值",
+              "ms": 61.175167,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "每两带清理的原生 R32F 透射率",
+              "ms": 369.055792,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 369.201375,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        },
+        {
+          "state": 1,
+          "ms": 273.157708,
+          "opaqueRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 0.047792,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "halfErosionEnabled": true,
+      "reportSHA256": "9cd2c791d6d716ef6454046892733f1d1d1f55a8d7acd468359d308b71921597",
+      "settled": [
+        {
+          "state": 0,
+          "ms": 603.985833,
+          "opaqueRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeHalfErosion",
+              "stage": "原生半浮点去雾最小值",
+              "ms": 54.60675,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "每两带清理的原生 R32F 透射率",
+              "ms": 225.263708,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 225.427541,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        },
+        {
+          "state": 1,
+          "ms": 278.204167,
+          "opaqueRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 0.051333,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "halfErosionEnabled": false,
+      "reportSHA256": "4b858aad219bfda79c2e07bbf09bc40c1cc24c8bac691eb053c339e8c7b52ab0",
+      "settled": [
+        {
+          "state": 0,
+          "ms": 957.675125,
+          "opaqueRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "每两带清理的原生 R32F 透射率",
+              "ms": 561.727084,
+              "pixels": 60217344,
+              "outcome": "成功"
+            },
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 561.835625,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        },
+        {
+          "state": 1,
+          "ms": 269.808375,
+          "opaqueRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+          "guideStages": [
+            {
+              "operation": "NativeDehazeGuide",
+              "stage": "原生透射率缓存",
+              "ms": 0.002417,
+              "pixels": 0,
+              "outcome": "成功"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "qualification": "All canonical settled RGBA8 readbacks matched the prior exact witnesses. Cold measurements include uncached initialization, and are diagnostic runs for a single control."
+}

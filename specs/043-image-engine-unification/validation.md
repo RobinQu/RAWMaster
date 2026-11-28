@@ -65,7 +65,7 @@ M1-03 的瓦片 DRT 在同一 Apple M4 Max、同一 Release 测试构建、同�
 | 032 SDR JPEG | 576.39 / 603.87 → 546.22 / 569.15 | 546.15 / 617.10 → 511.70 / 582.07 |
 | 双目标组件 | 1640.34 / 1699.83 → 1590.58 / 1644.78 | 1649.27 / 1856.53 → 1545.93 / 1632.85 |
 
-六组直写 p95 都在同路由 M0 的 105% 内。wgpu PQ 的 p95 较其 blit 对照上升 1.3%。独立 blit 在旧路径的主机等待每目标中位约 30–35 ms。两臂沿用同一保守图预算，采样设备峰值按原报告口径保留，039 的两个 032 路由下降约 197 MB，wgpu 的两个 032 路由增加约 14 MB。瓦片直写默认启用，`RAWMASTER_SCENE_DIRECT_DRT=0` 可选择逐瓦片 blit。图与 DRT 的同队列提交仍待签收。[复跑入口](../../scripts/performance/measure-043-scene-delivery.py)
+六组直写 p95 都在同路由 M0 的 105% 内。wgpu PQ 的 p95 较其 blit 对照上升 1.3%。独立 blit 在旧路径的主机等待每目标中位约 30–35 ms。两臂沿用同一保守图预算，采样设备峰值按原报告口径保留，039 的两个 032 路由下降约 197 MB，wgpu 的两个 032 路由增加约 14 MB。瓦片直写默认启用，`RAWMASTER_SCENE_DIRECT_DRT=0` 可选择逐瓦片 blit。图与 DRT 的同队列提交仍待签收。Release `20261128.134122` 在应用目录通过严格验签、隔离库启动和 Metal ABI 探针。[复跑入口](../../scripts/performance/measure-043-scene-delivery.py) · [安装回执](evidence/m1-direct-drt-release-checkpoint.json)
 
 ### M2 · 首条 WGSL 场景 DAG 与融合
 
@@ -200,6 +200,8 @@ Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配�
 37 项精确读回以同一实拍、同机 2400×1600 不透明 sRGB RGBA8 重测。RAWMaster 用显式 canonical 定稿，LightFlow 用锁定的 `2d41ab1`。每项 20 个暖态样本，首次变化、首个精确和最终读回三列均进入 LightFlow 容差。37 组输入各取两次首次状态。RAWMaster 首次变化 p50/p95 为 5.50/18.75 ms，LightFlow 为 7.19/175.22 ms。RAWMaster 首个精确与最终同为 87.36/413.02 ms，LightFlow 同为 24.77/184.44 ms，这两项仍超线。[分项与首次状态](evidence/m0-lightflow-canonical-readback.json)
 
 同一测试构建试用既有的局部蒙版分带、点蒙版区域、锐化分带和去雾分组开关后，首个精确 p50/p95 降到 80.23/355.12 ms。全部 814 对首次与最终 RGBA8 摘要相同，试验进程峰值约 5.26 GB。分项追踪还记录了冷去雾引导生成、局部锐化与降噪的全幅归约。正式口径使用 `RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical`。生产视口定稿返回带近似标记的结果，按自己的像素和时延口径验收。[试验数据](evidence/m0-lightflow-canonical-readback.json) · [精确读回入口](../../Tests/RAWMasterImagingTests/PanelDisplayReadbackTests.swift)
+
+另用同一阶段探针按关、开、开、关复测正向去雾的半浮点最小值。两次开启均实际命中原生算子，冷引导图由关闭时的 562 和 874 ms 降至 225 和 369 ms。四轮两档定稿均匹配归档的完整 RGBA8 摘要。此为单控件阶段诊断，37 项首次精确和定稿仍按完整矩阵验收。[实机阶段样本](evidence/m0-native-erosion-qualification.json)
 
 Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 Camera Raw 同口径精确读回、三方 1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
 
