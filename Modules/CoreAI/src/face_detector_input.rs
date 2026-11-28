@@ -84,12 +84,15 @@ pub(super) fn prepare(
         let columns = area_spans(image.width, width);
         let rows = area_spans(image.height, height);
         let mut totals = vec![[0f32; 3]; width];
+        // The frozen OpenCV arm64 resize uses non-fused NEON groups of four
+        // interleaved channels and fused scalar accumulation for the last group.
+        let scalar_start = (width * 3 - 1) / 4 * 4;
         for (y, row_weights) in rows.iter().enumerate() {
             check()?;
             totals.fill([0.; 3]);
             for &(source_y, row_weight) in row_weights {
                 let row = &image.data[source_y * image.stride..][..row_bytes];
-                for (pixel, column_weights) in totals.iter_mut().zip(&columns) {
+                for (x, (pixel, column_weights)) in totals.iter_mut().zip(&columns).enumerate() {
                     let mut horizontal = [0.; 3];
                     for &(x, column_weight) in column_weights {
                         for (channel, accumulator) in horizontal.iter_mut().enumerate() {
@@ -98,8 +101,12 @@ pub(super) fn prepare(
                                 .mul_add(f32::from(row[x * 4 + channel]), *accumulator);
                         }
                     }
-                    for (sum, channel) in pixel.iter_mut().zip(horizontal) {
-                        *sum += row_weight * channel;
+                    for (channel, (sum, value)) in pixel.iter_mut().zip(horizontal).enumerate() {
+                        if x * 3 + channel >= scalar_start {
+                            *sum = row_weight.mul_add(value, *sum);
+                        } else {
+                            *sum += row_weight * value;
+                        }
                     }
                 }
             }
@@ -116,6 +123,32 @@ pub(super) fn prepare(
         padded_height,
         data,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn narrow_area_resize_preserves_the_scalar_tail_rounding() {
+        let (width, height, stride) = (2, 1536, 8);
+        let mut pixels = vec![0; stride * height];
+        pixels[6 * stride + 1] = 47;
+        pixels[6 * stride + 5] = 44;
+        pixels[7 * stride + 1] = 240;
+        pixels[7 * stride + 5] = 205;
+        let image = Image {
+            data: &pixels,
+            width,
+            height,
+            stride,
+            format: PixelFormat::Rgba8,
+        };
+        let proxy = prepare(&image, || Ok(())).unwrap();
+        assert_eq!((proxy.width, proxy.height), (1, 1024));
+        let green_plane = proxy.padded_width * proxy.padded_height;
+        assert_eq!(proxy.data[green_plane + 4 * proxy.padded_width], 104.0);
+    }
 }
 
 fn area_spans(source: usize, destination: usize) -> Vec<Vec<(usize, f32)>> {

@@ -127,6 +127,7 @@ public final class CoreAI: @unchecked Sendable {
     }
 
     public func faceEmbedding(_ image: CoreAIPixelBuffer, landmarks: [CoreAIFacePoint]) async throws -> [Float] {
+        try Task.checkCancellation()
         guard image.stride >= 0 else { throw CoreAIError.invalidImage }
         guard landmarks.count == 5 else { throw CoreAIError.invalidLandmarks }
         return try await run { cancellation in
@@ -135,6 +136,7 @@ public final class CoreAI: @unchecked Sendable {
     }
 
     public func detectFaces(_ image: CoreAIPixelBuffer) async throws -> [CoreAIFaceObservation] {
+        try Task.checkCancellation()
         guard image.stride >= 0 else { throw CoreAIError.invalidImage }
         return try await run { cancellation in
             try self.detections(image, cancellation: cancellation)
