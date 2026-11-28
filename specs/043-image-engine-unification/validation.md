@@ -263,6 +263,8 @@ Release `20261128.172756` 已安装并严格验签。两个交付授权回归、
 
 正式端到端两轮各验收 37/37 项暖态。每轮核对 1184 对正式帧和 222 对预热帧的完整定稿摘要。74 个首次精确状态的 p50/p95 分别为 71.95/319.35 和 72.91/311.75 ms，同机 LightFlow 为 9.52/58.97 ms，首次精确仍超出容差。当前最慢项是正向去雾首次引导和局部降噪。[正式对标与逐状态证据](evidence/m0-opaque-local-grain-validation.json)
 
+Release `20261128.180152` 已安装并通过严格验签。19 项蒙版与交付授权、3 项原生回滚、24 项锐化与有限值、17 项滤镜和实拍自由缩放均通过。隔离资料库通过 SQLite 自检并显示实际窗口。安装前后通过 40+4 次 Metal C ABI 完成点复验。[构建与安装回执](evidence/m0-opaque-local-grain-release-checkpoint.json)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)
