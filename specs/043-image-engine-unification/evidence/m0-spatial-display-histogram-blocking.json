@@ -12,6 +12,150 @@
     "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-fit-diagnostics.telemetry.json",
     "sha256": "90d9d64f48ec63a36f449993d5e83046df9fb95a1a9ce2cdc48ef7362217e417"
   },
+  "cancellationDecomposition": {
+    "sampleCount": 12,
+    "inputBoundary": "sentNs inside each trial’s bracketed Dispatch uptime anchor",
+    "graphBoundary": "DevelopmentRendererV3.develop for the nested analysis graph",
+    "returnBoundary": "Previous histogram API return following analysis-worker unwind",
+    "countsTowardAcceptance": false,
+    "operations": {
+      "effects-texture": {
+        "inputToGraphExitRangeMs": [
+          0.710958,
+          5.708917
+        ],
+        "graphExitToReturnRangeMs": [
+          19.445875,
+          21.113417
+        ],
+        "finiteScanActiveAtInputCount": 4,
+        "trials": [
+          {
+            "frameID": "8E107E09-36F0-4A39-9AF7-B4E388C3B10C",
+            "graphID": "3FEC02FD-1640-464E-A513-194EF0DCECE8",
+            "histogramID": "20381C15-C75F-4998-9E3D-B30EC6E0DB2F",
+            "inputToGraphExitMs": 2.216334,
+            "graphExitToHistogramReturnMs": 19.780541,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "41DC5F94-7F78-410E-BE5D-DF8937BF2806",
+            "graphID": "0023098B-3DA5-406D-A091-8FF4052E9998",
+            "histogramID": "5301ADD5-92AB-4400-BD65-5CCF1D8E49A4",
+            "inputToGraphExitMs": 5.708917,
+            "graphExitToHistogramReturnMs": 19.863375,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "B0C51C65-2703-4E33-AA91-66725D0EEC20",
+            "graphID": "E81FD7B2-2216-48B7-B7BA-85075D0B7ADA",
+            "histogramID": "B549BE14-870E-498E-8854-BE5E64940D39",
+            "inputToGraphExitMs": 0.710958,
+            "graphExitToHistogramReturnMs": 19.445875,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "64D3A028-FA34-4167-9366-919062B8B41D",
+            "graphID": "9AB103A0-86C2-4F97-84D9-AC07C1C4A543",
+            "histogramID": "A5642C4A-24D0-49BD-8753-148D6B4C0EB4",
+            "inputToGraphExitMs": 5.290625,
+            "graphExitToHistogramReturnMs": 21.113417,
+            "finiteScanActiveAtInput": true
+          }
+        ]
+      },
+      "effects-clarity": {
+        "inputToGraphExitRangeMs": [
+          0.97025,
+          6.022375
+        ],
+        "graphExitToReturnRangeMs": [
+          17.456917,
+          26.323333
+        ],
+        "finiteScanActiveAtInputCount": 4,
+        "trials": [
+          {
+            "frameID": "22C05D61-552B-4021-87FE-393FF9728C3C",
+            "graphID": "E8FAF1C3-98F2-4D8F-A610-18F96BCEDA8A",
+            "histogramID": "CCF5D86C-45C0-4B0C-9438-288700EFD9C0",
+            "inputToGraphExitMs": 0.97025,
+            "graphExitToHistogramReturnMs": 17.976917,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "5085F36C-D9E6-416E-87B9-A288804B3129",
+            "graphID": "E47E5618-EB4F-40A0-9CF3-74FF57365DFD",
+            "histogramID": "377A60D5-6D1B-4BCC-8080-588473F3CD52",
+            "inputToGraphExitMs": 5.051125,
+            "graphExitToHistogramReturnMs": 18.045834,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "07935374-6532-4C83-A6AA-7C5603FFDE3C",
+            "graphID": "BD97013F-9CCE-4584-A695-E01A394783A7",
+            "histogramID": "EF124A81-4A44-43E4-B789-E061B0CBA0EE",
+            "inputToGraphExitMs": 6.022375,
+            "graphExitToHistogramReturnMs": 17.456917,
+            "finiteScanActiveAtInput": true
+          },
+          {
+            "frameID": "D0493E86-0580-46A1-8C1C-AC9796C9DFB0",
+            "graphID": "09014B40-254D-4855-940C-58CECC7DEC30",
+            "histogramID": "87F0EDEB-8256-42DD-A034-ADD7A7733A73",
+            "inputToGraphExitMs": 4.657042,
+            "graphExitToHistogramReturnMs": 26.323333,
+            "finiteScanActiveAtInput": true
+          }
+        ]
+      },
+      "effects-dehaze": {
+        "inputToGraphExitRangeMs": [
+          48.917083,
+          60.901625
+        ],
+        "graphExitToReturnRangeMs": [
+          17.401958,
+          19.914375
+        ],
+        "finiteScanActiveAtInputCount": 0,
+        "trials": [
+          {
+            "frameID": "57DD4592-20DB-41B4-B91F-06883C420E75",
+            "graphID": "DCB6D825-7B69-4AC1-A256-C6358002D072",
+            "histogramID": "4873AA56-CDBC-44BA-B422-42FE1575AF7B",
+            "inputToGraphExitMs": 49.174875,
+            "graphExitToHistogramReturnMs": 17.401958,
+            "finiteScanActiveAtInput": false
+          },
+          {
+            "frameID": "BFCCCA58-5ADB-454E-8A5E-6FFEBC327092",
+            "graphID": "79407637-0175-4573-AE6F-D30EDDCCA621",
+            "histogramID": "CED5BC55-DB33-4C1B-912A-F7EC7E6F84E0",
+            "inputToGraphExitMs": 50.227291,
+            "graphExitToHistogramReturnMs": 18.694917,
+            "finiteScanActiveAtInput": false
+          },
+          {
+            "frameID": "20305E03-021B-466D-8C50-CEA01A82090B",
+            "graphID": "34CE71C4-15C0-49B2-B8CF-3B650A372B3D",
+            "histogramID": "91EBDACD-AC80-4AE4-AD55-A4167E7CF6EF",
+            "inputToGraphExitMs": 60.901625,
+            "graphExitToHistogramReturnMs": 19.914375,
+            "finiteScanActiveAtInput": false
+          },
+          {
+            "frameID": "F4B1C92C-2D1E-4D0F-A58A-89F29A0375C4",
+            "graphID": "3E1A0055-F10A-4844-A648-A935025348B0",
+            "histogramID": "943BDFCE-8D06-4A33-B9D2-342AF690A805",
+            "inputToGraphExitMs": 48.917083,
+            "graphExitToHistogramReturnMs": 18.193625,
+            "finiteScanActiveAtInput": false
+          }
+        ]
+      }
+    }
+  },
   "results": {
     "effects-texture": {
       "trials": [
