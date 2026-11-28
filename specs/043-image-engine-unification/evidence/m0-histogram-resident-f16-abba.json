@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "scope": "One 60 MP RAW, same Release XCTest, A/B/B/A, actual AppKit and ScreenCaptureKit FIT diagnostic; independent original-frames replay",
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "scoreSamplesPerControlAndArm": 8,
+  "warmupPerControlAndArm": 5,
+  "countsTowardsAcceptance": false,
+  "testBundleSHA256": "900aaf83e1060e5f9859a2ac0528583be92a14d8a6eef606b083309f772b2f6c",
+  "candidateSource": {
+    "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/candidate-tested.patch",
+    "sha256": "8394020296dd4f4d04b8116ce9dd441965f1d85812472173bbcd94b4a43a6704"
+  },
+  "results": [
+    {
+      "arm": "A1",
+      "resident": false,
+      "nativeEvents": 390,
+      "worked": {
+        "effects-texture": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 38.928062999999995,
+            "p95Ms": 53.248917
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 23.747188,
+            "p95Ms": 31.786208
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 8.7758125,
+            "p95Ms": 11.924917
+          }
+        },
+        "effects-clarity": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 33.056229,
+            "p95Ms": 49.946083
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 19.5434165,
+            "p95Ms": 22.158583
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 7.893812499999999,
+            "p95Ms": 11.970875
+          }
+        },
+        "effects-dehaze": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 65.0574165,
+            "p95Ms": 80.914333
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 53.867729,
+            "p95Ms": 64.925709
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 13.426541499999999,
+            "p95Ms": 25.221042
+          }
+        }
+      },
+      "residentRoutes": {},
+      "fullFlashRawDecodes": 31,
+      "resetArrivalRelativeToOldHistogramGraphReturn": {
+        "effects-texture": {
+          "beforeGraphReturn": 4
+        },
+        "effects-clarity": {
+          "beforeGraphReturn": 4
+        },
+        "effects-dehaze": {
+          "beforeGraphReturn": 4
+        }
+      },
+      "nativeTiming": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A1/fit.telemetry.json",
+        "sha256": "3bca0a24c887607a65982d591a03d3277a414c2072022aa6e12cd459654b40e4"
+      },
+      "rawROIFrames": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A1/frames.zip",
+        "sha256": "911a797e71c73d76bad16ef9b6f23609132d1eca93e1f16d71f73fbedbbd3413"
+      },
+      "independentReplay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A1/replayed.json",
+        "sha256": "d842a750312b87d9bdae33078bfb86d4c26727c769946b865a4100968571e2d0"
+      }
+    },
+    {
+      "arm": "B1",
+      "resident": true,
+      "nativeEvents": 363,
+      "worked": {
+        "effects-texture": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 33.233270499999996,
+            "p95Ms": 54.171833
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 19.9021875,
+            "p95Ms": 22.773208
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 8.764979,
+            "p95Ms": 12.496
+          }
+        },
+        "effects-clarity": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 35.066500500000004,
+            "p95Ms": 49.9345
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 16.175166500000003,
+            "p95Ms": 16.315042
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 6.800625,
+            "p95Ms": 16.633625
+          }
+        },
+        "effects-dehaze": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 60.39352100000001,
+            "p95Ms": 100.725875
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 59.8421455,
+            "p95Ms": 70.956417
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 11.940792,
+            "p95Ms": 19.191375
+          }
+        }
+      },
+      "residentRoutes": {
+        "直方图输入 · 同源 F16 命中": 23,
+        "直方图输入 · 保留原解码": 1
+      },
+      "fullFlashRawDecodes": 7,
+      "resetArrivalRelativeToOldHistogramGraphReturn": {
+        "effects-texture": {
+          "afterGraphReturn": 2,
+          "beforeGraphReturn": 2
+        },
+        "effects-clarity": {
+          "afterGraphReturn": 4
+        },
+        "effects-dehaze": {
+          "beforeGraphReturn": 4
+        }
+      },
+      "nativeTiming": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B1/fit.telemetry.json",
+        "sha256": "8f6f27b14850d8c696a91d42ba497607f7c3a844c844f624df260493d008c1bb"
+      },
+      "rawROIFrames": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B1/frames.zip",
+        "sha256": "2f88362a51ddce6b05b298a460318958c1b7f4beffa151320fd2ad925fbba539"
+      },
+      "independentReplay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B1/replayed.json",
+        "sha256": "5b0c21132ea5bed583c0cba21c5482ff33423ab6a42e466899606a5d019d84f4"
+      }
+    },
+    {
+      "arm": "B2",
+      "resident": true,
+      "nativeEvents": 368,
+      "worked": {
+        "effects-texture": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 39.2123335,
+            "p95Ms": 49.948542
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 21.704104,
+            "p95Ms": 22.741834
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 7.1180415,
+            "p95Ms": 9.451167
+          }
+        },
+        "effects-clarity": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 37.0684165,
+            "p95Ms": 51.723917
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 20.31225,
+            "p95Ms": 22.224375
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 7.3999165,
+            "p95Ms": 12.104458
+          }
+        },
+        "effects-dehaze": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 66.8265,
+            "p95Ms": 106.440208
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 69.082104,
+            "p95Ms": 78.413625
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 11.2040835,
+            "p95Ms": 22.653834
+          }
+        }
+      },
+      "residentRoutes": {
+        "直方图输入 · 同源 F16 命中": 23,
+        "直方图输入 · 保留原解码": 1
+      },
+      "fullFlashRawDecodes": 8,
+      "resetArrivalRelativeToOldHistogramGraphReturn": {
+        "effects-texture": {
+          "afterGraphReturn": 1,
+          "beforeGraphReturn": 3
+        },
+        "effects-clarity": {
+          "afterGraphReturn": 3,
+          "beforeGraphReturn": 1
+        },
+        "effects-dehaze": {
+          "beforeGraphReturn": 4
+        }
+      },
+      "nativeTiming": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B2/fit.telemetry.json",
+        "sha256": "28336f3b2cfd01ece7c2a282082236ead9c12fd72505b14ab5726a74a6c48873"
+      },
+      "rawROIFrames": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B2/frames.zip",
+        "sha256": "d1c183df59d61eedce5487223dee369d67b261a43d4b54bb5e396b57774615d8"
+      },
+      "independentReplay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/B2/replayed.json",
+        "sha256": "0e0255f4382635762b1d5dd4d124f58577a5f7db86c4f7fad70a2c6e40506fb0"
+      }
+    },
+    {
+      "arm": "A2",
+      "resident": false,
+      "nativeEvents": 385,
+      "worked": {
+        "effects-texture": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 35.6233755,
+            "p95Ms": 50.57025
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 23.271250000000002,
+            "p95Ms": 23.847542
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 7.0493545,
+            "p95Ms": 10.035625
+          }
+        },
+        "effects-clarity": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 28.480937,
+            "p95Ms": 51.373125
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 20.8007295,
+            "p95Ms": 23.816667
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 7.1481665,
+            "p95Ms": 11.252542
+          }
+        },
+        "effects-dehaze": {
+          "fit": {
+            "n": 8,
+            "p50Ms": 62.981875,
+            "p95Ms": 110.168667
+          },
+          "overlappingHistogramWait": {
+            "n": 4,
+            "p50Ms": 70.500542,
+            "p95Ms": 79.363542
+          },
+          "previewAPI": {
+            "n": 8,
+            "p50Ms": 13.3928545,
+            "p95Ms": 25.551375
+          }
+        }
+      },
+      "residentRoutes": {},
+      "fullFlashRawDecodes": 30,
+      "resetArrivalRelativeToOldHistogramGraphReturn": {
+        "effects-texture": {
+          "beforeGraphReturn": 4
+        },
+        "effects-clarity": {
+          "beforeGraphReturn": 4
+        },
+        "effects-dehaze": {
+          "beforeGraphReturn": 4
+        }
+      },
+      "nativeTiming": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A2/fit.telemetry.json",
+        "sha256": "fe16ccde563d8ee814c9621a4b744b865fdc13ff9132df407306e5227cbb297a"
+      },
+      "rawROIFrames": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A2/frames.zip",
+        "sha256": "806cec99355df84a8a25baa42f55ce22c47dd22cd4fb08f320a37fa60d217f41"
+      },
+      "independentReplay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/resident-pair/A2/replayed.json",
+        "sha256": "b1a704614e2726dd2f22d79eb26bd4a0c34bccd6f8aedafd3e65c51a6b3197a1"
+      }
+    }
+  ],
+  "matchedTargetROIHashes": {
+    "effects-texture": [
+      "3f8899bddd20fbc15eff6f95c9c41371ac674474f0ab073d030e761040f2e1bf",
+      "4ba1a94b6412b59dec640957f8dfd9f8f6e14ec075bc18820da316d22feb0b5b"
+    ],
+    "effects-clarity": [
+      "3f8899bddd20fbc15eff6f95c9c41371ac674474f0ab073d030e761040f2e1bf",
+      "60fd9e5b33276e3371c132f24367247b19b4d25144a87bf1a03984d7dfa38611"
+    ],
+    "effects-dehaze": [
+      "3f8899bddd20fbc15eff6f95c9c41371ac674474f0ab073d030e761040f2e1bf",
+      "889ff2f3e600b2930fc1ecdd2a93fa6f98e078985f91bc511ace882c4e810b14"
+    ]
+  },
+  "verdict": "Repeated full RAW decode was reduced; visible latency and canceled-work overlap did not improve consistently. The experiment remains out of the release."
+}

@@ -254,6 +254,10 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 
 新增的逐帧诊断仅供显式开启的 XCTest 使用。Release `20261128.220315` 已安装并通过严格验签、隔离资料库自检、真实窗口和 44 次原生 Metal C ABI 检查。前一版本已备份，三份降噪着色器资源与前一版逐件一致。五项跟踪回归、45 项预览协调和诊断回归通过。[安装回执](evidence/m0-spatial-fit-trace-release-checkpoint.json) · [031 原生窗口分段](../031-preset-browser/evidence/camera-raw-integration/viewport-worker-phases.json)
 
+另用同个 Release 测试构建依次关闭、开启、开启、关闭直方图全幅 F16 驻留。四轮各保留三项各 8 个暖输入，原始可见画布复算均通过，各档的稳定 ROI 摘要相同。开启的两轮各实际保留首次解码一次、命中 23 次，全图 FlashRaw 解码次数从对照的 31、30 降到 7、8。四轮每轮的 12 次回零均遇到旧直方图。去雾 p95 在两轮对照为 80.91、110.17 ms，开启时为 100.73、106.44 ms。纹理和清晰度也没有稳定的画布收益，当前采用原路径。[按轮回放与分项](evidence/m0-histogram-resident-f16-abba.json)
+
+对照的 24 次回零都遇到尚未返回的显影图。开启后有 10 次纹理或清晰度回零在显影图返回后仍等待直方图，其中去雾的 8 次回零仍全部等待显影图。纹理和清晰度后续可分别核对已物化图的同步采样时间，去雾优先核对原引导与全域验证。性能继续使用可见画布与完整精确两项独立验收。[真实提交与任务时序](evidence/m0-histogram-resident-f16-abba.json)
+
 37 项精确读回以同一实拍、同机 2400×1600 不透明 sRGB RGBA8 重测。RAWMaster 用显式 canonical 定稿，LightFlow 用锁定的 `2d41ab1`。每项 20 个暖态样本，首次变化、首个精确和最终读回三列均进入 LightFlow 容差。37 组输入各取两次首次状态。RAWMaster 首次变化 p50/p95 为 5.50/18.75 ms，LightFlow 为 7.19/175.22 ms。RAWMaster 首个精确与最终同为 87.36/413.02 ms，LightFlow 同为 24.77/184.44 ms，这两项仍超线。[分项与首次状态](evidence/m0-lightflow-canonical-readback.json)
 
 同一测试构建试用既有的局部蒙版分带、点蒙版区域、锐化分带和去雾分组开关后，首个精确 p50/p95 降到 80.23/355.12 ms。全部 814 对首次与最终 RGBA8 摘要相同，试验进程峰值约 5.26 GB。分项追踪还记录了冷去雾引导生成、局部锐化与降噪的全幅归约。正式口径使用 `RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical`。生产视口定稿返回带近似标记的结果，按自己的像素和时延口径验收。[试验数据](evidence/m0-lightflow-canonical-readback.json) · [精确读回入口](../../Tests/RAWMasterImagingTests/PanelDisplayReadbackTests.swift)
