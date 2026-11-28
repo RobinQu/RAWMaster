@@ -1,0 +1,860 @@
+{
+  "schemaVersion": 1,
+  "scope": "Primary canonical 2400 settled and exact revisit of the same supported FlashRaw hard radial grain recipe",
+  "boundary": "Each of 37 controls has two first visits, six warmups and 30 timed warm inputs through full display readback",
+  "pixels": [
+    2400,
+    1600
+  ],
+  "gpu": "Apple M4 Max",
+  "os": "27.0.1 (26A434)",
+  "switch": "RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY",
+  "comparisonLightFlowBuild": "2d41ab1",
+  "lightFlowArchiveSHA256": "dbc4f77013b813a9b62e2d024b0ae1fe9d6839d4b02ffdf007f67e280fc608fa",
+  "previousOptIn": {
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "nativeReleaseTestSHA256": "fd9f5753bbb59d3add7ff183bb75a531873ad8b82977d039d1b4bfdf75fbbf81",
+    "flagValues": [
+      "0",
+      "1",
+      "1",
+      "0"
+    ],
+    "runs": [
+      {
+        "selection": 0,
+        "nativeReadbackSHA256": "b985c1b0456f99aee795fe6e85933e249ae553ef1da9673e24cc45da234909ca",
+        "validatedComparisonSHA256": "4b0421c55c35728fd81ce1816a5cff569419bdb6ba2428fe737293b549708cee",
+        "warmControlsQualified": 36,
+        "warmMisses": {
+          "effects-mask-grain": [
+            "first",
+            "firstExact"
+          ]
+        },
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 72.4959375,
+          "p95Ms": 319.85825
+        },
+        "initialLocalGrain": {
+          "first": [
+            9.963542,
+            4.122459
+          ],
+          "firstExact": [
+            318.267792,
+            292.712084
+          ],
+          "final": [
+            318.267792,
+            292.712084
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 4.881562499999999,
+              "p95Ms": 7.551375
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.4024585,
+              "p95Ms": 8.171208
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.4024585,
+              "p95Ms": 8.171208
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 0
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 0
+          }
+        }
+      },
+      {
+        "selection": 1,
+        "nativeReadbackSHA256": "d802072a4fb067b69c8170cc996ca67c0d1759cf4e78201b963af92c31df7d07",
+        "validatedComparisonSHA256": "7db48c529bbc7307ea5dfc125b81c46c4759e97cac6fe51bbb97ff937ad230c2",
+        "warmControlsQualified": 37,
+        "warmMisses": {},
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 70.5592705,
+          "p95Ms": 325.7725
+        },
+        "initialLocalGrain": {
+          "first": [
+            9.014917,
+            4.051208
+          ],
+          "firstExact": [
+            305.756542,
+            301.076208
+          ],
+          "final": [
+            305.756542,
+            301.076208
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0751870000000001,
+              "p95Ms": 1.264167
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0751870000000001,
+              "p95Ms": 1.264167
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.5602084999999999,
+              "p95Ms": 1.756167
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 30
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 6
+          }
+        }
+      },
+      {
+        "selection": 1,
+        "nativeReadbackSHA256": "8a0d99e855aff8727a13df3a02830e5acd49267a41fcc38bc21c775644252c95",
+        "validatedComparisonSHA256": "d5a92c925f512cd5244a6f7439a3d13ec46d02352bcb4dd61c668d8d47d1fc52",
+        "warmControlsQualified": 37,
+        "warmMisses": {},
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 71.7548125,
+          "p95Ms": 337.224292
+        },
+        "initialLocalGrain": {
+          "first": [
+            8.736208,
+            4.601292
+          ],
+          "firstExact": [
+            309.384916,
+            296.34325
+          ],
+          "final": [
+            309.384916,
+            296.34325
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.134792,
+              "p95Ms": 1.320375
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.134792,
+              "p95Ms": 1.320375
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.6209164999999999,
+              "p95Ms": 1.85725
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 30
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 6
+          }
+        }
+      },
+      {
+        "selection": 0,
+        "nativeReadbackSHA256": "aeec96a5837b328064f25bba995b6ad00ff8683c2c7ffed40bba2b22b381a9b0",
+        "validatedComparisonSHA256": "37d2b6e17a1177c3831b64b61af9f146e152639f66a8265855e01ff694c0306b",
+        "warmControlsQualified": 36,
+        "warmMisses": {
+          "effects-mask-grain": [
+            "first",
+            "firstExact"
+          ]
+        },
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 70.14360450000001,
+          "p95Ms": 316.353292
+        },
+        "initialLocalGrain": {
+          "first": [
+            9.435584,
+            4.274875
+          ],
+          "firstExact": [
+            316.353292,
+            313.68975
+          ],
+          "final": [
+            316.353292,
+            313.68975
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.047688,
+              "p95Ms": 7.256208
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.616229000000001,
+              "p95Ms": 7.770666
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.616229000000001,
+              "p95Ms": 7.770666
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 0
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 0
+          }
+        }
+      }
+    ]
+  },
+  "currentDefault": {
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "nativeReleaseTestSHA256": "6a6ed08534770758a25611829af2ba969b7ad1b5a9e3d664431c6cf75d928752",
+    "flagValues": [
+      "0",
+      null,
+      null,
+      "0"
+    ],
+    "runs": [
+      {
+        "selection": 0,
+        "nativeReadbackSHA256": "11f44d451defd19043200f636992e735ba44efb17d058f3609c7c7f3a5f05b7b",
+        "validatedComparisonSHA256": "9eb23b7ba16ac3f456866ea31624e699fadb030d11455415c9d51ce2ba22fa38",
+        "warmControlsQualified": 36,
+        "warmMisses": {
+          "effects-mask-grain": [
+            "first",
+            "firstExact"
+          ]
+        },
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 74.7591245,
+          "p95Ms": 359.271708
+        },
+        "initialLocalGrain": {
+          "first": [
+            8.855167,
+            4.797708
+          ],
+          "firstExact": [
+            299.902542,
+            302.204708
+          ],
+          "final": [
+            299.902542,
+            302.204708
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 4.764979,
+              "p95Ms": 7.521125
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.3837085,
+              "p95Ms": 8.030583
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.3837085,
+              "p95Ms": 8.030583
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 0
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 0
+          }
+        }
+      },
+      {
+        "selection": 1,
+        "nativeReadbackSHA256": "53048537f55404f6dc3296579683772abcc01d6ace5b87edc7d9e2a11217148e",
+        "validatedComparisonSHA256": "44f04902ee5676cdd5bbe135da97f118082c43004766c26b9cdd43cd1d7960cd",
+        "warmControlsQualified": 37,
+        "warmMisses": {},
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 72.584771,
+          "p95Ms": 342.081708
+        },
+        "initialLocalGrain": {
+          "first": [
+            8.996042,
+            4.072
+          ],
+          "firstExact": [
+            306.944667,
+            281.7145
+          ],
+          "final": [
+            306.944667,
+            281.7145
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0809790000000001,
+              "p95Ms": 1.199208
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0809790000000001,
+              "p95Ms": 1.199208
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.776563,
+              "p95Ms": 1.897042
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 30
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 6
+          }
+        }
+      },
+      {
+        "selection": 1,
+        "nativeReadbackSHA256": "9a4452463a2ffa8949ded6fc7cc2b1efd1f2365a866e323e16030bd85f55294f",
+        "validatedComparisonSHA256": "ff6529d24d6f65038b6debfc8452d1eacce200dce297c395f6d0c8d9352524b5",
+        "warmControlsQualified": 37,
+        "warmMisses": {},
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 73.001146,
+          "p95Ms": 323.977875
+        },
+        "initialLocalGrain": {
+          "first": [
+            8.576333,
+            4.668458
+          ],
+          "firstExact": [
+            302.246208,
+            292.144666
+          ],
+          "final": [
+            302.246208,
+            292.144666
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0693545,
+              "p95Ms": 1.27725
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.0693545,
+              "p95Ms": 1.27725
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 1.7408125,
+              "p95Ms": 1.971584
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 30
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 6
+          }
+        }
+      },
+      {
+        "selection": 0,
+        "nativeReadbackSHA256": "608bd9c012dcf0febec7cb0117f061708ca2828596d5dcd62926bb13987d52ae",
+        "validatedComparisonSHA256": "0b8f5b64dda35340ead6ff9758488e6c9425ef2fe6561a9778ed4b9b2ee3b4b6",
+        "warmControlsQualified": 36,
+        "warmMisses": {
+          "effects-mask-grain": [
+            "first",
+            "firstExact"
+          ]
+        },
+        "allInitialExact": {
+          "count": 74,
+          "p50Ms": 73.13933349999999,
+          "p95Ms": 318.313416
+        },
+        "initialLocalGrain": {
+          "first": [
+            11.76525,
+            4.001959
+          ],
+          "firstExact": [
+            312.997667,
+            289.168709
+          ],
+          "final": [
+            312.997667,
+            289.168709
+          ]
+        },
+        "warmLocalGrain": {
+          "first": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.0256045,
+              "p95Ms": 7.914958
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 4.407500000000001,
+              "p95Ms": 4.73
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.5455835,
+              "p95Ms": 8.476167
+            },
+            "medianLimit": 5.407500000000001,
+            "p95Limit": 6.73,
+            "within": false
+          },
+          "final": {
+            "LightFlow": {
+              "n": 30,
+              "medianMs": 19.3375,
+              "p95Ms": 21.845
+            },
+            "RAWMaster": {
+              "n": 30,
+              "medianMs": 5.5455835,
+              "p95Ms": 8.476167
+            },
+            "medianLimit": 21.27125,
+            "p95Limit": 26.214,
+            "within": true
+          }
+        },
+        "pixelWitness": {
+          "samples": {
+            "settledPairCount": 1184,
+            "firstReadbacksNowExact": 0
+          },
+          "warmupSamples": {
+            "settledPairCount": 222,
+            "firstReadbacksNowExact": 0
+          }
+        }
+      }
+    ]
+  },
+  "nativeReplayTransport": {
+    "closed": {
+      "traceSHA256": "9b056738c5a7ff0b2b5e2d32b5c55cc74049990d5c49b18ea0f5d8dcb9cfc8f1",
+      "probeSHA256": "56733bbc82f32ddedcbd80111d69d8c793c77e36aae666d9fdc451a79536e3fd",
+      "processPeakPhysicalFootprintBytes": 2370455496,
+      "samples": [
+        {
+          "state": 0,
+          "visit": "first",
+          "rgba8SHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+          "approximate": true,
+          "stages": []
+        },
+        {
+          "state": 0,
+          "visit": "settled",
+          "rgba8SHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+          "approximate": false,
+          "stages": []
+        },
+        {
+          "state": 0,
+          "visit": "repeat",
+          "rgba8SHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+          "approximate": true,
+          "stages": []
+        },
+        {
+          "state": 1,
+          "visit": "first",
+          "rgba8SHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+          "approximate": true,
+          "stages": []
+        },
+        {
+          "state": 1,
+          "visit": "settled",
+          "rgba8SHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "approximate": false,
+          "stages": []
+        },
+        {
+          "state": 1,
+          "visit": "repeat",
+          "rgba8SHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+          "approximate": true,
+          "stages": []
+        }
+      ]
+    },
+    "default": {
+      "traceSHA256": "c4d6a758122b5fe51235c879815d24ded5dd3addd06507050f57ce0e7ea42c68",
+      "probeSHA256": "56733bbc82f32ddedcbd80111d69d8c793c77e36aae666d9fdc451a79536e3fd",
+      "processPeakPhysicalFootprintBytes": 2384857032,
+      "samples": [
+        {
+          "state": 0,
+          "visit": "first",
+          "rgba8SHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+          "approximate": true,
+          "stages": []
+        },
+        {
+          "state": 0,
+          "visit": "settled",
+          "rgba8SHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+          "approximate": false,
+          "stages": []
+        },
+        {
+          "state": 0,
+          "visit": "repeat",
+          "rgba8SHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+          "approximate": false,
+          "stages": [
+            {
+              "beginNs": 1026315593459750,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 1026315594498666,
+              "ms": 1.038916,
+              "operation": "交互预览",
+              "outcome": "成功",
+              "pixels": 3840000,
+              "queue": "预览",
+              "stage": "复用已定稿画面"
+            }
+          ]
+        },
+        {
+          "state": 1,
+          "visit": "first",
+          "rgba8SHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+          "approximate": true,
+          "stages": []
+        },
+        {
+          "state": 1,
+          "visit": "settled",
+          "rgba8SHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "approximate": false,
+          "stages": []
+        },
+        {
+          "state": 1,
+          "visit": "repeat",
+          "rgba8SHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "approximate": false,
+          "stages": [
+            {
+              "beginNs": 1026315889697208,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 1026315889922625,
+              "ms": 0.225417,
+              "operation": "交互预览",
+              "outcome": "成功",
+              "pixels": 3840000,
+              "queue": "预览",
+              "stage": "复用已定稿画面"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "authorityRegression": {
+    "nativeJoinBeforeSupersession": true,
+    "sameSourceSecondLease": true,
+    "sameKeySourceGenerationRevalidated": true,
+    "pressureAndInvalidation": true,
+    "sourceResultRecertifiedAfterActualSettledReturn": true,
+    "testLogSHA256": "2e31283f5f1b584089efe76c4ba51c016a17d280bd2574f1623e2776a14b727c"
+  },
+  "sourceSHA256": {
+    "Sources/RAWMasterImaging/DevelopmentPreviewService.swift": "7f6b844b3804ba8a693bc67746390ce4d31dfafbd1187d9b50cc3cdf74c04b9b",
+    "Tests/RAWMasterImagingTests/PreviewInteractiveProxyTests.swift": "4f0a7b7364f9529dda1605381852705c5b2776b9a14a8b7f2d55c58712eb74df"
+  }
+}

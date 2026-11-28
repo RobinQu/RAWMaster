@@ -97,6 +97,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let sourceKey: String
     let settledRecipeFingerprint: String?
     let nativeDetailOwner: (lease: DevelopmentPreviewSessionID, generation: UInt64)?
+    // The ordinary canonical bitmap can outlive the lease that authorized its reuse as a first frame.
+    var localGrainReplayOwner: (lease: DevelopmentPreviewSessionID, generation: UInt64)? = nil
     var use: UInt64
     var nativeProfileSemantic: Bool
   }
@@ -139,7 +141,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var analysisWorkerIdentity: (token: UUID, request: DevelopmentAnalysisRequest)?
   private var cache: [String: Cached] = [:]
   private static let replaysExactDisplay = ProcessInfo.processInfo.environment["RAWMASTER_INTERACTIVE_EXACT_REPLAY"] != "0"
-  private static let qaSettledLocalGrainReplay = ProcessInfo.processInfo.environment["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] == "1"
+  private static let replaysSettledLocalGrain = ProcessInfo.processInfo.environment["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] != "0"
   private var tick: UInt64 = 0
   private var stats = PreviewStatistics()
   private var latest: [PreviewConsumerID: (DevelopmentPreviewSessionID, UInt64, UInt64)] = [:]
@@ -167,6 +169,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var criticalPressure = false
   private let now: @Sendable () -> UInt64
   private let revalidationLeaseOpened: @Sendable () async -> Void
+  private let nativePreviewDidJoinForTesting: (@Sendable (DevelopmentPreviewRequest) async -> Void)?
   private let qaNaturalCurveFiniteProof:Bool
   private let qaSharedFITIntermediate: Bool
   private let qaCanonicalGesture: Bool
@@ -204,6 +207,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     thumbnailCancellationGateRevokedForTesting=nil
     now = { DispatchTime.now().uptimeNanoseconds }
     revalidationLeaseOpened = {}
+    nativePreviewDidJoinForTesting = nil
     let qa=PreviewNativeInputProfileV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,
       environment:ProcessInfo.processInfo.environment)
     let bytes = qa ? 1_073_741_824:DevelopmentPreviewApplicationCacheProfile.currentSharedBytes()
@@ -218,7 +222,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     rawBasePool = bytes > 0 ? PreviewRawBasePool(byteBudget: bytes, nativeFillMode: .whole) : nil
   }
   /// Isolated deterministic backend for scheduler tests; unavailable to product callers.
-  init(policy: PreviewResourcePolicy = .default, now: @escaping @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds }, revalidationLeaseOpened: @escaping @Sendable () async -> Void = {}, rawBasePoolForTesting: PreviewRawBasePool? = nil, captureAuthorityForTesting: Bool = false, analysisOverride: (@Sendable (DevelopmentAnalysisRequest,DevelopmentLocalEditSourceBinding) throws -> DevelopmentAnalysisResult)? = nil, renderOverride: (@Sendable (DevelopmentRecipe, Int) throws -> PreviewPixels)? = nil, thumbnailStepWillBeginForTesting:(@Sendable()throws->Void)? = nil, thumbnailCancellationGateRevokedForTesting:(@Sendable(ThumbnailCancellationPhaseForTesting)async->Void)? = nil, filterResourcesForTesting:DevelopmentPhotoFilterResourceStore? = nil, qaSharedFITIntermediate:Bool = false,qaNaturalCurveFiniteProof:Bool = false,qaGrainFinalTransport:Bool = false,qaNeutralOwnerBootstrap:Bool = false,qaBrilliancePublicV1:Bool = false,qaCanonicalGesture:Bool = false,qaNeutralPretransportObserverForTesting:(@Sendable(PreviewPixels)throws->Void)? = nil,qaBWSummaryResident:Bool = false,qaBWSummaryObserverForTesting:DevelopmentBWSummaryResidentV3.Observer? = nil,qaDehazeTIFFPreview:Bool=false,qaDehazeTIFFObserverForTesting:((DevelopmentDehazeTIFFPreviewV1.Phase)throws->Void)?=nil) {
+  init(policy: PreviewResourcePolicy = .default, now: @escaping @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds }, revalidationLeaseOpened: @escaping @Sendable () async -> Void = {}, rawBasePoolForTesting: PreviewRawBasePool? = nil, captureAuthorityForTesting: Bool = false, analysisOverride: (@Sendable (DevelopmentAnalysisRequest,DevelopmentLocalEditSourceBinding) throws -> DevelopmentAnalysisResult)? = nil, renderOverride: (@Sendable (DevelopmentRecipe, Int) throws -> PreviewPixels)? = nil, thumbnailStepWillBeginForTesting:(@Sendable()throws->Void)? = nil, thumbnailCancellationGateRevokedForTesting:(@Sendable(ThumbnailCancellationPhaseForTesting)async->Void)? = nil, filterResourcesForTesting:DevelopmentPhotoFilterResourceStore? = nil, qaSharedFITIntermediate:Bool = false,qaNaturalCurveFiniteProof:Bool = false,qaGrainFinalTransport:Bool = false,qaNeutralOwnerBootstrap:Bool = false,qaBrilliancePublicV1:Bool = false,qaCanonicalGesture:Bool = false,qaNeutralPretransportObserverForTesting:(@Sendable(PreviewPixels)throws->Void)? = nil,qaBWSummaryResident:Bool = false,qaBWSummaryObserverForTesting:DevelopmentBWSummaryResidentV3.Observer? = nil,qaDehazeTIFFPreview:Bool=false,qaDehazeTIFFObserverForTesting:((DevelopmentDehazeTIFFPreviewV1.Phase)throws->Void)?=nil,
+       nativePreviewDidJoinForTesting: (@Sendable (DevelopmentPreviewRequest) async -> Void)? = nil) {
     self.qaBWSummaryResident=qaBWSummaryResident;self.qaBWSummaryObserverForTesting=qaBWSummaryObserverForTesting
     self.qaBrilliancePublicV1=qaBrilliancePublicV1
     self.qaDehazeTIFFPreview=qaDehazeTIFFPreview;self.qaDehazeTIFFObserverForTesting=qaDehazeTIFFObserverForTesting
@@ -232,6 +237,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     self.filterResourcesForTesting = filterResourcesForTesting
     self.captureAuthorityForTesting = captureAuthorityForTesting; self.analysisOverride = analysisOverride; self.thumbnailStepWillBeginForTesting=thumbnailStepWillBeginForTesting
     self.thumbnailCancellationGateRevokedForTesting=thumbnailCancellationGateRevokedForTesting
+    self.nativePreviewDidJoinForTesting = nativePreviewDidJoinForTesting
     self.rawBasePool = rawBasePoolForTesting ?? (policy.rawBaseCacheBytes > 0 ? PreviewRawBasePool(byteBudget:policy.rawBaseCacheBytes):nil)
     self.policy = policy; self.renderOverride = renderOverride; self.now = now; self.revalidationLeaseOpened = revalidationLeaseOpened
   }
@@ -873,12 +879,18 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     }
     // Look up the full canonical key, including source, viewport, recipe and active filter resources.
     // Only a settled primary result can supply a revisited value. The reverse lookup never occurs.
+    let localGrainReplay = Self.replaysExactDisplay && item.interactivePlan?.isProxy == true &&
+      prefersSettledLocalGrain(request, sourceKey: item.key)
     let settledDisplay: (key:String, pixels:PreviewPixels)?
     if Self.replaysExactDisplay, let plan = item.interactivePlan, plan.isProxy,
-       (plan.sourceOverlayVersion == nil || prefersSettledSourceOverlay(request, sourceKey: item.key)),
+       (plan.sourceOverlayVersion == nil || localGrainReplay ||
+        request.recipe.adjustmentsV3.map { PreviewInteractiveDetailGuide.isPureSharpen($0, maskPreview: true) } == true),
        item.nativePointwisePlan == nil, let fingerprint = latestRecipeFingerprint[request.consumerID],
        cache.values.contains(where: { $0.sourceKey == item.key && $0.settledRecipeFingerprint == fingerprint }),
        let exactKey = try? pixelKey(request,sourceKey:item.key,settledHalfFITReplay:true), let exact = cache[exactKey], exact.settledRecipeFingerprint == fingerprint,
+       (!localGrainReplay || (!clearAfterJoin && !criticalPressure &&
+          exact.localGrainReplayOwner?.lease == request.sessionID &&
+          exact.localGrainReplayOwner?.generation == request.sourceGeneration)),
        !exact.pixels.managedPresentation, exact.pixels.approximation == nil {
       settledDisplay = (exactKey,exact.pixels)
     } else { settledDisplay = nil }
@@ -953,6 +965,9 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     // Keep worker/active ownership while queued retirement commands join. Cancellation can
     // still revoke active delivery while this actor suspends; re-read it after the await.
     await flushRawBaseCommands()
+    if let nativePreviewDidJoinForTesting, let joined = active, joined.token == token, case .success = result {
+      await nativePreviewDidJoinForTesting(joined.request)
+    }
     guard let item = active, item.token == token else { return }
     // Native has actually joined. No earlier cancellation/terminal releases capacity.
     active = nil; stats.activeNativeRenders = 0; stats.completedRenders += 1
@@ -1012,7 +1027,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
                nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true,
                nativeDetailOwner:detail ? (item.request.sessionID, item.request.sourceGeneration) : nil)
         if settled, !pixels.managedPresentation, pixels.approximation == nil, cache[actualOutputKey]?.settledRecipeFingerprint != nil {
-          retireEarlierSourceOverlayProxy(item.request, sourceKey: item.key)
+          let localGrain = item.deliveryEnabled && authorizeLocalGrainReplay(item.request, sourceKey: item.key, key: actualOutputKey)
+          retireEarlierSourceOverlayProxy(item.request, sourceKey: item.key, localGrain: localGrain)
         }
       }
       deliver(item, .success(frame(item.request, key: actualOutputKey, pixels: pixels,sharedFITRequested:requestsSharedFIT(item.nativePointwisePlan))))
@@ -1570,21 +1586,33 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     do { try scope.requireOpenAdmission();try ticket.requireOpenAdmission();return true }
     catch { return false }
   }
-  private func prefersSettledSourceOverlay(_ request: DevelopmentPreviewRequest, sourceKey: String) -> Bool {
-    guard let p = request.recipe.adjustmentsV3 else { return false }
-    if PreviewInteractiveDetailGuide.isPureSharpen(p, maskPreview: true) { return true }
-    guard Self.qaSettledLocalGrainReplay, policy.settledTransport == .canonical,
+  private func prefersSettledLocalGrain(_ request: DevelopmentPreviewRequest, sourceKey: String) -> Bool {
+    guard Self.replaysSettledLocalGrain, policy.interactiveEvaluation == .proxyV1, policy.settledTransport == .canonical,
           request.role == .primary, request.viewport.maxPixel == 2400,
+          let p = request.recipe.adjustmentsV3,
           (p.masks.first?.adjustments.grain ?? 0) > 0,
           let native = sources[sourceKey]?.native, native.hasRAWFilter, native.originalEXIFOrientation == 1 else { return false }
     return DevelopmentMaskEngineV3.CanonicalValidation.qualifies(p, extent: native.orientedNativeExtent,
       transport: .spatialTileRegion, spatialTiles: .includingGrain)
   }
 
+  private func authorizeLocalGrainReplay(_ request: DevelopmentPreviewRequest, sourceKey: String, key: String) -> Bool {
+    guard Self.replaysExactDisplay, !clearAfterJoin, !criticalPressure,
+          request.quality == .settled, prefersSettledLocalGrain(request, sourceKey: sourceKey),
+          let current = latest[request.consumerID], current.0 == request.sessionID,
+          current.1 == request.sourceGeneration, current.2 == request.revision,
+          var entry = cache[key], entry.sourceKey == sourceKey,
+          let fingerprint = entry.settledRecipeFingerprint, fingerprint == latestRecipeFingerprint[request.consumerID],
+          !entry.pixels.managedPresentation, entry.pixels.approximation == nil else { return false }
+    entry.localGrainReplayOwner = (request.sessionID, request.sourceGeneration)
+    cache[key] = entry
+    return true
+  }
+
   /// Prefer the canonical raster to the earlier approximate overlay at the same viewport.
-  private func retireEarlierSourceOverlayProxy(_ request: DevelopmentPreviewRequest, sourceKey: String) {
-    guard Self.replaysExactDisplay, policy.interactiveEvaluation == .proxyV1,
-          prefersSettledSourceOverlay(request, sourceKey: sourceKey) else { return }
+  private func retireEarlierSourceOverlayProxy(_ request: DevelopmentPreviewRequest, sourceKey: String, localGrain: Bool) {
+    guard Self.replaysExactDisplay, policy.interactiveEvaluation == .proxyV1, let p = request.recipe.adjustmentsV3,
+          localGrain || PreviewInteractiveDetailGuide.isPureSharpen(p, maskPreview: true) else { return }
     let earlier = DevelopmentPreviewRequest(sessionID:request.sessionID,sourceGeneration:request.sourceGeneration,
       consumerID:request.consumerID,role:request.role,revision:request.revision,recipe:request.recipe,
       quality:.interactive,viewport:request.viewport)
@@ -1657,6 +1685,9 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     tick &+= 1
     hit.use = tick
     cache[key] = hit
+    if authorizeLocalGrainReplay(request, sourceKey: sourceKey, key: key) {
+      retireEarlierSourceOverlayProxy(request, sourceKey: sourceKey, localGrain: true)
+    }
     stats.cacheHits += 1
     recordNativeProfileCacheHit(nativePointwisePlan)
     return (key, hit.pixels)

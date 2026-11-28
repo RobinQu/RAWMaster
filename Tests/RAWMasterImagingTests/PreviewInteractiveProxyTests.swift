@@ -7,6 +7,22 @@ import Metal
 import RAWMasterCore
 @testable import RAWMasterImaging
 
+private actor PreviewJoinGate {
+  private var released = false
+  private var waiter: CheckedContinuation<Void, Never>?
+
+  func wait() async {
+    guard !released else { return }
+    await withCheckedContinuation { waiter = $0 }
+  }
+
+  func release() {
+    released = true
+    waiter?.resume()
+    waiter = nil
+  }
+}
+
 final class PreviewInteractiveProxyTests:XCTestCase {
   private func fixture(orientation:Int=1)throws->(URL,EditingSourceSnapshot) {
     let root=FileManager.default.temporaryDirectory.appendingPathComponent("RAWMaster-I1-"+UUID().uuidString)
@@ -234,10 +250,10 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     XCTAssertEqual(try bytes(replay.image), try bytes(exact.image))
   }
 
-  func testOptInSettledLocalGrainReplayRequiresACompletedSameState() async throws {
+  func testSettledLocalGrainReplayRequiresACompletedSameState() async throws {
     let env = ProcessInfo.processInfo.environment
-    guard env["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] == "1", let path = env["RAWMASTER_PANEL_READBACK_RAW"] else {
-      throw XCTSkip("Enable local grain replay and supply the authorized paired photo operators RAW")
+    guard env["RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY"] != "0", let path = env["RAWMASTER_PANEL_READBACK_RAW"] else {
+      throw XCTSkip("Requires local grain replay and the paired photo operators RAW")
     }
     let url = URL(fileURLWithPath: path)
     let sha = try RenderFiles.hash(url)
@@ -247,7 +263,14 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     let size = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
     let source = EditingSourceSnapshot(projectID: "local-grain-replay", assetID: "sony", contentSHA256: sha,
       byteCount: Int64(size), admissionFingerprint: "canonical-grain", sourceLocation: url)
-    let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .canonical))
+    let joined = expectation(description: "The real settled frame joined before delivery")
+    let gate = PreviewJoinGate()
+    let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .canonical),
+      nativePreviewDidJoinForTesting: { request in
+        guard request.quality == .settled, request.revision == 2 else { return }
+        joined.fulfill()
+        await gate.wait()
+      })
     let consumer = PreviewConsumerID()
     let buffer = UnsafeMutableRawBufferPointer.allocate(byteCount: 2400 * 1600 * 4, alignment: 64)
     defer { buffer.deallocate() }
@@ -265,32 +288,83 @@ final class PreviewInteractiveProxyTests:XCTestCase {
       parameters.masks[0].adjustments.grain = 0.55
       let b = DevelopmentRecipe(adjustmentsV3: parameters)
 
-      let first = try await service.render(request(lease, consumer, a, 1))
-      XCTAssertTrue(first.approximate)
-      let settled = try await service.render(request(lease, consumer, a, 2, quality: .settled))
-      XCTAssertFalse(settled.approximate)
-      XCTAssertNotEqual(try digest(first), try digest(settled))
-      let replay = try await service.render(request(lease, consumer, a, 3))
-      XCTAssertFalse(replay.approximate)
-      XCTAssertEqual(replay.quality, .interactive)
-      XCTAssertEqual(replay.outputKey, settled.outputKey)
-      XCTAssertEqual(replay.outputPixelSize, settled.outputPixelSize)
-      XCTAssertEqual(try digest(replay), try digest(settled))
-
-      let newState = try await service.render(request(lease, consumer, b, 4))
-      XCTAssertTrue(newState.approximate)
-      XCTAssertNotEqual(newState.outputKey, settled.outputKey)
-      await service.handleMemoryPressure()
-      let afterEviction = try await service.render(request(lease, consumer, a, 5))
-      XCTAssertTrue(afterEviction.approximate)
-      XCTAssertEqual(try digest(afterEviction), try digest(first))
-
-      await service.invalidate(lease.id)
+      let firstDigest: SHA256.Digest
       do {
-        _ = try await service.render(request(lease, consumer, a, 6))
+        let first = try await service.render(request(lease, consumer, a, 1))
+        XCTAssertTrue(first.approximate)
+        firstDigest = try digest(first)
+      }
+      let newStateKey: String
+      do {
+        let interrupted = Task { try await service.render(request(lease, consumer, a, 2, quality: .settled)) }
+        await fulfillment(of: [joined], timeout: 10)
+        let replacement = Task { try await service.render(request(lease, consumer, b, 3)) }
+        do {
+          _ = try await interrupted.value
+          XCTFail("The superseded request delivered its joined frame")
+        } catch DevelopmentPreviewError.superseded {}
+        await gate.release()
+        let newState = try await replacement.value
+        XCTAssertTrue(newState.approximate)
+        newStateKey = newState.outputKey
+      }
+      do {
+        let afterSupersession = try await service.render(request(lease, consumer, a, 4))
+        XCTAssertTrue(afterSupersession.approximate)
+        XCTAssertEqual(try digest(afterSupersession), firstDigest)
+      }
+      let settledKey: String
+      let settledDigest: SHA256.Digest
+      do {
+        let settled = try await service.render(request(lease, consumer, a, 5, quality: .settled))
+        XCTAssertFalse(settled.approximate)
+        settledKey = settled.outputKey
+        settledDigest = try digest(settled)
+        XCTAssertNotEqual(firstDigest, settledDigest)
+        XCTAssertNotEqual(newStateKey, settledKey)
+        let replay = try await service.render(request(lease, consumer, a, 6))
+        XCTAssertFalse(replay.approximate)
+        XCTAssertEqual(replay.quality, .interactive)
+        XCTAssertEqual(replay.outputKey, settledKey)
+        XCTAssertEqual(replay.outputPixelSize, settled.outputPixelSize)
+        XCTAssertEqual(try digest(replay), settledDigest)
+      }
+
+      let otherLease = try await service.open(source: .raw(source))
+      do {
+        let otherFirst = try await service.render(request(otherLease, PreviewConsumerID(), a, 1))
+        XCTAssertTrue(otherFirst.approximate)
+      }
+      await service.close(otherLease.id)
+
+      let revalidated = try await service.revalidate(lease.id, source: .raw(source))
+      XCTAssertEqual(revalidated.id, lease.id)
+      XCTAssertNotEqual(revalidated.sourceGeneration, lease.sourceGeneration)
+      do {
+        let renewedFirst = try await service.render(request(revalidated, consumer, a, 7))
+        XCTAssertTrue(renewedFirst.approximate)
+      }
+      do {
+        let renewedSettled = try await service.render(request(revalidated, consumer, a, 8, quality: .settled))
+        XCTAssertEqual(renewedSettled.outputKey, settledKey)
+        XCTAssertEqual(try digest(renewedSettled), settledDigest)
+        let renewedReplay = try await service.render(request(revalidated, consumer, a, 9))
+        XCTAssertFalse(renewedReplay.approximate)
+        XCTAssertEqual(try digest(renewedReplay), settledDigest)
+      }
+
+      await service.handleMemoryPressure()
+      let afterEviction = try await service.render(request(revalidated, consumer, a, 10))
+      XCTAssertTrue(afterEviction.approximate)
+      XCTAssertEqual(try digest(afterEviction), firstDigest)
+
+      await service.invalidate(revalidated.id)
+      do {
+        _ = try await service.render(request(revalidated, consumer, a, 11))
         XCTFail("An invalidated source supplied a preview")
       } catch DevelopmentPreviewError.sourceInvalidated {}
     } catch {
+      await gate.release()
       await service.closeAll()
       throw error
     }
