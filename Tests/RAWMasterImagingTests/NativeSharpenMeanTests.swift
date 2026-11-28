@@ -32,6 +32,9 @@ final class NativeSharpenMeanTests: XCTestCase {
         recipe.masks = [layer]
         recipe.masks[0].adjustments.noiseReduction = 0.15
         XCTAssertNil(PreviewNativeSharpenMean.plan(for: recipe))
+        recipe.masks = [layer]
+        recipe.masks[0].adjustments.sharpness = 1.01
+        XCTAssertNil(PreviewNativeSharpenMean.plan(for: recipe))
         recipe.masks = [layer, .init(kind: .radial, adjustments: .init(exposure: 0.2))]
         XCTAssertNil(PreviewNativeSharpenMean.plan(for: recipe))
     }
@@ -56,7 +59,8 @@ final class NativeSharpenMeanTests: XCTestCase {
         defer { pin.release() }
         var recipe = DevelopmentAdjustmentsV3()
         recipe.rawDecoder = .flashRaw031
-        recipe.sharpen = .init(enabled: true, intensity: 0.75, radius: 1)
+        let layer = DevelopmentMaskLayerV3(kind: .radial, feather: 0, adjustments: .init(sharpness: 0.75))
+        recipe.masks = [layer]
         let plan = try XCTUnwrap(PreviewNativeSharpenMean.plan(for: recipe))
         let context = CIContext(options: [.workingColorSpace: DevelopmentColorEngineV3.linearSRGB,
             .workingFormat: CIFormat.RGBAf.rawValue, .memoryTarget: 512, .cacheIntermediates: false])
@@ -78,10 +82,17 @@ final class NativeSharpenMeanTests: XCTestCase {
         }
         let retry = try XCTUnwrap(PreviewNativeSharpenMean.prepare(plan: plan, pin: pin, source: pin.image, context: context,
             device: device, checkAuthority: { try capture.requireCurrent(at: capture.url) }))
-        XCTAssertEqual(try retry.mean(for: pin.image, at: .photo)?.extent, extent)
+        XCTAssertEqual(try retry.mean(for: pin.image, at: .layer(layer.id))?.extent, extent)
+        XCTAssertNil(try retry.mean(for: pin.image, at: .photo))
         XCTAssertNil(try retry.mean(for: pin.image, at: .overlay))
-        XCTAssertNil(try retry.mean(for: CIImage(color: .black).cropped(to: extent), at: .photo))
+        XCTAssertNil(try retry.mean(for: CIImage(color: .black).cropped(to: extent), at: .layer(layer.id)))
+        if extent.width * extent.height > 32 * 1024 * 1024 {
+            // The first retained R32 mean occupies more than half of the shared 256 MiB allowance.
+            let second = try PreviewNativeSharpenMean.prepare(plan: plan, pin: pin, source: pin.image, context: context,
+                device: device, checkAuthority: { try capture.requireCurrent(at: capture.url) })
+            XCTAssertNil(second)
+        }
         pin.discard()
-        XCTAssertThrowsError(try retry.mean(for: pin.image, at: .photo))
+        XCTAssertThrowsError(try retry.mean(for: pin.image, at: .layer(layer.id)))
     }
 }

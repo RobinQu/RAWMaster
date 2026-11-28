@@ -817,12 +817,12 @@ final class PreviewNativeSource: @unchecked Sendable {
       if finalMaskValidation?.transport.checksPointwiseRegion == true { try finalMaskValidation?.checkCancellation() }
       try checkSpatialTiles?()
       let nativeSharpenMean: PreviewNativeSharpenMean?
-      if PreviewNativeSharpenMean.enabled, contextMemoryLimitMiB == 512, !cachesIntermediates,
+      if contextMemoryLimitMiB == 512, !cachesIntermediates,
          localMaskValidation == nil, spatialScan == nil, checkDehazeTexture == nil,
          checkCanonicalHalfFIT == nil, grainFinalTransport == nil, dehazeGuide == nil,
          based.extent == CGRect(origin: .zero, size: nativeSize),
-         let request = verifiedFiniteRequest, request.mayCheckTexture, let globalSource,
-         let plan = PreviewNativeSharpenMean.plan(for: adjustments), let device = interactiveMetalDevice {
+         let request = verifiedFiniteRequest, request.mayCheckTexture, let globalSource, let device = interactiveMetalDevice,
+         let plan = PreviewNativeSharpenMean.canonicalPlan(for: adjustments, size: nativeSize, device: device) {
         nativeSharpenMean = try PreviewNativeSharpenMean.prepare(plan:plan,pin:globalSource,source:based,context:context,
           device:device,checkAuthority:request.checkAuthority)
       } else {

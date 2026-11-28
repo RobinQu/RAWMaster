@@ -1,0 +1,5275 @@
+{
+  "schemaVersion": 1,
+  "protocol": "unique-recipe-canonical-stage-profile-v1",
+  "system": "macOS 27.0.1 (26A434)",
+  "gpu": "Apple M4 Max",
+  "probeBaseCodeCommit": "fa0d405741570bd9cb5e753f7b80920fdad30090",
+  "outputRGBA8": [
+    2400,
+    1600
+  ],
+  "sampling": "Four separate Release processes per experiment and RAW, with the switched option set to 0, 1, 1, 0 for diagnostics, or 0, unset, unset, 0 for the qualified local sharpen default. Create a new RAW session, then for each archived first state time an interactive readback and its first settled canonical readback. Each clock ends after copying the complete frame. No repeating the same state as a warm cache hit. Percentiles use median and nearest-rank p95.",
+  "experiments": {
+    "localNoiseFullWidth": {
+      "primary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1,
+          "RAWMASTER_QA_CANONICAL_CONTEXT_REUSE": 1
+        },
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "frozenReferenceSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda",
+        "probeSHA256": "d43ff7a55ebe8556c30483a19495a785159dabc5af7686139e042d51c3bea211",
+        "controls": 37,
+        "equalFullFrameKeysPerRun": 148,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:39:55Z",
+            "traceSHA256": "d4d163345a049cf822b129271b6698ffe74f0f009a8db49d67328978d9a889b9",
+            "processPeakPhysicalFootprintBytes": 5294967328,
+            "settled": {
+              "count": 74,
+              "p50Ms": 65.06985449999999,
+              "p95Ms": 410.333083,
+              "maxMs": 995.370542
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 415.543333,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 247.861542,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 146.276458,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 396.614917,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 238.016625,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 141.884542,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:40:06Z",
+            "traceSHA256": "cd83d344ba83fd5f7ff78e3edb4a94400140eb70d4fbf8ce89f93f275f78b313",
+            "processPeakPhysicalFootprintBytes": 5253286432,
+            "settled": {
+              "count": 74,
+              "p50Ms": 62.831229,
+              "p95Ms": 299.162958,
+              "maxMs": 989.107208
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 236.297042,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 56.530375,
+                      "pixels": 60217344,
+                      "bytes": 2162688,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 65.304917,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 144.574458,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 208.463167,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 35.342875,
+                      "pixels": 60217344,
+                      "bytes": 2162688,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 41.316333,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 143.455709,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:40:18Z",
+            "traceSHA256": "3933f60d68fa612a9c82b65d9562d4d343fe6d8035cb9685eeb491dfb3415379",
+            "processPeakPhysicalFootprintBytes": 5270211008,
+            "settled": {
+              "count": 74,
+              "p50Ms": 64.409104,
+              "p95Ms": 365.648083,
+              "maxMs": 936.186125
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 222.666541,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 44.300167,
+                      "pixels": 60217344,
+                      "bytes": 2162688,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 52.638584,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 143.5695,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 220.871584,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 38.309083,
+                      "pixels": 60217344,
+                      "bytes": 2162688,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 44.310459,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 150.108625,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:40:30Z",
+            "traceSHA256": "217e8851ef2551a35dcb025b95712dddcd21247468ccd69ad42456af910eaa72",
+            "processPeakPhysicalFootprintBytes": 5379508792,
+            "settled": {
+              "count": 74,
+              "p50Ms": 61.5724165,
+              "p95Ms": 403.488708,
+              "maxMs": 956.740667
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 403.19375,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 240.345542,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 143.444459,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 403.488708,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 242.685625,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 143.8365,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 63.9201875,
+              "p95Ms": 403.488708,
+              "maxMs": 995.370542
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5379508792,
+            "focus": {
+              "detail-mask-noise": {
+                "count": 4,
+                "p50Ms": 403.341229,
+                "p95Ms": 415.543333,
+                "maxMs": 415.543333
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 63.834312499999996,
+              "p95Ms": 333.396833,
+              "maxMs": 989.107208
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5270211008,
+            "focus": {
+              "detail-mask-noise": {
+                "count": 4,
+                "p50Ms": 221.76906250000002,
+                "p95Ms": 236.297042,
+                "maxMs": 236.297042
+              }
+            }
+          }
+        },
+        "digestWitnessSourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1,
+          "RAWMASTER_QA_CANONICAL_CONTEXT_REUSE": 1,
+          "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN": 0
+        },
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "frozenReferenceSHA256": "347d5ca4bc7241bf0a7aac9a1e34152fc502c31a8a20e0d6bb4fdbc002ac414e",
+        "probeSHA256": "d43ff7a55ebe8556c30483a19495a785159dabc5af7686139e042d51c3bea211",
+        "controls": 2,
+        "equalFullFrameKeysPerRun": 8,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:44:57Z",
+            "traceSHA256": "011205f2ab6483c20986f4fa2beb4db66e431e1c72e14574995ca27fd5be5d9f",
+            "processPeakPhysicalFootprintBytes": 3288958944,
+            "settled": {
+              "count": 4,
+              "p50Ms": 347.854042,
+              "p95Ms": 392.540083,
+              "maxMs": 392.540083
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 392.540083,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 192.194292,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 111.711291,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 345.877834,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 203.576791,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 121.4085,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:44:59Z",
+            "traceSHA256": "ab79534e76e9b1fbe2fe17b8e1fdcafc63c439c3583fcacb6f62c1f19f518c73",
+            "processPeakPhysicalFootprintBytes": 3520055192,
+            "settled": {
+              "count": 4,
+              "p50Ms": 307.412875,
+              "p95Ms": 380.283542,
+              "maxMs": 380.283542
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 263.050542,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 44.154625,
+                      "pixels": 49766400,
+                      "bytes": 2146304,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 50.556542,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 119.98475,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 186.517208,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 36.493792,
+                      "pixels": 49766400,
+                      "bytes": 2146304,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 44.849,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 121.070167,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:45:01Z",
+            "traceSHA256": "6308ace7d986463b2f711045d8682acaa4d24f355adb0a5256c959bee686d9d9",
+            "processPeakPhysicalFootprintBytes": 3518810032,
+            "settled": {
+              "count": 4,
+              "p50Ms": 298.443417,
+              "p95Ms": 361.494792,
+              "maxMs": 361.494792
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 254.0105,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 42.208583,
+                      "pixels": 49766400,
+                      "bytes": 2146304,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 42.919667,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 118.800083,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 189.914959,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 37.995167,
+                      "pixels": 49766400,
+                      "bytes": 2146304,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 46.169375,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 115.334542,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:45:03Z",
+            "traceSHA256": "3002a34d5a4b55edd10be5b790821eeecb9abd3fdd67a426c7036f0be9b16d89",
+            "processPeakPhysicalFootprintBytes": 3289925552,
+            "settled": {
+              "count": 4,
+              "p50Ms": 355.375896,
+              "p95Ms": 408.914375,
+              "maxMs": 408.914375
+            },
+            "focus": {
+              "detail-mask-noise": [
+                {
+                  "state": 0,
+                  "readbackMs": 408.914375,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 190.143834,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 124.053625,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 353.294875,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 210.426916,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 121.355167,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 351.404271,
+              "p95Ms": 408.914375,
+              "maxMs": 408.914375
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3289925552,
+            "focus": {
+              "detail-mask-noise": {
+                "count": 4,
+                "p50Ms": 372.91747899999996,
+                "p95Ms": 408.914375,
+                "maxMs": 408.914375
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 302.963438,
+              "p95Ms": 380.283542,
+              "maxMs": 380.283542
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3520055192,
+            "focus": {
+              "detail-mask-noise": {
+                "count": 4,
+                "p50Ms": 221.96272950000002,
+                "p95Ms": 263.050542,
+                "maxMs": 263.050542
+              }
+            }
+          }
+        },
+        "digestWitnessSourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "sharpenMean": {
+      "primary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1,
+          "RAWMASTER_QA_CANONICAL_CONTEXT_REUSE": 1,
+          "RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS": 0
+        },
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "frozenReferenceSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda",
+        "probeSHA256": "d43ff7a55ebe8556c30483a19495a785159dabc5af7686139e042d51c3bea211",
+        "controls": 37,
+        "equalFullFrameKeysPerRun": 148,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:49:52Z",
+            "traceSHA256": "4e123261bc3a10d11e3499e6fea018b4c19f0a015713878117a347c373ff6761",
+            "processPeakPhysicalFootprintBytes": 5567072776,
+            "settled": {
+              "count": 74,
+              "p50Ms": 65.501146,
+              "p95Ms": 409.382208,
+              "maxMs": 946.338334
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 432.205666,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 262.844709,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 141.010291,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 409.382208,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 244.897042,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 141.683834,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ],
+              "detail-mask-preview": [
+                {
+                  "state": 0,
+                  "readbackMs": 194.039,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 63.167583,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 63.989333,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 112.797125,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 187.175959,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 65.375958,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 73.614542,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 93.4475,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:50:04Z",
+            "traceSHA256": "cbbd7b29e34236b8b8f10e0521b97173ee68fe4f72abb447a34aca8ca26aa44f",
+            "processPeakPhysicalFootprintBytes": 5743348232,
+            "settled": {
+              "count": 74,
+              "p50Ms": 71.4647085,
+              "p95Ms": 298.592084,
+              "maxMs": 974.310916
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 175.885292,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 69.15425,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 81.776541,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 179.870083,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 67.006584,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 81.849625,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ],
+              "detail-mask-preview": [
+                {
+                  "state": 0,
+                  "readbackMs": 132.668041,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 69.363125,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 35.189667,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 131.603459,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 68.990208,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 38.313834,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:50:15Z",
+            "traceSHA256": "497d5b5ee9c66bdf10f40192eaaa7442fae86d94ee49d2057b0fe2d1fb070125",
+            "processPeakPhysicalFootprintBytes": 5744069080,
+            "settled": {
+              "count": 74,
+              "p50Ms": 65.67475,
+              "p95Ms": 297.004584,
+              "maxMs": 1004.783083
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 181.209,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 70.633625,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 85.42925,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 177.322792,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 66.47525,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 87.143417,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ],
+              "detail-mask-preview": [
+                {
+                  "state": 0,
+                  "readbackMs": 128.520458,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 67.599708,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 35.363666,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 129.218583,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 67.652917,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 36.098959,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:50:27Z",
+            "traceSHA256": "bc2173f41b17e3da8b2bb4e01aa9659e20c305da925fe9480c9c5bdeede6d22f",
+            "processPeakPhysicalFootprintBytes": 5294934488,
+            "settled": {
+              "count": 74,
+              "p50Ms": 65.9434375,
+              "p95Ms": 403.3755,
+              "maxMs": 973.667583
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 408.685167,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 243.968458,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 141.592875,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 403.3755,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 244.583875,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 139.195167,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ],
+              "detail-mask-preview": [
+                {
+                  "state": 0,
+                  "readbackMs": 191.399125,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 67.286958,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 68.393541,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 105.000917,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 193.767291,
+                  "stages": [
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 59.632708,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 67.995584,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 94.133292,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 65.501146,
+              "p95Ms": 403.3755,
+              "maxMs": 973.667583
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5567072776,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 409.0336875,
+                "p95Ms": 432.205666,
+                "maxMs": 432.205666
+              },
+              "detail-mask-preview": {
+                "count": 4,
+                "p50Ms": 192.583208,
+                "p95Ms": 194.039,
+                "maxMs": 194.039
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 68.66468750000001,
+              "p95Ms": 297.004584,
+              "maxMs": 1004.783083
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5744069080,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 178.59643749999998,
+                "p95Ms": 181.209,
+                "maxMs": 181.209
+              },
+              "detail-mask-preview": {
+                "count": 4,
+                "p50Ms": 130.411021,
+                "p95Ms": 132.668041,
+                "maxMs": 132.668041
+              }
+            }
+          }
+        },
+        "digestWitnessSourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1,
+          "RAWMASTER_QA_CANONICAL_CONTEXT_REUSE": 1,
+          "RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS": 0
+        },
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "frozenReferenceSHA256": "347d5ca4bc7241bf0a7aac9a1e34152fc502c31a8a20e0d6bb4fdbc002ac414e",
+        "probeSHA256": "d43ff7a55ebe8556c30483a19495a785159dabc5af7686139e042d51c3bea211",
+        "controls": 2,
+        "equalFullFrameKeysPerRun": 8,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:50:29Z",
+            "traceSHA256": "5b563e64cb1f87c740836c1ce0c8358f671045a4e64527932bee4128d74f23ef",
+            "processPeakPhysicalFootprintBytes": 3288664008,
+            "settled": {
+              "count": 4,
+              "p50Ms": 361.3059375,
+              "p95Ms": 412.5435,
+              "maxMs": 412.5435
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 365.57125,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 212.472042,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 130.894959,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 353.403542,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 206.2485,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 124.690417,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:50:31Z",
+            "traceSHA256": "4331add200c78b133e398a6ee8ee884b6359969ee06650ee2db3e62db808d7e3",
+            "processPeakPhysicalFootprintBytes": 3058206688,
+            "settled": {
+              "count": 4,
+              "p50Ms": 257.017625,
+              "p95Ms": 395.425125,
+              "maxMs": 395.425125
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 162.205042,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 54.812083,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 71.362417,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 162.3305,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 60.85875,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 67.287166,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:50:33Z",
+            "traceSHA256": "2f93d79c9d4b6fe61895f8b8e8c01629c33b01fc5734c27c75f0aedd162e076d",
+            "processPeakPhysicalFootprintBytes": 3059664744,
+            "settled": {
+              "count": 4,
+              "p50Ms": 276.28643750000003,
+              "p95Ms": 389.721375,
+              "maxMs": 389.721375
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 173.585125,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 55.732292,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 69.569625,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 164.158542,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 61.406917,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 72.506333,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:50:35Z",
+            "traceSHA256": "2ae65293c74e1040cba8909b0be4e9c3984386751b5840b33029b4e128e04671",
+            "processPeakPhysicalFootprintBytes": 3289122784,
+            "settled": {
+              "count": 4,
+              "p50Ms": 345.7260625,
+              "p95Ms": 406.869917,
+              "maxMs": 406.869917
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 352.74325,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 203.978916,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 125.468667,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 336.676209,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 198.218833,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 116.952875,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 355.2220835,
+              "p95Ms": 412.5435,
+              "maxMs": 412.5435
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3289122784,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 353.073396,
+                "p95Ms": 365.57125,
+                "maxMs": 365.57125
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 262.64493749999997,
+              "p95Ms": 395.425125,
+              "maxMs": 395.425125
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3059664744,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 163.24452100000002,
+                "p95Ms": 173.585125,
+                "maxMs": 173.585125
+              }
+            }
+          }
+        },
+        "digestWitnessSourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "positiveDehazeMinimum": {
+      "primary": {
+        "settingChanged": "RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1,
+          "RAWMASTER_QA_CANONICAL_CONTEXT_REUSE": 1,
+          "RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS": 1,
+          "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN": 1
+        },
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "frozenReferenceSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda",
+        "probeSHA256": "d43ff7a55ebe8556c30483a19495a785159dabc5af7686139e042d51c3bea211",
+        "controls": 37,
+        "equalFullFrameKeysPerRun": 148,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:45:44Z",
+            "traceSHA256": "4e8d627393043bc85b2aff05132b44401eabc1fc901bcb3bf7a9b3501eff6474",
+            "processPeakPhysicalFootprintBytes": 5737548248,
+            "settled": {
+              "count": 74,
+              "p50Ms": 81.88214550000001,
+              "p95Ms": 294.962875,
+              "maxMs": 921.481917
+            },
+            "focus": {
+              "effects-dehaze": [
+                {
+                  "state": 0,
+                  "readbackMs": 921.481917,
+                  "stages": [
+                    {
+                      "label": "每两带清理的原生 R32F 透射率",
+                      "boundary": "图构建与校验",
+                      "ms": 588.308209,
+                      "pixels": 60217344,
+                      "bytes": 240877568,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 589.942291,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 148.76925,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 148.857958,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 125.689791,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 261.951125,
+                  "stages": [
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 0.002583,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 112.070375,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 112.688708,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 130.134583,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:45:55Z",
+            "traceSHA256": "54d9dc5159047449b5fc28a4a6dd91d0042221d606745929fff21f6ed42f0dc1",
+            "processPeakPhysicalFootprintBytes": 5734123944,
+            "settled": {
+              "count": 74,
+              "p50Ms": 66.9213125,
+              "p95Ms": 291.48975,
+              "maxMs": 767.421333
+            },
+            "focus": {
+              "effects-dehaze": [
+                {
+                  "state": 0,
+                  "readbackMs": 767.421333,
+                  "stages": [
+                    {
+                      "label": "原生半浮点去雾最小值",
+                      "boundary": "GPU 完成",
+                      "ms": 76.74025,
+                      "pixels": 60217344,
+                      "bytes": 518094848,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "每两带清理的原生 R32F 透射率",
+                      "boundary": "图构建与校验",
+                      "ms": 419.968625,
+                      "pixels": 60217344,
+                      "bytes": 240877568,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 432.443292,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 162.39425,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 162.596917,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 132.872292,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 274.448583,
+                  "stages": [
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 0.05,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 119.782084,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 122.508458,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 134.929958,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:46:06Z",
+            "traceSHA256": "0bdfb7befc112b7cdb66cf81aa6f47c2b1fb90f54b641dc830f38fea2fb14aef",
+            "processPeakPhysicalFootprintBytes": 5733960224,
+            "settled": {
+              "count": 74,
+              "p50Ms": 66.594021,
+              "p95Ms": 300.422209,
+              "maxMs": 627.791542
+            },
+            "focus": {
+              "effects-dehaze": [
+                {
+                  "state": 0,
+                  "readbackMs": 627.791542,
+                  "stages": [
+                    {
+                      "label": "原生半浮点去雾最小值",
+                      "boundary": "GPU 完成",
+                      "ms": 88.202708,
+                      "pixels": 60217344,
+                      "bytes": 518094848,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "每两带清理的原生 R32F 透射率",
+                      "boundary": "图构建与校验",
+                      "ms": 287.301292,
+                      "pixels": 60217344,
+                      "bytes": 240877568,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 299.075042,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 154.102958,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 157.324292,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 140.146375,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 300.422209,
+                  "stages": [
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 0.047917,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 133.932625,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 134.585458,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 147.014042,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:46:17Z",
+            "traceSHA256": "83316698980bab4b1bd5b9650928a799862e874e41e45f722b673af4fa0b03ed",
+            "processPeakPhysicalFootprintBytes": 5734582768,
+            "settled": {
+              "count": 74,
+              "p50Ms": 67.3455625,
+              "p95Ms": 292.893,
+              "maxMs": 936.98725
+            },
+            "focus": {
+              "effects-dehaze": [
+                {
+                  "state": 0,
+                  "readbackMs": 936.98725,
+                  "stages": [
+                    {
+                      "label": "每两带清理的原生 R32F 透射率",
+                      "boundary": "图构建与校验",
+                      "ms": 604.255458,
+                      "pixels": 60217344,
+                      "bytes": 240877568,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 605.876458,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 149.728875,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 162.18125,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 128.982125,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 262.370083,
+                  "stages": [
+                    {
+                      "label": "原生透射率缓存",
+                      "boundary": "API 返回",
+                      "ms": 0.002875,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "原生宽度分带 · 标记、并行归约与 GPU 完成",
+                      "boundary": "GPU 完成",
+                      "ms": 114.483125,
+                      "pixels": 60217344,
+                      "bytes": 4980736,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 114.563208,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 126.648583,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 78.798709,
+              "p95Ms": 292.893,
+              "maxMs": 936.98725
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5737548248,
+            "focus": {
+              "effects-dehaze": {
+                "count": 4,
+                "p50Ms": 591.9259999999999,
+                "p95Ms": 936.98725,
+                "maxMs": 936.98725
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 66.9213125,
+              "p95Ms": 293.646791,
+              "maxMs": 767.421333
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5734123944,
+            "focus": {
+              "effects-dehaze": {
+                "count": 4,
+                "p50Ms": 464.1068755,
+                "p95Ms": 767.421333,
+                "maxMs": 767.421333
+              }
+            }
+          }
+        },
+        "digestWitnessSourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      }
+    }
+  },
+  "adversarialNoise": {
+    "original": "035 evidence/native-local-detail-full-bands-study.json reports the original finite scalar transport rejected a real lazy composite with an injected intermediate at a zero-coverage site. Its full-width transport admitted it.",
+    "exactHistoricalFixtureRecreated": false,
+    "currentSourceCommit": "df401d630c76ee2089f66f462dae76f3ee270703",
+    "currentReductionSourceSHA256": "a47747f0387f16474d78be3caec8b51ba83d288dfc1adea3aa448a247d64f259",
+    "newCases": [
+      {
+        "sourceSHA256": "6ec675ec8e87aef30d15080cb9eb2ff8fa19d27dce4c5e1c4b9ec15cff5ef58d",
+        "traceSHA256": "463348733f597e40f5bffbe25f394064856708072664f39360e6bc955cccaade",
+        "record": {
+          "extent": [
+            3074,
+            2050
+          ],
+          "originRowCoverage": 0,
+          "radialCenter": [
+            0.55,
+            0.5
+          ],
+          "radialRadii": [
+            0.09,
+            0.12
+          ],
+          "results": [
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "photo-scale-signed",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary16-maximum-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-reversed",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-to-zero",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "adjusted-intermediate-infinity",
+              "legacy": "accepted",
+              "legacyNativeStages": []
+            },
+            {
+              "bands": "invalidEncoding",
+              "bandsNativeStages": [
+                {
+                  "outcome": "失败",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "original-input-infinity",
+              "legacy": "invalidEncoding",
+              "legacyNativeStages": []
+            }
+          ]
+        }
+      },
+      {
+        "sourceSHA256": "d161ab03ac3811cb7cb08870a56db3b0814abb61af4cffde8966ddc90bf21ac7",
+        "traceSHA256": "d6a4e346a1f5f241751bd112a3eca076d5372f3ced72b886b4225fc5d80ee237",
+        "record": {
+          "extent": [
+            3074,
+            2050
+          ],
+          "originRowCoverage": 0,
+          "radialCenter": [
+            0.55,
+            0.5
+          ],
+          "radialRadii": [
+            0.09,
+            0.12
+          ],
+          "results": [
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "photo-scale-signed",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "photo-scale-signed",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary16-maximum-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary16-maximum-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-opposite",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-reversed",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-reversed",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-to-zero",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "binary32-high-to-zero",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "adjusted-intermediate-infinity",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "invalidEncoding",
+              "bandsNativeStages": [
+                {
+                  "outcome": "失败",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "original-input-infinity",
+              "legacy": "invalidEncoding",
+              "legacyNativeStages": [],
+              "originCovered": false
+            },
+            {
+              "bands": "accepted",
+              "bandsNativeStages": [
+                {
+                  "outcome": "成功",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "adjusted-intermediate-infinity",
+              "legacy": "accepted",
+              "legacyNativeStages": [],
+              "originCovered": true
+            },
+            {
+              "bands": "invalidEncoding",
+              "bandsNativeStages": [
+                {
+                  "outcome": "失败",
+                  "pixels": 6301700,
+                  "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+                }
+              ],
+              "fixture": "original-input-infinity",
+              "legacy": "invalidEncoding",
+              "legacyNativeStages": [],
+              "originCovered": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "qualifiedDefaultLocalSharpenMean": {
+    "transport": "Settled primary canonical FIT, orientation 1 verified capture, native FlashRaw physical source and checked R32Float mean",
+    "finiteGuard": "Same opaque finite RGBA16F pin, bounded plan with one local radial sharpen layer, checked |mean| <= 16; source identity, geometry and authority rechecked, with shared explicit 256 MiB R32 reservation cap.",
+    "verifiedGPU": "Apple M4 Max",
+    "sourceScope": [
+      [
+        9504,
+        6336
+      ],
+      [
+        8640,
+        5760
+      ]
+    ],
+    "fixedFlags": {
+      "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1
+    },
+    "runsBySource": {
+      "primary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1
+        },
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "frozenReferenceSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda",
+        "probeSHA256": "1cce84257cf3c58d3272302a321c2a82111a299325e4ea8339b93cf6fad1649c",
+        "controls": 37,
+        "equalFullFrameKeysPerRun": 148,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:57:38Z",
+            "traceSHA256": "6c0e9cf0a62c69d68fae120083daf879268ed2637bee81cfed654e02f5c7db81",
+            "processPeakPhysicalFootprintBytes": 5290920456,
+            "settled": {
+              "count": 74,
+              "p50Ms": 72.0320625,
+              "p95Ms": 421.55225,
+              "maxMs": 1937.048791
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 423.257792,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 252.859042,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 146.768583,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 408.101459,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 242.280584,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 145.984958,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:57:50Z",
+            "traceSHA256": "785398b4042886985522a9744d70870743fbccf2fd73b7709cf0da6ccbc9936b",
+            "processPeakPhysicalFootprintBytes": 5836753464,
+            "settled": {
+              "count": 74,
+              "p50Ms": 66.292708,
+              "p95Ms": 324.958,
+              "maxMs": 940.844416
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 297.390416,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 65.166,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 85.819209,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 178.939625,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 69.117417,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 86.010167,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:58:01Z",
+            "traceSHA256": "7d447152007df7bbc3203412971e5f3cb294e426a30e87a4d9bfe70bc86f3b0e",
+            "processPeakPhysicalFootprintBytes": 5874780608,
+            "settled": {
+              "count": 74,
+              "p50Ms": 67.8067915,
+              "p95Ms": 341.21825,
+              "maxMs": 1006.976375
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 196.7955,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 68.129875,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 84.843667,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 175.657417,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 67.526291,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 84.004166,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:58:13Z",
+            "traceSHA256": "dd1b59668a03a27412b4594e90e1c763ca1561d935f95c29a384d1015be896b9",
+            "processPeakPhysicalFootprintBytes": 5470358048,
+            "settled": {
+              "count": 74,
+              "p50Ms": 68.3053335,
+              "p95Ms": 402.342792,
+              "maxMs": 967.629583
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 419.533458,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 248.407083,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 147.321125,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 417.250542,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 248.099125,
+                      "pixels": 60217344,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 149.257584,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 70.63885450000001,
+              "p95Ms": 408.101459,
+              "maxMs": 1937.048791
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5470358048,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 418.392,
+                "p95Ms": 423.257792,
+                "maxMs": 423.257792
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 148,
+              "p50Ms": 67.8067915,
+              "p95Ms": 324.958,
+              "maxMs": 1006.976375
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 5874780608,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 187.86756250000002,
+                "p95Ms": 297.390416,
+                "maxMs": 297.390416
+              }
+            }
+          }
+        },
+        "settingValues": [
+          "0",
+          null,
+          null,
+          "0"
+        ],
+        "defaultOnlyLocalMeanCountPerRun": [
+          0,
+          2,
+          2,
+          0
+        ],
+        "digestWitnessSourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "settingChanged": "RAWMASTER_QA_CANONICAL_SHARPEN_MEAN",
+        "fixedSettings": {
+          "RAWMASTER_QA_CANONICAL_STAGE_TIMING": 1
+        },
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "frozenReferenceSHA256": "347d5ca4bc7241bf0a7aac9a1e34152fc502c31a8a20e0d6bb4fdbc002ac414e",
+        "probeSHA256": "1cce84257cf3c58d3272302a321c2a82111a299325e4ea8339b93cf6fad1649c",
+        "controls": 2,
+        "equalFullFrameKeysPerRun": 8,
+        "runs": [
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:58:15Z",
+            "traceSHA256": "e15393e7c6c1e038fc0ee7dd7b2b6e218491ad943da4a830d8a90cb07841b9b6",
+            "processPeakPhysicalFootprintBytes": 3290630088,
+            "settled": {
+              "count": 4,
+              "p50Ms": 350.1151255,
+              "p95Ms": 406.369334,
+              "maxMs": 406.369334
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 354.355292,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 207.092375,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 125.515542,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 345.874959,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 208.548042,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 115.589166,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:58:17Z",
+            "traceSHA256": "4ebb85d832cf29a57ea74d6c32ee2d540ae3b28f7fae5d4a3eb9164a89f0623f",
+            "processPeakPhysicalFootprintBytes": 3057862552,
+            "settled": {
+              "count": 4,
+              "p50Ms": 262.3336665,
+              "p95Ms": 395.899,
+              "maxMs": 395.899
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 174.312,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 58.408541,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 67.014042,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 159.594375,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 59.034791,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 70.108666,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 1,
+            "recordedAt": "2026-11-28T08:58:19Z",
+            "traceSHA256": "fe705fc1ef73be9c3d0ab58031dbd9266b8b7a81c9de0c633af924ea910491a8",
+            "processPeakPhysicalFootprintBytes": 3058747288,
+            "settled": {
+              "count": 4,
+              "p50Ms": 253.8575205,
+              "p95Ms": 409.553542,
+              "maxMs": 409.553542
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 162.004208,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 54.181375,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 68.40675,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 161.146292,
+                  "stages": [
+                    {
+                      "label": "原生锐化均值校验",
+                      "boundary": "GPU 完成",
+                      "ms": 56.387667,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 76.314125,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "setting": 0,
+            "recordedAt": "2026-11-28T08:58:21Z",
+            "traceSHA256": "05561f69d46c5373e72bc02ad50dc460e76da0ff5ce207288003b0c7fb42817f",
+            "processPeakPhysicalFootprintBytes": 3289778192,
+            "settled": {
+              "count": 4,
+              "p50Ms": 386.334646,
+              "p95Ms": 449.888458,
+              "maxMs": 449.888458
+            },
+            "focus": {
+              "detail-mask-sharpness": [
+                {
+                  "state": 0,
+                  "readbackMs": 449.888458,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 285.702041,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 140.842916,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "readbackMs": 364.554334,
+                  "stages": [
+                    {
+                      "label": "全域归约",
+                      "boundary": "GPU 完成",
+                      "ms": 212.111208,
+                      "pixels": 49766400,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    },
+                    {
+                      "label": "create sRGB8 CGImage",
+                      "boundary": "API 返回",
+                      "ms": 129.972583,
+                      "pixels": 0,
+                      "bytes": 0,
+                      "outcome": "成功"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "pooled": {
+          "0": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 359.454813,
+              "p95Ms": 449.888458,
+              "maxMs": 449.888458
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3290630088,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 359.454813,
+                "p95Ms": 449.888458,
+                "maxMs": 449.888458
+              }
+            }
+          },
+          "1": {
+            "settled": {
+              "count": 8,
+              "p50Ms": 260.0114165,
+              "p95Ms": 409.553542,
+              "maxMs": 409.553542
+            },
+            "highestProcessPeakPhysicalFootprintBytes": 3058747288,
+            "focus": {
+              "detail-mask-sharpness": {
+                "count": 4,
+                "p50Ms": 161.57524999999998,
+                "p95Ms": 174.312,
+                "maxMs": 174.312
+              }
+            }
+          }
+        },
+        "settingValues": [
+          "0",
+          null,
+          null,
+          "0"
+        ],
+        "defaultOnlyLocalMeanCountPerRun": [
+          0,
+          2,
+          2,
+          0
+        ],
+        "digestWitnessSourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "tests": {
+      "sharpAndFinite": {
+        "passed": 24,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "ee3b3836ad12629826363b7b8c6fec1748b87044f6b2ca80440d5afffe02b7f6"
+      },
+      "filterPanel": {
+        "passed": 17,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "6daecc6503090fc2464cf565c46501bcab7cb007a03965149dd35018995fc326"
+      },
+      "realFreeZoom": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "f263854d4b3ce1c03fb5cd72120e4dd7732715722feb9023fb6b6ca3fa8b159d"
+      }
+    },
+    "scopedSourceSHA256": {
+      "PreviewNativeSource.swift": "47d2da1f56b6aca51f62647ee658b444d269e395f9e3702504eae2c7949171c3",
+      "PreviewNativeSharpenMean.swift": "985d9d253011de342ee764c805b5e11a22d2d2257ab939af1128f71dca0f0f3c"
+    }
+  },
+  "digestWitnesses": {
+    "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": {
+      "fields": [
+        "control",
+        "state",
+        "quality",
+        "rgba8SHA256",
+        "approximate"
+      ],
+      "completeRGBA8Readback": [
+        [
+          "color-bw-treatment",
+          0,
+          "interactive",
+          "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+          true
+        ],
+        [
+          "color-bw-treatment",
+          0,
+          "settled",
+          "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+          false
+        ],
+        [
+          "color-bw-treatment",
+          1,
+          "interactive",
+          "9a353678df2f123387d1dafc635c4997047979dcc91ea2abea82bb99b2e380bb",
+          true
+        ],
+        [
+          "color-bw-treatment",
+          1,
+          "settled",
+          "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5",
+          false
+        ],
+        [
+          "color-mask-hue",
+          0,
+          "interactive",
+          "e069201000648898de70ed82a103bd766fda2e8d25f458010859455aa4787db9",
+          true
+        ],
+        [
+          "color-mask-hue",
+          0,
+          "settled",
+          "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+          false
+        ],
+        [
+          "color-mask-hue",
+          1,
+          "interactive",
+          "f0e45fe65a74ed8d36edad839c44cd6e38bf7fe1800f1c46227ee7f5a5fe44e8",
+          true
+        ],
+        [
+          "color-mask-hue",
+          1,
+          "settled",
+          "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+          false
+        ],
+        [
+          "color-mask-saturation",
+          0,
+          "interactive",
+          "ceefe0e501f2f027d6912602631e3a7f7735a4ce962eb26957541a2f246d0683",
+          true
+        ],
+        [
+          "color-mask-saturation",
+          0,
+          "settled",
+          "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+          false
+        ],
+        [
+          "color-mask-saturation",
+          1,
+          "interactive",
+          "5998ca3f987d6b90a3f394304ce4f5f06aa525d3f7eb209e51dda3ed06c2df61",
+          true
+        ],
+        [
+          "color-mask-saturation",
+          1,
+          "settled",
+          "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+          false
+        ],
+        [
+          "color-mask-temp",
+          0,
+          "interactive",
+          "965ed49d02adece731dc6807c4892b8b1f89755372ef8d6153039b26f617a31e",
+          true
+        ],
+        [
+          "color-mask-temp",
+          0,
+          "settled",
+          "babbda0c49a620d0175c69065f4ebb9f5d69e90ae5d771e9de91b044486df095",
+          false
+        ],
+        [
+          "color-mask-temp",
+          1,
+          "interactive",
+          "b3125c3a2311a9696e9efdf903006de1c8eea61f481075fb7a45abd0612b9f35",
+          true
+        ],
+        [
+          "color-mask-temp",
+          1,
+          "settled",
+          "dca929ebfd8839901606667f5486ca18be46dd7ad390833b90832e4ce5ac608a",
+          false
+        ],
+        [
+          "color-mask-tint",
+          0,
+          "interactive",
+          "04cd3f51961565cc45b0e0ca3ffc7493d5b2d37ddba2c681eb7f2816216d2952",
+          true
+        ],
+        [
+          "color-mask-tint",
+          0,
+          "settled",
+          "1f0260a3851c85261514d6fa26baf6553cb4414492e9cf155440e39c0429a64c",
+          false
+        ],
+        [
+          "color-mask-tint",
+          1,
+          "interactive",
+          "7507ade17d073dac876c864c9936547c90f8d1796aba438f957952ac21c8b6b7",
+          true
+        ],
+        [
+          "color-mask-tint",
+          1,
+          "settled",
+          "35704d3c15a262b9440c311b137e3a36251710486912b6f26dbe240c4ce646a1",
+          false
+        ],
+        [
+          "color-wb-as-shot",
+          0,
+          "interactive",
+          "0c68f1ac4db45b9a2eba2be05c9fc1fd24e54ceb7a2ce10d2758738ebfe8c2ff",
+          true
+        ],
+        [
+          "color-wb-as-shot",
+          0,
+          "settled",
+          "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935",
+          false
+        ],
+        [
+          "color-wb-as-shot",
+          1,
+          "interactive",
+          "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+          true
+        ],
+        [
+          "color-wb-as-shot",
+          1,
+          "settled",
+          "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+          false
+        ],
+        [
+          "color-wb-presets",
+          0,
+          "interactive",
+          "e112050dfde6f5b1c083ba2b9e72fefb653cda116b52110f6b409500e2c62078",
+          true
+        ],
+        [
+          "color-wb-presets",
+          0,
+          "settled",
+          "9d989c35e1918e5396bbadc5e8b49444a7aa6918ecd9dc8dd36b78ef2e97383e",
+          false
+        ],
+        [
+          "color-wb-presets",
+          1,
+          "interactive",
+          "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935",
+          false
+        ],
+        [
+          "color-wb-presets",
+          1,
+          "settled",
+          "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935",
+          false
+        ],
+        [
+          "curve-channels",
+          0,
+          "interactive",
+          "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+          true
+        ],
+        [
+          "curve-channels",
+          0,
+          "settled",
+          "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+          false
+        ],
+        [
+          "curve-channels",
+          1,
+          "interactive",
+          "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+          true
+        ],
+        [
+          "curve-channels",
+          1,
+          "settled",
+          "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+          false
+        ],
+        [
+          "curve-mask-curve",
+          0,
+          "interactive",
+          "34ed8ec91785d544b245b9f8383e6f4e5ab911ab8073ad91d5f1dff84dfbbca6",
+          true
+        ],
+        [
+          "curve-mask-curve",
+          0,
+          "settled",
+          "18465cb858d617626e8d806ce9f80e570a61dcad2f62ac191e04f56818f73aca",
+          false
+        ],
+        [
+          "curve-mask-curve",
+          1,
+          "interactive",
+          "d4137b9d22bd896f74ddc9204f0340b67d87603e95d467d28b5426edfdafb1a6",
+          true
+        ],
+        [
+          "curve-mask-curve",
+          1,
+          "settled",
+          "b48db4a80c57e6b5310542cdf7c8877f4b7af32d28b4784efc2327e1a9ea4a04",
+          false
+        ],
+        [
+          "curve-point",
+          0,
+          "interactive",
+          "f30cde6013c07331df7029e9094928745c26637d8e6e9e3bda6ca1b77ec6b12e",
+          true
+        ],
+        [
+          "curve-point",
+          0,
+          "settled",
+          "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+          false
+        ],
+        [
+          "curve-point",
+          1,
+          "interactive",
+          "e8b6d9affd10e94541b3a48827da77ef386bf6fc9eb9fbaa25709978b4ea6c1e",
+          true
+        ],
+        [
+          "curve-point",
+          1,
+          "settled",
+          "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d",
+          false
+        ],
+        [
+          "detail-mask-noise",
+          0,
+          "interactive",
+          "b85b6c94ea6f40103e91bbf7f906dfb672579a4f240fce8608c4388f5f802ae6",
+          true
+        ],
+        [
+          "detail-mask-noise",
+          0,
+          "settled",
+          "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+          false
+        ],
+        [
+          "detail-mask-noise",
+          1,
+          "interactive",
+          "4e0434b922d4507b321f69b401f0541bff5e6e51760b3c6ed2e47f683898964f",
+          true
+        ],
+        [
+          "detail-mask-noise",
+          1,
+          "settled",
+          "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+          false
+        ],
+        [
+          "detail-mask-preview",
+          0,
+          "interactive",
+          "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910",
+          true
+        ],
+        [
+          "detail-mask-preview",
+          0,
+          "settled",
+          "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          false
+        ],
+        [
+          "detail-mask-preview",
+          1,
+          "interactive",
+          "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903",
+          true
+        ],
+        [
+          "detail-mask-preview",
+          1,
+          "settled",
+          "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          false
+        ],
+        [
+          "detail-mask-sharpness",
+          0,
+          "interactive",
+          "1c212e478007152ca9a6bc9eab4c911f66493b839e008d60cb9ab02df2bedc34",
+          true
+        ],
+        [
+          "detail-mask-sharpness",
+          0,
+          "settled",
+          "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+          false
+        ],
+        [
+          "detail-mask-sharpness",
+          1,
+          "interactive",
+          "758030409450cca2fab332f4ab7944ac83ef8ec12dd8d33824c03e43e5878303",
+          true
+        ],
+        [
+          "detail-mask-sharpness",
+          1,
+          "settled",
+          "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+          false
+        ],
+        [
+          "detail-nr-color-detail",
+          0,
+          "interactive",
+          "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+          true
+        ],
+        [
+          "detail-nr-color-detail",
+          0,
+          "settled",
+          "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          false
+        ],
+        [
+          "detail-nr-color-detail",
+          1,
+          "interactive",
+          "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+          true
+        ],
+        [
+          "detail-nr-color-detail",
+          1,
+          "settled",
+          "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          false
+        ],
+        [
+          "detail-nr-lum-contrast",
+          0,
+          "interactive",
+          "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+          true
+        ],
+        [
+          "detail-nr-lum-contrast",
+          0,
+          "settled",
+          "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          false
+        ],
+        [
+          "detail-nr-lum-contrast",
+          1,
+          "interactive",
+          "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+          true
+        ],
+        [
+          "detail-nr-lum-contrast",
+          1,
+          "settled",
+          "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+          false
+        ],
+        [
+          "effects-dehaze",
+          0,
+          "interactive",
+          "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+          true
+        ],
+        [
+          "effects-dehaze",
+          0,
+          "settled",
+          "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+          false
+        ],
+        [
+          "effects-dehaze",
+          1,
+          "interactive",
+          "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+          true
+        ],
+        [
+          "effects-dehaze",
+          1,
+          "settled",
+          "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+          false
+        ],
+        [
+          "effects-mask-clarity",
+          0,
+          "interactive",
+          "e04549b6232a5d2db4d0b26d638276b1098047af247a8966942256f79bcbc501",
+          true
+        ],
+        [
+          "effects-mask-clarity",
+          0,
+          "settled",
+          "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+          false
+        ],
+        [
+          "effects-mask-clarity",
+          1,
+          "interactive",
+          "676595d9e0ec62bcad9704b78ab8cd28381dc08046d9a46f329e8ec03306048b",
+          true
+        ],
+        [
+          "effects-mask-clarity",
+          1,
+          "settled",
+          "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+          false
+        ],
+        [
+          "effects-mask-grain",
+          0,
+          "interactive",
+          "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+          true
+        ],
+        [
+          "effects-mask-grain",
+          0,
+          "settled",
+          "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+          false
+        ],
+        [
+          "effects-mask-grain",
+          1,
+          "interactive",
+          "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+          true
+        ],
+        [
+          "effects-mask-grain",
+          1,
+          "settled",
+          "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          false
+        ],
+        [
+          "effects-mask-texture",
+          0,
+          "interactive",
+          "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+          true
+        ],
+        [
+          "effects-mask-texture",
+          0,
+          "settled",
+          "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+          false
+        ],
+        [
+          "effects-mask-texture",
+          1,
+          "interactive",
+          "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+          true
+        ],
+        [
+          "effects-mask-texture",
+          1,
+          "settled",
+          "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+          false
+        ],
+        [
+          "effects-pcv-style",
+          0,
+          "interactive",
+          "48e083824b251781703ae78fe01fb5401ccfb6f8c5ff6eb4b68dfed8bedcf2d1",
+          true
+        ],
+        [
+          "effects-pcv-style",
+          0,
+          "settled",
+          "c9cbaef9ab8ab8d2dec552ff179be974ef88a2ffb28db5bfb68cea03bc69a860",
+          false
+        ],
+        [
+          "effects-pcv-style",
+          1,
+          "interactive",
+          "88ff0f28d3aca6453536ff6f8547467575399f288c1134bcc61283c2eeb636aa",
+          true
+        ],
+        [
+          "effects-pcv-style",
+          1,
+          "settled",
+          "651b0f68ba8fdccea3f161bfce6c8ef8f7b1c8040df1fa566351af589feadc37",
+          false
+        ],
+        [
+          "grading-balance",
+          0,
+          "interactive",
+          "135d40d3f71f0415e28a6375264e1ff5ca38fb51207862c90dacfb1f739bf114",
+          true
+        ],
+        [
+          "grading-balance",
+          0,
+          "settled",
+          "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+          false
+        ],
+        [
+          "grading-balance",
+          1,
+          "interactive",
+          "5aa26119967b1642b1ca28ed6729fb7c1e9b567532f0599aa9af1fc7f46f7420",
+          true
+        ],
+        [
+          "grading-balance",
+          1,
+          "settled",
+          "5f9f15423060039570f792ef80332f8f0dd0625780315dfc9a7a3c3ef5ee0679",
+          false
+        ],
+        [
+          "grading-blending",
+          0,
+          "interactive",
+          "4de64ab92c29011f2c6905072745e86da74b0d1afcf56365f11b54e6750565c9",
+          true
+        ],
+        [
+          "grading-blending",
+          0,
+          "settled",
+          "0f61f41087dbc51bbdd6391bfd47c3ee08abb486dbe155910acd5fd513d731b1",
+          false
+        ],
+        [
+          "grading-blending",
+          1,
+          "interactive",
+          "efa6826cba090856af00b680d1b1d8206f19e632e9208f8bd601674ebc19c17d",
+          true
+        ],
+        [
+          "grading-blending",
+          1,
+          "settled",
+          "2a9c9bfcbc3db28f1a4049c7c4f7f7626da31f80253fab9530e8740100f4ef8f",
+          false
+        ],
+        [
+          "grading-luminance",
+          0,
+          "interactive",
+          "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+          false
+        ],
+        [
+          "grading-luminance",
+          0,
+          "settled",
+          "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+          false
+        ],
+        [
+          "grading-luminance",
+          1,
+          "interactive",
+          "68c95ee57c840bdecdc86769051e6c9300aa1f202c7dfb0a2f82b5759383296b",
+          true
+        ],
+        [
+          "grading-luminance",
+          1,
+          "settled",
+          "6b778991d2fcbd0d921b50e32ff86b20f055c3f8688616d9629052d739ae20ab",
+          false
+        ],
+        [
+          "grading-lut-amount",
+          0,
+          "interactive",
+          "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+          true
+        ],
+        [
+          "grading-lut-amount",
+          0,
+          "settled",
+          "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+          false
+        ],
+        [
+          "grading-lut-amount",
+          1,
+          "interactive",
+          "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+          true
+        ],
+        [
+          "grading-lut-amount",
+          1,
+          "settled",
+          "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+          false
+        ],
+        [
+          "grading-lut-manage",
+          0,
+          "interactive",
+          "d8a055f6aa1374adbc1e4fd6d671d6da3adffeb9061b711503288b4c97be74c2",
+          true
+        ],
+        [
+          "grading-lut-manage",
+          0,
+          "settled",
+          "8b4dc9bcae84745879cbaf0d4133f12e75a7818e5609d917de633275845082a4",
+          false
+        ],
+        [
+          "grading-lut-manage",
+          1,
+          "interactive",
+          "b5fafbeb0e88704211a0687d28670861271c1eb2a25648e4befe4731d4228988",
+          true
+        ],
+        [
+          "grading-lut-manage",
+          1,
+          "settled",
+          "835ff3b2a419072fae5724de3da98f68e25338d55cc370ff13c5830cb3233e60",
+          false
+        ],
+        [
+          "grading-lut-mask",
+          0,
+          "interactive",
+          "b080930e81a9f8db775d6f4b9c47fde5f909fcde00e9a43e585e98108072ab79",
+          true
+        ],
+        [
+          "grading-lut-mask",
+          0,
+          "settled",
+          "58aacf234086a8d60560b3d87d45219391017bf387a85691b217e6ba7d9fb0e3",
+          false
+        ],
+        [
+          "grading-lut-mask",
+          1,
+          "interactive",
+          "66afed5008c7c5b2957b98770066bc18159ec2e7ff4c6975ad0a2317a6ad964b",
+          true
+        ],
+        [
+          "grading-lut-mask",
+          1,
+          "settled",
+          "4b8692ec4e976a902f5080c132d3589faa5933a5b0e53e0fea594ba07e5e73a6",
+          false
+        ],
+        [
+          "grading-lut-select",
+          0,
+          "interactive",
+          "f684905965df4069f5d975dda625940ab2cd1e10e61b422b5f29eefb436f5942",
+          true
+        ],
+        [
+          "grading-lut-select",
+          0,
+          "settled",
+          "3b4f112ea1b7fb9d8d54dd93672c061f7eaeaf800a70a5e5c4a990a0779863c3",
+          false
+        ],
+        [
+          "grading-lut-select",
+          1,
+          "interactive",
+          "06b75b284577c0ef48862feca7150edbdb1b99d9c6bb9e095499a29fd7e01467",
+          true
+        ],
+        [
+          "grading-lut-select",
+          1,
+          "settled",
+          "66a21ff0a83b4989a30e82ccb141b56baa5b7f0af3ba1bccde7976ef5a73ccf8",
+          false
+        ],
+        [
+          "grading-lut-stack",
+          0,
+          "interactive",
+          "8b4dc9bcae84745879cbaf0d4133f12e75a7818e5609d917de633275845082a4",
+          false
+        ],
+        [
+          "grading-lut-stack",
+          0,
+          "settled",
+          "8b4dc9bcae84745879cbaf0d4133f12e75a7818e5609d917de633275845082a4",
+          false
+        ],
+        [
+          "grading-lut-stack",
+          1,
+          "interactive",
+          "212536a2c925fbec3fc54d7d621044bca245c4ef55277c87e4350fd16f0d2032",
+          true
+        ],
+        [
+          "grading-lut-stack",
+          1,
+          "settled",
+          "19f741f92db4d27cbfcea6e84acf9120b11abd245eaf4e6529e4c8cb6dcbcb27",
+          false
+        ],
+        [
+          "grading-mask-wheels",
+          0,
+          "interactive",
+          "775a93a3ae67c93c7dea964c61009896e541901994ab4103183d297c8a192825",
+          true
+        ],
+        [
+          "grading-mask-wheels",
+          0,
+          "settled",
+          "ed78c1380cba50b67f3190f152de9a35a083914c296a8a2b2f95e36e7f91752a",
+          false
+        ],
+        [
+          "grading-mask-wheels",
+          1,
+          "interactive",
+          "1a6a9b4304d1f2944a42f2da0dc4cf088d0a3b7e7752bdee2abda8d4c133a30c",
+          true
+        ],
+        [
+          "grading-mask-wheels",
+          1,
+          "settled",
+          "2b70b02dd5befdffec6c77b1a9a5089dbc80010ced30af425359f4567abf0725",
+          false
+        ],
+        [
+          "light-clipping-indicators",
+          0,
+          "interactive",
+          "b9846fcb1b2ef40b092a350b828aeaa660091102a4f5c48fc44654814ae2885f",
+          true
+        ],
+        [
+          "light-clipping-indicators",
+          0,
+          "settled",
+          "59c350ad780ebeacf6ae3087c4a6f66374f8b8e6273531464cbe5928067ee696",
+          false
+        ],
+        [
+          "light-clipping-indicators",
+          1,
+          "interactive",
+          "b3fd38ec45bc3f0381ea4e0d6b6559e9cae60b8abc8d4a6ac97e4a8c4b1b5e75",
+          true
+        ],
+        [
+          "light-clipping-indicators",
+          1,
+          "settled",
+          "dae12aa2472582fdfe3fbb5025d97ada0d90bf4225fb348cd4c5e3e04d21d0a0",
+          false
+        ],
+        [
+          "light-clipping-modifier",
+          0,
+          "interactive",
+          "59c350ad780ebeacf6ae3087c4a6f66374f8b8e6273531464cbe5928067ee696",
+          false
+        ],
+        [
+          "light-clipping-modifier",
+          0,
+          "settled",
+          "59c350ad780ebeacf6ae3087c4a6f66374f8b8e6273531464cbe5928067ee696",
+          false
+        ],
+        [
+          "light-clipping-modifier",
+          1,
+          "interactive",
+          "b3fd38ec45bc3f0381ea4e0d6b6559e9cae60b8abc8d4a6ac97e4a8c4b1b5e75",
+          true
+        ],
+        [
+          "light-clipping-modifier",
+          1,
+          "settled",
+          "aac61529676a33077a13d147315105838074b3d3bac764991656bac46780d00e",
+          false
+        ],
+        [
+          "light-mask-blacks",
+          0,
+          "interactive",
+          "76e24704575c9d93ec69247b1bae809d3b59a3f6e9f8629d6d75204afade621a",
+          true
+        ],
+        [
+          "light-mask-blacks",
+          0,
+          "settled",
+          "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+          false
+        ],
+        [
+          "light-mask-blacks",
+          1,
+          "interactive",
+          "d952a92e45e80be8f0c4769bdd121ef1d2c488595c3a865246cc8339e4d5dd5f",
+          true
+        ],
+        [
+          "light-mask-blacks",
+          1,
+          "settled",
+          "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+          false
+        ],
+        [
+          "light-mask-contrast",
+          0,
+          "interactive",
+          "e2b3395abf7ab9eccb29d0034ac93492b925afee87a1cb3ace306584ba127a42",
+          true
+        ],
+        [
+          "light-mask-contrast",
+          0,
+          "settled",
+          "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+          false
+        ],
+        [
+          "light-mask-contrast",
+          1,
+          "interactive",
+          "976fe7649c0e676d36be9f0542e2c6242e1e3fb83df95fdaca6ec62f7229e63d",
+          true
+        ],
+        [
+          "light-mask-contrast",
+          1,
+          "settled",
+          "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+          false
+        ],
+        [
+          "light-mask-exposure",
+          0,
+          "interactive",
+          "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+          true
+        ],
+        [
+          "light-mask-exposure",
+          0,
+          "settled",
+          "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          false
+        ],
+        [
+          "light-mask-exposure",
+          1,
+          "interactive",
+          "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+          true
+        ],
+        [
+          "light-mask-exposure",
+          1,
+          "settled",
+          "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          false
+        ],
+        [
+          "light-mask-highlights",
+          0,
+          "interactive",
+          "d55695f194f84acda13eb3c690aad5a32c86835c41c7cf41be64de087c09798c",
+          true
+        ],
+        [
+          "light-mask-highlights",
+          0,
+          "settled",
+          "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+          false
+        ],
+        [
+          "light-mask-highlights",
+          1,
+          "interactive",
+          "864b86ff5b7f4d1fcd41d8681aa8a092ff0b38086380616b94215f1d11ec8494",
+          true
+        ],
+        [
+          "light-mask-highlights",
+          1,
+          "settled",
+          "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+          false
+        ],
+        [
+          "light-mask-shadows",
+          0,
+          "interactive",
+          "f48fbc3786dc731e086b209e200efdeccc29b83407a5895268132e24795747b3",
+          true
+        ],
+        [
+          "light-mask-shadows",
+          0,
+          "settled",
+          "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+          false
+        ],
+        [
+          "light-mask-shadows",
+          1,
+          "interactive",
+          "ebf2e0e7b8602699fe1493b930ce40becdd2535ad5b71bafaa25e7baed9c94fa",
+          true
+        ],
+        [
+          "light-mask-shadows",
+          1,
+          "settled",
+          "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+          false
+        ],
+        [
+          "light-mask-whites",
+          0,
+          "interactive",
+          "770bf176f126c88c8933b6f346b21cf5c3614ef1c874b62c899b91031df530f9",
+          true
+        ],
+        [
+          "light-mask-whites",
+          0,
+          "settled",
+          "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+          false
+        ],
+        [
+          "light-mask-whites",
+          1,
+          "interactive",
+          "1214c1c8f330ee128c9538c0c830318b2a982338938ed6923a6b987d5038e8ce",
+          true
+        ],
+        [
+          "light-mask-whites",
+          1,
+          "settled",
+          "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+          false
+        ]
+      ]
+    },
+    "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": {
+      "fields": [
+        "control",
+        "state",
+        "quality",
+        "rgba8SHA256",
+        "approximate"
+      ],
+      "completeRGBA8Readback": [
+        [
+          "detail-mask-noise",
+          0,
+          "interactive",
+          "490c3e4ecfe2ee9556e5ce59dda995791295ab802c28f3066281f6d6b6769a25",
+          true
+        ],
+        [
+          "detail-mask-noise",
+          0,
+          "settled",
+          "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+          false
+        ],
+        [
+          "detail-mask-noise",
+          1,
+          "interactive",
+          "4b25f1aeef398fc578c2594a76bcf9be5090106fda91ee5ff3ab88edfff6c7c9",
+          true
+        ],
+        [
+          "detail-mask-noise",
+          1,
+          "settled",
+          "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+          false
+        ],
+        [
+          "detail-mask-sharpness",
+          0,
+          "interactive",
+          "04153ac9191edb4a5576d08704477aa7bcdf921060fd1907c0b33ab941c44915",
+          true
+        ],
+        [
+          "detail-mask-sharpness",
+          0,
+          "settled",
+          "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+          false
+        ],
+        [
+          "detail-mask-sharpness",
+          1,
+          "interactive",
+          "75e92f5bbca0145e9ca89e32e31ded7259198dbbef159a64ed2fb79e9c06c4f5",
+          true
+        ],
+        [
+          "detail-mask-sharpness",
+          1,
+          "settled",
+          "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+          false
+        ]
+      ]
+    }
+  },
+  "endToEndAgainstLightFlow": {
+    "protocol": "paired-photo-operators-v2",
+    "boundary": "From the interactive recipe input to the first visible, first exact and final complete display readback. Previous validated LightFlow 2d41ab1 frames on the same Mac are paired with the current default native Release test. Each of the 37 controls has two first visits, six unscored warmups and 30 measured warm samples.",
+    "nativeReleaseTestSHA256": "fd9f5753bbb59d3add7ff183bb75a531873ad8b82977d039d1b4bfdf75fbbf81",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "manifestSHA256": "1ecab2311dfc3efc94d698aeff939708d5dd17c564a0e87c62712004c58ab4d4",
+    "nativeReportSHA256": "f478d4550561964afcefd56f9122345d475eb8f893d1e4560000821be50db31c",
+    "previousNativeReportSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda",
+    "lightflowReportSHA256": "dbc4f77013b813a9b62e2d024b0ae1fe9d6839d4b02ffdf007f67e280fc608fa",
+    "validatedComparisonSHA256": "d59364197e99d8da8eadeae32af879c746c9b1300360417417cbcb654fd5ea10",
+    "matchingNativeCompleteRGBA8PairsAgainstPreviousBuild": {
+      "samples": 1184,
+      "warmupSamples": 222
+    },
+    "initial": {
+      "RAWMaster": {
+        "first": {
+          "n": 74,
+          "p50Ms": 5.9154585,
+          "p95Ms": 19.268167
+        },
+        "firstExact": {
+          "n": 74,
+          "p50Ms": 71.7847495,
+          "p95Ms": 310.702541
+        },
+        "final": {
+          "n": 74,
+          "p50Ms": 71.7847495,
+          "p95Ms": 310.702541
+        }
+      },
+      "LightFlow": {
+        "first": {
+          "n": 74,
+          "p50Ms": 8.9175,
+          "p95Ms": 22.715
+        },
+        "firstExact": {
+          "n": 74,
+          "p50Ms": 9.515,
+          "p95Ms": 58.97
+        },
+        "final": {
+          "n": 74,
+          "p50Ms": 22.145,
+          "p95Ms": 58.97
+        }
+      }
+    },
+    "initialByControl": {
+      "color-wb-presets": {
+        "RAWMaster": {
+          "first": [
+            5.475375,
+            1.2025
+          ],
+          "firstExact": [
+            37.927917,
+            1.2025
+          ],
+          "final": [
+            37.927917,
+            1.724208
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            6.535,
+            7.19
+          ],
+          "firstExact": [
+            6.535,
+            7.19
+          ],
+          "final": [
+            11.995,
+            19.345
+          ]
+        }
+      },
+      "color-wb-as-shot": {
+        "RAWMaster": {
+          "first": [
+            6.992209,
+            2.2195
+          ],
+          "firstExact": [
+            45.2845,
+            23.261834
+          ],
+          "final": [
+            45.2845,
+            23.261834
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            4.225,
+            7.635
+          ],
+          "firstExact": [
+            4.225,
+            7.635
+          ],
+          "final": [
+            20.605,
+            21.645
+          ]
+        }
+      },
+      "color-bw-treatment": {
+        "RAWMaster": {
+          "first": [
+            108.432875,
+            4.33075
+          ],
+          "firstExact": [
+            232.320792,
+            53.841083
+          ],
+          "final": [
+            232.320792,
+            53.841083
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            5.375,
+            6.315
+          ],
+          "firstExact": [
+            5.375,
+            6.315
+          ],
+          "final": [
+            19.9,
+            21.425
+          ]
+        }
+      },
+      "effects-pcv-style": {
+        "RAWMaster": {
+          "first": [
+            3.628084,
+            2.996375
+          ],
+          "firstExact": [
+            69.792917,
+            52.104917
+          ],
+          "final": [
+            69.792917,
+            52.104917
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            13.865,
+            7.97
+          ],
+          "firstExact": [
+            13.865,
+            7.97
+          ],
+          "final": [
+            20.05,
+            23.34
+          ]
+        }
+      },
+      "effects-dehaze": {
+        "RAWMaster": {
+          "first": [
+            16.74675,
+            13.812583
+          ],
+          "firstExact": [
+            933.813542,
+            271.057917
+          ],
+          "final": [
+            933.813542,
+            271.057917
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            16.725,
+            5.89
+          ],
+          "firstExact": [
+            16.725,
+            5.89
+          ],
+          "final": [
+            23.385,
+            23.005
+          ]
+        }
+      },
+      "curve-point": {
+        "RAWMaster": {
+          "first": [
+            5.21325,
+            4.262875
+          ],
+          "firstExact": [
+            71.558666,
+            60.728333
+          ],
+          "final": [
+            71.558666,
+            60.728333
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            11.53,
+            6.295
+          ],
+          "firstExact": [
+            11.53,
+            6.295
+          ],
+          "final": [
+            19.71,
+            22.585
+          ]
+        }
+      },
+      "curve-channels": {
+        "RAWMaster": {
+          "first": [
+            6.01175,
+            4.007916
+          ],
+          "firstExact": [
+            65.453125,
+            59.9245
+          ],
+          "final": [
+            65.453125,
+            59.9245
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            7.025,
+            6.115
+          ],
+          "firstExact": [
+            7.025,
+            6.115
+          ],
+          "final": [
+            20.99,
+            21.77
+          ]
+        }
+      },
+      "curve-mask-curve": {
+        "RAWMaster": {
+          "first": [
+            8.250833,
+            6.870709
+          ],
+          "firstExact": [
+            127.976583,
+            147.847709
+          ],
+          "final": [
+            127.976583,
+            147.847709
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            17.88,
+            6.315
+          ],
+          "firstExact": [
+            17.88,
+            6.315
+          ],
+          "final": [
+            24.68,
+            20.165
+          ]
+        }
+      },
+      "grading-luminance": {
+        "RAWMaster": {
+          "first": [
+            0.963375,
+            4.368333
+          ],
+          "firstExact": [
+            0.963375,
+            58.230333
+          ],
+          "final": [
+            1.445792,
+            58.230333
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            23.59,
+            17.635
+          ],
+          "firstExact": [
+            23.59,
+            17.635
+          ],
+          "final": [
+            29.075,
+            22.855
+          ]
+        }
+      },
+      "grading-blending": {
+        "RAWMaster": {
+          "first": [
+            4.253917,
+            4.167083
+          ],
+          "firstExact": [
+            57.558417,
+            51.622833
+          ],
+          "final": [
+            57.558417,
+            51.622833
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            16.86,
+            15.65
+          ],
+          "firstExact": [
+            24.975,
+            22.28
+          ],
+          "final": [
+            24.975,
+            22.28
+          ]
+        }
+      },
+      "grading-balance": {
+        "RAWMaster": {
+          "first": [
+            5.736458,
+            4.0655
+          ],
+          "firstExact": [
+            77.595167,
+            50.392833
+          ],
+          "final": [
+            77.595167,
+            50.392833
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            17.51,
+            17.655
+          ],
+          "firstExact": [
+            22.515,
+            24.925
+          ],
+          "final": [
+            22.515,
+            24.925
+          ]
+        }
+      },
+      "detail-nr-lum-contrast": {
+        "RAWMaster": {
+          "first": [
+            11.816625,
+            9.28
+          ],
+          "firstExact": [
+            300.591667,
+            295.932959
+          ],
+          "final": [
+            300.591667,
+            295.932959
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            14.37,
+            6.535
+          ],
+          "firstExact": [
+            58.56,
+            59.275
+          ],
+          "final": [
+            58.56,
+            59.275
+          ]
+        }
+      },
+      "detail-nr-color-detail": {
+        "RAWMaster": {
+          "first": [
+            13.025208,
+            9.486875
+          ],
+          "firstExact": [
+            271.277667,
+            284.065667
+          ],
+          "final": [
+            271.277667,
+            284.065667
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            13.575,
+            5.095
+          ],
+          "firstExact": [
+            59.415,
+            58.26
+          ],
+          "final": [
+            59.415,
+            58.26
+          ]
+        }
+      },
+      "grading-lut-select": {
+        "RAWMaster": {
+          "first": [
+            4.800208,
+            4.111375
+          ],
+          "firstExact": [
+            66.784208,
+            60.61225
+          ],
+          "final": [
+            66.784208,
+            60.61225
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            18.34,
+            8.47
+          ],
+          "firstExact": [
+            18.34,
+            8.47
+          ],
+          "final": [
+            26.89,
+            24.96
+          ]
+        }
+      },
+      "grading-lut-amount": {
+        "RAWMaster": {
+          "first": [
+            6.479542,
+            3.917667
+          ],
+          "firstExact": [
+            57.56475,
+            49.893625
+          ],
+          "final": [
+            57.56475,
+            49.893625
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            11.56,
+            8.54
+          ],
+          "firstExact": [
+            11.56,
+            8.54
+          ],
+          "final": [
+            21.565,
+            25.94
+          ]
+        }
+      },
+      "grading-lut-stack": {
+        "RAWMaster": {
+          "first": [
+            1.065375,
+            8.559958
+          ],
+          "firstExact": [
+            1.065375,
+            133.123833
+          ],
+          "final": [
+            1.572667,
+            133.123833
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            11.51,
+            8.665
+          ],
+          "firstExact": [
+            11.51,
+            8.665
+          ],
+          "final": [
+            20.72,
+            27.16
+          ]
+        }
+      },
+      "grading-lut-manage": {
+        "RAWMaster": {
+          "first": [
+            6.847583,
+            5.819167
+          ],
+          "firstExact": [
+            99.604583,
+            111.677625
+          ],
+          "final": [
+            99.604583,
+            111.677625
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            4.365,
+            14.565
+          ],
+          "firstExact": [
+            4.365,
+            14.565
+          ],
+          "final": [
+            19.435,
+            28.24
+          ]
+        }
+      },
+      "grading-lut-mask": {
+        "RAWMaster": {
+          "first": [
+            6.933875,
+            7.475083
+          ],
+          "firstExact": [
+            126.633667,
+            134.033625
+          ],
+          "final": [
+            126.633667,
+            134.033625
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            15.855,
+            8.97
+          ],
+          "firstExact": [
+            15.855,
+            8.97
+          ],
+          "final": [
+            24.775,
+            23.2
+          ]
+        }
+      },
+      "light-mask-exposure": {
+        "RAWMaster": {
+          "first": [
+            4.423041,
+            4.437875
+          ],
+          "firstExact": [
+            72.010833,
+            83.294834
+          ],
+          "final": [
+            72.010833,
+            83.294834
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            9.26,
+            5.895
+          ],
+          "firstExact": [
+            9.26,
+            5.895
+          ],
+          "final": [
+            21.935,
+            21.3
+          ]
+        }
+      },
+      "light-mask-contrast": {
+        "RAWMaster": {
+          "first": [
+            4.150209,
+            3.838209
+          ],
+          "firstExact": [
+            61.632375,
+            55.781
+          ],
+          "final": [
+            61.632375,
+            55.781
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            14.355,
+            6.135
+          ],
+          "firstExact": [
+            14.355,
+            6.135
+          ],
+          "final": [
+            23.915,
+            22.975
+          ]
+        }
+      },
+      "light-mask-highlights": {
+        "RAWMaster": {
+          "first": [
+            4.560584,
+            3.895625
+          ],
+          "firstExact": [
+            56.749917,
+            50.362708
+          ],
+          "final": [
+            56.749917,
+            50.362708
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            13.885,
+            6.265
+          ],
+          "firstExact": [
+            13.885,
+            6.265
+          ],
+          "final": [
+            20.925,
+            21.57
+          ]
+        }
+      },
+      "light-mask-shadows": {
+        "RAWMaster": {
+          "first": [
+            4.407167,
+            4.200833
+          ],
+          "firstExact": [
+            58.718875,
+            49.868
+          ],
+          "final": [
+            58.718875,
+            49.868
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            9.2,
+            6
+          ],
+          "firstExact": [
+            9.2,
+            6
+          ],
+          "final": [
+            19.505,
+            22.24
+          ]
+        }
+      },
+      "light-mask-whites": {
+        "RAWMaster": {
+          "first": [
+            4.064291,
+            3.971083
+          ],
+          "firstExact": [
+            56.198333,
+            50.799291
+          ],
+          "final": [
+            56.198333,
+            50.799291
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            8.585,
+            5.67
+          ],
+          "firstExact": [
+            8.585,
+            5.67
+          ],
+          "final": [
+            19.75,
+            21.73
+          ]
+        }
+      },
+      "light-mask-blacks": {
+        "RAWMaster": {
+          "first": [
+            6.777708,
+            3.898958
+          ],
+          "firstExact": [
+            67.703625,
+            57.141
+          ],
+          "final": [
+            67.703625,
+            57.141
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            8.725,
+            6.085
+          ],
+          "firstExact": [
+            8.725,
+            6.085
+          ],
+          "final": [
+            18.7,
+            22.555
+          ]
+        }
+      },
+      "color-mask-temp": {
+        "RAWMaster": {
+          "first": [
+            7.532583,
+            6.779833
+          ],
+          "firstExact": [
+            129.085583,
+            117.593167
+          ],
+          "final": [
+            129.085583,
+            117.593167
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            10.325,
+            5.99
+          ],
+          "firstExact": [
+            10.325,
+            5.99
+          ],
+          "final": [
+            18.895,
+            20.055
+          ]
+        }
+      },
+      "color-mask-tint": {
+        "RAWMaster": {
+          "first": [
+            7.256292,
+            6.81525
+          ],
+          "firstExact": [
+            153.573417,
+            128.751916
+          ],
+          "final": [
+            153.573417,
+            128.751916
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            8.865,
+            5.69
+          ],
+          "firstExact": [
+            8.865,
+            5.69
+          ],
+          "final": [
+            18.975,
+            20.835
+          ]
+        }
+      },
+      "color-mask-hue": {
+        "RAWMaster": {
+          "first": [
+            5.160708,
+            4.072333
+          ],
+          "firstExact": [
+            59.5725,
+            57.425417
+          ],
+          "final": [
+            59.5725,
+            57.425417
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            11.845,
+            11.655
+          ],
+          "firstExact": [
+            11.845,
+            11.655
+          ],
+          "final": [
+            18.28,
+            20.55
+          ]
+        }
+      },
+      "color-mask-saturation": {
+        "RAWMaster": {
+          "first": [
+            4.184375,
+            3.852917
+          ],
+          "firstExact": [
+            57.6915,
+            49.651084
+          ],
+          "final": [
+            57.6915,
+            49.651084
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            11.11,
+            5.855
+          ],
+          "firstExact": [
+            11.11,
+            5.855
+          ],
+          "final": [
+            18.77,
+            22.585
+          ]
+        }
+      },
+      "effects-mask-texture": {
+        "RAWMaster": {
+          "first": [
+            12.974125,
+            12.438
+          ],
+          "firstExact": [
+            283.859125,
+            287.834458
+          ],
+          "final": [
+            283.859125,
+            287.834458
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            23.395,
+            7.6
+          ],
+          "firstExact": [
+            23.395,
+            7.6
+          ],
+          "final": [
+            36.94,
+            16.785
+          ]
+        }
+      },
+      "effects-mask-clarity": {
+        "RAWMaster": {
+          "first": [
+            15.861834,
+            10.702208
+          ],
+          "firstExact": [
+            295.972709,
+            310.702541
+          ],
+          "final": [
+            295.972709,
+            310.702541
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            10.08,
+            5.85
+          ],
+          "firstExact": [
+            10.08,
+            5.85
+          ],
+          "final": [
+            19.63,
+            22.05
+          ]
+        }
+      },
+      "effects-mask-grain": {
+        "RAWMaster": {
+          "first": [
+            10.961792,
+            6.496333
+          ],
+          "firstExact": [
+            307.02325,
+            291.373708
+          ],
+          "final": [
+            307.02325,
+            291.373708
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            10.415,
+            6.78
+          ],
+          "firstExact": [
+            10.415,
+            6.78
+          ],
+          "final": [
+            18.855,
+            20.625
+          ]
+        }
+      },
+      "grading-mask-wheels": {
+        "RAWMaster": {
+          "first": [
+            6.691292,
+            7.926041
+          ],
+          "firstExact": [
+            131.731,
+            117.557458
+          ],
+          "final": [
+            131.731,
+            117.557458
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            22.715,
+            18.695
+          ],
+          "firstExact": [
+            22.715,
+            18.695
+          ],
+          "final": [
+            28.615,
+            23.98
+          ]
+        }
+      },
+      "detail-mask-sharpness": {
+        "RAWMaster": {
+          "first": [
+            25.63325,
+            19.268167
+          ],
+          "firstExact": [
+            212.751,
+            204.383417
+          ],
+          "final": [
+            212.751,
+            204.383417
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            12.06,
+            4.525
+          ],
+          "firstExact": [
+            29.915,
+            24.06
+          ],
+          "final": [
+            29.915,
+            24.06
+          ]
+        }
+      },
+      "detail-mask-noise": {
+        "RAWMaster": {
+          "first": [
+            9.284667,
+            10.1435
+          ],
+          "firstExact": [
+            415.977333,
+            418.117584
+          ],
+          "final": [
+            415.977333,
+            418.117584
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            23.74,
+            12.315
+          ],
+          "firstExact": [
+            79.695,
+            58.97
+          ],
+          "final": [
+            79.695,
+            58.97
+          ]
+        }
+      },
+      "light-clipping-indicators": {
+        "RAWMaster": {
+          "first": [
+            5.112375,
+            6.038417
+          ],
+          "firstExact": [
+            62.373542,
+            97.844917
+          ],
+          "final": [
+            62.373542,
+            97.844917
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            9.77,
+            4.41
+          ],
+          "firstExact": [
+            9.77,
+            4.41
+          ],
+          "final": [
+            20.62,
+            21.02
+          ]
+        }
+      },
+      "light-clipping-modifier": {
+        "RAWMaster": {
+          "first": [
+            0.952916,
+            6.019958
+          ],
+          "firstExact": [
+            0.952916,
+            103.010583
+          ],
+          "final": [
+            1.412583,
+            103.010583
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            8.55,
+            4.585
+          ],
+          "firstExact": [
+            8.55,
+            4.585
+          ],
+          "final": [
+            17.9,
+            22.255
+          ]
+        }
+      },
+      "detail-mask-preview": {
+        "RAWMaster": {
+          "first": [
+            15.3,
+            78.070875
+          ],
+          "firstExact": [
+            192.247875,
+            241.986583
+          ],
+          "final": [
+            192.247875,
+            241.986583
+          ]
+        },
+        "LightFlow": {
+          "first": [
+            15.01,
+            13.87
+          ],
+          "firstExact": [
+            15.01,
+            13.87
+          ],
+          "final": [
+            26.79,
+            25.21
+          ]
+        }
+      }
+    },
+    "warmPassedAllPhases": 36,
+    "warmOutliers": {
+      "effects-mask-grain": {
+        "first": {
+          "LightFlow": {
+            "n": 30,
+            "medianMs": 4.407500000000001,
+            "p95Ms": 4.73
+          },
+          "RAWMaster": {
+            "n": 30,
+            "medianMs": 4.8258125,
+            "p95Ms": 7.474042
+          },
+          "medianLimit": 5.407500000000001,
+          "p95Limit": 6.73,
+          "within": false
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 30,
+            "medianMs": 4.407500000000001,
+            "p95Ms": 4.73
+          },
+          "RAWMaster": {
+            "n": 30,
+            "medianMs": 5.3940205,
+            "p95Ms": 7.99025
+          },
+          "medianLimit": 5.407500000000001,
+          "p95Limit": 6.73,
+          "within": false
+        }
+      }
+    }
+  }
+}

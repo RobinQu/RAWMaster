@@ -241,6 +241,14 @@ Release `20261128.163440` 已安装并复核严格签名、主程序及三个运
 
 37 项首次状态以相同 Release 阶段探针依次关、开、开、关复测上下文复用。每轮重新打开来源，74 个新状态各走一次交互和精确定稿。四轮交互与定稿的 148 个全幅 RGBA8 摘要逐项一致，两次开启各实际复用 43 次。每臂汇总 148 次定稿，p50/p95 从 80.75/406.20 ms 降至 63.06/398.08 ms，最高进程物理内存从 5.27 GB 升至 5.49 GB。默认启用限于既有的已验证横幅 RAW、原几何和点运算准入范围。每次清理上下文，最多使用八次，授权失效后清退。首次定稿仍超出 LightFlow 容差。局部锐化与降噪一次全域归约仍约 238–253 ms，之后显示位图约 136–145 ms。该轮正向去雾首次引导图约 592 ms。[逐状态与阶段样本](evidence/m0-cleared-context-cold-abba.json) · [复现探针](../../scripts/performance/run-settled-stage-profile.sh)
 
+后续每次只切换一个空间算子的传输，仍按关、开、开、关重开来源并比对完整显示摘要。局部降噪全宽分带将 60 MP 和 50 MP 的两档首次精确定稿 p50 分别从 403.34 和 372.92 ms 降到 221.77 和 221.96 ms。035 已记录同样 334 行分带会放行旧全域校验拒绝的零覆盖极值。当前补测的 21 组注入输入两路一致，旧反例的精确夹具缺失。本轮保留降噪分带试用。正向去雾候选两次冷定稿从 921.48 和 936.99 ms 变为 767.42 和 627.79 ms。其余慢态仍令整体 p95 高于外部门槛，半浮点最小值继续试用。[独立计时与像素](evidence/m0-canonical-spatial-stage-abba.json) · [035 极值原回执](../035-portable-processing-cores/evidence/native-local-detail-full-bands-study.json)
+
+局部锐化改用校验过的原生 R32F 均值。只在 M4 Max 的 9504×6336 或 8640×5760 原方向 FlashRaw 照片上，为 2400 主画布 canonical 定稿启用硬径向单层正锐化。以同一有效的 RGBA16F 源验证 RGB 有限和 α=1，均值逐组验证绝对值不超过 16。受约束的锐化、复合及中性尾段处于 Float32 有限范围。均值在提交、消费与交付前核对源和请求授权，预算不足时沿用原校验。共用的均值纹理额度为 256 MiB。撤销、丢弃旧源和容量上限的原生回归通过。[路径和数值域](../../Sources/RAWMasterImaging/PreviewNativeSharpenMean.swift) · [故障回归](../../Tests/RAWMasterImagingTests/NativeSharpenMeanTests.swift)
+
+同构建按显式关闭、默认、默认、显式关闭复测。四轮分别核对 60 MP 全矩阵的 148 个显示摘要和 50 MP 的 8 个摘要。默认臂每轮只在局部锐化的两个定稿状态实际运行均值。两张原片局部锐化 p50 分别为 418.39→187.87 ms 和 359.45→161.58 ms。60 MP 全矩阵 p50/p95 为 70.64/408.10→67.81/324.96 ms，每臂 148 个定稿，最高进程物理占用 5.47→5.87 GB。此处时钟从定稿请求到完整读回。普通视口按独立画布时钟验收。[原生默认分项与像素](evidence/m0-canonical-spatial-stage-abba.json)
+
+另按正式端到端时钟重跑 37 项，每项两次首态、六次预热和三十次暖测。两版 RAWMaster 的 1184 对正式帧和 222 对预热帧完整 RGBA8 摘要一致。74 次首态的交互输入到首个可见帧为 5.92/19.27 ms，同机 LightFlow 基线为 8.92/22.72 ms。输入到首次精确为 71.78/310.70 ms，LightFlow 为 9.52/58.97 ms，仍超出容差。暖态三项均通过 36/37，剩余局部颗粒的首个可见和首次精确 p95 分别为 7.47 与 7.99 ms，上限 6.73 ms。[同口径分项、逐状态和对照指纹](evidence/m0-canonical-spatial-stage-abba.json)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)

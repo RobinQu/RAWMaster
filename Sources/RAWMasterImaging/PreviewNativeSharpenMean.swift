@@ -14,8 +14,18 @@ final class PreviewNativeSharpenMean {
     let radius: Double
   }
 
-  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SHARPEN_MEAN"] == "1"
+  private static let previewOverride = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SHARPEN_MEAN"]
   private static let bandRows = 256
+
+  static func canonicalPlan(for parameters: DevelopmentAdjustmentsV3, size: CGSize, device: MTLDevice) -> Plan? {
+    guard previewOverride != "0", let plan = plan(for: parameters) else { return nil }
+    if previewOverride == "1" { return plan }
+    // The default covers the local operator's verified source and device sizes.
+    guard DevelopmentCanonicalFiniteGPU.enabled, case .layer = plan.target,
+          device.name == "Apple M4 Max",
+          size == CGSize(width: 9504, height: 6336) || size == CGSize(width: 8640, height: 5760) else { return nil }
+    return plan
+  }
 
   static func plan(for p: DevelopmentAdjustmentsV3) -> Plan? {
     guard p.rawDecoder == .flashRaw031, p.rawDetails == nil, p.geometry == DevelopmentGeometryV3() else { return nil }
