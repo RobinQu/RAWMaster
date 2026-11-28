@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "group": "Balanced actual pixel window with a 1 GiB configured but empty RAW base pool",
+  "cohortOrder": [
+    "wide override",
+    "default",
+    "default",
+    "wide override"
+  ],
+  "sampleDefinitions": "Five unscored warmups and 30 verified warm exposure changes per independent run",
+  "baselineLightFlow": {
+    "timing": {
+      "p50Ms": 27.99375,
+      "p95Ms": 40.604917
+    },
+    "tolerance": {
+      "p50Ms": 30.793125,
+      "p95Ms": 48.7259004
+    },
+    "build": "2d41ab1"
+  },
+  "native": {
+    "cohorts": [
+      {
+        "window": "wide",
+        "testBundleSHA256": "d8ba90e41eaf64d5712c0ae14c23aaf75b39fd99c101d3ab29e896fe211b5014",
+        "captureSHA256": "9b17105d001717317f2714134286614d274e528fc320716208a3c355bbdb2eab",
+        "replaySHA256": "4f174935edc3e59812c18e1ceda0f8cab293fdd16a0bcda186ece31e274a2229",
+        "screenArchiveSHA256": "81d0115d2681f328269262a2b4f2db3a9dd1b7cf559b46cb4377996059a15bdf",
+        "sourceROI": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "outputDetailPixels": [
+          7722,
+          3960
+        ],
+        "geometry": {
+          "sourceROIPixels": [
+            4096,
+            3072,
+            1536,
+            1024
+          ],
+          "roiWindowRectPixels": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "windowBackingPixels": [
+            3680,
+            1804
+          ],
+          "sampleROINormalized": [
+            0.37478260869565216,
+            0.3297117516629712,
+            0.2504347826086956,
+            0.34057649667405765
+          ],
+          "backingPixelsPerSourcePixel": [
+            1,
+            1
+          ],
+          "photoWindowRectPixelsFloat": [
+            -3024,
+            -2682,
+            9504,
+            6336
+          ],
+          "roiWindowRectPixelsFloat": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "detailWindowNormalized": [
+            0.09375,
+            0.25,
+            0.8125,
+            0.625
+          ],
+          "visibleSourceWindowNormalized": [
+            0.3181818181818182,
+            0.42329545454545453,
+            0.38720538720538716,
+            0.28472222222222227
+          ],
+          "detailPixelSize": [
+            7722,
+            3960
+          ]
+        },
+        "statistics": {
+          "n": 30,
+          "p50Ms": 124.00966650000001,
+          "p95Ms": 148.6695
+        },
+        "rawMs": [
+          120.714583,
+          132.405916,
+          126.592791,
+          149.272125,
+          121.595625,
+          143.231417,
+          117.453958,
+          148.6695,
+          117.837083,
+          130.702333,
+          111.543708,
+          147.811792,
+          120.249125,
+          121.150292,
+          121.43575,
+          122.527875,
+          123.199458,
+          143.604083,
+          130.126125,
+          130.17,
+          102.770834,
+          146.283958,
+          118.502208,
+          134.997917,
+          111.084666,
+          139.892,
+          119.9545,
+          124.819875,
+          116.528541,
+          133.842875
+        ],
+        "cacheAccounting": {
+          "ready": {
+            "cachedBitmapBytes": 122316480,
+            "cacheHits": 0,
+            "completedRenders": 2,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          },
+          "afterWitnesses": {
+            "cachedBitmapBytes": 122316480,
+            "cacheHits": 0,
+            "completedRenders": 43,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          }
+        },
+        "screenshotRGBSHA256": [
+          "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5"
+        ]
+      },
+      {
+        "window": "budgeted",
+        "testBundleSHA256": "d8ba90e41eaf64d5712c0ae14c23aaf75b39fd99c101d3ab29e896fe211b5014",
+        "captureSHA256": "d6b4ed3ca2a7a44af1e49b16bae898c16d44180aa09df44282262c3e132c28eb",
+        "replaySHA256": "f7de6b420b0bf185d848a0cc35bcae48db50d5b8d0a2881a4d602c60cb5825ea",
+        "screenArchiveSHA256": "ddd45745ecd7cceb195d6a3fc940708ea22ecc40cb6bc50f41bb395b6ea6eaf2",
+        "sourceROI": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "outputDetailPixels": [
+          5842,
+          2864
+        ],
+        "geometry": {
+          "sourceROIPixels": [
+            4096,
+            3072,
+            1536,
+            1024
+          ],
+          "roiWindowRectPixels": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "windowBackingPixels": [
+            3680,
+            1804
+          ],
+          "sampleROINormalized": [
+            0.37478260869565216,
+            0.3297117516629712,
+            0.2504347826086956,
+            0.34057649667405765
+          ],
+          "backingPixelsPerSourcePixel": [
+            1,
+            1
+          ],
+          "photoWindowRectPixelsFloat": [
+            -3024,
+            -2682,
+            9504,
+            6336
+          ],
+          "roiWindowRectPixelsFloat": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "detailWindowNormalized": [
+            0.2044402356902357,
+            0.33964646464646464,
+            0.6146885521885522,
+            0.45202020202020204
+          ],
+          "visibleSourceWindowNormalized": [
+            0.3181818181818182,
+            0.42329545454545453,
+            0.38720538720538716,
+            0.28472222222222227
+          ],
+          "detailPixelSize": [
+            5842,
+            2864
+          ]
+        },
+        "statistics": {
+          "n": 30,
+          "p50Ms": 29.514229,
+          "p95Ms": 38.811083
+        },
+        "rawMs": [
+          35.587791,
+          37.773875,
+          35.828458,
+          26.502084,
+          38.811083,
+          31.765625,
+          36.463125,
+          33.848375,
+          23.326375,
+          22.778916,
+          25.089459,
+          34.92575,
+          22.787834,
+          22.654042,
+          28.468875,
+          24.314041,
+          29.288583,
+          23.0885,
+          31.959125,
+          35.105292,
+          25.891459,
+          23.347667,
+          27.544,
+          30.000917,
+          29.739875,
+          33.50525,
+          41.460792,
+          28.715417,
+          30.914542,
+          24.530416
+        ],
+        "cacheAccounting": {
+          "ready": {
+            "cachedBitmapBytes": 66925952,
+            "cacheHits": 0,
+            "completedRenders": 2,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          },
+          "afterWitnesses": {
+            "cachedBitmapBytes": 133851904,
+            "cacheHits": 39,
+            "completedRenders": 4,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          }
+        },
+        "screenshotRGBSHA256": [
+          "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5"
+        ]
+      },
+      {
+        "window": "budgeted",
+        "testBundleSHA256": "d8ba90e41eaf64d5712c0ae14c23aaf75b39fd99c101d3ab29e896fe211b5014",
+        "captureSHA256": "95fc164e15c15bf69b4258616491b2bfe96a54411c63a54afc7422a3917c4415",
+        "replaySHA256": "7ba84789ff49bd50845dc18943d419fff71ae0c49cda6415e92f099636cfce3a",
+        "screenArchiveSHA256": "d949726c0e5dfa37cea05a8000e0c74cf4df19075941b731ee3f83b7a5d3fab6",
+        "sourceROI": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "outputDetailPixels": [
+          5842,
+          2864
+        ],
+        "geometry": {
+          "sourceROIPixels": [
+            4096,
+            3072,
+            1536,
+            1024
+          ],
+          "roiWindowRectPixels": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "windowBackingPixels": [
+            3680,
+            1804
+          ],
+          "sampleROINormalized": [
+            0.37478260869565216,
+            0.3297117516629712,
+            0.2504347826086956,
+            0.34057649667405765
+          ],
+          "backingPixelsPerSourcePixel": [
+            1,
+            1
+          ],
+          "photoWindowRectPixelsFloat": [
+            -3024,
+            -2682,
+            9504,
+            6336
+          ],
+          "roiWindowRectPixelsFloat": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "detailWindowNormalized": [
+            0.2044402356902357,
+            0.33964646464646464,
+            0.6146885521885522,
+            0.45202020202020204
+          ],
+          "visibleSourceWindowNormalized": [
+            0.3181818181818182,
+            0.42329545454545453,
+            0.38720538720538716,
+            0.28472222222222227
+          ],
+          "detailPixelSize": [
+            5842,
+            2864
+          ]
+        },
+        "statistics": {
+          "n": 30,
+          "p50Ms": 31.558374999999998,
+          "p95Ms": 47.0475
+        },
+        "rawMs": [
+          53.784416,
+          40.782333,
+          35.916125,
+          31.455833,
+          22.024791,
+          42.45375,
+          25.487042,
+          26.821917,
+          33.1775,
+          21.676541,
+          28.742916,
+          22.038625,
+          25.042375,
+          38.634709,
+          25.537542,
+          26.580792,
+          31.660917,
+          31.791291,
+          32.648458,
+          47.0475,
+          29.332041,
+          25.474583,
+          38.233584,
+          26.299458,
+          35.773417,
+          34.641417,
+          36.489875,
+          27.672208,
+          30.366583,
+          31.967458
+        ],
+        "cacheAccounting": {
+          "ready": {
+            "cachedBitmapBytes": 66925952,
+            "cacheHits": 0,
+            "completedRenders": 2,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          },
+          "afterWitnesses": {
+            "cachedBitmapBytes": 133851904,
+            "cacheHits": 39,
+            "completedRenders": 4,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          }
+        },
+        "screenshotRGBSHA256": [
+          "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5"
+        ]
+      },
+      {
+        "window": "wide",
+        "testBundleSHA256": "d8ba90e41eaf64d5712c0ae14c23aaf75b39fd99c101d3ab29e896fe211b5014",
+        "captureSHA256": "fbc5e39ebb840413bfa1cbf2b2d0eee6bd8de54a531c287510b765966746b17d",
+        "replaySHA256": "6c405aa3274b7a956384870f08bc8f88894963a45b28784aeed97a1043e60485",
+        "screenArchiveSHA256": "2665528d24ede5fb290cd2e64bca3458f9c2698cc585b58c21b33934074d7c2a",
+        "sourceROI": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "outputDetailPixels": [
+          7722,
+          3960
+        ],
+        "geometry": {
+          "sourceROIPixels": [
+            4096,
+            3072,
+            1536,
+            1024
+          ],
+          "roiWindowRectPixels": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "windowBackingPixels": [
+            3680,
+            1804
+          ],
+          "sampleROINormalized": [
+            0.37478260869565216,
+            0.3297117516629712,
+            0.2504347826086956,
+            0.34057649667405765
+          ],
+          "backingPixelsPerSourcePixel": [
+            1,
+            1
+          ],
+          "photoWindowRectPixelsFloat": [
+            -3024,
+            -2682,
+            9504,
+            6336
+          ],
+          "roiWindowRectPixelsFloat": [
+            1072,
+            390,
+            1536,
+            1024
+          ],
+          "detailWindowNormalized": [
+            0.09375,
+            0.25,
+            0.8125,
+            0.625
+          ],
+          "visibleSourceWindowNormalized": [
+            0.3181818181818182,
+            0.42329545454545453,
+            0.38720538720538716,
+            0.28472222222222227
+          ],
+          "detailPixelSize": [
+            7722,
+            3960
+          ]
+        },
+        "statistics": {
+          "n": 30,
+          "p50Ms": 128.04056200000002,
+          "p95Ms": 154.513417
+        },
+        "rawMs": [
+          111.381666,
+          127.629375,
+          116.69675,
+          132.530917,
+          98.074,
+          140.793916,
+          129.642792,
+          138.862667,
+          113.73025,
+          133.300583,
+          115.254167,
+          133.443667,
+          121.7175,
+          128.114458,
+          124.614375,
+          127.966666,
+          124.128667,
+          131.944625,
+          116.390542,
+          129.585916,
+          116.68625,
+          141.2635,
+          109.366125,
+          136.825625,
+          119.396542,
+          133.911209,
+          128.233708,
+          156.510167,
+          127.345042,
+          154.513417
+        ],
+        "cacheAccounting": {
+          "ready": {
+            "cachedBitmapBytes": 122316480,
+            "cacheHits": 0,
+            "completedRenders": 2,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          },
+          "afterWitnesses": {
+            "cachedBitmapBytes": 122316480,
+            "cacheHits": 0,
+            "completedRenders": 43,
+            "flashRawTextureResidentBytes": 481738752,
+            "rawBaseBuildingBytes": 0,
+            "rawBaseFills": 0,
+            "rawBasePinnedBytes": 0,
+            "rawBaseReservedBytes": 0,
+            "rawBaseResidentBytes": 0,
+            "rawBaseRetiredBytes": 0
+          }
+        },
+        "screenshotRGBSHA256": [
+          "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5"
+        ]
+      }
+    ],
+    "pooled": {
+      "wide": {
+        "n": 60,
+        "p50Ms": 127.48720850000001,
+        "p95Ms": 148.6695
+      },
+      "budgeted": {
+        "n": 60,
+        "p50Ms": 30.18375,
+        "p95Ms": 41.460792
+      }
+    },
+    "withinLightFlowTolerance": true
+  },
+  "previousPooled": {
+    "wide": {
+      "n": 60,
+      "p50Ms": 124.744021,
+      "p95Ms": 150.059541
+    },
+    "budgeted": {
+      "n": 60,
+      "p50Ms": 31.5226255,
+      "p95Ms": 43.375416
+    }
+  },
+  "fullVisibleWitness": {
+    "testBundleSHA256": "d8ba90e41eaf64d5712c0ae14c23aaf75b39fd99c101d3ab29e896fe211b5014",
+    "captureSHA256": "bccc45c1898b1be819901aa57376f9b45fd175afd873a5d50822287966581191",
+    "replaySHA256": "f2f5a8bf1753dd9e28db5d82041d9e831af6c3eba5a2e7aa4509c314c49d6700",
+    "screenArchiveSHA256": "3e03acd7123d20859fe470044e46defb0885ef5418e4739be667aaa4feb182a9",
+    "sourceROI": [
+      3024,
+      2682,
+      3680,
+      1804
+    ],
+    "outputDetailPixels": [
+      5842,
+      2864
+    ],
+    "geometry": {
+      "sourceROIPixels": [
+        3024,
+        2682,
+        3680,
+        1804
+      ],
+      "roiWindowRectPixels": [
+        0,
+        0,
+        3680,
+        1804
+      ],
+      "windowBackingPixels": [
+        3680,
+        1804
+      ],
+      "sampleROINormalized": [
+        0.2,
+        0.2,
+        0.6,
+        0.6
+      ],
+      "backingPixelsPerSourcePixel": [
+        1,
+        1
+      ],
+      "photoWindowRectPixelsFloat": [
+        -3024,
+        -2682,
+        9504,
+        6336
+      ],
+      "roiWindowRectPixelsFloat": [
+        0,
+        0,
+        3680,
+        1804
+      ],
+      "detailWindowNormalized": [
+        0.2044402356902357,
+        0.33964646464646464,
+        0.6146885521885522,
+        0.45202020202020204
+      ],
+      "visibleSourceWindowNormalized": [
+        0.3181818181818182,
+        0.42329545454545453,
+        0.38720538720538716,
+        0.28472222222222227
+      ],
+      "detailPixelSize": [
+        5842,
+        2864
+      ]
+    },
+    "statistics": {
+      "n": 2,
+      "p50Ms": 31.2665,
+      "p95Ms": 34.018292
+    },
+    "rawMs": [
+      28.514708,
+      34.018292
+    ],
+    "cacheAccounting": {
+      "ready": {
+        "cachedBitmapBytes": 66925952,
+        "cacheHits": 0,
+        "completedRenders": 2,
+        "flashRawTextureResidentBytes": 481738752,
+        "rawBaseBuildingBytes": 0,
+        "rawBaseFills": 0,
+        "rawBasePinnedBytes": 0,
+        "rawBaseReservedBytes": 0,
+        "rawBaseResidentBytes": 0,
+        "rawBaseRetiredBytes": 0
+      },
+      "afterWitnesses": {
+        "cachedBitmapBytes": 133851904,
+        "cacheHits": 5,
+        "completedRenders": 4,
+        "flashRawTextureResidentBytes": 481738752,
+        "rawBaseBuildingBytes": 0,
+        "rawBaseFills": 0,
+        "rawBasePinnedBytes": 0,
+        "rawBaseReservedBytes": 0,
+        "rawBaseResidentBytes": 0,
+        "rawBaseRetiredBytes": 0
+      }
+    },
+    "screenshotRGBSHA256": [
+      "73d56556c3fee1c6a3ab9ddca4d62d31b7ff3126749c7bf5b0524d950dfd99f8",
+      "302288545cb3ff8e5cb8c8b6a2d1e4d29af587e302e5aa9a78dfd3fcdd95674c"
+    ]
+  },
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "comparisonBoundary": "Native editing command and AppKit draw for first entry and two unique EVs. ScreenCaptureKit 20% visible response with two independently verified phases for warm timing.",
+  "nativeBuildSourceCommit": "5eaa8e4c3ec62e2e1f16d10a459a29d40cf4bc85",
+  "installedReleaseFromTheSameSourceCommit": "20261128.172756",
+  "recorderInterruption": {
+    "interruptedCohort": "second wide",
+    "error": "ScreenCaptureKit SCStream error -3805",
+    "includedSamplesFromInterruptedCapture": 0,
+    "replacement": "Complete independent rerun of that wide cohort with the same settings",
+    "failedRecorderLogSHA256": "965499643f1a85385b7700f81f9aa23b907da54f30fb5ced81ba0bc42ba68238"
+  }
+}
