@@ -1,6 +1,6 @@
 # 043 · 图像引擎统一与后续性能优化
 
-2026-11-28 · **M0 进行中。Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 通过 wgpu 的 Metal 后端运行，Linux 通过 Vulkan 运行。两端共用算子语义、编译和资源计划。032 V1 回执已修复，分项基线继续按产品入口采集。首条 WGSL 场景 DAG 在两端实机对照。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
+2026-11-28 · **Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 通过 wgpu 的 Metal 后端运行，Linux 通过 Vulkan 运行。两端共用算子语义、编译和资源计划。032 V1 回执和原生分项基线已通过验证，外部对标继续采集。首条 WGSL 场景 DAG 在两端实机对照。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
 
 ## 1. 为什么需要单独一条规格
 
@@ -9,7 +9,7 @@
 | 入口 | 当前实现 | 主要问题 |
 | --- | --- | --- |
 | 旧 V3 兼容显影 | 完整产品路径走 Core Image。035 点算子子集由 `graph.rs` 和 `gpu.rs` 执行，已有 WGSL 融合、分条及原生纹理接入 | 现有点算子计划与场景 DAG 分开。跨边界物化仍有成本，035 发布性能门待复验 |
-| 场景 DAG | `scene.rs` 和 `scene/metal_exec.rs` 执行原生 Metal 逐节点调度，按最后使用点复用纹理 | 每个有效点节点仍可能写一次当前执行区域的中间纹理。交付每块重新准备图，复杂图的 dispatch 和纹理读写随算子增加 |
+| 场景 DAG | `scene.rs` 和 `scene/metal_exec.rs` 执行原生 Metal 逐节点调度，按最后使用点复用纹理。同一交付目标的瓦片共用冻结场景程序 | 每个有效点节点仍可能写一次瓦片中间纹理，复杂图的派发和纹理读写随算子增加。跨目标图执行与输出提交仍可去重 |
 | 摄影前缀 | `DevelopmentScenePhotographicV1` 通过 Core Image 和 `DevelopmentRendererV3` 在全图坐标构图，按请求区域输出，再转 AP1 交给 DAG | 部分算子仍有整幅工作。摄影段固定预留 192 MiB，模型、几何及跨域资源各有自己的边界 |
 
 60 MP 摄影调整加三节点 DAG 的双目标组件样本为 `elapsedMs=1750.98`，每目标 35 个瓦片、105 次 DAG dispatch。图预算 `1,610,612,736 B`，核算峰值 `1,458,929,664 B`，含摄影段预留。两目标共用一次来源读取和 mosaic 上传，分别执行逐瓦片显影、DAG 和输出变换。032 的产品队列按目标分别进入渲染。[实拍回执](../037-color-film-hdr/evidence/2026-11-27-photographic-60mp.json) · [组件入口](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift#L43) · [032 渲染入口](../../Sources/RAWMasterImaging/PhotoBatchRenderExporter.swift#L132)

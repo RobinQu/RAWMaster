@@ -422,6 +422,31 @@ public enum RAWMasterImageKernel {
             self.program = handle
         }
 
+        private init(runtime: Runtime, program: OpaquePointer) {
+            self.runtime = runtime
+            self.program = program
+        }
+
+        /// Returns nil only when the loaded runtime predates the frozen delivery constructor.
+        /// The count measures calls to Metal's library API, including an unsuccessful call.
+        public static func openFrozenDelivery(graph: Data, device: any MTLDevice,
+                                              libraryAPICalls: inout UInt32) throws -> SceneProgram? {
+            libraryAPICalls = 0
+            let runtime = try RAWMasterImageKernel.runtime.get()
+            var handle: OpaquePointer?
+            let status = graph.withUnsafeBytes { bytes in
+                withExtendedLifetime(device) {
+                    rm_image_host_scene_open_frozen_delivery(runtime.handle, bytes.bindMemory(to: UInt8.self).baseAddress,
+                        bytes.count, Unmanaged.passUnretained(device as AnyObject).toOpaque(), &libraryAPICalls, &handle)
+                }
+            }
+            if status == Int32(RM_IMAGE_HOST_SCENE_FROZEN_OPEN_MISSING) { return nil }
+            guard status == 0, let handle else {
+                throw status == 2 ? Failure.unavailable : Failure.invalidParameters
+            }
+            return SceneProgram(runtime: runtime, program: handle)
+        }
+
         public func update(graph: Data) throws {
             let status = graph.withUnsafeBytes { bytes in
                 rm_image_host_scene_update(runtime.handle, program,

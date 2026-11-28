@@ -61,7 +61,10 @@ final class DevelopmentSceneTiledDeliveryV1 {
     let resident = destination.allocatedSize + fixedBytes
     let hasTrim = target == .sdr709 && graph.output.sdrTrim.exposureEV != 0
     let edge = min(maximumTileEdge, max(width, height))
-    let outputRenderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) { try Renderer(device: device, backend: .swift) }
+    // One target owns the frozen program and output stage. Each tile supplies its own resources.
+    let renderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) {
+      try Renderer(device: device, frozenDelivery: true)
+    }
     var total: Receipt?
     var display: Display?
     for y in stride(from: 0, to: height, by: edge) {
@@ -82,19 +85,16 @@ final class DevelopmentSceneTiledDeliveryV1 {
           let colorBytes = device.heapTextureSizeAndAlign(descriptor: Self.descriptor(.rgba32Float, tileWidth, tileHeight)).size
           let maskBytes = device.heapTextureSizeAndAlign(descriptor: Self.descriptor(.r32Float, tileWidth, tileHeight)).size
           let outputReserve = sensorBytes + colorBytes * (hasTrim ? 2 : 1)
-          // Rust counts logical texel bytes. Charge the largest actual/logical ratio of the
-          // two possible surface formats, including short edge tiles. Each pass is one tile.
+          // Preserve the conservative delivery headroom for both formats, including short
+          // edge tiles. Rust also checks the native allocations within each tile's budget.
           let padding = max(1, Double(max(colorBytes, 4 * maskBytes)) / Double(16 * tileWidth * tileHeight))
           guard budget > resident + outputReserve else { throw Renderer.Failure.surfaceBudget }
           let graphBudget = Int(Double(budget - resident - outputReserve) / padding)
           guard graphBudget >= 2 * colorBytes else { throw Renderer.Failure.surfaceBudget }
-          // One-shot delivery never revisits a tile. Drop its analytic and node caches before
-          // the next region, while retaining the pinned ACES output transform across regions.
-          let renderer = try SceneDeliveryTrace.measure(.dagBridgeInitialize) { try Renderer(device: device, surfaceBudget: graphBudget) }
           let master = try renderer.prepareFinalInput(source, geometry: geometry, graph: graph, masks: photographic?.alignsWithSensor == false ? [:] : modelPrefix?.native.masks ?? [:],
-            modelScale: modelPrefix?.native.scale ?? 1, tileEdge: edge)
+            modelScale: modelPrefix?.native.scale ?? 1, tileEdge: edge, maximumBytes: graphBudget)
           guard let current = renderer.lastReceipt else { throw Renderer.Failure.invalidImage }
-          let tile = try outputRenderer.renderDelivery(master, target: target)
+          let tile = try renderer.renderDelivery(master, target: target)
           guard tile.origin == SIMD2(x, y), tile.texture.width == rect.size.width, tile.texture.height == rect.size.height,
                 let cmd = queue.makeCommandBuffer(), let blit = cmd.makeBlitCommandEncoder() else { throw Renderer.Failure.invalidImage }
           blit.copy(from: tile.texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(), sourceSize: rect.size,

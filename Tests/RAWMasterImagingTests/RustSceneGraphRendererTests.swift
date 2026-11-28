@@ -277,6 +277,107 @@ final class RustSceneGraphRendererTests: XCTestCase {
     try compare(cached, fresh, tolerance: 0, message: "changed mask coverage")
   }
 
+  func testFrozenDeliveryRebindsTilesWithoutRetainingNodeOrCoverageResults() throws {
+    typealias Program = RAWMasterImageKernel.SceneProgram
+    struct Document: Encodable {
+      let schemaVersion = 1
+      let graph: Graph.Scope
+    }
+
+    let width = 37, height = 25
+    let (device, _, raw, _, source) = try fixture(width: width, height: height)
+    let gradient = Node(name: "Ramp", operation: .linearCoverage(start: .init(0.1, 0.2), end: .init(0.9, 0.8)))
+    let grade = Node(name: "Grade", operation: .corrector(image: .input, mask: gradient.id,
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    let graph = try workflow([gradient, grade], final: grade)
+    let data = try JSONEncoder().encode(Document(graph: graph.graph))
+    var libraryCalls: UInt32 = 99
+    XCTAssertThrowsError(try Program.openFrozenDelivery(graph: Data("{}".utf8), device: device, libraryAPICalls: &libraryCalls))
+    XCTAssertEqual(libraryCalls, 0)
+    let frozen = try XCTUnwrap(Program.openFrozenDelivery(graph: data, device: device, libraryAPICalls: &libraryCalls))
+    XCTAssertEqual(libraryCalls, 1)
+    XCTAssertThrowsError(try frozen.update(graph: data)) { error in
+      guard case RAWMasterImageKernel.Failure.invalidParameters = error else { return XCTFail("Unexpected error \(error)") }
+    }
+    let reference = try Program(graph: data, device: device)
+    let fullPixels = try read(reference.renderSurface(input: raw.texture))
+    let geometry = SIMD2(width, height)
+    let budget = 8 * 1024 * 1024
+
+    func tile(_ pixels: [SIMD4<Float>], at origin: SIMD2<Int>, width tileWidth: Int, height tileHeight: Int) -> [SIMD4<Float>] {
+      (0..<tileHeight).flatMap { row in
+        let start = (origin.y + row) * width + origin.x
+        return pixels[start..<(start + tileWidth)]
+      }
+    }
+
+    for (origin, tileWidth, tileHeight) in [(SIMD2(4, 5), 12, 8), (SIMD2(30, 20), 7, 5)] {
+      let input = try upload(tile(source, at: origin, width: tileWidth, height: tileHeight),
+        width: tileWidth, origin: origin, device: device)
+      let expected = tile(fullPixels, at: origin, width: tileWidth, height: tileHeight)
+      for _ in 0..<2 {
+        let output = try frozen.renderSurface(input: input.texture, origin: origin, geometry: geometry,
+          surfaceBudget: budget, sourceRevision: 17)
+        let receipt = try XCTUnwrap(frozen.receipt())
+        XCTAssertEqual(receipt.tiles, 1)
+        XCTAssertEqual(receipt.dispatches, 2)
+        XCTAssertEqual(receipt.nodeHits, 0)
+        XCTAssertEqual(receipt.coverageHits, 0)
+        XCTAssertEqual(receipt.budgetBytes, budget)
+        XCTAssertLessThanOrEqual(receipt.peakBytes, budget)
+        XCTAssertEqual(try read(output), expected)
+      }
+      XCTAssertThrowsError(try frozen.renderSurface(input: input.texture, origin: origin, geometry: geometry,
+        surfaceBudget: input.texture.allocatedSize, sourceRevision: 17)) { error in
+        guard case RAWMasterImageKernel.Failure.surfaceBudget = error else { return XCTFail("Unexpected error \(error)") }
+      }
+      var currentChecks = 0
+      XCTAssertThrowsError(try frozen.renderSurface(input: input.texture, origin: origin, geometry: geometry,
+        surfaceBudget: budget, sourceRevision: 17, revision: 91, isCurrent: { revision in
+          XCTAssertEqual(revision, 91)
+          currentChecks += 1
+          return currentChecks < 3
+        })) { error in
+        guard case RAWMasterImageKernel.Failure.staleFrame = error else { return XCTFail("Unexpected error \(error)") }
+      }
+      XCTAssertGreaterThanOrEqual(currentChecks, 3)
+      let retry = try frozen.renderSurface(input: input.texture, origin: origin, geometry: geometry,
+        surfaceBudget: budget, sourceRevision: 17)
+      XCTAssertEqual(try read(retry), expected)
+    }
+  }
+
+  func testFrozenDeliveryUsesLegacyProgramsOnlyWhenTheConstructorIsMissing() throws {
+    let (device, _, raw, geometry, _) = try fixture(width: 24, height: 12)
+    let mask = Node(name: "Ramp", operation: .linearCoverage(start: .zero, end: .init(1, 1)))
+    let grade = Node(name: "Grade", operation: .corrector(image: .input, mask: mask.id,
+      exposureEV: 1, curve: [], strength: 1, enabled: true))
+    let graph = try workflow([mask, grade], final: grade)
+    var probes = 0
+    let legacy = RustSceneGraphRenderer(device: device, frozenDelivery: true, openFrozen: { _, _, _ in
+      probes += 1
+      return nil
+    })
+    let available = 8 * 1024 * 1024
+    let size = SIMD2(geometry.width, geometry.height)
+    for _ in 0..<2 {
+      let (_, receipt) = try legacy.render(input: raw.texture, graph: graph, view: .init(), origin: .zero,
+        geometry: size, surfaceBudget: available, tileEdge: nil, sourceRevision: 17)
+      XCTAssertEqual(receipt.dispatches, 2)
+      XCTAssertEqual(receipt.nodeHits, 0)
+      XCTAssertEqual(receipt.coverageHits, 0)
+    }
+    XCTAssertEqual(probes, 1)
+
+    let unavailable = RustSceneGraphRenderer(device: device, frozenDelivery: true, openFrozen: { _, _, _ in
+      throw RAWMasterImageKernel.Failure.unavailable
+    })
+    XCTAssertThrowsError(try unavailable.render(input: raw.texture, graph: graph, view: .init(), origin: .zero,
+      geometry: size, surfaceBudget: available, tileEdge: nil, sourceRevision: 17)) { error in
+      guard case RAWMasterImageKernel.Failure.unavailable = error else { return XCTFail("Unexpected error \(error)") }
+    }
+  }
+
   func testReturnedAndCallerOwnedSurfacesPreserveSourceAndExternalCoverage() throws {
     let (device, _, raw, _, source) = try fixture(width: 12, height: 8)
     let stageID = UUID(), mask = Node(name: "Mask", operation: .externalCoverage(id: stageID))
@@ -337,6 +438,18 @@ final class RustSceneGraphRendererTests: XCTestCase {
     let expected = try Renderer(device: device, surfaceBudget: budget, backend: .swift)
       .prepareFinal(raw, geometry: geometry, graph: graph)
     XCTAssertEqual(try read(rendered.image.texture), try read(expected.image.texture))
+
+    let frozen = try Renderer(device: device, backend: .auto, frozenDelivery: true)
+    _ = try frozen.prepareFinalInput(raw, geometry: geometry, graph: graph, masks: [:], tileEdge: 64, maximumBytes: 8 * 1024 * 1024)
+    XCTAssertEqual(frozen.lastReceipt?.backend, .rust)
+    let constrained = try frozen.prepareFinalInput(raw, geometry: geometry, graph: graph, masks: [:], tileEdge: 64, maximumBytes: budget)
+    XCTAssertEqual(frozen.lastReceipt?.backend, .swiftFallback)
+    XCTAssertEqual(frozen.lastReceipt?.budgetBytes, budget)
+    XCTAssertEqual(try read(constrained.image.texture), try read(expected.image.texture))
+    XCTAssertThrowsError(try frozen.prepareFinalInput(raw, geometry: geometry, graph: graph, masks: [:],
+      tileEdge: 64, maximumBytes: raw.texture.allocatedSize)) {
+      XCTAssertEqual($0 as? Renderer.Failure, .surfaceBudget)
+    }
   }
 
   func testOptIn60MegapixelSceneBudgetAndReceipt() throws {

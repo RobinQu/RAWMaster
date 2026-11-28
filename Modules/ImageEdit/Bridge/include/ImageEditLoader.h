@@ -5,6 +5,7 @@
 #include "../../include/rawmaster_image_scene.h"
 
 typedef struct RMImageRuntime RMImageRuntime;
+#define RM_IMAGE_HOST_SCENE_FROZEN_OPEN_MISSING -1
 RMImageRuntime *rm_image_host_open(const char *path);
 void rm_image_host_close(RMImageRuntime *runtime);
 int32_t rm_image_host_filter(const RMImageRuntime *runtime, uint32_t family, double amount,
@@ -55,6 +56,8 @@ int32_t rm_image_host_metal_mask_half_render(const RMImageRuntime *runtime, cons
 
 int32_t rm_image_host_scene_open(const RMImageRuntime *runtime, const uint8_t *graph,
     size_t graph_bytes, void *device, RMSceneProgram **out);
+int32_t rm_image_host_scene_open_frozen_delivery(const RMImageRuntime *runtime, const uint8_t *graph,
+    size_t graph_bytes, void *device, uint32_t *library_api_calls, RMSceneProgram **out);
 int32_t rm_image_host_scene_update(const RMImageRuntime *runtime, const RMSceneProgram *program,
     const uint8_t *graph, size_t graph_bytes);
 int32_t rm_image_host_scene_render(const RMImageRuntime *runtime, const RMSceneProgram *program,

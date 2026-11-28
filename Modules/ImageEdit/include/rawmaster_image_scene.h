@@ -31,7 +31,12 @@ typedef struct RMSceneReceiptV1 {
 uint32_t rm_scene_abi_version(void);
 int32_t rm_scene_program_open_v1(const uint8_t *graph, size_t graph_bytes,
                                  void *metal_device, RMSceneProgram **out);
-/* Replaces parameters for the same topology without discarding prefix caches. */
+/* Optional constructor for one frozen delivery. The graph cannot be updated and no image
+   or analytic coverage results are retained across calls. library_api_calls may be NULL.
+   It counts Metal library API calls, including failures, rather than driver compilations. */
+int32_t rm_scene_program_open_frozen_delivery_v1(const uint8_t *graph, size_t graph_bytes,
+    void *metal_device, uint32_t *library_api_calls, RMSceneProgram **out);
+/* Replaces parameters of an editable program without discarding prefix caches. */
 int32_t rm_scene_program_update_v1(const RMSceneProgram *program,
                                    const uint8_t *graph, size_t graph_bytes);
 int32_t rm_scene_program_render_v1(const RMSceneProgram *program,

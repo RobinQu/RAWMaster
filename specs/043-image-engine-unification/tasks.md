@@ -1,6 +1,6 @@
 # 043 · 任务清单
 
-2026-11-28 · **M0 进行中。** 每项按对应原生路径和实际执行回执签收。[规格](spec.md) · [计划](plan.md) · [验收基线](validation.md)
+2026-11-28 · **M0 外部对标继续采集，M1-01 已通过。** 每项按对应原生路径和实际执行回执签收。[规格](spec.md) · [计划](plan.md) · [验收基线](validation.md)
 
 ## M0 · 回执修复与基线
 
@@ -14,7 +14,7 @@
 
 ## M1 · 去重
 
-- [ ] **M1-01** 复用设备 pipeline、SceneProgram 和输出阶段，输入、ROI、预算按瓦片绑定。记录 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`。
+- [x] **M1-01** 每个目标复用一个 renderer、冻结 SceneProgram 和输出阶段。输入、ROI、预算按瓦片绑定，旧运行库沿用逐瓦片 Rust。60 MP 三路核对 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`、成片与派发数。[实测回执](evidence/m1-60mp-frozen-tile-preparation.json)
 - [ ] **M1-02** 验证同一冻结输入可共享逐瓦片显影和 DAG，再分目标 DRT。只在输出、编码和总预算通过的路由启用，复验单目标失败、取消和 032 恢复。
 - [ ] **M1-03** 合并图、DRT、blit 的同队列工作，核对与解码和平台段的完成信号及资源生命期。
 - [ ] **M1-04** 按设备和规范化结构缓存编译产物，分别验证改参、跨照片、拓扑变更和源资源失效。

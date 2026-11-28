@@ -105,6 +105,7 @@ final class DevelopmentSceneOutputV1 {
     }
     let options=MTLCompileOptions(); options.mathMode = .safe
     let source="#include <metal_stdlib>\nusing namespace metal;\n"+shader+Self.wrapper
+    SceneDeliveryTrace.recordPreparation(.swiftLibraryCall)
     let library=try device.makeLibrary(source:source,options:options)
     guard let function=library.makeFunction(name:"rmSceneViewV1"), let queue=device.makeCommandQueue() else {
       throw MetalFailure.metalUnavailable

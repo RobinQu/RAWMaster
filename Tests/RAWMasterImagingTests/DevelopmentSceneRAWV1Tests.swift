@@ -139,6 +139,8 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
       let receipt = try XCTUnwrap(execution)
       XCTAssertEqual(receipt.backend, .rust); XCTAssertEqual(receipt.tiles, 12)
       XCTAssertGreaterThanOrEqual(receipt.dispatches, receipt.tiles * 2)
+      XCTAssertEqual(receipt.coverageCacheHits, 0)
+      XCTAssertEqual(receipt.nodeCacheHits, 0)
       XCTAssertLessThanOrEqual(receipt.peakBytes, receipt.budgetBytes)
     }
     let tooSmall = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, surfaceBudget: 64)

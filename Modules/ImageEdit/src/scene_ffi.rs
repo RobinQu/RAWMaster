@@ -25,6 +25,30 @@ pub unsafe extern "C" fn rm_scene_program_open_v1(
     device: *mut c_void,
     out: *mut *mut SceneProgram,
 ) -> i32 {
+    open(graph, graph_bytes, device, out, None)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_program_open_frozen_delivery_v1(
+    graph: *const u8,
+    graph_bytes: usize,
+    device: *mut c_void,
+    library_api_calls: *mut u32,
+    out: *mut *mut SceneProgram,
+) -> i32 {
+    if !library_api_calls.is_null() {
+        library_api_calls.write(0);
+    }
+    open(graph, graph_bytes, device, out, Some(library_api_calls))
+}
+
+unsafe fn open(
+    graph: *const u8,
+    graph_bytes: usize,
+    device: *mut c_void,
+    out: *mut *mut SceneProgram,
+    frozen_library_api_calls: Option<*mut u32>,
+) -> i32 {
     if out.is_null() {
         return 1;
     }
@@ -34,7 +58,14 @@ pub unsafe extern "C" fn rm_scene_program_open_v1(
             return 1;
         }
         let document = slice::from_raw_parts(graph, graph_bytes);
-        let program = match SceneProgram::open(device, document) {
+        let result = if let Some(library_api_calls) = frozen_library_api_calls {
+            let mut ignored_calls = 0;
+            let calls = library_api_calls.as_mut().unwrap_or(&mut ignored_calls);
+            SceneProgram::open_frozen_delivery(device, document, calls)
+        } else {
+            SceneProgram::open(device, document)
+        };
+        let program = match result {
             Ok(program) => program,
             Err(crate::scene::SceneError::Invalid(_)) => return 1,
             Err(crate::scene::SceneError::Backend(_)) => return 2,

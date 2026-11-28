@@ -25,6 +25,7 @@ struct RMImageRuntime {
         RMImageMetalIsCurrentV1, void *);
     void (*metal_frame_close)(RMImageMetalFrame *);
     int32_t (*scene_open)(const uint8_t *, size_t, void *, RMSceneProgram **);
+    int32_t (*scene_open_frozen_delivery)(const uint8_t *, size_t, void *, uint32_t *, RMSceneProgram **);
     int32_t (*scene_update)(const RMSceneProgram *, const uint8_t *, size_t);
     int32_t (*scene_render)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, uint64_t, RMSceneIsCurrent, void *);
     int32_t (*scene_render_coverages)(const RMSceneProgram *, void *, void *, const uint8_t *, size_t, const char *const *, void *const *, size_t, uint64_t, RMSceneIsCurrent, void *);
@@ -83,6 +84,7 @@ RMImageRuntime *rm_image_host_open(const char *path) {
         runtime->metal_frame_render = dlsym(library, "rm_image_metal_frame_render_v1");
         runtime->metal_frame_close = dlsym(library, "rm_image_metal_frame_close_v1");
         runtime->scene_open = dlsym(library, "rm_scene_program_open_v1");
+        runtime->scene_open_frozen_delivery = dlsym(library, "rm_scene_program_open_frozen_delivery_v1");
         runtime->scene_update = dlsym(library, "rm_scene_program_update_v1");
         runtime->scene_render = dlsym(library, "rm_scene_program_render_v1");
         runtime->scene_render_coverages = dlsym(library, "rm_scene_program_render_coverages_v1");
@@ -241,6 +243,14 @@ int32_t rm_image_host_scene_open(const RMImageRuntime *runtime, const uint8_t *g
     size_t graph_bytes, void *device, RMSceneProgram **out) {
     if (!runtime || !runtime->scene_open) { if (out) *out = NULL; return 2; }
     return runtime->scene_open(graph, graph_bytes, device, out);
+}
+int32_t rm_image_host_scene_open_frozen_delivery(const RMImageRuntime *runtime, const uint8_t *graph,
+    size_t graph_bytes, void *device, uint32_t *library_api_calls, RMSceneProgram **out) {
+    if (out) *out = NULL;
+    if (library_api_calls) *library_api_calls = 0;
+    if (!runtime) return 1;
+    if (!runtime->scene_open_frozen_delivery) return RM_IMAGE_HOST_SCENE_FROZEN_OPEN_MISSING;
+    return runtime->scene_open_frozen_delivery(graph, graph_bytes, device, library_api_calls, out);
 }
 int32_t rm_image_host_scene_update(const RMImageRuntime *runtime, const RMSceneProgram *program,
     const uint8_t *graph, size_t graph_bytes) {

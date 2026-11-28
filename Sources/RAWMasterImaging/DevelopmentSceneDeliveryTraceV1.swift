@@ -64,6 +64,42 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     var sdrBitmapBytes: Int?
   }
 
+  enum PreparationEvent {
+    case rendererBuilt
+    case programOpened(frozen: Bool)
+    case swiftLibraryCall
+    case rustLibraryCalls(Int)
+    case rustOpenWithoutLibraryCount
+  }
+
+  private struct Compilation: Encodable {
+    var rendererBuildCount = 0
+    var programCompileCount = 0
+    var frozenProgramBuildCount = 0
+    var libraryCompileCount = 0
+    var swiftLibraryAPICallCount = 0
+    var rustLibraryAPICallCount = 0
+    var rustOpenAttemptsWithoutLibraryCount = 0
+
+    mutating func add(_ event: PreparationEvent) {
+      switch event {
+      case .rendererBuilt:
+        rendererBuildCount += 1
+      case .programOpened(let frozen):
+        programCompileCount += 1
+        if frozen { frozenProgramBuildCount += 1 }
+      case .swiftLibraryCall:
+        libraryCompileCount += 1
+        swiftLibraryAPICallCount += 1
+      case .rustLibraryCalls(let count):
+        libraryCompileCount += count
+        rustLibraryAPICallCount += count
+      case .rustOpenWithoutLibraryCount:
+        rustOpenAttemptsWithoutLibraryCount += 1
+      }
+    }
+  }
+
   private struct Graph: Encodable {
     let backend: DevelopmentSceneExecutionReceiptV1.Backend
     let dagBackend: DevelopmentSceneExecutionReceiptV1.Backend?
@@ -93,6 +129,7 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
   private struct Target: Encodable {
     var stages: [String: Timing] = [:]
     var memory = Memory()
+    var compilation = Compilation()
     var graph: Graph?
     var flashRawNative: FlashRawDecodeStatistics?
     var flashRawNativeStatisticsStatus: String?
@@ -239,6 +276,13 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     bound.trace.lock.withLock { bound.trace.report.targets[bound.target, default: Target()].graph = Graph(receipt) }
   }
 
+  static func recordPreparation(_ event: PreparationEvent) {
+    guard let bound = binding else { return }
+    bound.trace.lock.withLock {
+      bound.trace.report.targets[bound.target, default: Target()].compilation.add(event)
+    }
+  }
+
   static func flashRawNative(_ statistics: FlashRawDecodeStatistics?) {
     guard let bound = binding else { return }
     let valid: FlashRawDecodeStatistics? = statistics.flatMap { stats in
@@ -299,6 +343,7 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     var phases = [
       "source.verified_copy.breakdown": "copy_hash_and_sync_measured_together",
       "dag.rust.dispatch.breakdown": "prepare_submit_and_wait_return_as_one_ffi_call",
+      "compilation.driver": "library_count_covers_scene_dag_and_drt_api_calls_driver_compilation_is_opaque",
       "memory.unobserved_intervals": "metal_allocated_and_process_footprint_sampled_at_selected_boundaries",
     ]
     if route == "workbench032" {

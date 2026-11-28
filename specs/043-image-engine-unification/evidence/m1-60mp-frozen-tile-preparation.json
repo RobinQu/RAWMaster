@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-28",
+  "measuredCode": "Swift Release with testability, Rust scene, 9504×6336 Bayer fixture",
+  "measuredSourceParent": "2510a64775f748e7204607e44c53b0005a6589dd",
+  "measuredTrackedPatchSHA256": "d34e68e32aa11c52f5570463673001e1a33015ca99e89c2098f68e1ad707bd32",
+  "loadedImageRuntimeSHA256": "9533c454d50183b9b3b48476e455c9d6cdd3b683bd8f404da30a9561497d79f0",
+  "testBundleSHA256": {
+    "RAWMasterUITests": "a2227af7d249cc50994aaf48e1b33b0d8ef12b5bfb836809b48c783b3f72aa01",
+    "RAWMasterImagingTests": "9dc7abb23d262e006209c7cffb99a0c86d1d382452c08b228ac1737ebfc7a1d7"
+  },
+  "fullTimingReportSHA256": "039a64e5fa0c27b6ae8c19fe313483982b3f3ea4d8c28fc77e6131dc181f1368",
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "warmups": 5,
+  "measuredSamplesPerRoute": 30,
+  "preparationCounting": "Renderer and program counts are successful opens. Library API counts cover Swift DAG plus DRT and the new frozen Rust DAG. Driver compile and SDR trim shader are outside the count.",
+  "compilationEveryWarmTarget": {
+    "rendererBuildCount": 1,
+    "programCompileCount": 1,
+    "frozenProgramBuildCount": 1,
+    "libraryCompileCount": 3,
+    "swiftLibraryAPICallCount": 2,
+    "rustLibraryAPICallCount": 1,
+    "rustOpenAttemptsWithoutLibraryCount": 0
+  },
+  "independentlyCheckedWarmTargets": 120,
+  "fixtureIdentity": "032 repeats one persisted program. Component recreates node UUIDs per iteration with the same operator sequence and parameters, then freezes the graph for both renditions.",
+  "queueFileEquality": {
+    "avif": {
+      "equalSHA256": "cbc9026c0aac8fd3507e0d3c0124363daa22b1159fb6c8402f87406fe62520fa",
+      "outputsPerVersion": 36
+    },
+    "jpg": {
+      "equalSHA256": "861665410e945da9531d493f0ab6500b63e8f6420431d30f9e61e8e2a4c0f0c9",
+      "outputsPerVersion": 36
+    }
+  },
+  "queueSampledMetalMemory": {
+    "m0": {
+      "afterEachTargetPairMetalBytesMin": 5613453312,
+      "afterEachTargetPairMetalBytesMax": 5617647616,
+      "afterClosingLibraryOwners": {
+        "metalAllocatedBytes": 138166272,
+        "processPhysFootprintBytes": 1942260232
+      }
+    },
+    "m1": {
+      "afterEachTargetPairMetalBytesMin": 5550243840,
+      "afterEachTargetPairMetalBytesMax": 5551292416,
+      "afterClosingLibraryOwners": {
+        "metalAllocatedBytes": 133971968,
+        "processPhysFootprintBytes": 1668434440
+      }
+    }
+  },
+  "routes": {
+    "component": {
+      "m0WallMs": {
+        "n": 30,
+        "p50Ms": 1732.948604,
+        "p95Ms": 1804.679708
+      },
+      "m1WallMs": {
+        "n": 30,
+        "p50Ms": 1724.143375,
+        "p95Ms": 1790.607292
+      },
+      "warmP95LimitMs": 1894.913693,
+      "p95GatePassed": true,
+      "workflowDigestsAcrossSweep": 36,
+      "targets": {
+        "avif10": {
+          "m0StageSamples": {
+            "dag.swift_bridge.init": 1080,
+            "dag.swift_bridge.encode": 1050,
+            "dag.rust.open": 1050,
+            "drt.init": 30
+          },
+          "m1StageSamples": {
+            "dag.swift_bridge.init": 30,
+            "dag.swift_bridge.encode": 30,
+            "dag.rust.open": 30,
+            "drt.init": 30
+          },
+          "m0RustOpenP50Ms": 4.120585,
+          "m1RustOpenP50Ms": 0.28883349999999997,
+          "graphReceiptAllWarmTargets": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          }
+        },
+        "jpeg8": {
+          "m0StageSamples": {
+            "dag.swift_bridge.init": 1080,
+            "dag.swift_bridge.encode": 1050,
+            "dag.rust.open": 1050,
+            "drt.init": 30
+          },
+          "m1StageSamples": {
+            "dag.swift_bridge.init": 30,
+            "dag.swift_bridge.encode": 30,
+            "dag.rust.open": 30,
+            "drt.init": 30
+          },
+          "m0RustOpenP50Ms": 4.240855,
+          "m1RustOpenP50Ms": 0.35556200000000004,
+          "graphReceiptAllWarmTargets": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          }
+        }
+      }
+    },
+    "032-avif10": {
+      "m0WallMs": {
+        "n": 30,
+        "p50Ms": 1354.6690210000002,
+        "p95Ms": 1409.240708
+      },
+      "m1WallMs": {
+        "n": 30,
+        "p50Ms": 1353.7023330000002,
+        "p95Ms": 1397.079334
+      },
+      "warmP95LimitMs": 1479.702743,
+      "p95GatePassed": true,
+      "workflowDigestsAcrossSweep": 1,
+      "targets": {
+        "avif10": {
+          "m0StageSamples": {
+            "dag.swift_bridge.init": 1080,
+            "dag.swift_bridge.encode": 1050,
+            "dag.rust.open": 1050,
+            "drt.init": 30
+          },
+          "m1StageSamples": {
+            "dag.swift_bridge.init": 30,
+            "dag.swift_bridge.encode": 30,
+            "dag.rust.open": 30,
+            "drt.init": 30
+          },
+          "m0RustOpenP50Ms": 4.119024,
+          "m1RustOpenP50Ms": 0.27389600000000003,
+          "graphReceiptAllWarmTargets": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          }
+        }
+      }
+    },
+    "032-jpeg8": {
+      "m0WallMs": {
+        "n": 30,
+        "p50Ms": 588.699771,
+        "p95Ms": 601.354292
+      },
+      "m1WallMs": {
+        "n": 30,
+        "p50Ms": 576.107438,
+        "p95Ms": 607.068291
+      },
+      "warmP95LimitMs": 631.422007,
+      "p95GatePassed": true,
+      "workflowDigestsAcrossSweep": 1,
+      "targets": {
+        "jpeg8": {
+          "m0StageSamples": {
+            "dag.swift_bridge.init": 1080,
+            "dag.swift_bridge.encode": 1050,
+            "dag.rust.open": 1050,
+            "drt.init": 30
+          },
+          "m1StageSamples": {
+            "dag.swift_bridge.init": 30,
+            "dag.swift_bridge.encode": 30,
+            "dag.rust.open": 30,
+            "drt.init": 30
+          },
+          "m0RustOpenP50Ms": 4.124435,
+          "m1RustOpenP50Ms": 0.2749585,
+          "graphReceiptAllWarmTargets": {
+            "accountedPeakBytes": 1458929664,
+            "backend": "mixed",
+            "budgetBytes": 1610612736,
+            "coverageCacheHits": 0,
+            "dagBackend": "rust",
+            "dispatches": 105,
+            "nodeCacheHits": 0,
+            "nodes": 105,
+            "photographicEngine": "scene-photographic-v1-f32-metal",
+            "tiles": 35
+          }
+        }
+      }
+    }
+  },
+  "compatibility": {
+    "olderFrozenSymbolMissing": true,
+    "legacyRustMetalDispatched": 1,
+    "pixelBitExact": true,
+    "olderAppRuntimeSHA256": "d9950883297c4797a735081229ddff615dbcede7e73d193394048e9f5fa7f8ce"
+  },
+  "regression": {
+    "passed": 9,
+    "optInExcludedFromFocusedRun": 5,
+    "additionalNative60MPTestsPassed": 2,
+    "rustParserTestsPassed": 4
+  }
+}

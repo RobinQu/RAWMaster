@@ -323,11 +323,29 @@ pub struct SceneProgram {
     queue: metal::CommandQueue,
     color: metal::ComputePipelineState,
     coverage: metal::ComputePipelineState,
+    frozen_delivery: bool,
     state: Mutex<ExecutionState>,
 }
 
 impl SceneProgram {
     pub fn open(device_pointer: *mut c_void, document: &[u8]) -> Result<Self, SceneError> {
+        Self::open_with_policy(device_pointer, document, false, None)
+    }
+
+    pub fn open_frozen_delivery(
+        device_pointer: *mut c_void,
+        document: &[u8],
+        library_api_calls: &mut u32,
+    ) -> Result<Self, SceneError> {
+        Self::open_with_policy(device_pointer, document, true, Some(library_api_calls))
+    }
+
+    fn open_with_policy(
+        device_pointer: *mut c_void,
+        document: &[u8],
+        frozen_delivery: bool,
+        library_api_calls: Option<&mut u32>,
+    ) -> Result<Self, SceneError> {
         if device_pointer.is_null() {
             return Err(SceneError::Invalid("null Metal device".into()));
         }
@@ -336,6 +354,9 @@ impl SceneProgram {
         let device = wanted.to_owned();
         let options = metal::CompileOptions::new();
         options.set_fast_math_enabled(false);
+        if let Some(calls) = library_api_calls {
+            *calls += 1;
+        }
         let library = device
             .new_library_with_source(SHADER, &options)
             .map_err(|error| SceneError::Backend(format!("scene shader: {error}")))?;
@@ -357,6 +378,7 @@ impl SceneProgram {
             queue,
             color,
             coverage,
+            frozen_delivery,
             state: Mutex::new(ExecutionState::new(graph)),
         })
     }
@@ -368,6 +390,11 @@ impl SceneProgram {
     /// Replaces the graph for an existing topology. The parameter caches remain keyed by node
     /// content, so unchanged prefixes still hit while edited nodes miss.
     pub fn update(&self, document: &[u8]) -> Result<(), SceneError> {
+        if self.frozen_delivery {
+            return Err(SceneError::Invalid(
+                "a frozen scene delivery program cannot be updated".into(),
+            ));
+        }
         let (_, graph) = parse(document)?;
         let mut state = self
             .state
@@ -405,7 +432,7 @@ impl SceneProgram {
             external_coverages,
             &current,
             &mut state,
-            true,
+            !self.frozen_delivery,
             &mut peak,
         );
         if let Err(error) = &result {

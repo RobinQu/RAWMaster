@@ -1,6 +1,6 @@
 # 043 · 实施计划
 
-2026-11-28 · **M0 进行中。** 032 的 V1 回执修复已通过双端验证，继续采集同构建分项与外部对照基线，再将场景图接入 Rust + wgpu/WGSL 主干。首条 WGSL 场景 DAG 同时在 macOS Metal 和 Linux 实体 Vulkan 上复验。[规格](spec.md) · [任务清单](tasks.md) · [验收基线](validation.md)
+2026-11-28 · **M0 外部对标继续采集，M1 目标内程序复用已实测。** 032 的 V1 回执和原生分项基线已通过验证。首条 Rust + wgpu/WGSL 场景 DAG 在 macOS Metal 和 Linux 实体 Vulkan 上对照。[规格](spec.md) · [任务清单](tasks.md) · [验收基线](validation.md)
 
 ## 1. 当前代码边界
 
@@ -54,7 +54,7 @@ Modules/ImageEdit/src/
 
 ### M1 · 去重
 
-1. **复用瓦片准备。** 同设备复用已编译 pipeline、验证后的 SceneProgram 与输出阶段。瓦片单独绑定纹理、原点和预算，交付只保留有复用价值的缓存。计数 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`。
+1. **复用瓦片准备。** 同一个交付目标复用 renderer、冻结 SceneProgram 与输出阶段。瓦片单独绑定纹理、原点和预算，冻结程序不保留瓦片间的像素和 coverage。计数 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount` 已在 60 MP 三路实测。[目标内复用验收](validation.md#m1--去重)
 2. **同输入共享。** 当前双目标组件已共用一次 mosaic 读取和上传。评估共享逐瓦片显影与 DAG，再各跑 DRT。两张全幅 F32 终端纹理已超过当前 1.5 GiB 图预算，先验证有界暂存和输出/编码峰值，再给通过的路由启用共享并核对 032 的独立目标、取消与续跑。其余路由沿用逐目标渲染。
 3. **合并提交。** 从同队列的图、DRT 和 blit 开始。Swift/CI/编码等跨边界沿生产者完成信号和消费者生命期交接。逐段核对完成状态、像素、迟到结果及真实等待下降。
 4. **形状缓存。** 规范化节点形状、依赖与输出选择。设备级缓存复用 `MTLLibrary`/pipeline，并与每次绑定、结果缓存和资源身份解耦，为 M2 的 wgpu pipeline 接入保留同一键规则。

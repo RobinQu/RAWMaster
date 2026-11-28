@@ -6,13 +6,27 @@ import RAWMasterImage
 /// Thin Swift owner for the Rust scene-linear graph executor. The Swift Metal graph remains the
 /// reference implementation; this backend is only selected after the shadow comparison passes.
 final class RustSceneGraphRenderer {
-    private let device: any MTLDevice
-    private let surfaceBudget: Int
-    private var programs: [String: RAWMasterImageKernel.SceneProgram] = [:]
+    typealias FrozenOpen = (Data, any MTLDevice, inout UInt32) throws -> RAWMasterImageKernel.SceneProgram?
+    private typealias Program = RAWMasterImageKernel.SceneProgram
+    private typealias Scope = DevelopmentSceneGraphV1.Scope
 
-    init(device: any MTLDevice, surfaceBudget: Int) {
+    private enum Reuse {
+        case editable
+        case frozenDelivery
+        case legacyDelivery
+        case frozen(Program, Scope)
+    }
+
+    private let device: any MTLDevice
+    private let openFrozen: FrozenOpen
+    private var reuse: Reuse
+    private var programs: [String: Program] = [:]
+
+    init(device: any MTLDevice, frozenDelivery: Bool = false,
+         openFrozen: @escaping FrozenOpen = RAWMasterImageKernel.SceneProgram.openFrozenDelivery) {
         self.device = device
-        self.surfaceBudget = surfaceBudget
+        self.openFrozen = openFrozen
+        reuse = frozenDelivery ? .frozenDelivery : .editable
     }
 
     enum Mode { case auto, rust, swift }
@@ -28,27 +42,10 @@ final class RustSceneGraphRenderer {
     func render(input: any MTLTexture,
                 graph: DevelopmentSceneGraphV1, view: DevelopmentSceneGraphV1.View,
                 origin: SIMD2<Int>, geometry: SIMD2<Int>,
-                tileEdge: Int?, sourceRevision: UInt64,
+                surfaceBudget: Int, tileEdge: Int?, sourceRevision: UInt64,
                 coverages: [UUID: any MTLTexture] = [:]) throws
       -> (texture: any MTLTexture, receipt: RAWMasterImageKernel.SceneProgram.SceneReceipt) {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        let data = try SceneDeliveryTrace.measure(.dagBridgeEncode) { try encoder.encode(Document(graph: graph.graph)) }
-        let key = Self.topology(graph.graph)
-        let program: RAWMasterImageKernel.SceneProgram
-        if let cached = programs[key] {
-            // Same node identity and scope nesting: swap parameters in place so the Rust prefix
-            // cache can keep unchanged nodes across an edit.
-            try SceneDeliveryTrace.measure(.dagUpdate) { try cached.update(graph: data) }
-            program = cached
-        } else {
-            if programs.count >= 8 { programs.removeAll(keepingCapacity: true) }
-            let created = try SceneDeliveryTrace.measure(.dagOpen) {
-                try RAWMasterImageKernel.SceneProgram(graph: data, device: device)
-            }
-            programs[key] = created
-            program = created
-        }
+        let program = try preparedProgram(graph.graph)
         let sceneView: RAWMasterImageKernel.SceneView = switch view.target {
         case .final: .final
         case .bypass: .bypass
@@ -66,6 +63,56 @@ final class RustSceneGraphRenderer {
         } catch RAWMasterImageKernel.Failure.surfaceBudget {
             throw DevelopmentSceneGraphRendererV1.Failure.surfaceBudget
         }
+    }
+
+    private func preparedProgram(_ scope: Scope) throws -> Program {
+        switch reuse {
+        case .frozen(let program, let frozenScope):
+            guard scope == frozenScope else { throw RAWMasterImageKernel.Failure.invalidParameters }
+            return program
+        case .frozenDelivery:
+            let data = try Self.encode(scope)
+            return try SceneDeliveryTrace.measure(.dagOpen) {
+                var libraryCalls: UInt32 = 0
+                defer {
+                    if libraryCalls > 0 { SceneDeliveryTrace.recordPreparation(.rustLibraryCalls(Int(libraryCalls))) }
+                }
+                if let program = try openFrozen(data, device, &libraryCalls) {
+                    reuse = .frozen(program, scope)
+                    SceneDeliveryTrace.recordPreparation(.programOpened(frozen: true))
+                    return program
+                }
+                reuse = .legacyDelivery
+                return try openEditable(data)
+            }
+        case .legacyDelivery:
+            let data = try Self.encode(scope)
+            return try SceneDeliveryTrace.measure(.dagOpen) { try openEditable(data) }
+        case .editable:
+            let data = try Self.encode(scope)
+            let key = Self.topology(scope)
+            if let cached = programs[key] {
+                try SceneDeliveryTrace.measure(.dagUpdate) { try cached.update(graph: data) }
+                return cached
+            }
+            if programs.count >= 8 { programs.removeAll(keepingCapacity: true) }
+            let created = try SceneDeliveryTrace.measure(.dagOpen) { try openEditable(data) }
+            programs[key] = created
+            return created
+        }
+    }
+
+    private func openEditable(_ data: Data) throws -> Program {
+        SceneDeliveryTrace.recordPreparation(.rustOpenWithoutLibraryCount)
+        let program = try Program(graph: data, device: device)
+        SceneDeliveryTrace.recordPreparation(.programOpened(frozen: false))
+        return program
+    }
+
+    private static func encode(_ scope: Scope) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        return try SceneDeliveryTrace.measure(.dagBridgeEncode) { try encoder.encode(Document(graph: scope)) }
     }
 
     /// Programs are reusable while node identities and group nesting stay fixed. Node parameter
