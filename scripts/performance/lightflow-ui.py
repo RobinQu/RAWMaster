@@ -27,7 +27,7 @@ from urllib.request import urlopen
 
 import websocket
 
-from canvas_latency import POLICY, load_frames, score
+from canvas_latency import POLICY, load_frames, score, warmup_states
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CHROME = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
@@ -599,10 +599,11 @@ def capture_compositor(cdp, session, args):
 def capture(cdp, session, args):
     if not session.get("visible", False):
         raise ValueError("ScreenCaptureKit requires a session started with --visible")
-    if args.output.exists() or args.samples < 2 or args.settle < 0.5:
+    if args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5:
         raise ValueError(
-            "new output file, at least two samples and 0.5 s settle required"
+            "new output file, at least two measured samples, nonnegative warmup and 0.5 s settle required"
         )
+    warmup_order = warmup_states(args.warmup)
     with args.raw.open("rb") as source:
         if hashlib.file_digest(source, "sha256").hexdigest() != session["sourceSHA256"]:
             raise ValueError("Photo changed since the stock editor opened it")
@@ -627,6 +628,8 @@ def capture(cdp, session, args):
     expected_height = args.photo_width * view["frame"]["frameH"] / view["frame"]["frameW"]
     if abs(bounds[2] - args.photo_width) > 1 or abs(bounds[3] - expected_height) > 1:
         raise ValueError("Visible photo does not match the requested real RAW display size")
+    with args.binary.open("rb") as binary:
+        recorder_hash = hashlib.file_digest(binary, "sha256").hexdigest()
     result = {
         "schemaVersion": 1,
         "protocol": "screen-photo-response-v1",
@@ -637,6 +640,10 @@ def capture(cdp, session, args):
             ["sysctl", "-n", "hw.model"], text=True
         ).strip(),
         "os": platform.mac_ver()[0],
+        "osBuild": subprocess.check_output(["sw_vers", "-buildVersion"], text=True).strip(),
+        "requestedWarmSamples": args.samples,
+        "requestedWarmupInputs": args.warmup,
+        "recorderSHA256": recorder_hash,
         "browser": cdp.call("Browser.getVersion")["product"],
         "browserBinarySHA256":session["browserBinarySHA256"],"windowBundle":bundle,
         "driver": "Trusted Return on prepared LightFlow numeric control through local Chrome DevTools; reads committed slider value",
@@ -682,7 +689,9 @@ def capture(cdp, session, args):
                     }
 
                 # Both calibration targets must be real transitions, even when the initial UI contains zero.
-                set_value(second)
+                seed = (first, second)[1 - warmup_order[0]] if warmup_order else second
+                if not set_value(seed)["accepted"] and warmup_order:
+                    raise ValueError("Could not prepare the initial state for warmup")
                 time.sleep(args.settle)
                 file = Path(temp) / f"{identity}.bin"
                 stream = subprocess.Popen(
@@ -698,7 +707,7 @@ def capture(cdp, session, args):
                     stdout=subprocess.PIPE,
                     text=True,
                 )
-                events = []
+                warmup, events = [], []
                 try:
                     with selectors.DefaultSelector() as selector:
                         selector.register(stream.stdout, selectors.EVENT_READ)
@@ -709,6 +718,9 @@ def capture(cdp, session, args):
                             raise ValueError(
                                 "ScreenCaptureKit did not supply an initial frame"
                             )
+                    for state in warmup_order:
+                        warmup.append(dict(set_value((first, second)[state]), state=state))
+                        time.sleep(args.settle)
                     for i in range(args.samples + 2):
                         state = i % 2
                         events.append(
@@ -730,15 +742,20 @@ def capture(cdp, session, args):
                 if photo_roi(view_geometry(cdp), window)[0] != bounds:
                     raise ValueError("displayed image bounds changed during the test")
                 row = score(load_frames(file), events, end)
+                if not all(event["accepted"] for event in warmup):
+                    row.update(status="inconclusive", reason="An unscored warmup did not commit its requested value")
                 if frame_folder:
                     shutil.copyfile(file,frame_folder/(identity+".bin"))
-                    (frame_folder/(identity+".json")).write_text(json.dumps({"events":events,"endNs":end},indent=2)+"\n")
+                    markers = {"events": events, "warmup": warmup, "endNs": end}
+                    (frame_folder/(identity+".json")).write_text(json.dumps(markers,indent=2)+"\n")
                 row.update(
                     values=[first, second],
                     displayLabel=control["label"],
                     calibration=events[:2],
                     scope="central 60% of displayed photo",
                 )
+                if args.warmup:
+                    row["warmup"] = warmup
             except (
                 OSError,
                 RuntimeError,
@@ -756,10 +773,8 @@ def capture(cdp, session, args):
         raise ValueError("RAW source identity changed")
     save()
     if frame_folder and session.get("electron"):
-        with args.binary.open("rb") as binary:
-            recorder_hash = hashlib.file_digest(binary, "sha256").hexdigest()
         collection = {key: session[key] for key in ("electron", "windowBundle", "browserBinarySHA256")}
-        collection.update(recorderSHA256=recorder_hash, settleSeconds=args.settle, measuredInputs=args.samples,
+        collection.update(recorderSHA256=recorder_hash, settleSeconds=args.settle, measuredInputs=args.samples, warmupInputs=args.warmup,
                           windowLevel="kCGDesktopIconWindowLevel + 1", activationPolicy="prohibited")
         (frame_folder / "collection.json").write_text(json.dumps(collection, indent=2) + "\n")
         shutil.copyfile(args.output, frame_folder / "observations.json")
@@ -797,6 +812,7 @@ def main():
     run.add_argument("--operations", nargs="+", choices=CASES)
     run.add_argument("--photo-width", type=int, default=2368)
     run.add_argument("--samples", type=int, default=10)
+    run.add_argument("--warmup", type=int, default=0, help="Unscored alternating changes before A/B calibration")
     run.add_argument("--settle", type=float, default=0.8)
     compositor = commands.add_parser("compositor")
     compositor.add_argument("--session", type=Path, required=True)

@@ -9,6 +9,11 @@ POLICY = {"roiGrid": [96, 64], "captureHz": 60, "minimumSeparationRGB8": 0.03,
           "firstFraction": 0.2, "finalToleranceFraction": 0.15, "plateauMs": 120}
 
 
+def warmup_states(count):
+    """Alternate A/B and leave B active before recording calibration A."""
+    return [(index + count) % 2 for index in range(count)]
+
+
 def load_frames(path: Path):
     record = struct.Struct(f">Q{RGB_BYTES}s")
     with path.open("rb") as stream:

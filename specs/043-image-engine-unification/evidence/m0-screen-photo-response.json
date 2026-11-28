@@ -1,0 +1,871 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "scope": "two fresh products and archived Adobe observations",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "physicalPhotoPixels": [
+    2368,
+    1579
+  ],
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "freshInputs": {
+    "RAWMaster": {
+      "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "startedAt": "2026-11-28T02:08:30.941721+00:00",
+      "finishedAt": "2026-11-28T02:11:54.341844+00:00",
+      "build": "Release, -O with testability enabled",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "testBundleSHA256": "9b52d9af2ea275c690ab3efc0462bd54b8c21c22e62879f04259c29d4c199366",
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "photoRectPixels": [
+        656,
+        49,
+        2368,
+        1579
+      ],
+      "window": {
+        "id": 69396,
+        "scale": 2,
+        "title": "RAWMaster Presented Canvas 7533EBDC-0775-479D-B317-545B5B8AB810",
+        "frame": [
+          108,
+          214,
+          1840,
+          902
+        ]
+      },
+      "osBuild": "26A434",
+      "reportSHA256": "0be8857d9fea0050ad968a9f847d5d2827bdf8d4a2c9250b4b83329741585690",
+      "sourceCommit": "e419c425c05397c37d7e05437070b7731fff922e",
+      "roiFrameArchiveSHA256": "c3438185bda52e4ed1a22f0905a3c0250a72be6fba431a5326dfc9104524f022"
+    },
+    "LightFlow": {
+      "driver": "Trusted Return on prepared LightFlow numeric control through local Chrome DevTools; reads committed slider value",
+      "startedAt": "2026-11-28T02:03:37.673345+00:00",
+      "finishedAt": "2026-11-28T02:06:54.102295+00:00",
+      "build": "2d41ab1",
+      "browser": "Chrome/146.0.7680.188",
+      "browserBinarySHA256": "5e925bf7d5c832c643d3fb141bd960250635304f512625050a8942ca539154db",
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "photoRectPixels": [
+        503,
+        215,
+        2368,
+        1579
+      ],
+      "uiSHA256": {
+        "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+        "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+        "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+        "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+        "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+        "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+        "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+        "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+        "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+        "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+        "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+        "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+        "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+        "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+        "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+        "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+        "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+        "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+        "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+        "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+        "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+        "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+        "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+        "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+        "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+        "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+        "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+        "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+        "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+        "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+        "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+      },
+      "window": {
+        "id": 69123,
+        "title": "LightFlow RAW benchmark 87dfb1bb",
+        "frame": [
+          2,
+          41,
+          1780,
+          1090
+        ],
+        "scale": 2
+      },
+      "osBuild": "26A434",
+      "reportSHA256": "639171f1ff15b48fb15c707d7f5bfcdf116e2408aeb113dc316a1d98e102e350",
+      "roiFrameArchiveSHA256": "73bd320153ed2373a6de016575bbcf2dfa9ec15bb0a739a3bce8865dbc0ea09f"
+    }
+  },
+  "operations": {
+    "light-exposure": {
+      "values": [
+        0,
+        0.5
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 28.699208,
+          "p95Ms": 39.306542,
+          "stableTargetDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "aa2bae25fdf4187415ce21011955cf08d47e337b4ee520ad01f4c6bb37622632"
+          ],
+          "firstMs": [
+            28.485583,
+            36.688333,
+            23.230208,
+            24.563125,
+            19.146625,
+            22.920666,
+            29.324,
+            35.525834,
+            18.3645,
+            28.445708,
+            35.454209,
+            36.201541,
+            29.899417,
+            48.435583,
+            19.603208,
+            27.556875,
+            22.09375,
+            29.165584,
+            36.47625,
+            28.401958,
+            15.724334,
+            33.389458,
+            28.928042,
+            28.912833,
+            17.785209,
+            39.306542,
+            18.387917,
+            31.093541,
+            20.179917,
+            31.172291
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 27.4044375,
+          "p95Ms": 47.782125,
+          "stableTargetDigests": [
+            "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+            "30ad331bc19dd180e14a34679b13b112396c87ff6aafc24c226c14930c4b0583"
+          ],
+          "firstMs": [
+            31.364166,
+            26.069792,
+            27.383875,
+            26.032625,
+            24.981166,
+            39.634666,
+            24.799417,
+            39.009208,
+            24.505833,
+            50.972083,
+            28.198375,
+            44.949958,
+            25.166583,
+            36.642416,
+            27.125917,
+            29.898541,
+            25.690334,
+            22.130792,
+            26.707958,
+            40.76275,
+            23.815667,
+            24.200625,
+            27.357291,
+            47.782125,
+            27.425,
+            42.834125,
+            36.171958,
+            26.733875,
+            31.028708,
+            36.92975
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 107.0233335,
+          "p95Ms": 125.542875,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "3d696dc46ab199dea14e64e4249c8d02681252cc53f620a7875307b58d43377d"
+          ],
+          "firstMs": [
+            118.013,
+            86.425708,
+            125.542875,
+            124.300375,
+            90.034917,
+            93.36,
+            92.062125,
+            101.448375,
+            123.434042,
+            112.598292
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 30.14488125,
+        "p95Ms": 57.33855
+      },
+      "freshLightFlowWithin": {
+        "medianMs": true,
+        "p95Ms": true
+      }
+    },
+    "light-contrast": {
+      "values": [
+        0,
+        30
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 29.310187499999998,
+          "p95Ms": 39.001375,
+          "stableTargetDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "07522c5af8739341a175645c3f749a01b210274b760f9b66a49da92e4c0f2e21"
+          ],
+          "firstMs": [
+            17.794334,
+            28.015083,
+            28.236709,
+            29.130625,
+            24.247834,
+            37.227541,
+            26.231125,
+            23.948042,
+            33.67325,
+            35.008667,
+            32.646375,
+            22.399417,
+            34.338917,
+            38.026459,
+            19.532,
+            26.69175,
+            33.664084,
+            30.345,
+            26.232375,
+            40.935208,
+            22.684625,
+            27.438833,
+            33.872917,
+            33.02825,
+            26.127958,
+            29.48975,
+            23.357167,
+            30.214084,
+            39.001375,
+            37.873542
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 29.413874999999997,
+          "p95Ms": 39.768458,
+          "stableTargetDigests": [
+            "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+            "8ce56b4d129af62ac0d35a038aa54d8cf57ebeb58696568706e0b460f1920661"
+          ],
+          "firstMs": [
+            26.853333,
+            31.130791,
+            30.163375,
+            32.969125,
+            27.76775,
+            29.109583,
+            26.090791,
+            26.152667,
+            29.881708,
+            25.149667,
+            32.330875,
+            29.229666,
+            27.819209,
+            23.752167,
+            34.401,
+            39.768458,
+            26.377833,
+            44.651834,
+            38.239833,
+            31.09275,
+            25.064958,
+            29.545125,
+            37.55925,
+            29.282625,
+            27.349625,
+            26.559708,
+            34.660875,
+            36.635583,
+            30.361875,
+            26.93675
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 91.7155625,
+          "p95Ms": 118.53325,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "693b3a01fec13183e7d2792df18641f33ee1f720f918eee32cb7b31ad02272fe"
+          ],
+          "firstMs": [
+            118.53325,
+            87.641792,
+            90.052417,
+            87.582167,
+            95.745792,
+            93.378708,
+            102.266583,
+            107.436208,
+            77.414833,
+            88.122041
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 32.355262499999995,
+        "p95Ms": 47.7221496
+      },
+      "freshLightFlowWithin": {
+        "medianMs": true,
+        "p95Ms": true
+      }
+    },
+    "light-highlights": {
+      "values": [
+        0,
+        30
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 51.983709000000005,
+          "p95Ms": 75.84725,
+          "stableTargetDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "32c6cc0b5c9ffdb344000cb3e3a0ec4f6f49cbf73d716b351b882f6311d14077"
+          ],
+          "firstMs": [
+            66.009292,
+            32.410667,
+            74.995167,
+            27.040625,
+            64.824417,
+            29.472083,
+            60.495209,
+            43.472209,
+            68.194541,
+            29.61725,
+            67.156417,
+            32.266083,
+            75.84725,
+            35.014334,
+            66.243708,
+            23.42975,
+            68.274334,
+            33.202417,
+            62.063791,
+            32.072333,
+            76.385292,
+            25.30975,
+            68.20375,
+            34.829041,
+            67.04975,
+            39.453,
+            66.3135,
+            34.187667,
+            66.555916,
+            27.933125
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 29.584270500000002,
+          "p95Ms": 37.782917,
+          "stableTargetDigests": [
+            "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+            "c6613ebf4e1bb2981911ca965ec552839d80d760b74f983aeecaa1ea3b0a4021"
+          ],
+          "firstMs": [
+            31.534083,
+            27.035084,
+            30.766833,
+            34.106459,
+            28.676083,
+            33.566542,
+            34.976167,
+            25.131875,
+            25.057792,
+            26.73325,
+            32.921375,
+            25.300916,
+            37.782917,
+            26.033167,
+            37.345791,
+            26.958125,
+            37.338792,
+            33.694209,
+            37.077334,
+            23.105708,
+            25.537959,
+            30.358208,
+            29.042166,
+            43.407,
+            35.653375,
+            27.015583,
+            25.8605,
+            25.536667,
+            24.829208,
+            30.126375
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 109.08500000000001,
+          "p95Ms": 122.073292,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "ee1d83b42732c2b28adf0c832cf44be563cd4d46b3d4193d554ef17aead4054c"
+          ],
+          "firstMs": [
+            112.275583,
+            92.082,
+            82.923625,
+            122.073292,
+            100.21925,
+            116.531125,
+            84.787792,
+            114.377417,
+            107.294667,
+            110.875333
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 32.54269755,
+        "p95Ms": 45.3395004
+      },
+      "freshLightFlowWithin": {
+        "medianMs": false,
+        "p95Ms": false
+      }
+    },
+    "light-shadows": {
+      "values": [
+        0,
+        30
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 53.469604000000004,
+          "p95Ms": 79.342625,
+          "stableTargetDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "210966d9b378c184ab6317290f7de3ae5565166da77a9be51d1c091aa299a9f0"
+          ],
+          "firstMs": [
+            69.082083,
+            34.687041,
+            65.801625,
+            41.366375,
+            66.250083,
+            37.874875,
+            65.084458,
+            29.471417,
+            67.835792,
+            40.892417,
+            68.471041,
+            33.996167,
+            66.057959,
+            28.276542,
+            64.704375,
+            43.17875,
+            79.342625,
+            24.137958,
+            63.760458,
+            28.704584,
+            65.522084,
+            21.785708,
+            68.081083,
+            33.676709,
+            79.6275,
+            31.639541,
+            65.888459,
+            31.2365,
+            65.292375,
+            24.506042
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 28.660229,
+          "p95Ms": 39.020625,
+          "stableTargetDigests": [
+            "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+            "6da5e8b1f1ec2e78107d7011bb0bf8372159d1f8de04c8e9e374a1bef6a79da1"
+          ],
+          "firstMs": [
+            27.395417,
+            26.1525,
+            27.496291,
+            36.189,
+            24.347042,
+            33.071834,
+            26.780875,
+            30.276125,
+            26.07,
+            22.636709,
+            39.020625,
+            30.120541,
+            33.52725,
+            38.408625,
+            25.10125,
+            28.531375,
+            33.183458,
+            22.43175,
+            23.948625,
+            27.149209,
+            36.418375,
+            28.419666,
+            36.230417,
+            32.200458,
+            25.486958,
+            28.789083,
+            31.998,
+            41.381542,
+            22.866333,
+            39.013167
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 105.83737500000001,
+          "p95Ms": 136.320792,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "60e4aa5394357c411d3981a15c844e6954a3348ed6bdb0e2ff8fada6f40b335f"
+          ],
+          "firstMs": [
+            72.642125,
+            101.138083,
+            127.0015,
+            120.804041,
+            106.284125,
+            136.320792,
+            91.49125,
+            105.390625,
+            72.860709,
+            119.762083
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 31.526251900000002,
+        "p95Ms": 46.82475
+      },
+      "freshLightFlowWithin": {
+        "medianMs": false,
+        "p95Ms": false
+      }
+    },
+    "light-blacks": {
+      "values": [
+        0,
+        30
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 30.872687,
+          "p95Ms": 37.185125,
+          "stableTargetDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "6465a962151eb643a1c936c059946bdcd09f4897bbdf286079b4146c2ada9c75"
+          ],
+          "firstMs": [
+            32.231791,
+            36.33275,
+            17.90275,
+            24.026666,
+            16.5075,
+            23.341667,
+            31.892125,
+            37.185125,
+            29.914125,
+            36.803166,
+            35.185625,
+            34.63525,
+            32.6085,
+            29.905708,
+            17.174917,
+            23.250333,
+            25.856541,
+            37.689666,
+            24.949875,
+            30.825333,
+            15.779833,
+            32.549125,
+            17.464209,
+            30.920041,
+            29.731417,
+            22.992083,
+            34.399542,
+            35.176541,
+            34.934375,
+            31.491166
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 29.031582999999998,
+          "p95Ms": 35.621,
+          "stableTargetDigests": [
+            "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+            "bf4ed115aeb99d8cc210e015a5ada69dc6fcf3bfae8c82ea967c1f6c7f4caff1"
+          ],
+          "firstMs": [
+            28.027375,
+            35.603709,
+            30.546459,
+            28.844292,
+            29.108583,
+            29.216083,
+            26.456959,
+            24.869459,
+            34.450583,
+            31.707042,
+            30.18475,
+            28.954583,
+            33.745875,
+            25.42925,
+            31.565917,
+            35.10075,
+            28.612166,
+            21.067542,
+            34.44525,
+            28.37275,
+            27.545666,
+            28.564125,
+            27.24475,
+            35.621,
+            27.484292,
+            44.157333,
+            24.59325,
+            25.318417,
+            32.090375,
+            31.228167
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 98.132646,
+          "p95Ms": 138.857416,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "cca6b6cb4eae7442999b6a4c1e0a75fc2302f877e7b8f3709734c910b8caac99"
+          ],
+          "firstMs": [
+            95.27525,
+            138.857416,
+            78.292292,
+            126.057916,
+            100.699083,
+            120.202417,
+            72.958459,
+            123.559542,
+            92.125834,
+            95.566209
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 31.9347413,
+        "p95Ms": 42.745200000000004
+      },
+      "freshLightFlowWithin": {
+        "medianMs": true,
+        "p95Ms": true
+      }
+    },
+    "color-tint": {
+      "values": [
+        16,
+        40
+      ],
+      "observations": {
+        "RAWMaster": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 30.827479,
+          "p95Ms": 41.257084,
+          "stableTargetDigests": [
+            "aa0b08b9f1ace289e3ecabcec442a4fa2ed1e4f3c5ec6d34e27247771bbf0c25",
+            "5db8245e8174200a8f2855e82964e6e6b1a703a3e2d7d1c52f64ceeb1b7f8b9c"
+          ],
+          "firstMs": [
+            33.911875,
+            36.065459,
+            27.421958,
+            33.371541,
+            32.461958,
+            29.078666,
+            28.944833,
+            33.738917,
+            41.257084,
+            27.042416,
+            34.3265,
+            25.847416,
+            23.417208,
+            35.945625,
+            35.536042,
+            33.023208,
+            39.5385,
+            41.954459,
+            32.407208,
+            23.594375,
+            33.046166,
+            21.117542,
+            29.768167,
+            21.822291,
+            30.20175,
+            28.716083,
+            25.339875,
+            26.71175,
+            21.915833,
+            31.453208
+          ]
+        },
+        "LightFlow": {
+          "warmup": 5,
+          "n": 30,
+          "medianMs": 27.93075,
+          "p95Ms": 36.825375,
+          "stableTargetDigests": [
+            "28a854093289d1df2f5e830e821811bf651dc4bff56b70ab7c716fa0ca921ec4",
+            "6216f60ae45783bdf5ca91899123361f0aa38d4b8a9e3426b2f57482d40098a9"
+          ],
+          "firstMs": [
+            23.194875,
+            19.890125,
+            36.114583,
+            36.825375,
+            31.401292,
+            22.410375,
+            29.7835,
+            33.032334,
+            27.931625,
+            22.461542,
+            38.58375,
+            31.725833,
+            21.241875,
+            31.918458,
+            30.935459,
+            26.628291,
+            15.854083,
+            31.083916,
+            32.971209,
+            19.747,
+            33.556375,
+            18.463666,
+            21.836625,
+            27.171542,
+            20.575917,
+            25.442792,
+            21.176083,
+            31.983834,
+            28.908292,
+            27.929875
+          ]
+        },
+        "Camera Raw (history)": {
+          "warmup": 0,
+          "n": 10,
+          "medianMs": 104.9132915,
+          "p95Ms": 145.589709,
+          "stableTargetDigests": [
+            "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+            "d512d2ba4814ebb92b836d8dbcd44be327117e1536b5755f5ed2aa6136e1eb96"
+          ],
+          "firstMs": [
+            82.213292,
+            139.965334,
+            105.305666,
+            104.520917,
+            94.4695,
+            117.221083,
+            104.293958,
+            145.589709,
+            94.290625,
+            141.680292
+          ]
+        }
+      },
+      "freshLightFlowLimitsMs": {
+        "medianMs": 30.723824999999998,
+        "p95Ms": 44.19045
+      },
+      "freshLightFlowWithin": {
+        "medianMs": false,
+        "p95Ms": true
+      }
+    }
+  },
+  "threeWayQualified": false,
+  "reason": "fresh Camera Raw collection pending",
+  "historyReference": {
+    "driver": "Physical numeric typing and Tab to ScreenCaptureKit witness; committed value read before the following edit",
+    "startedAt": "2026-11-22T09:41:15.674790+00:00",
+    "finishedAt": "2026-11-22T09:59:31.189111+00:00",
+    "photoRectPixels": [
+      16,
+      272,
+      2368,
+      1579
+    ],
+    "reportSHA256": "3c17a4af0fb423c75b3ed811d01dc889404e7a6d79dd5ff12fe1a7f59dc701c9"
+  }
+}

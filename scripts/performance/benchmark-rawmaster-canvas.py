@@ -9,12 +9,13 @@ from pathlib import Path
 import platform
 import runpy
 import selectors
+import shutil
 import signal
 import subprocess
 import tempfile
 import time
 
-from canvas_latency import POLICY, load_frames, score
+from canvas_latency import POLICY, load_frames, score, warmup_states
 
 ROOT = Path(__file__).resolve().parents[2]
 # Use the same published operation IDs and A/B settings as Adobe's driver.
@@ -43,17 +44,26 @@ def main():
                         default=ROOT / "output/RAWMaster.app/Contents/Resources/FlashRaw/libflashraw_capi.dylib",
                         help="FlashRaw dylib shipped in the release app (XCTest has its own bundle)")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
     parser.add_argument("--samples", default=10, type=int)
+    parser.add_argument("--warmup", default=0, type=int, help="Unscored alternating changes before A/B calibration")
     parser.add_argument("--settle", default=0.8, type=float)
     parser.add_argument("--operations", nargs="+", choices=CASES)
+    parser.add_argument("--scratch-path", type=Path, default=ROOT / ".build/native-presented-lab",
+                        help="SwiftPM build directory for the release canvas fixture")
     parser.add_argument("--skip-build", action="store_true", help="Use the already rebuilt Release test bundle")
     args = parser.parse_args()
     args.source, args.binary, args.output = (p.resolve() for p in (args.source, args.binary, args.output))
     args.flashraw_library = args.flashraw_library.resolve()
-    if args.output.exists() or args.samples < 2 or args.settle < 0.5 or not args.binary.is_file() or not args.source.is_file():
-        parser.error("Provide an existing RAW and recorder, a new output, and sufficient repetitions/settle interval")
+    if (args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5
+            or not args.binary.is_file() or not args.source.is_file()):
+        parser.error("Provide an existing RAW and recorder, a new output, a nonnegative warmup and sufficient repetitions/settle interval")
     if not args.flashraw_library.is_file():
         parser.error("Supply the packaged FlashRaw library using --flashraw-library")
+    warmup_order = warmup_states(args.warmup)
+    frame_folder = args.frames.resolve() if args.frames else None
+    if frame_folder:
+        frame_folder.mkdir(parents=True, exist_ok=False)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     result = {"schemaVersion": 1, "protocol": "screen-photo-response-v1",
               "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
@@ -64,6 +74,7 @@ def main():
               "sourceSHA256": digest(args.source), "os": platform.mac_ver()[0],
               "hardware": subprocess.check_output(["sysctl", "-n", "hw.model"], text=True).strip(),
               "osBuild": subprocess.check_output(["sw_vers", "-buildVersion"], text=True).strip(),
+              "requestedWarmSamples": args.samples, "requestedWarmupInputs": args.warmup,
               "recorderSHA256": digest(args.binary), "flashRawLibrarySHA256": digest(args.flashraw_library),
               "policy": POLICY, "operations": {}}
     with tempfile.TemporaryDirectory(prefix="rawmaster-native-presented-") as work:
@@ -72,7 +83,7 @@ def main():
             return folder / name
         # Compile with the same optimizer as the shipping executable. Testability permits
         # the fixture to drive the existing typed controls and observe the native canvas.
-        cmd = ["swift", "test", "--scratch-path", str(ROOT / ".build/native-presented-lab"),
+        cmd = ["swift", "test", "--scratch-path", str(args.scratch_path.resolve()),
                "-c", "release", "--jobs", "4", "-Xswiftc", "-enable-testing"]
         if args.skip_build:
             cmd.append("--skip-build")
@@ -130,6 +141,8 @@ def main():
                         # shipping UI. Visit B once so the first A and later A share the same
                         # enabled group, prepared state and complete recipe fingerprint.
                         precondition = request("set", key=key, value=b)
+                        if warmup_order and warmup_order[0] == 1 and not request("set", key=key, value=a)["accepted"]:
+                            raise ValueError("Could not prepare the initial state for warmup")
                     except ValueError as error:
                         result["operations"][key] = {"status": "inconclusive", "reason": str(error), "values": [a, b], "trials": []}
                         write(args.output, result)
@@ -139,13 +152,17 @@ def main():
                     raw = path(key + ".bin")
                     recorder = subprocess.Popen([args.binary, "capture", scope, str(meta["id"]),
                         *map(str, roi), raw], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-                    events = []
+                    warmup, events = [], []
                     try:
                         with selectors.DefaultSelector() as ready:
                             ready.register(recorder.stdout, selectors.EVENT_READ)
                             if not ready.select(15) or recorder.stdout.readline().strip() != "READY":
                                 raise ValueError("ScreenCaptureKit did not supply an initial photo frame")
                         time.sleep(0.15)
+                        for state in warmup_order:
+                            event = request("set", key=key, value=(a, b)[state])
+                            warmup.append(dict(event, state=state))
+                            time.sleep(args.settle)
                         for i in range(args.samples + 2):
                             state = i % 2
                             event = request("set", key=key, value=(a, b)[state])
@@ -163,14 +180,20 @@ def main():
                             recorder.wait()
                     if recorder.returncode:
                         raise RuntimeError("Canvas recorder failed")
-                    if len(events) == args.samples + 2 and (not precondition["accepted"] or not all(e["accepted"] for e in events[:2]) or
-                            any(e["recipeFingerprint"] != events[e["state"]]["recipeFingerprint"] for e in events)):
+                    if len(events) == args.samples + 2 and (not precondition["accepted"]
+                            or not all(e["accepted"] for e in warmup + events[:2])
+                            or any(e["recipeFingerprint"] != events[e["state"]]["recipeFingerprint"] for e in warmup + events)):
                         row = {"status": "inconclusive", "reason": "The accepted inputs did not reproduce the calibrated A/B recipes",
                                "inputEvents": events, "trials": []}
                     elif len(events) == args.samples + 2:
                         row = score(load_frames(raw), events, end)
                     row.update(values=[a, b], displayLabel=label, precondition=precondition, calibration=events[:2],
                                scope="central 60% of displayed photo")
+                    if args.warmup:
+                        row["warmup"] = warmup
+                    if frame_folder and len(events) == args.samples + 2:
+                        shutil.copyfile(raw, frame_folder / (key + ".bin"))
+                        write(frame_folder / (key + ".json"), {"events": events, "warmup": warmup, "endNs": end})
                     raw.unlink(missing_ok=True)
                     result["operations"][key] = row
                     write(args.output, result)
@@ -195,10 +218,18 @@ def main():
                         except subprocess.TimeoutExpired:
                             os.killpg(host.pid, signal.SIGKILL)
                             host.wait()
+    result["finishedAt"] = datetime.now(timezone.utc).isoformat()
     result["sourceSHA256After"] = digest(args.source)
     if result["sourceSHA256After"] != result["sourceSHA256"]:
         raise ValueError("Source hash changed during capture")
     write(args.output, result)
+    if frame_folder:
+        write(frame_folder / "collection.json", {"measuredInputs": args.samples, "warmupInputs": args.warmup,
+              "settleSeconds": args.settle, "recorderSHA256": result["recorderSHA256"],
+              "testBundleSHA256": result["testBundleSHA256"]})
+        observations = frame_folder / "observations.json"
+        if observations != args.output:
+            shutil.copyfile(args.output, observations)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ import subprocess
 import tempfile
 import time
 
-from canvas_latency import POLICY, load_frames, score
+from canvas_latency import POLICY, load_frames, score, warmup_states
 
 BUNDLE = "com.adobe.Photoshop"
 # Numeric controls in the Light, Color and Effects panels. UI labels are identified by OCR at their AX fields.
@@ -42,14 +42,16 @@ def main():
     parser.add_argument("--operations", nargs="+", choices=CASES)
     parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
     parser.add_argument("--samples", default=10, type=int)
+    parser.add_argument("--warmup", default=0, type=int, help="Unscored alternating changes before A/B calibration")
     parser.add_argument("--settle", default=0.8, type=float)
     args = parser.parse_args()
-    if args.output.exists() or args.samples < 2 or args.settle < 0.5:
-        parser.error("Provide a new output path, at least two alternating changes and a sufficient settle interval")
+    if args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5:
+        parser.error("Provide a new output path, at least two measured changes, a nonnegative warmup and a sufficient settle interval")
+    warmup_order = warmup_states(args.warmup)
     def native(*parts, timeout=25):
         return json.loads(subprocess.check_output([args.binary, *map(str, parts)], text=True, timeout=timeout))
-    def sha():
-        with args.source.open("rb") as stream:
+    def sha(path):
+        with path.open("rb") as stream:
             return hashlib.file_digest(stream, "sha256").hexdigest()
     native("activate", BUNDLE, args.window)
     matches = [w for w in native("list", BUNDLE) if w["title"] == args.window]
@@ -62,11 +64,13 @@ def main():
         raise ValueError("Photo bounds exceed window pixels")
     roi = [(x + pw * .2) / w, (y + ph * .2) / h, pw * .6 / w, ph * .6 / h]
     result = {"schemaVersion": 1, "protocol": "screen-photo-response-v1", "driver": "Native numeric typing and Tab; committed value read back",
-              "startedAt": datetime.now(timezone.utc).isoformat(), "sourceSHA256": sha(), "window": window,
+              "startedAt": datetime.now(timezone.utc).isoformat(), "sourceSHA256": sha(args.source), "window": window,
               "os": platform.mac_ver()[0], "hardware": subprocess.check_output(["sysctl", "-n", "hw.model"], text=True).strip(),
+              "osBuild": subprocess.check_output(["sw_vers", "-buildVersion"], text=True).strip(),
+              "requestedWarmSamples": args.samples, "requestedWarmupInputs": args.warmup, "recorderSHA256": sha(args.binary),
               "photoRectPixels": args.photo_rect, "roi": roi, "policy": POLICY, "operations": {}}
     def checkpoint():
-        result["sourceSHA256After"] = sha()
+        result["sourceSHA256After"] = sha(args.source)
         if result["sourceSHA256After"] != result["sourceSHA256"]:
             raise ValueError("RAW changed during capture")
         tmp_output = args.output.with_suffix(".tmp")
@@ -105,10 +109,13 @@ def main():
             stream_file = tmp / (key + ".bin")
             capture = subprocess.Popen([args.binary, "capture", BUNDLE, str(window["id"]), *map(str, roi), stream_file],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+            warmup = []
             events = []
             original = field["value"]
+            restore_needed = False
             def interrupted(reason):
                 result["interruption"] = {"operation":key,"completedInputs":len(events),"reason":reason,
+                                           "completedWarmupInputs":len(warmup),
                                            "observedAt":datetime.now(timezone.utc).isoformat()}
                 checkpoint()
             try:
@@ -116,6 +123,13 @@ def main():
                     selector.register(capture.stdout, selectors.EVENT_READ)
                     if not selector.select(20) or capture.stdout.readline().strip() != "READY":
                         raise ValueError("ScreenCaptureKit supplied no photo frame")
+                restore_needed = True
+                if warmup_order:
+                    set_value((first, second)[1 - warmup_order[0]])
+                    time.sleep(args.settle)
+                    for state in warmup_order:
+                        warmup.append(dict(set_value((first, second)[state]), state=state))
+                        time.sleep(args.settle)
                 for i in range(args.samples + 2):
                     state = i % 2
                     event = set_value((first, second)[state])
@@ -132,7 +146,7 @@ def main():
                 except subprocess.TimeoutExpired:
                     capture.kill()
                     capture.wait()
-                if events:
+                if restore_needed:
                     try:
                         restore = set_value(original)
                         time.sleep(args.settle)
@@ -144,23 +158,37 @@ def main():
                 raise RuntimeError("Window capture failed")
             # Adobe can publish an intermediate string (e.g. "3" before "+30").
             # Read the committed prior value before beginning the next input, including the restoration.
-            for event,following in zip(events,events[1:]+[restore]):
+            inputs = warmup + events
+            for event,following in zip(inputs,inputs[1:]+[restore]):
                 event["committedValue"] = following["old"]
                 event["accepted"] = float(following["old"]) == (first,second)[event["state"]]
             row = score(load_frames(stream_file), events, end_ns)
             if not all(t["accepted"] for t in events[:2]):
                 row.update(status="inconclusive",reason="A calibration input did not commit its requested value")
+            if warmup and (float(warmup[0]["old"]) != (first, second)[1 - warmup_order[0]]
+                           or not all(event["accepted"] for event in warmup)):
+                row.update(status="inconclusive", reason="An unscored warmup did not commit an alternating change")
             if args.frames:
                 shutil.copyfile(stream_file,args.frames/(key+".bin"))
-                (args.frames/(key+".json")).write_text(json.dumps({"events":events,"endNs":end_ns,"restoration":restore},indent=2)+"\n")
+                markers = {"events": events, "warmup": warmup, "endNs": end_ns, "restoration": restore}
+                (args.frames/(key+".json")).write_text(json.dumps(markers,indent=2)+"\n")
 
             row.update({"values": [first, second], "displayLabel": label, "ocrLabels": field["labelCandidates"],
                         "calibration": events[:2], "scope": "central 60% of displayed photo"})
+            if args.warmup:
+                row["warmup"] = warmup
             result["operations"][key] = row
             print(key, row["status"], flush=True)
             checkpoint()
     result["finishedAt"] = datetime.now(timezone.utc).isoformat()
     checkpoint()
+    if args.frames:
+        collection = {"measuredInputs": args.samples, "warmupInputs": args.warmup, "settleSeconds": args.settle,
+                      "lastScreenCaptureEndedAt": result["finishedAt"], "recorderSHA256": result["recorderSHA256"]}
+        (args.frames / "collection.json").write_text(json.dumps(collection, indent=2) + "\n")
+        observations = args.frames / "observations.json"
+        if observations.resolve() != args.output.resolve():
+            shutil.copyfile(args.output, observations)
 
 
 if __name__ == "__main__":

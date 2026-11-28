@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 import zipfile
 
-from canvas_latency import POLICY, load_frames, score
+from canvas_latency import POLICY, load_frames, score, warmup_states
 
 
 def digest(path):
@@ -19,9 +19,15 @@ def replay(path, raw_digest):
     with zipfile.ZipFile(path) as archive, tempfile.TemporaryDirectory() as scratch:
         capture = json.loads(archive.read("observations.json"))
         host = json.loads(archive.read("collection.json"))
+        samples = host["measuredInputs"]
+        warmup_count = host.get("warmupInputs", 0)
         if (capture["application"] != "LightFlow" or capture["protocol"] != "screen-photo-response-v1"
                 or capture["policy"] != POLICY or capture["sourceSHA256"] != raw_digest
                 or capture["sourceSHA256After"] != raw_digest or not capture["finishedAt"]
+                or type(samples) is not int or samples < 2 or capture.get("requestedWarmSamples", samples) != samples
+                or type(warmup_count) is not int or warmup_count < 0
+                or capture.get("requestedWarmupInputs", warmup_count) != warmup_count
+                or capture.get("recorderSHA256", host["recorderSHA256"]) != host["recorderSHA256"]
                 or host["electron"]["id"] != capture["window"]["id"]
                 or host["browserBinarySHA256"] != capture["browserBinarySHA256"]
                 or host["windowBundle"] != capture["windowBundle"]):
@@ -38,16 +44,20 @@ def replay(path, raw_digest):
             file = Path(scratch) / "frames.bin"
             file.write_bytes(frame_data)
             events = markers["events"]
-            if (len(events) != 12 or len(row["values"]) != 2
+            warmup = markers.get("warmup", [])
+            if (len(events) != samples + 2 or len(row["values"]) != 2
+                    or len(warmup) != warmup_count or warmup != row.get("warmup", [])
                     or capture["photoRectPixels"][2:] != [2368, 1579]
                     or capture["viewport"]["frame"]["fullRes"] is not True
-                    or any(event["state"] != index % 2 or event["value"] != row["values"][index % 2]
-                           for index, event in enumerate(events))
+                    or any(event["state"] != state or event["value"] != row["values"][state]
+                           for event, state in zip(warmup + events, warmup_states(warmup_count) + [i % 2 for i in range(len(events))]))
                     or any(event["accepted"] != (event["actual"] is not None
                                                  and abs(event["actual"] - event["value"]) < 1e-4)
-                           for event in events)):
+                           for event in warmup + events)):
                 raise ValueError(f"Input, viewport or full control series missing for {name}")
             scored = score(load_frames(file), events, markers["endNs"])
+            if not all(event["accepted"] for event in warmup):
+                scored.update(status="inconclusive", reason="An unscored warmup did not commit its requested value")
             if (any(scored[key] != row[key] for key in scored) or events[:2] != row["calibration"]
                     or not all(event["accepted"] for event in events[:2])):
                 raise ValueError(f"Captured input or reproduced pixel result differs for {name}")
@@ -62,8 +72,12 @@ def merge(paths, raw):
         capture, host = replay(path, raw_digest)
         if result is None:
             result = {**capture, "operations": {}, "sessions": []}
-        for field in ("sourceSHA256", "browserBinarySHA256", "hardware", "os", "build", "photoRectPixels", "roi", "policy"):
-            if result[field] != capture[field]:
+            # Individual sessions can have distinct warmup and trial counts.
+            result.pop("requestedWarmSamples", None)
+            result.pop("requestedWarmupInputs", None)
+        for field in ("sourceSHA256", "browserBinarySHA256", "hardware", "os", "osBuild", "build", "photoRectPixels", "roi", "policy",
+                      "recorderSHA256"):
+            if result.get(field) != capture.get(field):
                 raise ValueError(f"Screen sessions differ on {field}")
         required_assets = [name for name in result["uiSHA256"] if name.endswith((".wasm", ".js"))]
         if any(capture["uiSHA256"].get(name) != result["uiSHA256"][name] for name in required_assets):
@@ -75,7 +89,8 @@ def merge(paths, raw):
             prior = result["operations"].get(name)
             if prior and "values" in prior and "values" in row and prior["values"] != row["values"]:
                 raise ValueError(f"Control inputs differ for {name}")
-            if not prior or (prior["status"] != "measured" and row["status"] == "measured"):
+            if not prior or (row["status"] == "measured" and (prior["status"] != "measured"
+                    or len(row["trials"]) > len(prior["trials"]))):
                 result["operations"][name] = row
     return result
 
