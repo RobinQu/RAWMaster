@@ -12,7 +12,7 @@ use std::collections::VecDeque;
 use std::ffi::c_void;
 use std::fmt::Write;
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use wgpu::{BindGroupLayoutEntry, BindingType, BufferUsages, TextureUsages};
 
 type Metal = wgpu::hal::api::Metal;
@@ -80,6 +80,7 @@ struct PipelineEntry {
 pub struct MetalProgram {
     gpu: Gpu,
     native: metal::Device,
+    low_latency_join: bool,
     layout: wgpu::BindGroupLayout,
     pipeline_layout: wgpu::PipelineLayout,
     graphs: VecDeque<GraphEntry>,
@@ -138,6 +139,8 @@ impl MetalProgram {
         Ok(Self {
             gpu,
             native,
+            low_latency_join: std::env::var_os("RAWMASTER_AP1_METAL_LOW_LATENCY_JOIN")
+                .is_some_and(|value| value == "1"),
             layout,
             pipeline_layout,
             graphs: VecDeque::new(),
@@ -419,12 +422,7 @@ impl MetalProgram {
         let submission_index = self.gpu.queue.submit([encoder.finish()]);
         // The Metal buffer exposed before finish can precede wgpu's recorded compute pass.
         // Join the actual submission before exposing either its validation word or texture.
-        self.gpu
-            .device
-            .poll(wgpu::PollType::Wait {
-                submission_index: Some(submission_index),
-                timeout: None,
-            })
+        join_submission(device, submission_index, self.low_latency_join)
             .map_err(|error| SceneError::Render(error.to_string()))?;
         let submit_wait_ns = started.elapsed().as_nanos() as u64;
         let invalid = unsafe { validation.raw.contents().cast::<u32>().read_volatile() };
@@ -469,6 +467,40 @@ impl MetalProgram {
 struct SharedBuffer {
     raw: metal::Buffer,
     bound: wgpu::Buffer,
+}
+
+fn join_submission(
+    device: &wgpu::Device,
+    submission_index: wgpu::SubmissionIndex,
+    low_latency: bool,
+) -> Result<(), wgpu::PollError> {
+    if low_latency {
+        const WINDOW: Duration = Duration::from_millis(1);
+        const INTERVAL: Duration = Duration::from_micros(100);
+        let start = Instant::now();
+        while start.elapsed() < WINDOW {
+            // A zero-time Wait still tests this submission; Metal skips its 1 ms sleep.
+            match device.poll(wgpu::PollType::Wait {
+                submission_index: Some(submission_index.clone()),
+                timeout: Some(Duration::ZERO),
+            }) {
+                Ok(status) if status.wait_finished() => return Ok(()),
+                Ok(_) => break,
+                Err(wgpu::PollError::Timeout) => {}
+                Err(error) => return Err(error),
+            }
+            let pause = WINDOW.saturating_sub(start.elapsed()).min(INTERVAL);
+            if !pause.is_zero() {
+                std::thread::sleep(pause);
+            }
+        }
+    }
+    device
+        .poll(wgpu::PollType::Wait {
+            submission_index: Some(submission_index),
+            timeout: None,
+        })
+        .map(|_| ())
 }
 
 pub(crate) unsafe fn admits_source(input: *mut c_void) -> bool {
