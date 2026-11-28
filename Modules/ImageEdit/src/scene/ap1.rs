@@ -10,6 +10,12 @@ use std::collections::HashMap;
 
 const CURVE_POINTS: usize = 16;
 const AP1_Y: [f32; 3] = [0.2722287168, 0.6740817658, 0.0536895174];
+// Powers of two matching the pre-arithmetic bounds in ap1_scene_blend.wgsl.
+const MULTIPLY_STRAIGHT_LIMIT: f32 = f32::from_bits((127 + 58) << 23);
+const MULTIPLY_ALPHA_MIN: f32 = f32::from_bits((127 - 62) << 23);
+const BLEND_STRAIGHT_LIMIT: f32 = f32::from_bits((127 + 120) << 23);
+const MIN_MAX_STRAIGHT_LIMIT: f32 = f32::from_bits((127 + 127) << 23);
+const MIN_MAX_MIX_LIMIT: f32 = f32::from_bits((127 + 126) << 23);
 pub const MAX_PROBE_PIXELS: u64 = 6_000_000;
 pub const RGB_SCALED_TOLERANCE: f64 = 2e-5;
 pub const AP1_PORT: &str = "acescg-ap1-premul-rgba32f";
@@ -72,6 +78,38 @@ pub const OPERATORS: &[Operator] = &[
         inputs: &[AP1_PORT, AP1_PORT, AP1_PORT],
         output: AP1_PORT,
         roi: "pointwise-ordered-accumulator-with-original-base",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.layer_blend",
+        version: 1,
+        inputs: &[AP1_PORT, AP1_PORT],
+        output: AP1_PORT,
+        roi: "pointwise-ordered-pair",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.add_coverage",
+        version: 1,
+        inputs: &[COVERAGE_PORT, COVERAGE_PORT],
+        output: COVERAGE_PORT,
+        roi: "pointwise",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.subtract_coverage",
+        version: 1,
+        inputs: &[COVERAGE_PORT, COVERAGE_PORT],
+        output: COVERAGE_PORT,
+        roi: "pointwise",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.adjust_coverage",
+        version: 1,
+        inputs: &[COVERAGE_PORT],
+        output: COVERAGE_PORT,
+        roi: "pointwise",
         precision: "f32",
     },
 ];
@@ -217,6 +255,27 @@ pub(crate) enum Step {
         output: Image,
         row: usize,
     },
+    LayerBlend {
+        current: Image,
+        branch: Image,
+        output: Image,
+        row: usize,
+    },
+    AddCoverage {
+        left: Coverage,
+        right: Coverage,
+        output: Coverage,
+    },
+    SubtractCoverage {
+        left: Coverage,
+        right: Coverage,
+        output: Coverage,
+    },
+    AdjustCoverage {
+        input: Coverage,
+        output: Coverage,
+        row: usize,
+    },
 }
 
 /// A topology with typed slots and stable parameter positions. Selector IDs and recipe values
@@ -268,6 +327,12 @@ impl Prepared {
 impl Plan {
     pub fn step_count(&self) -> usize {
         self.steps.len()
+    }
+
+    pub(crate) fn has_layer_blend(&self) -> bool {
+        self.steps
+            .iter()
+            .any(|step| matches!(step, Step::LayerBlend { .. }))
     }
 }
 
@@ -384,22 +449,38 @@ impl Lowering {
                 let output = self.next_coverage();
                 (output, Step::RadialCoverage { output, row })
             }
-            Operation::CombineCoverage {
-                base,
-                other,
-                mode: CoverageCombine::Intersect,
-            } => {
+            Operation::CombineCoverage { base, other, mode } => {
                 let left = self.coverage(scope, base)?;
                 let right = self.coverage(scope, other)?;
                 let output = self.next_coverage();
-                (
-                    output,
-                    Step::IntersectCoverage {
+                let step = match mode {
+                    CoverageCombine::Add => Step::AddCoverage {
                         left,
                         right,
                         output,
                     },
-                )
+                    CoverageCombine::Subtract => Step::SubtractCoverage {
+                        left,
+                        right,
+                        output,
+                    },
+                    CoverageCombine::Intersect => Step::IntersectCoverage {
+                        left,
+                        right,
+                        output,
+                    },
+                };
+                (output, step)
+            }
+            Operation::AdjustCoverage {
+                mask,
+                strength,
+                inverted,
+            } => {
+                let input = self.coverage(scope, mask)?;
+                let row = self.row([*strength, *inverted as u32 as f32, 0.0, 0.0]);
+                let output = self.next_coverage();
+                (output, Step::AdjustCoverage { input, output, row })
             }
             _ => return Err(unsupported(id)),
         };
@@ -464,11 +545,26 @@ impl Lowering {
                 let mut current = self.image(scope, base)?;
                 if *enabled {
                     for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
-                        if layer.mode != Blend::Normal {
-                            return Err(unsupported(id));
+                        if layer.mode != Blend::Normal && layer.weight.is_subnormal() {
+                            return Err(SceneError::Unsupported(format!(
+                                "AP1 layer {id} uses a subnormal blend weight"
+                            )));
                         }
                         let branch = self.image(scope, &layer.image)?;
-                        current = self.normal_layer(current, branch, layer.weight);
+                        current = if layer.mode == Blend::Normal {
+                            self.normal_layer(current, branch, layer.weight)
+                        } else {
+                            // Self blends and weight-one blends still change the color.
+                            let row = self.row([layer.weight, layer.mode.code() as f32, 0.0, 0.0]);
+                            let output = self.next_image();
+                            self.steps.push(Step::LayerBlend {
+                                current,
+                                branch,
+                                output,
+                                row,
+                            });
+                            output
+                        };
                     }
                 }
                 current
@@ -537,6 +633,125 @@ fn lawful(pixel: Pixel) -> bool {
     pixel.iter().all(|value| value.is_finite()) && (0.0..=1.0).contains(&pixel[3])
 }
 
+fn checked_coverage(value: f32, index: usize) -> Result<f32, SceneError> {
+    if !value.is_finite() {
+        return Err(SceneError::Render(format!(
+            "non-finite AP1 coverage at pixel {index}"
+        )));
+    }
+    Ok(value.clamp(0.0, 1.0))
+}
+
+fn layer_blend(current: Pixel, branch: Pixel, mode: Blend, weight: f32) -> Option<Pixel> {
+    let alpha = current[3];
+    if alpha == 0.0 {
+        return Some([0.0; 4]);
+    }
+    let bottom = [current[0], current[1], current[2]];
+    let top = [branch[0], branch[1], branch[2]];
+    let within = |rgb: [f32; 3], limit| rgb.iter().all(|value| value.abs() <= limit);
+    let premultiplied = if matches!(mode, Blend::Lighten | Blend::Darken) {
+        let selected = std::array::from_fn(|c| {
+            if mode == Blend::Lighten {
+                bottom[c].max(top[c])
+            } else {
+                bottom[c].min(top[c])
+            }
+        });
+        if !within(selected, alpha * MIN_MAX_STRAIGHT_LIMIT)
+            || (weight != 1.0
+                && (!within(bottom, MIN_MAX_MIX_LIMIT) || !within(selected, MIN_MAX_MIX_LIMIT)))
+        {
+            return None;
+        }
+        selected.map(|value| (value / alpha) * alpha)
+    } else {
+        let limit = if mode == Blend::Multiply {
+            if alpha < MULTIPLY_ALPHA_MIN {
+                return None;
+            }
+            MULTIPLY_STRAIGHT_LIMIT
+        } else {
+            BLEND_STRAIGHT_LIMIT
+        };
+        if !within(bottom, alpha * limit) || !within(top, alpha * limit) {
+            return None;
+        }
+        blend_rgb(
+            bottom.map(|value| value / alpha),
+            top.map(|value| value / branch[3]),
+            mode,
+        )
+        .map(|value| value * alpha)
+    };
+    let [r, g, b] = if weight == 1.0 {
+        premultiplied
+    } else {
+        std::array::from_fn(|c| bottom[c] * (1.0 - weight) + premultiplied[c] * weight)
+    };
+    Some([r, g, b, alpha])
+}
+
+fn unsupported_blend_pixel(index: usize) -> SceneError {
+    SceneError::Unsupported(format!("AP1 layer blend numeric domain at pixel {index}"))
+}
+
+fn blend_rgb(bottom: [f32; 3], top: [f32; 3], mode: Blend) -> [f32; 3] {
+    let luma = |rgb: [f32; 3]| rgb[0] * AP1_Y[0] + rgb[1] * AP1_Y[1] + rgb[2] * AP1_Y[2];
+    match mode {
+        Blend::Color => {
+            let delta = luma(bottom) - luma(top);
+            top.map(|s| s + delta)
+        }
+        Blend::Luminosity => {
+            let delta = luma(top) - luma(bottom);
+            bottom.map(|b| b + delta)
+        }
+        _ => std::array::from_fn(|c| {
+            let b = bottom[c];
+            let s = top[c];
+            match mode {
+                Blend::Normal => s,
+                Blend::Add => b + s,
+                Blend::Subtract => b - s,
+                Blend::Multiply => b * s,
+                Blend::Difference => (b - s).abs(),
+                Blend::Screen | Blend::Overlay | Blend::HardLight | Blend::SoftLight => {
+                    bounded_blend(b, s, mode)
+                }
+                Blend::Color | Blend::Luminosity | Blend::Lighten | Blend::Darken => unreachable!(),
+            }
+        }),
+    }
+}
+
+fn bounded_blend(bottom: f32, top: f32, mode: Blend) -> f32 {
+    let x = bottom.clamp(0.0, 1.0);
+    let y = top.clamp(0.0, 1.0);
+    let core = match mode {
+        Blend::Screen => x + y - x * y,
+        Blend::Overlay | Blend::HardLight => {
+            let pivot = if mode == Blend::Overlay { x } else { y };
+            if pivot <= 0.5 {
+                2.0 * x * y
+            } else {
+                1.0 - 2.0 * (1.0 - x) * (1.0 - y)
+            }
+        }
+        Blend::SoftLight if y <= 0.5 => x - (1.0 - 2.0 * y) * x * (1.0 - x),
+        Blend::SoftLight => {
+            let d = if x <= 0.25 {
+                ((16.0 * x - 12.0) * x + 4.0) * x
+            } else {
+                libm::sqrtf(x)
+            };
+            x + (2.0 * y - 1.0) * (d - x)
+        }
+        _ => unreachable!(),
+    };
+    core + (bottom - x) + (top - y)
+}
+
 fn correct(pixel: Pixel, coverage: f32, rows: &[[f32; 4]]) -> Pixel {
     if pixel[3] == 0.0 {
         return [0.0; 4];
@@ -588,6 +803,11 @@ pub fn render_cpu(
     input: &[Pixel],
 ) -> Result<Vec<Pixel>, SceneError> {
     region.validate_pixels(input)?;
+    if prepared.plan.has_layer_blend() {
+        if let Some(index) = input.iter().position(|pixel| pixel[3].is_subnormal()) {
+            return Err(unsupported_blend_pixel(index));
+        }
+    }
     let mut images = vec![[0.0; 4]; prepared.plan.images];
     let mut coverage = vec![0.0; prepared.plan.coverages];
     let mut result = Vec::with_capacity(input.len());
@@ -688,6 +908,50 @@ pub fn render_cpu(
                         ]
                     };
                     Some(output)
+                }
+                Step::LayerBlend {
+                    current,
+                    branch,
+                    output,
+                    row,
+                } => {
+                    let [weight, mode, ..] = prepared.parameters.rows[row];
+                    images[output.0] = layer_blend(
+                        images[current.0],
+                        images[branch.0],
+                        Blend::from_code(mode as u32),
+                        weight,
+                    )
+                    .ok_or_else(|| unsupported_blend_pixel(index))?;
+                    Some(output)
+                }
+                Step::AddCoverage {
+                    left,
+                    right,
+                    output,
+                } => {
+                    let a = coverage[left.0];
+                    let b = coverage[right.0];
+                    coverage[output.0] = checked_coverage(a + b * (1.0 - a), index)?;
+                    None
+                }
+                Step::SubtractCoverage {
+                    left,
+                    right,
+                    output,
+                } => {
+                    coverage[output.0] =
+                        checked_coverage(coverage[left.0] * (1.0 - coverage[right.0]), index)?;
+                    None
+                }
+                Step::AdjustCoverage { input, output, row } => {
+                    let [strength, inverted, ..] = prepared.parameters.rows[row];
+                    let mut value = coverage[input.0];
+                    if inverted != 0.0 {
+                        value = 1.0 - value;
+                    }
+                    coverage[output.0] = checked_coverage(value * strength, index)?;
+                    None
                 }
             };
             if image_output.is_some_and(|slot| !lawful(images[slot.0])) {

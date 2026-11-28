@@ -1,10 +1,10 @@
 //! Strict, standalone wgpu execution of the first AP1 plan. Production still uses 039.
 
 use super::Gpu;
-use crate::scene::ap1::{Plan, Prepared, Region, Step};
+use crate::scene::ap1::{Coverage, Plan, Prepared, Region, Step};
 use crate::Pixel;
 use serde::{Deserialize, Serialize};
-use std::fmt::Write;
+use std::fmt::{Arguments, Write};
 use std::sync::{mpsc, Arc};
 use std::time::Instant;
 use wgpu::{BufferUsages, ComputePipeline, DeviceType};
@@ -13,6 +13,7 @@ use wgpu::{BufferUsages, ComputePipeline, DeviceType};
 pub(crate) mod metal_texture;
 
 const GROUP_EDGE: u32 = 16;
+const LAYER_BLEND_NUMERIC_FLAG: u32 = 0x8;
 pub const DEFAULT_BUDGET_BYTES: u64 = 512 * 1024 * 1024;
 
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq, Serialize)]
@@ -289,8 +290,13 @@ impl SceneDevice {
         if validation_bits != 0 {
             drop(mapped);
             staging.unmap();
+            let meanings = if validation_bits & LAYER_BLEND_NUMERIC_FLAG != 0 {
+                "input 0x1, coverage 0x2, image 0x4, unsupported layer blend numeric domain 0x8"
+            } else {
+                "input 0x1, coverage 0x2, image 0x4"
+            };
             return Err(format!(
-                "WGSL AP1 validation status {validation_bits:#x} (input 0x1, coverage 0x2, image 0x4)"
+                "WGSL AP1 validation status {validation_bits:#x} ({meanings})"
             ));
         }
         let result: Vec<Pixel> = bytemuck::cast_slice(&mapped[..size as usize]).to_vec();
@@ -373,9 +379,22 @@ fn write_additional_operators(code: &mut String, plan: &Plan) {
     {
         code.push_str(include_str!("ap1_scene_parallel.wgsl"));
     }
+    if plan.has_layer_blend() {
+        code.push_str(include_str!("ap1_scene_blend.wgsl"));
+    }
+}
+
+fn write_checked_coverage(code: &mut String, output: Coverage, expression: Arguments<'_>) {
+    let slot = output.0;
+    writeln!(code, "    let c{slot}_raw = {expression};").unwrap();
+    writeln!(code, "    if (bitcast<u32>(c{slot}_raw) & 0x7fffffffu) >= 0x7f800000u {{ atomicOr(&invalid, 2u); return; }}").unwrap();
+    writeln!(code, "    let c{slot} = clamp(c{slot}_raw, 0.0, 1.0);").unwrap();
 }
 
 fn write_steps(code: &mut String, plan: &Plan) {
+    if plan.has_layer_blend() {
+        writeln!(code, "    if blend_alpha_is_subnormal(p0.a) {{ atomicOr(&invalid, {LAYER_BLEND_NUMERIC_FLAG}u); return; }}").unwrap();
+    }
     for step in &plan.steps {
         let output = match *step {
             Step::LinearCoverage { output, row } => {
@@ -443,6 +462,55 @@ fn write_steps(code: &mut String, plan: &Plan) {
                 )
                 .unwrap();
                 output.0
+            }
+            Step::LayerBlend {
+                current,
+                branch,
+                output,
+                row,
+            } => {
+                writeln!(
+                    code,
+                    "    let blend{} = layer_blend(p{}, p{}, {row}u);",
+                    output.0, current.0, branch.0
+                )
+                .unwrap();
+                let slot = output.0;
+                writeln!(code, "    if !blend{slot}.supported {{ atomicOr(&invalid, {LAYER_BLEND_NUMERIC_FLAG}u); return; }}").unwrap();
+                writeln!(code, "    let p{slot} = blend{slot}.pixel;").unwrap();
+                output.0
+            }
+            Step::AddCoverage {
+                left,
+                right,
+                output,
+            } => {
+                let (a, b) = (left.0, right.0);
+                write_checked_coverage(code, output, format_args!("c{a} + c{b} * (1.0 - c{a})"));
+                continue;
+            }
+            Step::SubtractCoverage {
+                left,
+                right,
+                output,
+            } => {
+                write_checked_coverage(
+                    code,
+                    output,
+                    format_args!("c{} * (1.0 - c{})", left.0, right.0),
+                );
+                continue;
+            }
+            Step::AdjustCoverage { input, output, row } => {
+                let slot = input.0;
+                write_checked_coverage(
+                    code,
+                    output,
+                    format_args!(
+                        "select(c{slot}, 1.0 - c{slot}, row_f32({row}u).y != 0.0) * row_f32({row}u).x"
+                    ),
+                );
+                continue;
             }
         };
         writeln!(

@@ -1,6 +1,8 @@
 //! Same-device AP1 texture execution for the strict macOS product adapter.
 
-use super::{parameter_rows, write_additional_operators, write_steps, GROUP_EDGE};
+use super::{
+    parameter_rows, write_additional_operators, write_steps, GROUP_EDGE, LAYER_BLEND_NUMERIC_FLAG,
+};
 use crate::gpu::metal_surface::{NativeJoin, SurfaceFrame};
 use crate::gpu::Gpu;
 use crate::scene::ap1::{Plan, Prepared, Region};
@@ -434,11 +436,7 @@ impl MetalProgram {
         SurfaceFrame::drain_native(&fence.0).map_err(SceneError::Render)?;
         let submit_wait_ns = started.elapsed().as_nanos() as u64;
         let invalid = unsafe { validation.raw.contents().cast::<u32>().read_volatile() };
-        if invalid != 0 {
-            return Err(SceneError::Render(format!(
-                "native AP1 shader validation flags {invalid:#x}"
-            )));
-        }
+        validate_shader_result(invalid)?;
         let retained = unsafe {
             output
                 .as_hal::<Metal>()
@@ -540,6 +538,18 @@ fn charge(budget: u64, allocations: [u64; 4]) -> Result<u64, SceneError> {
 
 fn surface_unavailable() -> SceneError {
     SceneError::Render("wgpu did not expose the expected Metal texture".into())
+}
+
+fn validate_shader_result(flags: u32) -> Result<(), SceneError> {
+    match flags {
+        0 => Ok(()),
+        LAYER_BLEND_NUMERIC_FLAG => Err(SceneError::Unsupported(format!(
+            "native AP1 shader validation flags {flags:#x}: unsupported layer blend numeric domain"
+        ))),
+        _ => Err(SceneError::Render(format!(
+            "native AP1 shader validation flags {flags:#x}"
+        ))),
+    }
 }
 
 fn texture_wgsl(plan: &Plan) -> String {
@@ -652,11 +662,6 @@ mod tests {
 
     #[test]
     fn grouped_monitor_generates_valid_texture_and_buffer_wgsl() {
-        use wgpu::naga::{
-            front::wgsl::parse_str,
-            valid::{Capabilities, ValidationFlags, Validator},
-        };
-
         let view = ViewSpec {
             group_path: vec!["outer".into()],
             ..Default::default()
@@ -664,6 +669,33 @@ mod tests {
         let prepared = Prepared::from_039_view(GROUP_DOCUMENT, &view).unwrap();
         let plan = prepared.plan();
         assert_eq!(plan.step_count(), 2);
+        assert_valid_wgsl(plan);
+    }
+
+    #[test]
+    fn layer_blend_and_coverage_generate_valid_texture_and_buffer_wgsl() {
+        use crate::scene::ap1::Root;
+        let document = br#"{"schemaVersion":1,"graph":{"output":"layer","nodes":[
+          {"id":"x","name":"Horizontal","operation":{"kind":"linearCoverage","start":[0,0],"end":[1,0]}},
+          {"id":"y","name":"Vertical","operation":{"kind":"linearCoverage","start":[0,0],"end":[0,1]}},
+          {"id":"add","name":"Combine","operation":{"kind":"combineCoverage","base":"x","other":"y","mode":"add"}},
+          {"id":"subtract","name":"Remove","operation":{"kind":"combineCoverage","base":"add","other":"x","mode":"subtract"}},
+          {"id":"adjust","name":"Adjust","operation":{"kind":"adjustCoverage","mask":"subtract","strength":0.5,"inverted":true}},
+          {"id":"grade","name":"Grade","operation":{"kind":"corrector","image":"$input","mask":"adjust","exposureEV":1,"curve":[],"strength":1,"enabled":true}},
+          {"id":"layer","name":"Blend","operation":{"kind":"layer","base":"$input","enabled":true,
+              "layers":[{"image":"grade","weight":1,"mode":"soft-light"}]}}
+        ]}}"#;
+        let prepared = Prepared::from_039(document, Root::Final).unwrap();
+        assert_eq!(prepared.plan().step_count(), 7);
+        assert_valid_wgsl(prepared.plan());
+    }
+
+    fn assert_valid_wgsl(plan: &Plan) {
+        use wgpu::naga::{
+            front::wgsl::parse_str,
+            valid::{Capabilities, ValidationFlags, Validator},
+        };
+
         for shader in [texture_wgsl(plan), super::super::wgsl(plan)] {
             let module = parse_str(&shader).unwrap();
             Validator::new(ValidationFlags::all(), Capabilities::empty())
@@ -683,5 +715,20 @@ mod tests {
             charge(u64::MAX, [u64::MAX, 1, 0, 0]),
             Err(SceneError::Budget(_))
         ));
+    }
+
+    #[test]
+    fn native_blend_numeric_rejection_preserves_other_frame_errors() {
+        assert!(validate_shader_result(0).is_ok());
+        assert!(matches!(
+            validate_shader_result(LAYER_BLEND_NUMERIC_FLAG),
+            Err(SceneError::Unsupported(message)) if message.contains("0x8")
+        ));
+        for flags in [0x4, 0x4 | LAYER_BLEND_NUMERIC_FLAG] {
+            assert!(matches!(
+                validate_shader_result(flags),
+                Err(SceneError::Render(_))
+            ));
+        }
     }
 }

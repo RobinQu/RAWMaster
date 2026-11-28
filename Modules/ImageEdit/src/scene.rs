@@ -54,52 +54,60 @@ impl<'de> Deserialize<'de> for Endpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[repr(u32)]
 pub enum Blend {
     #[serde(rename = "normal")]
-    Normal,
+    Normal = 0,
     #[serde(rename = "add")]
-    Add,
+    Add = 1,
     #[serde(rename = "subtract")]
-    Subtract,
+    Subtract = 2,
     #[serde(rename = "multiply")]
-    Multiply,
+    Multiply = 3,
     #[serde(rename = "screen")]
-    Screen,
+    Screen = 4,
     #[serde(rename = "overlay")]
-    Overlay,
+    Overlay = 5,
     #[serde(rename = "soft-light")]
-    SoftLight,
+    SoftLight = 6,
     #[serde(rename = "hard-light")]
-    HardLight,
+    HardLight = 7,
     #[serde(rename = "lighten")]
-    Lighten,
+    Lighten = 8,
     #[serde(rename = "darken")]
-    Darken,
+    Darken = 9,
     #[serde(rename = "difference")]
-    Difference,
+    Difference = 10,
     #[serde(rename = "color")]
-    Color,
+    Color = 11,
     #[serde(rename = "luminosity")]
-    Luminosity,
+    Luminosity = 12,
 }
 impl Blend {
-    #[cfg(all(target_os = "macos", feature = "metal-surface"))]
     fn code(self) -> u32 {
-        match self {
-            Self::Normal => 0,
-            Self::Add => 1,
-            Self::Subtract => 2,
-            Self::Multiply => 3,
-            Self::Screen => 4,
-            Self::Overlay => 5,
-            Self::SoftLight => 6,
-            Self::HardLight => 7,
-            Self::Lighten => 8,
-            Self::Darken => 9,
-            Self::Difference => 10,
-            Self::Color => 11,
-            Self::Luminosity => 12,
-        }
+        self as u32
+    }
+
+    /// The caller reads a parameter row written with the legacy Metal mode code.
+    fn from_code(code: u32) -> Self {
+        const MODES: [Blend; 13] = [
+            Blend::Normal,
+            Blend::Add,
+            Blend::Subtract,
+            Blend::Multiply,
+            Blend::Screen,
+            Blend::Overlay,
+            Blend::SoftLight,
+            Blend::HardLight,
+            Blend::Lighten,
+            Blend::Darken,
+            Blend::Difference,
+            Blend::Color,
+            Blend::Luminosity,
+        ];
+        let mode = MODES[code as usize];
+        debug_assert_eq!(mode.code(), code);
+        mode
     }
 }
 

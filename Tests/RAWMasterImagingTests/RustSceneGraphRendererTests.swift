@@ -67,6 +67,144 @@ final class RustSceneGraphRendererTests: XCTestCase {
     }
   }
 
+  func testNativeWGSLMatches039ForBlendModesAndCoverage() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let legacy = try Renderer(device: device, backend: .rust)
+    let candidate = try Renderer(device: device, backend: .wgpu)
+    let width = 24, height = 14
+    let geometry = Renderer.Geometry(width: width, height: height)
+    let roi = MTLRegionMake2D(3, 2, 13, 7)
+    // Vary each channel on both sides of the blend pivots and include signed and HDR values.
+    let values: [Float] = [-0.5, 0.0625, 0.125, 0.25, 0.5, 0.75, 1, 2]
+    let alphas: [Float] = [0, 0.25, 0.5, 1]
+    let pixels = (0..<(width * height)).map { index -> SIMD4<Float> in
+      let alpha = alphas[(index / values.count) % alphas.count]
+      let scale = alpha == 0 ? 1 : alpha
+      return .init(values[index % 8] * scale, values[(index / 3 + 3) % 8] * scale,
+        values[(index / 7 + 5) % 8] * scale, alpha)
+    }
+    let root = try initializedPrivateCopy(upload(pixels, width: width, device: device))
+    let patch = try initializedPrivateCopy(root, region: roi)
+    func grade(_ name: String, ev: Float, mask: UUID? = nil) -> Node {
+      Node(name: name, operation: .corrector(image: .input, mask: mask, exposureEV: ev,
+        curve: [], strength: 1, enabled: true))
+    }
+    func render(_ graph: Graph, from image: Image, using renderer: Renderer, size: Renderer.Geometry) throws -> Image {
+      try renderer.prepareFinal(image, geometry: size, graph: graph, tileEdge: 0).image
+    }
+    var cases: [String: Any] = [:]
+    func verify(_ graph: Graph, label: String) throws -> [SIMD4<Float>] {
+      let old = try render(graph, from: root, using: legacy, size: geometry)
+      let new = try render(graph, from: root, using: candidate, size: geometry)
+      _ = try assertNativeExecution(legacy, backend: .rust, input: root, output: old)
+      let receipt = try assertNativeExecution(candidate, backend: .wgpu, input: root, output: new)
+      XCTAssertEqual(receipt.tiles, 1, label)
+      XCTAssertEqual(receipt.dispatches, 1, label)
+      let oldPatch = try render(graph, from: patch, using: legacy, size: geometry)
+      let newPatch = try render(graph, from: patch, using: candidate, size: geometry)
+      _ = try assertNativeExecution(legacy, backend: .rust, input: patch, output: oldPatch)
+      _ = try assertNativeExecution(candidate, backend: .wgpu, input: patch, output: newPatch)
+      cases[label] = [
+        "full": try pixelWitness(new.texture, reference: old.texture, label: label),
+        "roi": try pixelWitness(newPatch.texture, reference: oldPatch.texture, label: label + "/ROI"),
+        "039Crop": try pixelWitness(oldPatch.texture, reference: old.texture, referenceOrigin: roi.origin,
+          label: label + "/039 crop", exact: true),
+        "wgpuCrop": try pixelWitness(newPatch.texture, reference: new.texture, referenceOrigin: roi.origin,
+          label: label + "/wgpu crop", exact: true),
+      ]
+      return try read(new.texture)
+    }
+
+    let dark = grade("Dark", ev: -1)
+    let light = grade("Light", ev: 1)
+    for mode in Graph.Blend.allCases {
+      let partial = Node(name: "Partial \(mode.rawValue)", operation: .layer(base: .node(dark.id),
+        layers: [.init(.node(light.id), weight: 0.375, mode: mode)], enabled: true))
+      let full = Node(name: "Full \(mode.rawValue)", operation: .layer(base: .node(light.id),
+        layers: [.init(.node(dark.id), weight: 1, mode: mode)], enabled: true))
+      _ = try verify(workflow([light, dark, partial], final: partial), label: mode.rawValue + "/partial")
+      _ = try verify(workflow([light, dark, full], final: full), label: mode.rawValue + "/full-reversed")
+    }
+    for mode: Graph.Blend in [.add, .subtract] {
+      let layer = Node(name: "Self \(mode.rawValue)", operation: .layer(base: .input,
+        layers: [.init(.input, weight: 1, mode: mode)], enabled: true))
+      let actual = try verify(workflow([layer], final: layer), label: mode.rawValue + "/self")
+      let expected = pixels.map { pixel -> SIMD4<Float> in
+        if pixel.w == 0 { return .zero }
+        if mode == .subtract { return .init(0, 0, 0, pixel.w) }
+        return .init(2 * pixel.x, 2 * pixel.y, 2 * pixel.z, pixel.w)
+      }
+      XCTAssertEqual(actual, expected, mode.rawValue)
+    }
+    let ordered: [Graph.Layer] = [.init(.node(light.id), weight: 0.625, mode: .add),
+      .init(.node(dark.id), weight: 0.375, mode: .multiply)]
+    let forward = Node(name: "Forward", operation: .layer(base: .input, layers: ordered, enabled: true))
+    let backward = Node(name: "Backward", operation: .layer(base: .input, layers: Array(ordered.reversed()), enabled: true))
+    let forwardPixels = try verify(workflow([light, dark, forward], final: forward), label: "ordered/forward")
+    let backwardPixels = try verify(workflow([light, dark, backward], final: backward), label: "ordered/backward")
+    XCTAssertNotEqual(forwardPixels, backwardPixels)
+
+    let horizontal = Node(name: "Horizontal", operation: .linearCoverage(start: .init(0.05, 0), end: .init(0.95, 0)))
+    let vertical = Node(name: "Vertical", operation: .linearCoverage(start: .init(0, 0.1), end: .init(0, 0.95)))
+    for mode: Graph.CoverageCombine in [.add, .subtract] {
+      let combined = Node(name: "Combine", operation: .combineCoverage(base: horizontal.id, other: vertical.id, mode: mode))
+      for invert in [false, true] {
+        let adjusted = Node(name: "Adjust", operation: .adjustCoverage(mask: combined.id, strength: 0.75, inverted: invert))
+        let masked = grade("Masked", ev: 1.25, mask: adjusted.id)
+        _ = try verify(workflow([horizontal, vertical, combined, adjusted, masked], final: masked),
+          label: "coverage/\(mode.rawValue)/\(invert)")
+      }
+    }
+
+    let extreme: Float = 0.75 * .greatestFiniteMagnitude
+    let single = Renderer.Geometry(width: 1, height: 1)
+    let bright = try initializedPrivateCopy(upload([SIMD4<Float>(extreme, extreme, extreme, 1)], width: 1, device: device))
+    let invalid = Node(name: "Overflow", operation: .layer(base: .input,
+      layers: [.init(.input, weight: 1, mode: .add)], enabled: true))
+    let replaced = Node(name: "Replace invalid", operation: .layer(base: .node(invalid.id),
+      layers: [.init(.input, weight: 1, mode: .normal)], enabled: true))
+    let elided = Node(name: "Dead branch", operation: .layer(base: .input,
+      layers: [.init(.node(invalid.id), weight: 0, mode: .add)], enabled: true))
+    let replaceGraph = try workflow([invalid, replaced], final: replaced)
+    let elideGraph = try workflow([invalid, elided], final: elided)
+    let dim = grade("Dim", ev: -2)
+    let bounded = Node(name: "Darken", operation: .layer(base: .input,
+      layers: [.init(.node(dim.id), weight: 1, mode: .darken)], enabled: true))
+    let boundedGraph = try workflow([dim, bounded], final: bounded)
+    let partial = try initializedPrivateCopy(upload([SIMD4<Float>(extreme, extreme, extreme, 0.5)], width: 1, device: device))
+    let retryPixel = SIMD4<Float>(0.5, -0.375, 2, 1)
+    let retry = try initializedPrivateCopy(upload([retryPixel], width: 1, device: device))
+    for (renderer, backend) in [(legacy, DevelopmentSceneExecutionReceiptV1.Backend.rust), (candidate, .wgpu)] {
+      XCTAssertThrowsError(try render(replaceGraph, from: bright, using: renderer, size: single)) { error in
+        switch (backend, error as? RAWMasterImageKernel.Failure) {
+        case (.rust, .some(.renderFailed)), (.wgpu, .some(.unsupportedScene)): break
+        default: XCTFail("Unexpected \(backend.rawValue) pixel rejection: \(error)")
+        }
+      }
+      XCTAssertNil(renderer.lastReceipt)
+      XCTAssertEqual(try read(render(replaceGraph, from: retry, using: renderer, size: single).texture), [retryPixel])
+      XCTAssertEqual(try read(render(elideGraph, from: bright, using: renderer, size: single).texture),
+        [SIMD4<Float>(extreme, extreme, extreme, 1)])
+      let result = try render(boundedGraph, from: partial, using: renderer, size: single)
+      _ = try assertNativeExecution(renderer, backend: backend, input: partial, output: result)
+      let finite = try XCTUnwrap(read(result.texture).first)
+      XCTAssertEqual(finite.w.bitPattern, Float(0.5).bitPattern)
+      let expected = extreme * 0.25
+      for channel in 0..<3 { XCTAssertEqual(finite[channel], expected, accuracy: expected * 0.00002) }
+    }
+    if let output = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_NATIVE_BLEND_EVIDENCE"] {
+      var hash = SHA256()
+      updateSHA256(&hash, pixels: pixels)
+      let record: [String: Any] = ["device": device.name, "adapterRegistryID": String(device.registryID),
+        "inputSize": [width, height], "roi": [roi.origin.x, roi.origin.y, roi.size.width, roi.size.height],
+        "inputSHA256": hex(hash.finalize()), "cases": cases, "overflowRangeRejectedBeforeReplacement": true,
+        "retriableAfterRangeRejection": true,
+        "zeroWeightBranchElided": true, "finiteDarkenWithInfiniteUnpremultipliedInput": true]
+      let data = try JSONSerialization.data(withJSONObject: record, options: [.prettyPrinted, .sortedKeys])
+      try data.write(to: URL(fileURLWithPath: output), options: .withoutOverwriting)
+    }
+  }
+
   func testRustShadowMatchesNodeBypassAndROI() throws {
     let (device, _, raw, geometry, _) = try fixture(width: 20, height: 10)
     let gradient = Node(name: "Gradient", operation: .linearCoverage(start: .init(0, 0), end: .init(1, 1)))

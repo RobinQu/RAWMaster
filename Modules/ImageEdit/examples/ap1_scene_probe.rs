@@ -145,6 +145,7 @@ fn engine_source_sha256() -> String {
         include_bytes!("../src/gpu/ap1_scene.wgsl"),
         include_bytes!("../src/gpu/ap1_scene_radial.wgsl"),
         include_bytes!("../src/gpu/ap1_scene_parallel.wgsl"),
+        include_bytes!("../src/gpu/ap1_scene_blend.wgsl"),
         include_bytes!("ap1_scene_probe.rs"),
     ];
     for bytes in files {
