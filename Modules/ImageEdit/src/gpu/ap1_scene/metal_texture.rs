@@ -3,7 +3,6 @@
 use super::{
     parameter_rows, write_additional_operators, write_steps, GROUP_EDGE, LAYER_BLEND_NUMERIC_FLAG,
 };
-use crate::gpu::metal_surface::{NativeJoin, SurfaceFrame};
 use crate::gpu::Gpu;
 use crate::scene::ap1::{Plan, Prepared, Region};
 use crate::scene::{SceneError, ViewSpec};
@@ -292,7 +291,7 @@ impl MetalProgram {
             ],
         )?;
         let (pipeline, pipeline_builds) = self.pipeline(prepared.plan())?;
-        let rendered = self.run_texture(
+        let (output, peak_bytes, submit_wait_ns) = self.run_texture(
             input,
             extent,
             groups,
@@ -300,11 +299,7 @@ impl MetalProgram {
             parameters,
             input_bytes,
             budget,
-        );
-        // Release retired wgpu submissions once the native command is finished. Poll does not wait.
-        let maintenance = self.gpu.device.poll(wgpu::PollType::Poll);
-        let (output, peak_bytes, submit_wait_ns) = rendered?;
-        maintenance.map_err(|error| SceneError::Render(error.to_string()))?;
+        )?;
         Ok((
             output,
             MetalReceipt {
@@ -420,20 +415,17 @@ impl MetalProgram {
             pass.set_bind_group(0, &bindings, &[]);
             pass.dispatch_workgroups(groups[0], groups[1], 1);
         }
-        let fence = unsafe {
-            encoder.as_hal_mut::<Metal, _, _>(|native| {
-                native
-                    .and_then(|encoder| encoder.raw_command_buffer())
-                    .cloned()
-            })
-        };
-        let fence =
-            NativeJoin(fence.ok_or_else(|| {
-                SceneError::Render("AP1 Metal completion handle unavailable".into())
-            })?);
         let started = Instant::now();
-        self.gpu.queue.submit([encoder.finish()]);
-        SurfaceFrame::drain_native(&fence.0).map_err(SceneError::Render)?;
+        let submission_index = self.gpu.queue.submit([encoder.finish()]);
+        // The Metal buffer exposed before finish can precede wgpu's recorded compute pass.
+        // Join the actual submission before exposing either its validation word or texture.
+        self.gpu
+            .device
+            .poll(wgpu::PollType::Wait {
+                submission_index: Some(submission_index),
+                timeout: None,
+            })
+            .map_err(|error| SceneError::Render(error.to_string()))?;
         let submit_wait_ns = started.elapsed().as_nanos() as u64;
         let invalid = unsafe { validation.raw.contents().cast::<u32>().read_volatile() };
         validate_shader_result(invalid)?;

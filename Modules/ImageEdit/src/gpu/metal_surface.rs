@@ -473,20 +473,13 @@ impl SurfaceFrame {
     ) -> Result<(), String> {
         let (ticket, fence) = self.command(None)?;
         let admitted = after_submit();
-        let poll = if admitted.is_ok() {
-            self.gpu
-                .device
-                .poll(wgpu::PollType::Wait {
-                    submission_index: Some(ticket),
-                    timeout: None,
-                })
-                .map(|_| ())
-                .map_err(|e| e.to_string())
-        } else {
-            Ok(())
-        };
+        // A stale submit must release its borrowed textures only after the recorded work drains.
+        let poll = self.gpu.device.poll(wgpu::PollType::Wait {
+            submission_index: Some(ticket),
+            timeout: None,
+        });
         Self::drain_native(&fence.0)?;
-        poll?;
+        poll.map_err(|error| error.to_string())?;
         admitted?;
         let bad = unsafe { self.validation.contents().cast::<u32>().read_volatile() };
         if bad != 0 {

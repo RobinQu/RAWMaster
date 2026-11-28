@@ -205,6 +205,41 @@ final class RustSceneGraphRendererTests: XCTestCase {
     }
   }
 
+  func testNativeWGSLJoinsValidationBeforePublishingAnyTexture() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let renderer = try Renderer(device: device, backend: .wgpu)
+    let width = 32, height = 32
+    let geometry = Renderer.Geometry(width: width, height: height)
+    let accepted = SIMD4<Float>(0.125, -0.25, 1.25, 1)
+    let pixels = Array(repeating: accepted, count: width * height)
+    let valid = try initializedPrivateCopy(upload(pixels, width: width, device: device))
+    var overRange = pixels, nonfinite = pixels
+    overRange[0].x = Float.greatestFiniteMagnitude * 0.75
+    nonfinite[0].x = .nan
+    let wide = try initializedPrivateCopy(upload(overRange, width: width, device: device))
+    let bad = try initializedPrivateCopy(upload(nonfinite, width: width, device: device))
+    let layer = Node(name: "Add then use the original", operation: .layer(base: .input,
+      layers: [.init(.input, weight: 1, mode: .add), .init(.input, weight: 1)], enabled: true))
+    let graph = try workflow([layer], final: layer)
+    for _ in 0..<16 {
+      XCTAssertThrowsError(try renderer.prepareFinal(wide, geometry: geometry, graph: graph)) { error in
+        guard case .some(.unsupportedScene) = error as? RAWMasterImageKernel.Failure else {
+          return XCTFail("Expected range rejection, got \(error)")
+        }
+      }
+      XCTAssertNil(renderer.lastReceipt)
+      XCTAssertThrowsError(try renderer.prepareFinal(bad, geometry: geometry, graph: graph)) { error in
+        guard case .some(.renderFailed) = error as? RAWMasterImageKernel.Failure else {
+          return XCTFail("Expected input validation failure, got \(error)")
+        }
+      }
+      XCTAssertNil(renderer.lastReceipt)
+      let result = try renderer.prepareFinal(valid, geometry: geometry, graph: graph)
+      _ = try assertNativeExecution(renderer, backend: .wgpu, input: valid, output: result.image)
+      XCTAssertEqual(try read(result.image.texture), pixels)
+    }
+  }
+
   func testRustShadowMatchesNodeBypassAndROI() throws {
     let (device, _, raw, geometry, _) = try fixture(width: 20, height: 10)
     let gradient = Node(name: "Gradient", operation: .linearCoverage(start: .init(0, 0), end: .init(1, 1)))
