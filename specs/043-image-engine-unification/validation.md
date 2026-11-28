@@ -69,6 +69,8 @@ M1-01 在相同实拍与 FlashRaw 运行库上完成三条路径各一次首轮�
 
 首条场景路径必须有以上双端实机证据再启用。M5 继续签收 Linux 的 RAW 到成片产品闭环。
 
+macOS 组件在 Apple M4 Max 实体 GPU 通过，系统构建为 26A434。冻结源 RAW 9504×6336 生成 2400×1600 线性 AP1，非居中 ROI 为 `(1771, 1093, 629, 507)`。最终根和监看根各跑整幅与 ROI，四次回执均为 wgpu/Metal、一次派发和零回退。相对 CPU 及 039 Rust Metal 的最大缩放 RGB 误差为 `2.53×10⁻⁷`，alpha 位模式相同，同后端的两个 ROI 与整幅裁块逐位相同。合成硬件测试补齐部分 alpha、透明像素、零 coverage、禁用和参数重绑定。该证据覆盖 CPU 上传的 AP1 缓冲区组件。Linux 实体 Vulkan 与 macOS 产品同设备纹理路由继续按上表验收。 [Metal 实机回执](evidence/m2-ap1-real-metal.json)
+
 首条组件的冻结输入来自 `DevelopmentSceneRAWV1Tests/testOptInFrozenAP1SceneWGSLFixture`。用 `RAWMASTER_SCENE_60MP_ARW` 指定本节同源授权原片，`RAWMASTER_SCENE_WGSL_FIXTURE_DIR` 指定新目录。夹具写入 2400×1600 线性 AP1 F32、校准、冻结 039 图、右下 ROI 和四份严格 Rust Metal 参考。`manifest.json` 保存输入、输出及校准摘要。两端用同一份冻结输入。
 
 ```sh

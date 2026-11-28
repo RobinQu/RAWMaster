@@ -1,0 +1,595 @@
+{
+  "adapter": {
+    "backend": "metal",
+    "device": 0,
+    "driver": "",
+    "driverInfo": "",
+    "name": "Apple M4 Max",
+    "type": "IntegratedGpu",
+    "vendor": 0
+  },
+  "ap1Port": "acescg-ap1-premul-rgba32f",
+  "ap1SHA256": "411585e7f2b05d1b16fbbe2d4317df0a791c1a886dc80b534e003ab6e9d840b9",
+  "build": {
+    "crateVersion": "0.1.0",
+    "probeSHA256": "56322280783c10539426f11887916a5ac279788d3b84eebdef9594dcef1e2aa3",
+    "sourceCommitAtRun": "3145356fb73fcbcb46af5bcb6c662e8bb2c27d72",
+    "sourceDirtyAtRun": false
+  },
+  "calibrationSHA256": "35aa0357ba7fc15b544031f0ff5daa9d07d48a936d3e6397f900b1d2b0ae16ff",
+  "cargoLockSHA256": "2b86ee9258eae5956ee77ff5a4a64991c0cf9296e804c5adfa29b0ac8bbc5bb6",
+  "deviceOpenWallNs": 46399750,
+  "engineSourceSHA256": "498cd63108a92b5320d980f80530366ca685fc526047563875091bdf405235e7",
+  "executor": "wgpu",
+  "fallbackCount": 0,
+  "final": {
+    "compileWallNs": 10742917,
+    "full": {
+      "artifact": "final-full.rgba32f",
+      "cpuWallNs": 79941792,
+      "receipt": {
+        "accountedPeakBytes": 184320632,
+        "budgetBytes": 536870912,
+        "copyMapReadbackNs": 10603958,
+        "dispatches": 1,
+        "executor": "wgpu",
+        "fallbackCount": 0,
+        "gpuTimestampNs": null,
+        "graphicsAPI": "metal",
+        "inputBytes": 61440000,
+        "intermediateBufferBytes": 0,
+        "mappedBufferInitNs": 5076250,
+        "nodes": 5,
+        "outputBytes": 61440000,
+        "parameterBytes": 624,
+        "readbackBytes": 61440004,
+        "region": {
+          "extent": [
+            2400,
+            1600
+          ],
+          "full": [
+            2400,
+            1600
+          ],
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "submitAndHostJoinNs": 6665083,
+        "validationBytes": 4
+      },
+      "sha256": "888513ce78dc7981fc855ef73fbc07b74519ba5e42419c96c4c46ed3f2ac1e98",
+      "wgpuVsCpu": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          970772,
+          969541,
+          973667,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 4.76837158203125e-7,
+        "maxScaledRGB": 2.3587144770228776e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 3840000,
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.0107990503311157,
+          "actualBits": 1065443805,
+          "channel": "g",
+          "pixelIndex": 1876119,
+          "reference": 1.0107988119125366,
+          "referenceBits": 1065443803,
+          "x": 1719,
+          "y": 781
+        }
+      },
+      "wgpuVsLegacy039": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          1131020,
+          1141158,
+          1132410,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 4.76837158203125e-7,
+        "maxScaledRGB": 2.3042010885506784e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 3840000,
+        "referenceSHA256": "fe2b886f1843163817652512a16af9ca1dcc90363a30ee50d7103e2064aac776",
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.034712314605713,
+          "actualBits": 1065644404,
+          "channel": "g",
+          "pixelIndex": 1806321,
+          "reference": 1.034712553024292,
+          "referenceBits": 1065644406,
+          "x": 1521,
+          "y": 752
+        }
+      }
+    },
+    "loweredOperatorSteps": 5,
+    "parameterSHA256": "b528d5a31da38c22d43bc65d90544582d9250f8c2ebfd0319280930640f6adc5",
+    "plan": {
+      "coverages": 1,
+      "images": 5,
+      "output": 4,
+      "steps": [
+        {
+          "operator": "linearCoverage",
+          "output": 0,
+          "row": 0
+        },
+        {
+          "coverage": 0,
+          "input": 0,
+          "operator": "corrector",
+          "output": 1,
+          "row": 1
+        },
+        {
+          "bottom": 0,
+          "operator": "normalLayer",
+          "output": 2,
+          "row": 18,
+          "top": 1
+        },
+        {
+          "coverage": null,
+          "input": 0,
+          "operator": "corrector",
+          "output": 3,
+          "row": 19
+        },
+        {
+          "bottom": 2,
+          "operator": "normalLayer",
+          "output": 4,
+          "row": 36,
+          "top": 3
+        }
+      ]
+    },
+    "prepareWallNs": 31250,
+    "roi": {
+      "artifact": "final-roi.rgba32f",
+      "cpuWallNs": 7284542,
+      "receipt": {
+        "accountedPeakBytes": 15307976,
+        "budgetBytes": 536870912,
+        "copyMapReadbackNs": 1883459,
+        "dispatches": 1,
+        "executor": "wgpu",
+        "fallbackCount": 0,
+        "gpuTimestampNs": null,
+        "graphicsAPI": "metal",
+        "inputBytes": 5102448,
+        "intermediateBufferBytes": 0,
+        "mappedBufferInitNs": 516041,
+        "nodes": 5,
+        "outputBytes": 5102448,
+        "parameterBytes": 624,
+        "readbackBytes": 5102452,
+        "region": {
+          "extent": [
+            629,
+            507
+          ],
+          "full": [
+            2400,
+            1600
+          ],
+          "origin": [
+            1771,
+            1093
+          ]
+        },
+        "submitAndHostJoinNs": 1379667,
+        "validationBytes": 4
+      },
+      "sha256": "327a08cf81c7b32c4ee1d11ae605cb59fc6430396d652e2d5c6006b3f75e9ced",
+      "wgpuVsCpu": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          178915,
+          177544,
+          178630,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 1.1920928955078125e-7,
+        "maxScaledRGB": 1.050092896468086e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 318903,
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.1352260112762451,
+          "actualBits": 1066487574,
+          "channel": "r",
+          "pixelIndex": 200688,
+          "reference": 1.1352261304855347,
+          "referenceBits": 1066487575,
+          "x": 1808,
+          "y": 1412
+        }
+      },
+      "wgpuVsLegacy039": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          93785,
+          94960,
+          92500,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 1.1920928955078125e-7,
+        "maxScaledRGB": 1.050092896468086e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 318903,
+        "referenceSHA256": "109d1055d3336e2246bb10d3f91bfe85aabaf26f69b62f5ade36dad49866b122",
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.1352260112762451,
+          "actualBits": 1066487574,
+          "channel": "r",
+          "pixelIndex": 200688,
+          "reference": 1.1352261304855347,
+          "referenceBits": 1066487575,
+          "x": 1808,
+          "y": 1412
+        }
+      }
+    },
+    "roiVsWgpuFullCrop": {
+      "alphaBitMismatches": 0,
+      "bitMismatchesRGBA": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "firstFailure": null,
+      "maxAbsRGB": 0.0,
+      "maxScaledRGB": 0.0,
+      "mismatchedPixels": 0,
+      "mode": "bit-exact-f32",
+      "passed": true,
+      "pixels": 318903,
+      "rgbScaledTolerance": null,
+      "worstScaledRGB": null
+    },
+    "shaderSHA256": "4095653fc19ec06834f5406c2583d0a6cda45844118531427c44f49fcf6e7107"
+  },
+  "frozenDocumentNodes": 5,
+  "full": {
+    "extent": [
+      2400,
+      1600
+    ],
+    "full": [
+      2400,
+      1600
+    ],
+    "origin": [
+      0,
+      0
+    ]
+  },
+  "graphSHA256": "d8523e5d2b9ab95ee75e83b38d2c4865bdf45a2672469ad4bd77b383a3c4b162",
+  "graphicsAPI": "metal",
+  "legacyManifestSHA256": "5ee8fb8ef464e88c94100041db511d1231965bdc78f3b288d24209186d6a20ec",
+  "limits": {
+    "maxBufferSize": 86586540032,
+    "maxComputeInvocationsPerWorkgroup": 1024,
+    "maxComputeWorkgroupsPerDimension": 65535,
+    "maxStorageBufferBindingSize": 4294967295
+  },
+  "measurement": {
+    "gpuClock": "unavailable; host completion and readback wall intervals",
+    "legacyCompared": true,
+    "memory": "accounted bound buffers; no driver or process peak",
+    "peerCompared": false,
+    "transport": "CPU-uploaded buffers; no native texture borrow"
+  },
+  "monitor": {
+    "compileWallNs": 10506791,
+    "full": {
+      "artifact": "monitor-full.rgba32f",
+      "cpuWallNs": 53724417,
+      "receipt": {
+        "accountedPeakBytes": 184320328,
+        "budgetBytes": 536870912,
+        "copyMapReadbackNs": 7531125,
+        "dispatches": 1,
+        "executor": "wgpu",
+        "fallbackCount": 0,
+        "gpuTimestampNs": null,
+        "graphicsAPI": "metal",
+        "inputBytes": 61440000,
+        "intermediateBufferBytes": 0,
+        "mappedBufferInitNs": 5241167,
+        "nodes": 2,
+        "outputBytes": 61440000,
+        "parameterBytes": 320,
+        "readbackBytes": 61440004,
+        "region": {
+          "extent": [
+            2400,
+            1600
+          ],
+          "full": [
+            2400,
+            1600
+          ],
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "submitAndHostJoinNs": 3851333,
+        "validationBytes": 4
+      },
+      "sha256": "55e933537df4adbd2be6eb754192abe9e53d8337960c33cb83dcd48e7ceefb25",
+      "wgpuVsCpu": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          1216516,
+          1217415,
+          1215975,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 7.152557373046875e-7,
+        "maxScaledRGB": 2.500285240874563e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 3840000,
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.4303486347198486,
+          "actualBits": 1068963242,
+          "channel": "r",
+          "pixelIndex": 1772927,
+          "reference": 1.43034827709198,
+          "referenceBits": 1068963239,
+          "x": 1727,
+          "y": 738
+        }
+      },
+      "wgpuVsLegacy039": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          714866,
+          715656,
+          714858,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 7.152557373046875e-7,
+        "maxScaledRGB": 2.528657912284397e-7,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 3840000,
+        "referenceSHA256": "0aabf0397149b9f55dd856416a6896a4112f75e4c09c282763aa7a6ac038b758",
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.414299488067627,
+          "actualBits": 1068828612,
+          "channel": "g",
+          "pixelIndex": 1739263,
+          "reference": 1.4142991304397583,
+          "referenceBits": 1068828609,
+          "x": 1663,
+          "y": 724
+        }
+      }
+    },
+    "loweredOperatorSteps": 2,
+    "parameterSHA256": "d2e2b678596167ca0e02ee7cae13eeef8b16003cdc3c89c8fd425f273e9fd599",
+    "plan": {
+      "coverages": 1,
+      "images": 2,
+      "output": 1,
+      "steps": [
+        {
+          "operator": "linearCoverage",
+          "output": 0,
+          "row": 0
+        },
+        {
+          "coverage": 0,
+          "input": 0,
+          "operator": "corrector",
+          "output": 1,
+          "row": 1
+        }
+      ]
+    },
+    "prepareWallNs": 17959,
+    "roi": {
+      "artifact": "monitor-roi.rgba32f",
+      "cpuWallNs": 5152333,
+      "receipt": {
+        "accountedPeakBytes": 15307672,
+        "budgetBytes": 536870912,
+        "copyMapReadbackNs": 1643625,
+        "dispatches": 1,
+        "executor": "wgpu",
+        "fallbackCount": 0,
+        "gpuTimestampNs": null,
+        "graphicsAPI": "metal",
+        "inputBytes": 5102448,
+        "intermediateBufferBytes": 0,
+        "mappedBufferInitNs": 514542,
+        "nodes": 2,
+        "outputBytes": 5102448,
+        "parameterBytes": 320,
+        "readbackBytes": 5102452,
+        "region": {
+          "extent": [
+            629,
+            507
+          ],
+          "full": [
+            2400,
+            1600
+          ],
+          "origin": [
+            1771,
+            1093
+          ]
+        },
+        "submitAndHostJoinNs": 1319333,
+        "validationBytes": 4
+      },
+      "sha256": "2277a048035e5ebad53a1eb2f59c51e73c6975ae763815459d603102bfa2cb82",
+      "wgpuVsCpu": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          227464,
+          228184,
+          227989,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 1.1920928955078125e-7,
+        "maxScaledRGB": 7.375699548223651e-8,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 318903,
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.6162437200546265,
+          "actualBits": 1070522643,
+          "channel": "r",
+          "pixelIndex": 200688,
+          "reference": 1.616243839263916,
+          "referenceBits": 1070522644,
+          "x": 1808,
+          "y": 1412
+        }
+      },
+      "wgpuVsLegacy039": {
+        "alphaBitMismatches": 0,
+        "bitMismatchesRGBA": [
+          33892,
+          34527,
+          34260,
+          0
+        ],
+        "firstFailure": null,
+        "maxAbsRGB": 1.1920928955078125e-7,
+        "maxScaledRGB": 7.375699548223651e-8,
+        "mismatchedPixels": 0,
+        "mode": "scaled-rgb-exact-alpha",
+        "passed": true,
+        "pixels": 318903,
+        "referenceSHA256": "99ae70c3eedf0e32550866074dacb9ec7e94cacfc21c0e66a6e77418decdaf63",
+        "rgbScaledTolerance": 0.00002,
+        "worstScaledRGB": {
+          "actual": 1.6162437200546265,
+          "actualBits": 1070522643,
+          "channel": "r",
+          "pixelIndex": 200688,
+          "reference": 1.616243839263916,
+          "referenceBits": 1070522644,
+          "x": 1808,
+          "y": 1412
+        }
+      }
+    },
+    "roiVsWgpuFullCrop": {
+      "alphaBitMismatches": 0,
+      "bitMismatchesRGBA": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "firstFailure": null,
+      "maxAbsRGB": 0.0,
+      "maxScaledRGB": 0.0,
+      "mismatchedPixels": 0,
+      "mode": "bit-exact-f32",
+      "passed": true,
+      "pixels": 318903,
+      "rgbScaledTolerance": null,
+      "worstScaledRGB": null
+    },
+    "shaderSHA256": "63287f0e7f006afb868384d6d45b9cc787c1ec5ef55391999db3372cc7e0ecb8"
+  },
+  "monitorNode": "04300000-0000-4000-8000-000000000002",
+  "operators": [
+    {
+      "id": "scene.linear_coverage",
+      "inputs": [],
+      "output": "coverage-r32f",
+      "precision": "f32",
+      "roi": "pointwise-full-frame-pixel-center",
+      "version": 1
+    },
+    {
+      "id": "scene.ap1_corrector",
+      "inputs": [
+        "acescg-ap1-premul-rgba32f",
+        "coverage-r32f"
+      ],
+      "output": "acescg-ap1-premul-rgba32f",
+      "precision": "f32",
+      "roi": "pointwise-optional-coverage-port",
+      "version": 1
+    },
+    {
+      "id": "scene.normal_ordered_layer",
+      "inputs": [
+        "acescg-ap1-premul-rgba32f",
+        "acescg-ap1-premul-rgba32f"
+      ],
+      "output": "acescg-ap1-premul-rgba32f",
+      "precision": "f32",
+      "roi": "pointwise-ordered-pair",
+      "version": 1
+    }
+  ],
+  "outcome": "passed",
+  "peerReportSHA256": null,
+  "physicalAdapter": true,
+  "platform": {
+    "arch": "aarch64",
+    "kernel": "Darwin 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:05:48 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6041",
+    "macOSBuild": "26A434",
+    "os": "macos"
+  },
+  "roi": {
+    "extent": [
+      629,
+      507
+    ],
+    "full": [
+      2400,
+      1600
+    ],
+    "origin": [
+      1771,
+      1093
+    ]
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89"
+}

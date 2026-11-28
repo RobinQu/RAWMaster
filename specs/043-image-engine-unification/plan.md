@@ -63,7 +63,7 @@ Modules/ImageEdit/src/
 
 ### M2 · 首条 WGSL 场景 DAG 与融合
 
-1. **先接一条实际场景链。** 从 `DevelopmentSceneGraphV1.Scope` 转入 `EngineGraph`。首条覆盖 AP1 F32 曝光、EV 曲线、coverage 和有序 Layer，含零覆盖、禁用、监看与冻结最终根。摄影前缀、现用 ACES 2 和其他未迁移段先作为适配段进入计划。复用 035 的 WGSL 编译与参数布局基础，保留旧 V3 的域和语义。
+1. **先接一条实际场景链。** 首条独立组件已经接入 `DevelopmentSceneGraphV1.Scope` 对应的 039 文档，覆盖 AP1 F32 曝光、EV 曲线、线性 coverage 和有序 normal Layer，含零覆盖、禁用、顶层监看与冻结最终根。用 CPU 参考和同一 WGSL 融合计划绑定不同参数，Apple M4 Max 已实测。摄影前缀、ACES 2、组内监看和原生纹理传输从产品适配段接入。[实机结果与复跑](validation.md#m2--首条-wgsl-场景-dag-与融合)
 2. **两端实机首验。** 用同一提交、依赖锁、冻结图、校准实拍产生的 AP1 夹具及资源摘要，在 macOS 的 wgpu/Metal 和 Linux 的 wgpu/Vulkan 实体 GPU 运行同一条锁定场景路径。比较两端和参考的 F32 像素、全图及非居中 ROI，记录 GPU、驱动、能力与 `executor`/`graphicsAPI`，严格模式的 WGSL 段零回退。此项是首条场景路径启用的前置证据。[设备与样本矩阵](validation.md#m2--首条-wgsl-场景-dag-与融合)
 3. **实现算子级优化。** 验证后裁剪恒等和禁用分支。同域、同精度和几何的点段生成有固定求值顺序的 WGSL。为曲线、coverage 及参数绑定设设备上限，超限时切段。改变计算顺序的代数折叠逐项验收，结构化 pipeline 缓存让改参只更新缓冲。
 4. **验证产品传输。** 用 macOS 的同设备纹理接入 24/60 MP 原生预览、监看及 032 冻结交付，核对实际 GPU 驻留、同步、整帧往返和端到端预算。Linux 的首条 DAG 使用固定 AP1 输入验证执行器，完整 RAW 和目标文件在 M5 签收。
