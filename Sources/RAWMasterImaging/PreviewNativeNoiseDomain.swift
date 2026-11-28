@@ -87,13 +87,19 @@ final class PreviewNativeNoiseDomain {
           MTLCopyAllDevices().map(\.registryID) == [device.registryID],
           let camera = camera(for: p), pin.image.extent.origin == .zero,
           [CGSize(width: 9504, height: 6336), CGSize(width: 8640, height: 5760)].contains(pin.image.extent.size) else { return nil }
-    try checkAuthority()
+    func requireCurrent() throws {
+      try Task.checkCancellation()
+      try checkAuthority()
+      guard pin.isCurrent(for: pin.image) else { throw PreviewPresentationError.allocationProtocol }
+    }
+    try requireCurrent()
     let predicate = Self.predicate
-    try Task.checkCancellation()
-    try checkAuthority()
-    guard pin.isCurrent(for: pin.image) else { throw PreviewPresentationError.allocationProtocol }
-    guard let predicate, try pin.checkOpaqueUpload(pin.image, cancellation: checkAuthority) else { return nil }
-    try checkAuthority()
+    try requireCurrent()
+    guard let predicate else { return nil }
+    let opaque = try pin.checkOpaqueUpload(pin.image, cancellation: requireCurrent)
+    // Retirement during the opacity scan must revoke the request even when it returns false.
+    try requireCurrent()
+    guard opaque else { return nil }
     let cached = pin.checkedNoiseCertificate()?.pair
     if let cached, cached.camera == camera {
       return PreviewNativeNoiseDomain(pair: cached, pending: false, controls: p.noiseReduction, pin: pin,
