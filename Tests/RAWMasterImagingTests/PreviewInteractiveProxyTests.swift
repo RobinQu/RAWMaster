@@ -424,6 +424,67 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     XCTAssertEqual(digests[0], digests[1])
   }
 
+  func testCanonicalSpatialRequestCacheKeepsTheOriginalReductionGrid() async throws {
+    let environment = ProcessInfo.processInfo.environment
+    let os = ProcessInfo.processInfo.operatingSystemVersion
+    guard let path = environment["RAWMASTER_PANEL_READBACK_RAW"],
+          environment["RAWMASTER_QA_CANONICAL_STAGE_TIMING"] == "1",
+          environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"] != "1",
+          DevelopmentCheckedMaximumV3.allowsScalarGrouping, FlashRawNativeFiniteCheck.enabled,
+          DevelopmentMaskEngineV3.CanonicalValidation.SpatialTileScope.current != .disabled,
+          os.majorVersion == 27, os.minorVersion == 0, os.patchVersion == 1,
+          let device = MTLCreateSystemDefaultDevice(), device.name == "Apple M4 Max" else {
+      throw XCTSkip("Requires the paired RAW, the qualified device, and canonical stage timing")
+    }
+    let url = URL(fileURLWithPath:path)
+    let sha = try RenderFiles.hash(url)
+    let bytes = try XCTUnwrap(url.resourceValues(forKeys:[.fileSizeKey]).fileSize)
+    let source = EditingSourceSnapshot(projectID:"local-spatial-cache",assetID:"sony",contentSHA256:sha,
+      byteCount:Int64(bytes),admissionFingerprint:"local-spatial-cache",sourceLocation:url)
+    let service = DevelopmentPreviewService(policy:.init(bitmapCacheBytes:0,interactiveEvaluation:.proxyV1,settledTransport:.canonical))
+    let buffer = UnsafeMutableRawBufferPointer.allocate(byteCount:2400*1600*4,alignment:64)
+    defer { buffer.deallocate() }
+    do {
+      let lease = try await service.open(source:.raw(source))
+      guard PreviewPortableHalfFIT.supports(lease.orientedNativeSize, device:device) else {
+        throw XCTSkip("Requires one of the two qualified RAW dimensions")
+      }
+      for adjustment in [DevelopmentMaskAdjustmentsV3(texture:0.15), .init(clarity:0.15)] {
+        var parameters = DevelopmentAdjustmentsV3()
+        parameters.rawDecoder = .flashRaw031
+        parameters.masks = [.init(kind:.radial,radiusX:0.35,radiusY:0.30,feather:0,adjustments:adjustment)]
+        var digests = [SHA256.Digest]()
+        for role in [PreviewConsumerRole.primary, .comparison] {
+          let start = DispatchTime.now().uptimeNanoseconds
+          let recipe = DevelopmentRecipe(adjustmentsV3:parameters)
+          let frame = try await service.render(request(lease, PreviewConsumerID(), recipe, 1, quality:.settled, role:role))
+          XCTAssertFalse(frame.approximate)
+          try frame.copyDisplayRGBA8(into:buffer)
+          digests.append(SHA256.hash(data:Data(bytesNoCopy:buffer.baseAddress!,count:buffer.count,deallocator:.none)))
+          let events = ImagePerformanceTelemetry.shared.snapshot().recent.filter { $0.startedAtNanoseconds >= start && $0.outcome == .succeeded }
+          let shouldCache = role == .primary && environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"] == nil &&
+            environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] != "1" && !V3PreviewMaterializer.writesOwnedBitmap &&
+            !(adjustment.texture != nil && DevelopmentMaskEngineV3.CanonicalValidation.textureRegionBandsEnabled)
+          XCTAssertEqual(events.contains { $0.stage == "create context with spatial mask cache" }, shouldCache)
+          let region = events.filter { $0.operation == "显影有限值检查" && $0.stage == "原生局部归约" }
+          XCTAssertEqual(region.map(\.pixelCount), role == .primary ? [29_360_128] : [])
+          if shouldCache {
+            let created = try XCTUnwrap(events.first { $0.stage == "create context with spatial mask cache" })
+            let scan = try XCTUnwrap(region.first)
+            let display = try XCTUnwrap(events.first { $0.stage == "wrap NSBitmapImageRep" })
+            XCTAssertLessThanOrEqual(created.endedAtNanoseconds, scan.startedAtNanoseconds)
+            XCTAssertLessThanOrEqual(scan.endedAtNanoseconds, display.startedAtNanoseconds)
+          }
+        }
+        XCTAssertEqual(digests.first, digests.last)
+      }
+    } catch {
+      await service.closeAll()
+      throw error
+    }
+    await service.closeAll()
+  }
+
   func testCanonicalLocalNoiseGroupsTheOriginalFullDomain() async throws {
     let environment = ProcessInfo.processInfo.environment
     guard let path = environment["RAWMASTER_PANEL_READBACK_RAW"], #available(macOS 27, *),

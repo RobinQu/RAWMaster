@@ -198,7 +198,10 @@ final class NativePresentedCanvasTests: XCTestCase {
                     return editing.previews.primary.currentFrameWasDrawn && editing.previews.primary.frame?.quality == .detail
                 }
                 let frame = try XCTUnwrap(editing.previews.primary.frame)
+                let draw = try XCTUnwrap(editing.previews.primary.currentAcceptedDraw)
                 let landed = canvas.viewportSnapshot
+                XCTAssertEqual(CGSize(width: draw.imagePixelWidth, height: draw.imagePixelHeight), frame.outputSize)
+                XCTAssertEqual(landed.imagePixelSize, frame.nativeSize)
                 XCTAssertEqual(landed.transform, stopped.transform)
                 XCTAssertEqual(landed.imageRect, stopped.imageRect)
                 XCTAssertEqual(landed.imageRect.width * landed.backingScale / frame.nativeSize.width, 0.65, accuracy: 0.0001)

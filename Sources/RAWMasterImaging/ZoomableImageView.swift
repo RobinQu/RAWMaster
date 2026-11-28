@@ -158,6 +158,7 @@ public struct ImageFrameDrawEvent: Sendable {
     public let frameID: UUID
     public let drawBeganUptimeNanoseconds: UInt64
     public let drawReturnedUptimeNanoseconds: UInt64
+    /// Dimensions of the frame raster. A cropped or resized frame can cover a larger canvas.
     public let imagePixelWidth: Int
     public let imagePixelHeight: Int
 }
@@ -415,6 +416,9 @@ public final class ImageCanvas: NSView {
         // A windowed frame navigates and zooms as the whole canvas, not as its own bitmap.
         if let canvasPixelSize, canvasPixelSize.width > 0, canvasPixelSize.height > 0 { return canvasPixelSize }
         guard let image else { return .zero }
+        return rasterPixelSize(image)
+    }
+    private func rasterPixelSize(_ image: NSImage) -> CGSize {
         // Shared previews draw their producer's CGImage directly. Retina representations
         // synthesized by AppKit are display caches and must not redefine zoom or hit testing.
         if Self.drawsSharedRaster, comparisonImage == nil, let raster = PreviewSharedImageBridge.canvasRaster(for: image) {
@@ -657,9 +661,11 @@ public final class ImageCanvas: NSView {
         }
         if let frameID, frameID != lastDrawnFrameID, let callback = onFrameDrawn {
             lastDrawnFrameID = frameID
+            let returned = DispatchTime.now().uptimeNanoseconds
+            let raster = rasterPixelSize(image)
             let event = ImageFrameDrawEvent(frameID: frameID, drawBeganUptimeNanoseconds: began,
-                drawReturnedUptimeNanoseconds: DispatchTime.now().uptimeNanoseconds,
-                imagePixelWidth: Int(pixelSize.width), imagePixelHeight: Int(pixelSize.height))
+                drawReturnedUptimeNanoseconds: returned,
+                imagePixelWidth: Int(raster.width), imagePixelHeight: Int(raster.height))
             // AppKit draw return only; this is not WindowServer presentation or input-to-photon.
             DispatchQueue.main.async { callback(event) }
         }

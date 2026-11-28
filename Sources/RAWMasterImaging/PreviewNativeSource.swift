@@ -92,7 +92,13 @@ final class PreviewNativeSource: @unchecked Sendable {
   /// final materialization evaluate the graph once. Default off; no production caller sets it.
   private static let nativeIntermediateCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] == "1"
   private static let reusesPortableHalfContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_HALF_CONTEXT_REUSE"] == "1"
-  private static let cachesSpatialMasks = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"] == "1"
+  private static let spatialMaskCacheOverride = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"]
+  /// The default uses the measured grouped region and original CGImage transport.
+  private static let usesQualifiedSpatialMaskCache: Bool = {
+    let os = ProcessInfo.processInfo.operatingSystemVersion
+    return spatialMaskCacheOverride == nil && os.majorVersion == 27 && os.minorVersion == 0 && os.patchVersion == 1 &&
+      !nativeIntermediateCache && !V3PreviewMaterializer.writesOwnedBitmap
+  }()
   private(set) var context: CIContext
   private weak var clearedCanonicalContext: CIContext?
   private var remainingCanonicalContextUses = 0
@@ -669,7 +675,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           try checkCanonicalCache()
           try self.validateCaptureAuthority()
         }
-      } else if Self.cachesSpatialMasks, DevelopmentCheckedMaximumV3.groupedScalarsEnabled,
+      } else if Self.spatialMaskCacheOverride == "1", DevelopmentCheckedMaximumV3.groupedScalarsEnabled,
                 let request = localMaskValidation, request.transport == .spatialTileRegion,
                 maxPixel == 2400, originalEXIFOrientation == 1, adjustments.rawDetails == nil,
                 let local = adjustments.masks.first?.adjustments, (local.clarity ?? 0) > 0 || (local.texture ?? 0) > 0,
@@ -839,14 +845,27 @@ final class PreviewNativeSource: @unchecked Sendable {
         nativeSharpenMean = nil
       }
       var retainedMaskContext: CIContext?
+      let layer = adjustments.masks.first
+      let local = layer?.adjustments
+      let localTexture = (local?.texture ?? 0) > 0
+      let cachesQualifiedSpatialMask = Self.usesQualifiedSpatialMaskCache && window == nil && detailScale == nil &&
+        finalMaskValidation?.transport == .spatialTileRegion && finalMaskValidation?.scalarBatching == .clearAfterGroup &&
+        nativeFiniteCheck?.mayCheckTexture == true && (localTexture || (local?.clarity ?? 0) > 0) &&
+        !(localTexture && DevelopmentMaskEngineV3.CanonicalValidation.textureRegionBandsEnabled)
       let prepareRetainedMaskContext: (() throws -> CIContext?)?
-      if finalMaskValidation?.scalarBatching == .retainForRequest {
+      if finalMaskValidation?.scalarBatching == .retainForRequest || cachesQualifiedSpatialMask {
         prepareRetainedMaskContext = {
           try checkMaskValidation?()
+          if cachesQualifiedSpatialMask {
+            try nativeFiniteCheck?.checkAuthority()
+            guard let layer, let region = DevelopmentMaskEngineV3.CanonicalValidation.spatialTileSupport(layer, extent:based.extent),
+                  try DevelopmentCheckedMaximumV3.Partition(domain:region).count > 1 else { return nil }
+          }
           guard self.hasCanonicalCacheHeadroom(for:based.extent) else { return nil }
           var retainedOptions = options
           retainedOptions[.cacheIntermediates] = true
-          let retained = CanonicalPreviewDiagnostic.measure("create context for full validation cache") { CIContext(options:retainedOptions) }
+          let stage = cachesQualifiedSpatialMask ? "create context with spatial mask cache" : "create context for full validation cache"
+          let retained = CanonicalPreviewDiagnostic.measure(stage) { CIContext(options:retainedOptions) }
           retainedMaskContext = retained
           return retained
         }

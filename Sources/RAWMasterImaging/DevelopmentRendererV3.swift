@@ -607,9 +607,10 @@ enum DevelopmentRendererV3 {
     }
     // Only the admitted local graph may share cached intermediates with its display pass.
     // A denied request validates and renders in the original context.
-    if let request = admittedMaskValidation, request.scalarBatching == .retainForRequest {
+    if let request = admittedMaskValidation,
+       request.scalarBatching == .retainForRequest || request.transport == .spatialTileRegion {
       retainedMaskContext = try prepareRetainedMaskContext?()
-      if retainedMaskContext == nil {
+      if retainedMaskContext == nil, request.scalarBatching == .retainForRequest {
         admittedMaskValidation = .init(transport:request.transport,checkCancellation:request.checkCancellation)
       }
     }

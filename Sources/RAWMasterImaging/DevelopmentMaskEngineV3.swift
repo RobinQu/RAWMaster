@@ -95,7 +95,7 @@ enum DevelopmentMaskEngineV3 {
     private static let pointwiseRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_MASK_REGION"] == "1"
     private static let pointwiseCompositeRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_COMPOSITE_REGION"] == "1"
     private static let localNoiseBandsEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS"] == "1"
-    fileprivate static let textureRegionBandsEnabled = DevelopmentCheckedMaximumV3.groupedScalarsEnabled &&
+    static let textureRegionBandsEnabled = DevelopmentCheckedMaximumV3.groupedScalarsEnabled &&
       ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_TEXTURE_REGION_BANDS"] == "1"
     private static let spatialTransport: Transport? = {
       let environment = ProcessInfo.processInfo.environment
