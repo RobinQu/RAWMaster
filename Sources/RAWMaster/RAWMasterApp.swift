@@ -127,7 +127,7 @@ struct RAWMasterApp: App {
                 Button("适合窗口 / 原始像素 Z") {
                     if model.isNativeEditing, let editing = model.editing {
                         if editing.actualPixels { editing.requestCanvasCommand(.fit) }
-                        else { editing.setActualPixels(true, nativeEvent: true) }
+                        else { editing.enterActualPixels(nativeEvent: true) }
                     } else { model.actualPixels.toggle() }
                 }.disabled(!libraryCommandsEnabled || model.isCatalog)
                 Button("适合可用画面") { model.editing?.requestCanvasCommand(.fit) }

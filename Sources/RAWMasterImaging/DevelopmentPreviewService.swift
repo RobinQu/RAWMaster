@@ -92,7 +92,14 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var schedulingSequence: UInt64 = 0
   private var consecutiveInteractive = 0
   private var latestRecipeFingerprint: [PreviewConsumerID:String] = [:]
-  private struct Cached { let pixels: PreviewPixels; let sourceKey: String; let settledRecipeFingerprint: String?; var use: UInt64;var nativeProfileSemantic=false }
+  private struct Cached {
+    let pixels: PreviewPixels
+    let sourceKey: String
+    let settledRecipeFingerprint: String?
+    let nativeDetailOwner: (lease: DevelopmentPreviewSessionID, generation: UInt64)?
+    var use: UInt64
+    var nativeProfileSemantic: Bool
+  }
   private let ioQueue = DispatchQueue(label: "RAWMaster.preview.capture", qos: .userInitiated)
   private static let qaCanonicalRequestCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_REQUEST_CACHE"] == "1"
   private static let qaCanonicalHalfFIT = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_HALF_FIT"] == "1"
@@ -360,6 +367,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     leases[id] = Lease(key: key, source: source, stamp: stamp, generation: generation, valid: true, watcher: nil)
     sources[key]?.leases.insert(id)
     attachWatcher(id)
+    if rawBasePool != nil && leases.count > 1 { trimDetailPeers() }
     // Metadata-only policy at the existing lease boundary. Reconfiguration requires all leases closed.
     let gesture:PreviewCanonicalGestureCapability?
     if qaCanonicalGesture,policy.nativePointwiseProfile,policy.nativeCanonicalFiniteProof,
@@ -368,8 +376,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       gesture=try? PreviewCanonicalGestureCapability.admitted(native:native,sessionID:id,generation:generation,
         sourceKey:key,verifiedContentID:snapshot.contentSHA256)
     }else{gesture=nil}
+    let canPlanDetailCache = rawBasePool == nil || (policy.interactiveEvaluation == .proxyV1 &&
+      native.canRetainDetailBitmaps(bytes: policy.bitmapCacheBytes))
     return PreviewSessionInfo(id: id, sourceIdentity: key, sourceGeneration: generation, decoderVersion: native.decoder,
-      orientedNativeSize: native.nativeSize,canonicalGesture:gesture)
+      orientedNativeSize: native.nativeSize,canonicalGesture:gesture,
+      detailBitmapCacheBytes:canPlanDetailCache ? policy.bitmapCacheBytes : nil)
   }
   /// Immutable construction-time metadata from this already admitted lease. No decode, analysis,
   /// new capture, or native worker is started, and no mutable CIRAWFilter getter is read here.
@@ -772,10 +783,6 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     }
     active = item; stats.activeNativeRenders = 1; stats.maximumObservedNativeRenders = max(1, stats.maximumObservedNativeRenders)
     refreshChannels()
-    if rawBasePool != nil && item.request.quality == .detail {
-      for value in cache.values{value.pixels.presentationTicket?.markRetired()}
-      stats.evictions += UInt64(cache.count); cache.removeAll(); stats.cachedBitmapBytes = 0
-    }
     let native = record.native, override = renderOverride, request = item.request, pool = rawBasePool
     qaLifecycle(.render,.admitted,id:item.token,request:request,sourceID:native.captureID)
     let thumbnailHook=makeThumbnailSettledHook(item,native:native)
@@ -899,6 +906,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       do {
         result = try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1), presentation: true) {
           try item.interactiveCancellation.check()
+          if let pool { try await self.prepareBitmapsForRender(item, native: native, pool: pool) }
           return await Task.detached(priority: .userInitiated) {
             PreviewQALifecycleTrace.record(.render,.entered,id:item.token,request:request,sourceID:native.captureID)
             defer { PreviewQALifecycleTrace.record(.render,.returned,id:item.token,request:request,sourceID:native.captureID) }
@@ -991,10 +999,18 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         actualOutputKey=try pixelKey(item.request,sourceKey:item.key,interactivePlan:item.interactivePlan,
           nativePointwisePlan:plan,canonicalSharedFITOverride:false)
       }
-      if !clearAfterJoin && pixels.settledReplayKey == nil {
+      let pointwiseNativeDetailWithPool = rawBasePool != nil && Self.isPointwiseNativeDetail(item.request)
+      if !clearAfterJoin && pixels.settledReplayKey == nil && (!pointwiseNativeDetailWithPool || item.deliveryEnabled) {
         let settled = item.request.quality == .settled && item.request.role == .primary
+        if rawBasePool != nil && item.request.quality == .detail && leases.count > 1 {
+          for key in cache.keys.filter({ cache[$0]?.nativeDetailOwner != nil }) { retireBitmap(key) }
+        }
+        let detail = pointwiseNativeDetailWithPool && leases.count == 1 &&
+          pixels.window == item.request.viewport.window &&
+          !pixels.managedPresentation && pixels.approximation == nil
         insert(pixels,key:actualOutputKey,sourceKey:item.key,settledRecipe:settled ? item.request.recipe:nil,
-               nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true)
+               nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true,
+               nativeDetailOwner:detail ? (item.request.sessionID, item.request.sourceGeneration) : nil)
         if settled, !pixels.managedPresentation, pixels.approximation == nil, cache[actualOutputKey]?.settledRecipeFingerprint != nil {
           retireEarlierSourceOverlayProxy(item.request, sourceKey: item.key)
         }
@@ -1029,13 +1045,63 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     qaLifecycle(.render,.frame,id:value.frameID,request:request,sourceID:leases[request.sessionID].flatMap { sources[$0.key]?.native.captureID },receipt:pixels.nativePointwise,frameID:value.frameID,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,grainFinalTransport:pixels.actualGrainFinalTransport,presentationTicketID:PreviewQAMainPresentationWitness.registeredTicketID(pixels.presentationTicket?.id))
     return value
   }
-  private func insert(_ pixels: PreviewPixels, key: String, sourceKey: String,settledRecipe:DevelopmentRecipe?,nativeProfileSemantic:Bool = false) {
+  private static func isPointwiseNativeDetail(_ request: DevelopmentPreviewRequest) -> Bool {
+    guard request.quality == .detail, request.role == .primary, request.viewport.maxPixel == 0,
+          request.viewport.detailScale == nil, request.viewport.window != nil, let raw = request.recipe.adjustmentsV3,
+          raw.rawDecoder == .flashRaw031, raw.rawDetails == nil, raw.geometry == .init() else { return false }
+    return DevelopmentRAWSourcePolicy.usesFlashRaw(raw) && DevelopmentCanonicalFiniteGPU.supportsPointwiseRecipe(raw)
+  }
+  private func prepareBitmapsForRender(_ item: Pending, native: PreviewNativeSource, pool: PreviewRawBasePool) throws {
+    try item.interactiveCancellation.check()
+    let request = item.request
+    guard active?.token == item.token, let lease = leases[request.sessionID], lease.valid,
+          lease.generation == request.sourceGeneration else { throw DevelopmentPreviewError.sourceInvalidated }
+    guard request.quality == .detail else { trimDetailPeers(); return }
+    let keep: String?
+    if leases.count == 1, opening.isEmpty, captureRetirements.isEmpty, !criticalPressure, !clearAfterJoin,
+       policy.interactiveEvaluation == .proxyV1, Self.isPointwiseNativeDetail(request),
+       native.hasRAWFilter, native.canRetainDetailBitmaps(bytes: policy.bitmapCacheBytes),
+       pool.withWorker({
+         let state = pool.statistics
+         return state.residentBytes == 0 && state.reservedBytes == 0 && state.buildingBytes == 0 &&
+           state.pinnedBytes == 0 && state.retiredBytes == 0
+       }) {
+      // This path uses a verified FlashRaw source rather than filling the idle base pool.
+      // Only keep one already charged bitmap for the same native viewport.
+      keep = cache.filter { _, value in
+        value.sourceKey == item.key && value.nativeDetailOwner?.lease == request.sessionID &&
+          value.nativeDetailOwner?.generation == request.sourceGeneration &&
+          value.pixels.window == request.viewport.window && !value.pixels.managedPresentation &&
+          value.pixels.bytes <= policy.bitmapCacheBytes / 2
+      }.max { $0.value.use < $1.value.use }?.key
+    } else {
+      keep = nil
+    }
+    for key in Array(cache.keys) where key != keep { retireBitmap(key) }
+  }
+  private func trimDetailPeers() {
+    let detail = cache.filter { $0.value.nativeDetailOwner != nil }
+    guard detail.count > 1, let latest = detail.max(by: { $0.value.use < $1.value.use })?.key else { return }
+    for key in detail.keys where key != latest { retireBitmap(key) }
+  }
+  private func retireBitmap(_ key: String) {
+    guard let value = cache.removeValue(forKey: key) else { return }
+    value.pixels.presentationTicket?.markRetired()
+    stats.cachedBitmapBytes -= value.pixels.bytes
+    stats.evictions += 1
+  }
+  private func insert(_ pixels: PreviewPixels, key: String, sourceKey: String,settledRecipe:DevelopmentRecipe?,
+                      nativeProfileSemantic:Bool = false,
+                      nativeDetailOwner:(lease:DevelopmentPreviewSessionID,generation:UInt64)? = nil) {
     guard pixels.bytes <= policy.bitmapCacheBytes else { return }
     if let old = cache.removeValue(forKey: key) { old.pixels.presentationTicket?.markRetired();stats.cachedBitmapBytes -= old.pixels.bytes }
     while stats.cachedBitmapBytes + pixels.bytes > policy.bitmapCacheBytes, let oldest = cache.min(by: { $0.value.use < $1.value.use }) {
       oldest.value.pixels.presentationTicket?.markRetired();stats.cachedBitmapBytes -= oldest.value.pixels.bytes; cache.removeValue(forKey: oldest.key); stats.evictions += 1
     }
-    tick &+= 1; cache[key] = Cached(pixels: pixels, sourceKey: sourceKey, settledRecipeFingerprint: settledRecipe.flatMap { try? EditingFingerprint.of($0) }, use: tick,nativeProfileSemantic:nativeProfileSemantic); stats.cachedBitmapBytes += pixels.bytes
+    tick &+= 1
+    cache[key] = Cached(pixels: pixels, sourceKey: sourceKey, settledRecipeFingerprint: settledRecipe.flatMap { try? EditingFingerprint.of($0) },
+      nativeDetailOwner: nativeDetailOwner, use: tick, nativeProfileSemantic: nativeProfileSemantic)
+    stats.cachedBitmapBytes += pixels.bytes
   }
   public func invalidate(_ id: DevelopmentPreviewSessionID) async {
     let thumbnailRunning=(thumbnailStepRegistration != nil && thumbnailActive?.request.preview.sessionID==id) ? worker:nil
@@ -1752,6 +1818,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     guard let native = sources[item.key]?.native else { deliverAnalysis(item,.failure(DevelopmentPreviewError.sourceInvalidated)); pump(); return }
     do { _ = try validateAnalysisInput(item.request) }
     catch { deliverAnalysis(item,.failure(error)); pump(); return }
+    if rawBasePool != nil && item.request.sampling == .blackAndWhiteSummaryResident32V3 { trimDetailPeers() }
     activeAnalysis = item; consecutiveInteractive = 0
     stats.activeNativeRenders = 1; stats.maximumObservedNativeRenders = max(1,stats.maximumObservedNativeRenders)
     analysisStats.maximumActive = max(1,analysisStats.maximumActive)

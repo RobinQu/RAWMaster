@@ -89,10 +89,13 @@ public struct PreviewSessionInfo: Sendable {
   public let decoderVersion: String
   public let orientedNativeSize: CGSize
   public let canonicalGesture: PreviewCanonicalGestureCapability?
+  /// Bitmap capacity for planning native detail windows. The service checks reuse at render time.
+  public let detailBitmapCacheBytes: Int?
   init(id:DevelopmentPreviewSessionID,sourceIdentity:String,sourceGeneration:UInt64,decoderVersion:String,
-       orientedNativeSize:CGSize,canonicalGesture:PreviewCanonicalGestureCapability? = nil) {
+       orientedNativeSize:CGSize,canonicalGesture:PreviewCanonicalGestureCapability? = nil,detailBitmapCacheBytes:Int? = nil) {
     self.id=id;self.sourceIdentity=sourceIdentity;self.sourceGeneration=sourceGeneration
     self.decoderVersion=decoderVersion;self.orientedNativeSize=orientedNativeSize;self.canonicalGesture=canonicalGesture
+    self.detailBitmapCacheBytes=detailBitmapCacheBytes
   }
 }
 public struct DevelopmentPreviewRequest: Sendable {

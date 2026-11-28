@@ -459,11 +459,14 @@ import RAWMasterLibrary
         }
     }
     private var canvasSampling: [PreviewConsumerRole: CanvasSampling] = [:]
+    private var primaryCanvasViewport: ImageCanvasViewportSnapshot?
     private var canvasZooming = false
     private var canvasZoomTask: Task<Void, Never>?
     var canvasZoomContext: UUID { focusGeneration }
     private static let qaNarrowActualPixelWindow =
         ProcessInfo.processInfo.environment["RAWMASTER_QA_NARROW_ACTUAL_PIXEL_WINDOW"] == "1"
+    private static let usesDetailBitmapBudget =
+        ProcessInfo.processInfo.environment["RAWMASTER_QA_BUDGETED_ACTUAL_PIXEL_WINDOW"] != "0"
     /// Canvas window a 1:1 frame should cover. `nil` materializes the whole canvas.
     private(set) var detailWindow: CGRect?
     private var lastVisibleDetailWindow: CGRect?
@@ -759,6 +762,7 @@ import RAWMasterLibrary
         asset = newAsset; work = nil; versions = []; dispositions = [:]; selectedVersionID = nil
         preview = nil; previewDimensions = ""; comparison = .init(); comparisonAdmission = nil; message = nil; sourceReady = false
         _ = resetCanvasSampling()
+        primaryCanvasViewport = nil
         detailWindowTask?.cancel(); detailWindowExpandTask?.cancel()
         detailWindow = nil; lastVisibleDetailWindow = nil
         actualPixels = false; canvasCommand = .init(action: .fit)
@@ -1065,6 +1069,9 @@ import RAWMasterLibrary
     }
     func updateCanvasSampling(_ snapshot: ImageCanvasViewportSnapshot, role: PreviewConsumerRole, zooming: Bool? = nil) {
         guard !shuttingDown, !actualPixels, !cropEditing, developmentPicker == nil else { return }
+        if role == .primary, snapshot.frameID == previews.primary.frame?.id {
+            primaryCanvasViewport = snapshot
+        }
         let wasZooming = canvasZooming
         if let zooming { canvasZooming = zooming }
         let sample = CanvasSampling(snapshot)
@@ -1088,6 +1095,27 @@ import RAWMasterLibrary
             requestPreview(input: .capture(control: "canvas-zoom", phase: "end", nativeEvent: true))
         }
     }
+    private var canPlanPrimaryNativeWindow: Bool {
+        stage == .development && sourceReady && visibleSceneGraph == nil && !comparing && !cropEditing &&
+            !developmentShowingOriginal && !repairEditing && developmentPicker == nil
+    }
+    /// Explicit controls retain the canvas center. AppKit double-clicks supply their own anchor.
+    func enterActualPixels(nativeEvent: Bool = false) {
+        let pane = previews.primary
+        if !actualPixels, canPlanPrimaryNativeWindow, let work, let snapshot = primaryCanvasViewport,
+           pane.canInspectDevelopmentSource, let frame = pane.frame, snapshot.frameID == frame.id,
+           frame.generation == pane.currentSourceGeneration, frame.nativeSize == snapshot.imagePixelSize,
+           pane.frameRecipe == previewRecipe(for: work, editingDraft: true),
+           pane.framePresentationID == developmentPreviewPresentationID {
+            var transform = snapshot.transform
+            transform.physicalMagnification = 1
+            let photo = ImageViewportGeometry.imageRect(pixelSize: frame.nativeSize, viewport: snapshot.viewportSize,
+                transform: transform, backingScale: snapshot.backingScale)
+            lastVisibleDetailWindow = ImageViewportGeometry.visibleWindow(destination: photo,
+                bounds: CGRect(origin: .zero, size: snapshot.viewportSize))
+        }
+        setActualPixels(true, nativeEvent: nativeEvent)
+    }
     func setActualPixels(_ value: Bool, nativeEvent: Bool = false, requestPreview: Bool = true) {
         guard !shuttingDown, actualPixels != value, !(value && cropEditing && stage == .development) else { return }
         if value {
@@ -1098,6 +1126,7 @@ import RAWMasterLibrary
         } else {
             detailWindowTask?.cancel(); detailWindowTask = nil
             detailWindowExpandTask?.cancel(); detailWindowExpandTask = nil
+            detailWindow = nil; lastVisibleDetailWindow = nil; primaryCanvasViewport = nil
         }
         actualPixels = value
         if requestPreview {
@@ -1213,10 +1242,17 @@ import RAWMasterLibrary
     }
     private func prefetchedDetailWindow(_ visible: CGRect, margin: CGFloat) -> CGRect {
         // This padding is for pans. The renderer still supplies each operator's own ROI and halo.
-        let effectiveMargin = Self.qaNarrowActualPixelWindow && stage == .development && !PreviewPerformancePreferences.isTurbo
-            ? 0.01 : margin
+        let turbo = PreviewPerformancePreferences.isTurbo
+        let narrow = Self.qaNarrowActualPixelWindow && stage == .development && !turbo
+        if Self.usesDetailBitmapBudget, !turbo, !narrow, canPlanPrimaryNativeWindow,
+           recipe.adjustmentsV3?.rawDecoder == .flashRaw031, recipe.adjustmentsV3?.geometry == .init(),
+           let paneBudget = previews.primary.detailBitmapCacheBytes, let frame = previews.primary.frame,
+           let budgeted = ImageViewportGeometry.budgetedNativeWindow(visible: visible, nativeSize: frame.nativeSize,
+                                                                     cacheBytes: paneBudget, margin: margin) {
+            return budgeted
+        }
         return ImageViewportGeometry.quantized(
-            ImageViewportGeometry.servedWindow(visible: visible, margin: effectiveMargin), steps: 32)
+            ImageViewportGeometry.servedWindow(visible: visible, margin: narrow ? 0.01 : margin), steps: 32)
     }
 
     /// The 1:1 canvas reports which part of the canvas it can see. Ask for a bitmap that covers
@@ -1231,7 +1267,7 @@ import RAWMasterLibrary
         let pane = previews.primary
         if let frame = pane.displayedNativeDetail(recipe: previewRecipe(for: work, editingDraft: true),
                                                   presentationID: developmentPreviewPresentationID),
-           ImageViewportGeometry.window(frame.window ?? CGRect(x: 0, y: 0, width: 1, height: 1), covers: visible) {
+           ImageViewportGeometry.window(frame.window ?? CGRect(x: 0, y: 0, width: 1, height: 1), covers: visible, tolerance: 1e-9) {
             detailWindowTask?.cancel(); detailWindowTask = nil
             if detailWindow != frame.window || pane.pendingNativeDetailMisses(visible) {
                 detailWindow = frame.window
@@ -1391,6 +1427,7 @@ import RAWMasterLibrary
         guard previews.primary.hasRawSource || previews.comparison.hasRawSource else { return }
         detailWindowTask?.cancel(); detailWindowTask = nil
         detailWindowExpandTask?.cancel(); detailWindowExpandTask = nil
+        primaryCanvasViewport = nil; lastVisibleDetailWindow = nil
         sourceReady = false; sourceNeedsRevalidation = true
         previews.invalidateRawSources()
     }
@@ -4827,10 +4864,10 @@ import RAWMasterLibrary
         switch key {
         case "z":
             if developmentPicker == nil {
-                if actualPixels { requestCanvasCommand(.fit) } else { setActualPixels(true, nativeEvent: true) }
+                if actualPixels { requestCanvasCommand(.fit) } else { enterActualPixels(nativeEvent: true) }
             }
         case "0": requestCanvasCommand(.fit)
-        case "1": if developmentPicker == nil { setActualPixels(true, nativeEvent: true) }
+        case "1": if developmentPicker == nil { enterActualPixels(nativeEvent: true) }
         case "+", "=": requestCanvasCommand(.zoomIn)
         case "-": requestCanvasCommand(.zoomOut)
         case "a":

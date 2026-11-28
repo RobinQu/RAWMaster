@@ -54,6 +54,42 @@ public enum ImageViewportGeometry {
         let maxX = min(1, visible.maxX + dx), maxY = min(1, visible.maxY + dy)
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
+    /// Keep room for two native RGBA8 bitmaps when the complete visible region fits.
+    /// Use an outward-rounded visible region even when a single frame exceeds that allowance.
+    public static func budgetedNativeWindow(visible: CGRect, nativeSize: CGSize, cacheBytes: Int, margin: CGFloat) -> CGRect? {
+        guard let width = Int(exactly: nativeSize.width), let height = Int(exactly: nativeSize.height),
+              width > 0, height > 0, cacheBytes >= 0, (0...0.5).contains(margin),
+              [visible.minX, visible.minY, visible.maxX, visible.maxY].allSatisfy(\.isFinite),
+              !visible.isEmpty else { return nil }
+        let bounds = CGRect(origin: .zero, size: nativeSize)
+        let unit = visible.intersection(CGRect(x: 0, y: 0, width: 1, height: 1))
+        guard !unit.isEmpty else { return nil }
+        let pixels = CGRect(x: unit.minX * nativeSize.width, y: unit.minY * nativeSize.height,
+                            width: unit.width * nativeSize.width, height: unit.height * nativeSize.height)
+            .integral.intersection(bounds)
+        guard !pixels.isEmpty else { return nil }
+        let allowance = cacheBytes / 2
+        var best = pixels
+        var low = 1
+        var high = Int(margin * 10_000)
+        while low <= high {
+            let steps = (low + high) / 2
+            let dx = ceil(pixels.width * CGFloat(steps) / 10_000)
+            let dy = ceil(pixels.height * CGFloat(steps) / 10_000)
+            let candidate = pixels.insetBy(dx: -dx, dy: -dy).intersection(bounds)
+            let rowPixels = Int(candidate.width)
+            guard rowPixels <= (Int.max - 63) / 4 else { return nil }
+            let alignedRow = ((rowPixels * 4 + 63) / 64) * 64
+            if Int(candidate.height) <= allowance / alignedRow {
+                best = candidate
+                low = steps + 1
+            } else {
+                high = steps - 1
+            }
+        }
+        return CGRect(x: best.minX / nativeSize.width, y: best.minY / nativeSize.height,
+                      width: best.width / nativeSize.width, height: best.height / nativeSize.height)
+    }
     /// Snap a window to a `1/steps` grid so small pans keep the same cache identity.
     public static func quantized(_ window: CGRect, steps: Int) -> CGRect {
         guard steps > 1 else { return window }
@@ -65,8 +101,7 @@ public enum ImageViewportGeometry {
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
     /// True when `window` fully covers `visible` (with a small tolerance for grid snapping).
-    public static func window(_ window: CGRect, covers visible: CGRect) -> Bool {
-        let eps: CGFloat = 1e-4
+    public static func window(_ window: CGRect, covers visible: CGRect, tolerance eps: CGFloat = 1e-4) -> Bool {
         return window.minX <= visible.minX + eps && window.minY <= visible.minY + eps
             && window.maxX >= visible.maxX - eps && window.maxY >= visible.maxY - eps
     }

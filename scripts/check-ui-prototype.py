@@ -143,6 +143,10 @@ def main():
                   assert(fit.scrollLeft===0&&fit.scrollTop===0&&status.hidden,'remaining outside presents the settled target');
                   key(el('#workspace'),'0');await wait(()=>S.editZoom===1&&!S.pixelView);
                   assert(!el('.pan-preview-progress').checkVisibility(),'leaving 1:1 clears the pending state');
+                  key(el('#workspace'),'z');
+                  await wait(()=>S.pixelView&&el('.canvas-fit').dataset.panPhase==='settled');
+                  assert(S.editZoom>1&&Studio.data.work===photo,'keyboard enters 1:1 on the same photo');
+                  key(el('#workspace'),'0');await wait(()=>S.editZoom===1&&!S.pixelView);
                 """
                 for width, height, scheme in ((1440, 900, "dark"), (560, 800, "light")):
                     browser("set", "viewport", str(width), str(height))

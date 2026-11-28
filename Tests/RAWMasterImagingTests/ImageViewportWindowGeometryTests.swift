@@ -69,6 +69,34 @@ final class ImageViewportWindowGeometryTests: XCTestCase {
     XCTAssertFalse(ImageViewportGeometry.window(served, covers: CGRect(x: 0.1, y: 0.1, width: 0.1, height: 0.1)))
   }
 
+  func testBudgetedDetailWindowUsesThePixelGridAndFitsTwoBitmaps() throws {
+    let native = CGSize(width: 9504, height: 6336)
+    let visible = CGRect(x: 3024 / native.width, y: 2682 / native.height,
+                         width: 3680 / native.width, height: 1804 / native.height)
+    let budget = 128 * 1024 * 1024
+    let planned = try XCTUnwrap(ImageViewportGeometry.budgetedNativeWindow(
+      visible: visible, nativeSize: native, cacheBytes: budget, margin: 0.5))
+    XCTAssertTrue(ImageViewportGeometry.window(planned, covers: visible, tolerance: 1e-9))
+    XCTAssertGreaterThan(planned.width, visible.width)
+    XCTAssertGreaterThan(planned.height, visible.height)
+    let grid = [planned.minX * native.width, planned.minY * native.height,
+                planned.width * native.width, planned.height * native.height]
+    for coordinate in grid { XCTAssertEqual(coordinate, coordinate.rounded(), accuracy: 1e-9) }
+    let row = ((4 * Int(grid[2].rounded()) + 63) / 64) * 64
+    XCTAssertLessThanOrEqual(2 * row * Int(grid[3].rounded()), budget)
+  }
+
+  func testVisiblePixelsArePreservedWhenTwoBitmapsCannotFit() throws {
+    let native = CGSize(width: 9504, height: 6336)
+    let visible = CGRect(x: 0, y: 0, width: 6016 / native.width, height: 3384 / native.height)
+    let planned = try XCTUnwrap(ImageViewportGeometry.budgetedNativeWindow(
+      visible: visible, nativeSize: native, cacheBytes: 128 * 1024 * 1024, margin: 0.5))
+    XCTAssertTrue(ImageViewportGeometry.window(planned, covers: visible, tolerance: 1e-9))
+    XCTAssertEqual(planned.width * native.width, 6016, accuracy: 1)
+    XCTAssertEqual(planned.height * native.height, 3384, accuracy: 1)
+    XCTAssertEqual(planned.origin, .zero)
+  }
+
   /// The canvas draws a windowed bitmap into the corresponding part of the whole-canvas rect,
   /// with the rest of the canvas left to the background.
   @MainActor func testWindowedBitmapDrawsOnlyIntoItsCanvasRect() throws {

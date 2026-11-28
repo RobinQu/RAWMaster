@@ -181,6 +181,64 @@ final class PreviewRawBaseTests: XCTestCase {
     XCTAssertNil(owner);let stats=await service.statistics();XCTAssertEqual(stats.rawBaseResidentBytes+stats.rawBaseRetiredBytes,0)
     await service.closeAll()
   }
+  func testCancelledPooledNativeDetailCannotCacheItsLateBitmap() async throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_PREVIEW_BENCHMARK_RAW"] else {
+      throw XCTSkip("Use the verified RAW fixture for primary native detail")
+    }
+    let raw = URL(fileURLWithPath: path)
+    let source = EditingSourceSnapshot(projectID: "detail-cache", assetID: "source",
+      contentSHA256: try RenderFiles.hash(raw), byteCount: try PreviewFileStamp.read(raw).size,
+      admissionFingerprint: "detail-cache-cancellation", sourceLocation: raw)
+    let entered = DispatchSemaphore(value: 0), complete = DispatchSemaphore(value: 0)
+    let window = CGRect(x: 0.25, y: 0.25, width: 0.125, height: 0.125)
+    let size = CGSize(width: 16, height: 16)
+    let bytes = 16 * 16 * 4
+    let service = DevelopmentPreviewService(policy: .init(rawBaseCacheBytes: 1_073_741_824,
+      interactiveEvaluation: .proxyV1, settledTransport: .viewport), renderOverride: { recipe, _ in
+      if recipe.adjustmentsV3?.light.exposure == 0.5 {
+        entered.signal()
+        guard complete.wait(timeout: .now() + 5) == .success else { throw DevelopmentPreviewError.memoryBudgetExceeded }
+      }
+      return .init(image: NSImage(size: size), nativeSize: CGSize(width: 128, height: 128),
+        outputSize: size, window: window, bytes: bytes)
+    })
+    let lease = try await service.open(source: .raw(source))
+    guard lease.detailBitmapCacheBytes != nil else {
+      await service.closeAll()
+      throw XCTSkip("The native detail cache requires a supported Metal device and source")
+    }
+    let consumer = PreviewConsumerID()
+    func request(_ revision: UInt64, exposure: Double) -> DevelopmentPreviewRequest {
+      var adjustments = DevelopmentAdjustmentsV3()
+      adjustments.rawDecoder = .flashRaw031
+      adjustments.light = .init(enabled: true, exposure: exposure)
+      return .init(sessionID: lease.id, sourceGeneration: lease.sourceGeneration, consumerID: consumer,
+        role: .primary, revision: revision, recipe: .init(adjustmentsV3: adjustments),
+        quality: .detail, viewport: .init(maxPixel: 0, window: window))
+    }
+    let first = try await service.render(request(1, exposure: 0.25))
+    XCTAssertEqual(first.window, window)
+    let pending = request(2, exposure: 0.5)
+    let child = Task { try await service.render(pending) }
+    let didEnter = await Task.detached { entered.wait(timeout: .now() + 5) == .success }.value
+    XCTAssertTrue(didEnter)
+    await service.cancel(consumerID: consumer)
+    complete.signal()
+    switch await child.result {
+    case .failure(let error): XCTAssertEqual(error as? DevelopmentPreviewError, .superseded)
+    case .success: XCTFail("A cancelled request delivered a native detail frame")
+    }
+    await service.cancelAndJoin(consumerID: consumer)
+    let afterCancel = await service.statistics()
+    XCTAssertEqual(afterCancel.cachedBitmapBytes, bytes)
+    XCTAssertEqual(afterCancel.completedRenders, 2)
+    let secondLease = try await service.open(source: .raw(source))
+    let afterSecondLease = await service.statistics()
+    XCTAssertEqual(afterSecondLease.cachedBitmapBytes, bytes)
+    await service.close(secondLease.id)
+    await service.closeAll()
+  }
+
   func testOptInFirst60MPWholeFillAndSame2400MissHit() throws {
     let env=ProcessInfo.processInfo.environment
     guard env["RAWMASTER_F32_FIRST"]=="1",let repoPath=env["RAWMASTER_F32_REPOSITORY"],let outputPath=env["RAWMASTER_F32_OUTPUT"]else{throw XCTSkip("Explicit first60MP wholefill grant required")}

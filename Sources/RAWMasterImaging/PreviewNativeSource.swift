@@ -514,7 +514,11 @@ final class PreviewNativeSource: @unchecked Sendable {
   private func detailWindow(maxPixel: Int, window: CGRect?) -> CGRect? {
     maxPixel == 0 ? window : nil
   }
-  private func hasCanonicalCacheHeadroom(for extent: CGRect) -> Bool {
+  func canRetainDetailBitmaps(bytes: Int) -> Bool {
+    bytes >= 0 && originalEXIFOrientation == 1 &&
+      hasCanonicalCacheHeadroom(for: orientedNativeExtent, retainingBytes: bytes)
+  }
+  private func hasCanonicalCacheHeadroom(for extent: CGRect, retainingBytes: Int = 0) -> Bool {
     guard #available(macOS 27, *), verifiedCapture != nil, contextMemoryLimitMiB == 512,
           ProcessInfo.processInfo.physicalMemory >= 32 * 1024 * 1024 * 1024,
           extent.origin == .zero, extent == extent.integral, extent.width >= extent.height,
@@ -522,6 +526,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           let device = interactiveMetalDevice, device.hasUnifiedMemory else { return false }
     // Check headroom for the context target and one full-size Float32 intermediate.
     let required = UInt64(contextMemoryLimitMiB * 1024 * 1024) + UInt64(extent.width * extent.height) * 16
+      + UInt64(retainingBytes)
     let used = UInt64(device.currentAllocatedSize)
     let limit = device.recommendedMaxWorkingSetSize
     return used <= limit && required <= limit - used

@@ -128,7 +128,7 @@ struct EditingImageCanvas: View {
                 .focused($fitFocused)
             Button {
                 if editing.visibleSceneGraph != nil { transform.physicalMagnification = 1 }
-                editing.setActualPixels(true, nativeEvent: true)
+                editing.enterActualPixels(nativeEvent: true)
             } label: { Text("1:1").font(.system(size: 10, weight: .semibold)).frame(width: 30, height: 26) }
             .disabled(editing.cropEditing || editing.developmentPicker != nil)
             .help("实际像素 · Z").accessibilityLabel("实际像素").accessibilityIdentifier("editing.actualPixels")

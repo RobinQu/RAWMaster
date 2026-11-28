@@ -131,9 +131,11 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 在 [1:1 平移走查](../../docs/ui/prototype/index.html?nativePanReview=1#edit/development) 打开一张照片，点 `1:1` 或按 `Z`。在原寸区域内移动仍显示现有细节。移出原寸区域后，主图在到达新区域时更新细节。若在提交前或「计算中…」时折返，当前区域继续显示当前草稿，旧区域的结果随请求撤回。用 `FIT` 或 `0` 退出。换片后从新照片的 FIT 开始。[折返走查](../025-editing-workspace/prototype-review.md#原寸平移折返)
 
+工具条和键盘进入原寸时，有当前主画布快照便按当前中心直接请求规范像素窗口。双击由 AppKit 以指针落点同步给出窗口。均衡单画布的 FlashRaw V3 原几何路径用当前租约位图容量增加平移留边。以两张 RGBA8 位图的实际缓存额度确定上限，边界向外对齐整像素。大窗口超出单张半额时仍保留全部可见原寸。原始分辨率和算子的采样范围由渲染器维持。[043 原寸验收](../043-image-engine-unification/validation.md#物理-11-曝光)
+
 ## 极速模式（用户可选）
 
-设置 → 编辑 → 「渲染速度」提供 `均衡` / `极速`。默认 `均衡`，行为与上一版完全相同；`极速` 才启用降级项。选择保存在 `UserDefaults` 的 `editing.preview.performanceMode`，启动时应用到 `PreviewPerformancePreferences`，无法识别的值回落到 `均衡`。
+设置 → 编辑 → 「渲染速度」提供 `均衡` / `极速`。默认 `均衡`按原寸交付细节，`极速`允许手势期间先显示代理预览。选择保存在 `UserDefaults` 的 `editing.preview.performanceMode`，启动时应用到 `PreviewPerformancePreferences`，无法识别的值回落到 `均衡`。
 
 | 项 | 均衡 | 极速 |
 | --- | --- | --- |

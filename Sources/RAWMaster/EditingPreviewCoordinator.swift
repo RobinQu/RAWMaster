@@ -65,12 +65,15 @@ struct EditingPreviewLease: Sendable {
     let generation: UInt64
     let sourceIdentity: String?
     let canonicalGesture: PreviewCanonicalGestureCapability?
+    let detailBitmapCacheBytes: Int?
     init(id: DevelopmentPreviewSessionID, generation: UInt64, sourceIdentity:String? = nil,
          canonicalGesture:PreviewCanonicalGestureCapability? = nil) {
         self.id=id;self.generation=generation;self.sourceIdentity=sourceIdentity;self.canonicalGesture=canonicalGesture
+        self.detailBitmapCacheBytes=nil
     }
     init(_ info: PreviewSessionInfo) {
         id=info.id;generation=info.sourceGeneration;sourceIdentity=info.sourceIdentity;canonicalGesture=info.canonicalGesture
+        detailBitmapCacheBytes=info.detailBitmapCacheBytes
     }
 }
 struct EditingPreviewBitmap: @unchecked Sendable {
@@ -334,6 +337,11 @@ enum EditingPreviewPromptDispatch {
     var canInspectDevelopmentSource: Bool {
         !stopped && !sourceInvalidated && desired?.intent.isRaw == true && lease != nil && boundSourceKey == desired?.intent.sourceKey
     }
+    var detailBitmapCacheBytes: Int? {
+        guard canInspectDevelopmentSource, let frame, frame.leaseID == lease?.id,
+              frame.generation == lease?.generation else { return nil }
+        return lease?.detailBitmapCacheBytes
+    }
     func displayedNativeDetail(recipe: DevelopmentRecipe, presentationID: String) -> EditingPreviewBitmap? {
         guard canInspectDevelopmentSource, let frame, let frameViewport,
               frame.leaseID == lease?.id, frame.generation == lease?.generation, frameSourceKey == boundSourceKey,
@@ -344,7 +352,7 @@ enum EditingPreviewPromptDispatch {
     func pendingNativeDetailMisses(_ visible: CGRect) -> Bool {
         guard rendering, let intent = desired?.intent, intent.quality == .detail,
               intent.viewport.detailScale == nil, let requested = intent.viewport.window else { return false }
-        return !ImageViewportGeometry.window(requested, covers: visible)
+        return !ImageViewportGeometry.window(requested, covers: visible, tolerance: 1e-9)
     }
     func developmentSourceContext() async throws -> EditingPreviewSourceContext {
         guard canInspectDevelopmentSource, let lease, let target = desired,
@@ -672,7 +680,8 @@ enum EditingPreviewPromptDispatch {
                     }
                     output = try promptResult.result.get()
                 } else {
-                    InteractionTrace.shared.preview("preview.request", input: target.input, role: self.role, revision: target.revision, lease: info, quality: target.intent.quality, consumerID: self.consumerID)
+                    InteractionTrace.shared.preview("preview.request", input: target.input, role: self.role, revision: target.revision,
+                        lease: info, quality: target.intent.quality, consumerID: self.consumerID, viewport: request.viewport)
                     output = try await self.backend.render(request)
                 }
                 guard self.acceptsExact(target), !Task.isCancelled else {

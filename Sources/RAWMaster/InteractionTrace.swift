@@ -165,7 +165,7 @@ final class InteractionTrace {
                  consumerID: PreviewConsumerID? = nil, outcome: String? = nil, reason: String? = nil,
                  tokenID: UUID? = nil, channelID: UUID? = nil, publicationEpoch: UInt64? = nil,
                  requestedRevision: UInt64? = nil, displayedRevision: UInt64? = nil,
-                 capturedAt: UInt64? = nil) {
+                 capturedAt: UInt64? = nil, viewport: PreviewViewport? = nil) {
         guard isEnabled else { return }
         var fields: [String: Any] = ["pane": role.rawValue, "revision": revision, "control": input.control,
             "phase": input.phase, "inputOrigin": input.origin.rawValue, "eventAssociation": input.association.rawValue,
@@ -194,6 +194,14 @@ final class InteractionTrace {
         fields["pixelRequest"] = !["preview.parameter", "preview.interaction"].contains(event) && !["deduplicated", "overlay-only", "blocked"].contains(outcome ?? "")
         if let lease { fields["leaseID"] = lease.id.rawValue.uuidString; fields["sourceGeneration"] = lease.generation }
         if let quality { fields["quality"] = quality.rawValue }
+        if let viewport, quality == .detail {
+            if let rect = viewport.window {
+                fields["viewportWindow"] = [rect.minX, rect.minY, rect.width, rect.height]
+            } else {
+                fields["viewportWindow"] = NSNull()
+            }
+            if let scale = viewport.detailScale { fields["viewportScale"] = scale }
+        }
         if let frame {
             fields["frameID"] = frame.id.uuidString; fields["approximate"] = frame.approximate
             fields["pixelWidth"] = Int(frame.outputSize.width); fields["pixelHeight"] = Int(frame.outputSize.height)

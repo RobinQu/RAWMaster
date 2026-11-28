@@ -28,7 +28,10 @@ enum DevelopmentCanonicalFiniteGPU {
   /// The native FlashRaw FIT paths listed here have bounded pointwise inputs. Multiscale
   /// blur, learned models, local external mattes, exports and analysis keep their own transport.
   static func eligible(_ p: DevelopmentAdjustmentsV3, maxPixel: Int) -> Bool {
-    guard enabled, p.rawDecoder == .flashRaw031, (1...2400).contains(maxPixel), p.masks.count <= 1 else { return false }
+    (1...2400).contains(maxPixel) && supportsPointwiseRecipe(p)
+  }
+  static func supportsPointwiseRecipe(_ p: DevelopmentAdjustmentsV3) -> Bool {
+    guard enabled, p.rawDecoder == .flashRaw031, p.masks.count <= 1 else { return false }
     var allowed = p.neutralForSameSource
     allowed.rawDetails = p.rawDetails
     allowed.color = p.color

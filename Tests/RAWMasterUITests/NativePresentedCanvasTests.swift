@@ -1,7 +1,9 @@
 import AppKit
 import CoreMedia
+import Darwin
 import Dispatch
 import ImageIO
+import Metal
 import SwiftUI
 import XCTest
 @testable import RAWMaster
@@ -226,6 +228,7 @@ final class NativePresentedCanvasTests: XCTestCase {
         throw XCTSkip("The presented canvas benchmark requires Release")
         #endif
         let diagnostics = env["RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS"] == "1"
+        let directActualPixelEntry = env["RAWMASTER_PRESENTED_CANVAS_DIRECT_1TO1"] == "1"
         let requestedROI: [Int]?
         if let encodedROI = env["RAWMASTER_PRESENTED_CANVAS_SOURCE_ROI"] {
             let parts = encodedROI.split(separator: ",", omittingEmptySubsequences: false)
@@ -246,7 +249,18 @@ final class NativePresentedCanvasTests: XCTestCase {
         let suite = "PresentedCanvas-" + UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let app = AppModel(libraryURL: library, defaults: defaults)
+        let previewService: DevelopmentPreviewService
+        if let setting = env["RAWMASTER_PRESENTED_CANVAS_RAW_BASE_CACHE_BYTES"] {
+            guard let bytes = Int(setting), (0...1_073_741_824).contains(bytes) else {
+                throw Failure.invalid("RAW base cache bytes")
+            }
+            previewService = DevelopmentPreviewService(policy: .init(rawBaseCacheBytes: bytes,
+                interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+        } else {
+            previewService = .shared
+        }
+        let app = AppModel(libraryURL: library, defaults: defaults,
+                           editingPreviewBackend: SharedEditingPreviewBackend(service: previewService))
         let editing = try XCTUnwrap(app.editing)
         let screen = try XCTUnwrap(NSScreen.main), scale = screen.backingScaleFactor
         let insets = EditingLayout.fitInsets
@@ -288,6 +302,11 @@ final class NativePresentedCanvasTests: XCTestCase {
                 let outputSize: CGSize
             }
             var nativeDetail: DetailCapture?
+            var nativeEntry: [String: Any]?
+            func encodeWindow(_ rect: CGRect?) -> Any {
+                guard let rect else { return NSNull() }
+                return [rect.minX, rect.minY, rect.width, rect.height]
+            }
             func detailCapture(_ requested: [Int]) throws -> DetailCapture {
                 let snapshot = canvas.viewportSnapshot
                 let frame = try XCTUnwrap(editing.previews.primary.frame)
@@ -328,19 +347,34 @@ final class NativePresentedCanvasTests: XCTestCase {
                 guard requestedROI[0] <= sourceWidth - requestedROI[2], requestedROI[1] <= sourceHeight - requestedROI[3] else {
                     throw Failure.invalid("ROI falls outside the source")
                 }
-                let canvasRect = canvas.viewportSnapshot.imageRect
-                let x = Double(requestedROI[0]) + Double(requestedROI[2]) / 2
-                let y = Double(requestedROI[1]) + Double(requestedROI[3]) / 2
-                let anchor = NSPoint(x: canvasRect.minX + x * canvasRect.width / Double(sourceWidth),
-                                     y: canvasRect.minY + y * canvasRect.height / Double(sourceHeight))
-                let doubleClick = try XCTUnwrap(NSEvent.mouseEvent(with: .leftMouseDown,
-                    location: canvas.convert(anchor, to: nil), modifierFlags: [],
-                    timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
-                    eventNumber: 1, clickCount: 2, pressure: 1))
-                canvas.mouseDown(with: doubleClick)
+                if directActualPixelEntry {
+                    let submitted = DispatchTime.now().uptimeNanoseconds
+                    editing.enterActualPixels(nativeEvent: true)
+                    nativeEntry = ["mode": "native-command", "submitUptimeNs": submitted,
+                                   "firstRequestWindow": encodeWindow(editing.detailWindow),
+                                   "firstRequestRevision": editing.previews.primary.currentRevision]
+                } else {
+                    let canvasRect = canvas.viewportSnapshot.imageRect
+                    let x = Double(requestedROI[0]) + Double(requestedROI[2]) / 2
+                    let y = Double(requestedROI[1]) + Double(requestedROI[3]) / 2
+                    let anchor = NSPoint(x: canvasRect.minX + x * canvasRect.width / Double(sourceWidth),
+                                         y: canvasRect.minY + y * canvasRect.height / Double(sourceHeight))
+                    let doubleClick = try XCTUnwrap(NSEvent.mouseEvent(with: .leftMouseDown,
+                        location: canvas.convert(anchor, to: nil), modifierFlags: [],
+                        timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+                        eventNumber: 1, clickCount: 2, pressure: 1))
+                    canvas.mouseDown(with: doubleClick)
+                }
                 try await waitFor("exact detail at the requested source ROI") {
                     window.displayIfNeeded()
-                    return editing.previews.primary.currentFrameWasDrawn && ((try? detailCapture(requestedROI)) != nil)
+                    guard editing.previews.primary.currentFrameWasDrawn, let capture = try? detailCapture(requestedROI) else { return false }
+                    if nativeEntry != nil, nativeEntry?["firstDrawRevision"] == nil,
+                       let draw = editing.previews.primary.currentAcceptedDraw {
+                        nativeEntry?["firstDrawRevision"] = editing.previews.primary.displayedRevision
+                        nativeEntry?["firstDrawWindow"] = encodeWindow(capture.frameWindow)
+                        nativeEntry?["firstDrawUptimeNs"] = draw.drawReturnedUptimeNanoseconds
+                    }
+                    return !directActualPixelEntry || capture.frameWindow == editing.detailWindow
                 }
                 nativeDetail = try detailCapture(requestedROI)
             }
@@ -387,7 +421,8 @@ final class NativePresentedCanvasTests: XCTestCase {
                 meta["physicalMagnification"] = 1
                 meta["approximate"] = frame.approximate
                 meta["previewMode"] = PreviewPerformancePreferences.mode.rawValue
-                meta["detailCounters"] = await detailCounters()
+                meta["detailCounters"] = await detailCounters(previewService)
+                if let nativeEntry { meta["nativeEntry"] = nativeEntry }
             }
             if diagnostics { meta["diagnosticsEnabled"] = true }
             try write(meta, to: job.appendingPathComponent("ready.json"))
@@ -404,7 +439,7 @@ final class NativePresentedCanvasTests: XCTestCase {
                         try JSONEncoder().encode(telemetry).write(to: job.appendingPathComponent("telemetry.json"), options: .atomic)
                     }
                     var stopped: [String: Any] = ["stopped": true]
-                    if requestedROI != nil { stopped["detailCounters"] = await detailCounters() }
+                    if requestedROI != nil { stopped["detailCounters"] = await detailCounters(previewService) }
                     try write(stopped, to: reply)
                     break
                 }
@@ -417,6 +452,25 @@ final class NativePresentedCanvasTests: XCTestCase {
                         try editing.developmentSession.apply(.resetAll, event: .init(context: context, control: .init(group: nil, name: "Reset fixture")))
                         try await waitFor("reset frame") { editing.previews.primary.frameRecipe == editing.recipe && editing.previews.primary.currentFrameWasDrawn }
                         try write(["reset": true], to: reply)
+                    } else if request.action == "pan-native", let initial = nativeDetail {
+                        let evidence = try await verifyPhysicalPan(canvas, window: window, editing: editing,
+                            visible: initial.visibleWindow, served: try XCTUnwrap(initial.frameWindow))
+                        try write(evidence, to: reply)
+                    } else if request.action == "audit-detail-cache", requestedROI != nil {
+                        let work = try XCTUnwrap(editing.work)
+                        let before = await detailCounters(previewService)
+                        let second = try await previewService.open(source: .raw(work.source))
+                        let twoLeases = await detailCounters(previewService)
+                        await previewService.close(second.id)
+                        await previewService.handleMemoryPressure()
+                        let deadline = ContinuousClock.now + .seconds(5)
+                        while await previewService.statistics().cachedBitmapBytes != 0 {
+                            guard ContinuousClock.now < deadline else { throw Failure.invalid("Detail cache did not drain") }
+                            try await Task.sleep(for: .milliseconds(10))
+                        }
+                        XCTAssertTrue(editing.actualPixels)
+                        let pressured = await detailCounters(previewService)
+                        try write(["before": before, "withSecondLease": twoLeases, "afterPressure": pressured], to: reply)
                     } else {
                         guard request.action == "set", let key = request.key, let target = request.value else { throw Failure.invalid("request") }
                         let sentUptimeBefore: UInt64? = diagnostics ? DispatchTime.now().uptimeNanoseconds : nil
@@ -459,10 +513,92 @@ final class NativePresentedCanvasTests: XCTestCase {
         } catch { try? write(["error": String(describing: error)], to: job.appendingPathComponent("failure.json")); await editing.shutdown(); throw error }
     }
 
-    @MainActor private func detailCounters() async -> [String: Any] {
-        let stats = await DevelopmentPreviewService.shared.statistics()
-        return ["completedRenders": stats.completedRenders, "cacheHits": stats.cacheHits,
-                "cachedBitmapBytes": stats.cachedBitmapBytes, "rawBaseResidentBytes": stats.rawBaseResidentBytes,
-                "rawBaseFills": stats.rawBaseFills]
+    @MainActor private func verifyPhysicalPan(_ canvas: ImageCanvas, window: NSWindow, editing: EditingController,
+                                              visible: CGRect, served: CGRect) async throws -> [String: Any] {
+        let pane = editing.previews.primary
+        let original = try XCTUnwrap(pane.frame)
+        let revision = pane.currentRevision
+        let viewport = canvas.viewportSnapshot
+        let width = viewport.imageRect.width
+        let guardBand = (served.maxX - visible.maxX) * width
+        let outside = guardBand + 24 / viewport.backingScale
+        guard guardBand > 10, outside < (1 - visible.maxX) * width else { throw Failure.invalid("No pan travel") }
+        let center = CGPoint(x: canvas.bounds.midX, y: canvas.bounds.midY)
+        func event(_ type: NSEvent.EventType, offset: CGFloat = 0) throws -> NSEvent {
+            try XCTUnwrap(NSEvent.mouseEvent(with: type, location: canvas.convert(
+                CGPoint(x: center.x - offset, y: center.y), to: nil), modifierFlags: [],
+                timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber,
+                context: nil, eventNumber: 1, clickCount: 1, pressure: 1))
+        }
+        func visibleWindow() throws -> CGRect {
+            try XCTUnwrap(ImageViewportGeometry.visibleWindow(destination: canvas.viewportSnapshot.imageRect, bounds: canvas.bounds))
+        }
+        canvas.mouseDown(with: try event(.leftMouseDown))
+        defer {
+            if let release = try? event(.leftMouseUp) { canvas.mouseUp(with: release) }
+        }
+        canvas.mouseDragged(with: try event(.leftMouseDragged, offset: guardBand / 2))
+        let inner = try visibleWindow()
+        XCTAssertGreaterThan(inner.minX, visible.minX)
+        XCTAssertTrue(ImageViewportGeometry.window(served, covers: inner, tolerance: 1e-9))
+        try await Task.sleep(for: .milliseconds(160))
+        XCTAssertEqual(pane.currentRevision, revision)
+        XCTAssertEqual(pane.frame?.id, original.id)
+
+        canvas.mouseDragged(with: try event(.leftMouseDragged, offset: outside))
+        let target = try visibleWindow()
+        XCTAssertFalse(ImageViewportGeometry.window(served, covers: target, tolerance: 1e-9))
+        canvas.mouseDragged(with: try event(.leftMouseDragged))
+        try await Task.sleep(for: .milliseconds(160))
+        XCTAssertEqual(try visibleWindow(), visible)
+        XCTAssertEqual(pane.currentRevision, revision)
+        XCTAssertEqual(pane.frame?.id, original.id)
+
+        let began = DispatchTime.now().uptimeNanoseconds
+        canvas.mouseDragged(with: try event(.leftMouseDragged, offset: outside))
+        try await waitFor("exact pixels after crossing the served window") {
+            window.displayIfNeeded()
+            guard pane.currentFrameWasDrawn, let frame = pane.frame, frame.id != original.id,
+                  frame.quality == .detail, !frame.approximate, let region = frame.window else { return false }
+            return ImageViewportGeometry.window(region, covers: target, tolerance: 1e-9)
+        }
+        let frame = try XCTUnwrap(pane.frame)
+        XCTAssertEqual(frame.nativeSize, original.nativeSize)
+        XCTAssertEqual(pane.currentRevision, revision + 1)
+        XCTAssertTrue(editing.actualPixels)
+        let draw = try XCTUnwrap(pane.currentAcceptedDraw)
+        let region = try XCTUnwrap(frame.window)
+        return ["warmFrameID": original.id.uuidString, "outsideFrameID": frame.id.uuidString,
+                "startingRevision": revision, "endingRevision": pane.currentRevision,
+                "visibleTarget": [target.minX, target.minY, target.width, target.height],
+                "servedTarget": [region.minX, region.minY, region.width, region.height],
+                "windowPixels": [Int(frame.outputSize.width), Int(frame.outputSize.height)],
+                "outsideToDrawMs": Double(draw.drawReturnedUptimeNanoseconds - began) / 1_000_000]
+    }
+
+    @MainActor private func detailCounters(_ service: DevelopmentPreviewService) async -> [String: Any] {
+        let stats = await service.statistics()
+        let flash = FlashRawCanonicalTexturePool.shared.statistics()
+        var values: [String: Any] = ["completedRenders": stats.completedRenders, "cacheHits": stats.cacheHits,
+            "cachedBitmapBytes": stats.cachedBitmapBytes, "rawBaseResidentBytes": stats.rawBaseResidentBytes,
+            "rawBaseReservedBytes": stats.rawBaseReservedBytes, "rawBaseBuildingBytes": stats.rawBaseBuildingBytes,
+            "rawBasePinnedBytes": stats.rawBasePinnedBytes, "rawBaseRetiredBytes": stats.rawBaseRetiredBytes,
+            "rawBaseFills": stats.rawBaseFills, "flashRawTextureResidentBytes": flash.residentBytes]
+        if ProcessInfo.processInfo.environment["RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS"] == "1" {
+            var memory = task_vm_info_data_t()
+            var words = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<integer_t>.stride)
+            let status = withUnsafeMutablePointer(to: &memory) { pointer in
+                pointer.withMemoryRebound(to: integer_t.self, capacity: Int(words)) {
+                    task_info(mach_task_self_, task_flavor_t(TASK_VM_INFO), $0, &words)
+                }
+            }
+            if status == KERN_SUCCESS {
+                values["processPeakPhysicalFootprintBytes"] = memory.ledger_phys_footprint_peak
+            }
+            if let device = MTLCreateSystemDefaultDevice() {
+                values["metalAllocatedBytesAtObservation"] = device.currentAllocatedSize
+            }
+        }
+        return values
     }
 }
