@@ -127,7 +127,7 @@ M0 以带摄影调整的真实 032 队列发布、重开与恢复通过，并能
 | 黑色 | 30.87 / 37.19 | 29.03 / 35.62 | 两项均在容差内 |
 | 色调 | 30.83 / 41.26 | 27.93 / 36.83 | p50 超出容差 |
 
-同一原片的原生诊断每项每方向 3 次。0.8 秒静止间隔时，高光和阴影回到零值的预览终止中位为 65.08 和 54.11 ms。把诊断间隔拉到 1.8 秒后分别为 14.63 和 13.07 ms。AppKit 和 ScreenCaptureKit 各自保留真实边界。现有直方图在同一个原生工作线程重建和归约，取消后需等正在执行的工作结束。后续按实际任务区间验证这段等待。
+用同一个 Release 测试二进制串行跑了 0.8、1.8、0.8 秒三组诊断，每组高光、阴影和色调各 6 次，原始画布帧均独立复算。两轮 0.8 秒里，高光和阴影各 6 次回零均遇到上一笔直方图。提交到旧任务返回分别等待 42.69–61.29 ms 和 40.56–57.35 ms，旧任务返回后 0.33–0.39 ms 内启动当前预览。1.8 秒组的回零均在旧任务返回后提交，两个成功的慢直方图总耗时 1029、1044 ms，显影结束到任务返回占 786、800 ms。两轮 0.8 秒的稳定 ROI 指纹一致，1.8 秒组与它们最多差一个 RGB8 码值。长间隔只用于定位排队。 [诊断结果](evidence/m0-histogram-worker-diagnostic.json)
 
 `1ebf4e0a` 复用两个最近的直方图结果，命中时保留预览上下文。14 项 Release 回归通过。按原 0.8 秒协议复测时，六项的目标像素指纹均一致。曝光、对比度、黑色和色调的两项指标进入新 LightFlow 容差，高光和阴影回零长尾仍在。[RAWMaster 复测](evidence/m0-screen-photo-response-retest.json)
 
@@ -183,6 +183,8 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 ```
 
 038 的原生 FIT/监看和 036 的 1:1 分别沿用各自夹具和口径。M2 将首条场景链的锁定输入及两端命令、报告一同归档。[038 原生验证](../038-node-dag-workflow/validation.md#原生可编辑-graph) · [036 1:1 实测](../036-render-pipeline-performance/validation.md#画布接线后的出厂窗口)
+
+画布诊断在 `benchmark-rawmaster-canvas.py` 加 `--diagnostics` 和 `--frames`，并设置 `RAWMASTER_INTERACTION_TRACE` 为新的绝对文件路径。用相同测试包串行跑 `--settle 0.8`、`1.8`、`0.8`，各 `--warmup 5 --samples 6 --operations Highlights Shadows Tint`。输入诊断同时记录 Core Media 和 Dispatch 时钟，画布动作按已确认帧的 ID 和修订与 AppKit 追踪对齐。`*.telemetry.json` 为结束时的现有遥测快照。正式对标关闭这些诊断并使用 30 次计量。
 
 ## 7. 待补证据
 

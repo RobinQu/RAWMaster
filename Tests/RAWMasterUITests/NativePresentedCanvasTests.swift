@@ -1,5 +1,6 @@
 import AppKit
 import CoreMedia
+import Dispatch
 import ImageIO
 import SwiftUI
 import XCTest
@@ -224,6 +225,7 @@ final class NativePresentedCanvasTests: XCTestCase {
         #if DEBUG
         throw XCTSkip("The presented canvas benchmark requires Release")
         #endif
+        let diagnostics = env["RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS"] == "1"
         _ = NSApplication.shared
         // A foreground editor receives normal interactive scheduling. Keep the deliberately
         // background test host out of App Nap without taking focus or preventing idle sleep.
@@ -278,12 +280,13 @@ final class NativePresentedCanvasTests: XCTestCase {
             guard abs(capturedPhoto[2] - 2368) <= 1, abs(capturedPhoto[3] - 1579) <= 1,
                   screenRect.contains(window.convertToScreen(windowPhoto)) else { throw Failure.invalid("Photo bounds: \(capturedPhoto), screen \(screenRect)") }
             let testBinary = try XCTUnwrap(Bundle(for: Self.self).executableURL)
-            let meta: [String: Any] = ["id": window.windowNumber, "title": window.title, "pid": ProcessInfo.processInfo.processIdentifier,
+            var meta: [String: Any] = ["id": window.windowNumber, "title": window.title, "pid": ProcessInfo.processInfo.processIdentifier,
                 "bundle": NSRunningApplication.current.bundleIdentifier ?? "", "photoRectPixels": capturedPhoto,
                 "previewPixels": [Int(frame.outputSize.width), Int(frame.outputSize.height)],
                 "sourcePixels": [asset.width ?? 0, asset.height ?? 0], "sourceSHA256": context.sourceContentID,
                 "testBundleSHA256": try FileSafety.hash(testBinary), "decoder": decoder.rawValue,
                 "recipe": try JSONSerialization.jsonObject(with: JSONEncoder().encode(editing.recipe)), "scale": factor]
+            if diagnostics { meta["diagnosticsEnabled"] = true }
             try write(meta, to: job.appendingPathComponent("ready.json"))
             var sequence = 1
             while true {
@@ -292,7 +295,14 @@ final class NativePresentedCanvasTests: XCTestCase {
                 let request = try JSONDecoder().decode(Request.self, from: Data(contentsOf: requestFile))
                 let reply = job.appendingPathComponent("reply-\(sequence).json")
                 sequence += 1
-                if request.action == "stop" { try write(["stopped": true], to: reply); break }
+                if request.action == "stop" {
+                    if diagnostics {
+                        let telemetry = ImagePerformanceTelemetry.shared.snapshot()
+                        try JSONEncoder().encode(telemetry).write(to: job.appendingPathComponent("telemetry.json"), options: .atomic)
+                    }
+                    try write(["stopped": true], to: reply)
+                    break
+                }
                 guard !window.isKeyWindow, !window.isMainWindow,
                       NSWorkspace.shared.frontmostApplication?.processIdentifier != ProcessInfo.processInfo.processIdentifier else {
                     throw Failure.invalid("The test fixture unexpectedly received foreground focus")
@@ -304,7 +314,9 @@ final class NativePresentedCanvasTests: XCTestCase {
                         try write(["reset": true], to: reply)
                     } else {
                         guard request.action == "set", let key = request.key, let target = request.value else { throw Failure.invalid("request") }
+                        let sentUptimeBefore: UInt64? = diagnostics ? DispatchTime.now().uptimeNanoseconds : nil
                         let sent = CMTimeConvertScale(CMClockGetTime(CMClockGetHostTimeClock()), timescale: 1_000_000_000, method: .default).value
+                        let sentUptimeAfter: UInt64? = diagnostics ? DispatchTime.now().uptimeNanoseconds : nil
                         let (mapping, read) = try apply(key, value: target, editing: editing, context: context)
                         if key == "effects-dehaze" {
                             try await waitFor("dehaze preparation", seconds: 45) { !editing.developmentDehazeInput.hasPendingInput }
@@ -318,8 +330,20 @@ final class NativePresentedCanvasTests: XCTestCase {
                                     editing.previews.primary.frame?.quality != .interactive
                             }
                         }
-                        try write(["sentNs": sent, "actual": actual.map { $0 as Any } ?? NSNull(), "accepted": accepted,
-                                   "mapping": mapping, "recipeFingerprint": try EditingFingerprint.of(expected)], to: reply)
+                        var response: [String: Any] = ["sentNs": sent, "actual": actual.map { $0 as Any } ?? NSNull(),
+                            "accepted": accepted, "mapping": mapping, "recipeFingerprint": try EditingFingerprint.of(expected)]
+                        if let sentUptimeBefore, let sentUptimeAfter {
+                            var inputDiagnostics: [String: Any] = ["sentUptimeBeforeNs": sentUptimeBefore, "sentUptimeAfterNs": sentUptimeAfter]
+                            let primary = editing.previews.primary
+                            if accepted, let draw = primary.currentAcceptedDraw {
+                                inputDiagnostics["currentAcceptedDraw"] = ["frameID": draw.frameID.uuidString,
+                                    "revision": primary.displayedRevision,
+                                    "drawBeganUptimeNs": draw.drawBeganUptimeNanoseconds,
+                                    "drawReturnedUptimeNs": draw.drawReturnedUptimeNanoseconds] as [String: Any]
+                            }
+                            response["diagnostics"] = inputDiagnostics
+                        }
+                        try write(response, to: reply)
                     }
                 } catch { try write(["error": String(describing: error)], to: reply) }
             }

@@ -45,6 +45,8 @@ def main():
                         help="FlashRaw dylib shipped in the release app (XCTest has its own bundle)")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
+    parser.add_argument("--diagnostics", action="store_true",
+                        help="Record clock anchors, accepted AppKit draws and a final image telemetry sidecar")
     parser.add_argument("--samples", default=10, type=int)
     parser.add_argument("--warmup", default=0, type=int, help="Unscored alternating changes before A/B calibration")
     parser.add_argument("--settle", default=0.8, type=float)
@@ -60,6 +62,9 @@ def main():
         parser.error("Provide an existing RAW and recorder, a new output, a nonnegative warmup and sufficient repetitions/settle interval")
     if not args.flashraw_library.is_file():
         parser.error("Supply the packaged FlashRaw library using --flashraw-library")
+    telemetry_output = args.output.with_name(args.output.stem + ".telemetry.json") if args.diagnostics else None
+    if telemetry_output and telemetry_output.exists():
+        parser.error(f"Provide a new diagnostics sidecar destination: {telemetry_output}")
     warmup_order = warmup_states(args.warmup)
     frame_folder = args.frames.resolve() if args.frames else None
     if frame_folder:
@@ -77,6 +82,14 @@ def main():
               "requestedWarmSamples": args.samples, "requestedWarmupInputs": args.warmup,
               "recorderSHA256": digest(args.binary), "flashRawLibrarySHA256": digest(args.flashraw_library),
               "policy": POLICY, "operations": {}}
+    if telemetry_output:
+        result["diagnostics"] = {
+            "enabled": True,
+            "telemetrySidecar": telemetry_output.name,
+            "clockAnchor": "Core Media host sentNs bracketed by Dispatch uptime nanoseconds",
+            "drawBoundary": "AppKit draw began and returned for the coordinator's accepted current frame, in Dispatch uptime nanoseconds",
+            "telemetryBoundary": "Bounded ImagePerformanceTelemetry snapshot at stop before editor shutdown, in Dispatch uptime nanoseconds",
+        }
     with tempfile.TemporaryDirectory(prefix="rawmaster-native-presented-") as work:
         folder = Path(work)
         def path(name):
@@ -89,6 +102,7 @@ def main():
             cmd.append("--skip-build")
         cmd.extend(["--filter", "NativePresentedCanvasTests/testOptInRealRAWPresentedCanvas"])
         environment = dict(os.environ, RAWMASTER_PRESENTED_CANVAS_SOURCE=str(args.source), RAWMASTER_PRESENTED_CANVAS_JOB=work,
+                           RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS="1" if args.diagnostics else "0",
                            RAWMASTER_FLASHRAW_LIBRARY=str(args.flashraw_library))
         log = args.output.with_name(args.output.stem + ".log")
         with log.open("x") as output_log:
@@ -116,6 +130,8 @@ def main():
 
             try:
                 meta = wait("ready.json", 720)
+                if meta.get("diagnosticsEnabled", False) != args.diagnostics:
+                    raise RuntimeError("Native fixture diagnostics mode does not match the request; rebuild the Release test bundle")
                 if meta["sourceSHA256"] != result["sourceSHA256"]:
                     raise ValueError("The displayed native work and requested source differ")
                 scope = f"pid:{meta['pid']}"
@@ -187,6 +203,8 @@ def main():
                                "inputEvents": events, "trials": []}
                     elif len(events) == args.samples + 2:
                         row = score(load_frames(raw), events, end)
+                    if args.diagnostics and not row["trials"]:
+                        row.setdefault("inputEvents", events)
                     row.update(values=[a, b], displayLabel=label, precondition=precondition, calibration=events[:2],
                                scope="central 60% of displayed photo")
                     if args.warmup:
@@ -202,6 +220,12 @@ def main():
                 host.wait(timeout=60)
                 if host.returncode:
                     raise RuntimeError(f"Native fixture failed; see {log}")
+                if telemetry_output:
+                    snapshot = path("telemetry.json")
+                    if not snapshot.is_file():
+                        raise RuntimeError(f"Native fixture did not write image telemetry; see {log}")
+                    with snapshot.open("rb") as source, telemetry_output.open("xb") as destination:
+                        shutil.copyfileobj(source, destination)
             finally:
                 if host.poll() is None:
                     # Notify the test so the normal shutdown path releases its window, engine and private library.

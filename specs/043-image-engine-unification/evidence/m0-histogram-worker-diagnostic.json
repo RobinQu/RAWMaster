@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-28",
+  "productionSourceRevision": "269af790",
+  "measurement": "ScreenCaptureKit local window ROI and production engine telemetry, opt-in Release test host",
+  "boundary": "Diagnostics only. Histogram sample ends when the detached native operation has returned. AppKit terminal, draw-return, and first scored ScreenCaptureKit frame are distinct boundaries.",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "photoPixels": [
+    2368,
+    1579
+  ],
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "testBundleSHA256": "8c87647531b215a276e6e1aa0d59a658d57142edd025a57f223a225f990e2c98",
+  "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "warmupInputsPerControl": 5,
+  "calibrationsPerControl": 2,
+  "measuredInputsPerControl": 6,
+  "rounds": [
+    {
+      "quietSeconds": 0.8,
+      "frameArchiveSHA256": "1e561134dda7f5650b285ee5dbbd8b5fc66e3904105e6d486c176970585dd043",
+      "telemetrySHA256": "23bcab0c3dcf395c9cf513389d116c00bcab3555d8ed189e75b78aa129870fb0",
+      "appKitTraceSHA256": "cf7fd6dfe7f0d9f24a9520cda576908bb50d9e22929ea7946e45bb50c0792228",
+      "replayVerifiedAgainstOriginal": true,
+      "existingRingWasComplete": true,
+      "maximumInputClockAnchorWidthNs": 6834,
+      "maximumInputClockMidpointOffsetNs": 2583,
+      "controls": {
+        "light-highlights": {
+          "displayLabel": "Highlights",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "32c6cc0b5c9ffdb344000cb3e3a0ec4f6f49cbf73d716b351b882f6311d14077"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 3,
+              "medianActualInputIntervalMs": 856.236,
+              "medianFirstScoredFrameMs": 70.466,
+              "medianInputToRenderStartMs": 50.391,
+              "medianNativePreviewMs": 8.431,
+              "medianInputToPreviewTerminalMs": 58.546,
+              "medianInputToAppKitDrawReturnMs": 61.907,
+              "medianEarlierHistogramRemainingAtSubmissionMs": 49.554,
+              "medianHistogramReturnToPreviewStartMs": 0.375
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 890.167,
+              "medianFirstScoredFrameMs": 25.322,
+              "medianInputToRenderStartMs": 3.261,
+              "medianNativePreviewMs": 5.579,
+              "medianInputToPreviewTerminalMs": 13.951,
+              "medianInputToAppKitDrawReturnMs": 15.822,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "light-shadows": {
+          "displayLabel": "Shadows",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "210966d9b378c184ab6317290f7de3ae5565166da77a9be51d1c091aa299a9f0"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 3,
+              "medianActualInputIntervalMs": 860.942,
+              "medianFirstScoredFrameMs": 74.388,
+              "medianInputToRenderStartMs": 55.294,
+              "medianNativePreviewMs": 8.103,
+              "medianInputToPreviewTerminalMs": 63.713,
+              "medianInputToAppKitDrawReturnMs": 66.879,
+              "medianEarlierHistogramRemainingAtSubmissionMs": 54.412,
+              "medianHistogramReturnToPreviewStartMs": 0.374
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 891.028,
+              "medianFirstScoredFrameMs": 24.441,
+              "medianInputToRenderStartMs": 3.195,
+              "medianNativePreviewMs": 8.769,
+              "medianInputToPreviewTerminalMs": 12.483,
+              "medianInputToAppKitDrawReturnMs": 15.249,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "color-tint": {
+          "displayLabel": "Tint",
+          "values": [
+            16,
+            40
+          ],
+          "referenceDigests": [
+            "aa0b08b9f1ace289e3ecabcec442a4fa2ed1e4f3c5ec6d34e27247771bbf0c25",
+            "5db8245e8174200a8f2855e82964e6e6b1a703a3e2d7d1c52f64ceeb1b7f8b9c"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 848.293,
+              "medianFirstScoredFrameMs": 24.427,
+              "medianInputToRenderStartMs": 2.664,
+              "medianNativePreviewMs": 5.778,
+              "medianInputToPreviewTerminalMs": 11.31,
+              "medianInputToAppKitDrawReturnMs": 14.431,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 838.114,
+              "medianFirstScoredFrameMs": 22.539,
+              "medianInputToRenderStartMs": 2.038,
+              "medianNativePreviewMs": 5.852,
+              "medianInputToPreviewTerminalMs": 12.018,
+              "medianInputToAppKitDrawReturnMs": 13.778,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "quietSeconds": 1.8,
+      "frameArchiveSHA256": "ac24694a75529afff7964be5562dff1db2ad3fb82cd76499f3dd0ccd425a7a41",
+      "telemetrySHA256": "d44d908c22a2f2ae0be80b0761c15b638113b4fba40b795ee75b2cf5454c3c82",
+      "appKitTraceSHA256": "050c128d69af236a2a20615369950f9f936fa29629ae71ae7158d44676044a2f",
+      "replayVerifiedAgainstOriginal": true,
+      "existingRingWasComplete": true,
+      "maximumInputClockAnchorWidthNs": 7792,
+      "maximumInputClockMidpointOffsetNs": 2646,
+      "controls": {
+        "light-highlights": {
+          "displayLabel": "Highlights",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "2d0a79204763c1b2b557c7f1f107ef8637457a59808ea94e882521787eb4bc88",
+            "935210cfe83dbd5b983b0d606b7c310ce59094630c41192dbf48a24a42d0b185"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.338813,
+            0.335666
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            1,
+            1
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1855.148,
+              "medianFirstScoredFrameMs": 27.884,
+              "medianInputToRenderStartMs": 3.975,
+              "medianNativePreviewMs": 7.852,
+              "medianInputToPreviewTerminalMs": 14.079,
+              "medianInputToAppKitDrawReturnMs": 16.878,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1847.694,
+              "medianFirstScoredFrameMs": 38.516,
+              "medianInputToRenderStartMs": 3.152,
+              "medianNativePreviewMs": 11.039,
+              "medianInputToPreviewTerminalMs": 14.612,
+              "medianInputToAppKitDrawReturnMs": 24.749,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "light-shadows": {
+          "displayLabel": "Shadows",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "2d0a79204763c1b2b557c7f1f107ef8637457a59808ea94e882521787eb4bc88",
+            "6cf77a975aef8bfc27a496883e6b451e71d6b62b3753e717d3831bc4d8496232"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.338813,
+            0.340224
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            1,
+            1
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1865.767,
+              "medianFirstScoredFrameMs": 37.634,
+              "medianInputToRenderStartMs": 3.177,
+              "medianNativePreviewMs": 8.377,
+              "medianInputToPreviewTerminalMs": 14.694,
+              "medianInputToAppKitDrawReturnMs": 20.993,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1859.324,
+              "medianFirstScoredFrameMs": 27.407,
+              "medianInputToRenderStartMs": 3.375,
+              "medianNativePreviewMs": 9.364,
+              "medianInputToPreviewTerminalMs": 13.08,
+              "medianInputToAppKitDrawReturnMs": 15.554,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "color-tint": {
+          "displayLabel": "Tint",
+          "values": [
+            16,
+            40
+          ],
+          "referenceDigests": [
+            "ff8b1701ad5939a54899c95bbfb673769948c845b749d26f3197ec9ed20ba10b",
+            "acde5b4e2cb8db2b370c74186eec3d6cce419a52a588c3e0e9a96296b27a4acb"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.338921,
+            0.346137
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            1,
+            1
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1854.925,
+              "medianFirstScoredFrameMs": 31.106,
+              "medianInputToRenderStartMs": 3.106,
+              "medianNativePreviewMs": 10.554,
+              "medianInputToPreviewTerminalMs": 14.478,
+              "medianInputToAppKitDrawReturnMs": 19.437,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 1866.542,
+              "medianFirstScoredFrameMs": 34.572,
+              "medianInputToRenderStartMs": 2.002,
+              "medianNativePreviewMs": 9.587,
+              "medianInputToPreviewTerminalMs": 12.491,
+              "medianInputToAppKitDrawReturnMs": 16.636,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        }
+      },
+      "twoLongHistogramMisses": [
+        {
+          "operationMs": 1029.127,
+          "analysisDevelopMs": 243.034,
+          "decodeMs": 60.25,
+          "uploadMs": 39.359,
+          "finiteValidationMs": 88.543,
+          "analysisDevelopReturnToWorkerReturnMs": 767.175
+        },
+        {
+          "operationMs": 1043.582,
+          "analysisDevelopMs": 243.232,
+          "decodeMs": 58.205,
+          "uploadMs": 38.889,
+          "finiteValidationMs": 89.022,
+          "analysisDevelopReturnToWorkerReturnMs": 782.933
+        }
+      ]
+    },
+    {
+      "quietSeconds": 0.8,
+      "frameArchiveSHA256": "0d9e9f21be50cda19bb9b9b870d5f24aa39d225da52dd37da38df0f3d439dc1d",
+      "telemetrySHA256": "83257ec48473ef6c1876e528551cfdf4908d28d64c81b777b1e5ba0eeb6a6aa0",
+      "appKitTraceSHA256": "2a793dee5f1a9686c672d4a354bc98ef8feb84793a46c4f8cd3449f3582e756e",
+      "replayVerifiedAgainstOriginal": true,
+      "existingRingWasComplete": true,
+      "maximumInputClockAnchorWidthNs": 5875,
+      "maximumInputClockMidpointOffsetNs": 2105,
+      "controls": {
+        "light-highlights": {
+          "displayLabel": "Highlights",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "32c6cc0b5c9ffdb344000cb3e3a0ec4f6f49cbf73d716b351b882f6311d14077"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 3,
+              "medianActualInputIntervalMs": 849.724,
+              "medianFirstScoredFrameMs": 76.182,
+              "medianInputToRenderStartMs": 57.56,
+              "medianNativePreviewMs": 8.744,
+              "medianInputToPreviewTerminalMs": 66.592,
+              "medianInputToAppKitDrawReturnMs": 69.238,
+              "medianEarlierHistogramRemainingAtSubmissionMs": 56.687,
+              "medianHistogramReturnToPreviewStartMs": 0.369
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 902.389,
+              "medianFirstScoredFrameMs": 33.015,
+              "medianInputToRenderStartMs": 2.972,
+              "medianNativePreviewMs": 7.414,
+              "medianInputToPreviewTerminalMs": 13.429,
+              "medianInputToAppKitDrawReturnMs": 16.016,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "light-shadows": {
+          "displayLabel": "Shadows",
+          "values": [
+            0,
+            30
+          ],
+          "referenceDigests": [
+            "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+            "210966d9b378c184ab6317290f7de3ae5565166da77a9be51d1c091aa299a9f0"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 3,
+              "medianActualInputIntervalMs": 856.29,
+              "medianFirstScoredFrameMs": 75.009,
+              "medianInputToRenderStartMs": 52.537,
+              "medianNativePreviewMs": 8.292,
+              "medianInputToPreviewTerminalMs": 59.277,
+              "medianInputToAppKitDrawReturnMs": 63.475,
+              "medianEarlierHistogramRemainingAtSubmissionMs": 51.769,
+              "medianHistogramReturnToPreviewStartMs": 0.366
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 889.737,
+              "medianFirstScoredFrameMs": 34.525,
+              "medianInputToRenderStartMs": 3.299,
+              "medianNativePreviewMs": 6.606,
+              "medianInputToPreviewTerminalMs": 15.047,
+              "medianInputToAppKitDrawReturnMs": 21.326,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        },
+        "color-tint": {
+          "displayLabel": "Tint",
+          "values": [
+            16,
+            40
+          ],
+          "referenceDigests": [
+            "aa0b08b9f1ace289e3ecabcec442a4fa2ed1e4f3c5ec6d34e27247771bbf0c25",
+            "5db8245e8174200a8f2855e82964e6e6b1a703a3e2d7d1c52f64ceeb1b7f8b9c"
+          ],
+          "meanAbsoluteRGB8DifferenceVersusFirstRound": [
+            0.0,
+            0.0
+          ],
+          "maxChannelCodeDifferenceVersusFirstRound": [
+            0,
+            0
+          ],
+          "states": [
+            {
+              "state": 0,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 849.398,
+              "medianFirstScoredFrameMs": 26.027,
+              "medianInputToRenderStartMs": 4.194,
+              "medianNativePreviewMs": 6.779,
+              "medianInputToPreviewTerminalMs": 13.385,
+              "medianInputToAppKitDrawReturnMs": 15.92,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            },
+            {
+              "state": 1,
+              "samples": 3,
+              "submissionsDuringEarlierHistogram": 0,
+              "medianActualInputIntervalMs": 850.308,
+              "medianFirstScoredFrameMs": 32.205,
+              "medianInputToRenderStartMs": 3.714,
+              "medianNativePreviewMs": 4.568,
+              "medianInputToPreviewTerminalMs": 11.556,
+              "medianInputToAppKitDrawReturnMs": 15.426,
+              "medianEarlierHistogramRemainingAtSubmissionMs": null,
+              "medianHistogramReturnToPreviewStartMs": null
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
