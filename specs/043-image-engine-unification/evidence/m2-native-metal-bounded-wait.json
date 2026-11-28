@@ -1,0 +1,4891 @@
+{
+  "schemaVersion": 1,
+  "scope": "Metal wgpu native textures, actual queue submission join and bounded wait only",
+  "switch": "RAWMASTER_AP1_METAL_LOW_LATENCY_JOIN",
+  "shortPollWindowUs": 1000,
+  "maximumSleepIntervalUs": 100,
+  "theTicketBeingJoinedIsUnchanged": true,
+  "runtimeSHA256": "1af24401032ffefb244a42a67c86352851789cf56810f736ac85698fe23d731e",
+  "abi": {
+    "0": {
+      "checksPassed": 120,
+      "logSHA256": "179f35ad6c1f79272d93571a3a9dbac77f6379d6f832d93017fd52f7bb7d03ac"
+    },
+    "1": {
+      "checksPassed": 120,
+      "logSHA256": "179f35ad6c1f79272d93571a3a9dbac77f6379d6f832d93017fd52f7bb7d03ac"
+    }
+  },
+  "releaseTests": {
+    "testNativeWGSLJoinsValidationBeforePublishingAnyTexture": "2e84f6386070f33003c7f3d8b5ebb2b6ca3d07e224dd252c95b3adfea951e184",
+    "testNativeWGSLMatches039ForBlendModesAndCoverage": "8babd277a8d83447db30455c95835adc30e1fce43434ab3b06fa9640f2277001",
+    "testOptInWGSLNative6MPPerformance": "7a30fa59cc021db2a1929c31dbc089de4857c37105c19d3e9d269a797aeab43d",
+    "testOptInWGSLNative96NodePerformance": "1e6b5cb803fbfdde9932d19d97e296e7c6c27375de14480571b7b0b0c981cce5"
+  },
+  "warmupsPerProcess": 5,
+  "measuredPerCohort": 30,
+  "cohortOrder": [
+    "arm-0",
+    "arm-1",
+    "arm-1-repeat"
+  ],
+  "cohorts": {
+    "arm-0": {
+      "lowLatencyJoin": false,
+      "build": {
+        "sourceCommitAtStart": "5deb7d489f1a59004901d71cfb75df227325ba3e",
+        "worktreeChangesAtStart": [],
+        "testBundleSHA256": {
+          "RAWMasterUITests": "cf2f22abe94c87046b842983f0171d2ed08049c6d3ecd55fd21f5760cc7666a6",
+          "RAWMasterImagingTests": "c55e46224128f11f61e90c4f4fe2bcf4661ec2151015194f0c2c52d81cef9616"
+        },
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+        "hardware": "Mac16,5",
+        "osBuild": "26A434",
+        "drtAssembly": "direct"
+      },
+      "wholeHarnessSeconds": {
+        "real": 143.24,
+        "user": 902.61,
+        "system": 39.78
+      },
+      "summarySHA256": "c39e7f6da46b5131c871c2ce0d1bf3898ee7a2ed709a89df7305b14cfdb5c87c",
+      "routes": {
+        "component": {
+          "firstRunWallMs": 1883.569667,
+          "warmWallMs": [
+            1648.921708,
+            1668.928667,
+            1643.552125,
+            1645.789167,
+            1747.419583,
+            1647.735958,
+            1628.881792,
+            1647.200167,
+            1662.621542,
+            1726.941208,
+            1683.095208,
+            1648.243791,
+            1672.087041,
+            1651.11975,
+            1648.979208,
+            1635.690542,
+            1649.886792,
+            1667.7685,
+            1653.490375,
+            1651.5745,
+            1649.53925,
+            1664.470542,
+            2236.089584,
+            1662.812125,
+            1641.616417,
+            1640.718917,
+            1802.22,
+            1643.159958,
+            1653.487417,
+            1652.477166
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1651.347125,
+            "p95Ms": 1802.22
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                "maxSampledProcessPhysFootprintBytes": 3553135040
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    64.341499,
+                    66.271338,
+                    64.454876,
+                    65.466082,
+                    64.672415,
+                    64.923498,
+                    64.348456,
+                    66.241002,
+                    64.257838,
+                    64.783458,
+                    65.080792,
+                    65.730504,
+                    68.612583,
+                    64.031875,
+                    64.33871,
+                    64.930248,
+                    63.952708,
+                    64.358789,
+                    66.067746,
+                    69.032585,
+                    64.289085,
+                    64.554377,
+                    106.962917,
+                    64.644336,
+                    64.387334,
+                    64.190957,
+                    72.55642,
+                    64.813961,
+                    64.858415,
+                    65.648707
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 64.7987095,
+                    "p95Ms": 72.55642
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    55.543958,
+                    57.216004,
+                    55.614166,
+                    55.991788,
+                    55.753671,
+                    55.702042,
+                    55.470126,
+                    57.041289,
+                    55.475208,
+                    55.720832,
+                    55.559586,
+                    56.880877,
+                    59.007253,
+                    55.223456,
+                    55.397501,
+                    55.649288,
+                    55.162627,
+                    55.542335,
+                    57.161668,
+                    59.842792,
+                    55.550499,
+                    55.402417,
+                    87.928001,
+                    55.692419,
+                    55.624414,
+                    55.352959,
+                    60.927041,
+                    55.746503,
+                    55.713626,
+                    56.975375
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 55.6972305,
+                    "p95Ms": 60.927041
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "1303d599beac63f5c399e38ba21840f55647cc5390ce2be2618b89a19d74231d",
+              "m1DAGP50Ms": 62.739438,
+              "m2DAGP50LimitMs": 53.328522299999996,
+              "m2DAGP50Passed": false
+            },
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 1682079744,
+                "maxSampledProcessPhysFootprintBytes": 3395226216,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    70.766582,
+                    67.732873,
+                    66.965661,
+                    66.033042,
+                    67.888875,
+                    67.822541,
+                    68.93442,
+                    64.735453,
+                    65.339376,
+                    71.477168,
+                    65.725747,
+                    67.857875,
+                    70.416376,
+                    66.547711,
+                    66.540081,
+                    66.180415,
+                    64.625086,
+                    68.824836,
+                    70.007623,
+                    66.687169,
+                    71.55679,
+                    64.390127,
+                    70.167583,
+                    67.217044,
+                    64.787042,
+                    66.704962,
+                    65.816289,
+                    66.099751,
+                    64.614506,
+                    66.470833
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 66.6960655,
+                    "p95Ms": 71.477168
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    61.722333,
+                    57.079039,
+                    57.866918,
+                    56.921998,
+                    57.502248,
+                    58.649045,
+                    60.010041,
+                    55.675498,
+                    55.80079,
+                    60.570588,
+                    55.67592,
+                    58.683043,
+                    61.633457,
+                    56.807752,
+                    57.172624,
+                    56.693542,
+                    55.746623,
+                    60.05404,
+                    60.475629,
+                    57.183502,
+                    62.718749,
+                    55.637211,
+                    60.516667,
+                    58.499377,
+                    55.847039,
+                    57.118875,
+                    57.000833,
+                    57.191418,
+                    55.721416,
+                    57.248036
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 57.18746,
+                    "p95Ms": 61.722333
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "59319c0744685af79ae5ea8b8af00dbdd5458f537ec5b8b7b8bcddcad8a638f5",
+              "m1DAGP50Ms": 66.091478,
+              "m2DAGP50LimitMs": 56.17775629999999,
+              "m2DAGP50Passed": false
+            }
+          },
+          "m0P95LimitMs": 1894.914,
+          "m0P95Passed": true
+        },
+        "032-avif10": {
+          "firstRunWallMs": 1363.740292,
+          "warmWallMs": [
+            1305.310125,
+            1296.938416,
+            1290.836542,
+            1331.830542,
+            1305.379292,
+            1309.578917,
+            1367.308875,
+            1294.833,
+            1456.589417,
+            1330.304875,
+            1332.217209,
+            1407.418916,
+            1346.272541,
+            1360.079125,
+            1334.25175,
+            1358.88075,
+            1343.21175,
+            1334.022791,
+            1320.575667,
+            1329.952875,
+            1329.388334,
+            1326.576167,
+            1350.094166,
+            1395.079,
+            1401.14725,
+            1386.545,
+            1367.135042,
+            1372.841417,
+            1473.359625,
+            1379.253959
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1338.73175,
+            "p95Ms": 1456.589417
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 7234224128,
+                "maxSampledProcessPhysFootprintBytes": 3635481312
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    70.135539,
+                    64.391379,
+                    64.296044,
+                    65.937668,
+                    64.711334,
+                    64.43254,
+                    66.684373,
+                    66.061212,
+                    72.227793,
+                    64.227038,
+                    65.914998,
+                    77.221459,
+                    64.45746,
+                    67.720164,
+                    66.163749,
+                    64.496914,
+                    64.437582,
+                    64.85979,
+                    64.003667,
+                    65.840462,
+                    64.403293,
+                    67.621709,
+                    64.251793,
+                    68.130333,
+                    64.651912,
+                    67.760998,
+                    66.170289,
+                    67.702082,
+                    67.487293,
+                    65.021249
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 65.87773,
+                    "p95Ms": 72.227793
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    61.45775,
+                    55.533248,
+                    55.611624,
+                    57.050542,
+                    55.636543,
+                    55.52167,
+                    57.157292,
+                    57.114791,
+                    62.107294,
+                    55.400044,
+                    57.169164,
+                    64.324459,
+                    55.656875,
+                    58.404583,
+                    56.717794,
+                    55.648624,
+                    55.382418,
+                    55.325622,
+                    54.923835,
+                    57.088335,
+                    55.554415,
+                    58.63708,
+                    55.306084,
+                    59.011626,
+                    55.624586,
+                    58.707376,
+                    57.059128,
+                    58.640462,
+                    57.661212,
+                    55.723624
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 56.884168,
+                    "p95Ms": 62.107294
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "70661500055cd676a5aedfda8339bdf066a1dda0070301a095c701cd912dd6c9",
+              "m1DAGP50Ms": 62.5796645,
+              "m2DAGP50LimitMs": 53.192714824999996,
+              "m2DAGP50Passed": false
+            }
+          },
+          "m0P95LimitMs": 1479.702,
+          "m0P95Passed": true
+        },
+        "032-jpeg8": {
+          "firstRunWallMs": 530.095083,
+          "warmWallMs": [
+            546.680334,
+            538.229083,
+            550.79525,
+            547.8215,
+            537.142542,
+            561.568708,
+            558.684583,
+            552.162375,
+            621.088417,
+            545.002584,
+            562.250875,
+            622.701917,
+            555.748916,
+            547.908333,
+            548.161292,
+            556.184042,
+            568.255875,
+            568.803833,
+            531.705917,
+            541.258125,
+            565.532333,
+            551.090584,
+            549.492708,
+            566.742834,
+            569.639417,
+            541.453916,
+            554.172834,
+            646.973584,
+            577.851583,
+            572.86325
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 554.960875,
+            "p95Ms": 622.701917
+          },
+          "targets": {
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 7234224128,
+                "maxSampledProcessPhysFootprintBytes": 3287059288,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    65.975626,
+                    64.972416,
+                    63.948,
+                    64.838245,
+                    64.320169,
+                    64.642666,
+                    66.0825,
+                    64.580711,
+                    69.801582,
+                    63.840539,
+                    64.002372,
+                    67.432834,
+                    66.280292,
+                    66.151707,
+                    64.537128,
+                    67.939082,
+                    65.817209,
+                    66.35896,
+                    64.251126,
+                    64.372001,
+                    67.550379,
+                    64.944422,
+                    65.293125,
+                    66.153206,
+                    64.644082,
+                    64.550124,
+                    65.651749,
+                    68.527328,
+                    64.335749,
+                    66.724791
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 65.13277049999999,
+                    "p95Ms": 68.527328
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    56.918371,
+                    55.695293,
+                    55.197252,
+                    55.797956,
+                    55.558711,
+                    55.450291,
+                    57.053748,
+                    55.738706,
+                    59.316749,
+                    54.907708,
+                    54.971708,
+                    57.255417,
+                    57.179584,
+                    55.772915,
+                    55.155371,
+                    58.625836,
+                    56.877918,
+                    57.275667,
+                    55.26517,
+                    55.502334,
+                    58.610254,
+                    55.727498,
+                    55.867751,
+                    57.174627,
+                    55.411377,
+                    55.685751,
+                    56.661331,
+                    58.630253,
+                    55.350417,
+                    57.219586
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 55.7854355,
+                    "p95Ms": 58.630253
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "db46c548f3be7932e6e38be8e96f11b3e72ca14e1c428f6dc01f5e52f92ef88e",
+              "m1DAGP50Ms": 63.4886855,
+              "m2DAGP50LimitMs": 53.965382675,
+              "m2DAGP50Passed": false
+            }
+          },
+          "m0P95LimitMs": 631.4175,
+          "m0P95Passed": true
+        }
+      }
+    },
+    "arm-1": {
+      "lowLatencyJoin": true,
+      "build": {
+        "sourceCommitAtStart": "5deb7d489f1a59004901d71cfb75df227325ba3e",
+        "worktreeChangesAtStart": [],
+        "testBundleSHA256": {
+          "RAWMasterUITests": "cf2f22abe94c87046b842983f0171d2ed08049c6d3ecd55fd21f5760cc7666a6",
+          "RAWMasterImagingTests": "c55e46224128f11f61e90c4f4fe2bcf4661ec2151015194f0c2c52d81cef9616"
+        },
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+        "hardware": "Mac16,5",
+        "osBuild": "26A434",
+        "drtAssembly": "direct"
+      },
+      "wholeHarnessSeconds": {
+        "real": 137.92,
+        "user": 876.49,
+        "system": 39.64
+      },
+      "summarySHA256": "14fa735ff98af87ed1bc2fd367244e8b734df6042679d9ebf86df7342598ef87",
+      "routes": {
+        "component": {
+          "firstRunWallMs": 1662.469,
+          "warmWallMs": [
+            1655.092542,
+            1546.129792,
+            1566.861375,
+            1540.828333,
+            1697.756041,
+            1534.169917,
+            1568.879959,
+            1607.814625,
+            1572.336917,
+            1564.532458,
+            1636.6025,
+            1575.227,
+            1564.395583,
+            1569.4315,
+            1574.713458,
+            1707.021792,
+            1558.077208,
+            1548.299083,
+            1553.851541,
+            1555.983584,
+            1592.6565,
+            1567.487167,
+            1560.533,
+            1541.888792,
+            1573.202667,
+            1670.453375,
+            1526.433833,
+            1546.978708,
+            1547.354833,
+            1548.028209
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1565.6969165,
+            "p95Ms": 1697.756041
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                "maxSampledProcessPhysFootprintBytes": 3570125296
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    44.707542,
+                    47.760335,
+                    51.399208,
+                    44.843419,
+                    80.120128,
+                    51.12258,
+                    44.735291,
+                    58.714792,
+                    49.768829,
+                    46.230875,
+                    55.173876,
+                    59.758542,
+                    52.350666,
+                    59.1345,
+                    50.581754,
+                    45.940421,
+                    49.031001,
+                    42.72371,
+                    52.959208,
+                    50.64779,
+                    49.349871,
+                    51.216374,
+                    44.384457,
+                    49.34246,
+                    53.200002,
+                    47.735584,
+                    44.420587,
+                    48.990166,
+                    56.172084,
+                    45.716711
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 49.559349999999995,
+                    "p95Ms": 59.758542
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    35.884252,
+                    38.689374,
+                    42.070128,
+                    35.854126,
+                    69.678204,
+                    42.009919,
+                    35.751666,
+                    49.450417,
+                    40.651418,
+                    37.388129,
+                    45.15229,
+                    50.644577,
+                    43.416503,
+                    49.735578,
+                    41.638206,
+                    37.239337,
+                    40.14375,
+                    34.061336,
+                    43.647961,
+                    41.709125,
+                    40.538669,
+                    42.200914,
+                    35.66579,
+                    40.50492,
+                    43.990208,
+                    38.724289,
+                    35.599419,
+                    40.275001,
+                    47.015627,
+                    36.978665
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 40.5950435,
+                    "p95Ms": 50.644577
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "1303d599beac63f5c399e38ba21840f55647cc5390ce2be2618b89a19d74231d",
+              "m1DAGP50Ms": 62.739438,
+              "m2DAGP50LimitMs": 53.328522299999996,
+              "m2DAGP50Passed": true
+            },
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 1682079744,
+                "maxSampledProcessPhysFootprintBytes": 3426585240,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    64.790331,
+                    56.697787,
+                    57.106585,
+                    47.060037,
+                    49.433421,
+                    49.523623,
+                    52.165627,
+                    57.786834,
+                    50.094168,
+                    46.134538,
+                    47.085165,
+                    57.600499,
+                    48.203875,
+                    44.00904,
+                    48.411919,
+                    59.882044,
+                    58.596334,
+                    55.959998,
+                    45.967918,
+                    52.146876,
+                    60.211667,
+                    47.205291,
+                    61.831126,
+                    47.206578,
+                    52.797919,
+                    78.703792,
+                    46.395915,
+                    54.568122,
+                    47.665334,
+                    52.006375
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 52.0766255,
+                    "p95Ms": 64.790331
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    54.502833,
+                    46.459082,
+                    47.938874,
+                    38.329919,
+                    40.503539,
+                    40.243501,
+                    43.418377,
+                    49.215001,
+                    40.370002,
+                    36.979918,
+                    38.360165,
+                    46.529082,
+                    39.068834,
+                    35.376622,
+                    38.668042,
+                    49.70225,
+                    49.653957,
+                    46.459874,
+                    37.152588,
+                    43.479544,
+                    50.864791,
+                    38.592457,
+                    51.522666,
+                    38.503291,
+                    43.783625,
+                    68.142795,
+                    37.086708,
+                    44.980871,
+                    38.627588,
+                    43.163956
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 43.2911665,
+                    "p95Ms": 54.502833
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "59319c0744685af79ae5ea8b8af00dbdd5458f537ec5b8b7b8bcddcad8a638f5",
+              "m1DAGP50Ms": 66.091478,
+              "m2DAGP50LimitMs": 56.17775629999999,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 1894.914,
+          "m0P95Passed": true
+        },
+        "032-avif10": {
+          "firstRunWallMs": 1374.073584,
+          "warmWallMs": [
+            1328.453458,
+            1343.863667,
+            1334.228541,
+            1323.830792,
+            1369.846584,
+            1369.324791,
+            1331.065416,
+            1304.301625,
+            1330.571792,
+            1351.625334,
+            1321.844458,
+            1310.451084,
+            1300.619625,
+            1326.874625,
+            1323.1325,
+            1330.723125,
+            1383.866917,
+            1317.794459,
+            1319.980167,
+            1308.725084,
+            1330.391458,
+            1306.598417,
+            1301.422791,
+            1355.811042,
+            1303.60925,
+            1306.345125,
+            1305.113333,
+            1278.097916,
+            1292.0955,
+            1301.750666
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1322.488479,
+            "p95Ms": 1369.846584
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 7105445888,
+                "maxSampledProcessPhysFootprintBytes": 3646769792
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    44.730335,
+                    51.399252,
+                    54.45017,
+                    48.088788,
+                    58.465958,
+                    46.517169,
+                    59.26325,
+                    47.528499,
+                    49.438748,
+                    47.575751,
+                    56.495081,
+                    45.95646,
+                    50.875247,
+                    52.37671,
+                    52.207583,
+                    62.077586,
+                    80.291624,
+                    47.380086,
+                    52.323456,
+                    54.398376,
+                    46.434499,
+                    53.808249,
+                    50.380627,
+                    55.55796,
+                    49.798001,
+                    50.660419,
+                    50.323878,
+                    42.659829,
+                    50.542623,
+                    44.35729
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 50.601521,
+                    "p95Ms": 62.077586
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    35.984707,
+                    42.139337,
+                    45.571917,
+                    38.930632,
+                    48.878168,
+                    37.357374,
+                    49.905918,
+                    38.702458,
+                    40.24854,
+                    38.862708,
+                    47.573622,
+                    37.301835,
+                    41.918079,
+                    43.254461,
+                    43.159708,
+                    52.771748,
+                    70.519588,
+                    38.711875,
+                    43.288502,
+                    45.167958,
+                    37.397459,
+                    44.80871,
+                    41.633167,
+                    46.361626,
+                    40.345998,
+                    41.847459,
+                    41.502124,
+                    34.018041,
+                    41.703536,
+                    35.789168
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 41.7754975,
+                    "p95Ms": 52.771748
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "70661500055cd676a5aedfda8339bdf066a1dda0070301a095c701cd912dd6c9",
+              "m1DAGP50Ms": 62.5796645,
+              "m2DAGP50LimitMs": 53.192714824999996,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 1479.702,
+          "m0P95Passed": true
+        },
+        "032-jpeg8": {
+          "firstRunWallMs": 521.87725,
+          "warmWallMs": [
+            531.78525,
+            524.725834,
+            547.648125,
+            565.090333,
+            527.376042,
+            552.73475,
+            525.148209,
+            518.716541,
+            524.487833,
+            632.625458,
+            554.673042,
+            541.77275,
+            530.688917,
+            544.656792,
+            532.960458,
+            551.9415,
+            530.12725,
+            657.306375,
+            587.242458,
+            541.240709,
+            545.958166,
+            540.655458,
+            528.644542,
+            564.399375,
+            517.888916,
+            546.159333,
+            553.289666,
+            599.248959,
+            536.0645,
+            542.124333
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 541.9485414999999,
+            "p95Ms": 632.625458
+          },
+          "targets": {
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 7105445888,
+                "maxSampledProcessPhysFootprintBytes": 3304311544,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    47.369875,
+                    48.105754,
+                    52.559462,
+                    54.271581,
+                    48.474998,
+                    48.858588,
+                    47.4745,
+                    47.396962,
+                    44.90071,
+                    69.071169,
+                    58.979166,
+                    47.226454,
+                    48.769998,
+                    52.625833,
+                    47.450081,
+                    50.930167,
+                    45.929333,
+                    80.074788,
+                    64.117124,
+                    53.653333,
+                    54.529496,
+                    50.965503,
+                    45.334875,
+                    59.524999,
+                    48.996247,
+                    53.069245,
+                    54.290541,
+                    61.05246,
+                    53.814665,
+                    50.793376
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 50.947835,
+                    "p95Ms": 69.071169
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    38.31075,
+                    38.817539,
+                    43.440167,
+                    45.322,
+                    39.715377,
+                    40.20471,
+                    38.678376,
+                    38.621459,
+                    35.892292,
+                    59.516286,
+                    49.63429,
+                    37.797418,
+                    39.22767,
+                    43.434707,
+                    38.494544,
+                    41.773453,
+                    37.091791,
+                    70.961211,
+                    54.625127,
+                    44.770748,
+                    45.282873,
+                    41.765293,
+                    36.046792,
+                    50.273834,
+                    40.290958,
+                    44.046417,
+                    45.154792,
+                    51.832501,
+                    44.828666,
+                    41.838419
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 41.805936,
+                    "p95Ms": 59.516286
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "db46c548f3be7932e6e38be8e96f11b3e72ca14e1c428f6dc01f5e52f92ef88e",
+              "m1DAGP50Ms": 63.4886855,
+              "m2DAGP50LimitMs": 53.965382675,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 631.4175,
+          "m0P95Passed": false
+        }
+      }
+    },
+    "arm-1-repeat": {
+      "lowLatencyJoin": true,
+      "build": {
+        "sourceCommitAtStart": "5deb7d489f1a59004901d71cfb75df227325ba3e",
+        "worktreeChangesAtStart": [
+          "M Sources/RAWMaster/EditingController.swift",
+          " M Tests/RAWMasterUITests/NativePresentedCanvasTests.swift",
+          " M scripts/performance/benchmark-rawmaster-canvas.py",
+          " M scripts/performance/replay-rawmaster-screen.py"
+        ],
+        "testBundleSHA256": {
+          "RAWMasterUITests": "cf2f22abe94c87046b842983f0171d2ed08049c6d3ecd55fd21f5760cc7666a6",
+          "RAWMasterImagingTests": "c55e46224128f11f61e90c4f4fe2bcf4661ec2151015194f0c2c52d81cef9616"
+        },
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+        "hardware": "Mac16,5",
+        "osBuild": "26A434",
+        "drtAssembly": "direct"
+      },
+      "wholeHarnessSeconds": {
+        "real": 139.92,
+        "user": 896.87,
+        "system": 39.91
+      },
+      "summarySHA256": "13ac0e796bc42df5e4c708c80267d54472c23626b26b98b616cd9ecf08be69cf",
+      "routes": {
+        "component": {
+          "firstRunWallMs": 1679.537958,
+          "warmWallMs": [
+            1680.293292,
+            1653.414125,
+            1632.270375,
+            1616.619916,
+            1693.821375,
+            1651.499458,
+            1628.864542,
+            1646.019458,
+            1626.730375,
+            1634.792292,
+            1624.066875,
+            1650.593792,
+            1624.3265,
+            1628.855458,
+            1668.282542,
+            1675.830042,
+            1665.23975,
+            1604.494541,
+            1624.848458,
+            1650.454042,
+            1661.635083,
+            1662.890375,
+            1722.715625,
+            1636.23225,
+            1654.039125,
+            1621.751375,
+            1611.641459,
+            1658.513042,
+            1606.182208,
+            1631.815208
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1641.125854,
+            "p95Ms": 1693.821375
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                "maxSampledProcessPhysFootprintBytes": 3598207424
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    55.999122,
+                    58.628919,
+                    57.226248,
+                    52.660919,
+                    68.426877,
+                    53.677872,
+                    49.664793,
+                    52.364332,
+                    50.684708,
+                    51.769502,
+                    54.333998,
+                    50.516379,
+                    47.881583,
+                    44.582794,
+                    70.920414,
+                    45.846374,
+                    56.382165,
+                    47.308291,
+                    47.511418,
+                    51.305917,
+                    42.571626,
+                    52.361832,
+                    65.310917,
+                    60.056709,
+                    48.863461,
+                    47.588458,
+                    47.505297,
+                    60.459582,
+                    50.79321,
+                    47.304959
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 51.537709500000005,
+                    "p95Ms": 68.426877
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    46.576378,
+                    49.380833,
+                    48.138876,
+                    43.331713,
+                    57.831083,
+                    44.018084,
+                    40.665666,
+                    43.374419,
+                    41.886503,
+                    43.059124,
+                    45.213502,
+                    41.821835,
+                    38.70175,
+                    35.755912,
+                    61.700458,
+                    37.302834,
+                    46.928915,
+                    38.567374,
+                    38.621962,
+                    42.216334,
+                    33.965332,
+                    43.375209,
+                    55.843418,
+                    51.010628,
+                    40.155874,
+                    38.640417,
+                    38.729706,
+                    51.231589,
+                    42.001832,
+                    38.533205
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 42.637729,
+                    "p95Ms": 57.831083
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "1303d599beac63f5c399e38ba21840f55647cc5390ce2be2618b89a19d74231d",
+              "m1DAGP50Ms": 62.739438,
+              "m2DAGP50LimitMs": 53.328522299999996,
+              "m2DAGP50Passed": true
+            },
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 1682079744,
+                "maxSampledProcessPhysFootprintBytes": 3396274840,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    64.143626,
+                    59.369792,
+                    51.829544,
+                    51.298713,
+                    64.398916,
+                    55.607459,
+                    61.666668,
+                    56.91692,
+                    51.992127,
+                    47.714168,
+                    56.101543,
+                    62.028834,
+                    52.050709,
+                    57.445709,
+                    53.95104,
+                    66.128295,
+                    52.476334,
+                    53.866376,
+                    61.257998,
+                    55.646959,
+                    51.093371,
+                    68.398418,
+                    58.338164,
+                    51.922502,
+                    59.422626,
+                    53.347668,
+                    56.816416,
+                    54.152043,
+                    45.91296,
+                    52.726041
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 55.627209,
+                    "p95Ms": 66.128295
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    54.471789,
+                    49.56608,
+                    42.162624,
+                    41.972331,
+                    54.584668,
+                    46.399086,
+                    51.228668,
+                    47.96879,
+                    43.213039,
+                    38.761707,
+                    47.368626,
+                    51.011916,
+                    43.331042,
+                    48.222003,
+                    44.716627,
+                    56.047335,
+                    43.567791,
+                    44.822627,
+                    51.463499,
+                    46.312876,
+                    41.929833,
+                    58.012834,
+                    48.479919,
+                    43.278374,
+                    49.953538,
+                    44.632168,
+                    47.778409,
+                    45.222332,
+                    37.059457,
+                    43.642331
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 46.355981,
+                    "p95Ms": 56.047335
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "59319c0744685af79ae5ea8b8af00dbdd5458f537ec5b8b7b8bcddcad8a638f5",
+              "m1DAGP50Ms": 66.091478,
+              "m2DAGP50LimitMs": 56.17775629999999,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 1894.914,
+          "m0P95Passed": true
+        },
+        "032-avif10": {
+          "firstRunWallMs": 1284.37325,
+          "warmWallMs": [
+            1257.125292,
+            1295.486959,
+            1305.467958,
+            1279.898334,
+            1260.378167,
+            1339.580959,
+            1296.720625,
+            1281.815875,
+            1319.025125,
+            1367.953792,
+            1289.56475,
+            1280.04925,
+            1295.486541,
+            1308.286042,
+            1282.543,
+            1373.464917,
+            1344.30325,
+            1316.725875,
+            1364.959375,
+            1321.370667,
+            1307.621166,
+            1311.135333,
+            1327.378417,
+            1416.517333,
+            1338.899167,
+            1342.775584,
+            1333.542917,
+            1310.55375,
+            1324.4135,
+            1357.568584
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 1313.9306040000001,
+            "p95Ms": 1373.464917
+          },
+          "targets": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 7205158912,
+                "maxSampledProcessPhysFootprintBytes": 3642755688
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    45.568376,
+                    53.194709,
+                    55.762873,
+                    49.2465,
+                    45.485334,
+                    54.394748,
+                    47.588501,
+                    47.322006,
+                    52.71346,
+                    57.955833,
+                    50.374792,
+                    44.122959,
+                    45.850957,
+                    51.143621,
+                    44.396877,
+                    48.929456,
+                    56.571002,
+                    55.533957,
+                    57.185669,
+                    56.778206,
+                    49.765669,
+                    48.748291,
+                    46.125038,
+                    66.477001,
+                    54.295165,
+                    58.847169,
+                    48.897544,
+                    47.538961,
+                    51.972123,
+                    44.500709
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 50.0702305,
+                    "p95Ms": 58.847169
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    36.887584,
+                    43.737747,
+                    46.708292,
+                    40.260128,
+                    36.877668,
+                    45.089833,
+                    38.837165,
+                    38.481997,
+                    43.553503,
+                    48.024536,
+                    41.687876,
+                    35.489081,
+                    37.12842,
+                    41.863624,
+                    35.555586,
+                    40.104749,
+                    46.859252,
+                    46.531834,
+                    47.245169,
+                    47.733917,
+                    40.259916,
+                    40.07421,
+                    37.388586,
+                    55.960083,
+                    45.14454,
+                    49.615209,
+                    39.943002,
+                    38.570874,
+                    43.158871,
+                    35.709125
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 40.974002,
+                    "p95Ms": 49.615209
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "70661500055cd676a5aedfda8339bdf066a1dda0070301a095c701cd912dd6c9",
+              "m1DAGP50Ms": 62.5796645,
+              "m2DAGP50LimitMs": 53.192714824999996,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 1479.702,
+          "m0P95Passed": true
+        },
+        "032-jpeg8": {
+          "firstRunWallMs": 540.786667,
+          "warmWallMs": [
+            539.416792,
+            513.254458,
+            626.742292,
+            522.240458,
+            535.777292,
+            544.651542,
+            547.849375,
+            578.331875,
+            544.632209,
+            527.295833,
+            516.211167,
+            548.052083,
+            532.6695,
+            538.971291,
+            519.827,
+            547.782291,
+            519.26825,
+            521.237667,
+            570.56675,
+            513.385,
+            559.830292,
+            527.947333,
+            544.696458,
+            630.81525,
+            516.227625,
+            544.59075,
+            568.593375,
+            553.417041,
+            535.653459,
+            549.670584
+          ],
+          "warmWall": {
+            "n": 30,
+            "p50Ms": 542.0037709999999,
+            "p95Ms": 626.742292
+          },
+          "targets": {
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "transport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 7205158912,
+                "maxSampledProcessPhysFootprintBytes": 3387624400,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "dag.wgpu.render_wall": {
+                  "warmMs": [
+                    47.36558,
+                    42.634081,
+                    72.541623,
+                    44.856082,
+                    52.09104,
+                    64.030582,
+                    52.7455,
+                    60.836288,
+                    49.33787,
+                    47.756668,
+                    45.929502,
+                    47.335042,
+                    48.518873,
+                    55.338209,
+                    47.891415,
+                    53.537292,
+                    45.82975,
+                    48.826626,
+                    62.376708,
+                    45.959043,
+                    50.70408,
+                    44.57704,
+                    49.51921,
+                    71.603705,
+                    44.034293,
+                    55.69867,
+                    65.984079,
+                    53.989289,
+                    47.373832,
+                    55.328624
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 49.42854,
+                    "p95Ms": 71.603705
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "warmMs": [
+                    38.630086,
+                    33.898582,
+                    62.259042,
+                    35.889375,
+                    43.25379,
+                    54.189999,
+                    43.545874,
+                    51.466251,
+                    40.324328,
+                    38.911206,
+                    37.146957,
+                    38.531961,
+                    39.735292,
+                    46.388373,
+                    38.973373,
+                    43.608457,
+                    37.089127,
+                    40.081538,
+                    52.892836,
+                    36.94767,
+                    41.687252,
+                    35.591002,
+                    40.642419,
+                    62.102043,
+                    35.471127,
+                    46.518126,
+                    57.273456,
+                    44.90196,
+                    38.597666,
+                    46.256542
+                  ],
+                  "warm": {
+                    "n": 30,
+                    "p50Ms": 40.4833735,
+                    "p95Ms": 62.102043
+                  }
+                }
+              },
+              "files": 36,
+              "outputSHA256": "db46c548f3be7932e6e38be8e96f11b3e72ca14e1c428f6dc01f5e52f92ef88e",
+              "m1DAGP50Ms": 63.4886855,
+              "m2DAGP50LimitMs": 53.965382675,
+              "m2DAGP50Passed": true
+            }
+          },
+          "m0P95LimitMs": 631.4175,
+          "m0P95Passed": true
+        }
+      }
+    }
+  },
+  "pooledCandidate": {
+    "component": {
+      "warmWall": {
+        "n": 60,
+        "p50Ms": 1622.9091250000001,
+        "p95Ms": 1693.821375
+      },
+      "m0P95LimitMs": 1894.914,
+      "m0P95Passed": true,
+      "targets": {
+        "avif10": {
+          "stages": {
+            "dag.wgpu.render_wall": {
+              "n": 60,
+              "p50Ms": 50.666249,
+              "p95Ms": 65.310917
+            },
+            "dag.wgpu.submit_and_wait": {
+              "n": 60,
+              "p50Ms": 41.854169,
+              "p95Ms": 55.843418
+            }
+          },
+          "m2DAGP50LimitMs": 53.328522299999996,
+          "m2DAGP50Passed": true
+        },
+        "jpeg8": {
+          "stages": {
+            "dag.wgpu.render_wall": {
+              "n": 60,
+              "p50Ms": 53.908708000000004,
+              "p95Ms": 64.790331
+            },
+            "dag.wgpu.submit_and_wait": {
+              "n": 60,
+              "p50Ms": 44.769627,
+              "p95Ms": 54.584668
+            }
+          },
+          "m2DAGP50LimitMs": 56.17775629999999,
+          "m2DAGP50Passed": true
+        }
+      }
+    },
+    "032-avif10": {
+      "warmWall": {
+        "n": 60,
+        "p50Ms": 1319.502646,
+        "p95Ms": 1369.846584
+      },
+      "m0P95LimitMs": 1479.702,
+      "m0P95Passed": true,
+      "targets": {
+        "avif10": {
+          "stages": {
+            "dag.wgpu.render_wall": {
+              "n": 60,
+              "p50Ms": 50.461625,
+              "p95Ms": 59.26325
+            },
+            "dag.wgpu.submit_and_wait": {
+              "n": 60,
+              "p50Ms": 41.695706,
+              "p95Ms": 49.905918
+            }
+          },
+          "m2DAGP50LimitMs": 53.192714824999996,
+          "m2DAGP50Passed": true
+        }
+      }
+    },
+    "032-jpeg8": {
+      "warmWall": {
+        "n": 60,
+        "p50Ms": 541.9485414999999,
+        "p95Ms": 626.742292
+      },
+      "m0P95LimitMs": 631.4175,
+      "m0P95Passed": true,
+      "targets": {
+        "jpeg8": {
+          "stages": {
+            "dag.wgpu.render_wall": {
+              "n": 60,
+              "p50Ms": 50.748728,
+              "p95Ms": 69.071169
+            },
+            "dag.wgpu.submit_and_wait": {
+              "n": 60,
+              "p50Ms": 41.7262725,
+              "p95Ms": 59.516286
+            }
+          },
+          "m2DAGP50LimitMs": 53.965382675,
+          "m2DAGP50Passed": true
+        }
+      }
+    }
+  },
+  "sixNode": {
+    "device": "Apple M4 Max",
+    "graph": {
+      "nodes": [
+        {
+          "id": "04360000-0000-4000-8000-000000000001",
+          "name": "Ramp",
+          "operation": {
+            "end": [
+              0.9,
+              1
+            ],
+            "kind": "linearCoverage",
+            "start": [
+              0.1,
+              0
+            ]
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000002",
+          "name": "Ellipse",
+          "operation": {
+            "center": [
+              0.5,
+              0.5
+            ],
+            "feather": 0.2,
+            "kind": "radialCoverage",
+            "radii": [
+              0.4,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000003",
+          "name": "Mask",
+          "operation": {
+            "base": "04360000-0000-4000-8000-000000000001",
+            "kind": "combineCoverage",
+            "mode": "intersect",
+            "other": "04360000-0000-4000-8000-000000000002"
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000004",
+          "name": "Light",
+          "operation": {
+            "curve": [
+              [
+                -4,
+                -3.5
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "enabled": true,
+            "exposureEV": 1.2,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": "04360000-0000-4000-8000-000000000003",
+            "strength": 0.8
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000005",
+          "name": "Dark",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.7,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000006",
+          "name": "Mix",
+          "operation": {
+            "base": "$input",
+            "enabled": true,
+            "kind": "parallel",
+            "layers": [
+              {
+                "image": "04360000-0000-4000-8000-000000000004",
+                "mode": "normal",
+                "weight": 0.65
+              },
+              {
+                "image": "04360000-0000-4000-8000-000000000005",
+                "mode": "normal",
+                "weight": 0.35
+              }
+            ]
+          }
+        }
+      ],
+      "output": "04360000-0000-4000-8000-000000000006"
+    },
+    "historicM0Gate": {
+      "actualP95Ms": 5.741,
+      "baselineP95Ms": 13.7605,
+      "passed": true,
+      "targetP95Ms": 10.58
+    },
+    "inputAllocatedBytes": 97288192,
+    "inputInitialization": "one joined same-device texture blit before both series",
+    "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+    "inputStorageMode": "private",
+    "measuredSamples": 30,
+    "modern039Gate": {
+      "actualP95Ms": 5.741,
+      "actualSpeedup": 2.3250667131161817,
+      "passed": true,
+      "referenceP95Ms": 13.348208,
+      "requiredSpeedup": 1.3,
+      "targetP95Ms": 10.267852307692307
+    },
+    "order": "each pair runs serially and alternates its first backend, starting with rust",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p95Rule": "nearest rank",
+    "recipeSHA256": "b253536ea2b8df6638aae3c535fdcbda3394307d596910f8c80c084c4e412a5c",
+    "registryID": "4294968440",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rust039": {
+      "backend": [
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "dispatches": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "fallbackCount": 0,
+      "p50Ms": 12.5272705,
+      "p95Ms": 13.348208,
+      "peakBytes": [
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992
+      ],
+      "samplesMs": [
+        12.197,
+        12.179833,
+        11.411041,
+        13.348208,
+        11.910292,
+        12.695583,
+        12.08125,
+        12.720166,
+        12.673917,
+        12.687959,
+        12.346917,
+        12.765667,
+        12.461542,
+        12.136792,
+        11.933209,
+        12.153542,
+        13.086416,
+        13.325167,
+        12.546958,
+        13.125334,
+        12.507583,
+        13.083333,
+        11.67025,
+        13.516333,
+        11.332667,
+        12.657708,
+        10.836292,
+        12.850917,
+        11.229083,
+        13.12675
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "scope": "host wall from prepareFinal invocation to its return",
+    "warmups": 5,
+    "wgpuMetal": {
+      "backend": [
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "dispatches": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "fallbackCount": 0,
+      "p50Ms": 4.203771,
+      "p95Ms": 5.741,
+      "peakBytes": [
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900
+      ],
+      "samplesMs": [
+        4.186208,
+        4.217333,
+        4.21425,
+        5.741,
+        4.205292,
+        4.209666,
+        4.165541,
+        4.190375,
+        4.169125,
+        4.223583,
+        4.223625,
+        4.198292,
+        4.194834,
+        5.739583,
+        4.22325,
+        5.746041,
+        4.1775,
+        4.20225,
+        4.148375,
+        4.216375,
+        4.1765,
+        4.194708,
+        4.146541,
+        5.726542,
+        4.193834,
+        5.709,
+        4.142334,
+        5.695416,
+        4.180791,
+        5.733458
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "ninetySixNode": {
+    "accounting": {
+      "rust039": "Texture-pool budget high-water mark. The final output may be absent at the peak. Subtract the input, the actual final output and one measured positive heap estimate overshoot for a conservative lower bound.",
+      "scope": "Engine accounting. Driver and command staging, pipeline memory, unrelated allocations and test readback are outside these figures. The 039 receipt accounts for textures; its validation flag and shader arguments are outside that budget.",
+      "wgpuMetal": "Actual charge for the resident input and output textures and the graph parameter and validation buffers, with logical sizes as minimum charges. Subtract actual input and output allocations to obtain the intermediate charge."
+    },
+    "device": "Apple M4 Max",
+    "frozenDelivery": true,
+    "graph": {
+      "nodes": [
+        {
+          "id": "04960000-0000-4000-8000-000000000001",
+          "name": "Ramp",
+          "operation": {
+            "end": [
+              0.9,
+              1
+            ],
+            "kind": "linearCoverage",
+            "start": [
+              0.1,
+              0
+            ]
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000002",
+          "name": "Ellipse",
+          "operation": {
+            "center": [
+              0.5,
+              0.5
+            ],
+            "feather": 0.2,
+            "kind": "radialCoverage",
+            "radii": [
+              0.4,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000003",
+          "name": "Mask",
+          "operation": {
+            "base": "04960000-0000-4000-8000-000000000001",
+            "kind": "combineCoverage",
+            "mode": "intersect",
+            "other": "04960000-0000-4000-8000-000000000002"
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000004",
+          "name": "Exposure 1",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": "04960000-0000-4000-8000-000000000003",
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000005",
+          "name": "Exposure 2",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000004",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000006",
+          "name": "Exposure 3",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000005",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000007",
+          "name": "Exposure 4",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000006",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000008",
+          "name": "Exposure 5",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000007",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000009",
+          "name": "Exposure 6",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000008",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000A",
+          "name": "Exposure 7",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000009",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000B",
+          "name": "Exposure 8",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000C",
+          "name": "Exposure 9",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000D",
+          "name": "Exposure 10",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000E",
+          "name": "Exposure 11",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000F",
+          "name": "Exposure 12",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000010",
+          "name": "Exposure 13",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000011",
+          "name": "Exposure 14",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000010",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000012",
+          "name": "Exposure 15",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000011",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000013",
+          "name": "Exposure 16",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000012",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000014",
+          "name": "Exposure 17",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000013",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000015",
+          "name": "Exposure 18",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000014",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000016",
+          "name": "Exposure 19",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000015",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000017",
+          "name": "Exposure 20",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000016",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000018",
+          "name": "Exposure 21",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000017",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000019",
+          "name": "Exposure 22",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000018",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001A",
+          "name": "Exposure 23",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000019",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001B",
+          "name": "Exposure 24",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001C",
+          "name": "Exposure 25",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001D",
+          "name": "Exposure 26",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001E",
+          "name": "Exposure 27",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001F",
+          "name": "Exposure 28",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000020",
+          "name": "Exposure 29",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000021",
+          "name": "Exposure 30",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000020",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000022",
+          "name": "Exposure 31",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000021",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000023",
+          "name": "Exposure 32",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000022",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000024",
+          "name": "Exposure 33",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000023",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000025",
+          "name": "Exposure 34",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000024",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000026",
+          "name": "Exposure 35",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000025",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000027",
+          "name": "Exposure 36",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000026",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000028",
+          "name": "Exposure 37",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000027",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000029",
+          "name": "Exposure 38",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000028",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002A",
+          "name": "Exposure 39",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000029",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002B",
+          "name": "Exposure 40",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002C",
+          "name": "Exposure 41",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002D",
+          "name": "Exposure 42",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002E",
+          "name": "Exposure 43",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002F",
+          "name": "Exposure 44",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000030",
+          "name": "Exposure 45",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000031",
+          "name": "Exposure 46",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000030",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000032",
+          "name": "Exposure 47",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000031",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000033",
+          "name": "Exposure 48",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000032",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000034",
+          "name": "Exposure 49",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000033",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000035",
+          "name": "Exposure 50",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000034",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000036",
+          "name": "Exposure 51",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000035",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000037",
+          "name": "Exposure 52",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000036",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000038",
+          "name": "Exposure 53",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000037",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000039",
+          "name": "Exposure 54",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000038",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003A",
+          "name": "Exposure 55",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000039",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003B",
+          "name": "Exposure 56",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003C",
+          "name": "Exposure 57",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003D",
+          "name": "Exposure 58",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003E",
+          "name": "Exposure 59",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003F",
+          "name": "Exposure 60",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000040",
+          "name": "Exposure 61",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000041",
+          "name": "Exposure 62",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000040",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000042",
+          "name": "Exposure 63",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000041",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000043",
+          "name": "Exposure 64",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000042",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000044",
+          "name": "Exposure 65",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000043",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000045",
+          "name": "Exposure 66",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000044",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000046",
+          "name": "Exposure 67",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000045",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000047",
+          "name": "Exposure 68",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000046",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000048",
+          "name": "Exposure 69",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000047",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000049",
+          "name": "Exposure 70",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000048",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004A",
+          "name": "Exposure 71",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000049",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004B",
+          "name": "Exposure 72",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004C",
+          "name": "Exposure 73",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004D",
+          "name": "Exposure 74",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004E",
+          "name": "Exposure 75",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004F",
+          "name": "Exposure 76",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000050",
+          "name": "Exposure 77",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000051",
+          "name": "Exposure 78",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000050",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000052",
+          "name": "Exposure 79",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000051",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000053",
+          "name": "Exposure 80",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000052",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000054",
+          "name": "Exposure 81",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000053",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000055",
+          "name": "Exposure 82",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000054",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000056",
+          "name": "Exposure 83",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000055",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000057",
+          "name": "Exposure 84",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000056",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000058",
+          "name": "Exposure 85",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000057",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000059",
+          "name": "Exposure 86",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000058",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005A",
+          "name": "Exposure 87",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000059",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005B",
+          "name": "Exposure 88",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000005A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005C",
+          "name": "Exposure 89",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000005B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005D",
+          "name": "Exposure 90",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000005C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005E",
+          "name": "Light branch",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.25,
+            "image": "04960000-0000-4000-8000-00000000005D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005F",
+          "name": "Dark branch",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.3125,
+            "image": "04960000-0000-4000-8000-00000000005D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000060",
+          "name": "Ordered layer",
+          "operation": {
+            "base": "04960000-0000-4000-8000-00000000005D",
+            "enabled": true,
+            "kind": "layer",
+            "layers": [
+              {
+                "image": "04960000-0000-4000-8000-00000000005E",
+                "mode": "normal",
+                "weight": 0.5
+              },
+              {
+                "image": "04960000-0000-4000-8000-00000000005F",
+                "mode": "normal",
+                "weight": 0.375
+              }
+            ]
+          }
+        }
+      ],
+      "output": "04960000-0000-4000-8000-000000000060"
+    },
+    "graphNodes": 96,
+    "inputAllocatedBytes": 97288192,
+    "inputInitialization": "one joined same-device texture blit before both series",
+    "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+    "inputStorageMode": "private",
+    "intermediateWorkingSetGate": {
+      "allowedBytes": 231014400,
+      "allowedFraction": 0.5,
+      "passed": true,
+      "rust039ConservativeLowerBytes": 462028800,
+      "wgpuIntermediateChargeBytes": 32772
+    },
+    "loweredSteps": 97,
+    "measuredSamples": 30,
+    "order": "each pair runs serially and alternates its first backend, starting with rust",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p95Rule": "nearest rank",
+    "passed": true,
+    "recipeSHA256": "5f3a961ef6d0bc30f7f340cc12fa3bbe68e64b07f8c06f035a1d281622ad52ea",
+    "registryID": "4294968440",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rust039": {
+      "backend": [
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "coverageCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "dispatches": [
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97
+      ],
+      "fallbackCount": 0,
+      "heapEstimateOvershootDeductionBytes": 0,
+      "hostWallSamplesMs": [
+        54.584333,
+        56.626041,
+        52.906583,
+        55.904333,
+        52.093167,
+        55.864541,
+        52.947375,
+        55.485,
+        53.315667,
+        54.43775,
+        52.419542,
+        54.803166,
+        52.276667,
+        55.776542,
+        53.941,
+        55.805,
+        51.999958,
+        55.678709,
+        52.188209,
+        55.469458,
+        52.938458,
+        55.692208,
+        52.916083,
+        56.284084,
+        54.390875,
+        56.452,
+        55.666375,
+        56.224208,
+        54.90525,
+        56.221125
+      ],
+      "hostWallSumMs": 1636.2137070000003,
+      "intermediateLowerBytes": [
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800
+      ],
+      "maxIntermediateLowerBytes": 462028800,
+      "maxIntermediateUpperBytes": 559054848,
+      "maxTotalPeakBytes": 656343040,
+      "nodeCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outputAllocatedBytes": [
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048
+      ],
+      "p50Ms": 54.854208,
+      "p95Ms": 56.452,
+      "peakMinusInputAndOutputBytes": [
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800
+      ],
+      "peakMinusInputBytes": [
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848
+      ],
+      "pixelsPerSecond": 110010079.50851983,
+      "receiptNodes": [
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "totalPeakBytes": [
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040
+      ]
+    },
+    "rust039HeapEstimateProbes": [
+      {
+        "allocatedBytes": 97026048,
+        "estimatedBytes": 97026048,
+        "format": "rgba32Float",
+        "positiveOvershootBytes": 0
+      },
+      {
+        "allocatedBytes": 24641536,
+        "estimatedBytes": 24641536,
+        "format": "r32Float",
+        "positiveOvershootBytes": 0
+      }
+    ],
+    "scope": "host wall from prepareFinal invocation to its return",
+    "sourceRevision": 0,
+    "throughputFormula": "width * height * measuredSamples / sum(host wall seconds)",
+    "throughputGate": {
+      "actualRatio": 5.7941844829087445,
+      "passed": true,
+      "requiredRatio": 2
+    },
+    "tileEdge": 0,
+    "warmups": 5,
+    "wgpuMetal": {
+      "backend": [
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "coverageCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "dispatches": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "fallbackCount": 0,
+      "heapEstimateOvershootDeductionBytes": 0,
+      "hostWallSamplesMs": [
+        8.708542,
+        10.249375,
+        8.733958,
+        10.355958,
+        8.774583,
+        10.254292,
+        8.763667,
+        10.342958,
+        8.670791,
+        10.263208,
+        8.436042,
+        8.742791,
+        8.720625,
+        10.296166,
+        8.75075,
+        10.295,
+        8.76275,
+        10.278167,
+        8.7595,
+        10.262542,
+        8.796416,
+        10.268875,
+        8.778167,
+        10.242625,
+        8.767125,
+        10.294208,
+        8.739833,
+        9.594542,
+        8.413,
+        10.0725
+      ],
+      "hostWallSumMs": 282.388956,
+      "intermediateLowerBytes": [
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772
+      ],
+      "maxIntermediateLowerBytes": 32772,
+      "maxIntermediateUpperBytes": 97058820,
+      "maxTotalPeakBytes": 194347012,
+      "nodeCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outputAllocatedBytes": [
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048
+      ],
+      "p50Ms": 8.7872915,
+      "p95Ms": 10.342958,
+      "peakMinusInputAndOutputBytes": [
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772
+      ],
+      "peakMinusInputBytes": [
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820
+      ],
+      "pixelsPerSecond": 637418695.6518228,
+      "receiptNodes": [
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "totalPeakBytes": [
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012
+      ]
+    }
+  },
+  "defaultBoundedWaitDrawableRegression": {
+    "sourceCommit": "c27dd4a46b20709b30be10445e0e383841c18269",
+    "backendFlag": "wgpu",
+    "boundedWaitOverride": null,
+    "warmups": 5,
+    "cases": {
+      "fit24": {
+        "backingScale": 2,
+        "currentHeadroom": 16,
+        "device": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "p50Ms": 16.989896,
+        "p95Ms": 18.860666,
+        "samplesMs": [
+          18.006709,
+          18.860666,
+          28.080792,
+          17.3925,
+          15.611,
+          17.341458,
+          14.406541,
+          16.861625,
+          17.250417,
+          17.30025,
+          15.239375,
+          18.509041,
+          16.493209,
+          16.170334,
+          15.623125,
+          17.159417,
+          17.195375,
+          16.149667,
+          15.970459,
+          16.06225,
+          17.213791,
+          16.448042,
+          17.407459,
+          17.02125,
+          15.84175,
+          14.988125,
+          17.752,
+          16.338125,
+          16.958542,
+          17.244417
+        ],
+        "scope": "live scene exposure command to joined AppKit Metal drawable; warm FIT SDR derivative, no HID or photon readback",
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "window": [
+          1240,
+          660
+        ]
+      },
+      "monitor-24": {
+        "asset": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "backingScale": 2,
+        "device": "Apple M4 Max",
+        "executors": [
+          "wgpu"
+        ],
+        "finalP50Ms": 20.3360205,
+        "finalP95Ms": 21.354708,
+        "finalSamplesMs": [
+          20.961125,
+          22.42825,
+          20.900875,
+          21.354708,
+          21.319291,
+          20.545959,
+          19.763292,
+          21.109542,
+          20.379333,
+          20.433,
+          20.270833,
+          20.026542,
+          19.804084,
+          21.350084,
+          19.470333,
+          20.253709,
+          20.292708,
+          19.363042,
+          20.593167,
+          20.065709,
+          19.91,
+          20.191,
+          19.74375,
+          19.969458,
+          20.228042,
+          20.703416,
+          20.711667,
+          19.845958,
+          20.506,
+          20.408917
+        ],
+        "measuredSamplesPerRoot": 30,
+        "nodeP50Ms": 21.747854500000003,
+        "nodeP95Ms": 23.891584,
+        "nodeSamplesMs": [
+          21.884917,
+          23.94025,
+          23.891584,
+          22.459375,
+          22.67225,
+          22.062875,
+          21.931166,
+          21.6705,
+          22.0225,
+          21.639542,
+          21.681416,
+          21.005625,
+          21.846708,
+          21.945625,
+          21.307083,
+          21.161791,
+          21.432708,
+          22.167584,
+          21.48875,
+          21.35775,
+          21.660417,
+          21.362292,
+          21.8135,
+          21.682209,
+          21.382792,
+          22.18025,
+          22.141042,
+          21.540834,
+          20.911334,
+          22.105916
+        ],
+        "os": "Version 27.0.1 (Build 26A434)",
+        "pixels": [
+          1200,
+          640
+        ],
+        "scope": "open floating Graph: warm interim Corrector and final grouped serial output monitor switching to joined SDR drawable",
+        "warmups": 5
+      },
+      "monitor-60": {
+        "asset": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "backingScale": 2,
+        "device": "Apple M4 Max",
+        "executors": [
+          "wgpu"
+        ],
+        "finalP50Ms": 22.1005625,
+        "finalP95Ms": 26.221167,
+        "finalSamplesMs": [
+          22.18025,
+          20.335666,
+          20.552209,
+          21.677667,
+          20.412,
+          21.072083,
+          22.497334,
+          21.873042,
+          24.160791,
+          24.864583,
+          20.818458,
+          22.360125,
+          23.56825,
+          24.849958,
+          22.419042,
+          21.575375,
+          21.781583,
+          22.195041,
+          22.297375,
+          22.001292,
+          22.11575,
+          21.710083,
+          20.222333,
+          26.221167,
+          26.513625,
+          22.177875,
+          22.085375,
+          22.473541,
+          20.915625,
+          21.342
+        ],
+        "measuredSamplesPerRoot": 30,
+        "nodeP50Ms": 23.6104585,
+        "nodeP95Ms": 27.224625,
+        "nodeSamplesMs": [
+          22.875333,
+          23.27825,
+          22.723041,
+          22.741875,
+          22.065458,
+          23.178042,
+          23.537708,
+          23.946542,
+          22.967542,
+          24.938333,
+          26.679,
+          25.483541,
+          22.602416,
+          24.861084,
+          24.586875,
+          23.618708,
+          23.63125,
+          23.7445,
+          23.184208,
+          23.619083,
+          23.830542,
+          23.592667,
+          23.602209,
+          23.626041,
+          28.0515,
+          27.224625,
+          22.185666,
+          23.640292,
+          21.896667,
+          22.352958
+        ],
+        "os": "Version 27.0.1 (Build 26A434)",
+        "pixels": [
+          1200,
+          640
+        ],
+        "scope": "open floating Graph: warm interim Corrector and final grouped serial output monitor switching to joined SDR drawable",
+        "warmups": 5
+      }
+    }
+  }
+}

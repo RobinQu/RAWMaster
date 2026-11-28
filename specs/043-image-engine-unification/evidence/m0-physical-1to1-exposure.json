@@ -1,0 +1,719 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "c27dd4a46b20709b30be10445e0e383841c18269",
+  "scope": "Warm physical 1:1 Exposure control submitted to an independently scanned displayed target; isolated windows",
+  "boundary": "ScreenCaptureKit first 20% change in central 60% of the same 1536\u00d71024 source ROI; final target checked",
+  "lightflow": {
+    "protocol": "screen-photo-native-roi-response-v1",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "nativeROI": {
+      "sourcePixels": [
+        9504,
+        6336
+      ],
+      "sourceROIPixels": [
+        4096,
+        3072,
+        1536,
+        1024
+      ],
+      "sourceCenterNormalized": [
+        0.5117845117845118,
+        0.5656565656565656
+      ],
+      "backingPixelsPerSourcePixel": [
+        1.0,
+        1.0
+      ],
+      "canvasBackingPixels": [
+        2378,
+        1736
+      ],
+      "roiCanvasRectPixels": [
+        421,
+        356,
+        1536,
+        1024
+      ],
+      "roiWindowRectPixels": [
+        919,
+        492,
+        1536,
+        1024
+      ],
+      "windowBackingPixels": [
+        3560,
+        2180
+      ],
+      "sampleROINormalized": [
+        0.344438202247191,
+        0.31963302752293576,
+        0.258876404494382,
+        0.28183486238532107
+      ]
+    },
+    "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+    "hardware": "Mac16,5",
+    "osBuild": "26A434",
+    "build": "2d41ab1",
+    "driver": "Trusted Return on prepared LightFlow numeric control through local Chrome DevTools; reads committed slider value",
+    "windowBundle": "org.rawmaster.benchmark.lightflow-chromium",
+    "browserBinarySHA256": "5e925bf7d5c832c643d3fb141bd960250635304f512625050a8942ca539154db",
+    "samples": 30,
+    "warmups": 5,
+    "timing": {
+      "p50Ms": 27.99375,
+      "p95Ms": 40.604917
+    },
+    "pairedIntentEV": [
+      0,
+      0.5
+    ],
+    "rawTrialMs": [
+      31.2515,
+      26.083875,
+      21.8815,
+      31.291417,
+      23.840209,
+      34.964791,
+      32.975334,
+      36.058792,
+      27.94425,
+      27.460458,
+      27.031625,
+      25.997541,
+      30.858125,
+      25.825917,
+      26.80875,
+      25.805625,
+      37.231667,
+      32.845417,
+      34.41825,
+      28.04325,
+      35.338417,
+      25.834042,
+      27.077916,
+      26.423084,
+      29.901875,
+      40.910417,
+      28.266666,
+      27.718,
+      23.855833,
+      40.604917
+    ],
+    "screenshotWitnesses": [
+      {
+        "state": 0,
+        "sha256": "02b7b22efd41a82eedae181f5314249c4dedba1f19ac09a2d2c76dadbbf05246",
+        "rgbSHA256": "ce89da89b9b8a8b9de13420c6d5006d40de42e19d7bf47a6f911d8116ab6129b",
+        "pixels": [
+          1536,
+          1024
+        ],
+        "meanLuma": 74.02539189656575
+      },
+      {
+        "state": 1,
+        "sha256": "feed57e6093d74f039ccd32435f3be75cab48d8726b7fc418ffebdf30ca02a1b",
+        "rgbSHA256": "1964d09f3f434f7a0b52f962495d9f4683494a3fa8012669fb2c17f53be58af7",
+        "pixels": [
+          1536,
+          1024
+        ],
+        "meanLuma": 87.34380849202473
+      }
+    ],
+    "archivedScreenSamplesSHA256": "0668bd045c8bd2db673003444f78069c80490a6f4a432ad175b9c57f4c42c146",
+    "archivedCaptureSHA256": "7d9d7caaf7ce8248cadebd619ea47ee9bfc94dcb43686fe8c0223c4149f70770",
+    "replaySHA256": "0982889bf7e975678842c67dae66eabbbf3cb7099a89ab44fbcc6564487583c7",
+    "frameSamplesSHA256": "5583a29ebd6268ae7e1014d788a32b0fd0c7398735cc10eba37f06c7efdcfcc4",
+    "sourceExactGeometry": true,
+    "allStableTrialsVerified": true
+  },
+  "rawmaster": {
+    "balancedCurrent": {
+      "protocol": "screen-photo-native-roi-response-v1",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "nativeROI": {
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "roiWindowRectPixels": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.37478260869565216,
+          0.3297117516629712,
+          0.2504347826086956,
+          0.34057649667405765
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "detailWindowNormalized": [
+          0.09375,
+          0.25,
+          0.8125,
+          0.625
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          7722,
+          3960
+        ]
+      },
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "hardware": "Mac16,5",
+      "osBuild": "26A434",
+      "build": "Release, -O with testability enabled",
+      "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "previewMode": "balanced",
+      "detailCounters": {
+        "ready": {
+          "cachedBitmapBytes": 122316480,
+          "cacheHits": 0,
+          "completedRenders": 2,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        },
+        "afterWitnesses": {
+          "cachedBitmapBytes": 122316480,
+          "cacheHits": 0,
+          "completedRenders": 43,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        }
+      },
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "testBundleSHA256": "d965fcbd4e74620c0438d1fe5efe9fbe4832b902e4f046280c1529d74429b8f9",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "samples": 30,
+      "warmups": 5,
+      "timing": {
+        "p50Ms": 118.0061455,
+        "p95Ms": 135.457334
+      },
+      "pairedIntentEV": [
+        0,
+        0.5
+      ],
+      "rawTrialMs": [
+        105.086083,
+        117.461084,
+        108.124583,
+        135.457334,
+        115.303625,
+        95.559625,
+        118.245458,
+        134.900708,
+        115.047208,
+        131.433375,
+        111.44775,
+        129.279708,
+        117.082584,
+        129.813417,
+        94.900541,
+        119.875125,
+        105.713083,
+        120.104,
+        117.766833,
+        122.317292,
+        116.87975,
+        132.461083,
+        120.636583,
+        113.67475,
+        122.319125,
+        125.937916,
+        110.740792,
+        137.874875,
+        116.422625,
+        128.758667
+      ],
+      "screenshotWitnesses": [
+        {
+          "state": 0,
+          "sha256": "d66cccd6a00eab3936b86c3850ba457c0da1379387ca259b372cc7182b5544b3",
+          "rgbSHA256": "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "meanLuma": 63.48860740661621
+        },
+        {
+          "state": 1,
+          "sha256": "85c5462aa2dba6b59f296496d1a4d49c22568f1a45b87c029ca06daef4df951f",
+          "rgbSHA256": "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "meanLuma": 75.48536745707194
+        }
+      ],
+      "archivedScreenSamplesSHA256": "1694dd9b081fd04fa1af73abe58af8a3f44b04d73a2992119825e1b8f63269b0",
+      "archivedCaptureSHA256": "6f061ebf7c38718a52b85676bbabb150e3429df89bdce2ea6da436ca41c43c97",
+      "replaySHA256": "26fab6c60faf9b5f9a2a4566c430d9084a3629bd7de5e34c9c6ff5f73616e87f",
+      "frameSamplesSHA256": "8c30a3919f133325012de6d4da97be375a5b507d1d7547cebe4e5c4a9c02b056",
+      "sourceExactGeometry": true,
+      "allStableTrialsVerified": true
+    },
+    "balancedNarrowQualification": {
+      "protocol": "screen-photo-native-roi-response-v1",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "nativeROI": {
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "roiWindowRectPixels": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.37478260869565216,
+          0.3297117516629712,
+          0.2504347826086956,
+          0.34057649667405765
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "detailWindowNormalized": [
+          0.3125,
+          0.40625,
+          0.40625,
+          0.3125
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          3861,
+          1980
+        ]
+      },
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "hardware": "Mac16,5",
+      "osBuild": "26A434",
+      "build": "Release, -O with testability enabled",
+      "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "previewMode": "balanced",
+      "detailCounters": {
+        "ready": {
+          "cachedBitmapBytes": 45947312,
+          "cacheHits": 0,
+          "completedRenders": 2,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        },
+        "afterWitnesses": {
+          "cachedBitmapBytes": 107105552,
+          "cacheHits": 39,
+          "completedRenders": 4,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        }
+      },
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "testBundleSHA256": "d965fcbd4e74620c0438d1fe5efe9fbe4832b902e4f046280c1529d74429b8f9",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "samples": 30,
+      "warmups": 5,
+      "timing": {
+        "p50Ms": 27.2870205,
+        "p95Ms": 43.277333
+      },
+      "pairedIntentEV": [
+        0,
+        0.5
+      ],
+      "rawTrialMs": [
+        35.389042,
+        27.608916,
+        27.735333,
+        19.872792,
+        46.814458,
+        22.934,
+        28.659917,
+        19.87825,
+        31.338291,
+        31.916584,
+        22.635375,
+        34.491584,
+        34.621625,
+        33.482792,
+        23.202208,
+        24.898875,
+        18.958625,
+        18.203292,
+        21.82325,
+        43.277333,
+        27.981208,
+        21.5345,
+        28.941791,
+        23.125917,
+        19.308875,
+        28.277333,
+        25.390375,
+        31.047792,
+        26.965125,
+        25.098708
+      ],
+      "screenshotWitnesses": [
+        {
+          "state": 0,
+          "sha256": "d66cccd6a00eab3936b86c3850ba457c0da1379387ca259b372cc7182b5544b3",
+          "rgbSHA256": "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "meanLuma": 63.48860740661621
+        },
+        {
+          "state": 1,
+          "sha256": "85c5462aa2dba6b59f296496d1a4d49c22568f1a45b87c029ca06daef4df951f",
+          "rgbSHA256": "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "meanLuma": 75.48536745707194
+        }
+      ],
+      "archivedScreenSamplesSHA256": "e83e375c7bc746c71ef84a8205987663c0630861fee2e2c0d62e294f82419bca",
+      "archivedCaptureSHA256": "734a40ecf342a82462bc93cd4bea638b812cdfdd9414a04079d97202aea3f1f0",
+      "replaySHA256": "38daf851986be8d1e964de52d2111446be72497041ad74160eecdbcd3fc9fe55",
+      "frameSamplesSHA256": "8814abdb8871eb1fd91b20e82f0c4d777a172532fd07d09edb4790cf1113a468",
+      "sourceExactGeometry": true,
+      "allStableTrialsVerified": true
+    }
+  },
+  "narrowQualificationSwitch": "RAWMASTER_QA_NARROW_ACTUAL_PIXEL_WINDOW=1",
+  "physicalVisibleRGB": {
+    "wide": {
+      "protocol": "screen-photo-native-roi-response-v1",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "nativeROI": {
+        "sourceROIPixels": [
+          3024,
+          2682,
+          3680,
+          1804
+        ],
+        "roiWindowRectPixels": [
+          0,
+          0,
+          3680,
+          1804
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.2,
+          0.2,
+          0.6,
+          0.6
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          0,
+          0,
+          3680,
+          1804
+        ],
+        "detailWindowNormalized": [
+          0.09375,
+          0.25,
+          0.8125,
+          0.625
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          7722,
+          3960
+        ]
+      },
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "hardware": "Mac16,5",
+      "osBuild": "26A434",
+      "build": "Release, -O with testability enabled",
+      "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "previewMode": "balanced",
+      "detailCounters": {
+        "ready": {
+          "cachedBitmapBytes": 122316480,
+          "cacheHits": 0,
+          "completedRenders": 2,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        },
+        "afterWitnesses": {
+          "cachedBitmapBytes": 122316480,
+          "cacheHits": 0,
+          "completedRenders": 11,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        }
+      },
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "testBundleSHA256": "d965fcbd4e74620c0438d1fe5efe9fbe4832b902e4f046280c1529d74429b8f9",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "samples": 2,
+      "warmups": 1,
+      "timing": {
+        "p50Ms": 118.485604,
+        "p95Ms": 121.538291
+      },
+      "pairedIntentEV": [
+        0,
+        0.5
+      ],
+      "rawTrialMs": [
+        115.432917,
+        121.538291
+      ],
+      "screenshotWitnesses": [
+        {
+          "state": 0,
+          "sha256": "f34c3256f51ed388e814b88238f9bfcaa6dff72739062312f070e80727180659",
+          "rgbSHA256": "73d56556c3fee1c6a3ab9ddca4d62d31b7ff3126749c7bf5b0524d950dfd99f8",
+          "pixels": [
+            3680,
+            1804
+          ],
+          "meanLuma": 82.52632058589607
+        },
+        {
+          "state": 1,
+          "sha256": "ba0a2f1aa3b127ce0ae71eefd72a6cd8905a8b51758b99cfa8007333c3a6f5be",
+          "rgbSHA256": "302288545cb3ff8e5cb8c8b6a2d1e4d29af587e302e5aa9a78dfd3fcdd95674c",
+          "pixels": [
+            3680,
+            1804
+          ],
+          "meanLuma": 95.01069453147595
+        }
+      ],
+      "archivedScreenSamplesSHA256": "45249252806622c784aaede20a66d03d9b78dfc9449365275b97ed105a06e6cc",
+      "archivedCaptureSHA256": "fe19df11df9a8b8f99eb493ab5cbb3e506244a31d176dffa31ba19e02ec44250",
+      "replaySHA256": "d3dd48c46608b9195f5a6eff6624322226761ad956408f77b217f9c58aa757c9",
+      "frameSamplesSHA256": "4ef3ec27e2f41281c5c808c46c4558eccd5080f2e0af512cd17a0e1c3a0e71e5",
+      "sourceExactGeometry": true,
+      "allStableTrialsVerified": true
+    },
+    "narrow": {
+      "protocol": "screen-photo-native-roi-response-v1",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "nativeROI": {
+        "sourceROIPixels": [
+          3024,
+          2682,
+          3680,
+          1804
+        ],
+        "roiWindowRectPixels": [
+          0,
+          0,
+          3680,
+          1804
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.2,
+          0.2,
+          0.6,
+          0.6
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          0,
+          0,
+          3680,
+          1804
+        ],
+        "detailWindowNormalized": [
+          0.3125,
+          0.40625,
+          0.40625,
+          0.3125
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          3861,
+          1980
+        ]
+      },
+      "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+      "hardware": "Mac16,5",
+      "osBuild": "26A434",
+      "build": "Release, -O with testability enabled",
+      "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "previewMode": "balanced",
+      "detailCounters": {
+        "ready": {
+          "cachedBitmapBytes": 45947312,
+          "cacheHits": 0,
+          "completedRenders": 2,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        },
+        "afterWitnesses": {
+          "cachedBitmapBytes": 107105552,
+          "cacheHits": 7,
+          "completedRenders": 4,
+          "rawBaseFills": 0,
+          "rawBaseResidentBytes": 0
+        }
+      },
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "testBundleSHA256": "d965fcbd4e74620c0438d1fe5efe9fbe4832b902e4f046280c1529d74429b8f9",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "samples": 2,
+      "warmups": 1,
+      "timing": {
+        "p50Ms": 25.343896,
+        "p95Ms": 28.768375
+      },
+      "pairedIntentEV": [
+        0,
+        0.5
+      ],
+      "rawTrialMs": [
+        28.768375,
+        21.919417
+      ],
+      "screenshotWitnesses": [
+        {
+          "state": 0,
+          "sha256": "f34c3256f51ed388e814b88238f9bfcaa6dff72739062312f070e80727180659",
+          "rgbSHA256": "73d56556c3fee1c6a3ab9ddca4d62d31b7ff3126749c7bf5b0524d950dfd99f8",
+          "pixels": [
+            3680,
+            1804
+          ],
+          "meanLuma": 82.52632058589607
+        },
+        {
+          "state": 1,
+          "sha256": "ba0a2f1aa3b127ce0ae71eefd72a6cd8905a8b51758b99cfa8007333c3a6f5be",
+          "rgbSHA256": "302288545cb3ff8e5cb8c8b6a2d1e4d29af587e302e5aa9a78dfd3fcdd95674c",
+          "pixels": [
+            3680,
+            1804
+          ],
+          "meanLuma": 95.01069453147595
+        }
+      ],
+      "archivedScreenSamplesSHA256": "c5344d2675c303fa0108d5976b0670370cd0772dac1e8c5663e7b34f52708699",
+      "archivedCaptureSHA256": "591878ea74f1fd23457b1eede68d8147bf666a67203e9766884712604cb68331",
+      "replaySHA256": "33c8267144588ef21a020471dc3c91b81c4b2292fa91faab5fde25e63f654f19",
+      "frameSamplesSHA256": "4ccbc2eaa3a37a714c01dfa6f606749b0b20f511e0ce977e9565f2c58bcf71f1",
+      "sourceExactGeometry": true,
+      "allStableTrialsVerified": true
+    },
+    "exposureStatesWithMatchingRGB": 2,
+    "visibleSourcePixelsMatched": 6638720
+  },
+  "limitsFromLightFlow": {
+    "p50Ms": 30.793125,
+    "p95Ms": 48.7259004
+  },
+  "qualificationReachedLightFlowTolerance": true,
+  "advancedDetailCropRegression": {
+    "byteCount": 3640800,
+    "differingBytes": 0,
+    "testLogSHA256": "6ae0ddf77fd134e01d9bb8a1d653b4e16453c76bd9803d2c99e38733a7aeda6f"
+  }
+}

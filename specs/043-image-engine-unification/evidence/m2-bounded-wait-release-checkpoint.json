@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "build": "20261128.151111",
+  "mode": "Release",
+  "installedPath": "/Applications/RAWMaster.app",
+  "sourceCommit": "c27dd4a46b20709b30be10445e0e383841c18269",
+  "previousBuild": "20261128.143506",
+  "previousBundlePreservedAndVerified": true,
+  "builtStagedAndInstalledStrictCodeSign": true,
+  "cdhash": "c838211007ff62a7a740548a531cf38fe3f87c3a",
+  "builtAndInstalledSHA256": {
+    "Contents/MacOS/RAWMaster": "ff66893b2e445ddf3dac8bb0cb4806f342fe7125c8bdd91a4c0b174ed6fd6a21",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "smoke": {
+    "actualWindowPresent": true,
+    "isolatedSQLiteQuickCheck": "ok",
+    "nativeFilterRegression": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "cd53a01400e32985345c3403ce342c0e6bb2425760c968b8a56a83c110717194"
+    },
+    "nativeWGPUMetalABI": {
+      "budgetFailure": 6,
+      "unknownGroup": 1,
+      "postSubmitStale": 5,
+      "postSubmitCallbackChecks": 2,
+      "reusableAfterStale": true,
+      "dispatches": 1,
+      "submissions": 1,
+      "hostWaits": 1,
+      "frameCopyBytes": 0,
+      "validationBytes": 4,
+      "signedRGBAndAlphaExactPixels": 1024,
+      "nestedGroupPasses": 4,
+      "layerAddAndRetryExactPixels": 2048,
+      "layerRangeFailure": 7
+    },
+    "validationAndRetry": {
+      "boundedWaitOverride": null,
+      "stagedChecksPerCase": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "installedChecksPerCase": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "expectedCABIStatuses": [
+        7,
+        7,
+        3,
+        7
+      ],
+      "stagedSHA256byVariant": [
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+      ],
+      "installedSHA256": "304e44c8862bad9b83daf809876b8663a34e820c107d5cd1ee13afb1ffc8e44d"
+    }
+  },
+  "executionDefaults": {
+    "sceneDelivery": "039 with direct tiled DRT",
+    "strictMetalWGPUSubmissionWait": "bounded polling and blocking wait on the same actual submission",
+    "balancedNativeView": "standard pan margin",
+    "qaNarrowWindow": false,
+    "qaSettledLocalGrainReplay": false
+  }
+}
