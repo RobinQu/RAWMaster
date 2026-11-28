@@ -479,6 +479,7 @@ enum EditingPreviewPromptDispatch {
               current.intent.sourceKey == requested.sourceKey,
               current.intent.recipe == requested.recipe,
               current.intent.quality == requested.quality,
+              current.intent.viewport == requested.viewport,
               Self.sameDraftPixels(current.intent.draftPresentation, requested.draftPresentation),
               frameRecipe == requested.recipe,
               current.intent.presentationID != requested.presentationID else { return false }

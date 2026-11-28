@@ -462,6 +462,8 @@ import RAWMasterLibrary
     private var canvasZooming = false
     private var canvasZoomTask: Task<Void, Never>?
     var canvasZoomContext: UUID { focusGeneration }
+    private static let qaNarrowActualPixelWindow =
+        ProcessInfo.processInfo.environment["RAWMASTER_QA_NARROW_ACTUAL_PIXEL_WINDOW"] == "1"
     /// Canvas window a 1:1 frame should cover. `nil` materializes the whole canvas.
     private(set) var detailWindow: CGRect?
     private var lastVisibleDetailWindow: CGRect?
@@ -1091,8 +1093,7 @@ import RAWMasterLibrary
         if value {
             _ = resetCanvasSampling()
             if let visible = lastVisibleDetailWindow {
-                detailWindow = ImageViewportGeometry.quantized(ImageViewportGeometry.servedWindow(visible: visible,
-                    margin: PreviewPerformancePreferences.settledWindowMargin), steps: 32)
+                detailWindow = prefetchedDetailWindow(visible, margin: PreviewPerformancePreferences.settledWindowMargin)
             }
         }
         actualPixels = value
@@ -1207,6 +1208,14 @@ import RAWMasterLibrary
             self.requestPreview(input: .capture(control: "detail-window-expand", phase: "discrete"))
         }
     }
+    private func prefetchedDetailWindow(_ visible: CGRect, margin: CGFloat) -> CGRect {
+        // This padding is for pans. The renderer still supplies each operator's own ROI and halo.
+        let effectiveMargin = Self.qaNarrowActualPixelWindow && stage == .development && !PreviewPerformancePreferences.isTurbo
+            ? 0.01 : margin
+        return ImageViewportGeometry.quantized(
+            ImageViewportGeometry.servedWindow(visible: visible, margin: effectiveMargin), steps: 32)
+    }
+
     /// The 1:1 canvas reports which part of the canvas it can see. Ask for a bitmap that covers
     /// it plus a margin, so panning within the margin never re-renders.
     func updateDetailVisibleWindow(_ visible: CGRect) {
@@ -1215,10 +1224,8 @@ import RAWMasterLibrary
         guard stage == .development, sourceReady else { return }
         lastVisibleDetailWindow = visible
         guard actualPixels, !previewInteracting else { return }
-        let desired = ImageViewportGeometry.quantized(
-            ImageViewportGeometry.servedWindow(visible: visible,
-                margin: PreviewQualityPolicy.windowMargin(interacting: previewInteracting,
-                    turbo: PreviewPerformancePreferences.isTurbo)), steps: 32)
+        let desired = prefetchedDetailWindow(visible, margin: PreviewQualityPolicy.windowMargin(
+            interacting: previewInteracting, turbo: PreviewPerformancePreferences.isTurbo))
         let served = previews.primary.frame?.window
         if let served, ImageViewportGeometry.window(served, covers: visible) { return }
         guard desired != detailWindow else { return }

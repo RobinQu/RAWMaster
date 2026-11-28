@@ -162,8 +162,12 @@ def main():
                     roi = [(x + pw * 0.2) / w, (y + ph * 0.2) / h, pw * 0.6 / w, ph * 0.6 / h]
                     geometry = {"sourceROIPixels": args.source_roi, "roiWindowRectPixels": meta["sourceROIWindowPixels"],
                                 "windowBackingPixels": [w, h], "sampleROINormalized": roi,
-                                "backingPixelsPerSourcePixel": [1, 1]}
-                    result.update(nativeROI=geometry, approximate=meta["approximate"])
+                                "backingPixelsPerSourcePixel": [1, 1],
+                                **{key: meta[key] for key in ("photoWindowRectPixelsFloat", "roiWindowRectPixelsFloat",
+                                                             "detailWindowNormalized", "visibleSourceWindowNormalized",
+                                                             "detailPixelSize")}}
+                    result.update(nativeROI=geometry, approximate=meta["approximate"], previewMode=meta["previewMode"],
+                                  detailCounters={"ready": meta["detailCounters"]})
                 else:
                     x, y, pw, ph = meta["photoRectPixels"]
                     roi = [(x + pw * 0.2) / w, (y + ph * 0.2) / h, pw * 0.6 / w, ph * 0.6 / h]
@@ -256,7 +260,9 @@ def main():
                     result["operations"][key] = row
                     write(args.output, result)
                     print(key, row["status"], flush=True)
-                request("stop")
+                stopped = request("stop")
+                if args.source_roi:
+                    result["detailCounters"]["afterWitnesses"] = stopped["detailCounters"]
                 host.wait(timeout=60)
                 if host.returncode:
                     raise RuntimeError(f"Native fixture failed; see {log}")

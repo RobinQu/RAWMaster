@@ -31,6 +31,31 @@ final class EditingPreviewCoordinationTests: XCTestCase {
         XCTAssertEqual(requests[1].viewport.maxPixel, 0, "Detail always asks for native pixels explicitly")
         await pane.shutdown()
     }
+    @MainActor func testNativePresentationRebindRequiresTheSameViewport() async throws {
+        let backend = ControllablePreviewBackend()
+        let pane = EditingPreviewPane(role: .primary, backend: backend)
+        let input = EditingPreviewInput.capture(control: "actualPixels", phase: "discrete")
+        let raw = DevelopmentPreviewSource.raw(source())
+        let firstWindow = CGRect(x: 0.125, y: 0.125, width: 0.25, height: 0.25)
+        let secondWindow = CGRect(x: 0.5, y: 0.25, width: 0.25, height: 0.25)
+        let first = try EditingPreviewIntent(source: raw, recipe: .init(), quality: .detail,
+            presentationID: "first", detailWindow: firstWindow)
+        pane.submit(first, input: input)
+        try await wait { pane.frame != nil && !pane.rendering }
+        let firstID = try XCTUnwrap(pane.frame?.id)
+        let sameViewport = try EditingPreviewIntent(source: raw, recipe: .init(), quality: .detail,
+            presentationID: "rebound", detailWindow: firstWindow)
+        XCTAssertTrue(pane.reuseForPresentation(sameViewport, input: input))
+        XCTAssertEqual(pane.frame?.id, firstID)
+        let differentViewport = try EditingPreviewIntent(source: raw, recipe: .init(), quality: .detail,
+            presentationID: "panned", detailWindow: secondWindow)
+        XCTAssertFalse(pane.reuseForPresentation(differentViewport, input: input))
+        pane.submit(differentViewport, input: input)
+        try await wait { pane.frame?.id != firstID && !pane.rendering }
+        let requests = await backend.requests
+        XCTAssertEqual(requests.map(\.viewport.window), [firstWindow, secondWindow])
+        await pane.shutdown()
+    }
     @MainActor func testLeaseRetirementWaitsForLateOpenAndCannotPublishIntoNewPhoto() async throws {
         let backend = ControllablePreviewBackend(holdOpen: true)
         let pane = EditingPreviewPane(role: .primary, backend: backend)

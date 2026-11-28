@@ -228,8 +228,9 @@ final class NativePresentedCanvasTests: XCTestCase {
         let diagnostics = env["RAWMASTER_PRESENTED_CANVAS_DIAGNOSTICS"] == "1"
         let requestedROI: [Int]?
         if let encodedROI = env["RAWMASTER_PRESENTED_CANVAS_SOURCE_ROI"] {
-            let pixels = encodedROI.split(separator: ",").compactMap { Int($0) }
-            guard pixels.count == 4, pixels.prefix(2).allSatisfy({ $0 >= 0 }),
+            let parts = encodedROI.split(separator: ",", omittingEmptySubsequences: false)
+            let pixels = parts.compactMap { Int($0) }
+            guard parts.count == 4, pixels.count == 4, pixels.prefix(2).allSatisfy({ $0 >= 0 }),
                   pixels.suffix(2).allSatisfy({ $0 > 0 }) else { throw Failure.invalid("Source ROI") }
             requestedROI = pixels
         } else { requestedROI = nil }
@@ -273,13 +274,21 @@ final class NativePresentedCanvasTests: XCTestCase {
             host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
             let canvas = try XCTUnwrap(findCanvas(host)), factor = window.backingScaleFactor
             let sourceWidth = try XCTUnwrap(asset.width), sourceHeight = try XCTUnwrap(asset.height)
-            func capturedPixels(_ rect: CGRect) -> [Int] {
+            func capturedBackingRect(_ rect: CGRect) -> [CGFloat] {
                 let inWindow = canvas.convert(rect, to: nil)
                 return [inWindow.minX, window.frame.height - inWindow.maxY, inWindow.width, inWindow.height]
-                    .map { Int(($0 * factor).rounded()) }
+                    .map { $0 * factor }
             }
-            var captureRect: [Int]?
-            func detailCapture(_ requested: [Int]) throws -> [Int] {
+            func roundedPixels(_ rect: [CGFloat]) -> [Int] { rect.map { Int($0.rounded()) } }
+            struct DetailCapture: Equatable {
+                let photoRect: [CGFloat]
+                let roiRect: [CGFloat]
+                let frameWindow: CGRect?
+                let visibleWindow: CGRect
+                let outputSize: CGSize
+            }
+            var nativeDetail: DetailCapture?
+            func detailCapture(_ requested: [Int]) throws -> DetailCapture {
                 let snapshot = canvas.viewportSnapshot
                 let frame = try XCTUnwrap(editing.previews.primary.frame)
                 guard editing.actualPixels, frame.quality == .detail, !frame.approximate,
@@ -291,18 +300,29 @@ final class NativePresentedCanvasTests: XCTestCase {
                 }
                 let unit = CGRect(x: Double(requested[0]) / Double(sourceWidth), y: Double(requested[1]) / Double(sourceHeight),
                     width: Double(requested[2]) / Double(sourceWidth), height: Double(requested[3]) / Double(sourceHeight))
-                if let window = frame.window, !ImageViewportGeometry.window(window, covers: unit) {
-                    throw Failure.invalid("Requested ROI falls outside the exact detail bitmap")
+                let served = frame.window ?? CGRect(x: 0, y: 0, width: 1, height: 1)
+                guard let visible = ImageViewportGeometry.visibleWindow(destination: snapshot.imageRect, bounds: canvas.bounds),
+                      ImageViewportGeometry.window(served, covers: visible),
+                      ImageViewportGeometry.window(visible, covers: unit) else {
+                    throw Failure.invalid("The exact detail bitmap must cover the visible source and the sampled ROI")
+                }
+                let sourceGrid = [served.minX * CGFloat(sourceWidth), served.minY * CGFloat(sourceHeight),
+                                  served.width * CGFloat(sourceWidth), served.height * CGFloat(sourceHeight)]
+                guard sourceGrid.allSatisfy({ abs($0 - $0.rounded()) <= 0.01 }),
+                      frame.outputSize == CGSize(width: sourceGrid[2].rounded(), height: sourceGrid[3].rounded()) else {
+                    throw Failure.invalid("The presented detail bitmap resampled its source window")
                 }
                 let roi = ImageViewportGeometry.windowRect(unit, in: snapshot.imageRect)
                 guard canvas.bounds.contains(roi), screenRect.contains(window.convertToScreen(canvas.convert(roi, to: nil))) else {
                     throw Failure.invalid("Source ROI fell outside the physical canvas")
                 }
-                let physical = capturedPixels(roi)
-                guard Array(physical.suffix(2)) == Array(requested.suffix(2)) else {
+                let physical = capturedBackingRect(roi), photo = capturedBackingRect(snapshot.imageRect)
+                guard (photo + physical).allSatisfy({ abs($0 - $0.rounded()) <= 0.01 }),
+                      Array(roundedPixels(physical).suffix(2)) == Array(requested.suffix(2)) else {
                     throw Failure.invalid("ROI geometry mismatch: \(physical)")
                 }
-                return physical
+                return DetailCapture(photoRect: photo, roiRect: physical,
+                                     frameWindow: frame.window, visibleWindow: visible, outputSize: frame.outputSize)
             }
             if let requestedROI {
                 guard requestedROI[0] <= sourceWidth - requestedROI[2], requestedROI[1] <= sourceHeight - requestedROI[3] else {
@@ -322,7 +342,7 @@ final class NativePresentedCanvasTests: XCTestCase {
                     window.displayIfNeeded()
                     return editing.previews.primary.currentFrameWasDrawn && ((try? detailCapture(requestedROI)) != nil)
                 }
-                captureRect = try detailCapture(requestedROI)
+                nativeDetail = try detailCapture(requestedROI)
             }
             let context = try XCTUnwrap(editing.developmentContext), frame = try XCTUnwrap(editing.previews.primary.frame)
             guard let decoder = editing.recipe.adjustmentsV3?.rawDecoder, decoder == .flashRaw031 else {
@@ -333,12 +353,12 @@ final class NativePresentedCanvasTests: XCTestCase {
                 throw Failure.invalid("Benchmark window must stay in the background")
             }
             let capturedPhoto: [Int]
-            if requestedROI != nil {
-                capturedPhoto = capturedPixels(canvas.viewportSnapshot.imageRect)
+            if let nativeDetail {
+                capturedPhoto = roundedPixels(nativeDetail.photoRect)
             } else {
                 let fitted = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: canvas.bounds.size,
                     transform: .init(), backingScale: factor, fitInsets: insets)
-                capturedPhoto = capturedPixels(fitted)
+                capturedPhoto = roundedPixels(capturedBackingRect(fitted))
                 guard abs(capturedPhoto[2] - 2368) <= 1, abs(capturedPhoto[3] - 1579) <= 1,
                       screenRect.contains(window.convertToScreen(canvas.convert(fitted, to: nil))) else {
                     throw Failure.invalid("Photo bounds: \(capturedPhoto), screen \(screenRect)")
@@ -351,11 +371,23 @@ final class NativePresentedCanvasTests: XCTestCase {
                 "sourcePixels": [asset.width ?? 0, asset.height ?? 0], "sourceSHA256": context.sourceContentID,
                 "testBundleSHA256": try FileSafety.hash(testBinary), "decoder": decoder.rawValue,
                 "recipe": try JSONSerialization.jsonObject(with: JSONEncoder().encode(editing.recipe)), "scale": factor]
-            if let requestedROI, let captureRect {
+            if let requestedROI, let nativeDetail {
                 meta["sourceROIPixels"] = requestedROI
-                meta["sourceROIWindowPixels"] = captureRect
+                meta["sourceROIWindowPixels"] = roundedPixels(nativeDetail.roiRect)
+                meta["photoWindowRectPixelsFloat"] = nativeDetail.photoRect
+                meta["roiWindowRectPixelsFloat"] = nativeDetail.roiRect
+                if let crop = nativeDetail.frameWindow {
+                    meta["detailWindowNormalized"] = [crop.minX, crop.minY, crop.width, crop.height]
+                } else {
+                    meta["detailWindowNormalized"] = NSNull()
+                }
+                let visible = nativeDetail.visibleWindow
+                meta["visibleSourceWindowNormalized"] = [visible.minX, visible.minY, visible.width, visible.height]
+                meta["detailPixelSize"] = [Int(nativeDetail.outputSize.width), Int(nativeDetail.outputSize.height)]
                 meta["physicalMagnification"] = 1
                 meta["approximate"] = frame.approximate
+                meta["previewMode"] = PreviewPerformancePreferences.mode.rawValue
+                meta["detailCounters"] = await detailCounters()
             }
             if diagnostics { meta["diagnosticsEnabled"] = true }
             try write(meta, to: job.appendingPathComponent("ready.json"))
@@ -371,7 +403,9 @@ final class NativePresentedCanvasTests: XCTestCase {
                         let telemetry = ImagePerformanceTelemetry.shared.snapshot()
                         try JSONEncoder().encode(telemetry).write(to: job.appendingPathComponent("telemetry.json"), options: .atomic)
                     }
-                    try write(["stopped": true], to: reply)
+                    var stopped: [String: Any] = ["stopped": true]
+                    if requestedROI != nil { stopped["detailCounters"] = await detailCounters() }
+                    try write(stopped, to: reply)
                     break
                 }
                 guard !window.isKeyWindow, !window.isMainWindow,
@@ -401,7 +435,7 @@ final class NativePresentedCanvasTests: XCTestCase {
                                     editing.previews.primary.frame?.quality != .interactive
                             }
                         }
-                        if accepted, let requestedROI, try detailCapture(requestedROI) != captureRect {
+                        if accepted, let requestedROI, try detailCapture(requestedROI) != nativeDetail {
                             throw Failure.invalid("Physical ROI changed after edit")
                         }
                         var response: [String: Any] = ["sentNs": sent, "actual": actual.map { $0 as Any } ?? NSNull(),
@@ -423,5 +457,12 @@ final class NativePresentedCanvasTests: XCTestCase {
             }
             await editing.shutdown()
         } catch { try? write(["error": String(describing: error)], to: job.appendingPathComponent("failure.json")); await editing.shutdown(); throw error }
+    }
+
+    @MainActor private func detailCounters() async -> [String: Any] {
+        let stats = await DevelopmentPreviewService.shared.statistics()
+        return ["completedRenders": stats.completedRenders, "cacheHits": stats.cacheHits,
+                "cachedBitmapBytes": stats.cachedBitmapBytes, "rawBaseResidentBytes": stats.rawBaseResidentBytes,
+                "rawBaseFills": stats.rawBaseFills]
     }
 }
