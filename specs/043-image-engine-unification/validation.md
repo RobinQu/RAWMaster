@@ -1,6 +1,6 @@
 # 043 · 验收基线
 
-2026-11-28 · **尚未实施。** 本页登记现状证据和 Rust + wgpu/WGSL 的放行条件。每次切换路径时追加冻结输入、实际设备、像素与性能回执。[规格](spec.md) · [计划](plan.md) · [任务](tasks.md)
+2026-11-28 · **M0 进行中。** 本页登记现状证据和 Rust + wgpu/WGSL 的放行条件。每次切换路径时追加冻结输入、实际设备、像素与性能回执。[规格](spec.md) · [计划](plan.md) · [任务](tasks.md)
 
 ## 1. 当前基线
 
@@ -10,7 +10,7 @@
 | 6 MP 六节点 AP1 图 | 039 一轮各 15 个暖样本，原生 Rust Metal/Swift p95 为 14.26/14.27 ms | [039 图执行实测](../039-rust-scene-backend/validation.md#组内监看与实际后端) |
 | 038 FIT 与组内监看 | FIT p50/p95 为 22.07/23.30 ms。节点监看为 19.43/20.78 ms，复跑 p95 为 21.61 ms。主跑返回最终根为 18.23/19.34 ms | [038 原生监看](../038-node-dag-workflow/validation.md#原生可编辑-graph) |
 | 036 1:1 50 配方 | 中位 111.4 ms，p95 1,474.3 ms。局部样本 texture 482.3、dehaze 1,586.2、brilliance 3,883.8 ms | [036 规格](../036-render-pipeline-performance/spec.md#画布自由缩放与取样) |
-| 035 发布门 | 首次精确/定稿中位 77–81 ms，对 24.35/25.92 ms 上限。缩放平移 p95 约 21 ms，对 8 ms 上限 | [035 路线图](../035-portable-processing-cores/roadmap.md#当前实现和签收缺口) |
+| 035 发布门 | 首次精确/定稿中位 77–81 ms。LightFlow 2400×1600 精确读回的旧对标上限为 24.35/25.92 ms。缩放平移 p95 约 21 ms，对 8 ms 上限 | [035 路线图](../035-portable-processing-cores/roadmap.md#当前实现和签收缺口) · [正式比较器](../../scripts/check-lightflow-performance.py) |
 | 035 wgpu 点算子 | 已有 macOS 真实 Metal、同设备纹理借用与 Linux 软件 Vulkan 的点运算对照 | [035 点算子证据](../035-portable-processing-cores/validation.md) · [纹理交接](../035-portable-processing-cores/evidence/image-metal-iosurface.md) |
 
 60 MP 的 1.751 秒是组件样本，还包含文件核对和证据复制。`cpuMilliseconds` 采集 Rust `SceneProgram.render` 区间的墙钟，含 GPU 等待。图峰值含 192 MiB 摄影预留，AVIF 的整帧缓冲需另计。M0 以同构建的 032 和组件分项数据建立各自基线。[组件测量区间](../../Tests/RAWMasterImagingTests/DevelopmentSceneDeliveryServiceV1Tests.swift#L211) · [Rust 计时](../../Modules/ImageEdit/src/scene/metal_exec.rs#L387) · [编码缓冲](../../Sources/RAWMasterImaging/DevelopmentSceneAVIFV1.swift#L42)
@@ -19,8 +19,8 @@
 
 ### M0 · 回执修复与基线
 
-- **已复现的故障。** 当前原生目录接口能解析无摄影字段的 V1 `prepareItem` 请求。相同请求分别带上 `photographicEngine` 或 `dagBackend` 时，在打开目录前被拒绝。修复后用旧 V1、有摄影字段的 V1 和确实未知的字段做原生协议回归。[Swift 编码入口](../../Sources/RAWMaster/WorkbenchDeliveryCatalog.swift#L437) · [Rust 反序列化](../../Modules/LibraryCatalog/src/scheduler/batch/items.rs#L53)
-- **产品回归。** 用固定 60 MP 原片进入编辑，创建 HDR 场景，修改全图饱和度，并给 DAG 节点设置非中性曝光。冻结含 `photographic` 的版本，由 032 分别提交 PQ AVIF 与 SDR JPEG。检查准备、发布、重开、旧 V1 可读、目标文件摘要和中断续跑。保留测试时的冻结身份、`backend=mixed`、`photographicEngine` 及 `dagBackend`，完成后再次核对同一文件和回执。已有只改节点曝光的原生队列用例提供入口对照。[现行原生队列用例](../../Tests/RAWMasterUITests/EditingSceneDarkroomTests.swift#L54)
+- **协议回归。** 修复前，原生目录接口解析旧 V1 `prepareItem`，带 `photographicEngine` 或 `dagBackend` 的同一请求在打开目录前被拒绝。修复后 Rust 队列 Release 35 项通过，覆盖旧 V1、带摄影字段的 V1、未知字段以及准备、发布、确认后的 `SIGKILL`。恢复时复核同一执行回执并拒绝替换已冻结的 DAG 后端。[Swift 编码入口](../../Sources/RAWMaster/WorkbenchDeliveryCatalog.swift#L437) · [Rust 反序列化](../../Modules/LibraryCatalog/src/scheduler/batch/items.rs#L53) · [Rust 恢复测试](../../Modules/LibraryCatalog/tests/scheduled_processing/workbench_item_delivery.rs#L196)
+- **产品回归。** 在 `main@e419c425` 的原生 Release 中，固定 60 MP 原片的 HDR 场景以全图饱和度 0.23 和 DAG 曝光 +0.5 EV 冻结。032 分两个批次发布 PQ AVIF 与 SDR JPEG，重新打开目录并核对版本、文件摘要和 9504×6336 尺寸。每个目标实际执行 35 个瓦片和 35 次 DAG 派发，回执保留 `backend=mixed`、`photographicEngine=scene-photographic-v1-f32-metal`、`dagBackend=rust`。联合原生回归 19 项通过。实际 032 成片与进程中断状态机分别提供产品输出和恢复证据。[原生队列用例](../../Tests/RAWMasterUITests/EditingSceneDarkroomTests.swift#L54) · [目录提取回执](evidence/m0-032-photographic-receipt.json)
 - **同构建计量。** 60 MP 分别测量 032 单目标和双目标组件，拆分来源校验/读取、FlashRaw 解码、mosaic 上传、摄影/模型、DAG 准备及执行、DRT/blit、编码读回、发布和等待。每段记录墙钟、可用 GPU 时间、纹理分配、瓦片、派发和编译计数。另记录工作集、缓存、模型、输出、编码和总峰值。
 - **基线报告。** 取得 6 MP 六节点、038 FIT/监看和 036 1:1 的同构建基线。记录提交、锁定依赖、构建与运行库摘要、样片和校准 SHA、设备/驱动/屏幕及阶段时间边界，说明缺失或跳过的量。V2 草案应有版本、实际执行者、图形 API 和旧票据兼容策略。[回执草案](plan.md#43-receiptv2)
 
@@ -84,6 +84,23 @@ M0 以带摄影调整的真实 032 队列发布、重开与恢复通过，并能
 - 阶段墙钟、GPU 时间和等待分别报告，标记区间重叠及 GPU 计时缺失原因。预算报告标明实际分配、采样峰值或保守估算，输出和编码暂存计入总驻留。
 - 交付与交互分别报告，批量另列首件、整批及失败/取消。038 FIT 与监看既有门槛为 p50 ≤25.92 ms、p95 ≤210.23 ms，节点监看 p95 ≤20 ms 是 043 后续优化目标。[现有原生门槛](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift#L241)
 
+### 外部产品对标
+
+每个可比场景分别以 LightFlow 与 Adobe Camera Raw 中较低的 p50 和 p95 为目标。p50 容差为 `max(目标 × 10%, 1 ms)`，p95 为 `max(目标 × 20%, 2 ms)`。对照报告保留版本、设备、系统构建、原片与输出尺寸、交互动作、稳定目标像素和原始计时。暖态每个控件做至少 5 次预热，计量至少 30 次有效变化。软件 GPU、缺测、丢失像素见证及测量边界不同的行单独记录。[035 对照规则](../../scripts/check-lightflow-performance.py) · [三产品采集证据](../../docs/research/camera-raw-parity/evidence/)
+
+下表是同一 Mac16,5、同一 9504×6336 RAW、画布照片 2368×1579 的历史 `screen-photo-response-v1` 复算。计时从各产品的输入标记到 ScreenCaptureKit 中首次达到目标像素变化 20% 的帧，稳定目标帧另经校验。输入分别为原生编辑控制器提交、准备好的 LightFlow 字段按 Return，以及 Camera Raw 字段输入数字后按 Tab。每项各 10 次，表中单位为毫秒，p95 在这个样本量取最大值。六项的历史 p50 和 p95 均在容差内。当前构建须重新采样。[RAWMaster](../../docs/research/camera-raw-parity/evidence/rawmaster-canvas.json) · [LightFlow](../../docs/research/camera-raw-parity/evidence/lightflow-canvas.json) · [Camera Raw](../../docs/research/camera-raw-parity/evidence/camera-raw-canvas.json)
+
+| 控件 | RAWMaster p50 / p95 | LightFlow p50 / p95 | Camera Raw p50 / p95 |
+| --- | ---: | ---: | ---: |
+| 曝光 | 14.89 / 22.53 | 30.18 / 60.20 | 107.02 / 125.54 |
+| 对比度 | 24.16 / 32.71 | 27.67 / 40.37 | 91.72 / 118.53 |
+| 高光 | 22.47 / 43.97 | 28.79 / 38.08 | 109.09 / 122.07 |
+| 阴影 | 19.51 / 34.52 | 25.34 / 37.70 | 105.84 / 136.32 |
+| 黑色 | 22.30 / 29.50 | 28.86 / 40.36 | 98.13 / 138.86 |
+| 色调 | 22.88 / 26.89 | 28.89 / 35.60 | 104.91 / 145.59 |
+
+LightFlow 的 24.35/25.92 ms 为 74 配方 2400×1600 RGBA8 精确读回的首次精确与最终结果中位上限。Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。三方同口径精确读回、1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
+
 ## 5. 放行边界
 
 - 产品路径通过需同时具备同构建、真实设备、像素、性能和该次执行回执。独立组件和合成夹具只记录各自测量区间。
@@ -93,15 +110,16 @@ M0 以带摄影调整的真实 032 队列发布、重开与恢复通过，并能
 
 ## 6. 现有原生基线复现
 
-以下路径来自本机复跑。其他构建使用同 SHA 的授权原片与固定运行库，记录测试实际使用的路径、摘要和跳过原因。摄影组件和普通 032 队列目前各有已有用例，M0 添加带摄影参数的 032 回归。
+以下路径来自本机复跑。其他构建使用同 SHA 的授权原片与固定运行库，记录测试实际使用的路径、摘要和跳过原因。历史双目标组件的三节点图与两条 032 队列测试分别留证。
 
 ```sh
 # 60 MP 摄影加 DAG 的双目标组件，以及现有原生队列入口
 export RAWMASTER_FLASHRAW_LIBRARY="$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib"
 export RAWMASTER_SCENE_60MP_ARW="$PWD/output/validation/020-development-controls/final-fit-burst/attempt1/DSC05995-authorized-copy.ARW"
 export RAWMASTER_SCENE_DELIVERY_EVIDENCE="$(mktemp -d)"
+export RAWMASTER_EDITOR_ACCEPTANCE_DIR="$(mktemp -d)"
 RAWMASTER_SCENE_BACKEND=rust swift test -c release --jobs 4 -Xswiftc -enable-testing \
-  --filter 'testOptInPhotographic60MPFrozenGraphPublishesPQTogetherWithTheEditedSDRDerivative|testOptIn60MPEditorAndPublishedBatchReceipts'
+  --filter 'testOptInPhotographic60MPFrozenGraphPublishesPQTogetherWithTheEditedSDRDerivative|testOptIn60MP(EditorAndPublishedBatchReceipts|PhotographicPublishedBatchReceipts)'
 
 # Rust 场景解析器/执行器
 cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.toml --lib scene::tests
@@ -118,7 +136,8 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 
 ## 7. 待补证据
 
-- [ ] M0 摄影场景 032 准备、发布、回执兼容和恢复，以及 60 MP 同构建分项报告
+- [x] M0 摄影场景 032 准备、发布、目录重开与队列中断恢复
+- [ ] M0 60 MP 同构建分项报告及外部基线复跑
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
 - [ ] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机回执
 - [ ] M2 6 MP、96 节点、60 MP A/B 和 macOS 原生产品路径

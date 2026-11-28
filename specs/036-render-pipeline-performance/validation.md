@@ -56,7 +56,7 @@ swift test -c release --jobs 4 --filter EditingInteractivePerformanceTests
 | 定稿 P95 | 842.57 ms | **20.24 ms** | 41.6× |
 | 定稿最大值 | 4,480.94 ms | **33.11 ms** | 135× |
 
-对照水位：Camera Raw 同机口径 24.35 / 25.92 ms；LightFlow 同机 P50／P95 22.13 / 23.56 ms 与 210.23 ms。视口定稿的中位与 P95 都低于两者。
+LightFlow 2400×1600 精确读回的首次精确和最终结果中位为 22.135 和 23.562 ms，旧发布上限各加 10%，为 24.35 和 25.92 ms。原始 p95 均为 210.225 ms，旧发布上限为 252.27 ms。这里的 50 配方视口定稿按上表的本地测量区间记录。Camera Raw 与 LightFlow 的同机可见响应另有独立对照。[旧发布比较器](../../scripts/check-lightflow-performance.py) · [可见响应对标](../043-image-engine-unification/validation.md#外部产品对标)
 
 ## 产品位图缓存下的松手成本
 
@@ -321,7 +321,7 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 - Alcedo 的 `QUALITY_BASE_PREVIEW` 是 `metadata.source_roi_norm = {}` + `max_edge = kQualityBaseMaxLongEdge (4096)`（`include/edit/runtime/pipeline_apply_request.hpp:67,88-93`）；`use_viewport_region_` 只在 `Detail` 或 `ScopeRefresh` 为真（`ui/alcedo_main/album_backend/editor_session_render_scheduler_port.cpp:106`）。
 - zoom 跨过 1.0 才切 Detail：`emitViewChange(zoom() > 1.0f + 1.0e-4f ? .DetailRefresh : …)`（`ui/editor_rhi/editor_interaction_controller.cpp:61`），ROI 与目标尺寸由 `ViewportMapper::ComputeViewportRenderRegion` 从 `widget×dpr×zoom` 推出（`ui/edit_viewer/viewport_mapper.cpp:132-210`）。
 - LightFlow 的每次采样都写着 `{"kind":"image","maxSize":2400,"exact":true}`，即整帧 2400；源 `s.load(id,"full")` 常驻。
-- 仓库内 Adobe 的实测边界是「完整 RAW 打开为 Photoshop 文档」，`outputPixels: [9504,6336]`；早前引用的 24.35／25.92 ms 方法与分辨率不在 `performance-data.json`，不能当作分辨率策略的证据。
+- Adobe 有输出 9504×6336 Photoshop 文档的打开测试和独立的可见画布测试。24.35／25.92 ms 来自 LightFlow 的 2400×1600 精确读回发布门。Adobe 的精确读回仍待取得可比数据。
 
 结论：两条实现都在**整幅**上完成定稿（分别 2400 与 4096），只有 Alcedo 在 zoom > 1 时切成可见 ROI。RAWMaster 的定稿与它们一致；不一致的是 zoom ≥ 1 时跳到整帧原生，而不是切 ROI —— 该项经实测否决，见[已否决](spec.md#已否决11-按可见-roi-裁剪)。
 

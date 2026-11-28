@@ -1,6 +1,6 @@
 # 043 · 图像引擎统一与后续性能优化
 
-2026-11-28 · **待实施。** 基于 `main@90b3780f`。**Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 通过 wgpu 的 Metal 后端运行，Linux 通过 Vulkan 运行。两端共用算子语义、编译和资源计划。先修复 032 回执并建立分项基线，首条 WGSL 场景 DAG 即在两端实机对照。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
+2026-11-28 · **M0 进行中。Rust + wgpu/WGSL 是统一的生产渲染主干。** macOS 通过 wgpu 的 Metal 后端运行，Linux 通过 Vulkan 运行。两端共用算子语义、编译和资源计划。032 V1 回执已修复，分项基线继续按产品入口采集。首条 WGSL 场景 DAG 在两端实机对照。[实施计划](plan.md) · [任务](tasks.md) · [验收基线](validation.md)
 
 ## 1. 为什么需要单独一条规格
 
@@ -14,7 +14,7 @@
 
 60 MP 摄影调整加三节点 DAG 的双目标组件样本为 `elapsedMs=1750.98`，每目标 35 个瓦片、105 次 DAG dispatch。图预算 `1,610,612,736 B`，核算峰值 `1,458,929,664 B`，含摄影段预留。两目标共用一次来源读取和 mosaic 上传，分别执行逐瓦片显影、DAG 和输出变换。032 的产品队列按目标分别进入渲染。[实拍回执](../037-color-film-hdr/evidence/2026-11-27-photographic-60mp.json) · [组件入口](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryServiceV1.swift#L43) · [032 渲染入口](../../Sources/RAWMasterImaging/PhotoBatchRenderExporter.swift#L132)
 
-**M0 的发布阻断。** 图文档 schema 3 保存 `photographic`，Swift 在 032 `prepareItem` 随执行回执提交 `photographicEngine` 和 `dagBackend`。当前 Rust 队列的 `SceneExecution` 会拒绝这两个字段，发布止于准备阶段。原生队列接口已复现。M0 先修 V1 双端读写及重开兼容，再用摄影场景的真实 032 路径建立分项基线。[Swift 票据入口](../../Sources/RAWMaster/WorkbenchDeliveryCatalog.swift#L437) · [Rust 回执定义](../../Modules/LibraryCatalog/src/scheduler/batch/items.rs#L53) · [M0 回归](validation.md#m0--回执修复与基线)
+**032 回执修复。** 图文档 schema 3 保存 `photographic`，Swift 在 032 `prepareItem` 随执行回执提交 `photographicEngine` 和 `dagBackend`。旧 Rust 队列在准备阶段拒绝这两个字段。修复后，V1 两个字段可选，旧票据可读，未知字段仍严格校验。真实 60 MP 摄影场景已经通过 PQ AVIF、SDR JPEG 发布及目录重开，队列进程中断测试覆盖准备、发布和确认。[Swift 票据入口](../../Sources/RAWMaster/WorkbenchDeliveryCatalog.swift#L437) · [Rust 回执定义](../../Modules/LibraryCatalog/src/scheduler/batch/items.rs#L53) · [M0 回归](validation.md#m0--回执修复与基线)
 
 ## 2. 目标与范围
 
@@ -169,6 +169,7 @@ P2 每个算子先通过窗口、整幅、导出像素对照，再进 50 配方�
 | 6 MP 六节点和 96 节点场景图 | 6 MP 暖态 p95 至少 1.3× 提速。固定 96 节点图的吞吐 ≥2×，峰值中间工作集 ≤50%，总峰值单列 |
 | 038 FIT 与组内监看 | 维持既有 `p50 ≤25.92 ms`、`p95 ≤210.23 ms`。节点监看 p95 ≤20 ms 为后续优化目标 |
 | 036 1:1 50 配方与 035 发布门 | 1:1 矩阵 p95 至多为同路由基线的三分之二。旧配方切换前通过 035 封存发布门 |
+| LightFlow 与 Adobe Camera Raw 同机对标 | 每个可比控件的 p50 与 p95 分别取两者快值。p50 允许增加 `max(10%, 1 ms)`，p95 允许增加 `max(20%, 2 ms)`。精确渲染、1:1 和出片按相同输出及测量区间另验 |
 
 同机、同源、同分辨率、同质量及同测量区间用于计算性能变化。每个暖态组合预热 5 次后至少记录 30 次，另报冷启动、p50/p95、峰值、瓦片、派发、回退和实际后端。两端实机对照以像素和设备准入为主，各端独立计量性能。[历史样本和测量边界](validation.md#1-当前基线)
 
@@ -187,6 +188,7 @@ P2 每个算子先通过窗口、整幅、导出像素对照，再进 50 配方�
 - **SC-004** · 5K/6K 完成正确的 1:1 取景，60 MP 受支持模型完成运行，其余组合提供明确的能力或预算诊断。
 - **SC-005** · 旧 v1–v3 成片通过原语义回放和 035 封存矩阵。
 - **SC-006** · 041 逐项通过 Linux 实体 Vulkan 的完整输入到文件验收后开放能力。
+- **SC-007** · 逐场景保留 LightFlow 和 Camera Raw 的同机原始可比证据，验证 p50、p95 两项接近较快参考。缺测或区间不一致时保持待测。[外部对标](validation.md#外部产品对标)
 
 ## 6. 迁移与回滚
 
