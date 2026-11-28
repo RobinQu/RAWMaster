@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "mode": "Release",
+  "build": "20261128.182855",
+  "installedPath": "/Applications/RAWMaster.app",
+  "sourceCommit": "cd3bb3e30190f1a2ae4db1b0752181d0f5b08c9a",
+  "previousBuild": "20261128.180152",
+  "previousBundlePreservedAndVerified": true,
+  "qualification": "Original-grid grouping and request-local full validation reuse for verified FlashRaw previews",
+  "builtStagedAndInstalledStrictCodeSign": true,
+  "cdhash": "f6d3490dcf47b4c131d5afb40837fd7d436933bf",
+  "builtAndInstalledSHA256": {
+    "Contents/MacOS/RAWMaster": "6e3136751f7736b35751076f24e756272ad8199a5224f6252ca81b60cdabda61",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "smoke": {
+    "actualWindowPresent": true,
+    "isolatedSQLiteQuickCheck": "ok",
+    "nativeWGPUMetalABI": {
+      "budgetFailure": 6,
+      "unknownGroup": 1,
+      "postSubmitStale": 5,
+      "postSubmitCallbackChecks": 2,
+      "reusableAfterStale": true,
+      "dispatches": 1,
+      "submissions": 1,
+      "hostWaits": 1,
+      "frameCopyBytes": 0,
+      "validationBytes": 4,
+      "signedRGBAndAlphaExactPixels": 1024,
+      "nestedGroupPasses": 4,
+      "layerAddAndRetryExactPixels": 2048,
+      "layerRangeFailure": 7
+    },
+    "abiCompletionTests": {
+      "staged": {
+        "default": {
+          "count": 20,
+          "reportSHA256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        },
+        "blocking": {
+          "count": 20,
+          "reportSHA256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      },
+      "installed": {
+        "default": {
+          "count": 2,
+          "reportSHA256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        },
+        "blocking": {
+          "count": 2,
+          "reportSHA256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      }
+    },
+    "nativeReleaseTests": {
+      "maskAndFiniteAuthority": {
+        "passed": 48,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "b14a78c648324ae50d650d6527402f80a00b345720818645507083a2bf034af4"
+      },
+      "groupRollback": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "17077af45562c838f2e818da92842b818408165d01f68a33422ac70142af0d9f"
+      },
+      "retainedContextRollback": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "c9a69f07de20eea6ba194fa3ce05d9006dee987c88ce96e587c26d472b9020d8"
+      },
+      "serialFiniteRollback": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "2a4dc0a74d585e93616c8b1873599e7aca8959b899edfc3407d575e6d96ea38d"
+      },
+      "scalarDiagnosticRollback": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "c82990a1800376b4b2b212b618b2573a12fddc8e333f92b443fbae34f20cc256"
+      },
+      "sharpAndFinite": {
+        "passed": 24,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "40022b7d12aa33a41ccda756ca4f1e7ba817262efd7fa906246db94b9cca762d"
+      },
+      "filterPanel": {
+        "passed": 17,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "00fe6d59ed2b8f59096effc68d344e2924f8f716b53d836ebc79a57042bb966f"
+      },
+      "realFreeZoom": {
+        "passed": 1,
+        "failures": 0,
+        "skipped": 0,
+        "logSHA256": "ebfe5756062316e98461cefded92d4593cb10fa7f8ed9846cf25aae8fd08f82a"
+      }
+    },
+    "canonicalQualificationSHA256": "e311db3ee0187921011a85f1b27ff392e39b438367b18fec0698133adfb7803c"
+  }
+}
