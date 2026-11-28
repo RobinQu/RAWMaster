@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "mode": "Release",
+  "build": "20261128.225813",
+  "sourceCommit": "74dea4eca6d2c6c2272ef5d85439983cb43419a4",
+  "installedPath": "/Applications/RAWMaster.app",
+  "previousBuild": "20261128.222547",
+  "previousBundlePreservedAndSigned": true,
+  "builtAndInstalledStrictCodeSign": true,
+  "codeCDHash": "92cd45c49d25f28768d281ce5f4eb6f96be1bcf4",
+  "isolatedSQLiteQuickCheck": "ok",
+  "isolatedWindowPresent": true,
+  "matchingBuiltAndInstalledBinarySHA256": {
+    "Contents/MacOS/RAWMaster": "e5e299b6cd22d3e22556a532f8183d0215b3a8d74cc6fee7ff14db8b2271c2cc",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+    "Contents/Frameworks/librawmaster_core_ai.dylib": "9807d1a22139d7f058b914dd57d1330a5e0d47c85f8007faa3ed2fdd10e742e7",
+    "Contents/Frameworks/libonnxruntime.1.27.0.dylib": "0554a26ed9cba89d031150ccccb449f352b4d81606b235bacdbf08c598c62aa7"
+  },
+  "matchingBuiltAndInstalledCoreResourceSHA256": {
+    "Contents/Resources/CoreModels/v1/manifest.json": "8c79ac973a540056ff0a97470aedaf0c2bbab17a2ec8cedc9acdc151b8902049",
+    "Contents/Resources/CoreModels/v1/Licenses/Intel-Open-Model-Zoo.txt": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "Contents/Resources/CoreModels/v1/Licenses/YuNet-MIT.txt": "c83b8120c50ccbd4c4f96edf53141bdd566ebb8f8e9227e415326aa1b1aba958",
+    "Contents/Resources/CoreModels/v1/Licenses/Intel-0095-NOTICE.txt": "10139051d6a53e47766646b954c35b112057af4cca9c6b64e2e291f0d04e9ffb",
+    "Contents/Resources/CoreModels/v1/Licenses/ONNXRuntime-LICENSE.txt": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "Contents/Resources/CoreModels/v1/Licenses/ONNXRuntime-ThirdPartyNotices.txt": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2",
+    "Contents/Resources/CoreModels/v1/face/yunet-2023mar-dynamic.conversion.json": "81e44a5480d6a2c6cf52402988b20667ed0294c7c9af9d997a1c99b7d7b2beb0",
+    "Contents/Resources/CoreModels/v1/face/face-reidentification-retail-0095.onnx": "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373",
+    "Contents/Resources/CoreModels/v1/face/yunet-2023mar-dynamic.onnx": "8486bd72a09be3dc872c8b97e26bbbce2a5eb2eed602e4b385c618be5432787a"
+  },
+  "unchangedAndMatchingBuiltAndInstalledRAWNoiseResources": {
+    "RawNoiseDomain.metal": "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7",
+    "RawNoiseDomain.metallib": "d33c0c04b03fc61fd16e68f33d520b1696ec7952c741cd71388c4ad174d30a6c",
+    "RawNoiseDomain.json": "9c3ef027badeca22b9d819c0e05cd44bae9b3adf5a6cab47eb3668aab912ac79"
+  },
+  "MetalCABI": {
+    "staged": {
+      "default": {
+        "count": 20,
+        "source": {
+          "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/smoke/staged-default.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      },
+      "blocking": {
+        "count": 20,
+        "source": {
+          "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/smoke/staged-blocking.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      }
+    },
+    "installed": {
+      "default": {
+        "count": 2,
+        "source": {
+          "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/smoke/installed-default.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      },
+      "blocking": {
+        "count": 2,
+        "source": {
+          "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/smoke/installed-blocking.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      }
+    }
+  },
+  "packagedCoreAIPass": {
+    "intel": {
+      "staged": {
+        "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/staged-intel-abi.json",
+        "sha256": "d588d00fd7a5c19e716340efc368486cdfe67057a4826a7ab4eff522070d857b"
+      },
+      "installed": {
+        "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/installed-intel-abi.json",
+        "sha256": "d588d00fd7a5c19e716340efc368486cdfe67057a4826a7ab4eff522070d857b"
+      }
+    },
+    "detector": {
+      "staged": {
+        "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/staged-detector-abi.json",
+        "sha256": "732d34e5cda7f817dbdf48d3fc53f874a269b8a306277f6d79640b4d0396d46f"
+      },
+      "installed": {
+        "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/installed-detector-abi.json",
+        "sha256": "732d34e5cda7f817dbdf48d3fc53f874a269b8a306277f6d79640b4d0396d46f"
+      }
+    }
+  },
+  "signingScope": "local RAWMaster Release with both verified face model assets; independent Apple Development App Sandbox component qualification",
+  "YuNetAndIntelSandboxQualification": {
+    "path": "specs/044-mac-app-store-lite/evidence/core-ai-yunet.json",
+    "sha256": "f289d0f38e60cd4d01e69b8849a52bba7695ccead0e4be21d8caab676f58f4c1"
+  },
+  "buildLog": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/release-final/build.log",
+    "sha256": "7e4cdf82a2a7e080c792ad6cbb1e4f46ad3d43eae8eb427a9873e33bc0e3996f"
+  }
+}

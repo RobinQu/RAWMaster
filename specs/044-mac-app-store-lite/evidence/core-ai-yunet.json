@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "state": "signed native component qualification on Mac16,5",
+  "sourceCommit": "74dea4eca6d2c6c2272ef5d85439983cb43419a4",
+  "onnxRuntime": "1.27.0",
+  "api": 27,
+  "oldRuntime": "Python Discovery with OpenCV 4.12 and Intel ONNX 1.23.2 reference",
+  "warmupPerInput": 5,
+  "measuredPerInput": 30,
+  "detectionP95TargetMs": 50,
+  "firstStage": "upright source bytes to Swift detector results with native execution; combined time adds all returned embeddings",
+  "comparisonScope": "two components through same worker; no library index or product migration",
+  "sandboxProcessMaximumRSSBytes": 372817920,
+  "runtimeStartupIncludingSealMs": 46.337084,
+  "cases": [
+    {
+      "inputKind": "frozen still",
+      "inputPixels": [
+        1365,
+        2048
+      ],
+      "uprightRGBA8SHA256": "98369af971e762a8be2063218b2dbd2b7b7db51c617d5dcdc40aa4c73f5e1da9",
+      "faceCount": 1,
+      "maximumBoxErrorPx": 0,
+      "maximumLandmarkErrorPx": 0,
+      "maximumConfidenceError": 5.960464477539063e-08,
+      "embeddingCosines": [
+        0.9999999999995233
+      ],
+      "firstDetectionMs": 29.735916,
+      "warmDetectionMs": {
+        "trials": [
+          16.787791,
+          17.16625,
+          17.004541,
+          16.910291,
+          16.805167,
+          16.798334,
+          16.9505,
+          17.069417,
+          16.845917,
+          17.122583,
+          16.737541,
+          17.244084,
+          17.045167,
+          17.07375,
+          16.950375,
+          16.724333,
+          16.81925,
+          17.101333,
+          16.839916,
+          17.133375,
+          16.848625,
+          16.711625,
+          17.614542,
+          16.850834,
+          16.939917,
+          16.552125,
+          16.591084,
+          16.868667,
+          16.8075,
+          16.819042
+        ],
+        "p50Ms": 16.859750499999997,
+        "p95Ms": 17.244084
+      },
+      "warmJointMs": {
+        "trials": [
+          19.977708,
+          20.394917,
+          20.281041,
+          20.193625,
+          20.073208,
+          20.059292,
+          20.221708,
+          20.365917,
+          20.017459,
+          20.420041,
+          19.941333,
+          20.579542,
+          20.300458,
+          20.332,
+          20.132125,
+          19.891625,
+          20.074583,
+          20.333792,
+          20.056625,
+          20.375875,
+          20.053083,
+          20.173875,
+          20.804917,
+          20.059375,
+          20.265875,
+          19.81,
+          19.761792,
+          20.077875,
+          20.016709,
+          20.191125
+        ],
+        "p50Ms": 20.153,
+        "p95Ms": 20.579542
+      }
+    },
+    {
+      "inputKind": "empty frame",
+      "inputPixels": [
+        321,
+        239
+      ],
+      "uprightRGBA8SHA256": "097ba5e879494ddfc7b7050160e69a769106904cd511a606a73fe6bab62c7352",
+      "faceCount": 0,
+      "maximumBoxErrorPx": 0,
+      "maximumLandmarkErrorPx": 0,
+      "maximumConfidenceError": 0,
+      "embeddingCosines": [],
+      "firstDetectionMs": 4.959958,
+      "warmDetectionMs": {
+        "trials": [
+          1.734292,
+          1.686542,
+          1.703083,
+          1.669375,
+          1.699375,
+          1.701625,
+          1.659458,
+          1.673833,
+          1.680042,
+          1.713084,
+          1.716334,
+          1.672291,
+          1.761292,
+          1.690583,
+          1.722,
+          1.730834,
+          1.699041,
+          1.666959,
+          1.677833,
+          1.757875,
+          1.691166,
+          1.700333,
+          1.667333,
+          1.720959,
+          1.690791,
+          1.687208,
+          1.686042,
+          1.689125,
+          1.689375,
+          1.7435
+        ],
+        "p50Ms": 1.6909785,
+        "p95Ms": 1.757875
+      },
+      "warmJointMs": {
+        "trials": [
+          1.735125,
+          1.686708,
+          1.704083,
+          1.669458,
+          1.70025,
+          1.70175,
+          1.659666,
+          1.673958,
+          1.680542,
+          1.713459,
+          1.716542,
+          1.672375,
+          1.761417,
+          1.690833,
+          1.722125,
+          1.730917,
+          1.699916,
+          1.667042,
+          1.678208,
+          1.758041,
+          1.691541,
+          1.700708,
+          1.667458,
+          1.721125,
+          1.691,
+          1.687291,
+          1.686208,
+          1.689292,
+          1.689542,
+          1.743666
+        ],
+        "p50Ms": 1.6912705,
+        "p95Ms": 1.758041
+      }
+    },
+    {
+      "inputKind": "frozen still",
+      "inputPixels": [
+        1024,
+        1024
+      ],
+      "uprightRGBA8SHA256": "29cea9906e4431f66ef3825dcb8fe58d706659d6fb82ad559a8f961e551f68b3",
+      "faceCount": 1,
+      "maximumBoxErrorPx": 0,
+      "maximumLandmarkErrorPx": 3.0517578125e-05,
+      "maximumConfidenceError": 5.960464477539063e-08,
+      "embeddingCosines": [
+        0.9999999723129818
+      ],
+      "firstDetectionMs": 26.589917,
+      "warmDetectionMs": {
+        "trials": [
+          20.028958,
+          20.058959,
+          19.888667,
+          19.963625,
+          19.827167,
+          19.799542,
+          19.802334,
+          19.922416,
+          19.85875,
+          19.903375,
+          20.282875,
+          19.979041,
+          19.694209,
+          19.738958,
+          19.939625,
+          19.882292,
+          20.065417,
+          20.17,
+          19.928125,
+          19.611084,
+          20.052792,
+          19.641667,
+          19.787625,
+          19.92425,
+          20.508125,
+          19.800708,
+          20.089791,
+          19.86,
+          19.706333,
+          20.047041
+        ],
+        "p50Ms": 19.912895499999998,
+        "p95Ms": 20.282875
+      },
+      "warmJointMs": {
+        "trials": [
+          23.18425,
+          23.305417,
+          23.154417,
+          23.190167,
+          23.048459,
+          23.049834,
+          23.010875,
+          23.102708,
+          23.097083,
+          23.128166,
+          23.560042,
+          23.179333,
+          22.8475,
+          22.975542,
+          23.135,
+          23.153959,
+          23.26275,
+          23.438917,
+          23.165,
+          22.838542,
+          23.252,
+          22.872167,
+          23.046792,
+          23.110791,
+          23.660417,
+          23.031,
+          23.330458,
+          23.085333,
+          22.983375,
+          23.31825
+        ],
+        "p50Ms": 23.131583,
+        "p95Ms": 23.560042
+      }
+    },
+    {
+      "inputKind": "two-face composite",
+      "inputPixels": [
+        1024,
+        640
+      ],
+      "uprightRGBA8SHA256": "f7c9b514f7da0d7a8f56901b39ee2626343a87d5d8128140a9632d0a88fbb1e8",
+      "faceCount": 2,
+      "maximumBoxErrorPx": 0,
+      "maximumLandmarkErrorPx": 6.103515625e-05,
+      "maximumConfidenceError": 5.960464477539063e-08,
+      "embeddingCosines": [
+        0.9999999336919977,
+        0.9999999368608408
+      ],
+      "firstDetectionMs": 16.321292,
+      "warmDetectionMs": {
+        "trials": [
+          11.972542,
+          12.311833,
+          12.021459,
+          12.312417,
+          11.954042,
+          12.185708,
+          12.334375,
+          12.589541,
+          12.822417,
+          12.295291,
+          12.369125,
+          12.106667,
+          12.401416,
+          12.277625,
+          12.277125,
+          12.07275,
+          12.014208,
+          12.145209,
+          12.137083,
+          12.126417,
+          11.9825,
+          12.378875,
+          12.112875,
+          12.270541,
+          12.565917,
+          12.3075,
+          12.173083,
+          12.339792,
+          12.12825,
+          12.096417
+        ],
+        "p50Ms": 12.2281245,
+        "p95Ms": 12.589541
+      },
+      "warmJointMs": {
+        "trials": [
+          18.211625,
+          18.6135,
+          18.440625,
+          18.588959,
+          18.400375,
+          18.494083,
+          18.975,
+          19.101375,
+          19.431917,
+          18.7555,
+          18.704625,
+          18.554792,
+          18.6675,
+          18.829375,
+          18.681333,
+          18.496458,
+          18.317,
+          18.473334,
+          18.393375,
+          18.37325,
+          18.309541,
+          18.591583,
+          18.579,
+          18.574666,
+          18.995042,
+          18.553583,
+          18.687958,
+          18.764667,
+          18.456417,
+          18.569542
+        ],
+        "p50Ms": 18.576833,
+        "p95Ms": 19.101375
+      }
+    }
+  ],
+  "mixedShapesWithBothSessions": {
+    "raw": {
+      "path": "output/spec044-core-ai.65gYDJ/yunet/signed-mixed.json",
+      "sha256": "17e57399c67e82a5c0c08707d7380af7e21199a33656e1d9cd6eea31ea450240"
+    },
+    "maximumRSSBytes": 384204800,
+    "beforeEvictionRSSBytes": 384172032,
+    "afterEvictionRSSBytes": 384204800
+  },
+  "narrowImageResizeRegression": {
+    "sourcePixels": [
+      2,
+      1536
+    ],
+    "resizedPixels": [
+      1,
+      1024
+    ],
+    "sampleXY": [
+      0,
+      4
+    ],
+    "expectedGreen": 104,
+    "openCVArm64UsesFusedScalarTail": true
+  },
+  "signature": {
+    "scope": "Apple Development test sandbox",
+    "appExecutable": {
+      "sha256": "6b18d9385bed5e9521f16ced9436317d5179fd272aa778268d46bc47d917a940",
+      "cdHash": "e5b43b7f7b3dcc5679ad18d15e616e20107e89f1",
+      "hardenedRuntime": true
+    },
+    "bridge": {
+      "sha256": "0360c1cd058a58e4c1e2923d910fec7e40c581bd25081ff0ac633627871bbaed",
+      "cdHash": "9332f1ed89f9bb3c1d081350a4585996bb3574bb",
+      "hardenedRuntime": true
+    },
+    "onnxRuntime": {
+      "sha256": "91346b77400cccec8b34d3cdf6f9f70072b3fe7fe936d69c6166e724bf430cd7",
+      "cdHash": "0e7246cd68c04ada24337bebf9f927ab047ecba9",
+      "hardenedRuntime": true
+    },
+    "entitlements": {
+      "path": "output/spec044-core-ai.65gYDJ/yunet/positive-entitlements.plist",
+      "sha256": "f8b4cfc5e7c5076be716c5a3e37f8f6b03db3f5c47220215175e9ea3cd9ef6f0"
+    }
+  },
+  "modelContract": {
+    "path": "Modules/CoreAI/ModelContracts/yunet-2023mar-dynamic-v1.json",
+    "sha256": "f043668b035bf456e88ccec233e57dd4dce8f77db2438871b057ba1c2f70cea9"
+  },
+  "frozenModelReferenceReplay": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/replay-report.json",
+    "sha256": "2943cdd0f5213fc656c07ef6096078537e9620c925a714e95f311527491f5f66"
+  },
+  "actualCPPToRustInputs": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/module-check.hxx07F/cpu-check.log",
+    "sha256": "f412e66539663291f631c510166cc58ea99fddf58399c3d5e6485e75a32163fb"
+  },
+  "nativeResults": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/signed-detection.json",
+    "sha256": "3a497d8acdabfc0e99b450e5320501430b2a6fb32cabc3fd337fbd0df3b979b1"
+  },
+  "assetStageRepeatAndNegatives": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/package-check.m26YSN/stage-validation.json",
+    "sha256": "c523299161d53d848d461b56fb00f9bce7f83fa0f77a4e1c14d96300690c8dd0"
+  },
+  "intelOnlyModelLookup": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/missing-detector.log",
+    "sha256": "18d2f566b9b3dad573547da17b693a70dd4a460af0f1cede9548d973e4221b61"
+  },
+  "directCABI": {
+    "tooSmall": {
+      "status": 7,
+      "written": 222
+    },
+    "zeroCapacityWithTwoFaces": {
+      "status": 7,
+      "written": 222
+    },
+    "validEmptyWithoutOutputBuffer": {
+      "status": 0,
+      "written": 0
+    },
+    "preCancelled": {
+      "status": 8,
+      "written": 222
+    },
+    "twoValidFaces": {
+      "status": 0,
+      "written": 2
+    },
+    "pastMaximum": {
+      "status": 1,
+      "written": 222
+    },
+    "reloadAfterEviction": {
+      "status": 0,
+      "written": 2
+    }
+  },
+  "selectedRustTests": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/core-ai-rust-tail.log",
+    "sha256": "d6c883591366de0f8075fa42c50cd2867b49800ced6d7699ffac0726ba170c09"
+  },
+  "actualNativeCancellationAndReuse": {
+    "path": "output/spec044-core-ai.65gYDJ/yunet/cancel-tail.log",
+    "sha256": "bba8f06d4b72557884eb79572d228de75f23d94fcf1b3e6a274af16506e24870"
+  }
+}
