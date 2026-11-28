@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "mode": "Release",
+  "build": "20261128.143506",
+  "sourceCommit": "f408410f7d3d47fbe26bbe96acc6d61d9eb8721a",
+  "installedPath": "/Applications/RAWMaster.app",
+  "previousBuild": "20261128.134122",
+  "previousBundlePreservedAndVerified": true,
+  "strictCodeSignBuiltStagedAndInstalled": true,
+  "cdhash": "3c1a8c565865144b62bd6d4a608ccfac62f1166d",
+  "builtAndInstalledSHA256": {
+    "Contents/MacOS/RAWMaster": "5698fe3c169c6ed1da4bd6c566f23d33683b867a8e273fa93fd317e1dc051c9c",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "fbb99321ba4f4d0e193252c9e93924708a03e88cdd6f18a167a64d810ddfa611",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "smoke": {
+    "isolatedSQLiteQuickCheck": "ok",
+    "actualWindowPresent": true,
+    "nativeFilterTests": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "dff2f38e5bdbec6c418d24089954ec2ec9c4517f2229b6eaebcf801ac5f34f93"
+    },
+    "nativeWGPUMetalABI": {
+      "budgetFailure": 6,
+      "unknownGroup": 1,
+      "postSubmitStale": 5,
+      "postSubmitCallbackChecks": 2,
+      "reusableAfterStale": true,
+      "dispatches": 1,
+      "submissions": 1,
+      "hostWaits": 1,
+      "frameCopyBytes": 0,
+      "validationBytes": 4,
+      "signedRGBAndAlphaExactPixels": 1024,
+      "nestedGroupPasses": 4,
+      "layerAddAndRetryExactPixels": 2048,
+      "layerRangeFailure": 7
+    },
+    "nativeWGPUMetalABIVariants": {
+      "cases": [
+        "all pixels outside blend domain",
+        "single pixel outside blend domain",
+        "nonfinite input",
+        "second texture outside blend domain"
+      ],
+      "expectedRejectionStatus": [
+        7,
+        7,
+        3,
+        7
+      ],
+      "stagedPassesPerCase": 20,
+      "installedPassesPerCase": 1,
+      "stagedLogSHA256": "7fcc2b1fe99fa1e01ed2f6cac065a659a1fd02322731ffee7a9be4127eba5cd2",
+      "installedLogSHA256": "304e44c8862bad9b83daf809876b8663a34e820c107d5cd1ee13afb1ffc8e44d"
+    }
+  },
+  "verification": "The installed and staged libraries passed the same-device Metal rejection and reusable program checks. The product smoke used a dedicated process and separate library. Scene delivery defaults to 039 with direct tiled DRT."
+}
