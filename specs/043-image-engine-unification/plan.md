@@ -67,7 +67,7 @@ Modules/ImageEdit/src/
 2. **两端实机首验。** 同一提交、依赖锁、冻结图和校准 AP1 在 Apple M4 Max 的 wgpu/Metal 与 NVIDIA RTX 6000 Ada 的 wgpu/Vulkan 上通过。整幅和非居中 ROI 均覆盖监看与最终根，双端四通道、设备、驱动和零回退回执已经归档。原生纹理传输和端到端资源按 24/60 MP 产品用例验收。[双端回执](evidence/m2-ap1-cross-device-receipt.json)
 3. **实现算子级优化。** 验证后裁剪恒等和禁用分支。同域、同精度和几何的点段生成有固定求值顺序的 WGSL。为曲线、coverage 及参数绑定设设备上限，超限时切段。改变计算顺序的代数折叠逐项验收，结构化 pipeline 缓存让改参只更新缓冲。
 4. **验证产品传输。** macOS 在内部严格 `RAWMASTER_SCENE_BACKEND=wgpu` 下借用已完成生产的同设备 RGBA32F 输入，由 wgpu 分配输出并在 Metal 命令完成后交给现行 DRT。24/60 MP 的 FIT、原寸窗口、顶层和组内监看及 032 冻结交付均有原生回执。分开计量 DAG 的整帧 CPU 搬运、验证标量、命令等待和 GPU 驻留。Linux 的首条 DAG 使用固定 AP1 输入验证执行器，完整 RAW 和目标文件在 M5 签收。[同设备纹理](validation.md#macos-同设备纹理试验)
-5. **扩大算子覆盖并复测。** 迁移其他场景节点、混合模式及有证据的 V3 点段。对比融合/未融合及 039 当前执行器，记录 6 MP 六节点、96 节点合成图和 60 MP 三节点的性能。
+5. **扩大算子覆盖并复测。** 13 种 Layer 混合模式和 Add/Subtract/Adjust coverage 已通过两端实机及 039 像素对照。非 normal Layer 在去预乘和混合之前验证数值域。其余场景节点及 V3 点段按同一模式迁移。对比融合/未融合及 039，记录 6 MP 六节点、96 节点合成图和 60 MP 三节点的性能。[模式与准入回执](evidence/m2-layer-blend-coverage.json)
 
 退出条件为两端严格 wgpu 实机、像素与 ROI 通过，macOS 产品路由通过。6 MP 暖态图 p95 至少 1.3× 提速，固定 96 节点图的吞吐 ≥2× 且峰值中间工作集 ≤50%，60 MP 图阶段 p50 较 M1 至少降 15%，038 既有门槛保持。
 

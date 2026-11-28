@@ -98,6 +98,12 @@ cargo run --release --locked --manifest-path Modules/ImageEdit/Cargo.toml \
 
 Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配器，设置独立 `--output-dir`，并用 `--peer-dir` 传入 Metal 回执及读回结果。随报告保留 `vulkaninfo --summary` 和物理设备、驱动信息。组件比较同后端 RGBAf 裁块位模式，跨实现比较 RGB `2×10⁻⁵ × max(1, |reference|)` 和 alpha 位模式。报告分别标明 CPU 上传、GPU 完成等待、读回及核算缓冲区。 [首条组件入口](../../Modules/ImageEdit/examples/ap1_scene_probe.rs)
 
+#### 混合与覆盖算子
+
+13 种 Layer 模式及 Add、Subtract、Adjust coverage 用 34 组固定 AP1 图比较。覆盖全权重、部分权重、互换输入、自混合、混合顺序和反转遮罩。Apple M4 Max Metal 与 NVIDIA RTX 6000 Ada Vulkan 比较整幅及非居中 ROI 的最终根和监看根，最大缩放 RGB 误差 `2.31×10⁻⁷`，alpha 逐位一致，两端的 ROI 均与各自整幅裁块逐位一致。macOS 同一私有输入纹理上比较严格 wgpu 与 039，最大缩放 RGB 误差 `1.70×10⁻⁷`，通过相同 alpha 和 ROI 门。[两端与原生回执](evidence/m2-layer-blend-coverage.json)
+
+RTX 实机曾在全权重 Add 溢出后被后续 normal 替换时返回有效的原像素。WGSL 允许运行时溢出产生不定结果，因此新增非 normal Layer 在去预乘和混合前先检查安全范围。越界使用现有验证标志的 `0x8`，Metal ABI 返回状态 `7`。两端验证了拒绝和同一程序重试，也保留了选中支仍有限的全权重 Darken 极值。保守范围会拒绝部分 039 仍可求值的有限极值。该证据覆盖新增 Layer 的数值域，旧算子的极值仍需独立验收。[WGSL 浮点规则](https://www.w3.org/TR/WGSL/#finite-math-assumption)
+
 #### macOS 同设备纹理试验
 
 严格模式在 Apple M4 Max 上用同一图比较 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。24 MP 实拍从修改曝光到 AppKit drawable 的暖态 p50/p95 为 15.57/17.46 ms，达到 038 既有 FIT 门槛，原生 SDR 队列发布和重开也通过。[八帧与画布证据](evidence/m2-native-metal-textures.json)

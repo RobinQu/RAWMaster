@@ -27,7 +27,7 @@
 - [ ] **M2-03** 实现 WGSL 点段融合、已验证的裁剪、按设备限制切段及资源生存期复用。保持已签收的 F32 语义。结构化 pipeline 缓存与参数缓冲独立。
 - [x] **M2-04** 首条链使用同源固定 AP1 夹具和冻结图，在 macOS wgpu/Metal 与 Linux wgpu/Vulkan 实体 GPU 验证了 F32、ROI、恒等和零回退。记录驱动、两端回执及独立复算结果。[双端证据](evidence/m2-ap1-cross-device-receipt.json)
 - [x] **M2-05** 在 macOS 24/60 MP 原生 FIT、原寸窗口、顶层和组内监看与 032 冻结交付验证同设备纹理、同步和峰值。两种实拍尺寸均已呈现 AppKit drawable。032 覆盖 24 MP SDR 和 60 MP PQ、SDR。[实机回执](evidence/m2-native-metal-textures.json) · [组内监看](evidence/m2-group-monitor.json)
-- [ ] **M2-06** 接入其余场景节点、13 种 blend 和有等价证据的 V3 点段，作 CPU/039 与融合/未融合像素对照。径向 coverage、交集和有序 Parallel 已通过两端实体组件与 macOS 全幅和 ROI 对照。[六节点证据](evidence/m2-six-node-operators.json)
+- [ ] **M2-06** 接入其余场景节点和有等价证据的 V3 点段，作 CPU/039 与融合/未融合像素对照。径向 coverage、交集、有序 Parallel、13 种 Layer blend、Add/Subtract/Adjust coverage 已在准入数值域内通过双端实机组件及 macOS 原生全幅与 ROI 对照。[六节点](evidence/m2-six-node-operators.json) · [混合与覆盖](evidence/m2-layer-blend-coverage.json)
 - [x] **M2-07** 6 MP 暖态图通过同构建 1.3× 和历史 p95 门。96 节点通过吞吐和中间工作集门，60 MP 的 PQ、JPEG 与双目标图阶段通过相对 M1 的 15% 提速门。实拍 FIT 和组内监看通过 038 既有门槛。043 的节点监看 p95 ≤20 ms 优化目标仍待达到。[6 MP](evidence/m2-six-node-operators.json) · [96 节点](evidence/m2-native-96-node.json) · [60 MP](evidence/m2-native-metal-textures.json) · [监看](evidence/m2-group-monitor.json)
 
 ## M3 · 资源、模型与原寸窗口
