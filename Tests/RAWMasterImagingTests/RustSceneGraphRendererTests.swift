@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import Metal
 import RAWMasterCore
@@ -526,16 +527,7 @@ final class RustSceneGraphRendererTests: XCTestCase {
       throw XCTSkip("Set RAWMASTER_SCENE_BACKEND_PERFORMANCE to a new JSON report path")
     }
     let (device, _, raw, geometry, _) = try fixture(width: 3000, height: 2000)
-    let gradient = Node(name: "Ramp", operation: .linearCoverage(start: .init(0.1, 0), end: .init(0.9, 1)))
-    let radial = Node(name: "Ellipse", operation: .radialCoverage(center: .init(0.5, 0.5), radii: .init(0.4, 0.6), feather: 0.2))
-    let mask = Node(name: "Mask", operation: .combineCoverage(base: gradient.id, other: radial.id, mode: .intersect))
-    let light = Node(name: "Light", operation: .corrector(image: .input, mask: mask.id, exposureEV: 1.2,
-      curve: [.init(-4, -3.5), .init(0, 0), .init(3, 2)], strength: 0.8, enabled: true))
-    let dark = Node(name: "Dark", operation: .corrector(image: .input, mask: nil, exposureEV: -0.7, curve: [], strength: 1, enabled: true))
-    let mix = Node(name: "Mix", operation: .parallel(base: .input, layers: [
-      .init(.node(light.id), weight: 0.65), .init(.node(dark.id), weight: 0.35)
-    ], enabled: true))
-    let graph = try workflow([gradient, radial, mask, light, dark, mix], final: mix)
+    let graph = try sixNodePerformanceGraph()
     let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
     let warmups = 5, measuredSamples = 30
     func measure(_ renderer: Renderer) throws -> [Double] {
@@ -571,7 +563,233 @@ final class RustSceneGraphRendererTests: XCTestCase {
       "Rust backend must stay within 20% of the Swift executor at 6MP")
   }
 
+  func testOptInWGSLNative6MPPerformance() throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_WGPU_6MP_PERFORMANCE"] else {
+      throw XCTSkip("Set RAWMASTER_SCENE_WGPU_6MP_PERFORMANCE to a new JSON report path")
+    }
+    let input = try nativePerformanceInput(width: 3000, height: 2000)
+    let device = input.image.texture.device, graph = try sixNodePerformanceGraph()
+    let rust = try rustRenderer(device), wgpu = try Renderer(device: device, backend: .wgpu)
+    let warmups = 5, sampleCount = 30
+    struct Trial {
+      let elapsedMs: Double
+      let execution: DevelopmentSceneExecutionReceiptV1
+    }
+    func trial(_ renderer: Renderer, backend: DevelopmentSceneExecutionReceiptV1.Backend) throws -> Trial {
+      try autoreleasepool {
+        let start = DispatchTime.now().uptimeNanoseconds
+        let master = try renderer.prepareFinal(input.image, geometry: input.geometry, graph: graph)
+        let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
+        let execution = try assertNativeExecution(renderer, backend: backend, input: input.image, output: master.image)
+        return Trial(elapsedMs: elapsed, execution: execution)
+      }
+    }
+    var rustTrials: [Trial] = [], wgpuTrials: [Trial] = []
+    for index in 0..<(warmups + sampleCount) {
+      let old: Trial, candidate: Trial
+      if index.isMultiple(of: 2) {
+        old = try trial(rust, backend: .rust)
+        candidate = try trial(wgpu, backend: .wgpu)
+      } else {
+        candidate = try trial(wgpu, backend: .wgpu)
+        old = try trial(rust, backend: .rust)
+      }
+      if index >= warmups { rustTrials.append(old); wgpuTrials.append(candidate) }
+    }
+    func summarize(_ trials: [Trial]) -> (p95: Double, record: [String: Any]) {
+      let samples = trials.map(\.elapsedMs), sorted = samples.sorted()
+      let p50 = (sorted[(sorted.count - 1) / 2] + sorted[sorted.count / 2]) / 2
+      let p95 = sorted[Int((Double(sorted.count) * 0.95).rounded(.up)) - 1]
+      return (p95, ["p50Ms": p50, "p95Ms": p95, "samplesMs": samples,
+        "backend": trials.map { $0.execution.backend.rawValue },
+        "dispatches": trials.map { $0.execution.dispatches }, "tiles": trials.map { $0.execution.tiles },
+        "peakBytes": trials.map { $0.execution.peakBytes }, "budgetBytes": trials.map { $0.execution.budgetBytes },
+        "fallbackCount": trials.filter { $0.execution.fallbackReason != nil }.count])
+    }
+    let legacy = summarize(rustTrials), candidate = summarize(wgpuTrials)
+    let historicTarget = 10.58, speedupTarget = 1.3
+    let recipe = DevelopmentRecipe(sceneGraph: graph)
+    let historicGate: [String: Any] = ["baselineP95Ms": 13.7605, "targetP95Ms": historicTarget,
+      "actualP95Ms": candidate.p95, "passed": candidate.p95 <= historicTarget]
+    let modernGate: [String: Any] = ["referenceP95Ms": legacy.p95, "targetP95Ms": legacy.p95 / speedupTarget,
+      "actualP95Ms": candidate.p95, "requiredSpeedup": speedupTarget, "actualSpeedup": legacy.p95 / candidate.p95,
+      "passed": candidate.p95 <= legacy.p95 / speedupTarget]
+    let report: [String: Any] = [
+      "device": device.name, "registryID": String(device.registryID), "os": ProcessInfo.processInfo.operatingSystemVersionString,
+      "resolution": [input.geometry.width, input.geometry.height], "inputRGBA32FSHA256": input.sha256,
+      "inputStorageMode": "private", "inputInitialization": "one joined same-device texture blit before both series",
+      "inputAllocatedBytes": input.image.texture.allocatedSize, "recipeSHA256": try EditingFingerprint.of(recipe),
+      "graph": try JSONSerialization.jsonObject(with: JSONEncoder().encode(graph.graph)),
+      "scope": "host wall from prepareFinal invocation to its return",
+      "order": "each pair runs serially and alternates its first backend, starting with rust",
+      "warmups": warmups, "measuredSamples": sampleCount, "p95Rule": "nearest rank",
+      "rust039": legacy.record, "wgpuMetal": candidate.record,
+      "historicM0Gate": historicGate, "modern039Gate": modernGate,
+    ]
+    try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+      .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
+  }
+
+  func testOptInWGSLNativeSixNodePixelEvidence() throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_WGPU_6MP_PIXELS"] else {
+      throw XCTSkip("Set RAWMASTER_SCENE_WGPU_6MP_PIXELS to a new JSON report path")
+    }
+    let graph = try sixNodePerformanceGraph()
+    var cases: [String: Any] = [:]
+    for (label, width, height) in [("small", 40, 24), ("full", 3000, 2000)] {
+      try autoreleasepool {
+        let input = try nativePerformanceInput(width: width, height: height)
+        let device = input.image.texture.device
+        let rust = try rustRenderer(device), wgpu = try Renderer(device: device, backend: .wgpu)
+        func render(_ image: Image) throws -> (legacy: MTLTexture, candidate: MTLTexture) {
+          let old = try rust.prepareFinal(image, geometry: input.geometry, graph: graph)
+          _ = try assertNativeExecution(rust, backend: .rust, input: image, output: old.image)
+          let new = try wgpu.prepareFinal(image, geometry: input.geometry, graph: graph)
+          _ = try assertNativeExecution(wgpu, backend: .wgpu, input: image, output: new.image)
+          return (old.image.texture, new.image.texture)
+        }
+        let applied = try render(input.image)
+        cases[label] = ["inputRGBA32FSHA256": input.sha256, "size": [width, height],
+          "comparison": try pixelWitness(applied.candidate, reference: applied.legacy, label: label)] as [String: Any]
+        if label == "full" {
+          let region = MTLRegionMake2D(1771, 1093, 47, 23)
+          let roi = try initializedPrivateCopy(input.image, region: region)
+          let window = try render(roi)
+          cases["roi"] = ["fullInputRGBA32FSHA256": input.sha256, "origin": [region.origin.x, region.origin.y],
+            "size": [region.size.width, region.size.height],
+            "comparison": try pixelWitness(window.candidate, reference: window.legacy, label: "direct ROI"),
+            "wgpuAgainstOwnFullCrop": try pixelWitness(window.candidate, reference: applied.candidate,
+              referenceOrigin: region.origin, label: "wgpu ROI vs own full crop", exact: true),
+            "rustAgainstOwnFullCrop": try pixelWitness(window.legacy, reference: applied.legacy,
+              referenceOrigin: region.origin, label: "039 ROI vs own full crop", exact: true)] as [String: Any]
+        }
+      }
+    }
+    let report: [String: Any] = ["scope": "untimed AP1 RGBA32F after prepareFinal",
+      "recipeSHA256": try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: graph)),
+      "rgbScaledTolerance": 0.00002, "alphaEquality": "bit pattern", "cases": cases]
+    try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+      .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
+  }
+
   // MARK: - Helpers
+
+  private func sixNodePerformanceGraph() throws -> Graph {
+    func id(_ index: UInt8) -> UUID { UUID(uuid: (0x04, 0x36, 0, 0, 0, 0, 0x40, 0, 0x80, 0, 0, 0, 0, 0, 0, index)) }
+    let gradient = Node(id: id(1), name: "Ramp", operation: .linearCoverage(start: .init(0.1, 0), end: .init(0.9, 1)))
+    let radial = Node(id: id(2), name: "Ellipse", operation: .radialCoverage(center: .init(0.5, 0.5), radii: .init(0.4, 0.6), feather: 0.2))
+    let mask = Node(id: id(3), name: "Mask", operation: .combineCoverage(base: gradient.id, other: radial.id, mode: .intersect))
+    let light = Node(id: id(4), name: "Light", operation: .corrector(image: .input, mask: mask.id, exposureEV: 1.2,
+      curve: [.init(-4, -3.5), .init(0, 0), .init(3, 2)], strength: 0.8, enabled: true))
+    let dark = Node(id: id(5), name: "Dark", operation: .corrector(image: .input, mask: nil, exposureEV: -0.7, curve: [], strength: 1, enabled: true))
+    let mix = Node(id: id(6), name: "Mix", operation: .parallel(base: .input, layers: [
+      .init(.node(light.id), weight: 0.65), .init(.node(dark.id), weight: 0.35)
+    ], enabled: true))
+    return try workflow([gradient, radial, mask, light, dark, mix], final: mix)
+  }
+
+  private func nativePerformanceInput(width: Int, height: Int) throws -> (image: Image, geometry: Renderer.Geometry, sha256: String) {
+    try autoreleasepool {
+      let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+      let samples = fixturePixels(width: width, height: height)
+      var digest = SHA256()
+      updateSHA256(&digest, pixels: samples)
+      let shared = try upload(samples, width: width, device: device)
+      let image = try initializedPrivateCopy(shared)
+      return (image, .init(width: width, height: height), hex(digest.finalize()))
+    }
+  }
+
+  private func initializedPrivateCopy(_ image: Image, region: MTLRegion? = nil) throws -> Image {
+    let source = image.texture, device = source.device
+    let rect = region ?? MTLRegionMake2D(0, 0, source.width, source.height)
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: rect.size.width, height: rect.size.height, mipmapped: false)
+    descriptor.storageMode = .private; descriptor.usage = .shaderRead; descriptor.hazardTrackingMode = .tracked
+    let destination = try XCTUnwrap(device.makeTexture(descriptor: descriptor))
+    let queue = try XCTUnwrap(device.makeCommandQueue())
+    let command = try XCTUnwrap(queue.makeCommandBuffer())
+    let encoder = try XCTUnwrap(command.makeBlitCommandEncoder())
+    encoder.copy(from: source, sourceSlice: 0, sourceLevel: 0, sourceOrigin: rect.origin, sourceSize: rect.size,
+      to: destination, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init())
+    encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
+    guard command.status == .completed, destination.device === device else { throw Renderer.Failure.invalidImage }
+    let origin = SIMD2<Int>(image.origin.x + rect.origin.x, image.origin.y + rect.origin.y)
+    return .init(texture: destination, port: image.port, origin: origin)
+  }
+
+  private func assertNativeExecution(_ renderer: Renderer, backend: DevelopmentSceneExecutionReceiptV1.Backend,
+                                     input: Image, output: Image) throws -> DevelopmentSceneExecutionReceiptV1 {
+    let receipt = try XCTUnwrap(renderer.lastReceipt)
+    guard receipt.backend == backend, receipt.fallbackReason == nil, receipt.dispatches > 0,
+          receipt.peakBytes <= receipt.budgetBytes,
+          input.texture.device === output.texture.device, input.texture !== output.texture,
+          output.texture.pixelFormat == .rgba32Float, output.texture.storageMode == .private,
+          input.texture.width == output.texture.width, input.texture.height == output.texture.height,
+          input.origin == output.origin else {
+      XCTFail("Expected a joined private AP1 result with actual \(backend.rawValue) dispatch, origin and budget")
+      throw Renderer.Failure.invalidImage
+    }
+    return receipt
+  }
+
+  private func pixelWitness(_ actual: MTLTexture, reference: MTLTexture, referenceOrigin: MTLOrigin = .init(),
+                            label: String, exact: Bool = false) throws -> [String: Any] {
+    var aHash = SHA256(), bHash = SHA256()
+    var maxScaledRGBError: Float = 0
+    var nonfinite = 0, alphaBitDifferences = 0, rgbBitDifferences = 0
+    var negativePixels = 0, aboveOnePixels = 0, transparentPixels = 0, partialAlphaPixels = 0, opaquePixels = 0
+    for row in stride(from: 0, to: actual.height, by: 64) {
+      let rows = min(64, actual.height - row)
+      try autoreleasepool {
+        let a = try read(actual, region: MTLRegionMake2D(0, row, actual.width, rows))
+        let b = try read(reference, region: MTLRegionMake2D(referenceOrigin.x, referenceOrigin.y + row, actual.width, rows))
+        updateSHA256(&aHash, pixels: a); updateSHA256(&bHash, pixels: b)
+        for (value, expected) in zip(a, b) {
+          if value.w.bitPattern != expected.w.bitPattern { alphaBitDifferences += 1 }
+          if value.w == 0 { transparentPixels += 1 }
+          if value.w > 0 && value.w < 1 { partialAlphaPixels += 1 }
+          if value.w == 1 { opaquePixels += 1 }
+          if min(value.x, value.y, value.z) < 0 { negativePixels += 1 }
+          if max(value.x, value.y, value.z) > 1 { aboveOnePixels += 1 }
+          for channel in 0..<3 {
+            let candidate = value[channel], baseline = expected[channel]
+            if candidate.bitPattern != baseline.bitPattern { rgbBitDifferences += 1 }
+            if candidate.isFinite, baseline.isFinite {
+              maxScaledRGBError = max(maxScaledRGBError, abs(candidate - baseline) / max(1, abs(baseline)))
+            } else { nonfinite += 1 }
+          }
+          if !value.w.isFinite || !expected.w.isFinite { nonfinite += 1 }
+        }
+      }
+    }
+    XCTAssertEqual(nonfinite, 0, label)
+    XCTAssertEqual(alphaBitDifferences, 0, label)
+    XCTAssertLessThanOrEqual(maxScaledRGBError, 0.00002, label)
+    if exact { XCTAssertEqual(rgbBitDifferences, 0, label) }
+    XCTAssertGreaterThan(transparentPixels, 0, label)
+    XCTAssertGreaterThan(partialAlphaPixels, 0, label)
+    XCTAssertGreaterThan(opaquePixels, 0, label)
+    // The center ROI may intentionally stay inside a positive, below-white part of the chart.
+    if label == "small" || label == "full" {
+      XCTAssertGreaterThan(negativePixels, 0, label)
+      XCTAssertGreaterThan(aboveOnePixels, 0, label)
+    }
+    return ["candidateRGBA32FSHA256": hex(aHash.finalize()), "referenceRGBA32FSHA256": hex(bHash.finalize()),
+      "pixels": actual.width * actual.height, "maxScaledRGBError": maxScaledRGBError, "rgbBitDifferences": rgbBitDifferences,
+      "alphaBitDifferences": alphaBitDifferences, "nonfinite": nonfinite, "negativePixels": negativePixels,
+      "aboveOnePixels": aboveOnePixels, "transparentPixels": transparentPixels, "partialAlphaPixels": partialAlphaPixels,
+      "opaquePixels": opaquePixels]
+  }
+
+  private func updateSHA256(_ digest: inout SHA256, pixels: [SIMD4<Float>]) {
+    pixels.withUnsafeBytes { bytes in
+      digest.update(data: Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: bytes.baseAddress!),
+        count: bytes.count, deallocator: .none))
+    }
+  }
+
+  private func hex(_ digest: SHA256.Digest) -> String { digest.map { String(format: "%02x", $0) }.joined() }
 
   private func rustRenderer(_ device: MTLDevice) throws -> Renderer {
     try Renderer(device: device, backend: .rust)
@@ -579,13 +797,17 @@ final class RustSceneGraphRendererTests: XCTestCase {
 
   private func fixture(width: Int, height: Int) throws -> (MTLDevice, Renderer, Image, Renderer.Geometry, [SIMD4<Float>]) {
     let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
-    let samples = (0..<(width * height)).map { index -> SIMD4<Float> in
+    let samples = fixturePixels(width: width, height: height)
+    let raw = try upload(samples, width: width, device: device)
+    return (device, try Renderer(device: device), raw, .init(width: width, height: height), samples)
+  }
+
+  private func fixturePixels(width: Int, height: Int) -> [SIMD4<Float>] {
+    (0..<(width * height)).map { index -> SIMD4<Float> in
       let x = Float(index % width) / Float(width), y = Float(index / width) / Float(height)
       let alpha: Float = index % 7 == 0 ? 0 : (index % 5 == 0 ? 0.5 : 1)
       return .init(0.05 + 0.9 * x - 0.125 * y, 1.2 * y - 0.03125, -0.015625 + 0.4 * x * y, alpha)
     }
-    let raw = try upload(samples, width: width, device: device)
-    return (device, try Renderer(device: device), raw, .init(width: width, height: height), samples)
   }
 
   private func workflow(_ nodes: [Node], final: Node) throws -> Graph {
@@ -650,18 +872,20 @@ final class RustSceneGraphRendererTests: XCTestCase {
   }
   """#
 
-  private func read(_ texture: MTLTexture) throws -> [SIMD4<Float>] {
-    let size = texture.width * texture.height * 16
+  private func read(_ texture: MTLTexture, region: MTLRegion? = nil) throws -> [SIMD4<Float>] {
+    let rect = region ?? MTLRegionMake2D(0, 0, texture.width, texture.height)
+    let stride = MemoryLayout<SIMD4<Float>>.stride
+    let rowBytes = rect.size.width * stride, size = rowBytes * rect.size.height
     let buffer = try XCTUnwrap(texture.device.makeBuffer(length: size, options: .storageModeShared))
     let queue = try XCTUnwrap(texture.device.makeCommandQueue())
     let command = try XCTUnwrap(queue.makeCommandBuffer())
     let encoder = try XCTUnwrap(command.makeBlitCommandEncoder())
-    encoder.copy(from: texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(),
-      sourceSize: .init(width: texture.width, height: texture.height, depth: 1), to: buffer,
-      destinationOffset: 0, destinationBytesPerRow: texture.width * 16, destinationBytesPerImage: size)
+    encoder.copy(from: texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: rect.origin,
+      sourceSize: rect.size, to: buffer,
+      destinationOffset: 0, destinationBytesPerRow: rowBytes, destinationBytesPerImage: size)
     encoder.endEncoding(); command.commit(); command.waitUntilCompleted()
     XCTAssertEqual(command.status, .completed)
-    return Array(UnsafeBufferPointer(start: buffer.contents().assumingMemoryBound(to: SIMD4<Float>.self), count: size / 16))
+    return Array(UnsafeBufferPointer(start: buffer.contents().assumingMemoryBound(to: SIMD4<Float>.self), count: size / stride))
   }
 
   private func compare(_ actual: [SIMD4<Float>], _ expected: [SIMD4<Float>], tolerance: Float, message: String) throws {

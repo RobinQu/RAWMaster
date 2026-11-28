@@ -1,6 +1,6 @@
 //! Same-device AP1 texture execution for the strict macOS product adapter.
 
-use super::{parameter_rows, write_steps, GROUP_EDGE};
+use super::{parameter_rows, write_additional_operators, write_steps, GROUP_EDGE};
 use crate::gpu::metal_surface::{NativeJoin, SurfaceFrame};
 use crate::gpu::Gpu;
 use crate::scene::ap1::{Plan, Prepared, Region, Root};
@@ -541,6 +541,7 @@ fn texture_wgsl(plan: &Plan) -> String {
 "#,
     );
     code.push_str(operators);
+    write_additional_operators(&mut code, plan);
     code.push_str(
         r#"
 @compute @workgroup_size(16, 16)

@@ -1,7 +1,7 @@
 //! The first portable scene contract. The 039 document stays authoritative for validation.
 //! This component accepts native pixel rectangles. Each supported operator is pointwise.
 
-use super::{parse, Blend, Endpoint, Operation, SceneError, Scope};
+use super::{parse, Blend, CoverageCombine, Endpoint, Operation, SceneError, Scope};
 use crate::Pixel;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -46,6 +46,30 @@ pub const OPERATORS: &[Operator] = &[
         inputs: &[AP1_PORT, AP1_PORT],
         output: AP1_PORT,
         roi: "pointwise-ordered-pair",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.radial_coverage",
+        version: 1,
+        inputs: &[],
+        output: COVERAGE_PORT,
+        roi: "pointwise-full-frame-pixel-center",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.intersect_coverage",
+        version: 1,
+        inputs: &[COVERAGE_PORT, COVERAGE_PORT],
+        output: COVERAGE_PORT,
+        roi: "pointwise",
+        precision: "f32",
+    },
+    Operator {
+        id: "scene.normal_ordered_parallel",
+        version: 1,
+        inputs: &[AP1_PORT, AP1_PORT, AP1_PORT],
+        output: AP1_PORT,
+        roi: "pointwise-ordered-accumulator-with-original-base",
         precision: "f32",
     },
 ];
@@ -175,6 +199,22 @@ pub(crate) enum Step {
         output: Image,
         row: usize,
     },
+    RadialCoverage {
+        output: Coverage,
+        row: usize,
+    },
+    IntersectCoverage {
+        left: Coverage,
+        right: Coverage,
+        output: Coverage,
+    },
+    NormalParallel {
+        current: Image,
+        branch: Image,
+        base: Image,
+        output: Image,
+        row: usize,
+    },
 }
 
 /// A topology with typed slots and stable parameter positions. Selector IDs and recipe values
@@ -292,12 +332,47 @@ impl<'a> Lowering<'a> {
         if let Some(slot) = self.coverages.get(id) {
             return Ok(*slot);
         }
-        let Operation::LinearCoverage { start, end } = self.operation(id)? else {
-            return Err(unsupported(id));
+        let (output, step) = match self.operation(id)? {
+            Operation::LinearCoverage { start, end } => {
+                let row = self.row([start[0], start[1], end[0], end[1]]);
+                let output = Coverage(self.coverages.len());
+                (output, Step::LinearCoverage { output, row })
+            }
+            Operation::RadialCoverage {
+                center,
+                radii,
+                feather,
+            } => {
+                if *feather > 0.0 && 1.0_f32 - *feather == 1.0 {
+                    return Err(SceneError::Unsupported(format!(
+                        "radial coverage {id} feather has no nonzero F32 interval"
+                    )));
+                }
+                let row = self.row([center[0], center[1], radii[0], radii[1]]);
+                self.row([*feather, 0.0, 0.0, 0.0]);
+                let output = Coverage(self.coverages.len());
+                (output, Step::RadialCoverage { output, row })
+            }
+            Operation::CombineCoverage {
+                base,
+                other,
+                mode: CoverageCombine::Intersect,
+            } => {
+                let left = self.coverage(base)?;
+                let right = self.coverage(other)?;
+                let output = Coverage(self.coverages.len());
+                (
+                    output,
+                    Step::IntersectCoverage {
+                        left,
+                        right,
+                        output,
+                    },
+                )
+            }
+            _ => return Err(unsupported(id)),
         };
-        let row = self.row([start[0], start[1], end[0], end[1]]);
-        let output = Coverage(self.coverages.len());
-        self.steps.push(Step::LinearCoverage { output, row });
+        self.steps.push(step);
         self.coverages.insert(id.into(), output);
         Ok(output)
     }
@@ -378,6 +453,39 @@ impl<'a> Lowering<'a> {
                 }
                 current
             }
+            Operation::Parallel {
+                base,
+                layers,
+                enabled,
+            } => {
+                let base = self.image(base)?;
+                let mut current = base;
+                if *enabled {
+                    for layer in layers.iter().filter(|layer| layer.weight > 0.0) {
+                        // 039 validates Parallel's normal mode and skips the original base
+                        // before its weight-one replacement. A repeated non-base still adds.
+                        let branch = self.image(&layer.image)?;
+                        if branch == base {
+                            continue;
+                        }
+                        if layer.weight == 1.0 {
+                            current = branch;
+                            continue;
+                        }
+                        let row = self.row([layer.weight, 0.0, 0.0, 0.0]);
+                        let output = self.next_image();
+                        self.steps.push(Step::NormalParallel {
+                            current,
+                            branch,
+                            base,
+                            output,
+                            row,
+                        });
+                        current = output;
+                    }
+                }
+                current
+            }
             _ => return Err(unsupported(id)),
         };
         self.images.insert(id.clone(), output);
@@ -426,6 +534,18 @@ fn correct(pixel: Pixel, coverage: f32, rows: &[[f32; 4]]) -> Pixel {
     [pixel[0] * gain, pixel[1] * gain, pixel[2] * gain, pixel[3]]
 }
 
+fn radial(pixel_center: [f32; 2], facts: [f32; 4], feather: f32) -> f32 {
+    let x = (pixel_center[0] - facts[0]) / facts[2];
+    let y = (pixel_center[1] - facts[1]) / facts[3];
+    let radius = libm::sqrtf(x * x + y * y);
+    if feather == 0.0 {
+        return if radius <= 1.0 { 1.0 } else { 0.0 };
+    }
+    let inner = 1.0 - feather;
+    let t = ((radius - inner) / (1.0 - inner)).clamp(0.0, 1.0);
+    (1.0 - t * t * (3.0 - 2.0 * t)).clamp(0.0, 1.0)
+}
+
 /// Independent scalar evaluation of the supported AP1 operators. A checked scalar step cannot
 /// hide an invalid value behind a later shader identity or blend.
 pub fn render_cpu(
@@ -440,13 +560,13 @@ pub fn render_cpu(
     for (index, pixel) in input.iter().copied().enumerate() {
         let x = index as u32 % region.extent[0];
         let y = index as u32 / region.extent[0];
+        let px = ((region.origin[0] + x) as f32 + 0.5) / region.full[0] as f32;
+        let py = ((region.origin[1] + y) as f32 + 0.5) / region.full[1] as f32;
         images[0] = pixel;
         for step in &prepared.plan.steps {
             let image_output = match *step {
                 Step::LinearCoverage { output, row } => {
                     let [x0, y0, x1, y1] = prepared.parameters.rows[row];
-                    let px = ((region.origin[0] + x) as f32 + 0.5) / region.full[0] as f32;
-                    let py = ((region.origin[1] + y) as f32 + 0.5) / region.full[1] as f32;
                     let dx = x1 - x0;
                     let dy = y1 - y0;
                     coverage[output.0] =
@@ -487,6 +607,49 @@ pub fn render_cpu(
                             a[0] + (b[0] - a[0]) * weight,
                             a[1] + (b[1] - a[1]) * weight,
                             a[2] + (b[2] - a[2]) * weight,
+                            a[3],
+                        ]
+                    };
+                    Some(output)
+                }
+                Step::RadialCoverage { output, row } => {
+                    let rows = &prepared.parameters.rows;
+                    let value = radial([px, py], rows[row], rows[row + 1][0]);
+                    if !value.is_finite() {
+                        return Err(SceneError::Render(format!(
+                            "non-finite AP1 radial coverage at pixel {index}"
+                        )));
+                    }
+                    coverage[output.0] = value;
+                    None
+                }
+                Step::IntersectCoverage {
+                    left,
+                    right,
+                    output,
+                } => {
+                    // Both coverage operands have already passed the finite [0, 1] boundary.
+                    coverage[output.0] = coverage[left.0] * coverage[right.0];
+                    None
+                }
+                Step::NormalParallel {
+                    current,
+                    branch,
+                    base,
+                    output,
+                    row,
+                } => {
+                    let a = images[current.0];
+                    let b = images[branch.0];
+                    let original = images[base.0];
+                    let weight = prepared.parameters.rows[row][0];
+                    images[output.0] = if a[3] == 0.0 {
+                        [0.0; 4]
+                    } else {
+                        [
+                            a[0] + weight * (b[0] - original[0]),
+                            a[1] + weight * (b[1] - original[1]),
+                            a[2] + weight * (b[2] - original[2]),
                             a[3],
                         ]
                     };

@@ -1,4 +1,5 @@
-use rawmaster_image::scene::ap1::{render_cpu, Prepared, Region, Root};
+use rawmaster_image::scene::ap1::{render_cpu, Prepared, Region, Root, OPERATORS};
+use rawmaster_image::scene::SceneError;
 use rawmaster_image::Pixel;
 use serde_json::{json, Value};
 
@@ -29,6 +30,141 @@ fn input() -> Vec<Pixel> {
             _ => [0.11, 0.07, 0.099, 0.18],
         })
         .collect()
+}
+
+fn six_mp_scene() -> Value {
+    json!({"schemaVersion":1,"graph":{"output":"mix","nodes":[
+        {"id":"ramp","name":"Ramp","operation":{"kind":"linearCoverage","start":[0.1,0],"end":[0.9,1]}},
+        {"id":"ellipse","name":"Ellipse","operation":{"kind":"radialCoverage","center":[0.5,0.5],"radii":[0.4,0.6],"feather":0.2}},
+        {"id":"mask","name":"Intersection","operation":{"kind":"combineCoverage","base":"ramp","other":"ellipse","mode":"intersect"}},
+        {"id":"light","name":"Light","operation":{"kind":"corrector","image":"$input","mask":"mask","exposureEV":1.2,
+            "curve":[[-4.0,-3.5],[0.0,0.0],[3.0,2.0]],"strength":0.8,"enabled":true}},
+        {"id":"dark","name":"Dark","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":-0.7,
+            "curve":[],"strength":1,"enabled":true}},
+        {"id":"mix","name":"Mix","operation":{"kind":"parallel","base":"$input","enabled":true,
+            "layers":[{"image":"light","weight":0.65,"mode":"normal"},{"image":"dark","weight":0.35,"mode":"normal"}]}}
+    ]}})
+}
+
+#[test]
+fn cpu_six_mp_shape_uses_typed_coverage_and_ordered_parallel() {
+    let mut graph = six_mp_scene();
+    let encoded = serde_json::to_vec(&graph).unwrap();
+    let prepare = |root| Prepared::from_039(&encoded, root).unwrap();
+    let base = input();
+    let full = Region::new([27, 13], [0, 0], [27, 13]).unwrap();
+    let roi = Region::new([27, 13], [4, 2], [17, 8]).unwrap();
+    let final_plan = prepare(Root::Final);
+    let light = render_cpu(&prepare(Root::Monitor("light")), full, &base).unwrap();
+    let dark = render_cpu(&prepare(Root::Monitor("dark")), full, &base).unwrap();
+    let actual = render_cpu(&final_plan, full, &base).unwrap();
+    assert_eq!(final_plan.plan().step_count(), 7);
+    for (((base, light), dark), actual) in base.iter().zip(light).zip(dark).zip(&actual) {
+        if base[3] == 0.0 {
+            assert_eq!(*actual, [0.0; 4]);
+        } else {
+            for c in 0..3 {
+                let after_light = base[c] + 0.65 * (light[c] - base[c]);
+                assert_eq!(actual[c], after_light + 0.35 * (dark[c] - base[c]));
+            }
+            assert_eq!(actual[3].to_bits(), base[3].to_bits());
+        }
+    }
+    assert_eq!(
+        render_cpu(&final_plan, roi, &roi.crop(&base).unwrap()).unwrap(),
+        roi.crop(&actual).unwrap()
+    );
+    for (id, output) in [
+        ("scene.radial_coverage", "coverage-r32f"),
+        ("scene.intersect_coverage", "coverage-r32f"),
+        ("scene.normal_ordered_parallel", "acescg-ap1-premul-rgba32f"),
+    ] {
+        assert!(OPERATORS.iter().any(|op| op.id == id
+            && op.output == output
+            && op.version == 1
+            && op.precision == "f32"));
+    }
+    graph["graph"]["nodes"][1]["operation"]["feather"] = json!(0.4);
+    let rebound = Prepared::from_039(&serde_json::to_vec(&graph).unwrap(), Root::Final).unwrap();
+    assert_eq!(final_plan.plan(), rebound.plan());
+    graph["graph"]["nodes"][2]["operation"]["mode"] = json!("add");
+    assert!(matches!(
+        Prepared::from_039(&serde_json::to_vec(&graph).unwrap(), Root::Final),
+        Err(SceneError::Unsupported(_))
+    ));
+}
+
+#[test]
+fn cpu_radial_edge_feather_absolute_roi_and_zero_intersection() {
+    let mut graph = six_mp_scene();
+    graph["graph"]["nodes"][0]["operation"]["start"] = json!([0.375, 0.0]);
+    graph["graph"]["nodes"][0]["operation"]["end"] = json!([0.875, 0.0]);
+    graph["graph"]["nodes"][1]["operation"]["center"] = json!([0.375, 0.5]);
+    graph["graph"]["nodes"][1]["operation"]["radii"] = json!([0.25, 1.0]);
+    graph["graph"]["nodes"][1]["operation"]["feather"] = json!(0.0);
+    graph["graph"]["nodes"][3]["operation"]["exposureEV"] = json!(1.0);
+    graph["graph"]["nodes"][3]["operation"]["curve"] = json!([]);
+    graph["graph"]["nodes"][3]["operation"]["strength"] = json!(1.0);
+    let color = [0.5, -0.25, 1.0, 0.75];
+    let prepared =
+        Prepared::from_039(&serde_json::to_vec(&graph).unwrap(), Root::Monitor("light")).unwrap();
+    let full = Region::new([4, 1], [0, 0], [4, 1]).unwrap();
+    let hard = render_cpu(&prepared, full, &[color; 4]).unwrap();
+    assert_eq!(hard, [color, color, [0.75, -0.375, 1.5, 0.75], color]);
+    // The pixel at r=1 has half the linear coverage; outside returns zero even at full ramp.
+    let corner = Region::new([4, 1], [2, 0], [2, 1]).unwrap();
+    assert_eq!(
+        render_cpu(&prepared, corner, &[color; 2]).unwrap(),
+        hard[2..]
+    );
+
+    graph["graph"]["nodes"][0]["operation"]["start"] = json!([0.125, 0.0]);
+    graph["graph"]["nodes"][0]["operation"]["end"] = json!([0.625, 0.0]);
+    graph["graph"]["nodes"][1]["operation"]["center"] = json!([0.4375, 0.5]);
+    graph["graph"]["nodes"][1]["operation"]["radii"] = json!([0.5, 1.0]);
+    graph["graph"]["nodes"][1]["operation"]["feather"] = json!(0.5);
+    let prepared =
+        Prepared::from_039(&serde_json::to_vec(&graph).unwrap(), Root::Monitor("light")).unwrap();
+    let feather = Region::new([8, 1], [6, 0], [2, 1]).unwrap();
+    let feathered = render_cpu(&prepared, feather, &[color; 2]).unwrap();
+    assert_eq!(feathered[0], [0.75, -0.375, 1.5, 0.75]); // r=0.75, the midpoint of [0.5,1].
+    assert_eq!(feathered[1], color); // r=1, the feather ends at zero.
+    graph["graph"]["nodes"][1]["operation"]["feather"] = json!(f32::EPSILON / 8.0);
+    assert!(matches!(
+        Prepared::from_039(&serde_json::to_vec(&graph).unwrap(), Root::Monitor("light")),
+        Err(SceneError::Unsupported(message)) if message.contains("no nonzero F32 interval")
+    ));
+}
+
+#[test]
+fn cpu_parallel_preserves_base_skip_weight_one_replacement_and_early_finite_gate() {
+    let mut graph = json!({"schemaVersion":1,"graph":{"output":"mix","nodes":[
+        {"id":"a","name":"Brighter","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":1.0,"curve":[],"strength":1,"enabled":true}},
+        {"id":"b","name":"Darker","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":-1.0,"curve":[],"strength":1,"enabled":true}},
+        {"id":"mix","name":"Mix","operation":{"kind":"parallel","base":"$input","enabled":true,
+            "layers":[{"image":"a","weight":0.25,"mode":"normal"},{"image":"$input","weight":1,"mode":"normal"},
+                      {"image":"b","weight":0.5,"mode":"normal"}]}}
+    ]}});
+    let full = Region::new([1, 1], [0, 0], [1, 1]).unwrap();
+    let run = |document: &Value, input| {
+        let plan = Prepared::from_039(&serde_json::to_vec(document).unwrap(), Root::Final).unwrap();
+        render_cpu(&plan, full, &[input])
+    };
+    let color = [1.0, -0.5, 0.25, 1.0];
+    assert_eq!(run(&graph, color).unwrap(), [color]);
+    let layers = &mut graph["graph"]["nodes"][2]["operation"]["layers"];
+    *layers = json!([{"image":"a","weight":0.25,"mode":"normal"},{"image":"b","weight":1,"mode":"normal"},
+                     {"image":"a","weight":0.75,"mode":"normal"}]);
+    assert_eq!(run(&graph, color).unwrap(), [[1.25, -0.625, 0.3125, 1.0]]);
+    let mut layers = vec![json!({"image":"a","weight":0.75,"mode":"normal"}); 5];
+    layers.push(json!({"image":"b","weight":1,"mode":"normal"}));
+    graph["graph"]["nodes"][2]["operation"]["layers"] = json!(layers);
+    // Both branch results are finite. A repeated accumulation overflows before the final
+    // weight-one replacement can hide it.
+    assert!(matches!(
+        run(&graph, [f32::MAX * 0.25, 0.0, 0.0, 1.0]),
+        Err(SceneError::Render(_))
+    ));
 }
 
 #[test]
@@ -193,5 +329,40 @@ fn assert_bit_exact(actual: &[Pixel], expected: &[Pixel]) {
             expected.map(f32::to_bits),
             "pixel {index}"
         );
+    }
+}
+
+#[cfg(feature = "gpu")]
+#[test]
+#[ignore = "requires physical Metal on macOS or physical Vulkan on Linux"]
+fn strict_wgsl_six_mp_shape_matches_cpu_on_small_full_and_roi() {
+    use rawmaster_image::gpu::ap1_scene::{Backend, SceneDevice, DEFAULT_BUDGET_BYTES};
+    let backend = if cfg!(target_os = "macos") {
+        Backend::Metal
+    } else {
+        Backend::Vulkan
+    };
+    let mut device = SceneDevice::open(
+        backend,
+        std::env::var("RAWMASTER_AP1_ADAPTER").ok().as_deref(),
+    )
+    .unwrap();
+    let encoded = serde_json::to_vec(&six_mp_scene()).unwrap();
+    let full = Region::new([27, 13], [0, 0], [27, 13]).unwrap();
+    let roi = Region::new([27, 13], [4, 2], [17, 8]).unwrap();
+    let input = input();
+    let crop = roi.crop(&input).unwrap();
+    for root in [Root::Final, Root::Monitor("light")] {
+        let prepared = Prepared::from_039(&encoded, root).unwrap();
+        let program = device.compile(prepared.plan()).unwrap();
+        let (actual, _) = device
+            .render(&program, &prepared, full, &input, DEFAULT_BUDGET_BYTES)
+            .unwrap();
+        let (part, _) = device
+            .render(&program, &prepared, roi, &crop, DEFAULT_BUDGET_BYTES)
+            .unwrap();
+        assert_pixels(&actual, &render_cpu(&prepared, full, &input).unwrap());
+        assert_pixels(&part, &render_cpu(&prepared, roi, &crop).unwrap());
+        assert_bit_exact(&part, &roi.crop(&actual).unwrap());
     }
 }

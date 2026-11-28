@@ -328,6 +328,7 @@ impl SceneDevice {
 
 fn wgsl(plan: &Plan) -> String {
     let mut code = include_str!("ap1_scene.wgsl").to_owned();
+    write_additional_operators(&mut code, plan);
     code.push_str(
         r#"
 @compute @workgroup_size(16, 16)
@@ -355,6 +356,23 @@ fn parameter_rows(prepared: &Prepared, region: Region) -> Vec<[u32; 4]> {
             .map(|row| row.map(f32::to_bits)),
     );
     rows
+}
+
+fn write_additional_operators(code: &mut String, plan: &Plan) {
+    if plan
+        .steps
+        .iter()
+        .any(|step| matches!(step, Step::RadialCoverage { .. }))
+    {
+        code.push_str(include_str!("ap1_scene_radial.wgsl"));
+    }
+    if plan
+        .steps
+        .iter()
+        .any(|step| matches!(step, Step::NormalParallel { .. }))
+    {
+        code.push_str(include_str!("ap1_scene_parallel.wgsl"));
+    }
 }
 
 fn write_steps(code: &mut String, plan: &Plan) {
@@ -391,6 +409,37 @@ fn write_steps(code: &mut String, plan: &Plan) {
                     code,
                     "    let p{} = normal_layer(p{}, p{}, {row}u);",
                     output.0, bottom.0, top.0
+                )
+                .unwrap();
+                output.0
+            }
+            Step::RadialCoverage { output, row } => {
+                let slot = output.0;
+                writeln!(code, "    let c{slot} = radial_coverage(q, {row}u);").unwrap();
+                writeln!(code, "    if !(c{slot} >= 0.0 && c{slot} <= 1.0) {{ atomicOr(&invalid, 2u); return; }}").unwrap();
+                continue;
+            }
+            Step::IntersectCoverage {
+                left,
+                right,
+                output,
+            } => {
+                let slot = output.0;
+                writeln!(code, "    let c{slot} = c{} * c{};", left.0, right.0).unwrap();
+                writeln!(code, "    if !(c{slot} >= 0.0 && c{slot} <= 1.0) {{ atomicOr(&invalid, 2u); return; }}").unwrap();
+                continue;
+            }
+            Step::NormalParallel {
+                current,
+                branch,
+                base,
+                output,
+                row,
+            } => {
+                writeln!(
+                    code,
+                    "    let p{} = normal_parallel(p{}, p{}, p{}, {row}u);",
+                    output.0, current.0, branch.0, base.0
                 )
                 .unwrap();
                 output.0
