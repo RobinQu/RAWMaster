@@ -290,6 +290,8 @@ Release `20261128.182855` 已安装并通过严格验签。48 项蒙版、归约
 
 同构建按原路径、默认、默认、原路径采四轮，60 MP 的 296 个定稿与 50 MP 的 16 个定稿均匹配完整 RGBA8。冷去雾请求到读回 p50 分别从 985.91、815.09 ms 降至 600.80、452.26 ms，60 MP 的引导图从 640.85 降至 256.06 ms。60 MP 全阶段矩阵 p50/p95 为 68.58/286.38 和 67.90/293.21 ms。正式两轮仍各有 37/37 项暖态达到 LightFlow 容差，分别验证 1184 对正式帧和 222 对预热帧。74 个首次状态的首个精确 p50/p95 分别为 73.96/336.88 和 77.45/298.62 ms，当前首次精确仍超出同机 LightFlow 的 9.52/58.97 ms。[逐状态时钟、阶段及回滚](evidence/m0-native-dehaze-default.json)
 
+Release `20261128.190636` 已安装并通过严格验签。默认源纹理、引导与回退 61 项，直写引导选跑 1 项，锐化和有限值 24 项，滤镜面板 17 项及实拍自由缩放 1 项全部通过。隔离资料库通过 SQLite 自检并显示 AppKit 窗口，安装前后完成 40+4 次 Metal C ABI 复验。[构建、签名与安装回执](evidence/m0-native-dehaze-release-checkpoint.json)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)
@@ -299,7 +301,7 @@ Release `20261128.182855` 已安装并通过严格验签。48 项蒙版、归约
 | RAWMaster 032 | 535.50 | 439.98 / 486.68 | 45.869 dB / 0.968124 |
 | LightFlow 2d41ab1 | 3074.66 | 1825.77 / 1838.37 | 42.793 dB / 0.958384 |
 
-Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 Camera Raw 同口径精确读回、三方 1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
+Camera Raw 19.0 通过原生 Save Options 将同源、+0.5 EV 保存为原尺寸 8-bit sRGB baseline JPEG。数值档 4–6 为 4:2:0，7–12 为 4:4:4。两份独立原生 TIFF16 的规范 RGB16 摘要一致。最高已测 4:2:0 档的 PSNR / SSIM 为 41.139 dB / 0.951336，LightFlow q95 锚为 42.793 dB / 0.958384，当前未进入等保真门。Adobe 第 6 档另做 5 次预热和 30 次暖测，从原生 Save 提交到独立 15 ms 观察最终 JPEG 尾标记，p50/p95 为 352.65/405.72 ms。全部文件的图像编码流、ICC 和量化表均与校准样本一致。三方等保真时钟和 Adobe 同口径精确读回仍待验。Photoshop 9504×6336 文档打开继续沿用独立区间。[Adobe 实际头部、保真度与逐次出片时钟](evidence/m0-camera-raw-jpeg-qualification.json) · [Camera Raw 文档打开原始数据](../../docs/research/camera-raw-parity/performance-data.json)
 
 #### 物理 1:1 曝光
 
@@ -311,7 +313,16 @@ Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 C
 | RAWMaster 均衡默认 | 118.01 / 135.46 | 7722×3960 |
 | RAWMaster 均衡窄窗试验 | 27.29 / 43.28 | 3861×1980 |
 
-窄窗进入 LightFlow 的 30.79/48.73 ms 容差。两个 RAWMaster 路径各以两档曝光核对 3680×1804 完整可见区，RGB 摘要相同。窄窗暖态可在现有缓存留住两档原寸位图，本轮交互和截图合计从 0 次命中变为 39 次命中。该轮基图池关闭，`RAWMASTER_QA_NARROW_ACTUAL_PIXEL_WINDOW=1` 保留供历史对照。Camera Raw 当前沿用历史数据，新的独立窗口样本继续待采。[独立回放](../../scripts/performance/replay-rawmaster-screen.py) · [实测几何、像素及缓存](evidence/m0-physical-1to1-exposure.json)
+窄窗进入 LightFlow 的 30.79/48.73 ms 容差。两个 RAWMaster 路径各以两档曝光核对 3680×1804 完整可见区，RGB 摘要相同。窄窗暖态可在现有缓存留住两档原寸位图，本轮交互和截图合计从 0 次命中变为 39 次命中。该轮基图池关闭，`RAWMASTER_QA_NARROW_ACTUAL_PIXEL_WINDOW=1` 保留供历史对照。[独立回放](../../scripts/performance/replay-rawmaster-screen.py) · [实测几何、像素及缓存](evidence/m0-physical-1to1-exposure.json)
+
+Camera Raw 19.0 在同一 Mac16,5 的 2× 屏上用原生 100% 画布取同一源区。两档曝光分别用七个分散纹理块和 Adobe 原生 9504×6336 TIFF16 配准。两轴都是一个源像素对应一个背板像素，指定源区在采集窗内完整落于 `(544, 868, 1536, 1024)`。两次数字键入被确认窗打断后，改用经标定的两处原生曝光滑杆点击。每次从鼠标按下起计时，下次动作前读回当前曝光，另验稳定目标帧。当前 RAWMaster Release 同源构建的两个基图池配置、Adobe 及 LightFlow 同机封存样本各回放 30 个暖样本。按各产品原生输入到共同显示终点计量，LightFlow 决定 30.79/48.73 ms 的验收限值，两组 RAWMaster 均通过。[三方原寸坐标、回放与逐次时间](evidence/m0-current-three-way-1to1.json)
+
+| 单屏物理 1:1 曝光 | 暖态 p50 / p95，ms |
+| --- | ---: |
+| RAWMaster，关基图池 | 26.80 / 38.30 |
+| RAWMaster，启用空基图池 | 30.23 / 46.01 |
+| LightFlow `2d41ab1` | 27.99 / 40.60 |
+| Camera Raw 19.0 | 50.86 / 91.17 |
 
 #### 原寸首窗与位图预算
 
@@ -374,13 +385,16 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 
 画布诊断在 `benchmark-rawmaster-canvas.py` 加 `--diagnostics` 和 `--frames`，并设置 `RAWMASTER_INTERACTION_TRACE` 为新的绝对文件路径。用相同测试包串行跑 `--settle 0.8`、`1.8`、`0.8`，各 `--warmup 5 --samples 6 --operations Highlights Shadows Tint`。输入诊断同时记录 Core Media 和 Dispatch 时钟，画布动作按已确认帧的 ID 和修订与 AppKit 追踪对齐。`*.telemetry.json` 为结束时的现有遥测快照。正式对标关闭这些诊断并使用 30 次计量。
 
+Adobe 原寸测量先在独立 RAW 副本的 100% 画布配准整像素坐标，并检查两档目标的完整区域。`benchmark-acr-canvas.py` 用 `--photo-rect` 传该源区的窗口像素，用 `--exposure-slider` 传零档、+0.5 档的横坐标和滑杆纵坐标。更换窗口或显示器后须重新标定。保留 `--warmup 5 --samples 30 --settle 0.8 --frames` 的帧和输入记录，通过 `replay-acr-screen.py` 复核。[采集脚本](../../scripts/performance/benchmark-acr-canvas.py) · [回放脚本](../../scripts/performance/replay-acr-screen.py)
+
 ## 7. 待补证据
 
 - [x] M0 摄影场景 032 准备、发布、目录重开与队列中断恢复
 - [x] M0 60 MP 三路同构建分项，固定校准和运行库
 - [x] M0 6 MP 5 次预热、每执行器 30 次，原生 FIT/监看及 1:1 复跑
-- [x] M0 当前 Camera Raw 和 LightFlow 的同机 FIT 六项，各 30 次暖测进入最快对手容差
-- [ ] M0 冷态首个精确、完整可比的原寸与等保真成片外部验收
+- [x] M0 当前 Camera Raw 和 LightFlow 的同机 FIT 六项，从各自原生输入到共同显示终点，各 30 次暖测进入 LightFlow 容差
+- [x] M0 三方物理 1:1 单屏曝光，RAWMaster 关基图池和启用空基图池均进入最快对手容差
+- [ ] M0 Adobe FIT 完整值提交的可比时钟、冷态首个精确及等保真成片外部验收
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
 - [x] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机组件回执
 - [x] M2 6 MP、96 节点、60 MP A/B 和已覆盖算子的 macOS 原生产品路径

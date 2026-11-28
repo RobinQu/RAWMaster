@@ -37,9 +37,11 @@ def main():
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--window", required=True, help="Exact Camera Raw version in the window title")
     parser.add_argument("--photo-rect", required=True, type=int, nargs=4, metavar=("X", "Y", "W", "H"),
-                        help="Visible photo bounds in the captured window’s physical pixels")
+                        help="Displayed photo or verified native ROI bounds in the window’s physical pixels")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--operations", nargs="+", choices=CASES)
+    parser.add_argument("--exposure-slider", type=int, nargs=3, metavar=("ZERO_X", "PLUS_HALF_X", "Y"),
+                        help="Click two calibrated Exposure track positions in the window's physical pixels")
     parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
     parser.add_argument("--samples", default=10, type=int)
     parser.add_argument("--warmup", default=0, type=int, help="Unscored alternating changes before A/B calibration")
@@ -47,6 +49,8 @@ def main():
     args = parser.parse_args()
     if args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5:
         parser.error("Provide a new output path, at least two measured changes, a nonnegative warmup and a sufficient settle interval")
+    if args.exposure_slider and args.operations not in (None, ["Exposure"]):
+        parser.error("Calibrated slider positions are available for Exposure only")
     warmup_order = warmup_states(args.warmup)
     def native(*parts, timeout=25):
         return json.loads(subprocess.check_output([args.binary, *map(str, parts)], text=True, timeout=timeout))
@@ -69,6 +73,12 @@ def main():
               "osBuild": subprocess.check_output(["sw_vers", "-buildVersion"], text=True).strip(),
               "requestedWarmSamples": args.samples, "requestedWarmupInputs": args.warmup, "recorderSHA256": sha(args.binary),
               "photoRectPixels": args.photo_rect, "roi": roi, "policy": POLICY, "operations": {}}
+    if args.exposure_slider:
+        first_x, second_x, slider_y = args.exposure_slider
+        if not 0 <= first_x < second_x < w or not 0 <= slider_y < h:
+            parser.error("Exposure track positions must be ordered and inside the window")
+        result.update(inputMode="exposure-slider-click", exposureSliderWindowBackingPixels=args.exposure_slider,
+                      driver="Native Exposure slider click from mouse-down; committed value read from the numeric field")
     def checkpoint():
         result["sourceSHA256After"] = sha(args.source)
         if result["sourceSHA256After"] != result["sourceSHA256"]:
@@ -84,7 +94,7 @@ def main():
         identified = native("fields", BUNDLE, args.window, "AXTextField", shot, timeout=240)
         if not any(args.source.name in word["text"] for word in identified["words"]):
             raise ValueError("The Camera Raw window did not show the benchmark file name")
-        wanted = args.operations or list(CASES)
+        wanted = args.operations or (["Exposure"] if args.exposure_slider else list(CASES))
         if args.frames:
             args.frames.mkdir(parents=True, exist_ok=False)
         result["planned"] = [CASES[label][0] for label in wanted]
@@ -98,8 +108,17 @@ def main():
                 checkpoint()
                 continue
             field = attrs[0]
+            original = field["value"]
+            if args.exposure_slider and float(original) not in (first, second):
+                raise ValueError("Start Exposure on one of the two calibrated slider values so it can be restored")
             def set_value(value):
-                event = native("type", BUNDLE, args.window, "AXTextField", field["index"], value)
+                control = (BUNDLE, args.window, "AXTextField", field["index"])
+                if args.exposure_slider:
+                    point_x = {first: first_x, second: second_x}[float(value)]
+                    scale = window["scale"]
+                    event = native("click-value", *control, point_x / scale, slider_y / scale)
+                else:
+                    event = native("type", *control, value)
                 if event["position"] != field["position"]:
                     raise ValueError("The AX field moved during capture")
                 event["accepted"] = float(event["actual"]) == float(value)
@@ -111,7 +130,6 @@ def main():
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
             warmup = []
             events = []
-            original = field["value"]
             restore_needed = False
             def interrupted(reason):
                 result["interruption"] = {"operation":key,"completedInputs":len(events),"reason":reason,

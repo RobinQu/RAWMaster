@@ -10,7 +10,7 @@
 - [x] **M0-04** 60 MP 三路暖态各 30 次，已记录墙钟、计数、分项预算与进程/设备采样。6 MP 两个原生 Metal 执行器各完成 5 次预热与 30 次计量。038 FIT/监看与 036 1:1 已复跑。[M0 原生基线](validation.md#m0--回执修复与基线)
 - [x] **M0-05** 定稿版本化 [ReceiptV2](plan.md#43-receiptv2)，区分执行器、图形 API、阶段峰值、计时来源和回退。定义旧 V1、恢复票据与 V2 写入切换条件。
 - [x] **M0-06** 固定实拍和校准摘要、构建与运行库、设备/系统构建及测量区间，提供复现脚本。按原生分项判定编译、图执行、同步和编码的优先级。[M0 验收](validation.md#m0--回执修复与基线)
-- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。当前三方 FIT 六项可见响应均进入最快对手容差。最新两轮默认 canonical 各有 37/37 项暖态通过。点算子复用、局部锐化均值、颗粒原格、四类局部算子分组、局部降噪上下文复用及冷去雾半浮点最小值已按准入范围完成实机验收。首次精确仍超出外部容差，局部降噪分带的旧极值仍待回放。原寸预算窗在两种已测基图池配置下达到 LightFlow 容差。60 MP JPEG 同设置复测通过 LightFlow 门槛，九档校准尚未进入等保真双门。[外部对标](validation.md#外部产品对标) · [当前三方 FIT](evidence/m0-current-fit-three-way.json) · [去雾回执](evidence/m0-native-dehaze-default.json)
+- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。当前三方 FIT 六项和物理 1:1 暖态曝光均进入最快对手容差。最新两轮默认 canonical 各有 37/37 项暖态通过。点算子复用、局部锐化均值、颗粒原格、四类局部算子分组、局部降噪上下文复用及冷去雾半浮点最小值已按准入范围完成实机验收。首次精确仍超出外部容差，局部降噪分带的旧极值仍待回放。60 MP JPEG 同设置复测通过 LightFlow 门槛。Adobe 第 6 档已取得独立出片基线，RAWMaster 和 Adobe 的 4:2:0 候选均尚未达到等保真双门。[外部对标](validation.md#外部产品对标) · [当前三方 FIT](evidence/m0-current-fit-three-way.json) · [三方原寸曝光](evidence/m0-current-three-way-1to1.json) · [Adobe JPEG](evidence/m0-camera-raw-jpeg-qualification.json) · [去雾回执](evidence/m0-native-dehaze-default.json)
 
 ## M1 · 去重
 
@@ -34,7 +34,7 @@
 
 - [ ] **M3-01** 按生存期复用 wgpu 纹理/缓冲池。工作集、缓存、coverage、模型、输出、编码分别准入并核算总峰值。
 - [ ] **M3-02** 按每个模型的尺度和 halo 准入，验证全图坐标的分块 coverage、接缝、取消及预算失败。
-- [ ] **M3-03** 采用设备/ROI/预算计划进行 1:1 取景。60 MP 的首窗、平移、双曝光全可见像素和两种基图池配置已实测。基图池关闭组通过 LightFlow 容差，开启空池组最新复测为 30.18/41.46 ms，也通过。继续签收 5K/6K 实体屏幕、非点算子和多窗的像素与峰值。[原寸首窗及预算回执](evidence/m3-budgeted-actual-pixel-window.json) · [开池复测](evidence/m3-budgeted-1to1-retest.json)
+- [ ] **M3-03** 采用设备/ROI/预算计划进行 1:1 取景。60 MP 的首窗、平移、双曝光全可见像素和两种基图池配置已实测。当前默认预算窗在关池和开空池各 30 次暖态曝光均通过三方容差。继续签收 5K/6K 实体屏幕、非点算子和多窗的像素与峰值。[原寸首窗及预算回执](evidence/m3-budgeted-actual-pixel-window.json) · [三方原寸曝光](evidence/m0-current-three-way-1to1.json)
 - [ ] **M3-04** 交互合并到一个在途帧和一个最新待处理帧，交付在预算内重叠阶段。已处理原寸平移折返后的排队与在途发布失效。继续覆盖换片、切组、迟到、命令和资源失败。[原寸折返](../025-editing-workspace/prototype-review.md#原寸平移折返)
 - [ ] **M3-05** 签收 60 MP 总峰值下降，5K/6K 1:1 可用，受支持模型运行成功，其余组合有具体能力或预算诊断。
 

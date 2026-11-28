@@ -21,7 +21,10 @@ def replay(archive, source):
                 or original.get("recorderSHA256") != info.get("recorderSHA256")):
             raise ValueError("Capture metadata differ from the Adobe frame archive")
         result = {k:v for k,v in original.items() if k!="operations"}
-        result["driver"] = "Physical numeric typing and Tab to ScreenCaptureKit witness; committed value read before the following edit"
+        if original.get("inputMode") == "exposure-slider-click":
+            result["driver"] = "Physical Exposure slider click from mouse-down to ScreenCaptureKit witness; numeric value read before the next click"
+        else:
+            result["driver"] = "Physical numeric typing and Tab to ScreenCaptureKit witness; committed value read before the following edit"
         result["operations"] = {}
         for key,row in original["operations"].items():
             marker = key + ".json"
@@ -78,7 +81,7 @@ def merge(archives, source):
         return captures[0]
     first = captures[0]
     identity = ("protocol","sourceSHA256","sourceSHA256After","hardware","os","osBuild","photoRectPixels","roi","policy",
-                "recorderSHA256")
+                "recorderSHA256","inputMode","exposureSliderWindowBackingPixels")
     result = {k:first[k] for k in (*identity,"schemaVersion","driver","startedAt") if k in first}
     result.update(planned=[],operations={},sessions=[],finishedAt=captures[-1]["finishedAt"])
     for archive, capture in zip(archives,captures):

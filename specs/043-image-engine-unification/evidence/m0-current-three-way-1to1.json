@@ -1,0 +1,1691 @@
+{
+  "schemaVersion": 1,
+  "spec": "043",
+  "scope": "Physical 1:1 still-view Exposure, one Mac16,5 2x screen",
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceROIPixels": [
+    4096,
+    3072,
+    1536,
+    1024
+  ],
+  "valuesEV": [
+    0,
+    0.5
+  ],
+  "RAWMasterByRawBasePoolBytes": {
+    "0": {
+      "product": "RAWMaster Release AppKit fixture",
+      "protocol": "screen-photo-native-roi-response-v1",
+      "timingBoundary": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "captureReport": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/rawmaster-native-0-replayed.json",
+      "reportSHA256": "5a93a37f96f2ba848aa7ebfaf1b483b66e7d9dace90d2eeb3c7fee3f0ec581f7",
+      "captureArchive": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/rawmaster-native-0-frames.zip",
+      "archiveSHA256": "51d61e6eb954ca251901dd703628848cd8a0689b080d1f4768c0ba91530148e0",
+      "recorderSHA256": "43c7ce1602d8baeff205a0a4125544545c7af2d926f859c65744e12a1f941f96",
+      "sourceGeometry": {
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "roiWindowRectPixels": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.37478260869565216,
+          0.3297117516629712,
+          0.2504347826086956,
+          0.34057649667405765
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "detailWindowNormalized": [
+          0.2044402356902357,
+          0.33964646464646464,
+          0.6146885521885522,
+          0.45202020202020204
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          5842,
+          2864
+        ]
+      },
+      "warmup": 5,
+      "calibrationCount": 2,
+      "n": 30,
+      "p50Ms": 26.7987085,
+      "p95Ms": 38.296209,
+      "sampleInputHostNs": [
+        1032983379267916,
+        1032984241257625,
+        1032985099174250,
+        1032985953722250,
+        1032986794166166,
+        1032987639427458,
+        1032988485952125,
+        1032989311969500,
+        1032990146013500,
+        1032990998690791,
+        1032991848176291,
+        1032992686579291,
+        1032993524457666,
+        1032994377922708,
+        1032995233045541,
+        1032996079176541,
+        1032996913002708,
+        1032997763652666,
+        1032998584250250,
+        1032999441196791,
+        1033000314247333,
+        1033001147222750,
+        1033001987301166,
+        1033002841021666,
+        1033003683491958,
+        1033004512657375,
+        1033005372911458,
+        1033006221233125,
+        1033007056729333,
+        1033007906305208
+      ],
+      "rawTrialMs": [
+        27.682917,
+        28.213041,
+        38.816625,
+        26.434083,
+        25.609375,
+        22.43325,
+        20.328875,
+        16.411958,
+        23.909916,
+        30.046542,
+        24.164792,
+        18.325334,
+        29.627042,
+        27.123792,
+        38.296209,
+        34.874875,
+        27.283125,
+        14.022667,
+        35.016458,
+        32.206709,
+        26.473625,
+        33.139208,
+        28.288875,
+        22.689334,
+        30.538833,
+        26.389333,
+        25.278417,
+        28.73225,
+        25.714125,
+        21.739083
+      ],
+      "ROICalibrationRGB8SHA256": [
+        "381c919c2873e3189790a5ed786979241f14a7aa5572e48fb781a134fefd7894",
+        "2225f101e8d9b9b160840196238bfdb872169ef4f216c05f1a40c2ae2df88c06"
+      ],
+      "ROIStreamSHA256": "953b8bbe0560fd09b0230177303d7764919f92684c002e7a72e10e25c834c7a1",
+      "finalErrorRGB8": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "build": "Release, -O with testability enabled",
+      "testBundleSHA256": "7ff3908deee30c390d8ac3e51ebb3cff23baab907e1ef2b2ea62b2d83b0785d4",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "nativeScreenshots": [
+        {
+          "file": "light-exposure-1to1-0.png",
+          "sha256": "d66cccd6a00eab3936b86c3850ba457c0da1379387ca259b372cc7182b5544b3",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "rgbSHA256": "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "meanLuma": 63.48860740661621,
+          "state": 0,
+          "value": 0,
+          "event": {
+            "accepted": true,
+            "actual": 0,
+            "mapping": "recipe = supplied / 2.0",
+            "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+            "sentNs": 1033008814677666
+          }
+        },
+        {
+          "file": "light-exposure-1to1-1.png",
+          "sha256": "85c5462aa2dba6b59f296496d1a4d49c22568f1a45b87c029ca06daef4df951f",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "rgbSHA256": "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5",
+          "meanLuma": 75.48536745707194,
+          "state": 1,
+          "value": 0.5,
+          "event": {
+            "accepted": true,
+            "actual": 0.5,
+            "mapping": "recipe = supplied / 2.0",
+            "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+            "sentNs": 1033010191608083
+          }
+        }
+      ]
+    },
+    "1073741824": {
+      "product": "RAWMaster Release AppKit fixture",
+      "protocol": "screen-photo-native-roi-response-v1",
+      "timingBoundary": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+      "captureReport": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/rawmaster-native-1073741824-replayed.json",
+      "reportSHA256": "5820b191c49bb6e3daad2119648074f96f39112fd0f551575bf757c8c8bb53af",
+      "captureArchive": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/rawmaster-native-1073741824-frames.zip",
+      "archiveSHA256": "0fac3be7072553658688d7f670b78850e8e2f985654e8789f5cb7124a9496868",
+      "recorderSHA256": "43c7ce1602d8baeff205a0a4125544545c7af2d926f859c65744e12a1f941f96",
+      "sourceGeometry": {
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "roiWindowRectPixels": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "windowBackingPixels": [
+          3680,
+          1804
+        ],
+        "sampleROINormalized": [
+          0.37478260869565216,
+          0.3297117516629712,
+          0.2504347826086956,
+          0.34057649667405765
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "photoWindowRectPixelsFloat": [
+          -3024,
+          -2682,
+          9504,
+          6336
+        ],
+        "roiWindowRectPixelsFloat": [
+          1072,
+          390,
+          1536,
+          1024
+        ],
+        "detailWindowNormalized": [
+          0.2044402356902357,
+          0.33964646464646464,
+          0.6146885521885522,
+          0.45202020202020204
+        ],
+        "visibleSourceWindowNormalized": [
+          0.3181818181818182,
+          0.42329545454545453,
+          0.38720538720538716,
+          0.28472222222222227
+        ],
+        "detailPixelSize": [
+          5842,
+          2864
+        ]
+      },
+      "warmup": 5,
+      "calibrationCount": 2,
+      "n": 30,
+      "p50Ms": 30.234333499999998,
+      "p95Ms": 46.014333,
+      "sampleInputHostNs": [
+        1033022684237791,
+        1033023541949291,
+        1033024376006250,
+        1033025205264083,
+        1033026041395708,
+        1033026876971291,
+        1033027723886041,
+        1033028559592250,
+        1033029404911625,
+        1033030269865708,
+        1033031129203750,
+        1033031990272041,
+        1033032839199000,
+        1033033704180500,
+        1033034538172500,
+        1033035389605750,
+        1033036235722083,
+        1033037099014041,
+        1033037945817291,
+        1033038807425833,
+        1033039650559791,
+        1033040488022000,
+        1033041342617875,
+        1033042186507666,
+        1033043021777125,
+        1033043888206000,
+        1033044758319625,
+        1033045603505541,
+        1033046452793875,
+        1033047289342708
+      ],
+      "rawTrialMs": [
+        38.097917,
+        32.476542,
+        23.604333,
+        16.527,
+        20.1655,
+        27.730459,
+        31.906959,
+        22.803458,
+        35.3805,
+        35.051625,
+        26.396541,
+        26.157959,
+        44.105166,
+        20.421166,
+        26.370833,
+        40.36075,
+        30.382625,
+        28.422584,
+        25.229459,
+        30.086042,
+        26.96025,
+        27.534916,
+        40.290041,
+        34.074667,
+        42.915875,
+        35.898583,
+        46.014333,
+        29.33275,
+        36.508041,
+        46.282
+      ],
+      "ROICalibrationRGB8SHA256": [
+        "381c919c2873e3189790a5ed786979241f14a7aa5572e48fb781a134fefd7894",
+        "2225f101e8d9b9b160840196238bfdb872169ef4f216c05f1a40c2ae2df88c06"
+      ],
+      "ROIStreamSHA256": "380cd96957ffac2863f6eeaf105bb733e38d92014d7b0ce3a87d179a0b862ed9",
+      "finalErrorRGB8": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "build": "Release, -O with testability enabled",
+      "testBundleSHA256": "7ff3908deee30c390d8ac3e51ebb3cff23baab907e1ef2b2ea62b2d83b0785d4",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "nativeScreenshots": [
+        {
+          "file": "light-exposure-1to1-0.png",
+          "sha256": "d66cccd6a00eab3936b86c3850ba457c0da1379387ca259b372cc7182b5544b3",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "rgbSHA256": "b5fc5744d969b6c14427a7fc9e3ef9b677bdbb1bae88f10a8b686c2c4ee4a5da",
+          "meanLuma": 63.48860740661621,
+          "state": 0,
+          "value": 0,
+          "event": {
+            "accepted": true,
+            "actual": 0,
+            "mapping": "recipe = supplied / 2.0",
+            "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+            "sentNs": 1033048244182875
+          }
+        },
+        {
+          "file": "light-exposure-1to1-1.png",
+          "sha256": "85c5462aa2dba6b59f296496d1a4d49c22568f1a45b87c029ca06daef4df951f",
+          "pixels": [
+            1536,
+            1024
+          ],
+          "rgbSHA256": "303a51e285768efe9199dc379f3bae6acb2684b47bd7b4bf0472d4b19ee94bf5",
+          "meanLuma": 75.48536745707194,
+          "state": 1,
+          "value": 0.5,
+          "event": {
+            "accepted": true,
+            "actual": 0.5,
+            "mapping": "recipe = supplied / 2.0",
+            "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+            "sentNs": 1033049598229250
+          }
+        }
+      ]
+    }
+  },
+  "LightFlow": {
+    "product": "LightFlow 2d41ab1",
+    "protocol": "screen-photo-native-roi-response-v1",
+    "timingBoundary": "Trusted Return on prepared LightFlow numeric control through local Chrome DevTools; reads committed slider value",
+    "captureReport": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/lightflow-native-replayed.json",
+    "reportSHA256": "0982889bf7e975678842c67dae66eabbbf3cb7099a89ab44fbcc6564487583c7",
+    "captureArchive": "output/spec043-direct-drt.BQ1jdB/native-roi/lightflow-formal/frames.zip",
+    "archiveSHA256": "0668bd045c8bd2db673003444f78069c80490a6f4a432ad175b9c57f4c42c146",
+    "recorderSHA256": "14a680aeacf13820e3de2cc3b0b92af3f7daac4211b8af85325ca7aabf0c294c",
+    "sourceGeometry": {
+      "sourcePixels": [
+        9504,
+        6336
+      ],
+      "sourceROIPixels": [
+        4096,
+        3072,
+        1536,
+        1024
+      ],
+      "sourceCenterNormalized": [
+        0.5117845117845118,
+        0.5656565656565656
+      ],
+      "backingPixelsPerSourcePixel": [
+        1.0,
+        1.0
+      ],
+      "canvasBackingPixels": [
+        2378,
+        1736
+      ],
+      "roiCanvasRectPixels": [
+        421,
+        356,
+        1536,
+        1024
+      ],
+      "roiWindowRectPixels": [
+        919,
+        492,
+        1536,
+        1024
+      ],
+      "windowBackingPixels": [
+        3560,
+        2180
+      ],
+      "sampleROINormalized": [
+        0.344438202247191,
+        0.31963302752293576,
+        0.258876404494382,
+        0.28183486238532107
+      ]
+    },
+    "warmup": 5,
+    "calibrationCount": 2,
+    "n": 30,
+    "p50Ms": 27.99375,
+    "p95Ms": 40.604917,
+    "sampleInputHostNs": [
+      1017960449731625,
+      1017961280274291,
+      1017962116696833,
+      1017962951595708,
+      1017963797894916,
+      1017964638876375,
+      1017965475127666,
+      1017966322832958,
+      1017967165893750,
+      1017968023428125,
+      1017968864461500,
+      1017969700484500,
+      1017970562184458,
+      1017971426142458,
+      1017972264659666,
+      1017973098184208,
+      1017973937908458,
+      1017974782892166,
+      1017975619768583,
+      1017976464029166,
+      1017977306159083,
+      1017978131933833,
+      1017978962110000,
+      1017979822077041,
+      1017980663181041,
+      1017981493135791,
+      1017982328423125,
+      1017983160867833,
+      1017984002400875,
+      1017984835712041
+    ],
+    "rawTrialMs": [
+      31.2515,
+      26.083875,
+      21.8815,
+      31.291417,
+      23.840209,
+      34.964791,
+      32.975334,
+      36.058792,
+      27.94425,
+      27.460458,
+      27.031625,
+      25.997541,
+      30.858125,
+      25.825917,
+      26.80875,
+      25.805625,
+      37.231667,
+      32.845417,
+      34.41825,
+      28.04325,
+      35.338417,
+      25.834042,
+      27.077916,
+      26.423084,
+      29.901875,
+      40.910417,
+      28.266666,
+      27.718,
+      23.855833,
+      40.604917
+    ],
+    "ROICalibrationRGB8SHA256": [
+      "9a5d86beb8e6d1f2dd044114c5f79855334c2b2aa101c894c184cdb2187be9c3",
+      "5d2a314b6d9ad87079409f4b419d3c3817d45285f083c449ca450bef5c61bc76"
+    ],
+    "ROIStreamSHA256": "5583a29ebd6268ae7e1014d788a32b0fd0c7398735cc10eba37f06c7efdcfcc4",
+    "finalErrorRGB8": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "build": "2d41ab1",
+    "nativeScreenshots": [
+      {
+        "file": "light-exposure-1to1-0.png",
+        "sha256": "02b7b22efd41a82eedae181f5314249c4dedba1f19ac09a2d2c76dadbbf05246",
+        "pixels": [
+          1536,
+          1024
+        ],
+        "rgbSHA256": "ce89da89b9b8a8b9de13420c6d5006d40de42e19d7bf47a6f911d8116ab6129b",
+        "meanLuma": 74.02539189656575,
+        "state": 0,
+        "event": {
+          "sentNs": 1017986597148541,
+          "dispatchResponseHostNs": 1017986597959916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "focus": {
+            "slider": "base.exposure",
+            "label": "Exposure value",
+            "prepared": "0"
+          }
+        },
+        "viewport": {
+          "canvasCSS": {
+            "x": 249,
+            "y": 68,
+            "width": 1189,
+            "height": 868
+          },
+          "dpr": 2,
+          "inner": [
+            1780,
+            1090
+          ],
+          "outer": [
+            1780,
+            1090
+          ],
+          "screen": [
+            2,
+            41
+          ],
+          "frame": {
+            "viewport": "v1",
+            "photo": "p26963361",
+            "editRev": 38,
+            "frameW": 9504,
+            "frameH": 6336,
+            "affine": [
+              0.00010521885521885521,
+              0,
+              0,
+              0.00015782828282828284,
+              0.38667929292929293,
+              0.42866161616161613
+            ],
+            "width": 2378,
+            "height": 1736,
+            "fullRes": true,
+            "busy": true,
+            "frames": 121,
+            "at": 1795849536895.1,
+            "presentedAt": 35225.99990236759,
+            "photoId": "p26963361"
+          },
+          "metrics": {
+            "scale": 1,
+            "fitScale": 0.2401094276094276,
+            "view": [
+              0.00010521885521885521,
+              0,
+              0,
+              0.00015782828282828284,
+              0.38667929292929293,
+              0.42866161616161613
+            ],
+            "geometry": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "frameW": 9504,
+            "frameH": 6336,
+            "canvasW": 2378,
+            "canvasH": 1736,
+            "viewH": 1736,
+            "dpr": 2,
+            "sourceW": 9504,
+            "sourceH": 6336,
+            "lastRenderMs": 0.7000000476837158,
+            "fullRes": true,
+            "extent": [
+              0,
+              0,
+              1,
+              1
+            ],
+            "seq": 3,
+            "at": 1795849503534.4
+          },
+          "availableInputs": [
+            "Amount value",
+            "Amount value",
+            "Temp value",
+            "Tint value",
+            "Exposure value",
+            "Contrast value",
+            "Highlights value",
+            "Shadows value",
+            "Whites value",
+            "Blacks value",
+            "Vibrance value",
+            "Saturation value"
+          ],
+          "developView": {
+            "zoom": 1,
+            "center": {
+              "x": 0.5117845117845118,
+              "y": 0.5656565656565656
+            },
+            "viewerIdle": true
+          }
+        }
+      },
+      {
+        "file": "light-exposure-1to1-1.png",
+        "sha256": "feed57e6093d74f039ccd32435f3be75cab48d8726b7fc418ffebdf30ca02a1b",
+        "pixels": [
+          1536,
+          1024
+        ],
+        "rgbSHA256": "1964d09f3f434f7a0b52f962495d9f4683494a3fa8012669fb2c17f53be58af7",
+        "meanLuma": 87.34380849202473,
+        "state": 1,
+        "event": {
+          "sentNs": 1017987910616500,
+          "dispatchResponseHostNs": 1017987914007666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "focus": {
+            "slider": "base.exposure",
+            "label": "Exposure value",
+            "prepared": "0.5"
+          }
+        },
+        "viewport": {
+          "canvasCSS": {
+            "x": 249,
+            "y": 68,
+            "width": 1189,
+            "height": 868
+          },
+          "dpr": 2,
+          "inner": [
+            1780,
+            1090
+          ],
+          "outer": [
+            1780,
+            1090
+          ],
+          "screen": [
+            2,
+            41
+          ],
+          "frame": {
+            "viewport": "v1",
+            "photo": "p26963361",
+            "editRev": 39,
+            "frameW": 9504,
+            "frameH": 6336,
+            "affine": [
+              0.00010521885521885521,
+              0,
+              0,
+              0.00015782828282828284,
+              0.38667929292929293,
+              0.42866161616161613
+            ],
+            "width": 2378,
+            "height": 1736,
+            "fullRes": true,
+            "busy": true,
+            "frames": 124,
+            "at": 1795849538186,
+            "presentedAt": 36516.89990234375,
+            "photoId": "p26963361"
+          },
+          "metrics": {
+            "scale": 1,
+            "fitScale": 0.2401094276094276,
+            "view": [
+              0.00010521885521885521,
+              0,
+              0,
+              0.00015782828282828284,
+              0.38667929292929293,
+              0.42866161616161613
+            ],
+            "geometry": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "frameW": 9504,
+            "frameH": 6336,
+            "canvasW": 2378,
+            "canvasH": 1736,
+            "viewH": 1736,
+            "dpr": 2,
+            "sourceW": 9504,
+            "sourceH": 6336,
+            "lastRenderMs": 0.7000000476837158,
+            "fullRes": true,
+            "extent": [
+              0,
+              0,
+              1,
+              1
+            ],
+            "seq": 3,
+            "at": 1795849503534.4
+          },
+          "availableInputs": [
+            "Amount value",
+            "Amount value",
+            "Temp value",
+            "Tint value",
+            "Exposure value",
+            "Contrast value",
+            "Highlights value",
+            "Shadows value",
+            "Whites value",
+            "Blacks value",
+            "Vibrance value",
+            "Saturation value"
+          ],
+          "developView": {
+            "zoom": 1,
+            "center": {
+              "x": 0.5117845117845118,
+              "y": 0.5656565656565656
+            },
+            "viewerIdle": true
+          }
+        }
+      }
+    ]
+  },
+  "Camera Raw": {
+    "product": "Camera Raw 19.0",
+    "protocol": "screen-photo-response-v1",
+    "timingBoundary": "Physical Exposure slider click from mouse-down to ScreenCaptureKit witness; numeric value read before the next click",
+    "captureReport": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/native-roi-slider-replayed.json",
+    "reportSHA256": "ae2e6591421b38a6d62ec5754a648d5eee8effef9afec4787055185054b60325",
+    "captureArchive": "output/spec043-native-dehaze-default.0bM6Ud/adobe-visible/native-roi-slider-frames.zip",
+    "archiveSHA256": "c7df07df686bc5fbc83bee5f8ae0e4e44625931af7a7d9ed2abe105dc03e312e",
+    "recorderSHA256": "43c7ce1602d8baeff205a0a4125544545c7af2d926f859c65744e12a1f941f96",
+    "sourceGeometry": {
+      "reference": {
+        "file": "neutral-16.tif",
+        "sha256": "7c3ebe8ba29436f9edc318dce62fb8beb18bd6ea47e082db4af39da55f4679a3",
+        "pixels": [
+          9504,
+          6336
+        ],
+        "dtype": "uint16"
+      },
+      "windowSnapshot": {
+        "file": "pointer-zero-raw.png",
+        "sha256": "c73e62d707428456d0797c37d11e6329958899d0a73763e06e2561bbf4d389fc",
+        "backingPixels": [
+          3022,
+          2190
+        ],
+        "mode": "RGBA"
+      },
+      "sourceROIPixels": [
+        4096,
+        3072,
+        1536,
+        1024
+      ],
+      "translationSourceToWindow": [
+        -3552,
+        -2204
+      ],
+      "backingPixelsPerSourcePixel": [
+        1,
+        1
+      ],
+      "visibleWindowRectPixels": [
+        16,
+        152,
+        2368,
+        1820
+      ],
+      "roiWindowRectPixels": [
+        544,
+        868,
+        1536,
+        1024
+      ],
+      "roiUnclipped": true,
+      "roiRGBSHA256": "eaa9457d4e3bb6d4c8652dda4d579288f935222bddd6b48947d3b3dd1168d0aa",
+      "sampleROINormalized": [
+        0.28166776968894774,
+        0.4898630136986301,
+        0.3049636002647253,
+        0.28054794520547943
+      ],
+      "landmarks": [
+        {
+          "windowXY": [
+            1080,
+            1050
+          ],
+          "sourceXY": [
+            4632,
+            3254
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9983281493186951,
+          "nextSeparatedPeak": 0.7214030027389526
+        },
+        {
+          "windowXY": [
+            1900,
+            1050
+          ],
+          "sourceXY": [
+            5452,
+            3254
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9994993209838867,
+          "nextSeparatedPeak": 0.8860988020896912
+        },
+        {
+          "windowXY": [
+            250,
+            1300
+          ],
+          "sourceXY": [
+            3802,
+            3504
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9715172052383423,
+          "nextSeparatedPeak": 0.4673401713371277
+        },
+        {
+          "windowXY": [
+            1080,
+            1300
+          ],
+          "sourceXY": [
+            4632,
+            3504
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9888352751731873,
+          "nextSeparatedPeak": 0.4516986310482025
+        },
+        {
+          "windowXY": [
+            1900,
+            1300
+          ],
+          "sourceXY": [
+            5452,
+            3504
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9888743162155151,
+          "nextSeparatedPeak": 0.5843729376792908
+        },
+        {
+          "windowXY": [
+            250,
+            1600
+          ],
+          "sourceXY": [
+            3802,
+            3804
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9884305596351624,
+          "nextSeparatedPeak": 0.6996771097183228
+        },
+        {
+          "windowXY": [
+            1080,
+            1600
+          ],
+          "sourceXY": [
+            4632,
+            3804
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9801719784736633,
+          "nextSeparatedPeak": 0.32300078868865967
+        }
+      ],
+      "rejectedLandmarks": [
+        {
+          "windowXY": [
+            250,
+            1050
+          ],
+          "sourceXY": [
+            3802,
+            3254
+          ],
+          "pixels": [
+            144,
+            144
+          ],
+          "origin": [
+            -3552,
+            -2204
+          ],
+          "correlation": 0.9994465708732605,
+          "nextSeparatedPeak": 0.9736035466194153
+        }
+      ],
+      "stateEV": 0.0,
+      "luma": 77.31512260437012,
+      "registrationReportSHA256": "cda4d3746d3a54e80036c1cc26ab41b69608e20317b7bcd04c19a098a4de2aee"
+    },
+    "warmup": 5,
+    "calibrationCount": 2,
+    "n": 30,
+    "p50Ms": 50.8574375,
+    "p95Ms": 91.171958,
+    "sampleInputHostNs": [
+      1032918560636250,
+      1032919553163666,
+      1032920552229791,
+      1032921552840000,
+      1032922555731750,
+      1032923553169375,
+      1032924538209208,
+      1032925535303666,
+      1032926498620458,
+      1032927502254458,
+      1032928501084458,
+      1032929482522416,
+      1032930469876708,
+      1032931467840000,
+      1032932470993625,
+      1032933478200250,
+      1032934469867791,
+      1032935470246791,
+      1032936459030208,
+      1032937453200958,
+      1032938464178000,
+      1032939454929416,
+      1032940446617333,
+      1032941441324708,
+      1032942460604791,
+      1032943535624083,
+      1032944536581166,
+      1032945540259583,
+      1032946536069625,
+      1032947580593625
+    ],
+    "rawTrialMs": [
+      43.339125,
+      43.445417,
+      36.002417,
+      36.083666,
+      126.814291,
+      33.554708,
+      52.343083,
+      54.331209,
+      49.371792,
+      54.162833,
+      55.37475,
+      41.51,
+      46.951042,
+      40.263416,
+      44.856375,
+      63.344208,
+      46.594542,
+      43.507959,
+      38.412667,
+      69.914542,
+      58.724666,
+      72.558959,
+      35.04025,
+      91.171958,
+      60.096209,
+      42.39175,
+      56.480417,
+      71.521208,
+      90.873958,
+      72.562791
+    ],
+    "ROICalibrationRGB8SHA256": [
+      "e3e0c820e78043eeda890867da2c60fc19bd4591c4988ea758613dca3c970b21",
+      "7194e9e410b392a75c26041e2438ef6861cb7f70ef929c958fe8a487e5a79be4"
+    ],
+    "ROIStreamSHA256": "f4c330dc778533788cc8a1bbfc9ded8bfc5aaf92608b33e2d326fe541dae659f",
+    "finalErrorRGB8": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "nativeGeometryForTwoExposures": [
+      {
+        "reference": {
+          "file": "neutral-16.tif",
+          "sha256": "7c3ebe8ba29436f9edc318dce62fb8beb18bd6ea47e082db4af39da55f4679a3",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "dtype": "uint16"
+        },
+        "windowSnapshot": {
+          "file": "pointer-zero-raw.png",
+          "sha256": "c73e62d707428456d0797c37d11e6329958899d0a73763e06e2561bbf4d389fc",
+          "backingPixels": [
+            3022,
+            2190
+          ],
+          "mode": "RGBA"
+        },
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "translationSourceToWindow": [
+          -3552,
+          -2204
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "visibleWindowRectPixels": [
+          16,
+          152,
+          2368,
+          1820
+        ],
+        "roiWindowRectPixels": [
+          544,
+          868,
+          1536,
+          1024
+        ],
+        "roiUnclipped": true,
+        "roiRGBSHA256": "eaa9457d4e3bb6d4c8652dda4d579288f935222bddd6b48947d3b3dd1168d0aa",
+        "sampleROINormalized": [
+          0.28166776968894774,
+          0.4898630136986301,
+          0.3049636002647253,
+          0.28054794520547943
+        ],
+        "landmarks": [
+          {
+            "windowXY": [
+              1080,
+              1050
+            ],
+            "sourceXY": [
+              4632,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9983281493186951,
+            "nextSeparatedPeak": 0.7214030027389526
+          },
+          {
+            "windowXY": [
+              1900,
+              1050
+            ],
+            "sourceXY": [
+              5452,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9994993209838867,
+            "nextSeparatedPeak": 0.8860988020896912
+          },
+          {
+            "windowXY": [
+              250,
+              1300
+            ],
+            "sourceXY": [
+              3802,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9715172052383423,
+            "nextSeparatedPeak": 0.4673401713371277
+          },
+          {
+            "windowXY": [
+              1080,
+              1300
+            ],
+            "sourceXY": [
+              4632,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9888352751731873,
+            "nextSeparatedPeak": 0.4516986310482025
+          },
+          {
+            "windowXY": [
+              1900,
+              1300
+            ],
+            "sourceXY": [
+              5452,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9888743162155151,
+            "nextSeparatedPeak": 0.5843729376792908
+          },
+          {
+            "windowXY": [
+              250,
+              1600
+            ],
+            "sourceXY": [
+              3802,
+              3804
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9884305596351624,
+            "nextSeparatedPeak": 0.6996771097183228
+          },
+          {
+            "windowXY": [
+              1080,
+              1600
+            ],
+            "sourceXY": [
+              4632,
+              3804
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9801719784736633,
+            "nextSeparatedPeak": 0.32300078868865967
+          }
+        ],
+        "rejectedLandmarks": [
+          {
+            "windowXY": [
+              250,
+              1050
+            ],
+            "sourceXY": [
+              3802,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9994465708732605,
+            "nextSeparatedPeak": 0.9736035466194153
+          }
+        ],
+        "stateEV": 0.0,
+        "luma": 77.31512260437012,
+        "registrationReportSHA256": "cda4d3746d3a54e80036c1cc26ab41b69608e20317b7bcd04c19a098a4de2aee"
+      },
+      {
+        "reference": {
+          "file": "neutral-16.tif",
+          "sha256": "7c3ebe8ba29436f9edc318dce62fb8beb18bd6ea47e082db4af39da55f4679a3",
+          "pixels": [
+            9504,
+            6336
+          ],
+          "dtype": "uint16"
+        },
+        "windowSnapshot": {
+          "file": "pointer-plus-raw.png",
+          "sha256": "c473c264eb926ae191b301c66c4f1ed684783766a352867d6fb1e4db2938a9b0",
+          "backingPixels": [
+            3022,
+            2190
+          ],
+          "mode": "RGBA"
+        },
+        "sourceROIPixels": [
+          4096,
+          3072,
+          1536,
+          1024
+        ],
+        "translationSourceToWindow": [
+          -3552,
+          -2204
+        ],
+        "backingPixelsPerSourcePixel": [
+          1,
+          1
+        ],
+        "visibleWindowRectPixels": [
+          16,
+          152,
+          2368,
+          1820
+        ],
+        "roiWindowRectPixels": [
+          544,
+          868,
+          1536,
+          1024
+        ],
+        "roiUnclipped": true,
+        "roiRGBSHA256": "e931fbe944ee803b4c13c7d416ba26aba82738368af991b385d8e1ad5f50da74",
+        "sampleROINormalized": [
+          0.28166776968894774,
+          0.4898630136986301,
+          0.3049636002647253,
+          0.28054794520547943
+        ],
+        "landmarks": [
+          {
+            "windowXY": [
+              1080,
+              1050
+            ],
+            "sourceXY": [
+              4632,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9890688061714172,
+            "nextSeparatedPeak": 0.6862583160400391
+          },
+          {
+            "windowXY": [
+              1900,
+              1050
+            ],
+            "sourceXY": [
+              5452,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9922268986701965,
+            "nextSeparatedPeak": 0.8719637989997864
+          },
+          {
+            "windowXY": [
+              250,
+              1300
+            ],
+            "sourceXY": [
+              3802,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9685845971107483,
+            "nextSeparatedPeak": 0.46781790256500244
+          },
+          {
+            "windowXY": [
+              1080,
+              1300
+            ],
+            "sourceXY": [
+              4632,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9878047108650208,
+            "nextSeparatedPeak": 0.4409542679786682
+          },
+          {
+            "windowXY": [
+              1900,
+              1300
+            ],
+            "sourceXY": [
+              5452,
+              3504
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9882389903068542,
+            "nextSeparatedPeak": 0.5789735913276672
+          },
+          {
+            "windowXY": [
+              250,
+              1600
+            ],
+            "sourceXY": [
+              3802,
+              3804
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9870615601539612,
+            "nextSeparatedPeak": 0.6926347017288208
+          },
+          {
+            "windowXY": [
+              1080,
+              1600
+            ],
+            "sourceXY": [
+              4632,
+              3804
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9781998991966248,
+            "nextSeparatedPeak": 0.3258262872695923
+          }
+        ],
+        "rejectedLandmarks": [
+          {
+            "windowXY": [
+              250,
+              1050
+            ],
+            "sourceXY": [
+              3802,
+              3254
+            ],
+            "pixels": [
+              144,
+              144
+            ],
+            "origin": [
+              -3552,
+              -2204
+            ],
+            "correlation": 0.9960227608680725,
+            "nextSeparatedPeak": 0.9683413505554199
+          }
+        ],
+        "stateEV": 0.5,
+        "luma": 90.18032010396321,
+        "registrationReportSHA256": "42221da844d3d56f9b2270077547636f74202a0651e4237f8721cbb02126a9c0"
+      }
+    ],
+    "priorTypedCaptureInterruptions": [
+      {
+        "operation": "light-exposure",
+        "completedInputs": 6,
+        "reason": "Native Camera Raw cancel confirmation interrupted typed input",
+        "completedWarmupInputs": 5,
+        "observedAt": "2026-11-28T11:02:06.302887+00:00",
+        "reportSHA256": "31e77b570e2e017ba15e3b8897cd418179ece7c4881a108bc73c0d993a48b05b"
+      },
+      {
+        "operation": "light-exposure",
+        "completedInputs": 2,
+        "reason": "Native Camera Raw cancel confirmation interrupted typed input",
+        "completedWarmupInputs": 5,
+        "observedAt": "2026-11-28T11:03:09.085179+00:00",
+        "reportSHA256": "3e3b0f8699e866aeb8dc6d1d502e7e7f272df17882266aafc9e6cea902acae0a"
+      }
+    ]
+  },
+  "installedReleaseSource": "0aab007e2a08b6e71493892f3d0b23c434ede058",
+  "gate": {
+    "p50Ms": {
+      "fastestOriginal": "LightFlow 2d41ab1",
+      "targetMs": 27.99375,
+      "limitMs": 30.793125,
+      "passedByRawBasePoolBytes": {
+        "0": true,
+        "1073741824": true
+      }
+    },
+    "p95Ms": {
+      "fastestOriginal": "LightFlow 2d41ab1",
+      "targetMs": 40.604917,
+      "limitMs": 48.7259004,
+      "passedByRawBasePoolBytes": {
+        "0": true,
+        "1073741824": true
+      }
+    }
+  }
+}

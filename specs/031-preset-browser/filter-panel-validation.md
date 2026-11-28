@@ -26,4 +26,5 @@
 - Release `20261128.172756` 的 17 项原生滤镜回归和实拍自由缩放已通过。颗粒的交付撤销、同源换代和缓存清退另有原生回归。[签名安装与原生回执](../043-image-engine-unification/evidence/m0-authorized-grain-release-checkpoint.json)
 - Release `20261128.180152` 的 17 项原生滤镜回归和实拍自由缩放均通过。独立复验颗粒定稿的源证明、比较通道和回滚路径。[签名安装与原生回执](../043-image-engine-unification/evidence/m0-opaque-local-grain-release-checkpoint.json)
 - Release `20261128.182855` 的 17 项原生滤镜回归和实拍自由缩放均通过。另行复验了局部算子分组、降噪缓存与全域回滚。[签名安装与原生回执](../043-image-engine-unification/evidence/m0-grouped-local-validation-release-checkpoint.json)
+- Release `20261128.190636` 的 17 项原生滤镜回归和实拍均衡／极速自由缩放均通过。另行复验原图和去雾引导失效后的取消、回退与重试。[签名安装与原生回执](../043-image-engine-unification/evidence/m0-native-dehaze-release-checkpoint.json)
 - 深度散景继续由本张深度与焦点准备后显式确认。缺少风景局部映射、配置表或其他依赖的自适应条目保留可查看的原因。[能力边界](directory-delivery.md)

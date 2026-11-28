@@ -124,8 +124,10 @@ enum CaptureCanvas {
             let result: [String: Any] = ["fields": fields, "words": words]
             FileHandle.standardOutput.write(try JSONSerialization.data(withJSONObject: result)); return
         }
-        if args[0] == "set" || args[0] == "type" {
-            guard args.count == 6, let appPID = NSRunningApplication.runningApplications(withBundleIdentifier: app).first(where: { $0.isActive })?.processIdentifier,
+        if ["set", "type", "click-value"].contains(args[0]) {
+            let operation = args[0]
+            guard args.count == (operation == "click-value" ? 7 : 6),
+                  let appPID = NSRunningApplication.runningApplications(withBundleIdentifier: app).first(where: { $0.isActive })?.processIdentifier,
                   let windows = ax(AXUIElementCreateApplication(appPID), "AXWindows") as? [AXUIElement],
                   let window = windows.first(where: { ax($0, "AXTitle") as? String == args[2] }),
                   let index = Int(args[4]) else { throw CaptureError.missingWindow }
@@ -139,11 +141,26 @@ enum CaptureCanvas {
             guard fields.indices.contains(index) else { throw CaptureError.missingField }
             let field = fields[index]
             let initial = ax(field, "AXValue").map { String(describing: $0) } ?? ""
-            let value: CFTypeRef
-            if args[3] == "AXSlider", let number = Double(args[5]) { value = NSNumber(value: number) }
-            else { value = args[5] as CFString }
             let sent: UInt64
-            if args[0] == "type" {
+            if operation == "click-value" {
+                let origin = coordinate(ax(window, "AXPosition")), size = coordinate(ax(window, "AXSize"), size: true)
+                let fieldPosition = coordinate(ax(field, "AXPosition"))
+                guard args[3] == "AXTextField", origin.count == 2, size.count == 2, fieldPosition.count == 2,
+                      let x = Double(args[5]), let y = Double(args[6]), x.isFinite, y.isFinite,
+                      x >= 0, y >= 0, x < size[0], y < size[1] else { throw CaptureError.invalidValue }
+                let point = CGPoint(x: origin[0] + x, y: origin[1] + y)
+                guard (0...250).contains(fieldPosition[0] - point.x), (0...45).contains(point.y - fieldPosition[1]),
+                      let down = CGEvent(mouseEventSource: nil, mouseType: .leftMouseDown, mouseCursorPosition: point, mouseButton: .left),
+                      let up = CGEvent(mouseEventSource: nil, mouseType: .leftMouseUp, mouseCursorPosition: point, mouseButton: .left)
+                else { throw CaptureError.invalidValue }
+                CGEvent(mouseEventSource: nil, mouseType: .mouseMoved, mouseCursorPosition: point, mouseButton: .left)?.post(tap: .cghidEventTap)
+                usleep(20_000)
+                sent = hostNanoseconds()
+                down.post(tap: .cghidEventTap)
+                usleep(20_000)
+                up.post(tap: .cghidEventTap)
+                usleep(35_000)
+            } else if operation == "type" {
                 let digits: [Character:CGKeyCode] = ["0":29,"1":18,"2":19,"3":20,"4":21,"5":23,"6":22,"7":26,"8":28,"9":25,"-":27,".":47,"+":24]
                 let keys = args[5].compactMap { digits[$0] }
                 let position = coordinate(ax(field,"AXPosition")), size = coordinate(ax(field,"AXSize"),size:true)
@@ -178,6 +195,9 @@ enum CaptureCanvas {
                 key(48)
                 usleep(35_000)
             } else {
+                let value: CFTypeRef
+                if args[3] == "AXSlider", let number = Double(args[5]) { value = NSNumber(value: number) }
+                else { value = args[5] as CFString }
                 sent = hostNanoseconds()
                 guard AXUIElementSetAttributeValue(field, "AXValue" as CFString, value) == .success else { throw CaptureError.invalidValue }
             }
