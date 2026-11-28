@@ -115,7 +115,7 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
     }
   }
 
-  func testTiledDeliveryMatchesFullHDRAndSDRThroughMaskAndTrim() throws {
+  func testTiledDeliveryMatchesFullHDRAndSDRThroughMaskAndTrim() async throws {
     let device = try XCTUnwrap(MTLCreateSystemDefaultDevice()), decoder = try RAW(device: device)
     let width = 109, height = 73, calibration = try Calibration(xyzToCamera: identity, whiteBalance: .one)
     let sensor = try RAW.Sensor(width: width, height: height, orientation: 6, active: .init(0, 0, 109, 73), crop: .init(2, 1, 105, 71),
@@ -127,16 +127,42 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
       curve: [], strength: 1, enabled: true))
     let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [mask, grade], output: .node(grade.id)),
       output: .init(sdrTrim: .init(exposureEV: -1, mapping: .balanced, highlightCompression: 0)))
-    let tiled = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph, maximumTileEdge: 32)
+    let tiled = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph,
+      maximumTileEdge: 32, directDRT: false)
+    let direct = try DevelopmentSceneTiledDeliveryV1(decoder: decoder, mosaic: mosaic, graph: graph,
+      maximumTileEdge: 32, directDRT: true)
+    let cancelled = Task {
+      var completedTiles = 0
+      do {
+        _ = try direct.render(.hdr2020, afterCompletedTile: {
+          completedTiles += 1
+          withUnsafeCurrentTask { $0?.cancel() }
+        })
+        XCTFail("A cancelled tiled render returned a display")
+      } catch is CancellationError {}
+      XCTAssertEqual(completedTiles, 1)
+    }
+    try await cancelled.value
     let renderer = try DevelopmentSceneGraphRendererV1(device: device)
     let master = try renderer.prepareFinal(decoder.develop(mosaic, sampling: .native(nil)).image,
       geometry: .init(width: 71, height: 105), graph: graph)
     for target: DevelopmentSceneOutputStateV1.Target in [.hdr2020, .sdr709] {
       let (display, execution) = try tiled.render(target)
+      let (directDisplay, directExecution) = try direct.render(target)
       let reference = try renderer.renderDelivery(master, target: target)
       let large: [SIMD4<Float>] = try read(display.texture), small: [SIMD4<Float>] = try read(reference.texture)
       XCTAssertEqual(large, small)
+      let directPixels: [SIMD4<Float>] = try read(directDisplay.texture)
+      XCTAssertEqual(directPixels.withUnsafeBytes { Data($0) }, large.withUnsafeBytes { Data($0) })
+      XCTAssertEqual(directDisplay.origin, .zero)
+      XCTAssertEqual(directDisplay.target, target)
       let receipt = try XCTUnwrap(execution)
+      let directReceipt = try XCTUnwrap(directExecution)
+      XCTAssertEqual(directReceipt.backend, receipt.backend)
+      XCTAssertEqual(directReceipt.tiles, receipt.tiles)
+      XCTAssertEqual(directReceipt.dispatches, receipt.dispatches)
+      XCTAssertEqual(directReceipt.peakBytes, receipt.peakBytes)
+      XCTAssertEqual(directReceipt.budgetBytes, receipt.budgetBytes)
       XCTAssertEqual(receipt.backend, .rust); XCTAssertEqual(receipt.tiles, 12)
       XCTAssertGreaterThanOrEqual(receipt.dispatches, receipt.tiles * 2)
       XCTAssertEqual(receipt.coverageCacheHits, 0)

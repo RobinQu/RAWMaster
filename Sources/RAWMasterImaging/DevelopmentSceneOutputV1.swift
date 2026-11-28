@@ -48,9 +48,9 @@ final class DevelopmentSceneOutputV1 {
     fileprivate init(texture: MTLTexture, target: Target, origin: SIMD2<Int>) {
       self.texture=texture; self.target=target; self.origin=origin
     }
-    /// The compositor copies already transformed, typed tiles into this full-size texture.
-    init(assembled texture: MTLTexture, like tile: Self) {
-      self.init(texture: texture, target: tile.target, origin: .zero)
+    /// The compositor publishes the full-size texture after all transformed tiles finish.
+    init(assembled texture: MTLTexture, target: Target) {
+      self.init(texture: texture, target: target, origin: .zero)
     }
   }
 
@@ -120,6 +120,20 @@ final class DevelopmentSceneOutputV1 {
 
   func render(_ image: DevelopmentSceneMetalV1.Image, hdrLimitEV: Double? = nil,
               bandExposure: SIMD4<Float>? = nil, visualizeHDR: Bool = false) throws -> DisplayImage {
+    let texture = try renderDisplay(image, hdrLimitEV: hdrLimitEV, bandExposure: bandExposure, visualizeHDR: visualizeHDR)
+    return DisplayImage(texture: texture, target: visualizeHDR ? .sdr709 : target, origin: image.origin)
+  }
+
+  // The tiled compositor owns the destination and publishes it only after every region completes.
+  func renderTile(_ image: DevelopmentSceneMetalV1.Image, into destination: MTLTexture, region: MTLRegion,
+                  hdrLimitEV: Double? = nil, bandExposure: SIMD4<Float>? = nil) throws {
+    _ = try renderDisplay(image, hdrLimitEV: hdrLimitEV, bandExposure: bandExposure, visualizeHDR: false,
+      tile: (destination, region))
+  }
+
+  private func renderDisplay(_ image: DevelopmentSceneMetalV1.Image, hdrLimitEV: Double?,
+                             bandExposure: SIMD4<Float>?, visualizeHDR: Bool,
+                             tile: (texture: MTLTexture, region: MTLRegion)? = nil) throws -> MTLTexture {
     guard boundary == .display else { throw Failure.invalidInput }
     guard !visualizeHDR || target == .hdr2020 else { throw Failure.invalidInput }
     let bands = target == .hdr2020 ? bandExposure ?? .zero : .zero
@@ -128,8 +142,9 @@ final class DevelopmentSceneOutputV1 {
       guard (0...DevelopmentSceneOutputStateV1.Version.maximumHDRLimitEV).contains(hdrLimitEV) else { throw Failure.invalidInput }
       peak = Float(exp2(hdrLimitEV))
     }
-    let texture = try SceneDeliveryTrace.measure(.drtRender) { try evaluate(image, peak: peak, bands: bands, visualizeHDR: visualizeHDR) }
-    return DisplayImage(texture: texture, target: visualizeHDR ? .sdr709 : target, origin: image.origin)
+    return try SceneDeliveryTrace.measure(.drtRender) {
+      try evaluate(image, peak: peak, bands: bands, visualizeHDR: visualizeHDR, tile: tile)
+    }
   }
 
   struct TargetEvidence { let texture: MTLTexture }
@@ -139,15 +154,45 @@ final class DevelopmentSceneOutputV1 {
   }
 
   private func evaluate(_ image: DevelopmentSceneMetalV1.Image, peak: Float = 0,
-                        bands: SIMD4<Float> = .zero, visualizeHDR: Bool = false) throws -> MTLTexture {
+                        bands: SIMD4<Float> = .zero, visualizeHDR: Bool = false,
+                        tile: (texture: MTLTexture, region: MTLRegion)? = nil) throws -> MTLTexture {
     try Task.checkCancellation()
     let source=image.texture
     guard image.port == .working, source.device === device, source.textureType == .type2D,
           source.pixelFormat == .rgba32Float, !source.isFramebufferOnly, source.storageMode != .memoryless,
           source.usage.isEmpty || source.usage.contains(.shaderRead) else { throw Failure.invalidInput }
-    let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba32Float,width:source.width,height:source.height,mipmapped:false)
-    d.storageMode = .private; d.usage = [.shaderRead,.shaderWrite]
-    guard let output=device.makeTexture(descriptor:d), let flag=device.makeBuffer(length:4,options:.storageModeShared),
+    let output: MTLTexture
+    var destinationOrigin = SIMD2<UInt32>.zero
+    if let (destination, rect) = tile {
+      guard destination.device === device, destination.textureType == .type2D, destination.pixelFormat == .rgba32Float,
+            destination.storageMode == .private, !destination.isFramebufferOnly, !destination.isShareable,
+            destination.mipmapLevelCount == 1,
+            destination.usage.contains([.shaderRead, .shaderWrite]), destination.hazardTrackingMode != .untracked,
+            destination.parent == nil, destination.buffer == nil, destination.heap == nil, destination.iosurface == nil,
+            source !== destination, rect.origin.z == 0, rect.size.depth == 1,
+            rect.size.width == source.width, rect.size.height == source.height,
+            image.origin == SIMD2(rect.origin.x, rect.origin.y),
+            let x = UInt32(exactly: rect.origin.x), let y = UInt32(exactly: rect.origin.y),
+            rect.origin.x <= destination.width - source.width, rect.origin.y <= destination.height - source.height else {
+        throw Failure.invalidInput
+      }
+      // A standalone destination can only alias the source through a view of that texture.
+      var parent = source.parent
+      while let view = parent {
+        guard view !== destination else { throw Failure.invalidInput }
+        parent = view.parent
+      }
+      output = destination
+      destinationOrigin = .init(x, y)
+    } else {
+      let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+        width: source.width, height: source.height, mipmapped: false)
+      descriptor.storageMode = .private
+      descriptor.usage = [.shaderRead, .shaderWrite]
+      guard let texture = device.makeTexture(descriptor: descriptor) else { throw MetalFailure.metalUnavailable }
+      output = texture
+    }
+    guard let flag=device.makeBuffer(length:4,options:.storageModeShared),
           let command=queue.makeCommandBuffer(), let encoder=command.makeComputeCommandEncoder() else { throw MetalFailure.metalUnavailable }
     let invalid=flag.contents().bindMemory(to:UInt32.self,capacity:1); invalid.pointee=0
     encoder.setComputePipelineState(pipeline)
@@ -162,6 +207,7 @@ final class DevelopmentSceneOutputV1 {
     DevelopmentSceneOutputStateV1.HDRBand.visualizationColors.withUnsafeBufferPointer {
       encoder.setBytes($0.baseAddress!, length: $0.count * MemoryLayout<SIMD4<Float>>.stride, index: 4)
     }
+    encoder.setBytes(&destinationOrigin, length: MemoryLayout<SIMD2<UInt32>>.stride, index: 5)
     let lanes=pipeline.threadExecutionWidth
     encoder.dispatchThreads(MTLSize(width:source.width,height:source.height,depth:1),
       threadsPerThreadgroup:MTLSize(width:lanes,height:min(8,pipeline.maxTotalThreadsPerThreadgroup/lanes),depth:1))
@@ -181,10 +227,11 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
                           sampler lookup [[sampler(0)]], device atomic_uint& invalid [[buffer(0)]],
                           constant float& limit [[buffer(1)]], constant float4& bands [[buffer(2)]],
                           constant uint& visualize [[buffer(3)]], constant float4* palette [[buffer(4)]],
+                          constant uint2& destinationOrigin [[buffer(5)]],
                           uint2 xy [[thread_position_in_grid]]) {
   float4 p=scene.read(xy);
   if (!all(isfinite(p)) || p.a < 0 || p.a > 1) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
-  if (p.a == 0) { display.write(float4(0),xy); return; }
+  if (p.a == 0) { display.write(float4(0),xy+destinationOrigin); return; }
   float3 rgb=p.rgb/p.a;
   if (!all(isfinite(rgb))) { atomic_store_explicit(&invalid,1,memory_order_relaxed); return; }
   float3 shown=OCIOMain(reach,lookup,cusp,lookup,float4(rgb,1)).rgb;
@@ -207,7 +254,7 @@ kernel void rmSceneViewV1(texture2d<float,access::read> scene [[texture(0)]],
     float luma = max(0.0f, dot(shown, rec2020Y));
     shown = luma <= 1.0f ? float3(luma) : palette[min(3, int(log2(luma)))].rgb;
   }
-  display.write(float4(shown*p.a,p.a),xy);
+  display.write(float4(shown*p.a,p.a),xy+destinationOrigin);
 }
 """#
 }

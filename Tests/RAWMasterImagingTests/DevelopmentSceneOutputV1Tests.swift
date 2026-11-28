@@ -142,6 +142,73 @@ final class DevelopmentSceneOutputV1Tests: XCTestCase {
     }
   }
 
+  func testDirectDeliveryTileMatchesDRTAndPreservesSentinels() throws {
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let renderer = try DevelopmentSceneGraphRendererV1(device: device, backend: .swift)
+    let output = try DevelopmentSceneOutputStateV1.Version(
+      sdrTrim: .init(exposureEV: -0.5, mapping: .balanced, highlightCompression: 0))
+      .replacingHDRLimit(2).replacingHDRBand(.second, exposureEV: 0.25)
+    let graph = try DevelopmentSceneGraphV1(graph: .init(nodes: [], output: .input), output: output)
+    let width = 7, height = 5, rect = MTLRegionMake2D(4, 3, 3, 2)
+    let pixels: [SIMD4<Float>] = [
+      .init(0.2, 0.1, 0.01, 1), .init(7, 6, 5, 0), .init(1.5, 1, 0.75, 0.5),
+      .init(1, 1.1, 0.9, 0.25), .init(12, 3, 0.9, 1), .init(0.5, 0.4, 0.6, 0),
+    ]
+    let texture = try upload(pixels, device: device, width: rect.size.width)
+    let source = DevelopmentSceneMetalV1.Image(texture: texture, port: .working, origin: .init(rect.origin.x, rect.origin.y))
+    let master = try renderer.prepareFinal(source, geometry: .init(width: width, height: height), graph: graph)
+    let sentinel = SIMD4<Float>(-7, 8, 13, 0.75)
+    let initial = [SIMD4<Float>](repeating: sentinel, count: width * height)
+    let uploaded = try upload(initial, device: device, width: width)
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
+    descriptor.storageMode = .private
+    descriptor.usage = [.shaderRead, .shaderWrite]
+    let queue = try XCTUnwrap(device.makeCommandQueue())
+    func bits(_ pixel: SIMD4<Float>) -> SIMD4<UInt32> {
+      .init(pixel.x.bitPattern, pixel.y.bitPattern, pixel.z.bitPattern, pixel.w.bitPattern)
+    }
+    for target in Output.Target.allCases {
+      let destination = try XCTUnwrap(device.makeTexture(descriptor: descriptor))
+      let command = try XCTUnwrap(queue.makeCommandBuffer())
+      let blit = try XCTUnwrap(command.makeBlitCommandEncoder())
+      blit.copy(from: uploaded, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(),
+        sourceSize: .init(width: width, height: height, depth: 1),
+        to: destination, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init())
+      blit.endEncoding()
+      command.commit()
+      command.waitUntilCompleted()
+      XCTAssertEqual(command.status, .completed)
+
+      let legacy = try read(renderer.renderDelivery(master, target: target).texture)
+      XCTAssertEqual(legacy.map(\.w), pixels.map(\.w))
+      XCTAssertEqual(legacy[1], .zero)
+      XCTAssertEqual(legacy[5], .zero)
+      var expected = initial
+      for row in 0..<rect.size.height {
+        let start = (rect.origin.y + row) * width + rect.origin.x
+        let outputStart = row * rect.size.width
+        expected.replaceSubrange(start..<(start + rect.size.width), with: legacy[outputStart..<(outputStart + rect.size.width)])
+      }
+      try renderer.renderDeliveryTile(master, target: target, into: destination, region: rect)
+      XCTAssertEqual(try read(destination).map(bits), expected.map(bits), target.rawValue)
+
+      let stage = try Output(device: device, target: target)
+      let shifted = MTLRegionMake2D(5, 3, rect.size.width, rect.size.height)
+      let outside = DevelopmentSceneMetalV1.Image(texture: texture, port: .working, origin: .init(5, 3))
+      let aliased = DevelopmentSceneMetalV1.Image(texture: destination, port: .working)
+      XCTAssertThrowsError(try stage.renderTile(source, into: destination, region: shifted)) {
+        XCTAssertEqual($0 as? Output.Failure, .invalidInput)
+      }
+      XCTAssertThrowsError(try stage.renderTile(outside, into: destination, region: shifted)) {
+        XCTAssertEqual($0 as? Output.Failure, .invalidInput)
+      }
+      XCTAssertThrowsError(try stage.renderTile(aliased, into: destination, region: MTLRegionMake2D(0, 0, width, height))) {
+        XCTAssertEqual($0 as? Output.Failure, .invalidInput)
+      }
+      XCTAssertEqual(try read(destination).map(bits), expected.map(bits), target.rawValue)
+    }
+  }
+
   func testHDRCurveAndCoverageKeepHeadroomAndIdentityAreas() throws {
     let dev=try XCTUnwrap(MTLCreateSystemDefaultDevice())
     let stage=try DevelopmentSceneToneV1(device:dev)
@@ -280,14 +347,14 @@ final class DevelopmentSceneOutputV1Tests: XCTestCase {
   }
 
   private func read(_ texture: MTLTexture) throws -> [SIMD4<Float>] {
-    let bytes=16*texture.width
-    let buffer=try XCTUnwrap(texture.device.makeBuffer(length:bytes,options:.storageModeShared))
+    let bytes=16*texture.width, length=bytes*texture.height
+    let buffer=try XCTUnwrap(texture.device.makeBuffer(length:length,options:.storageModeShared))
     let queue=try XCTUnwrap(texture.device.makeCommandQueue()), command=try XCTUnwrap(queue.makeCommandBuffer())
     let blit=try XCTUnwrap(command.makeBlitCommandEncoder())
-    blit.copy(from:texture,sourceSlice:0,sourceLevel:0,sourceOrigin:.init(),sourceSize:.init(width:texture.width,height:1,depth:1),
-      to:buffer,destinationOffset:0,destinationBytesPerRow:bytes,destinationBytesPerImage:bytes)
+    blit.copy(from:texture,sourceSlice:0,sourceLevel:0,sourceOrigin:.init(),sourceSize:.init(width:texture.width,height:texture.height,depth:1),
+      to:buffer,destinationOffset:0,destinationBytesPerRow:bytes,destinationBytesPerImage:length)
     blit.endEncoding(); command.commit(); command.waitUntilCompleted()
     XCTAssertEqual(command.status,.completed,"\(String(describing:command.error))")
-    return Array(UnsafeBufferPointer(start:buffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:texture.width))
+    return Array(UnsafeBufferPointer(start:buffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:texture.width*texture.height))
   }
 }

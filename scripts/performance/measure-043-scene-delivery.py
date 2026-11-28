@@ -37,7 +37,7 @@ def timing(values):
     }
 
 
-def summarize(paths, warmups, sample_count, backend):
+def summarize(paths, warmups, sample_count, backend, assembly):
     samples = sorted((json.loads(path.read_bytes()) for path in paths), key=lambda record: record["startedUptimeNS"])
     if len(samples) != 1 + warmups + sample_count or any(record["outcome"] != "succeeded" for record in samples):
         raise ValueError("A cold sample, all warmups and all successful measured deliveries are required for each route")
@@ -65,6 +65,14 @@ def summarize(paths, warmups, sample_count, backend):
             item.get("dagBackend") != backend or item["dispatches"] < 3 for item in graph
         )):
             raise ValueError(f"Missing the actual photographic {backend} DAG receipt for {target}")
+        if target != "shared":
+            for record, receipt in zip(records, graph, strict=True):
+                observed = record["stages"]
+                drt_waits = observed.get("drt.host_wait", {}).get("samples", 0)
+                blit_waits = observed.get("assembly.blit.host_wait", {}).get("samples", 0)
+                tiles = receipt["tiles"]
+                if drt_waits != tiles or blit_waits != (tiles if assembly == "blit" else 0):
+                    raise ValueError(f"Unexpected DRT or assembly submit count for {target} in {assembly} mode")
         transport = [record.get("wgpu") for record in records] if backend == "wgpu" and target != "shared" else []
         if transport and any(
             receipt is None or receipt["graphicsAPI"] != "metal"
@@ -93,6 +101,9 @@ def main():
     parser.add_argument("--scratch-path", type=Path, default=ROOT / ".build")
     parser.add_argument("--skip-build", action="store_true")
     parser.add_argument("--backend", choices=("rust", "wgpu"), default="rust")
+    parser.add_argument("--drt-assembly", choices=("blit", "direct"), default="blit")
+    parser.add_argument("--retain-component-evidence", action="store_true",
+                        help="Keep component receipts and renditions outside the measured export interval")
     parser.add_argument("--warmup", type=int, default=5)
     parser.add_argument("--samples", type=int, default=30)
     args = parser.parse_args()
@@ -116,11 +127,16 @@ def main():
         RAWMASTER_SCENE_60MP_ARW=str(raw),
         RAWMASTER_FLASHRAW_LIBRARY=str(flashraw),
         RAWMASTER_SCENE_BACKEND=args.backend,
+        RAWMASTER_SCENE_DIRECT_DRT="1" if args.drt_assembly == "direct" else "0",
         RAWMASTER_EDITOR_ACCEPTANCE_DIR=str(output / "queue"),
         RAWMASTER_SCENE_DELIVERY_TRACE_DIR=str(traces),
         RAWMASTER_SCENE_DELIVERY_PROFILE_REPEATS=str(repeats),
     )
     environment.pop("RAWMASTER_SCENE_DELIVERY_EVIDENCE", None)
+    if args.retain_component_evidence:
+        component = output / "component"
+        component.mkdir()
+        environment["RAWMASTER_SCENE_DELIVERY_EVIDENCE"] = str(component)
     command = ["swift", "test", "--scratch-path", str(scratch), "-c", "release", "--jobs", "4", "-Xswiftc", "-enable-testing"]
     if args.skip_build:
         command.append("--skip-build")
@@ -161,6 +177,7 @@ def main():
         "worktreeChangesAtStart": changes,
         "testBundleSHA256": test_bundles,
         "configuration": f"Swift Release with testability, {args.backend} scene, 9504×6336 Bayer fixture",
+        "drtAssembly": args.drt_assembly,
         "warmups": args.warmup,
         "measuredSamplesPerRoute": args.samples,
         "firstRunBoundary": "first delivery of this route in the test process with system file caches intact",
@@ -171,7 +188,8 @@ def main():
             "afterEachTargetPair": checkpoints[1:-1],
             "afterClosingLibraryOwners": checkpoints[-1],
         },
-        "routes": {route: summarize(paths, args.warmup, args.samples, args.backend) for route, paths in routes.items()},
+        "routes": {route: summarize(paths, args.warmup, args.samples, args.backend, args.drt_assembly)
+                   for route, paths in routes.items()},
     }
     (output / "summary.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
     print(output / "summary.json")

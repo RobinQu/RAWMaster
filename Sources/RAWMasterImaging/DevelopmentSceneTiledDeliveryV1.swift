@@ -16,10 +16,11 @@ final class DevelopmentSceneTiledDeliveryV1 {
   private let photographic: DevelopmentScenePhotographicV1?
   private let modelPrefix: DevelopmentSceneModelPreviewV1?
   private let maximumTileEdge: Int
+  private let directDRT: Bool
 
   init(decoder: DevelopmentSceneRAWV1, mosaic: DevelopmentSceneRAWV1.Mosaic, graph: DevelopmentSceneGraphV1,
        models: DevelopmentSceneModelProgramV1? = nil, capture: URL? = nil, surfaceBudget: Int = DevelopmentSceneGraphRendererV1.defaultSurfaceBudget,
-       maximumTileEdge: Int = 1536) throws {
+       maximumTileEdge: Int = 1536, directDRT: Bool = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DIRECT_DRT"] == "1") throws {
     try graph.validatePhotographicCoverage(using: models)
     guard surfaceBudget > 0, (1...4096).contains(maximumTileEdge) else { throw Renderer.Failure.surfaceBudget }
     guard let queue = mosaic.texture.device.makeCommandQueue() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }
@@ -40,6 +41,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
     } else { photographic = nil }
     self.decoder = decoder; self.mosaic = mosaic; self.graph = graph; self.queue = queue
     self.budget = surfaceBudget; self.maximumTileEdge = maximumTileEdge
+    self.directDRT = directDRT
   }
 
   static func requiresTiling(_ mosaic: DevelopmentSceneRAWV1.Mosaic) -> Bool {
@@ -48,7 +50,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
     return mosaic.texture.allocatedSize + 2 * full > Renderer.defaultSurfaceBudget
   }
 
-  func render(_ target: DevelopmentSceneOutputStateV1.Target) throws
+  func render(_ target: DevelopmentSceneOutputStateV1.Target, afterCompletedTile: (() -> Void)? = nil) throws
     -> (display: DevelopmentSceneOutputV1.DisplayImage, execution: DevelopmentSceneExecutionReceiptV1?) {
     try Task.checkCancellation()
     let device = mosaic.texture.device, width = photographic?.width ?? Int(mosaic.sensor.size.x), height = photographic?.height ?? Int(mosaic.sensor.size.y)
@@ -66,7 +68,6 @@ final class DevelopmentSceneTiledDeliveryV1 {
       try Renderer(device: device, frozenDelivery: true)
     }
     var total: Receipt?
-    var display: Display?
     for y in stride(from: 0, to: height, by: edge) {
       for x in stride(from: 0, to: width, by: edge) {
         try autoreleasepool {
@@ -86,7 +87,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
           let maskBytes = device.heapTextureSizeAndAlign(descriptor: Self.descriptor(.r32Float, tileWidth, tileHeight)).size
           let outputReserve = sensorBytes + colorBytes * (hasTrim ? 2 : 1)
           // Preserve the conservative delivery headroom for both formats, including short
-          // edge tiles. Rust also checks the native allocations within each tile's budget.
+          // edge tiles. Both routes admit graphs with the same reserve, including the DRT tile.
           let padding = max(1, Double(max(colorBytes, 4 * maskBytes)) / Double(16 * tileWidth * tileHeight))
           guard budget > resident + outputReserve else { throw Renderer.Failure.surfaceBudget }
           let graphBudget = Int(Double(budget - resident - outputReserve) / padding)
@@ -94,28 +95,40 @@ final class DevelopmentSceneTiledDeliveryV1 {
           let master = try renderer.prepareFinalInput(source, geometry: geometry, graph: graph, masks: photographic?.alignsWithSensor == false ? [:] : modelPrefix?.native.masks ?? [:],
             modelScale: modelPrefix?.native.scale ?? 1, tileEdge: edge, maximumBytes: graphBudget)
           guard let current = renderer.lastReceipt else { throw Renderer.Failure.invalidImage }
-          let tile = try renderer.renderDelivery(master, target: target)
-          guard tile.origin == SIMD2(x, y), tile.texture.width == rect.size.width, tile.texture.height == rect.size.height,
-                let cmd = queue.makeCommandBuffer(), let blit = cmd.makeBlitCommandEncoder() else { throw Renderer.Failure.invalidImage }
-          blit.copy(from: tile.texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(), sourceSize: rect.size,
-            to: destination, destinationSlice: 0, destinationLevel: 0, destinationOrigin: rect.origin)
-          blit.endEncoding(); cmd.commit()
-          SceneDeliveryTrace.wait(cmd, host: .blitWait, gpu: .blitGPU)
-          SceneDeliveryTrace.sampleMemory(device: device)
-          guard cmd.status == .completed else { throw cmd.error ?? DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
+          let renderedTile: Display?
+          if directDRT {
+            try renderer.renderDeliveryTile(master, target: target, into: destination, region: rect)
+            renderedTile = nil
+          } else {
+            let tile = try renderer.renderDelivery(master, target: target)
+            guard tile.origin == SIMD2(x, y), tile.texture.width == rect.size.width, tile.texture.height == rect.size.height,
+                  let cmd = queue.makeCommandBuffer(), let blit = cmd.makeBlitCommandEncoder() else { throw Renderer.Failure.invalidImage }
+            blit.copy(from: tile.texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(), sourceSize: rect.size,
+              to: destination, destinationSlice: 0, destinationLevel: 0, destinationOrigin: rect.origin)
+            blit.endEncoding()
+            cmd.commit()
+            SceneDeliveryTrace.wait(cmd, host: .blitWait, gpu: .blitGPU)
+            guard cmd.status == .completed else { throw cmd.error ?? DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
+            renderedTile = tile
+          }
+          withExtendedLifetime(renderedTile) { SceneDeliveryTrace.sampleMemory(device: device) }
           try Task.checkCancellation()
-          if display == nil { display = Display(assembled: destination, like: tile) }
           // The graph accounts for its input/output and Rust pool. Keep the target branch and
           // sensor flags in the bound even when those stages do not overlap at peak.
           let graphPeak = current.backend == .rust ? Int(ceil(Double(current.peakBytes) * padding)) : current.peakBytes
           let peak = resident + outputReserve + graphPeak
           guard peak <= budget else { throw Renderer.Failure.surfaceBudget }
           total = Self.add(current, to: total, peak: peak, budget: budget)
+          if let afterCompletedTile {
+            afterCompletedTile()
+            try Task.checkCancellation()
+          }
         }
       }
     }
-    guard let display, let total else { throw Renderer.Failure.invalidImage }
-    return (display, total.includingPhotographic(photographic != nil))
+    guard let total else { throw Renderer.Failure.invalidImage }
+    try Task.checkCancellation()
+    return (Display(assembled: destination, target: target), total.includingPhotographic(photographic != nil))
   }
 
   private static func descriptor(_ format: MTLPixelFormat, _ width: Int, _ height: Int) -> MTLTextureDescriptor {

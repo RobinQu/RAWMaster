@@ -127,6 +127,12 @@ final class DevelopmentSceneGraphRendererV1 {
     try render(master.image, output: master.output, target: target)
   }
 
+  func renderDeliveryTile(_ master: Master, target: Target, into destination: MTLTexture, region: MTLRegion) throws {
+    let (stage, branch) = try outputStage(for: master.image, output: master.output, target: target)
+    try stage.renderTile(branch, into: destination, region: region, hdrLimitEV: master.output.hdrHighlightLimitEV,
+      bandExposure: master.output.hdrBandExposureEV)
+  }
+
   func preparePreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
                       models: DevelopmentSceneModelProgramV1? = nil,
                       provider: (any DevelopmentSceneModelProvider)? = nil,
@@ -165,6 +171,13 @@ final class DevelopmentSceneGraphRendererV1 {
   private var exposureStage: DevelopmentSceneMetalV1?
   private func render(_ image: Image, output: DevelopmentSceneOutputStateV1.Version,
                       target: Target, visualizeHDR: Bool = false) throws -> DevelopmentSceneOutputV1.DisplayImage {
+    let (stage, branch) = try outputStage(for: image, output: output, target: target)
+    return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV,
+                            bandExposure: output.hdrBandExposureEV, visualizeHDR: visualizeHDR)
+  }
+
+  private func outputStage(for image: Image, output: DevelopmentSceneOutputStateV1.Version, target: Target) throws
+    -> (DevelopmentSceneOutputV1, Image) {
     let branch: Image
     let trim = output.sdrTrim
     if target == .sdr709 {
@@ -180,8 +193,7 @@ final class DevelopmentSceneGraphRendererV1 {
       try DevelopmentSceneOutputV1(device: device, target: target)
     }
     outputStages[target] = stage
-    return try stage.render(branch, hdrLimitEV: output.hdrHighlightLimitEV,
-                            bandExposure: output.hdrBandExposureEV, visualizeHDR: visualizeHDR)
+    return (stage, branch)
   }
 
   private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
