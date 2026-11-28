@@ -20,3 +20,13 @@ RAWMASTER_BUILD_VERSION=1.0.1 RAWMASTER_DISTRIBUTION_OUTPUT="$PWD/output/m0/webs
 ```
 
 组包先签 `Contents/Frameworks` 的 FlashRaw、图像引擎、资料库和 PhotoExport，再签主应用。签名权限为 App Sandbox、用户选取读写和应用范围书签。组包核验 Mach-O 架构、系统下限、install name、依赖和 rpath，并输出 `app-manifest.json`。官网渠道另产出安装到 `/Applications` 的独立验证 `.pkg` 和载荷摘要。四个图像与资料库运行库保留在固定包内位置。既有滤镜、降噪和 2× 成像资产随同验证，外部模型服务、脚本和组包归档不进入该构建。[构建入口](../../scripts/build-app.sh) · [本地组包审计](../../scripts/distribution/verify-local-app.py)
+
+## 11 月 28 日本机阶段验收
+
+两个 `1.0.1` 候选均从干净提交 `ad5f50e0` 生成。每包有 5 个 arm64 Mach-O 和 91 个密封文件，四个 dylib 逐字节相同。官网 `.pkg` 为 `131,317,754` 字节，展开后的应用逐文件相同并通过严格验签。
+
+两个签名应用分别通过系统打开事件接收预置的独立库包，退出后用同一签名运行，通过最近记录自动重开，SQLite 和原件摘要正常。App Store 形态的暗房实际渲染 6000 × 4000 原片，直方图有 10,880 个采样，进程映射了包内 FlashRaw、图像引擎和资料库。采用「鲜明」后显示 100% 强度。收藏控件切换到「取消收藏鲜明」，重开后仍保留。[构建与原生回执](evidence/m0-local-distribution-checkpoint.json)
+
+常规 Release `20261128.234100` 已重新构建、严格验签并安装。安装前后通过不同分支合计 44 次 Metal ABI 实测，两条 CoreAI 人脸调用回执相同。隔离资料库正常启动并通过 SQLite 检查。库包、资料库会话和 FLUX 清单共有 18 项本机回归通过。
+
+M0 还需完成系统选取器的新建、复制接入与真实 JPEG 交付，以及无开发环境的 Mac 复跑。当前的系统打开与最近库回执覆盖预置库，后续同一份候选运行完整最小工作流。

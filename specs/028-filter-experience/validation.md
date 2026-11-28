@@ -10,6 +10,8 @@ Camera Raw 交付版本上的 Classic 窗口、十候选及全尺寸导出实测
 
 028 T-021 仍需实际 VoiceOver 朗读和物理键盘验收。031 普通预设按 SC-02 与同字段手调独立对照。[028 任务](tasks.md) · [031 验收门](../031-preset-browser/spec.md#成功标准)
 
+签名沙盒的 6000 × 4000 实拍暗房已通过「基础滤镜 → 鲜明」采用及 100% 强度回执。原生 AX 控件从「收藏鲜明」切换为「取消收藏鲜明」，同一签名应用退出并重开后仍保留。[原生回执](../044-mac-app-store-lite/evidence/m0-local-distribution-checkpoint.json)
+
 ## 028 独立版本的结论
 
 固定九滤镜 + 原片的交互代理、独立缩略图、内容键、last-known-good、有界恢复、hover、收藏和键盘导航已经实施。真实 RAW 的十组 canonical settled、全尺寸 PNG16 导出、暖十候选吞吐、滤镜相关 Debug/Release 回归均通过。
