@@ -300,6 +300,26 @@ Release `20261128.190636` 已安装并通过严格验签。默认源纹理、引
 
 Release `20261128.195700` 已安装并通过严格验签。104 项定向回归全部通过，包含 17 项滤镜与实拍自由缩放。滤镜悬停用例在开关两侧均出现过窗口失焦，保留原失败日志，完整套件复跑通过。隔离资料库、实际 AppKit 窗口和安装前后 40+4 次 Metal C ABI 复验通过。[签名、安装和原生回执](evidence/m0-native-dehaze-restore-half-release-checkpoint.json) · [焦点观察](evidence/m0-native-dehaze-restore-half.json)
 
+局部正向纹理与清晰度的 canonical 定稿现在在已核验的 M4 Max、macOS 27.0.1 和两种原方向 RAW 尺寸上启用单请求上下文缓存。显影器确认原图与源纹理身份后，再核对请求、纹理 pin、至少两个绝对 1024 格和设备余量。局部归约沿用原区域和分组清理，FIT 完成或撤销后清理该上下文。`RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE=0` 可恢复原路径。纹理分带和独立位图等诊断保留各自准入。普通 AppKit 视口按实际绘制另行计量。[代码与准入](../../Sources/RAWMasterImaging/PreviewNativeSource.swift) · [两源验证](evidence/m0-native-spatial-request-context.json)
+
+两张 RAW 共 16 个强度和位置组合的原尺寸 RGBAf 与 2400×1600 RGBA8 逐位一致。26 组实际 GPU 注入在两种上下文的区域校验得到相同裁决。原区域范围外的四份坏像素仍由原全域对照拒绝。256 MiB、单格、显影器资格不足和晚期容量拒绝均走原上下文。原生归约后、实际位图写回后撤销，以及源 pin 在写回后退役均拒绝交付，后续同源重试通过。[像素、故障及回滚](evidence/m0-native-spatial-request-context.json)
+
+同构建按关闭、默认、默认、关闭各跑一轮。两张 RAW 的交互与定稿共 1184 幅完整像素一致，默认各轮只在正向纹理与清晰度各两档命中。阶段计时从定稿请求至完整像素读回，每个算子、每张 RAW、每侧开关各四个样本。[逐态原始报告与物理内存](evidence/m0-native-spatial-request-context.json)
+
+| 2400×1600 canonical 定稿 | 9504×6336 p50 | 8640×5760 p50 |
+| --- | ---: | ---: |
+| 局部纹理 | 268.13 → 214.76 ms | 253.61 → 235.97 ms |
+| 局部清晰度 | 270.98 → 247.43 ms | 257.20 → 228.03 ms |
+| 37 项各两首次状态的全部定稿 p95 | 288.92 → 264.54 ms | 259.13 → 242.86 ms |
+
+两轮无阶段追踪的正式 37 项暖态均通过 LightFlow 门槛，各轮 1184 对正式帧与 222 对预热帧匹配上版。74 个首次状态的输入到精确读回 p50/p95 分别为 76.02/309.97 与 68.25/302.29 ms，LightFlow 为 9.52/58.97 ms。正式首次门继续开放。[正式时钟](evidence/m0-native-spatial-request-context.json)
+
+在上版 Release 上另用两张 RAW 对照全局降噪的原路径、同上下文缓存、已知输入范围证明及两者组合，三项降噪的 192 幅完整画面一致。主片色彩降噪第一次单独建立证明时，从总计 418.45 ms 的证明阶段分离出 62.01 ms 的实际分带归约。这次完整定稿为 672.43 ms。两次组合测量未复现该尖峰，保留试用并继续定位首次建立开销。[四种走法及原始阶段区间](evidence/m0-native-spatial-request-context.json)
+
+独立程序首次加载降噪范围着色器时，运行期编译为 377.93 ms，预编译的 stitchable 库装载为 51.49 ms。后续每侧四个进程的中位数为 29.10 和 26.95 ms。两路实际 GPU 对七个范围边界和非有限输入给出相同结果。这组测量只覆盖着色器装载和小样本正确性，完整 RAW 回放仍待验证。[装载测量与像素](evidence/m0-native-spatial-request-context.json) · [Apple Core Image 内核构建](https://developer.apple.com/videos/play/wwdc2021/10159/)
+
+Release `20261128.203238` 已安装并通过严格验签、隔离资料库自检与真实窗口启动。105 项定向原生回归通过，安装前后完成 40+4 次实际 Metal C ABI 检查。修正后的绘制回执报告实际位图尺寸。经典滤镜两轮 AppKit 测量均达门槛，普通预设两轮中有一轮慢于等价手调。最终测试构建另跑完整 37 项，两轮暖态均全过，首次精确 p95 为 255.74 和 306.27 ms。[构建、窗口及正式回执](evidence/m0-native-spatial-request-release-checkpoint.json) · [滤镜与预设验收](../031-preset-browser/integration-validation.md#11-月-28-日画布回执与窗口复测)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)

@@ -10,7 +10,7 @@
 - [x] **M0-04** 60 MP 三路暖态各 30 次，已记录墙钟、计数、分项预算与进程/设备采样。6 MP 两个原生 Metal 执行器各完成 5 次预热与 30 次计量。038 FIT/监看与 036 1:1 已复跑。[M0 原生基线](validation.md#m0--回执修复与基线)
 - [x] **M0-05** 定稿版本化 [ReceiptV2](plan.md#43-receiptv2)，区分执行器、图形 API、阶段峰值、计时来源和回退。定义旧 V1、恢复票据与 V2 写入切换条件。
 - [x] **M0-06** 固定实拍和校准摘要、构建与运行库、设备/系统构建及测量区间，提供复现脚本。按原生分项判定编译、图执行、同步和编码的优先级。[M0 验收](validation.md#m0--回执修复与基线)
-- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。当前三方 FIT 六项和物理 1:1 暖态曝光均进入最快对手容差。最新两轮默认 canonical 各有 37/37 项暖态通过。点算子复用、局部锐化均值、颗粒原格、四类局部算子分组、局部降噪上下文复用及正向去雾的半浮点最小值、范围证明、硬件半幅定稿已按准入范围完成实机验收。首次精确仍超出外部容差，局部降噪分带的旧极值仍待回放。60 MP JPEG 同设置复测通过 LightFlow 门槛。Adobe 第 6 档已取得独立出片基线，RAWMaster 和 Adobe 的 4:2:0 候选均尚未达到等保真双门。[外部对标](validation.md#外部产品对标) · [当前三方 FIT](evidence/m0-current-fit-three-way.json) · [三方原寸曝光](evidence/m0-current-three-way-1to1.json) · [Adobe JPEG](evidence/m0-camera-raw-jpeg-qualification.json) · [去雾回执](evidence/m0-native-dehaze-default.json)
+- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。当前三方 FIT 六项和物理 1:1 暖态曝光均进入最快对手容差。最新两轮默认 canonical 各有 37/37 项暖态通过。点算子复用、局部锐化均值、颗粒原格、四类局部算子分组、局部降噪全域及纹理／清晰度区域的请求内上下文复用，以及正向去雾的半浮点最小值、范围证明、硬件半幅定稿已按准入范围完成实机验收。首次精确仍超出外部容差，局部降噪分带的旧极值仍待回放。60 MP JPEG 同设置复测通过 LightFlow 门槛。Adobe 第 6 档已取得独立出片基线，RAWMaster 和 Adobe 的 4:2:0 候选均尚未达到等保真双门。[外部对标](validation.md#外部产品对标) · [当前三方 FIT](evidence/m0-current-fit-three-way.json) · [三方原寸曝光](evidence/m0-current-three-way-1to1.json) · [Adobe JPEG](evidence/m0-camera-raw-jpeg-qualification.json) · [去雾回执](evidence/m0-native-dehaze-default.json) · [局部空间缓存与降噪分项](evidence/m0-native-spatial-request-context.json)
 
 ## M1 · 去重
 

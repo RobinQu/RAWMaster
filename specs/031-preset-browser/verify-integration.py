@@ -37,7 +37,18 @@ def verify(name, data):
     stored = (6000, 4000) if portrait else (9504, 6336)
     require(data["sourceSHA256"] == data["sourceSHA256After"] == sha, "source fingerprint mismatch")
     require((data["sourcePixelWidth"], data["sourcePixelHeight"]) == stored, "capture dimensions mismatch")
-    require(data["recipeRawDecoder"] == FLASHRAW and data["engineAfterInitialSettled"]["canonicalTextureFills"] > 0,
+    initial = data["engineAfterInitialSettled"]
+    viewport_decoded = False
+    if name in ("classic", "paired") and data["initialFrame"]["approximate"] is True:
+        # The shipping viewport can finish on a FlashRaw proxy without filling the canonical pool.
+        before = data["engineBeforeApp"]
+        previous_counts = before["flashRawDecodesByStage"]
+        viewport_decoded = initial["fallbacks"] == before["fallbacks"] and all(
+            any(stage.endswith(" · bilinear · " + region) and count > previous_counts.get(stage, 0)
+                for stage, count in initial["flashRawDecodesByStage"].items())
+            for region in ("全图", "区域")
+        )
+    require(data["recipeRawDecoder"] == FLASHRAW and (initial["canonicalTextureFills"] > 0 or viewport_decoded),
             "requires FlashRaw-backed initial frame")
     require(data["gates"] and all(v is True or (pair_pending and k == PAIR_GATE)
                                   for k, v in data["gates"].items()), "unexpected reported gate failed")

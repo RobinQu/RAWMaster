@@ -41,7 +41,7 @@ Camera Raw 交付上的 Classic 窗口性能和目录缩略图请求数已分别
 ## F. 交付门
 
 - [x] **T-022** 真实 RAW 受控 probe 已复测并保存新 raw JSON；Service、十候选、十组 settled 和全尺寸导出均记录固定源 SHA，不覆盖旧证据。依赖：T-008、T-014、T-016。
-- [x] **T-023** 真实 AppKit 画布达到 p50 ≤ 20 ms、p95 ≤ 33 ms，支持域 filter fallback/RAW 重解码为 0。依赖：T-022。原 028 构建的暖 p50/p95 为 27.367/34.061 ms。基础编辑集成版经两轮真实画布复测达标，冷样本与每类解码计数分别保存。[逐轮数据](../031-preset-browser/integration-validation.md)
+- [x] **T-023** 真实 AppKit 画布达到 p50 ≤ 20 ms、p95 ≤ 33 ms，支持域 filter fallback/RAW 重解码为 0。依赖：T-022。11 月 28 日的两轮暖态 p50/p95 为 14.77/18.11 和 13.31/14.18 ms，各有 19 个暖样本及实际位图回执。[逐轮数据](../031-preset-browser/integration-validation.md#11-月-28-日画布回执与窗口复测)
 - [x] **T-024** 真实 RAW 十候选全部成功，滤镜阶段差异重建 0，模型观测刷新空白 0，暖整组 p95 104.279 ms；冷代理和物理窗口空白不作已通过宣称。依赖：T-022。
 - [ ] **T-025** 完整 Debug/Release 回归、实际保存/导出、原文件 SHA、资源 union0 和正常退出验收。依赖：T-023、T-024、T-021。旧构建记录全项目 Debug 1,684 项与滤镜 Release 80 项通过；集成版另验保存、原尺寸导出、原件 SHA、资源释放和签名包启动。T-021 的人工走查尚待签收。
 - [x] **T-026** `validation.md` 已更新为生产验收结果并明确未验证边界；未把未完成门禁宣称成 M0/M1 Converged。

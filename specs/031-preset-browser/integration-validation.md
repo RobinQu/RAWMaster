@@ -63,6 +63,20 @@ Release 共通过 218 项相关回归，覆盖独立功能版原有的全部 94 
 python3 specs/031-preset-browser/verify-integration.py specs/031-preset-browser/evidence/camera-raw-integration --confirm
 ```
 
+### 11 月 28 日画布回执与窗口复测
+
+同一张 9504×6336 RAW 的 FIT 位图为 2400×1600。四次复验在首个中性帧停止，原因是旧绘制回执记录了整幅缩放坐标的尺寸。修正后，回执取当前帧实际位图，实际绘制的截止时间仍在 AppKit 绘制返回处。65% 自由缩放的均衡和极速两种模式都核对了 4055×2189 位图与原画布尺寸。[原生自由缩放回归](../../Tests/RAWMasterUITests/NativePresentedCanvasTests.swift) · [首轮停止与复测回执](../043-image-engine-unification/evidence/m0-native-spatial-request-release-checkpoint.json)
+
+| 同机 Release 窗口 | 首轮 | 复测 |
+| --- | ---: | ---: |
+| Classic Filters 暖态 p50 / p95 | 14.77 / 18.11 ms | 13.31 / 14.18 ms |
+| 普通预设暖态 p95 | 9.42 ms | 10.91 ms |
+| 等价手调暖态 p95 | 12.74 ms | 8.47 ms |
+
+Classic 两轮各有 19 个暖样本，均通过 028 的 20/33 ms 门槛。每轮 22 幅实绘像素尺寸均与 2400×1600 帧一致，暖阶段 RAW 解码与 fallback 计数无增长。普通预设每轮保留首对及 30 对暖样本，两侧配方逐对一致，暖样本每侧均实际渲染 30 次。第二轮普通预设超过等价手调 p95，SC-02 仍待签收。两轮的主要差异位于命令返回到 AppKit 开始绘制之间，继续用原门槛验收。
+
+独立核验器按正常视口回执核对首帧的 FlashRaw 全图和区域解码及 fallback 计数，也继续接受封存的 canonical 纹理回执。四轮窗口结果均从原始计时重新计算并保留各自判定。[逐样本与签收状态](../043-image-engine-unification/evidence/m0-native-spatial-request-release-checkpoint.json) · [独立核验器](verify-integration.py)
+
 ## 接收版本
 
 基础编辑交付于 2026-11-22，提交为 `e2b9c68a6c88aa3ec73a231a863bd0d1df4ea434`。滤镜、预设目录和本地蒙版沿用这次交付的编辑预览、GPU 算子及导出入口。首个集成提交为 `0fd08108`。10 个共享文件逐项合并，保留新版降噪、超分辨率资源与保存时的发布协议。蒙版创建进入候选复核，镜头模糊的主体对焦仍使用原有入口。[独立功能基线](feature-validation.md) · [原引擎的逐项记录](../../docs/research/camera-raw-parity/performance-data.json)
