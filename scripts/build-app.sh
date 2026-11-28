@@ -2,10 +2,38 @@
 set -euo pipefail
 cd "${0:A:h:h}"
 configuration="${1:-release}"
-if [[ "$configuration" != "release" && "$configuration" != "debug" ]]; then
-  print -u2 'Usage: scripts/build-app.sh [release|debug]'
+channel="${2:-personal}"
+if (( $# > 2 )) || [[ "$configuration" != "release" && "$configuration" != "debug" ]]; then
+  print -u2 'Usage: scripts/build-app.sh [release|debug] [personal|app-store-local|website-local]'
   exit 2
 fi
+build_version="${RAWMASTER_BUILD_VERSION:-1}"
+if [[ ! "$build_version" =~ '^[0-9A-Za-z._-]+$' ]]; then
+  print -u2 'Invalid RAWMASTER_BUILD_VERSION'
+  exit 2
+fi
+case "$channel" in
+  personal) app="${RAWMASTER_APP_OUTPUT:-$PWD/output/RAWMaster.app}" ;;
+  app-store-local|website-local)
+    if [[ "$configuration" != "release" || -n "${RAWMASTER_APP_OUTPUT:-}" || ! "$build_version" =~ '^[0-9]+(\.[0-9]+){0,2}$' ]]; then
+      print -u2 'Use release, a numeric build version, and RAWMASTER_DISTRIBUTION_OUTPUT for a local distribution build.'
+      exit 2
+    fi
+    distribution_output="${RAWMASTER_DISTRIBUTION_OUTPUT:-$PWD/output/distribution/$channel}"
+    distribution_output="${distribution_output:A}"
+    mkdir -p -- "${distribution_output:h}"
+    if ! mkdir -- "$distribution_output"; then
+      print -u2 'Choose a new directory for RAWMASTER_DISTRIBUTION_OUTPUT.'
+      exit 2
+    fi
+    if [[ "$channel" == app-store-local ]]; then
+      app="$distribution_output/RAWMaster App Store Local.app"
+    else
+      app="$distribution_output/RAWMaster Website Local.app"
+    fi
+    ;;
+  *) print -u2 "Unknown application build channel: $channel"; exit 2 ;;
+esac
 flashraw_source="${FLASHRAW_SOURCE_DIR:-$PWD/output/tools/flashraw-src}"
 flashraw_target="${FLASHRAW_TARGET_DIR:-$PWD/output/tools/flashraw-target}"
 flashraw_library="${FLASHRAW_LIBRARY:-$flashraw_target/release/libflashraw_capi.dylib}"
@@ -18,30 +46,43 @@ if [[ ! -f "$flashraw_library" || ! -f "$flashraw_source/LICENSE-MIT" || ! -f "$
 fi
 typeset -a swift_build_options
 swift_build_options=(--configuration "$configuration")
-if [[ -n "${RAWMASTER_BUILD_PATH:-}" ]]; then
-  swift_build_options+=(--scratch-path "$RAWMASTER_BUILD_PATH")
+build_dir="${RAWMASTER_BUILD_PATH:-$PWD/.build}"
+if [[ "$channel" != personal ]]; then
+  build_dir="${RAWMASTER_BUILD_PATH:-$PWD/output/build/local-raw}"
+  swift_build_options+=(--force-resolved-versions -Xswiftc -DRAWMASTER_LOCAL_RAW_VALIDATION)
 fi
-flux_worker_root="$PWD/Modules/FluxWorker"
-flux_worker_binary="$PWD/Sources/RAWMasterAI/Resources/FluxWorker/flux-worker"
-"$flux_worker_root/build-worker.sh" "$flux_worker_root" "$flux_worker_root/target" "$flux_worker_binary"
+if [[ "$channel" != personal || -n "${RAWMASTER_BUILD_PATH:-}" ]]; then
+  swift_build_options+=(--scratch-path "$build_dir")
+fi
+if [[ "$channel" == personal ]]; then
+  flux_worker_root="$PWD/Modules/FluxWorker"
+  flux_worker_binary="$PWD/Sources/RAWMasterAI/Resources/FluxWorker/flux-worker"
+  "$flux_worker_root/build-worker.sh" "$flux_worker_root" "$flux_worker_root/target" "$flux_worker_binary"
+fi
 swift build "${swift_build_options[@]}" --jobs 4 --product RAWMaster
 binary_dir="$(swift build "${swift_build_options[@]}" --show-bin-path)"
-app="${RAWMASTER_APP_OUTPUT:-$PWD/output/RAWMaster.app}"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary_dir/RAWMaster" "$app/Contents/MacOS/RAWMaster"
 /usr/bin/ditto "$binary_dir/RAWMaster_RAWMaster.bundle" "$app/Contents/Resources/RAWMaster_RAWMaster.bundle"
-/usr/bin/ditto "$binary_dir/PhotoExport_RAWMasterPhotoExport.bundle" "$app/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle"
-depth_resources="$app/Contents/Resources/SceneDepth"
-python3 scripts/build-depth-model.py --destination "$depth_resources"
-cp "$flashraw_source/LICENSE-APACHE" "$depth_resources/LICENSE-Apache-2.0.txt"
-cp scripts/licenses/SceneDepth-NOTICE.txt "$depth_resources/NOTICE.txt"
 ai_resources="$binary_dir/RAWMaster_RAWMasterAI.bundle"
 if [[ ! -d "$ai_resources" ]]; then
   print -u2 "Missing AI runtime resources: $ai_resources"
   exit 1
 fi
-rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterAI.bundle"
-cp -R "$ai_resources" "$app/Contents/Resources/"
+if [[ "$channel" == personal ]]; then
+  /usr/bin/ditto "$binary_dir/PhotoExport_RAWMasterPhotoExport.bundle" "$app/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle"
+  depth_resources="$app/Contents/Resources/SceneDepth"
+  python3 scripts/build-depth-model.py --destination "$depth_resources"
+  cp "$flashraw_source/LICENSE-APACHE" "$depth_resources/LICENSE-Apache-2.0.txt"
+  cp scripts/licenses/SceneDepth-NOTICE.txt "$depth_resources/NOTICE.txt"
+  rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterAI.bundle"
+  cp -R "$ai_resources" "$app/Contents/Resources/"
+else
+  # SwiftPM's inactive AI resource lookups still require a bundle at launch.
+  ai_bundle="$app/Contents/Resources/RAWMaster_RAWMasterAI.bundle/Contents"
+  mkdir -p "$ai_bundle/Resources"
+  cp "$ai_resources/Contents/Info.plist" "$ai_bundle/Info.plist"
+fi
 core_resources="$binary_dir/RAWMaster_RAWMasterCore.bundle"
 migration_rules="Contents/Resources/AdobePresetMigration-v1.json"
 python3 - "$core_resources/$migration_rules" "$PWD/specs/031-preset-browser/contracts/migration-manifest-v1.json" <<'MIGRATION_RULES_PY'
@@ -123,13 +164,15 @@ PHOTO_FILTER_PY
 catalog_bundle="$binary_dir/LibraryCatalog_RAWMasterLibrary.bundle"
 catalog_runtime="$catalog_bundle/Contents/Resources/rawmaster-library.runtime"
 test -f "$catalog_runtime"
-mkdir -p "$app/Contents/Helpers" "$app/Contents/Resources/LibraryNotices"
-Modules/LibraryCatalog/GroupRender/build.sh "$app/Contents/Helpers/rawmaster-group-render"
-cp Modules/LibraryCatalog/GroupRender/OpenCV-LICENSE.txt "$app/Contents/Resources/LibraryNotices/"
-install -m 0644 "${RAWMASTER_BUILD_PATH:-$PWD/.build}/checkouts/SimpleToast/LICENSE" "$app/Contents/Resources/LibraryNotices/SimpleToast-LICENSE.txt"
-discovery_pack="${RAWMASTER_LIBRARY_DISCOVERY_PACK:-$PWD/output/library-models/LibraryDiscovery}"
-if [[ -d "$discovery_pack" ]]; then
-  python3 - "$discovery_pack" Modules/LibraryCatalog/Swift/Resources/discovery/models.json <<'DISCOVERY'
+mkdir -p "$app/Contents/Frameworks" "$app/Contents/Resources/LibraryNotices"
+install -m 0644 "$build_dir/checkouts/SimpleToast/LICENSE" "$app/Contents/Resources/LibraryNotices/SimpleToast-LICENSE.txt"
+if [[ "$channel" == personal ]]; then
+  mkdir -p "$app/Contents/Helpers"
+  Modules/LibraryCatalog/GroupRender/build.sh "$app/Contents/Helpers/rawmaster-group-render"
+  cp Modules/LibraryCatalog/GroupRender/OpenCV-LICENSE.txt "$app/Contents/Resources/LibraryNotices/"
+  discovery_pack="${RAWMASTER_LIBRARY_DISCOVERY_PACK:-$PWD/output/library-models/LibraryDiscovery}"
+  if [[ -d "$discovery_pack" ]]; then
+    python3 - "$discovery_pack" Modules/LibraryCatalog/Swift/Resources/discovery/models.json <<'DISCOVERY'
 import hashlib, json, pathlib, sys
 root = pathlib.Path(sys.argv[1])
 pins = json.loads(pathlib.Path(sys.argv[2]).read_text())
@@ -144,20 +187,27 @@ for name, expected in pins['sha256'].items():
 if not (root / 'runtime/bin/python3.12').is_file() or not (root / 'discovery/worker.py').is_file():
     raise SystemExit('Incomplete library discovery runtime')
 DISCOVERY
-  ditto "$discovery_pack" "$app/Contents/Resources/LibraryDiscovery"
-elif [[ -n "${RAWMASTER_LIBRARY_DISCOVERY_PACK:-}" ]]; then
-  print -u2 "Missing requested library model bundle: $discovery_pack"
-  exit 1
+    ditto "$discovery_pack" "$app/Contents/Resources/LibraryDiscovery"
+  elif [[ -n "${RAWMASTER_LIBRARY_DISCOVERY_PACK:-}" ]]; then
+    print -u2 "Missing requested library model bundle: $discovery_pack"
+    exit 1
+  fi
+  codesign --force --sign - "$app/Contents/Helpers/rawmaster-group-render"
 fi
-codesign --force --sign - "$app/Contents/Helpers/rawmaster-group-render"
-mkdir -p "$app/Contents/Frameworks"
 cp "$catalog_runtime" "$app/Contents/Frameworks/librawmaster_library.dylib"
 image_runtime="$binary_dir/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime"
 test -f "$image_runtime"
 /usr/bin/codesign --verify "$image_runtime"
 cp "$image_runtime" "$app/Contents/Frameworks/librawmaster_image.dylib"
 /usr/bin/codesign --verify "$app/Contents/Frameworks/librawmaster_image.dylib"
-if [[ -n "${RAWMASTER_CORE_MODELS_DIR:-}" ]]; then
+if [[ "$channel" != personal ]]; then
+  catalog_resources="$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents"
+  mkdir -p "$catalog_resources/Resources"
+  cp "$catalog_bundle/Contents/Info.plist" "$catalog_resources/Info.plist"
+  cp "$catalog_bundle/Contents/Resources/catalog-format.json" "$catalog_resources/Resources/"
+  cp "$binary_dir/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime" \
+    "$app/Contents/Frameworks/librawmaster_photo_export.dylib"
+elif [[ -n "${RAWMASTER_CORE_MODELS_DIR:-}" ]]; then
   python3 Modules/CoreAI/Tools/stage_assets.py "$RAWMASTER_CORE_MODELS_DIR" "$app"
   core_ai_runtime="$binary_dir/CoreAI_RAWMasterCoreAI.bundle/Contents/Resources/rawmaster-core-ai.runtime"
   /usr/bin/codesign --verify "$core_ai_runtime"
@@ -168,7 +218,9 @@ elif [[ -e "$app/Contents/Resources/CoreModels/v1" || -e "$app/Contents/Framewor
   print -u2 'Use a fresh application output when omitting staged CoreAI assets.'
   exit 1
 fi
-ditto "$catalog_bundle" "$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle"
+if [[ "$channel" == personal ]]; then
+  ditto "$catalog_bundle" "$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle"
+fi
 imaging_resources="$binary_dir/RAWMaster_RAWMasterImaging.bundle"
 if [[ ! -d "$imaging_resources" ]]; then
   print -u2 "Missing Imaging filter resources: $imaging_resources"
@@ -183,13 +235,17 @@ if [[ "$configuration" == "release" ]]; then
 fi
 
 mkdir -p "$app/Contents/Resources/FlashRaw"
-cp "$flashraw_library" "$app/Contents/Resources/FlashRaw/libflashraw_capi.dylib"
 cp "$flashraw_source/LICENSE-MIT" "$flashraw_source/LICENSE-APACHE" "$app/Contents/Resources/FlashRaw/"
+if [[ "$channel" != personal ]]; then
+  bundled_flashraw="$app/Contents/Frameworks/libflashraw_capi.dylib"
+  cp "$flashraw_library" "$bundled_flashraw"
+  xcrun install_name_tool -id @rpath/libflashraw_capi.dylib "$bundled_flashraw"
+else
+  cp "$flashraw_library" "$app/Contents/Resources/FlashRaw/libflashraw_capi.dylib"
 
-runtime_artifacts="${RAWMASTER_RUNTIME_ARTIFACTS_DIR:-$PWD/output/runtime-artifacts}"
-# Runtime executables stay inside a data archive until the native installer has
-# authenticated them. A packaged app must work without a system Python or uv.
-python3 - "$runtime_artifacts" <<'PY'
+  runtime_artifacts="${RAWMASTER_RUNTIME_ARTIFACTS_DIR:-$PWD/output/runtime-artifacts}"
+  # The native installer authenticates the archive before extracting runtime executables.
+  python3 - "$runtime_artifacts" <<'PY'
 import hashlib, json, sys
 from pathlib import Path
 root = Path(sys.argv[1])
@@ -209,8 +265,9 @@ for artifact in json.loads(catalog.read_text())['artifacts']:
     if Path(name).name != name or path.is_symlink() or not path.is_file() or path.stat().st_size != artifact['archiveByteCount'] or sha(path) != artifact['archiveSHA256']:
         raise SystemExit('Offline runtime archive failed integrity verification: ' + name)
 PY
-mkdir -p "$app/Contents/Resources/RuntimeArtifacts"
-cp "$runtime_artifacts/catalog.json" "$runtime_artifacts/rawmaster-comfymlx-v4-arm64-py312.zip" "$app/Contents/Resources/RuntimeArtifacts/"
+  mkdir -p "$app/Contents/Resources/RuntimeArtifacts"
+  cp "$runtime_artifacts/catalog.json" "$runtime_artifacts/rawmaster-comfymlx-v4-arm64-py312.zip" "$app/Contents/Resources/RuntimeArtifacts/"
+fi
 cat > "$app/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -249,15 +306,16 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 </dict></array>
 </dict></plist>
 PLIST
-build_version="${RAWMASTER_BUILD_VERSION:-1}"
-if [[ ! "$build_version" =~ '^[0-9A-Za-z._-]+$' ]]; then
-  print -u2 'Invalid RAWMASTER_BUILD_VERSION'
-  exit 2
-fi
 plutil -replace CFBundleVersion -string "$build_version" "$app/Contents/Info.plist"
-python3 scripts/package-metadata-tool.py --source "$PWD/output/tools/exiftool" --destination "$app/Contents/Resources/MetadataTool"
+if [[ "$channel" == personal ]]; then
+  python3 scripts/package-metadata-tool.py --source "$PWD/output/tools/exiftool" --destination "$app/Contents/Resources/MetadataTool"
+fi
 ./scripts/build-icons.sh "$app/Contents/Resources"
 python3 scripts/check-app-icon.py "$app"
-codesign --force --sign - "$app"
+if [[ "$channel" == personal ]]; then
+  codesign --force --sign - "$app"
+else
+  ./scripts/package-local-distribution.sh "$channel" "$app" "$flashraw_library"
+fi
 print "Built $app"
 print "Open with: open '$app'"

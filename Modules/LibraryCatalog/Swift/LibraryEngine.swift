@@ -28,6 +28,14 @@ public final class LibraryEngine: @unchecked Sendable {
     public static func shared() throws -> LibraryEngine { try instance.get() }
 
     private init() throws {
+        #if RAWMASTER_LOCAL_RAW_VALIDATION
+        let image = Bundle.main.bundleURL.resolvingSymlinksInPath()
+            .appendingPathComponent("Contents/Frameworks/librawmaster_library.dylib")
+        guard image.path == image.resolvingSymlinksInPath().path,
+              (try? image.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else {
+            throw LibraryEngineError("无法找到资料库组件")
+        }
+        #else
         #if os(macOS)
         let packaged = Bundle.main.privateFrameworksURL?.appendingPathComponent("librawmaster_library.dylib")
         #else
@@ -36,11 +44,13 @@ public final class LibraryEngine: @unchecked Sendable {
         let image: URL
         if let packaged, FileManager.default.fileExists(atPath: packaged.path) {
             image = packaged
-        } else if let build = Bundle.module.url(forResource: "rawmaster-library", withExtension: "runtime") {
-            image = build
         } else {
-            throw LibraryEngineError("无法找到资料库组件")
+            guard let build = Bundle.module.url(forResource: "rawmaster-library", withExtension: "runtime") else {
+                throw LibraryEngineError("无法找到资料库组件")
+            }
+            image = build
         }
+        #endif
         var message: UnsafeMutablePointer<CChar>?
         guard let handle = image.path.withCString({ rm_host_open($0, &message) }) else {
             defer { rm_host_free_message(message) }

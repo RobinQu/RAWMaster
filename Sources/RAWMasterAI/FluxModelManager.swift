@@ -82,7 +82,7 @@ public final class FluxModelManager: ObservableObject {
     }
 
     public var shouldShowFirstRunPrompt: Bool {
-        status == .notInstalled && !defaults.bool(forKey: firstRunPromptKey)
+        manifest != nil && status == .notInstalled && !defaults.bool(forKey: firstRunPromptKey)
     }
 
     public func markFirstRunPromptShown() {

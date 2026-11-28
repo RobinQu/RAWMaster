@@ -41,6 +41,9 @@ public actor LocalFluxProvider: AIEditingProvider {
   }
 
   nonisolated static func workerExecutable(_ profile: AIProviderProfile) -> URL? {
+    #if RAWMASTER_LOCAL_RAW_VALIDATION
+    return nil
+    #else
     let fm = FileManager.default
     var candidates: [URL] = []
     if let path = profile.configuration["workerExecutable"], path.hasPrefix("/") {
@@ -59,6 +62,7 @@ public actor LocalFluxProvider: AIEditingProvider {
     let repo = source.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     candidates.append(repo.appendingPathComponent("Modules/FluxWorker/target/release/flux-worker"))
     return candidates.first { fm.isExecutableFile(atPath: $0.path) }
+    #endif
   }
 
   public func edit(_ request: AIEditRequest, attempt: ProcessingAttempt,

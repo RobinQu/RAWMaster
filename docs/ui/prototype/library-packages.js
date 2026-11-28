@@ -261,12 +261,17 @@ function newPackage(name, path, server = null, sync = false) {
 }
 
 function packagePath(name, folder) {
-  return folder.replace(/\/+$/, '') + '/' + name + packageSuffix;
+  const filename = name.toLowerCase().endsWith(packageSuffix) ? name : name + packageSuffix;
+  return folder.replace(/\/+$/, '') + '/' + filename;
 }
 
 function packageDestination(name, folder, except = null) {
-  if (!name || /[/\\]/.test(name) || !/^(~\/|\/)/.test(folder)) {
+  if (!name || name === '.' || name === '..' || /[/\\:]/.test(name) || !/^(~\/|\/)/.test(folder)) {
     reviewError('填写库名称和有效的本机目录，例如 ~/Pictures。');
+    return null;
+  }
+  if (folder === '/Volumes/只读照片盘' || folder.startsWith('/Volumes/只读照片盘/')) {
+    reviewError('所选保存目录不可写。请选择另一目录。');
     return null;
   }
   const path = packagePath(name, folder);
@@ -282,7 +287,7 @@ function packageForm(server = false) {
   const title = sync ? '同步已有库' : server ? '新建 Server 资料库' : '新建资料库';
   reviewDialog(title,
     (sync ? factList([['Server 资料库', '湖岸资料库'], ['快照', '修订 24 · 已验证'], ['访问', '本机所有者 · 可写']]) : '')
-    + field('资料库名称', 'packageName', sync ? '湖岸资料库' : '旅行资料库') + field('保存目录', 'packageFolder', '~/Pictures')
+    + field('资料库名称', 'packageName', sync ? '湖岸资料库' : '旅行资料库') + field('所选保存目录', 'packageFolder', '~/Pictures')
     + (sync ? '<p>先下载目录与必要编辑资源。代理可随后加载，原片按需取回。</p>' : '')
     + '<p class="review-error" role="alert"></p>',
     btn('取消', 'close') + (server ? btn('上一步', 'package-server-choice') : '')

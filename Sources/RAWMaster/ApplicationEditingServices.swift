@@ -87,10 +87,16 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
             .appendingPathComponent("RAWMaster", isDirectory: true)
         let managedModels = base.appendingPathComponent("AI Models", isDirectory: true)
         managedModelRoot = managedModels
+        #if RAWMASTER_LOCAL_RAW_VALIDATION
+        let resolvedRuntime = base.appendingPathComponent("AI Runtime", isDirectory: true)
+        let resolvedModels = managedModels
+        borrowedModels = false
+        #else
         let resolvedRuntime = URL(fileURLWithPath: ProcessInfo.processInfo.environment["RAWMASTER_EDITING_RUNTIME_ROOT"] ?? defaults.string(forKey: "editing.runtimeRoot") ?? base.appendingPathComponent("AI Runtime").path)
         let resolvedModels = URL(fileURLWithPath: ProcessInfo.processInfo.environment["RAWMASTER_EDITING_MODEL_ROOT"] ?? defaults.string(forKey: "editing.modelRoot") ?? managedModels.path)
-        runtimeRoot = resolvedRuntime; modelRoot = resolvedModels
         borrowedModels = ProcessInfo.processInfo.environment["RAWMASTER_EDITING_MODEL_ROOT"] != nil || defaults.bool(forKey: "editing.borrowedModels") || defaults.string(forKey: "editing.modelRoot") != nil
+        #endif
+        runtimeRoot = resolvedRuntime; modelRoot = resolvedModels
         let loadedCatalog = try? RuntimeArtifactCatalog.bundled()
         catalog = loadedCatalog
         modelLicenseSHA256 = try? LocalAIModelConsent.currentLicenseSHA256()
@@ -134,7 +140,13 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     }
 
     var busy: Bool { preparing || cancelling || actionBusy }
-    var canPrepare: Bool { !shuttingDown && !busy && localWorkIsRunning?() != true }
+    var canPrepare: Bool {
+        #if RAWMASTER_LOCAL_RAW_VALIDATION
+        false
+        #else
+        !shuttingDown && !busy && localWorkIsRunning?() != true
+        #endif
+    }
     var runtimeStateTitle: String {
         switch runtimeState {
         case "stopped": return "已停止"
@@ -335,6 +347,7 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     /// Compatibility for explicit old runtime actions and deterministic shutdown tests.
     /// The settings primary path always goes through the preparation coordinator.
     func performRuntimeAction(_ operation: @escaping (ManagedRuntimeService) async throws -> Void) {
+        #if !RAWMASTER_LOCAL_RAW_VALIDATION
         guard !shuttingDown, !busy else { return }
         actionBusy = true
         let override = runtimeActionOverride
@@ -349,6 +362,7 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
                 if !shuttingDown { setupMessage = "操作未完成，可检查状态后重试。" }
             }
         }
+        #endif
     }
     func shutdown() async {
         if let shutdownTask { await shutdownTask.value; return }

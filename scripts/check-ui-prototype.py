@@ -164,6 +164,8 @@ def main():
                   act('close','',el('.dialog-foot',modal()));await wait(()=>document.activeElement===opener);
                   act('package-new');set('[name=packageFolder]','invalid');act('package-create','');
                   assert(el('[role=alert]',modal()).textContent.includes('本机目录'),'invalid path is reported');
+                  set('[name=packageFolder]','/Volumes/只读照片盘');act('package-create','');
+                  assert(el('[role=alert]',modal()).textContent.includes('不可写')&&S.page==='welcome','a read-only folder keeps the library draft open');
                   set('[name=packageFolder]','/Volumes/照片盘');act('package-create','');await page('.empty');
                   assert(packageLocation().path==='/Volumes/照片盘/旅行资料库.rawmasterlibrary','chosen location');
                   assert(el('[data-act=workflow][data-val=edit]').disabled&&el('[data-act=workflow][data-val=export]').disabled,'empty library controls');

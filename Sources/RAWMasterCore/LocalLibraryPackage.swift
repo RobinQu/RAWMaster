@@ -67,9 +67,9 @@ public struct LocalLibraryPackage: Sendable {
 
   public static func inspect(_ url: URL) throws -> Self { try inspect(url, legacyAccess: nil) }
 
-  fileprivate static func inspect(_ url: URL, legacyAccess: OpenLibraryLocation?) throws -> Self {
+  fileprivate static func inspect(_ url: URL, legacyAccess: OpenLibraryLocation?, packageAccess: LibraryPackageAccess? = nil) throws -> Self {
     guard url.isFileURL else { throw LibraryError.invalid("请选择本机资料库文件。") }
-    let access = LibraryPackageAccess(url)
+    let access = packageAccess ?? LibraryPackageAccess(url)
     let alias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) == true
       ? try URL(resolvingAliasFileAt: url, options: [.withoutUI, .withoutMounting]) : url
     let selected = alias.standardizedFileURL.resolvingSymlinksInPath()
@@ -151,40 +151,46 @@ public struct LocalLibraryPackage: Sendable {
     restored && !hasManifest && (binding?.root != root.path || binding?.physicalIdentity != physicalIdentity)
   }
 
-  public static func create(at url: URL) throws -> Self {
-    let access = LibraryPackageAccess(url)
+  public static func newPackageURL(named name: String, in directory: URL) throws -> URL {
+    let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard directory.isFileURL, !name.isEmpty, name != ".", name != "..",
+      !name.contains("/"), !name.contains("\\"), !name.contains(":"), !name.contains("\0") else {
+      throw LibraryError.invalid("填写有效的资料库名称，并选择本机保存目录。")
+    }
+    let access = LibraryPackageAccess(directory)
     return try withExtendedLifetime(access) {
-      try stagePackage(at: url) { stage, destination in
-        let store = try LibraryStore(databaseURL: stage.appendingPathComponent(databaseName))
-        try seal(store, at: stage, destination: destination, oldRoot: nil, disposition: .keepIdentity)
-      }
+      try validatedDestination(directory.appendingPathComponent(name, isDirectory: true))
     }
   }
 
-  public func restore(to url: URL) throws -> Self {
+  public static func create(at url: URL, authorizedDirectory: URL? = nil) throws -> Self {
+    try stagePackage(at: url, authorizedDirectory: authorizedDirectory) { stage, destination in
+      let store = try LibraryStore(databaseURL: stage.appendingPathComponent(databaseName))
+      try seal(store, at: stage, destination: destination, oldRoot: nil, disposition: .keepIdentity)
+    }
+  }
+
+  public func restore(to url: URL, authorizedDirectory: URL? = nil) throws -> Self {
     guard kind == .backup else { throw LibraryError.invalid("所选资料库没有备份清单。") }
-    let destinationAccess = LibraryPackageAccess(url)
-    return try withExtendedLifetime(destinationAccess) {
-      try Self.stagePackage(at: url) { stage, destination in
-        guard !FileSafety.contains(root, destination) else { throw LibraryError.invalid("请在备份包之外选择恢复位置。") }
-        let manifest = root.appendingPathComponent("manifest.json")
-        let data = try Data(contentsOf: manifest)
-        let targetDB = stage.appendingPathComponent(Self.databaseName)
-        if (try? JSONDecoder().decode(EditingLibraryBackupManifest.self, from: data)) != nil {
-          let store = try LibraryStore.restoreEditingLibrary(from: root, databaseURL: targetDB,
-            archiveRoot: stage.appendingPathComponent("EditingArchive", isDirectory: true))
-          try Self.seal(store, at: stage, destination: destination, oldRoot: stage, disposition: .independentCopy)
-        } else {
-          let components = stage.appendingPathComponent("sealed-restoration", isDirectory: true)
-          let _: CatalogJSON = try LibraryEngine.shared().request("package", at: database,
-            payload: ["op": "restore", "package": root.path, "destination": components.path], as: CatalogJSON.self)
-          for child in try FileManager.default.contentsOfDirectory(at: components, includingPropertiesForKeys: nil) {
-            try FileManager.default.moveItem(at: child, to: stage.appendingPathComponent(child.lastPathComponent))
-          }
-          try FileManager.default.removeItem(at: components)
-          let store = try LibraryStore(databaseURL: targetDB)
-          try Self.seal(store, at: stage, destination: destination, oldRoot: components, disposition: .independentCopy)
+    return try Self.stagePackage(at: url, authorizedDirectory: authorizedDirectory) { stage, destination in
+      guard !FileSafety.contains(root, destination) else { throw LibraryError.invalid("请在备份包之外选择恢复位置。") }
+      let manifest = root.appendingPathComponent("manifest.json")
+      let data = try Data(contentsOf: manifest)
+      let targetDB = stage.appendingPathComponent(Self.databaseName)
+      if (try? JSONDecoder().decode(EditingLibraryBackupManifest.self, from: data)) != nil {
+        let store = try LibraryStore.restoreEditingLibrary(from: root, databaseURL: targetDB,
+          archiveRoot: stage.appendingPathComponent("EditingArchive", isDirectory: true))
+        try Self.seal(store, at: stage, destination: destination, oldRoot: stage, disposition: .independentCopy)
+      } else {
+        let components = stage.appendingPathComponent("sealed-restoration", isDirectory: true)
+        let _: CatalogJSON = try LibraryEngine.shared().request("package", at: database,
+          payload: ["op": "restore", "package": root.path, "destination": components.path], as: CatalogJSON.self)
+        for child in try FileManager.default.contentsOfDirectory(at: components, includingPropertiesForKeys: nil) {
+          try FileManager.default.moveItem(at: child, to: stage.appendingPathComponent(child.lastPathComponent))
         }
+        try FileManager.default.removeItem(at: components)
+        let store = try LibraryStore(databaseURL: targetDB)
+        try Self.seal(store, at: stage, destination: destination, oldRoot: components, disposition: .independentCopy)
       }
     }
   }
@@ -268,7 +274,16 @@ public struct LocalLibraryPackage: Sendable {
     return destination
   }
 
-  static func stagePackage(at url: URL, build: (URL, URL) throws -> Void) throws -> Self {
+  static func stagePackage(at url: URL, authorizedDirectory: URL?, build: (URL, URL) throws -> Void) throws -> Self {
+    let access = LibraryPackageAccess(authorizedDirectory ?? url)
+    defer { withExtendedLifetime(access) {} }
+    if let authorizedDirectory {
+      let expected = url.deletingLastPathComponent().standardizedFileURL.resolvingSymlinksInPath()
+      guard authorizedDirectory.isFileURL,
+        authorizedDirectory.standardizedFileURL.resolvingSymlinksInPath().path == expected.path else {
+        throw LibraryError.invalid("请授权资料库所在的保存目录。")
+      }
+    }
     let destination = try validatedDestination(url)
     let parent = destination.deletingLastPathComponent()
     let stage = parent.appendingPathComponent(".rawmaster-library-\(UUID().uuidString).partial", isDirectory: true)
@@ -281,7 +296,7 @@ public struct LocalLibraryPackage: Sendable {
       throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
     }
     try synchronizeDirectory(parent)
-    return try inspect(destination)
+    return try inspect(destination, legacyAccess: nil, packageAccess: access)
   }
 
   static func seal(_ store: LibraryStore, at stage: URL, destination: URL, oldRoot: URL?, disposition: LocalLibraryDisposition) throws {
@@ -333,7 +348,7 @@ public final class LocalLibraryWriter: @unchecked Sendable {
         throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
       }
       try Self.checkFile(fd: fd, database: package.database)
-      let current = try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess)
+      let current = try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess, packageAccess: package.access)
       guard package.physicalIdentity == current.physicalIdentity, package.libraryID == current.libraryID else {
         throw LibraryError.invalid("资料库身份刚刚变化，请重新打开。")
       }
@@ -382,7 +397,7 @@ public final class LocalLibraryWriter: @unchecked Sendable {
 
   private func inspectLocked() throws -> LocalLibraryPackage {
     try Self.checkFile(fd: descriptor, database: package.database)
-    let observed = try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess)
+    let observed = try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess, packageAccess: package.access)
     try Self.checkFile(fd: descriptor, database: package.database)
     return observed
   }
@@ -418,24 +433,21 @@ public final class LocalLibraryWriter: @unchecked Sendable {
       previousRoot: current.previousRoot, disposition: effective, packageFilesAt: current.root,
       requireExistingResources: detachedRestore)
     if current.kind == .working { try LocalLibraryPackage.writeManifest(binding, at: current.root) }
-    return try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess)
+    return try LocalLibraryPackage.inspect(package.database, legacyAccess: package.legacyAccess, packageAccess: package.access)
   }
 
-  public func migrate(to url: URL) throws -> LocalLibraryPackage {
-    let destinationAccess = LibraryPackageAccess(url)
-    return try withExtendedLifetime(destinationAccess) {
-      try LocalLibraryPackage.stagePackage(at: url) { stage, destination in
-        guard !FileSafety.contains(package.root, destination) else {
-          throw LibraryError.invalid("请在原资料库目录之外选择迁移位置。")
-        }
-        let source = try inspectLocked()
-        let stagedDatabase = stage.appendingPathComponent(LocalLibraryPackage.databaseName)
-        try LibraryStore.snapshotLocalPackage(from: source.database, to: stagedDatabase)
-        let store = try LibraryStore(databaseURL: stagedDatabase)
-        let sourceRoot = source.previousRoot ?? source.root
-        try store.copyLocalPackageResources(from: source.root, recordedAt: sourceRoot, to: stage, finalRoot: destination)
-        try LocalLibraryPackage.seal(store, at: stage, destination: destination, oldRoot: sourceRoot, disposition: .keepIdentity)
+  public func migrate(to url: URL, authorizedDirectory: URL? = nil) throws -> LocalLibraryPackage {
+    try LocalLibraryPackage.stagePackage(at: url, authorizedDirectory: authorizedDirectory) { stage, destination in
+      guard !FileSafety.contains(package.root, destination) else {
+        throw LibraryError.invalid("请在原资料库目录之外选择迁移位置。")
       }
+      let source = try inspectLocked()
+      let stagedDatabase = stage.appendingPathComponent(LocalLibraryPackage.databaseName)
+      try LibraryStore.snapshotLocalPackage(from: source.database, to: stagedDatabase)
+      let store = try LibraryStore(databaseURL: stagedDatabase)
+      let sourceRoot = source.previousRoot ?? source.root
+      try store.copyLocalPackageResources(from: source.root, recordedAt: sourceRoot, to: stage, finalRoot: destination)
+      try LocalLibraryPackage.seal(store, at: stage, destination: destination, oldRoot: sourceRoot, disposition: .keepIdentity)
     }
   }
 }

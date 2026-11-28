@@ -3,7 +3,6 @@ import Combine
 import RAWMasterCore
 import RAWMasterLibrary
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct LibrarySwitchConfirmation {
     let current: String
@@ -25,16 +24,22 @@ final class ApplicationLibrarySession: ObservableObject {
         let recent: LocalLibraryRecent?
     }
 
+    private struct NewLibraryLocation: Sendable {
+        let url: URL
+        let directory: URL
+    }
+
     private enum Destination: Sendable {
         case existing(LocalLibraryPackage, LocalLibraryDisposition)
-        case create(URL)
-        case migrate(LocalLibraryWriter, URL)
-        case restore(LocalLibraryPackage, URL)
+        case create(NewLibraryLocation)
+        case migrate(LocalLibraryWriter, NewLibraryLocation)
+        case restore(LocalLibraryPackage, NewLibraryLocation)
 
         var location: (name: String, url: URL) {
             switch self {
             case .existing(let package, _): return (package.name, package.root)
-            case .create(let url), .migrate(_, let url), .restore(_, let url):
+            case .create(let location), .migrate(_, let location), .restore(_, let location):
+                let url = location.url
                 let name = url.pathExtension.lowercased() == LocalLibraryPackage.pathExtension
                     ? url.deletingPathExtension().lastPathComponent : url.lastPathComponent
                 return (name, url)
@@ -125,14 +130,14 @@ final class ApplicationLibrarySession: ObservableObject {
     }
 
     func chooseNewLibrary() {
-        guard transition == nil, let url = saveLocation("新建资料库", name: "照片资料库") else { return }
-        begin { try await self.transfer(to: .create(url)) }
+        guard transition == nil, let location = saveLocation("新建资料库", name: "照片资料库") else { return }
+        begin { try await self.transfer(to: .create(location)) }
     }
 
     func chooseMigrationLocation() {
         guard transition == nil, let source = writer, activePackage?.kind == .legacy,
-              let url = saveLocation("迁移到资料库包", name: source.package.name) else { return }
-        begin { try await self.transfer(to: .migrate(source, url)) }
+              let location = saveLocation("迁移到资料库包", name: source.package.name) else { return }
+        begin { try await self.transfer(to: .migrate(source, location)) }
     }
 
     func relocateMissingLibrary() {
@@ -269,8 +274,8 @@ final class ApplicationLibrarySession: ObservableObject {
         }
         try checkSwitchAllowed()
         if package.kind == .backup {
-            guard let url = saveLocation("从备份恢复到新位置", name: "已恢复的照片") else { return }
-            try await transfer(to: .restore(package, url))
+            guard let location = saveLocation("从备份恢复到新位置", name: "已恢复的照片") else { return }
+            try await transfer(to: .restore(package, location))
             return
         }
         let history = recent
@@ -358,12 +363,15 @@ final class ApplicationLibrarySession: ObservableObject {
                 case .existing(_, let disposition):
                     guard let reservation else { throw LibraryEngineError("无法锁定目标资料库。") }
                     return (reservation, try reservation.prepare(disposition))
-                case .create(let url):
-                    return try Self.prepare(LocalLibraryPackage.create(at: url), disposition: .keepIdentity)
-                case .migrate(let source, let url):
-                    return try Self.prepare(source.migrate(to: url), disposition: .keepIdentity)
-                case .restore(let backup, let url):
-                    return try Self.prepare(backup.restore(to: url), disposition: .keepIdentity)
+                case .create(let location):
+                    return try Self.prepare(LocalLibraryPackage.create(at: location.url, authorizedDirectory: location.directory),
+                                            disposition: .keepIdentity)
+                case .migrate(let source, let location):
+                    return try Self.prepare(source.migrate(to: location.url, authorizedDirectory: location.directory),
+                                            disposition: .keepIdentity)
+                case .restore(let backup, let location):
+                    return try Self.prepare(backup.restore(to: location.url, authorizedDirectory: location.directory),
+                                            disposition: .keepIdentity)
                 }
             }.value
             let next = try await makeModel(for: package, lease: nextWriter, services: services, scoped: remember, migrateBrowse: migrateBrowse)
@@ -519,15 +527,41 @@ final class ApplicationLibrarySession: ObservableObject {
         return pickLocation(using: panel)
     }
 
-    private func saveLocation(_ title: String, name: String) -> URL? {
-        let panel = NSSavePanel()
+    private func saveLocation(_ title: String, name: String) -> NewLibraryLocation? {
+        let panel = NSOpenPanel()
         panel.title = title
-        panel.prompt = "选择"
+        panel.prompt = "创建并打开"
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
         panel.canCreateDirectories = true
+        panel.treatsFilePackagesAsDirectories = false
         panel.directoryURL = FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask).first
-        panel.allowedContentTypes = [UTType(exportedAs: "io.robinqu.rawmaster.library", conformingTo: .package)]
-        panel.nameFieldStringValue = "\(name).\(LocalLibraryPackage.pathExtension)"
-        return pickLocation(using: panel)
+        let label = NSTextField(labelWithString: "资料库名称")
+        let nameField = NSTextField(string: name)
+        nameField.setAccessibilityLabel(label.stringValue)
+        nameField.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
+        panel.initialFirstResponder = nameField
+        let errorLabel = NSTextField(wrappingLabelWithString: "")
+        errorLabel.textColor = .systemRed
+        errorLabel.isHidden = true
+        let accessory = NSStackView(views: [NSStackView(views: [label, nameField]), errorLabel])
+        accessory.orientation = .vertical
+        accessory.alignment = .leading
+        accessory.edgeInsets = .init(top: 8, left: 12, bottom: 8, right: 12)
+        panel.accessoryView = accessory
+        panel.isAccessoryViewDisclosed = true
+
+        while let directory = pickLocation(using: panel) {
+            do {
+                let url = try LocalLibraryPackage.newPackageURL(named: nameField.stringValue, in: directory)
+                return NewLibraryLocation(url: url, directory: directory)
+            } catch {
+                panel.directoryURL = directory
+                errorLabel.stringValue = error.localizedDescription
+                errorLabel.isHidden = false
+            }
+        }
+        return nil
     }
 
     private func pickLocation(using panel: NSSavePanel) -> URL? {

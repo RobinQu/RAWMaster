@@ -8,6 +8,9 @@ public enum GroupPixelRenderer {
   }
 
   static func helper() throws -> URL {
+    #if RAWMASTER_LOCAL_RAW_VALIDATION
+    throw Failure(detail: "找不到分组合成组件。")
+    #else
     let name = "rawmaster-group-render"
     var candidates = [
       Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers").appendingPathComponent(name)
@@ -24,6 +27,7 @@ public enum GroupPixelRenderer {
       let found = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0.path) })
     else { throw Failure(detail: "找不到分组合成组件。") }
     return found
+    #endif
   }
 
   public static func render(_ request: GroupRenderRequest) async throws -> GroupRenderReceipt {

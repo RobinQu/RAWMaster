@@ -34,11 +34,21 @@ public enum RAWMasterImageKernel {
 
         init() throws {
             let url: URL?
+            #if RAWMASTER_LOCAL_RAW_VALIDATION
+            let library = Bundle.main.bundleURL.resolvingSymlinksInPath()
+                .appendingPathComponent("Contents/Frameworks/librawmaster_image.dylib")
+            guard library.path == library.resolvingSymlinksInPath().path,
+                  (try? library.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else {
+                throw Failure.unavailable
+            }
+            url = library
+            #else
             if Bundle.main.bundleURL.pathExtension.lowercased() == "app" {
                 url = Bundle.main.privateFrameworksURL?.appendingPathComponent("librawmaster_image.dylib")
             } else {
                 url = Bundle.module.url(forResource: "rawmaster-image", withExtension: "runtime")
             }
+            #endif
             guard let url, let handle = url.path.withCString({ rm_image_host_open($0) }) else {
                 throw Failure.unavailable
             }

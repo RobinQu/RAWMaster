@@ -267,10 +267,14 @@ final class AppModel: ObservableObject {
     }
 
     nonisolated static var explicitLibraryURL: URL? {
+        #if RAWMASTER_LOCAL_RAW_VALIDATION
+        return nil
+        #else
         let arguments = ProcessInfo.processInfo.arguments
         let path = arguments.firstIndex(of: "--library").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil }
             ?? ProcessInfo.processInfo.environment["RAWMASTER_LIBRARY_PATH"]
         return path.map { URL(fileURLWithPath: $0) }
+        #endif
     }
 
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
@@ -313,7 +317,11 @@ final class AppModel: ObservableObject {
             if !usesPagedLibrary {
                 attachEditor(store: database, services: services, backend: editingPreviewBackend)
             }
+            #if RAWMASTER_LOCAL_RAW_VALIDATION
+            importer = ImportService(store: database, postIngest: postIngest)
+            #else
             importer = ImportService(store: database, postIngest: postIngest ?? RuntimeAutomaticGroupingCoordinator.callback(store: database, libraryURL: libraryURL))
+            #endif
             let liveAnalyzer = RuntimeAutomaticGroupingAnalyzer(libraryURL: libraryURL)
             regroupService = AutomaticGroupingService(store: database, analyzer: regroupAnalyzer ?? { input, check, progress in
                 try await liveAnalyzer.analyze(input, check: check, progress: progress)

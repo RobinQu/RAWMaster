@@ -89,8 +89,19 @@ public enum PhotoExportKernel {
         let publish: Publish
 
         init() throws {
-            guard let url = Bundle.module.url(forResource: "rawmaster-photo-export", withExtension: "runtime"),
-                  let library = dlopen(url.path, RTLD_LOCAL | RTLD_NOW) else { throw PhotoExportKernelError.unavailable }
+            let url: URL?
+            #if RAWMASTER_LOCAL_RAW_VALIDATION
+            let library = Bundle.main.bundleURL.resolvingSymlinksInPath()
+                .appendingPathComponent("Contents/Frameworks/librawmaster_photo_export.dylib")
+            guard library.path == library.resolvingSymlinksInPath().path,
+                  (try? library.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else {
+                throw PhotoExportKernelError.unavailable
+            }
+            url = library
+            #else
+            url = Bundle.module.url(forResource: "rawmaster-photo-export", withExtension: "runtime")
+            #endif
+            guard let url, let library = dlopen(url.path, RTLD_LOCAL | RTLD_NOW) else { throw PhotoExportKernelError.unavailable }
             func load<T>(_ name: String, as type: T.Type) throws -> T {
                 guard let address = dlsym(library, name) else { throw PhotoExportKernelError.unavailable }
                 return unsafeBitCast(address, to: type)

@@ -42,6 +42,9 @@ public actor LibraryDiscoveryWorker {
         self.models = models
     }
     private func paths() throws -> (URL, URL, URL) {
+        #if RAWMASTER_LOCAL_RAW_VALIDATION
+        throw DiscoveryError("本地模型包尚未安装。")
+        #else
         let fm = FileManager.default
         let bundle = Bundle.main.resourceURL?.appendingPathComponent("LibraryDiscovery")
         let support = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
@@ -63,6 +66,7 @@ public actor LibraryDiscoveryWorker {
             throw DiscoveryError("本地模型包尚未安装。将 LibraryDiscovery 放入应用资源或 ~/Library/Application Support/RAWMaster。")
         }
         return (binary, directory, script)
+        #endif
     }
     private func hasFaceModel(in directory: URL) -> Bool {
         let resource = Bundle.module.url(forResource: "models", withExtension: "json", subdirectory: "discovery")

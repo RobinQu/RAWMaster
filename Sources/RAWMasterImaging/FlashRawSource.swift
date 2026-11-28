@@ -117,16 +117,25 @@ final class FlashRawSource {
   let decoderVersion: String
 
   static var bundledLibraryPath: String? {
+    #if RAWMASTER_LOCAL_RAW_VALIDATION
+    let library = Bundle.main.bundleURL.resolvingSymlinksInPath()
+      .appendingPathComponent("Contents/Frameworks/libflashraw_capi.dylib")
+    guard library.path == library.resolvingSymlinksInPath().path,
+          (try? library.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else { return nil }
+    return library.path
+    #else
     let environment = ProcessInfo.processInfo.environment
     if let explicit = environment["RAWMASTER_FLASHRAW_LIBRARY"], !explicit.isEmpty { return explicit }
     return Bundle.main.resourceURL?
       .appendingPathComponent("FlashRaw/libflashraw_capi.dylib").path
+    #endif
   }
 
   static var isAvailable: Bool {
-    let environment = ProcessInfo.processInfo.environment
-    guard environment["RAWMASTER_FLASHRAW_DISABLE"] != "1",
-          let path = bundledLibraryPath else { return false }
+    #if !RAWMASTER_LOCAL_RAW_VALIDATION
+    guard ProcessInfo.processInfo.environment["RAWMASTER_FLASHRAW_DISABLE"] != "1" else { return false }
+    #endif
+    guard let path = bundledLibraryPath else { return false }
     return FileManager.default.fileExists(atPath: path)
   }
 
