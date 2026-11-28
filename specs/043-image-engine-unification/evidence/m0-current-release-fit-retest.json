@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "scope": "Fresh RAWMaster native FIT capture against archived same-host, same-frozen-RAW external baselines. Viewport first verified response.",
+  "sourceCommit": "8bfbfa29599f0d94d96219ebab16de21d0273784",
+  "installedPersonalReleaseFromSameSource": "20261129.013459",
+  "rawmasterBenchmarkBuild": "Release, -O with testability enabled",
+  "rawmasterTestBundleSHA256": "69760a75fdca0a9445131c4b9541a2b9876e495de63d3e813633d749e32733bb",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "photoPixels": [
+    2368,
+    1579
+  ],
+  "unscoredWarmupPerControl": 5,
+  "verifiedWarmSamplesPerControl": 30,
+  "settleSeconds": 0.8,
+  "operations": {
+    "effects-texture": {
+      "controls": [
+        0,
+        30
+      ],
+      "productsMs": {
+        "RAWMaster": {
+          "p50": 38.964583000000005,
+          "p95": 54.585875
+        },
+        "LightFlow": {
+          "p50": 27.582979,
+          "p95": 38.539166
+        },
+        "Camera Raw": {
+          "p50": 127.45516649999999,
+          "p95": 176.507417
+        }
+      },
+      "fastestRivalP95LimitMs": 46.246999200000005,
+      "passedBothPercentiles": false
+    },
+    "effects-clarity": {
+      "controls": [
+        0,
+        30
+      ],
+      "productsMs": {
+        "RAWMaster": {
+          "p50": 34.656729,
+          "p95": 51.503083
+        },
+        "LightFlow": {
+          "p50": 28.929042000000003,
+          "p95": 38.917416
+        },
+        "Camera Raw": {
+          "p50": 121.856938,
+          "p95": 155.806334
+        }
+      },
+      "fastestRivalP95LimitMs": 46.7008992,
+      "passedBothPercentiles": false
+    },
+    "effects-dehaze": {
+      "controls": [
+        0,
+        30
+      ],
+      "productsMs": {
+        "RAWMaster": {
+          "p50": 55.985958,
+          "p95": 86.605208
+        },
+        "LightFlow": {
+          "p50": 28.525958,
+          "p95": 36.978292
+        },
+        "Camera Raw": {
+          "p50": 128.8042085,
+          "p95": 161.100333
+        }
+      },
+      "fastestRivalP95LimitMs": 44.373950400000005,
+      "passedBothPercentiles": false
+    },
+    "light-exposure": {
+      "controls": [
+        0,
+        0.5
+      ],
+      "productsMs": {
+        "RAWMaster": {
+          "p50": 25.578291999999998,
+          "p95": 37.407625
+        },
+        "LightFlow": {
+          "p50": 29.0185,
+          "p95": 42.977833
+        },
+        "Camera Raw": {
+          "p50": 38.183499999999995,
+          "p95": 44.76925
+        }
+      },
+      "fastestRivalP95LimitMs": 51.573399599999995,
+      "passedBothPercentiles": true
+    }
+  },
+  "inputBoundaries": {
+    "spatial": {
+      "RAWMaster": "Submission of the complete numeric intent to the editing controller",
+      "LightFlow": "Return sent after the complete numeric value is entered",
+      "Camera Raw": "First numeric key sent, followed by the remaining characters and Tab"
+    },
+    "exposure": {
+      "RAWMaster": "Submission of the complete numeric intent to the editing controller",
+      "LightFlow": "Return sent after the complete numeric value is entered",
+      "Camera Raw": "Mouse-down at a calibrated Exposure slider position"
+    }
+  },
+  "rawmasterFrames": {
+    "artifact": "output/spec043-current-release-fit.m3jDpx/rawmaster-fit-frames.zip",
+    "sha256": "6197588f17f69c541a84ee093bca35adf84dbb20cfa3b808fe20828c605bfef2"
+  },
+  "rawmasterIndependentReplay": {
+    "artifact": "output/spec043-current-release-fit.m3jDpx/rawmaster-replayed.json",
+    "sha256": "69c124c2ce2e4cb3ca1971fdcb30675f6d0616393f31d94ad177dbf979f96fe3"
+  },
+  "threeWayComparisons": {
+    "spatial": {
+      "artifact": "output/spec043-current-release-fit.m3jDpx/comparison-spatial.json",
+      "sha256": "94fa03427dbee4d6e60e47b0dab178cfc0e394b8ebe3f19c347c97ceb20ca352"
+    },
+    "exposure": {
+      "artifact": "output/spec043-current-release-fit.m3jDpx/comparison-exposure.json",
+      "sha256": "2190ed0af62559d1e4c85f6d1c630127061804536acdfd0cec6b3f2a439da060"
+    }
+  },
+  "archivedExternalReportSHA256": {
+    "spatial": {
+      "Camera Raw": "283d9c2f7a388b1bc26718f7332417dd1a809938a7796bfc6ab3a3304614ba31",
+      "LightFlow": "382a5b1faca9269f807abcdb00163ed02b09118777b0aa024ae279e38b7e2935"
+    },
+    "exposure": {
+      "Camera Raw": "443922f6e7d8dbbf044b0e11385b59f3084c81d7e4e65f54e6153ac946630264",
+      "LightFlow": "382a5b1faca9269f807abcdb00163ed02b09118777b0aa024ae279e38b7e2935"
+    }
+  }
+}
