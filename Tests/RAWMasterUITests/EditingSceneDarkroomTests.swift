@@ -59,18 +59,15 @@ final class EditingSceneDarkroomTests: XCTestCase {
         let environment = ProcessInfo.processInfo.environment
         let repeats = Int(environment["RAWMASTER_SCENE_DELIVERY_PROFILE_REPEATS"] ?? "1") ?? 0
         guard (1...64).contains(repeats) else { return XCTFail("Profile repeats must be from 1 through 64") }
-        for run in 0..<repeats {
-            try await verify60MPEditorAndPublishedBatchReceipts(photographic: true, run: repeats > 1 ? run : nil)
-        }
+        try await verify60MPEditorAndPublishedBatchReceipts(photographic: true, repeats: repeats)
     }
 
-    @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, run: Int? = nil) async throws {
+    @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, repeats: Int = 1) async throws {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
         let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { path in
             let root = URL(fileURLWithPath: path)
-            let directory = photographic ? root.appendingPathComponent("photographic", isDirectory: true) : root
-            return run.map { directory.appendingPathComponent("run-\($0)", isDirectory: true) } ?? directory
+            return photographic ? root.appendingPathComponent("photographic", isDirectory: true) : root
         }
         let directory = retained ?? FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -148,18 +145,32 @@ final class EditingSceneDarkroomTests: XCTestCase {
             XCTAssertNotEqual(frozen.id, original.id)
             model.activateWorkflow(.export)
             var deliveries: [(batchID: String, file: URL)] = []
-            for format in [PhotoRenderFormat.avif10, .jpeg8] {
-                let review = format == .avif10 ? try await model.reviewWorkbenchPQ([asset]) : nil
-                if let review {
-                    XCTAssertNil(review.lines.first?.reason, "Saved parent \(String(describing: editing.draftParentID)); selected \(String(describing: editing.selectedVersionID))")
+            let deliveryRoot = directory.appendingPathComponent("delivery", isDirectory: true)
+            let memoryDevice = repeats > 1 ? MTLCreateSystemDefaultDevice() : nil
+            func memoryCheckpoint() -> [String: UInt64] {
+                var bytes: [String: UInt64] = [:]
+                if let memoryDevice { bytes["metalAllocatedBytes"] = UInt64(memoryDevice.currentAllocatedSize) }
+                if let footprint = SceneDeliveryTrace.physicalFootprint() { bytes["processPhysFootprintBytes"] = footprint }
+                return bytes
+            }
+            var memoryCheckpoints = repeats > 1 ? [memoryCheckpoint()] : []
+            for run in 0..<repeats {
+                let destination = repeats == 1 ? deliveryRoot : deliveryRoot.appendingPathComponent("run-\(run)", isDirectory: true)
+                try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+                for format in [PhotoRenderFormat.avif10, .jpeg8] {
+                    let review = format == .avif10 ? try await model.reviewWorkbenchPQ([asset]) : nil
+                    if let review {
+                        XCTAssertNil(review.lines.first?.reason, "Saved parent \(String(describing: editing.draftParentID)); selected \(String(describing: editing.selectedVersionID))")
+                    }
+                    model.submitWorkbenchPhotoDelivery(directory: destination, naming: "{name}",
+                        configuration: .init(format: format, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: review)
+                    let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
+                    await model.workbenchPhotoDeliveryTask?.value
+                    let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
+                    let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
+                    deliveries.append((id.uuidString.lowercased(), file))
                 }
-                model.submitWorkbenchPhotoDelivery(directory: directory.appendingPathComponent("delivery"), naming: "{name}",
-                    configuration: .init(format: format, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: review)
-                let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
-                await model.workbenchPhotoDeliveryTask?.value
-                let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
-                let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
-                deliveries.append((id.uuidString.lowercased(), file))
+                if repeats > 1 { memoryCheckpoints.append(memoryCheckpoint()) }
             }
             try await wait("live HDR persisted") {
                 (try? model.store?.photoWork(id: workID).liveRecipe) == recipe
@@ -171,7 +182,14 @@ final class EditingSceneDarkroomTests: XCTestCase {
             XCTAssertEqual(gridReview.lines.first?.version, frozen.id)
             XCTAssertEqual(try fixtureVersions(model: model, workID: workID).map(\.id), [original.id])
             XCTAssertEqual(try XCTUnwrap(model.store).photoWork(id: workID).adoptedVersionID, original.id)
+            await model.closeLibraryReads()
             await editing.shutdown()
+            await model.editingServices?.shutdown()
+            model.releaseLibraryConnections()
+            if repeats > 1 {
+                memoryCheckpoints.append(memoryCheckpoint())
+                try JSONEncoder().encode(memoryCheckpoints).write(to: directory.appendingPathComponent("memory-checkpoints.json"))
+            }
 
             let queue = WorkbenchDeliveryCatalog(database: db)
             for (batchID, file) in deliveries {

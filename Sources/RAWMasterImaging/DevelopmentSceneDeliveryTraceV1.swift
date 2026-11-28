@@ -315,7 +315,7 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     return getrusage(RUSAGE_SELF, &usage) == 0 ? Int64(usage.ru_maxrss) : nil
   }
 
-  private static func physicalFootprint() -> UInt64? {
+  package static func physicalFootprint() -> UInt64? {
     var info = task_vm_info_data_t()
     var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<integer_t>.size)
     let status = withUnsafeMutablePointer(to: &info) { pointer in

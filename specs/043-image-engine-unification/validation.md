@@ -25,6 +25,10 @@
 - **分项记录口径。** 原生队列与双目标组件现在可以写隔离 JSON。032 从新编码尝试计到发布确认，独立组件共享一次来源捕获和 mosaic。Swift Metal 只从现有完成点读取 GPU 时间戳。Core Image、ImageIO、模型提供者和 Rust ABI 的不可见阶段注明原因。每项 CPU 墙钟、阻塞和 GPU 区间可能重叠。进程 footprint 和 Metal 已分配大小在现有阶段边界采样，图预算保持单独的保守核算。[分项记录](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryTraceV1.swift) · [复跑脚本](../../scripts/performance/measure-043-scene-delivery.py)
 - **基线报告。** 取得 6 MP 六节点、038 FIT/监看和 036 1:1 的同构建基线。记录提交、锁定依赖、构建与运行库摘要、样片和校准 SHA、设备/驱动/屏幕及阶段时间边界，说明缺失或跳过的量。V2 草案应有版本、实际执行者、图形 API 和旧票据兼容策略。[回执草案](plan.md#43-receiptv2)
 
+`933cebec` 同源码的 Release 实跑通过 6 MP、038 编辑窗口和 036 原寸窗口用例。6 MP 六节点暖测每个执行器 15 次，Rust Metal p50/p95 为 12.06/12.75 ms，Swift Metal 为 14.93/15.89 ms。038 原生窗口的组内节点监看和最终根切换各采 30 次，p50/p95 分别为 22.93/23.55 和 21.53/22.34 ms。036 的 50 配方原寸窗口为 119.40/1,527.90 ms，p95 取配方之间的分布。三项长尾依次为自适应 Brilliance 4,564.37 ms、正向去雾 v2 1,797.49 ms 和局部纹理加清晰度 1,527.90 ms。[原生结果与构建指纹](evidence/m0-scene-and-detail-matrices.json)
+
+60 MP 夹具经固定 FlashRaw C ABI 的 `rawU16` 和现行 Swift 校准读取。证据固定 Bayer 区域、CFA、黑白电平、白平衡、XYZ→相机矩阵和相机→AP1 三行，供首条场景 DAG 固定输入使用。[校准证据](evidence/m0-60mp-calibration.json)
+
 M0 以带摄影调整的真实 032 队列发布、重开与恢复通过，并能复现同构建的分项基线为完成条件。
 
 ### M1 · 去重

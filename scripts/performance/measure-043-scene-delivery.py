@@ -134,6 +134,9 @@ def main():
     for name in ("RAWMasterUITests", "RAWMasterImagingTests"):
         executable = products / f"{name}.xctest" / "Contents" / "MacOS" / name
         test_bundles[name] = sha256(executable)
+    checkpoints = json.loads((output / "queue/photographic/memory-checkpoints.json").read_bytes())
+    if len(checkpoints) != repeats + 2:
+        raise ValueError("Expected memory samples before the delivery sweep, between pairs and after closing the library owners")
     report = {
         "schemaVersion": 1,
         "sourceSHA256": source_sha,
@@ -150,6 +153,11 @@ def main():
         "firstRunBoundary": "first delivery of this route in the test process with system file caches intact",
         "stageTotals": "nested CPU wall, host waits and GPU intervals overlap; timings are per-run stage sums",
         "memory": "sampled process/device and logical graph accounting, each reported independently",
+        "workbenchMemoryOutsideTimedRegions": {
+            "beforeSweep": checkpoints[0],
+            "afterEachTargetPair": checkpoints[1:-1],
+            "afterClosingLibraryOwners": checkpoints[-1],
+        },
         "routes": {route: summarize(paths, args.warmup, args.samples) for route, paths in routes.items()},
     }
     (output / "summary.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")

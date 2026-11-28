@@ -1,0 +1,549 @@
+{
+  "schemaVersion": 1,
+  "buildSource": "933cebec included at compile time with parent 08903906",
+  "testBundleSHA256": {
+    "RAWMasterUITests": "add0537d6e49f594f85c68562af65e9d90de094357d30d225c17a813e829b0db",
+    "RAWMasterImagingTests": "edff9fc18f64f9297d48efa81f2b17b2a9389b2d380b73445ebac17fdc97b2dc"
+  },
+  "device": "Mac16,5",
+  "osBuild": "26A434",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "sixMegapixelLegacyMetal": {
+    "device": "Apple M4 Max",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rustColdMs": 20.20675,
+    "rustMs": [
+      11.618292,
+      11.906916,
+      12.059833,
+      12.008375,
+      11.666792,
+      13.17475,
+      12.741875,
+      12.019708,
+      12.085917,
+      11.491584,
+      12.234625,
+      11.708208,
+      12.135791,
+      12.752542,
+      12.59525
+    ],
+    "rustP50": 12.059833,
+    "rustP95": 12.752542,
+    "scope": "six-node AP1 graph with two coverage nodes and a two-branch parallel mix; excluding RAW, DRT and UI",
+    "swiftMs": [
+      14.589959,
+      14.396916,
+      14.1835,
+      14.252208,
+      14.931667,
+      15.258417,
+      14.725166,
+      15.11925,
+      15.893875,
+      15.620667,
+      15.688333,
+      14.775458,
+      16.16975,
+      14.218291,
+      15.0485
+    ],
+    "swiftP50": 14.931667,
+    "swiftP95": 15.893875
+  },
+  "native038Monitor": {
+    "asset": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+    "backingScale": 2,
+    "device": "Apple M4 Max",
+    "finalP50Ms": 21.531917,
+    "finalP95Ms": 22.339291,
+    "finalSamplesMs": [
+      20.928,
+      21.681292,
+      21.874875,
+      22.148333,
+      20.975875,
+      21.524292,
+      22.070583,
+      21.402333,
+      21.984584,
+      22.87925,
+      21.258459,
+      21.894708,
+      22.217541,
+      21.2595,
+      22.339291,
+      21.6145,
+      21.629291,
+      21.752834,
+      21.539542,
+      21.143375,
+      21.904834,
+      21.434625,
+      20.851667,
+      21.890917,
+      21.412083,
+      20.650333,
+      21.29025,
+      21.188042,
+      20.918959,
+      21.497125
+    ],
+    "nodeP50Ms": 22.925646,
+    "nodeP95Ms": 23.547167,
+    "nodeSamplesMs": [
+      22.817792,
+      22.814083,
+      24.695792,
+      22.497291,
+      23.268833,
+      22.793959,
+      22.151042,
+      21.886875,
+      23.109917,
+      22.637625,
+      22.998417,
+      23.030833,
+      22.498459,
+      23.188125,
+      23.547167,
+      23.129083,
+      23.014542,
+      23.103375,
+      22.776542,
+      23.283625,
+      22.612333,
+      23.13525,
+      22.872125,
+      22.943125,
+      23.099959,
+      22.943791,
+      22.75625,
+      22.481166,
+      22.824667,
+      22.908167
+    ],
+    "os": "Version 27.0.1 (Build 26A434)",
+    "pixels": [
+      1200,
+      640
+    ],
+    "scope": "open floating Graph: warm interim Corrector and final grouped serial output monitor switching to joined SDR drawable"
+  },
+  "native036Detail": {
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "configuration": "proxyV1 interactive; viewport settled; bitmapCache=134217728; rawBaseCache=1073741824",
+    "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+    "view": "shipped 1:1 50%-per-side margin window, service API return",
+    "method": "one detail sample each over 50 different frozen recipes, p95 across recipes",
+    "p50Ms": 119.4024165,
+    "p95Ms": 1527.9025,
+    "reportSHA256": "4961be4e44e369480deb9335d7483808dfc70379e8a20e2ac8968637afccb7ac",
+    "recipes": [
+      {
+        "label": "neutral",
+        "detailMilliseconds": 123.872625,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.284417,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "exposure-color",
+        "detailMilliseconds": 47.114417,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.296916,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "adaptive-brilliance",
+        "detailMilliseconds": 4564.370708,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.304,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "texture",
+        "detailMilliseconds": 538.170167,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.284291,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "clarity",
+        "detailMilliseconds": 517.213542,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.2745,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "dehaze-v1",
+        "detailMilliseconds": 1278.959875,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.534125,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "dehaze-v2",
+        "detailMilliseconds": 1797.486875,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.545791,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "geometry",
+        "detailMilliseconds": 29.824625,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.272208,
+        "p99ChannelError": 3,
+        "qualityComparison": "settled-resampled-to-proxy"
+      },
+      {
+        "label": "post-crop-vignette",
+        "detailMilliseconds": 38.963042,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.32925,
+        "p99ChannelError": 3,
+        "qualityComparison": "settled-resampled-to-proxy"
+      },
+      {
+        "label": "lens-blur-procedural",
+        "detailMilliseconds": 186.689375,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.269375,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-device-depth",
+        "detailMilliseconds": 212.739,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.429375,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-refine-focus",
+        "detailMilliseconds": 249.733667,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.314416,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-refine-blur",
+        "detailMilliseconds": 240.807708,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.309959,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-refine-auto-mask",
+        "detailMilliseconds": 243.058125,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.315625,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-bokeh-bubble",
+        "detailMilliseconds": 102.404917,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.296209,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-bokeh-five-blade",
+        "detailMilliseconds": 68.304875,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.299542,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-bokeh-ring",
+        "detailMilliseconds": 72.006083,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.291084,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-bokeh-anamorphic",
+        "detailMilliseconds": 72.079208,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.286208,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-cat-eye",
+        "detailMilliseconds": 71.830958,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.287792,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-bokeh-boost",
+        "detailMilliseconds": 67.810209,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.2825,
+        "p99ChannelError": 1,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "lens-blur-depth-preview",
+        "detailMilliseconds": 45.200125,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.286834,
+        "p99ChannelError": 0,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-glow",
+        "detailMilliseconds": 323.643875,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.345125,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "bw-mixer",
+        "detailMilliseconds": 62.395125,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.306541,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "point-variance",
+        "detailMilliseconds": 50.523625,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.281291,
+        "p99ChannelError": 12,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "targeted-hsl",
+        "detailMilliseconds": 43.202542,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.277792,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "visualise-range",
+        "detailMilliseconds": 40.145208,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.280167,
+        "p99ChannelError": 0,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "hue-isolation",
+        "detailMilliseconds": 39.983458,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.288125,
+        "p99ChannelError": 0,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "clipping-shadows",
+        "detailMilliseconds": 46.457833,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.296208,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "clipping-highlights",
+        "detailMilliseconds": 46.132792,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.273041,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "wb-flash-preset",
+        "detailMilliseconds": 44.323916,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.303792,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "refine-saturation",
+        "detailMilliseconds": 60.648583,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.269125,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "point-curve-targeted",
+        "detailMilliseconds": 48.874458,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.2895,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "defringe",
+        "detailMilliseconds": 40.4215,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.287917,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "point-color-samples",
+        "detailMilliseconds": 46.679084,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.296708,
+        "p99ChannelError": 18,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-point-color",
+        "detailMilliseconds": 226.963167,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.317666,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-light-extended",
+        "detailMilliseconds": 226.841375,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.321667,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-wb",
+        "detailMilliseconds": 238.29675,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.307375,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-hue-colorize",
+        "detailMilliseconds": 231.919125,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.306792,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-texture-clarity",
+        "detailMilliseconds": 1527.9025,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.302667,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-dehaze",
+        "detailMilliseconds": 364.684166,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.309167,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-grain",
+        "detailMilliseconds": 263.733458,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.297,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-curves",
+        "detailMilliseconds": 259.606875,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.335083,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-grading",
+        "detailMilliseconds": 254.343583,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.325625,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-detail",
+        "detailMilliseconds": 612.8765,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.302667,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "local-defringe",
+        "detailMilliseconds": 427.637291,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.3345,
+        "p99ChannelError": 2,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "global-sharpen-detail",
+        "detailMilliseconds": 115.66275,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.277583,
+        "p99ChannelError": 13,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "global-sharpen-mask-preview",
+        "detailMilliseconds": 123.142083,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.274125,
+        "p99ChannelError": 0,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "global-noise-detail",
+        "detailMilliseconds": 127.351167,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.269667,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "optics-ca-distortion",
+        "detailMilliseconds": 80.297458,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.289958,
+        "p99ChannelError": 7,
+        "qualityComparison": "matched-pixels"
+      },
+      {
+        "label": "optics-lens-profile",
+        "detailMilliseconds": 52.06225,
+        "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "settledMilliseconds": 0.284916,
+        "p99ChannelError": 3,
+        "qualityComparison": "matched-pixels"
+      }
+    ]
+  }
+}
