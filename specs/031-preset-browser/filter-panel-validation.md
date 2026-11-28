@@ -22,4 +22,5 @@
 - 原生侧栏窗口缓存核对 11 点同色同字重、逐级缩进、文件夹底色及唯一采用标记。浅色窗口收窄至 620 点。[深色侧栏](evidence/filter-panel/native-dark.webp) · [浅色窄窗侧栏](evidence/filter-panel/native-light-narrow.webp)
 - `PresetMaskEntryPointTests.testSceneFilterPanelPreviewsAndAppliesOnRealRAW` 使用本机已校验的「柔和」预设和 `person.ARW`，在独立资料库挂载原生侧栏与画布。对三类滤镜移动指针并读取实际预览帧，检查 SDR 提示与 HDR 草稿；胶片采用和逐图蒙版确认通过当前照片的 SDR 会话。测试核对退出预览、撤销、草稿往返与选区来源。
 - Release `20261128.163440` 签名安装前重新跑完同一 17 项原生专项，场景滤镜悬停、采用及 HDR/SDR 恢复均通过。[安装与测试回执](../043-image-engine-unification/evidence/m3-budgeted-window-release-checkpoint.json)
+- Release `20261128.170300` 用同一雪景 RAW、兼容 JPEG 和人像 RAW 复跑 17 项原生专项。全部通过，0 失败、0 跳过。实拍均衡与极速自由缩放也通过。[最新安装与测试回执](../043-image-engine-unification/evidence/m0-local-sharpen-release-checkpoint.json)
 - 深度散景继续由本张深度与焦点准备后显式确认。缺少风景局部映射、配置表或其他依赖的自适应条目保留可查看的原因。[能力边界](directory-delivery.md)
