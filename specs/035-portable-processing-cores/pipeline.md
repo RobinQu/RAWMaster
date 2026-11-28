@@ -141,15 +141,15 @@ Core Image 按最多 256 行将算后原生像素写进复用的 Metal 纹理。
 
 `RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION=1` 在主画布 2400 像素定稿中试用此路径。准入限定为 macOS 27.0.1 的单一 M4 Max GPU、已校验的 FlashRaw 0.3.1 原件、EXIF 方向 1、同一受持有的原生 RGBA16F 纹理和实测的 9504×6336 或 8640×5760 画幅。纹理须在 Metal 上证明 RGB 有限且不透明，去雾空气光须在有界正数域内。白平衡改变输入的配方进入原始路径。[入口与预算](../../Sources/RAWMasterImaging/DevelopmentNativeDehazeErosion.swift) · [来源与缓存](../../Sources/RAWMasterImaging/DevelopmentResidentDehazeGuide.swift)
 
-两种实际采样区域分别可分解成五级九点最小值。原始 RGBA16F 的每通道最小值直接选择已有的半浮点位型。正向归一化在已批准的输入域内单调，因而可以在五级最小值完成后再求值。原始图像边缘复制一次，分带交界保留剩余级的完整邻域。每个 64 行分带在 GPU 完成后核对各级工作组实写像素数，再释放临时纹理。整幅结果继续进入原来的 Gaussian 与 256 行 R32F 验证，缓存以预计算版本和原件凭据绑定。布局、源签名、预算和任务权限贯穿生成与读取。试用开关默认关闭。[独立孔径证明、四通道对照和正常入口](evidence/native-dehaze-and-portable-basic.json)
+两种实际采样区域分别可分解成五级九点最小值。原始 RGBA16F 的每通道最小值直接选择已有的半浮点位型。正向归一化在已批准的输入域内单调，因而可以在五级最小值完成后再求值。原始图像边缘复制一次，分带交界保留剩余级的完整邻域。每个 64 行分带在 GPU 完成后核对各级工作组实写像素数，再释放临时纹理。整幅结果继续进入原来的 Gaussian 与 256 行 R32F 验证，缓存以预计算版本和原件凭据绑定。布局、源签名、预算和任务权限贯穿生成与读取。043 已在限定准入范围内默认启用，可用 `RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION=0` 回滚。[独立孔径证明、四通道对照和正常入口](evidence/native-dehaze-and-portable-basic.json) · [043 默认放行](../043-image-engine-unification/evidence/m0-native-dehaze-default.json)
 
-`RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION=1` 在上述资格内把最多四个 64 行最小值分带顺序编码到同一个 Metal 命令缓冲。各带有独立的写入标志分区，两个 tracked 临时纹理按原 encoder 顺序复用，完整组等待完成后逐带核对写入数量和请求授权。已提交组失效时先等 GPU 完成。现有 256 行 R32F Gaussian 物化边界继续使用；直接放大该带在两种原片尺寸均改变引导值。开关默认关闭，组版本参与缓存身份。[分带任务及布局](../../Sources/RAWMasterImaging/DevelopmentNativeDehazeErosion.swift)
+最小值默认把最多四个 64 行分带顺序编码到同一个 Metal 命令缓冲。各带有独立的写入标志分区，两个 tracked 临时纹理按原 encoder 顺序复用，完整组等待完成后逐带核对写入数量和请求授权。已提交组失效时先等 GPU 完成。R32F Gaussian 保持 256 行物化边界，直接放大该带在两种原片尺寸均改变引导值。组版本参与缓存身份，`RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION=0` 可回滚到单带。[分带任务及布局](../../Sources/RAWMasterImaging/DevelopmentNativeDehazeErosion.swift)
 
 R32F 的每带至多 256 行。带内仍逐行检查取消和现有请求状态，只写本次的私有缓冲。完整的工作者和原件授权检查覆盖提交前、已提交及等待完成、拷贝结束和缓存发布。若已提交后失效，先等待该任务，再清退未发布数据。已完成的暖缓存可继续由当前授权请求读取。[原生私有带与发布检查](../../Sources/RAWMasterImaging/DevelopmentResidentDehazeGuide.swift) · [原件失效和两源实测](evidence/native-program-ownership.json)
 
-`RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF=1` 在上述半浮点侵蚀候选的同一设备和尺寸域内试用还原范围证明。原始 RGBA16F 的 RGB 绝对值须不超过 1024，alpha 须精确为 1。R32F 提交前用 NaN 填充目标，等待完成后验证每行实写，再核对全部引导值的绝对值不超过 2。两份活的缓存借用、原件、空气光、固定覆盖归一化与还原着色器共同绑定本次还原。还原的透射率下限为 0.2，有界输入使每项中间值和输出都处于有限范围。匹配该证明的图可以交给原 FIT 直接物化，发布前继续核验来源和提供者故障。有限值超出证明域或其他非适用条件继续进入原全幅验证。默认关闭。[证明与实写核验](../../Sources/RAWMasterImaging/DevelopmentDehazeRestoreProof.swift) · [生产调用和回退](../../Sources/RAWMasterImaging/DevelopmentResidentDehazeGuide.swift)
+还原范围证明默认用于上述同设备、同尺寸的合格正向去雾。原始 RGBA16F 的 RGB 绝对值须不超过 1024，alpha 须精确为 1。R32F 提交前用 NaN 填充目标，等待完成后验证每行实写，再核对全部引导值的绝对值不超过 2。两份活的缓存借用、原件、空气光、固定覆盖归一化与还原着色器共同绑定本次还原。还原的透射率下限为 0.2，有界输入使每项中间值和输出都处于有限范围。匹配该证明的图可以交给原 FIT 直接物化，发布前继续核验来源和提供者故障。尚未取得证明、有限值超出证明域或设置 `RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF=0` 时执行原全幅验证。已取得证明的借用或请求失效时拒绝交付。[证明与实写核验](../../Sources/RAWMasterImaging/DevelopmentDehazeRestoreProof.swift) · [生产调用和回退](../../Sources/RAWMasterImaging/DevelopmentResidentDehazeGuide.swift)
 
-`RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT=1` 将已验证的同一 F16 来源和 R32F 引导用于主画布 2400×1600 定稿。最终图须是本次返回的原还原对象，且符合两种实测的提交计划之一，计划的 overdraw 为零。Metal 复用原还原方程，每 256 行写 FP32 暂存并使用硬件线性采样。两阶段分别核对读写覆盖和有限值，共用半幅工作预算，半幅保留到原显示物化完成。每带等待完成并重查原件、引导和请求授权。此开关默认关闭。[还原、采样及预算](../../Sources/RAWMasterImaging/DevelopmentNativeDehazeHalfFIT.swift) · [原生实片和撤销回执](evidence/native-banded-finish.json)
+主画布的 2400×1600 canonical 定稿默认对合格的 F16 来源和 R32F 引导采用半幅。最终图须是本次返回的原还原对象，且符合两种实测的提交计划之一，计划的 overdraw 为零。Metal 复用原还原方程，每 256 行写 FP32 暂存并使用硬件线性采样。两阶段分别核对读写覆盖和有限值，共用半幅工作预算，半幅保留到原显示物化完成。每带等待完成并重查原件、引导和请求授权。首带提交前预算不足时走经范围证明的原 FIT。`RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT=0` 单独回滚半幅，原生中间缓存和自有位图两个诊断组合沿用原 FIT，除非显式试用半幅。[还原、采样及预算](../../Sources/RAWMasterImaging/DevelopmentNativeDehazeHalfFIT.swift) · [043 实片及撤销回执](../043-image-engine-unification/evidence/m0-native-dehaze-restore-half.json)
 
 ## 径向纹理与清晰度的定稿校验
 

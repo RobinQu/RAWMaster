@@ -57,7 +57,7 @@ enum DevelopmentDehazeEngineV3 {
       let proofInput: DevelopmentDehazeRestoreProof.NativeInput?
       if rawPositiveV2CoverageSuffix(parameters,sourceIsRAW:sourceIsRAW).isEmpty {
         input=image; proofInput=nil
-      } else if DevelopmentDehazeRestoreProof.enabled, let residentGuide, residentGuide.mayCertifyRestore, checkedInput === image {
+      } else if let residentGuide, residentGuide.mayCertifyRestore, checkedInput === image, DevelopmentDehazeRestoreProof.enabled {
         let pair = try DevelopmentDehazeRestoreProof.NativeInput(normalizing:image)
         input=pair.normalized; proofInput=pair
       } else {

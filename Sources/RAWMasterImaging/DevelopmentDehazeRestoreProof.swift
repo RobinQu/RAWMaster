@@ -8,7 +8,7 @@ import RAWMasterCore
 /// consumer each check the same source and backing. No result graph is accepted as input.
 enum DevelopmentDehazeRestoreProof {
   static let contract = "restore-finite/opaque1024-r32-bounded2-lines-v1"
-  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF"] == "1" && programIsKnown
+  static let enabled = (ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF"] ?? "1") == "1" && programIsKnown
   static let programIsKnown: Bool = {
     guard let restore = try? DevelopmentDehazeRfTransportV1.restoreSource() else { return false }
     return matches(restore: restore, coverage: PreviewFITCoverageV1.metalSource)

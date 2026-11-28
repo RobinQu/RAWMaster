@@ -7,7 +7,12 @@ import RAWMasterCore
 /// The two certified restore inputs stay pinned through every command and the original
 /// FIT readback. A 256-row F32 band preserves the hardware sampler's exact rounding.
 enum DevelopmentNativeDehazeHalfFIT {
-  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT"] == "1"
+  static let enabled: Bool = {
+    let environment = ProcessInfo.processInfo.environment
+    if let requested = environment["RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT"] { return requested == "1" }
+    // The qualified display plan uses the original uncached context and CGImage readback.
+    return environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] != "1" && !V3PreviewMaterializer.writesOwnedBitmap
+  }()
   private static let bandRows = 256
   private static let lanes = 128
   private static let workingLimit = 512 * 1024 * 1024

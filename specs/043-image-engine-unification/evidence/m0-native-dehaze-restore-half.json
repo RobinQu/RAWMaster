@@ -1,0 +1,1469 @@
+{
+  "schemaVersion": 1,
+  "scope": "Certified positive V2 dehaze in canonical 2400×1600 FIT on the two qualified M4 Max RAW grids",
+  "measurement": "Separate fresh process for each original/default arm. Input to completed full RGBA8 readback.",
+  "completeProofAndReleaseOfResources": {
+    "primary": {
+      "numeric": {
+        "certifiedStockFITAfterBudgetDeclineSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "fullReservationDeclinedWithoutHalfSubmission": true,
+        "joinedGuideR32FSHA256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+        "numericCases": [
+          {
+            "amount": 0.001,
+            "fitRGBA8SHA256": "8eb6c4fa0b67c5d1fff9f2fcace74a5480c1949b4ff2d94aa200792124848e0b",
+            "halfPackedRGBAfSHA256": "a911ac9713c2d4180e0146e33b18174f68bccb56241bc8b8b5ac875eb293df94"
+          },
+          {
+            "amount": 15,
+            "fitRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "halfPackedRGBAfSHA256": "497c92a035c296bde36ec35838697abc03b15d976da3ea492050cdd2a88ae145",
+            "joinedNativeRGBAfSHA256": "bcb91098cc3a5df3f0f0473b90e58e73e747ca1c1ad546b4e19ce2e950b99843"
+          },
+          {
+            "amount": 37.5,
+            "fitRGBA8SHA256": "87ad95d740dc634f3869470dedcaf249cd6472513d90536e704b360286b702f2",
+            "halfPackedRGBAfSHA256": "2298514402793475ff4b790e1c3772a5e0f300b665eedebc077e33f6a1c52fea"
+          },
+          {
+            "amount": 45,
+            "fitRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "halfPackedRGBAfSHA256": "d1cd820ef200099b38d71b8a8a7a32696100471eee621b83ddf66e91dbad3a26",
+            "joinedNativeRGBAfSHA256": "6805d5307886864bdaef5faa7141b960246cd0b23426a59903d930516c7ced8b"
+          },
+          {
+            "amount": 99.999,
+            "fitRGBA8SHA256": "bbe23ec10b5eef8a39fe1fe049ad4c09b7ac86bed5f3d43504184a123e577e85",
+            "halfPackedRGBAfSHA256": "2a15a91d9a2a111f1bd7675707da931219e4d68d2c5e131e0785cd3129f43e88"
+          },
+          {
+            "amount": 100,
+            "fitRGBA8SHA256": "74de5eb065a9ef8fee1fdad887204e78366a5fd538214f48cbc343628b84ca33",
+            "halfPackedRGBAfSHA256": "8ec03a0aed294cdecfa89867d87ab4bddcf7eb6cd60cd6251b08ba080246da81"
+          }
+        ],
+        "originalSize": [
+          9504,
+          6336
+        ],
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "numericReportSHA256": "35f9fde62f1d93e6cb49c51c0d52af22e60bac01e67aacc70a7c0c7c58bb5a8e",
+      "faults": {
+        "actualNativeRenderSupersededAfterReadback": true,
+        "cases": [
+          {
+            "fault": "first-submit",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 0,
+            "nativeChargeBytes": 280707072,
+            "producedFrame": false
+          },
+          {
+            "fault": "last-join",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 60217344,
+            "nativeChargeBytes": 280707072,
+            "producedFrame": false
+          },
+          {
+            "fault": "raw-retired",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 60217344,
+            "nativeChargeBytes": 280707072,
+            "producedFrame": false
+          },
+          {
+            "fault": "guide-retired",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 60217344,
+            "nativeChargeBytes": 280707072,
+            "producedFrame": false
+          }
+        ],
+        "fullReservationReacquiredAfterEachFault": true,
+        "originalSize": [
+          9504,
+          6336
+        ],
+        "sameSourceRetryFITRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "tailRows": 192
+      },
+      "faultReportSHA256": "75074ce6f4f92a0c31238faa0eb705ff5b6b8ee870f72be6da22bc5b8e6c4817"
+    },
+    "secondary": {
+      "numeric": {
+        "certifiedStockFITAfterBudgetDeclineSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "fullReservationDeclinedWithoutHalfSubmission": true,
+        "joinedGuideR32FSHA256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+        "numericCases": [
+          {
+            "amount": 0.001,
+            "fitRGBA8SHA256": "54ebfc8941152e3537a69f3356255bdc65ac882827483d09546ef7cd559d9c72",
+            "halfPackedRGBAfSHA256": "18dfe2e28e473df1212ee65736b304164959091b7969ec379bd8548145c90cdc"
+          },
+          {
+            "amount": 15,
+            "fitRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+            "halfPackedRGBAfSHA256": "84843c0fe498cb6c7bb016a98907723d5c2fc41a69cbdeb157998bf83a3e45c2",
+            "joinedNativeRGBAfSHA256": "c765bfcb6c92722eb62531fe9bfd570f5487b9f9955fabb63d61e1f5c6739486"
+          },
+          {
+            "amount": 37.5,
+            "fitRGBA8SHA256": "eb53a6b2d532b4003f3d1079e7561d99421f8da65ff222e0cfd5d1010b7bdfbb",
+            "halfPackedRGBAfSHA256": "30b80c07c580757bb1941bbb6cd3a0e47ed391f1dff1f736215c9fa16784a0c5"
+          },
+          {
+            "amount": 45,
+            "fitRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+            "halfPackedRGBAfSHA256": "c0fdb231ff8393ba91054604538cdb2823392f7ff6d3b2bec052d235ea830c2e",
+            "joinedNativeRGBAfSHA256": "ac72fa4112609b2099f28e6301969575b66490b4732a97f83699deebc215aaec"
+          },
+          {
+            "amount": 99.999,
+            "fitRGBA8SHA256": "aace089e92d9c0ee37023cf8dc63aa46a5b53ca9a7b886cd860a8aa126b2e637",
+            "halfPackedRGBAfSHA256": "5e13ec44baf680a033c2fa2fb5918ac3dff61b73509200bd38a9c35cc583a6ef"
+          },
+          {
+            "amount": 100,
+            "fitRGBA8SHA256": "2591baec3591efc36a8e04ca6213406e9ce8535bb244392b2531cc74a3626e25",
+            "halfPackedRGBAfSHA256": "1f7862177eb39bf2d14e68167105eccf74ccb0f7a8dd16b16caf2200a5495121"
+          }
+        ],
+        "originalSize": [
+          8640,
+          5760
+        ],
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      },
+      "numericReportSHA256": "3bb65fc4318d9b639b5b4594d896467f2e6d149b6d99c010b1724db39636da73",
+      "faults": {
+        "actualNativeRenderSupersededAfterReadback": true,
+        "cases": [
+          {
+            "fault": "first-submit",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 0,
+            "nativeChargeBytes": 234553344,
+            "producedFrame": false
+          },
+          {
+            "fault": "last-join",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 49766400,
+            "nativeChargeBytes": 234553344,
+            "producedFrame": false
+          },
+          {
+            "fault": "raw-retired",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 49766400,
+            "nativeChargeBytes": 234553344,
+            "producedFrame": false
+          },
+          {
+            "fault": "guide-retired",
+            "joinedAndAcknowledgedPixelsBeforeFailure": 49766400,
+            "nativeChargeBytes": 234553344,
+            "producedFrame": false
+          }
+        ],
+        "fullReservationReacquiredAfterEachFault": true,
+        "originalSize": [
+          8640,
+          5760
+        ],
+        "sameSourceRetryFITRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "tailRows": 128
+      },
+      "faultReportSHA256": "1a26fa7534828e6871922b131e6d0eae29d9e37726dd9af3187a94804279523e"
+    }
+  },
+  "defaultVersusOriginal": {
+    "primary": {
+      "unchangedAcrossFourCohorts": 592,
+      "unchangedCompleteSettled": 296,
+      "arms": {
+        "baseline": {
+          "allSettled": {
+            "n": 148,
+            "p50Ms": 68.119896,
+            "p95Ms": 297.246917
+          },
+          "dehazeCold": {
+            "n": 2,
+            "p50Ms": 645.6906665,
+            "p95Ms": 681.958791
+          },
+          "dehazeReusingGuide": {
+            "n": 2,
+            "p50Ms": 297.7069585,
+            "p95Ms": 298.167
+          },
+          "peakProcessPhysicalFootprintBytes": 5833771552,
+          "recordedRuns": [
+            {
+              "processReportSHA256": "286c729f41f7f77ffb33de3a89afaae4988c879e66e678fa7939962c2a6607c0",
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 1,
+              "allSettledMs": [
+                145.124125,
+                424.876166,
+                54.604292,
+                48.581375,
+                50.511917,
+                49.34475,
+                116.589792,
+                116.773291,
+                143.667333,
+                126.111292,
+                32.169625,
+                22.363083,
+                33.34475,
+                0.620792,
+                55.489042,
+                58.529584,
+                131.2125,
+                155.369292,
+                59.609792,
+                62.09625,
+                326.117666,
+                295.000333,
+                177.879416,
+                193.480041,
+                272.65525,
+                176.1965,
+                258.315791,
+                234.401834,
+                271.391708,
+                270.570375,
+                681.958791,
+                297.246917,
+                290.183667,
+                281.393167,
+                160.350042,
+                147.368584,
+                281.980958,
+                276.630334,
+                60.883834,
+                53.023709,
+                74.247959,
+                48.26575,
+                50.621917,
+                46.289625,
+                0.689167,
+                50.177458,
+                55.7775,
+                49.4505,
+                111.363958,
+                134.396292,
+                132.633625,
+                120.837875,
+                57.387875,
+                54.220542,
+                0.737916,
+                117.496792,
+                115.521583,
+                128.915875,
+                65.028375,
+                92.358042,
+                0.706416,
+                100.1965,
+                53.874083,
+                57.394125,
+                54.583042,
+                55.39175,
+                60.476292,
+                81.975791,
+                51.158959,
+                52.539917,
+                47.034459,
+                48.886792,
+                49.404625,
+                49.181083
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 681.958791,
+                  "fitRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                  "halfGPU": [],
+                  "proof": []
+                },
+                {
+                  "state": 1,
+                  "ms": 297.246917,
+                  "fitRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                  "halfGPU": [],
+                  "proof": []
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 5284219472
+            },
+            {
+              "processReportSHA256": "d39af8b85a687350b39af3ba1c17897205f8edb83429916b8dcd4b1771bfe6d1",
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 4,
+              "allSettledMs": [
+                117.445083,
+                52.491417,
+                46.916459,
+                50.595333,
+                50.578583,
+                48.703208,
+                121.453416,
+                124.555959,
+                154.423375,
+                118.78775,
+                32.646292,
+                22.195042,
+                34.004167,
+                0.714375,
+                61.373917,
+                71.211417,
+                123.349334,
+                151.058416,
+                59.558167,
+                55.807625,
+                306.863,
+                303.223875,
+                172.14475,
+                201.831,
+                191.346542,
+                174.88,
+                258.275,
+                242.800125,
+                270.780958,
+                281.22125,
+                609.422542,
+                298.167,
+                279.019959,
+                280.080875,
+                167.6685,
+                157.697958,
+                258.189417,
+                266.382958,
+                62.573333,
+                53.478458,
+                74.728,
+                48.800208,
+                51.112875,
+                47.267458,
+                0.684458,
+                52.077125,
+                47.964875,
+                46.44675,
+                95.050542,
+                113.900458,
+                123.859791,
+                118.699875,
+                57.024833,
+                53.402125,
+                0.674667,
+                125.171958,
+                130.259125,
+                123.155334,
+                63.747084,
+                98.4725,
+                0.635459,
+                93.508833,
+                55.411292,
+                59.3605,
+                58.504458,
+                58.552125,
+                57.019083,
+                83.144292,
+                47.942417,
+                50.362791,
+                53.005333,
+                52.719583,
+                50.395042,
+                46.175166
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 609.422542,
+                  "fitRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                  "halfGPU": [],
+                  "proof": []
+                },
+                {
+                  "state": 1,
+                  "ms": 298.167,
+                  "fitRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                  "halfGPU": [],
+                  "proof": []
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 5833771552
+            }
+          ]
+        },
+        "default": {
+          "allSettled": {
+            "n": 148,
+            "p50Ms": 65.5124165,
+            "p95Ms": 279.569
+          },
+          "dehazeCold": {
+            "n": 2,
+            "p50Ms": 316.3637705,
+            "p95Ms": 321.243708
+          },
+          "dehazeReusingGuide": {
+            "n": 2,
+            "p50Ms": 38.1659585,
+            "p95Ms": 38.5085
+          },
+          "peakProcessPhysicalFootprintBytes": 5835016736,
+          "recordedRuns": [
+            {
+              "processReportSHA256": "f5389e288cc858d9695d37a7f294a05e7853676b19ae88430a0cb3a69fb7c7d0",
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 2,
+              "allSettledMs": [
+                116.075625,
+                58.47325,
+                52.854459,
+                53.686375,
+                48.916209,
+                50.651,
+                123.609167,
+                134.913833,
+                154.332417,
+                127.208667,
+                32.917875,
+                20.85325,
+                29.817792,
+                0.568334,
+                60.72925,
+                57.053875,
+                128.60275,
+                157.590166,
+                60.107125,
+                56.953041,
+                297.382917,
+                279.569,
+                173.064792,
+                200.059708,
+                203.872125,
+                179.995167,
+                255.773666,
+                256.706875,
+                261.617375,
+                272.160541,
+                311.483833,
+                37.823417,
+                263.927958,
+                274.747958,
+                152.405417,
+                148.186708,
+                251.562708,
+                255.511167,
+                67.028792,
+                63.996041,
+                77.049625,
+                50.244208,
+                48.590125,
+                52.051,
+                0.57825,
+                48.707083,
+                48.156083,
+                47.767125,
+                92.8295,
+                122.458166,
+                131.393834,
+                135.498375,
+                58.979541,
+                54.589125,
+                0.751916,
+                122.443583,
+                125.299791,
+                126.132708,
+                63.219334,
+                106.338709,
+                0.591917,
+                107.9165,
+                58.287834,
+                55.687834,
+                59.898292,
+                57.381375,
+                54.23925,
+                83.463625,
+                53.033583,
+                45.783791,
+                45.896375,
+                45.1455,
+                54.796875,
+                49.798792
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 311.483833,
+                  "fitRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034854183044208,
+                      "boundary": "GPU 完成",
+                      "bytes": 280707072,
+                      "endNs": 1034854210082958,
+                      "ms": 27.03875,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034854180205125,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034854180208750,
+                      "ms": 0.003625,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "ms": 37.823417,
+                  "fitRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034854251348875,
+                      "boundary": "GPU 完成",
+                      "bytes": 280707072,
+                      "endNs": 1034854272451500,
+                      "ms": 21.102625,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034854250425125,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034854250425833,
+                      "ms": 0.000708,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 5833689608
+            },
+            {
+              "processReportSHA256": "d51ce0d7a31a72934c37b33cfedb154e50947619693a83fbcfb8f0d80a5913e2",
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 3,
+              "allSettledMs": [
+                117.44825,
+                58.6915,
+                48.234833,
+                49.691458,
+                56.414917,
+                51.411666,
+                129.279625,
+                135.399375,
+                155.16525,
+                118.847083,
+                32.260041,
+                22.987584,
+                33.152333,
+                0.630292,
+                67.532083,
+                67.286792,
+                124.0945,
+                155.766291,
+                56.844875,
+                57.479875,
+                307.9145,
+                297.96625,
+                187.429708,
+                172.962459,
+                192.827375,
+                179.057875,
+                257.684667,
+                238.491875,
+                270.976958,
+                281.606666,
+                321.243708,
+                38.5085,
+                266.069417,
+                282.0755,
+                160.816958,
+                141.379833,
+                252.826833,
+                267.126208,
+                69.421084,
+                59.228708,
+                78.542125,
+                48.079542,
+                47.607125,
+                48.644834,
+                0.789958,
+                58.24225,
+                59.761792,
+                52.480541,
+                107.7575,
+                121.233042,
+                133.047875,
+                135.158333,
+                57.297292,
+                56.9135,
+                0.62525,
+                117.919167,
+                135.165333,
+                138.708708,
+                59.770083,
+                108.487708,
+                0.577792,
+                108.855583,
+                57.2005,
+                59.913958,
+                56.892917,
+                60.356708,
+                57.16475,
+                79.280542,
+                47.674416,
+                49.3415,
+                49.346708,
+                49.506875,
+                52.172458,
+                52.518083
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 321.243708,
+                  "fitRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034865225261208,
+                      "boundary": "GPU 完成",
+                      "bytes": 280707072,
+                      "endNs": 1034865252500291,
+                      "ms": 27.239083,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034865222463708,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034865222466500,
+                      "ms": 0.002792,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "ms": 38.5085,
+                  "fitRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034865293278291,
+                      "boundary": "GPU 完成",
+                      "bytes": 280707072,
+                      "endNs": 1034865315181625,
+                      "ms": 21.903334,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034865292308041,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034865292309083,
+                      "ms": 0.001042,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 5835016736
+            }
+          ]
+        }
+      }
+    },
+    "secondary": {
+      "unchangedAcrossFourCohorts": 16,
+      "unchangedCompleteSettled": 8,
+      "arms": {
+        "baseline": {
+          "allSettled": {
+            "n": 4,
+            "p50Ms": 364.4266255,
+            "p95Ms": 536.447208
+          },
+          "dehazeCold": {
+            "n": 2,
+            "p50Ms": 521.7107085,
+            "p95Ms": 536.447208
+          },
+          "dehazeReusingGuide": {
+            "n": 2,
+            "p50Ms": 218.714271,
+            "p95Ms": 221.879042
+          },
+          "peakProcessPhysicalFootprintBytes": 3230009456,
+          "recordedRuns": [
+            {
+              "processReportSHA256": "464925ca6a1044ab9c55abd64d9a1c3812e069add7bc8a1525e13b0e44b61560",
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 1,
+              "allSettledMs": [
+                506.974209,
+                215.5495
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 506.974209,
+                  "fitRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                  "halfGPU": [],
+                  "proof": []
+                },
+                {
+                  "state": 1,
+                  "ms": 215.5495,
+                  "fitRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                  "halfGPU": [],
+                  "proof": []
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 3228551184
+            },
+            {
+              "processReportSHA256": "7a5bf4281c82c655c8976256940029632176e6dc0299212a2894136c843f8dea",
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 4,
+              "allSettledMs": [
+                536.447208,
+                221.879042
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 536.447208,
+                  "fitRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                  "halfGPU": [],
+                  "proof": []
+                },
+                {
+                  "state": 1,
+                  "ms": 221.879042,
+                  "fitRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                  "halfGPU": [],
+                  "proof": []
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 3230009456
+            }
+          ]
+        },
+        "default": {
+          "allSettled": {
+            "n": 4,
+            "p50Ms": 171.825667,
+            "p95Ms": 310.331875
+          },
+          "dehazeCold": {
+            "n": 2,
+            "p50Ms": 309.3449585,
+            "p95Ms": 310.331875
+          },
+          "dehazeReusingGuide": {
+            "n": 2,
+            "p50Ms": 35.017770999999996,
+            "p95Ms": 35.293292
+          },
+          "peakProcessPhysicalFootprintBytes": 2917631872,
+          "recordedRuns": [
+            {
+              "processReportSHA256": "168e95b05f76e6bc3600dc0217d8c04479a253847599e0adf657c268951d27b4",
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 2,
+              "allSettledMs": [
+                308.358042,
+                34.74225
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 308.358042,
+                  "fitRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034859639979541,
+                      "boundary": "GPU 完成",
+                      "bytes": 234553344,
+                      "endNs": 1034859662521916,
+                      "ms": 22.542375,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034859637725416,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034859637728000,
+                      "ms": 0.002584,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "ms": 34.74225,
+                  "fitRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034859700417666,
+                      "boundary": "GPU 完成",
+                      "bytes": 234553344,
+                      "endNs": 1034859718903291,
+                      "ms": 18.485625,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034859699501500,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034859699502541,
+                      "ms": 0.001041,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 2917631872
+            },
+            {
+              "processReportSHA256": "9134ea84209b1723da5fc3a09acee01a6e7b12d2de9fb8fcc4e8ac306bf8404a",
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "binarySHA256": "f18885c812794f70c28c23cb373ef1e4b59bdd7e1d350e9f2c7c6ceb31e3e256",
+              "cohort": 3,
+              "allSettledMs": [
+                310.331875,
+                35.293292
+              ],
+              "dehaze": [
+                {
+                  "state": 0,
+                  "ms": 310.331875,
+                  "fitRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034870769704500,
+                      "boundary": "GPU 完成",
+                      "bytes": 234553344,
+                      "endNs": 1034870791699291,
+                      "ms": 21.994791,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034870768129541,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034870768132625,
+                      "ms": 0.003084,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                },
+                {
+                  "state": 1,
+                  "ms": 35.293292,
+                  "fitRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                  "halfGPU": [
+                    {
+                      "beginNs": 1034870830709833,
+                      "boundary": "GPU 完成",
+                      "bytes": 234553344,
+                      "endNs": 1034870848231250,
+                      "ms": 17.521417,
+                      "operation": "NativeDehazeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "原生还原与硬件半幅采样"
+                    }
+                  ],
+                  "proof": [
+                    {
+                      "beginNs": 1034870829740166,
+                      "boundary": "图构建与校验",
+                      "bytes": 0,
+                      "endNs": 1034870829741041,
+                      "ms": 0.000875,
+                      "operation": "NativeDehazeRestoreFinite",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "已验证原生透射率与还原范围"
+                    }
+                  ]
+                }
+              ],
+              "peakProcessPhysicalFootprintBytes": 2915190728
+            }
+          ]
+        }
+      }
+    }
+  },
+  "rollback": {
+    "halfExplicitlyDisabled": {
+      "reportSHA256": "8db83763095faca5fb1dbbc5c8091d1a3d47c05d9ce64efd3bb4fe80ef84a615",
+      "restoredUsingRangeProof": true,
+      "halfFIT": false,
+      "fullFitRGBA8SHA256": [
+        "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+      ],
+      "recordedTimesMs": [
+        518.324625,
+        185.654208
+      ]
+    },
+    "proofDisabledWithHalfRequested": {
+      "reportSHA256": "5983328db0bf796697140454a39a33ccaf1a245aa8bb46119d35ac954e8dfc97",
+      "restoredUsingRangeProof": false,
+      "halfFIT": false,
+      "fullFitRGBA8SHA256": [
+        "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+      ],
+      "recordedTimesMs": [
+        630.165042,
+        283.403333
+      ]
+    }
+  },
+  "formalLightFlow": {
+    "reference": "2d41ab1",
+    "referenceFirstExactP50P95Ms": [
+      9.52,
+      58.97
+    ],
+    "referenceSHA256": "dbc4f77013b813a9b62e2d024b0ae1fe9d6839d4b02ffdf007f67e280fc608fa",
+    "runs": [
+      {
+        "qualifiedWarmControls": 37,
+        "firstExact": {
+          "n": 74,
+          "p50Ms": 74.6275205,
+          "p95Ms": 299.471667
+        },
+        "canonicalFrameDigestsMatched": [
+          1184,
+          222
+        ],
+        "binarySHA256": "d0c29fe66882b1206cc0a02d0437ada55578cbe7d28c53c3ce7515c3cf1f4240",
+        "reportSHA256": "2f9c6e8e3ca7c04d27f7ee36c28ee990ba89ee1246279bb3a6a4f9688e9d9ad7",
+        "independentComparisonSHA256": "83a6924c534f10575da3b3199fee91cbb114279a6cc24bbd0f281e5342dd1ced"
+      },
+      {
+        "qualifiedWarmControls": 37,
+        "firstExact": {
+          "n": 74,
+          "p50Ms": 79.7999585,
+          "p95Ms": 341.384125
+        },
+        "canonicalFrameDigestsMatched": [
+          1184,
+          222
+        ],
+        "binarySHA256": "d0c29fe66882b1206cc0a02d0437ada55578cbe7d28c53c3ce7515c3cf1f4240",
+        "reportSHA256": "45b92a4e6da9f8d93f55e00ecbbefec1665d653aef9fde0759ddc6031129744d",
+        "independentComparisonSHA256": "1e78b4f1ae72c42766ddd7eda0ca40e5f526945fa11fd6b348d67da77186fe10"
+      }
+    ]
+  },
+  "probeSHA256": "03050ad2c412ecd06c4160e2df26a0b2a5c3d997e2124fe523a21c886fd926fa",
+  "realReleaseRegressions": {
+    "native-qualified.log": {
+      "passed": 61,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "3a0808067cb3ec313cd69d6f4ea3990c6a912f6593a2cf69f6c2745ea534c04b"
+    },
+    "direct-opt-in.log": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "42f48ee2c42f0a48cb00ca49dbcfa26de5f708081a9cbaefa5fb6e43512265ce"
+    },
+    "current/sharp-and-finite-tests.log": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "7f24e153499e169b665e871e0f071eee47ae50ba2d4812047f7057529e974e29"
+    },
+    "current/filters-17.log": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "43129760d62b69ed661a3099e06b2fca43ee2c9b96d86a52fadd437cc555b1de"
+    },
+    "current/zoom-case.log": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "866d5e4d76ea5f88692a29f13415adb8c0fc22544babccf0a7b408100569e4af"
+    }
+  },
+  "focusInterruptionsInActualMouseHoverTest": {
+    "filters-17-initial.log": {
+      "logSHA256": "3b0972b53269376e78dc6b66bce26c58ed7e9ebb17ea77b7bdddd42d4e59f3cf",
+      "witness": "AppKit test window did not have key focus and pointer location differed at the native hover"
+    },
+    "filter-off.log": {
+      "logSHA256": "656867b830d041ec7d78c08ae3660dc9b053f1f27448cfd1e4c1cf49be4b77c5",
+      "witness": "AppKit test window did not have key focus and pointer location differed at the native hover"
+    },
+    "filter-default.log": {
+      "logSHA256": "0b2553f37b31a8ff0fc3fa10d1ef58ceac6f9fe7a205b7f54ab80ccb42271fb9",
+      "witness": "AppKit test window did not have key focus and pointer location differed at the native hover"
+    }
+  },
+  "independentTerminalDiagnosticCompatibility": {
+    "INTERMEDIATE_CACHE": {
+      "reportedNativeHalfSubmissions": 0,
+      "rangeProofSuccessCount": 2,
+      "fullFitRGBA8SHA256": [
+        "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+      ],
+      "reportSHA256": "7d67908a22ad9feb1c2fcfd1e239c7348ac351e35b4e7e75e96184c96a9b398f"
+    },
+    "OWNED_BITMAP": {
+      "reportedNativeHalfSubmissions": 0,
+      "rangeProofSuccessCount": 2,
+      "fullFitRGBA8SHA256": [
+        "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+      ],
+      "reportSHA256": "545ed42e84f8a46b715856683344c29ad3e3a5bb89213d2fe6af59d7a633e9dd"
+    }
+  },
+  "independentColdSpatialDiagnostic": {
+    "scope": "60 MP. Both arms use explicitly grouped scalars; four settled observations per control, per tested mode.",
+    "allCompleteRGBADigestsMatched": 72,
+    "cohorts": [
+      {
+        "mode": "original",
+        "reportSHA256": "e57c2977f13c977ee32f694cacac8dcb9b26c544abd02caacd5bd0be1c4fc1f2",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              390.227667,
+              302.004166
+            ],
+            "measuredDisplayMs": [
+              [
+                151.382708
+              ],
+              [
+                154.759333
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              303.51575,
+              299.088375
+            ],
+            "measuredDisplayMs": [
+              [
+                148.510875
+              ],
+              [
+                146.726125
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              336.528666,
+              318.201208
+            ],
+            "measuredDisplayMs": [
+              [
+                105.69525
+              ],
+              [
+                112.665125
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      },
+      {
+        "mode": "cache",
+        "reportSHA256": "8386061ccc2098bd02ed8dd3edaa686b9a73d5951cedbd5cd0576cef748ca53a",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              352.303291,
+              245.693625
+            ],
+            "measuredDisplayMs": [
+              [
+                116.824709
+              ],
+              [
+                117.554041
+              ]
+            ],
+            "retainedContextStarts": 2,
+            "bandedFiniteChecks": 0
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              284.754084,
+              284.089
+            ],
+            "measuredDisplayMs": [
+              [
+                135.303042
+              ],
+              [
+                137.294583
+              ]
+            ],
+            "retainedContextStarts": 2,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              325.25975,
+              324.724084
+            ],
+            "measuredDisplayMs": [
+              [
+                111.022541
+              ],
+              [
+                114.149708
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      },
+      {
+        "mode": "bands",
+        "reportSHA256": "6a660ac89c09de679328c1cee1e3631857e87613234eadc7be81694624b83266",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              351.979625,
+              255.577875
+            ],
+            "measuredDisplayMs": [
+              [
+                156.2115
+              ],
+              [
+                150.94125
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 2
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              309.724208,
+              299.662875
+            ],
+            "measuredDisplayMs": [
+              [
+                147.450459
+              ],
+              [
+                144.955083
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              339.648083,
+              324.317541
+            ],
+            "measuredDisplayMs": [
+              [
+                108.415917
+              ],
+              [
+                112.188458
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      },
+      {
+        "mode": "bands",
+        "reportSHA256": "baeec813368044e411eb25787f818323994b9219e3421c5dc72962b559d9902a",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              354.04175,
+              256.579166
+            ],
+            "measuredDisplayMs": [
+              [
+                153.841458
+              ],
+              [
+                153.706334
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 2
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              305.74525,
+              310.202875
+            ],
+            "measuredDisplayMs": [
+              [
+                149.930042
+              ],
+              [
+                147.539208
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              342.330167,
+              318.787167
+            ],
+            "measuredDisplayMs": [
+              [
+                109.806
+              ],
+              [
+                111.768792
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      },
+      {
+        "mode": "cache",
+        "reportSHA256": "e536d456017d84ff8084e11171ba1b9d10d78f889bfaf471e1b2d0c88dc50539",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              346.052667,
+              247.910417
+            ],
+            "measuredDisplayMs": [
+              [
+                115.618
+              ],
+              [
+                118.311791
+              ]
+            ],
+            "retainedContextStarts": 2,
+            "bandedFiniteChecks": 0
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              273.49075,
+              286.906167
+            ],
+            "measuredDisplayMs": [
+              [
+                132.6115
+              ],
+              [
+                144.936458
+              ]
+            ],
+            "retainedContextStarts": 2,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              312.001875,
+              327.296667
+            ],
+            "measuredDisplayMs": [
+              [
+                103.906834
+              ],
+              [
+                114.874
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      },
+      {
+        "mode": "original",
+        "reportSHA256": "433d1399ed7f6e31b4e06c0ccec74cf079e94e60cf1c1b1b821c93b14a7b36a8",
+        "result": {
+          "effects-mask-texture": {
+            "rawMs": [
+              379.894667,
+              281.350083
+            ],
+            "measuredDisplayMs": [
+              [
+                147.038875
+              ],
+              [
+                149.834083
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "effects-mask-clarity": {
+            "rawMs": [
+              302.392792,
+              299.364125
+            ],
+            "measuredDisplayMs": [
+              [
+                146.578042
+              ],
+              [
+                147.608542
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          },
+          "detail-mask-noise": {
+            "rawMs": [
+              334.422417,
+              321.874834
+            ],
+            "measuredDisplayMs": [
+              [
+                107.561166
+              ],
+              [
+                111.613333
+              ]
+            ],
+            "retainedContextStarts": 0,
+            "bandedFiniteChecks": 0
+          }
+        }
+      }
+    ],
+    "medianMs": {
+      "original": {
+        "effects-mask-texture": 340.95,
+        "effects-mask-clarity": 300.88,
+        "detail-mask-noise": 328.15
+      },
+      "bands": {
+        "effects-mask-texture": 304.28,
+        "effects-mask-clarity": 307.73,
+        "detail-mask-noise": 331.98
+      },
+      "cache": {
+        "effects-mask-texture": 296.98,
+        "effects-mask-clarity": 284.42,
+        "detail-mask-noise": 324.99
+      }
+    }
+  }
+}
