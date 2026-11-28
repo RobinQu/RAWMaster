@@ -1,4 +1,5 @@
 mod face;
+mod face_detector;
 mod ffi;
 mod runtime;
 
@@ -36,4 +37,12 @@ struct Image<'a> {
 struct Point {
     x: f64,
     y: f64,
+}
+
+#[derive(Clone, Copy)]
+#[repr(C)]
+struct FaceDetection {
+    bounds: [f64; 4],
+    landmarks: [Point; 5],
+    confidence: f64,
 }

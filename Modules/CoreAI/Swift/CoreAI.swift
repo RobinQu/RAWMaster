@@ -1,4 +1,5 @@
 import CCoreAI
+import CoreGraphics
 import Foundation
 import Security
 import Synchronization
@@ -38,6 +39,15 @@ public struct CoreAIPixelBuffer: Sendable {
         self.stride = stride
         self.format = format
     }
+
+    fileprivate func withNativeImage<Result>(_ body: (UnsafePointer<RMCoreAIImageV1>) -> Result) -> Result {
+        bytes.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            var input = RMCoreAIImageV1(data: bytes.bindMemory(to: UInt8.self).baseAddress, len: bytes.count,
+                stride: stride, width: width, height: height, format: format.rawValue,
+                roi_x: 0, roi_y: 0, roi_width: width, roi_height: height)
+            return withUnsafePointer(to: &input, body)
+        }
+    }
 }
 
 public struct CoreAIFacePoint: Sendable {
@@ -46,6 +56,21 @@ public struct CoreAIFacePoint: Sendable {
 
     /// Coordinates are normalized by the full image dimensions in Discovery order.
     public init(x: Double, y: Double) { self.x = x; self.y = y }
+}
+
+public struct CoreAIFaceObservation: Sendable {
+    /// Bounds and landmarks are normalized to the upright full image.
+    public let bounds: CGRect
+    public let landmarks: [CoreAIFacePoint]
+    public let confidence: Double
+
+    fileprivate init(_ face: RMCoreAIFaceV1) {
+        let (x, y, width, height) = face.bounds
+        bounds = CGRect(x: x, y: y, width: width, height: height)
+        let (leftEye, rightEye, nose, leftMouth, rightMouth) = face.landmarks
+        landmarks = [leftEye, rightEye, nose, leftMouth, rightMouth].map { CoreAIFacePoint(x: $0.x, y: $0.y) }
+        confidence = face.confidence
+    }
 }
 
 /// One CoreAI engine may be open per process. Rust serializes session ownership and
@@ -102,16 +127,29 @@ public final class CoreAI: @unchecked Sendable {
     }
 
     public func faceEmbedding(_ image: CoreAIPixelBuffer, landmarks: [CoreAIFacePoint]) async throws -> [Float] {
-        try Task.checkCancellation()
         guard image.stride >= 0 else { throw CoreAIError.invalidImage }
         guard landmarks.count == 5 else { throw CoreAIError.invalidLandmarks }
+        return try await run { cancellation in
+            try self.embedding(image, points: landmarks, cancellation: cancellation)
+        }
+    }
+
+    public func detectFaces(_ image: CoreAIPixelBuffer) async throws -> [CoreAIFaceObservation] {
+        guard image.stride >= 0 else { throw CoreAIError.invalidImage }
+        return try await run { cancellation in
+            try self.detections(image, cancellation: cancellation)
+        }
+    }
+
+    private func run<Value: Sendable>(_ work: @Sendable @escaping (Cancellation) throws -> Value) async throws -> Value {
+        try Task.checkCancellation()
         try reserveSubmission()
         defer { submission.withLock { $0 = false } }
         let cancellation = try Cancellation(runtime: self)
         return try await withTaskCancellationHandler {
             try Task.checkCancellation()
             let result = try await Task.detached(priority: .userInitiated) {
-                try self.embedding(image, points: landmarks, cancellation: cancellation)
+                try work(cancellation)
             }.value
             try Task.checkCancellation()
             return result
@@ -123,19 +161,29 @@ public final class CoreAI: @unchecked Sendable {
     private func embedding(_ image: CoreAIPixelBuffer, points: [CoreAIFacePoint], cancellation: Cancellation) throws -> [Float] {
         let landmarks = points.map { RMCoreAIPointV1(x: $0.x, y: $0.y) }
         var result = [Float](repeating: 0, count: Int(RM_CORE_AI_FACE_EMBEDDING_LENGTH))
-        let status = image.bytes.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
-            var input = RMCoreAIImageV1(data: bytes.bindMemory(to: UInt8.self).baseAddress, len: bytes.count,
-                stride: image.stride, width: image.width, height: image.height, format: image.format.rawValue,
-                roi_x: 0, roi_y: 0, roi_width: image.width, roi_height: image.height)
-            return landmarks.withUnsafeBufferPointer { points in
+        let status = image.withNativeImage { input in
+            landmarks.withUnsafeBufferPointer { points in
                 result.withUnsafeMutableBufferPointer { output in
-                    rm_core_ai_host_embed_face(host, cancellation.token, &input, points.baseAddress, points.count,
+                    rm_core_ai_host_embed_face(host, cancellation.token, input, points.baseAddress, points.count,
                         output.baseAddress, output.count)
                 }
             }
         }
         try CoreAIError.check(status)
         return result
+    }
+
+    private func detections(_ image: CoreAIPixelBuffer, cancellation: Cancellation) throws -> [CoreAIFaceObservation] {
+        var result = [RMCoreAIFaceV1](repeating: .init(), count: Int(RM_CORE_AI_FACE_CAPACITY))
+        var count = 0
+        let status = image.withNativeImage { input in
+            result.withUnsafeMutableBufferPointer { output in
+                rm_core_ai_host_detect_faces(host, cancellation.token, input, output.baseAddress, output.count, &count)
+            }
+        }
+        try CoreAIError.check(status)
+        guard (0...result.count).contains(count) else { throw CoreAIError.internalFailure }
+        return result.prefix(count).map(CoreAIFaceObservation.init)
     }
 
     /// Use this when the consumer goes idle to release the loaded model off the main actor.

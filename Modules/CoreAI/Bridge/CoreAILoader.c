@@ -13,6 +13,8 @@ struct RMCoreAIHost {
     void (*close_cancellation)(RMCoreAICancellation *);
     int32_t (*embed_face)(const RMCoreAIEngine *, const RMCoreAICancellation *, const RMCoreAIImageV1 *,
         const RMCoreAIPointV1 *, size_t, float *, size_t);
+    int32_t (*detect_faces)(const RMCoreAIEngine *, const RMCoreAICancellation *, const RMCoreAIImageV1 *,
+        RMCoreAIFaceV1 *, size_t, size_t *);
 };
 
 RMCoreAIHost *rm_core_ai_host_open(const char *path, const uint8_t *contents, size_t len, int32_t *status) {
@@ -40,6 +42,7 @@ RMCoreAIHost *rm_core_ai_host_open(const char *path, const uint8_t *contents, si
     host->request_cancellation = dlsym(library, "rm_core_ai_cancellation_request_v1");
     host->close_cancellation = dlsym(library, "rm_core_ai_cancellation_close_v1");
     host->embed_face = dlsym(library, "rm_core_ai_embed_face_v1");
+    host->detect_faces = dlsym(library, "rm_core_ai_detect_faces_v1");
     if (!open || !host->close || !host->evict || !host->create_cancellation || !host->request_cancellation ||
         !host->close_cancellation || !host->embed_face) {
         rm_core_ai_host_close(host);
@@ -81,4 +84,10 @@ int32_t rm_core_ai_host_embed_face(RMCoreAIHost *host, RMCoreAICancellation *tok
     const RMCoreAIImageV1 *image, const RMCoreAIPointV1 *landmarks, size_t landmark_count,
     float *output, size_t output_len) {
     return host->embed_face(host->engine, token, image, landmarks, landmark_count, output, output_len);
+}
+
+int32_t rm_core_ai_host_detect_faces(RMCoreAIHost *host, RMCoreAICancellation *token,
+    const RMCoreAIImageV1 *image, RMCoreAIFaceV1 *output, size_t capacity, size_t *written) {
+    if (!host->detect_faces) return RM_CORE_AI_INCOMPATIBLE_RUNTIME;
+    return host->detect_faces(host->engine, token, image, output, capacity, written);
 }

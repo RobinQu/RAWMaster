@@ -1,5 +1,5 @@
 use crate::runtime::{Cancellation, EMBEDDING_LENGTH, Engine};
-use crate::{Error, Image, PixelFormat, Point};
+use crate::{Error, FaceDetection, Image, PixelFormat, Point};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::Path;
 use std::{ptr, slice, str};
@@ -7,6 +7,7 @@ use std::{ptr, slice, str};
 const MAX_IMAGE_BYTES: usize = 256 * 1024 * 1024;
 const MAX_IMAGE_EDGE: u32 = 16_384;
 const MAX_PATH_BYTES: usize = 16_384;
+const MAX_FACE_RESULTS: usize = 5000;
 
 #[repr(C)]
 pub struct ImageV1 {
@@ -53,6 +54,17 @@ impl ImageV1 {
             return Err(Error::InvalidImage);
         }
         Ok(format)
+    }
+
+    unsafe fn borrow(&self) -> Result<Image<'_>, Error> {
+        let format = self.validate()?;
+        Ok(Image {
+            data: unsafe { slice::from_raw_parts(self.data, self.len) },
+            stride: self.stride,
+            width: self.width as usize,
+            height: self.height as usize,
+            format,
+        })
     }
 }
 
@@ -146,17 +158,39 @@ pub unsafe extern "C" fn rm_core_ai_embed_face_v1(
         if landmarks.is_null() || landmark_count != 5 {
             return Err(Error::InvalidLandmarks);
         }
-        let format = image.validate()?;
-        let image = Image {
-            data: slice::from_raw_parts(image.data, image.len),
-            stride: image.stride,
-            width: image.width as usize,
-            height: image.height as usize,
-            format,
-        };
+        let image = image.borrow()?;
         let points = &*landmarks.cast::<[Point; 5]>();
         let vector = engine.embed(&image, points, cancel)?;
         cancel.publish(|| ptr::copy_nonoverlapping(vector.as_ptr(), output, EMBEDDING_LENGTH))
+    })
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn rm_core_ai_detect_faces_v1(
+    engine: *const Engine,
+    cancel: *const Cancellation,
+    raw_image: *const ImageV1,
+    output: *mut FaceDetection,
+    capacity: usize,
+    written: *mut usize,
+) -> i32 {
+    status(|| unsafe {
+        let engine = engine.as_ref().ok_or(Error::InvalidArgument)?;
+        let cancel = cancel.as_ref().ok_or(Error::InvalidArgument)?;
+        let image = raw_image.as_ref().ok_or(Error::InvalidArgument)?;
+        if written.is_null() || capacity > MAX_FACE_RESULTS || (capacity > 0 && output.is_null()) {
+            return Err(Error::InvalidArgument);
+        }
+        let faces = engine.detect(&image.borrow()?, cancel)?;
+        if faces.len() > capacity {
+            return Err(Error::BudgetExceeded);
+        }
+        cancel.publish(|| {
+            if !faces.is_empty() {
+                ptr::copy_nonoverlapping(faces.as_ptr(), output, faces.len());
+            }
+            *written = faces.len();
+        })
     })
 }
 

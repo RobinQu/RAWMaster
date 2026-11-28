@@ -1,4 +1,4 @@
-"""Install the verified first CoreAI capability into an application staging directory."""
+"""Install reviewed CoreAI models and runtime into an application staging directory."""
 
 import argparse
 from hashlib import file_digest, sha256
@@ -21,15 +21,55 @@ def require_file(root, relative):
     return path
 
 
+def unique_object(pairs):
+    obj = dict(pairs)
+    if len(obj) != len(pairs):
+        raise ValueError("Duplicate key in CoreAI model manifest")
+    return obj
+
+
+def verified_bytes(root, entry, label):
+    with require_file(root, entry["path"]).open("rb") as stream:
+        data = stream.read(entry["bytes"] + 1)
+    if len(data) != entry["bytes"] or sha256(data).hexdigest() != entry["sha256"]:
+        raise ValueError(f"CoreAI {label} SHA-256 or size does not match the contract")
+    return data
+
+
+def verified_detector_assets(source, module, originals, detector):
+    conversion = detector["conversion"]
+    verified_bytes(source, detector["source"], "original YuNet")
+    verified_bytes(module.parent.parent, conversion["script"], "YuNet converter")
+    license_file = detector["license"]["file"]
+    return {
+        detector["path"]: verified_bytes(source, detector, "dynamic YuNet"),
+        conversion["record"]["path"]: verified_bytes(source, conversion["record"], "YuNet conversion record"),
+        f"Licenses/{license_file['path']}": verified_bytes(originals, license_file, "YuNet MIT license"),
+    }
+
+
 def stage(source, application):
     module = Path(__file__).resolve().parents[1]
-    declared = require_file(source, "manifest.json")
-    contract = json.loads((module / "ModelContracts/intel-0095-v1.json").read_text())
-    if json.loads(declared.read_text()) != contract:
-        raise ValueError("CoreAI model manifest does not match the reviewed Intel 0095 contract")
+    contracts = module / "ModelContracts"
+    intel_contract = contracts / "intel-0095-v1.json"
+    declared = json.loads(require_file(source, "manifest.json").read_text(), object_pairs_hook=unique_object)
+    contract = json.loads(intel_contract.read_text())
+    if not isinstance(declared, dict):
+        raise ValueError("CoreAI model manifest must be an object")
+    if "detector" in declared:
+        contract["detector"] = json.loads((contracts / "yunet-2023mar-dynamic-v1.json").read_text())
+    detector = contract.get("detector")
+    if json.dumps(declared, sort_keys=True) != json.dumps(contract, sort_keys=True):
+        bundle = "Intel 0095 and YuNet" if detector is not None else "Intel 0095"
+        raise ValueError(f"CoreAI model manifest does not match the reviewed {bundle} contract")
     model = require_file(source, contract["model"]["path"])
     if model.stat().st_size != contract["model"]["bytes"] or digest(model) != contract["model"]["sha256"]:
         raise ValueError("CoreAI Intel 0095 SHA-256 or size does not match the contract")
+
+    originals = module.parent / "LibraryCatalog/Swift/Resources/discovery/licenses"
+    detector_assets = {}
+    if detector is not None:
+        detector_assets = verified_detector_assets(source, module, originals, detector)
 
     runtime = contract["runtime"]
     wheel = require_file(source, runtime["wheel"])
@@ -56,8 +96,12 @@ def stage(source, application):
     shutil.copyfile(model, target)
     if digest(target) != contract["model"]["sha256"]:
         raise ValueError("Intel 0095 asset changed during staging")
-    shutil.copyfile(module / "ModelContracts/intel-0095-v1.json", package / "manifest.json")
-    originals = module.parent / "LibraryCatalog/Swift/Resources/discovery/licenses"
+    if detector is None:
+        shutil.copyfile(intel_contract, package / "manifest.json")
+    else:
+        (package / "manifest.json").write_text(json.dumps(contract, indent=2) + "\n")
+        for relative, data in detector_assets.items():
+            (package / relative).write_bytes(data)
     for name in ("Intel-0095-NOTICE.txt", "Intel-Open-Model-Zoo.txt"):
         shutil.copyfile(originals / name, licenses / name)
     (licenses / "ONNXRuntime-LICENSE.txt").write_bytes(license_text)

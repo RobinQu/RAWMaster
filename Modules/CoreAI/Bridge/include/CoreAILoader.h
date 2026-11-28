@@ -14,5 +14,7 @@ void rm_core_ai_host_close_cancellation(RMCoreAIHost *host, RMCoreAICancellation
 int32_t rm_core_ai_host_embed_face(RMCoreAIHost *host, RMCoreAICancellation *token,
     const RMCoreAIImageV1 *image, const RMCoreAIPointV1 *landmarks, size_t landmark_count,
     float *output, size_t output_len);
+int32_t rm_core_ai_host_detect_faces(RMCoreAIHost *host, RMCoreAICancellation *token,
+    const RMCoreAIImageV1 *image, RMCoreAIFaceV1 *output, size_t capacity, size_t *written);
 
 #endif

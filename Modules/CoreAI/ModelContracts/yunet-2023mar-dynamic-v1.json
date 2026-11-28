@@ -1,0 +1,54 @@
+{
+  "capability": "face-detection-yunet-2023mar-dynamic-v1",
+  "path": "face/yunet-2023mar-dynamic.onnx",
+  "bytes": 232726,
+  "sha256": "8486bd72a09be3dc872c8b97e26bbbce2a5eb2eed602e4b385c618be5432787a",
+  "source": {
+    "path": "face/yunet-2023mar-original.onnx",
+    "bytes": 232589,
+    "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "revision": "48b10fa505aeb51fbd127fc60a5c660040e823b7",
+    "upstream": "https://github.com/opencv/opencv_zoo/blob/48b10fa505aeb51fbd127fc60a5c660040e823b7/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
+  },
+  "conversion": {
+    "onnxVersion": "1.19.1",
+    "changedAxes": 14,
+    "method": "Replace the input height and width and all head location dimensions with symbols. Restoring those declarations reproduces the entire upstream ONNX protobuf.",
+    "script": {
+      "path": "Modules/CoreAI/Tools/derive-yunet.py",
+      "bytes": 4246,
+      "sha256": "ecf8048fd8fffbd4c248b286b4060c440f2e4f2796b6d3d12b784fe9b6038865"
+    },
+    "record": {
+      "path": "face/yunet-2023mar-dynamic.conversion.json",
+      "bytes": 473,
+      "sha256": "81e44a5480d6a2c6cf52402988b20667ed0294c7c9af9d997a1c99b7d7b2beb0"
+    }
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": {
+      "path": "YuNet-MIT.txt",
+      "bytes": 1085,
+      "sha256": "c83b8120c50ccbd4c4f96edf53141bdd566ebb8f8e9227e415326aa1b1aba958"
+    },
+    "upstream": "https://raw.githubusercontent.com/opencv/opencv_zoo/48b10fa505aeb51fbd127fc60a5c660040e823b7/models/face_detection_yunet/LICENSE"
+  },
+  "input": {"name": "input", "element": "Float32", "shape": [1, 3, "height", "width"]},
+  "outputs": [
+    {"name": "cls_8", "element": "Float32", "shape": [1, "locations_8", 1]},
+    {"name": "cls_16", "element": "Float32", "shape": [1, "locations_16", 1]},
+    {"name": "cls_32", "element": "Float32", "shape": [1, "locations_32", 1]},
+    {"name": "obj_8", "element": "Float32", "shape": [1, "locations_8", 1]},
+    {"name": "obj_16", "element": "Float32", "shape": [1, "locations_16", 1]},
+    {"name": "obj_32", "element": "Float32", "shape": [1, "locations_32", 1]},
+    {"name": "bbox_8", "element": "Float32", "shape": [1, "locations_8", 4]},
+    {"name": "bbox_16", "element": "Float32", "shape": [1, "locations_16", 4]},
+    {"name": "bbox_32", "element": "Float32", "shape": [1, "locations_32", 4]},
+    {"name": "kps_8", "element": "Float32", "shape": [1, "locations_8", 10]},
+    {"name": "kps_16", "element": "Float32", "shape": [1, "locations_16", 10]},
+    {"name": "kps_32", "element": "Float32", "shape": [1, "locations_32", 10]}
+  ],
+  "preprocessing": "Upright unassociated sRGB8, longest edge at most 1024, nearest even dimensions at a tie, OpenCV 4.12 INTER_AREA, right and bottom zero padding to a multiple of 32, BGR NCHW in 0...255.",
+  "postprocessing": "OpenCV 4.12 FaceDetectorYN stride 8/16/32 grid, composite score gate 0.9, integer rectangle NMS 0.3 with top K 5000, normalized boxes and five landmarks in upright image coordinates."
+}

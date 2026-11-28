@@ -25,7 +25,8 @@ enum {
     RM_CORE_AI_INTERNAL = 10,
 };
 
-enum { RM_CORE_AI_RGBA8 = 1, RM_CORE_AI_BGRA8 = 2, RM_CORE_AI_FACE_EMBEDDING_LENGTH = 256 };
+enum { RM_CORE_AI_RGBA8 = 1, RM_CORE_AI_BGRA8 = 2, RM_CORE_AI_FACE_EMBEDDING_LENGTH = 256,
+    RM_CORE_AI_FACE_CAPACITY = 5000 };
 
 typedef struct {
     const uint8_t *data;
@@ -41,6 +42,12 @@ typedef struct {
 } RMCoreAIImageV1;
 
 typedef struct { double x; double y; } RMCoreAIPointV1;
+
+typedef struct {
+    double bounds[4]; /* x, y, width, height, relative to the upright full image. */
+    RMCoreAIPointV1 landmarks[5];
+    double confidence;
+} RMCoreAIFaceV1;
 
 uint32_t rm_core_ai_abi_version(void);
 /* contents is the trusted, absolute bundle Contents path, encoded as UTF-8 without a terminator. */
@@ -59,6 +66,12 @@ void rm_core_ai_cancellation_close_v1(RMCoreAICancellation *cancel);
 int32_t rm_core_ai_embed_face_v1(const RMCoreAIEngine *engine, const RMCoreAICancellation *cancel,
     const RMCoreAIImageV1 *image, const RMCoreAIPointV1 *landmarks, size_t landmark_count,
     float *output, size_t output_len);
+
+/* The detector uses the same full-image ROI and disjoint borrowed-buffer contract. A successful
+ * empty result writes zero to written. Failure leaves written and every output slot untouched.
+ * A null output is supported at capacity zero. Capacity is measured in RMCoreAIFaceV1 elements. */
+int32_t rm_core_ai_detect_faces_v1(const RMCoreAIEngine *engine, const RMCoreAICancellation *cancel,
+    const RMCoreAIImageV1 *image, RMCoreAIFaceV1 *output, size_t capacity, size_t *written);
 
 #ifdef __cplusplus
 }

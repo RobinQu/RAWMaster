@@ -1,4 +1,4 @@
-use crate::{Error, Image, Point, face};
+use crate::{Error, FaceDetection, Image, Point, face, face_detector};
 use libloading::{Library, Symbol};
 use ort::environment::Environment;
 use ort::session::{RunOptions, Session};
@@ -13,9 +13,18 @@ use std::sync::{Arc, Mutex, TryLockError};
 
 pub(crate) const EMBEDDING_LENGTH: usize = 256;
 const ORT_FILE: &str = "libonnxruntime.1.27.0.dylib";
-const MODEL_RELATIVE: &str = "Resources/CoreModels/v1/face/face-reidentification-retail-0095.onnx";
-const MODEL_BYTES: u64 = 4_466_624;
-const MODEL_SHA256: &str = "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373";
+const EMBEDDING_MODEL: ModelAsset = ModelAsset {
+    file: "face-reidentification-retail-0095.onnx",
+    bytes: 4_466_624,
+    sha256: "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373",
+    matches: matches_embedding_session,
+};
+const DETECTOR_MODEL: ModelAsset = ModelAsset {
+    file: "yunet-2023mar-dynamic.onnx",
+    bytes: 232_726,
+    sha256: "8486bd72a09be3dc872c8b97e26bbbce2a5eb2eed602e4b385c618be5432787a",
+    matches: face_detector::matches_session,
+};
 const INPUT_SHAPE: [i64; 4] = [1, 3, 128, 128];
 const OUTPUT_SHAPE: [i64; 4] = [1, EMBEDDING_LENGTH as i64, 1, 1];
 static ENGINE_OWNED: AtomicBool = AtomicBool::new(false);
@@ -39,10 +48,23 @@ impl Drop for EngineLease {
 }
 
 pub(crate) struct Engine {
-    session: Mutex<Option<Session>>,
+    sessions: Mutex<FaceSessions>,
     environment: Environment,
-    model: PathBuf,
+    models: PathBuf,
     _lease: EngineLease,
+}
+
+struct ModelAsset {
+    file: &'static str,
+    bytes: u64,
+    sha256: &'static str,
+    matches: fn(&Session) -> bool,
+}
+
+#[derive(Default)]
+struct FaceSessions {
+    embedding: Option<Session>,
+    detector: Option<Session>,
 }
 
 impl Engine {
@@ -73,25 +95,26 @@ impl Engine {
             }
         };
         Ok(Self {
-            session: Mutex::new(None),
+            sessions: Mutex::new(FaceSessions::default()),
             environment,
-            model: contents.join(MODEL_RELATIVE),
+            models: contents.join("Resources/CoreModels/v1/face"),
             _lease: lease,
         })
     }
 
-    fn load_session(&self, cancel: &Cancellation) -> Result<Session, Error> {
-        require_regular_path(&self.model).map_err(|_| Error::ModelRejected)?;
-        let file = File::open(&self.model).map_err(|_| Error::ModelRejected)?;
-        if file.metadata().map_err(|_| Error::ModelRejected)?.len() != MODEL_BYTES {
+    fn load_session(&self, asset: &ModelAsset, cancel: &Cancellation) -> Result<Session, Error> {
+        let model = self.models.join(asset.file);
+        require_regular_path(&model).map_err(|_| Error::ModelRejected)?;
+        let file = File::open(&model).map_err(|_| Error::ModelRejected)?;
+        if file.metadata().map_err(|_| Error::ModelRejected)?.len() != asset.bytes {
             return Err(Error::ModelRejected);
         }
-        let mut bytes = Vec::with_capacity(MODEL_BYTES as usize);
-        file.take(MODEL_BYTES + 1)
+        let mut bytes = Vec::with_capacity(asset.bytes as usize);
+        file.take(asset.bytes + 1)
             .read_to_end(&mut bytes)
             .map_err(|_| Error::ModelRejected)?;
-        if bytes.len() as u64 != MODEL_BYTES
-            || format!("{:x}", Sha256::digest(&bytes)) != MODEL_SHA256
+        if bytes.len() as u64 != asset.bytes
+            || format!("{:x}", Sha256::digest(&bytes)) != asset.sha256
         {
             return Err(Error::ModelRejected);
         }
@@ -106,14 +129,14 @@ impl Engine {
             .commit_from_memory(&bytes)
             .map_err(|_| Error::ModelRejected)?;
         cancel.check()?;
-        if !matches_model(&session) {
+        if !(asset.matches)(&session) {
             return Err(Error::ModelRejected);
         }
         Ok(session)
     }
 
-    fn session_slot(&self) -> Result<std::sync::MutexGuard<'_, Option<Session>>, Error> {
-        self.session.try_lock().map_err(|error| match error {
+    fn session_slot(&self) -> Result<std::sync::MutexGuard<'_, FaceSessions>, Error> {
+        self.sessions.try_lock().map_err(|error| match error {
             TryLockError::WouldBlock => Error::Busy,
             TryLockError::Poisoned(_) => Error::Internal,
         })
@@ -121,7 +144,7 @@ impl Engine {
 
     pub(crate) fn evict(&self) -> Result<(), Error> {
         let mut slot = self.session_slot()?;
-        *slot = None;
+        *slot = FaceSessions::default();
         Ok(())
     }
 
@@ -134,10 +157,10 @@ impl Engine {
         let mut slot = self.session_slot()?;
         cancel.begin()?;
         let input = face::aligned_input(image, points, || cancel.check())?;
-        if slot.is_none() {
-            *slot = Some(self.load_session(cancel)?);
+        if slot.embedding.is_none() {
+            slot.embedding = Some(self.load_session(&EMBEDDING_MODEL, cancel)?);
         }
-        let session = slot.as_mut().ok_or(Error::Internal)?;
+        let session = slot.embedding.as_mut().ok_or(Error::Internal)?;
         let tensor =
             Tensor::from_array((INPUT_SHAPE, input)).map_err(|_| Error::InferenceFailed)?;
         let run = cancel.attach()?;
@@ -163,6 +186,21 @@ impl Engine {
             *destination = (f64::from(*value) / length) as f32;
         }
         Ok(vector)
+    }
+
+    pub(crate) fn detect(
+        &self,
+        image: &Image<'_>,
+        cancel: &Cancellation,
+    ) -> Result<Vec<FaceDetection>, Error> {
+        let mut slot = self.session_slot()?;
+        cancel.begin()?;
+        if slot.detector.is_none() {
+            slot.detector = Some(self.load_session(&DETECTOR_MODEL, cancel)?);
+        }
+        let session = slot.detector.as_mut().ok_or(Error::Internal)?;
+        let run = cancel.attach()?;
+        face_detector::detect(session, image, &run.options, || cancel.check())
     }
 }
 
@@ -196,7 +234,7 @@ fn verify_runtime_version(path: &Path) -> Result<(), Error> {
     }
 }
 
-fn matches_model(session: &Session) -> bool {
+fn matches_embedding_session(session: &Session) -> bool {
     let [input] = session.inputs() else {
         return false;
     };
