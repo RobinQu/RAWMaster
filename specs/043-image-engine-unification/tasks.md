@@ -1,6 +1,6 @@
 # 043 · 任务清单
 
-2026-11-28 · **M0 外部对标继续采集，M1-01 和 M2-04 已通过。** 每项按对应原生路径和实际执行回执签收。[规格](spec.md) · [计划](plan.md) · [验收基线](validation.md)
+2026-11-28 · **M0 外部对标继续采集，M1-01 及 M2 的双端、原生传输和图性能门已通过。** 每项按对应原生路径和实际执行回执签收。[规格](spec.md) · [计划](plan.md) · [验收基线](validation.md)
 
 ## M0 · 回执修复与基线
 
@@ -10,7 +10,7 @@
 - [x] **M0-04** 60 MP 三路暖态各 30 次，已记录墙钟、计数、分项预算与进程/设备采样。6 MP 两个原生 Metal 执行器各完成 5 次预热与 30 次计量。038 FIT/监看与 036 1:1 已复跑。[M0 原生基线](validation.md#m0--回执修复与基线)
 - [x] **M0-05** 定稿版本化 [ReceiptV2](plan.md#43-receiptv2)，区分执行器、图形 API、阶段峰值、计时来源和回退。定义旧 V1、恢复票据与 V2 写入切换条件。
 - [x] **M0-06** 固定实拍和校准摘要、构建与运行库、设备/系统构建及测量区间，提供复现脚本。按原生分项判定编译、图执行、同步和编码的优先级。[M0 验收](validation.md#m0--回执修复与基线)
-- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。逐项以两者较快 p50 与 p95 加容差验收。LightFlow 可见响应六项各 30 次已通过，当前 Camera Raw、三方精确读回、1:1 与出片仍待验收。[外部对标](validation.md#外部产品对标)
+- [ ] **M0-07** 建立 LightFlow 和 Camera Raw 同机逐控件基线，保留预热、原始样本和像素见证。逐项以两者较快 p50 与 p95 加容差验收。LightFlow 六项可见响应和 37 项暖态精确读回已通过，74 个首次精确状态超线。当前 Camera Raw、三方精确读回、1:1 与出片仍待验收。[外部对标](validation.md#外部产品对标)
 
 ## M1 · 去重
 
@@ -23,12 +23,12 @@
 ## M2 · 首条 WGSL 场景 DAG 与融合
 
 - [ ] **M2-01** 定义 Rust `EngineGraph`、类型化端口、几何/ROI、执行计划和版本化算子注册表，绑定 CPU 参考、WGSL、能力、成本、像素与缓存契约。
-- [ ] **M2-02** 从 038 持久图接入首条 AP1 F32 曝光、EV 曲线、coverage 和有序 Layer，保留监看与最终根。摄影前缀和现用 ACES 2 以适配段运行。
+- [x] **M2-02** 从 038 持久图接入首条 AP1 F32 曝光、EV 曲线、coverage 和有序 Layer，保留监看与最终根。摄影前缀和现用 ACES 2 以适配段运行。[原生验收](evidence/m2-native-metal-textures.json)
 - [ ] **M2-03** 实现 WGSL 点段融合、已验证的裁剪、按设备限制切段及资源生存期复用。保持已签收的 F32 语义。结构化 pipeline 缓存与参数缓冲独立。
 - [x] **M2-04** 首条链使用同源固定 AP1 夹具和冻结图，在 macOS wgpu/Metal 与 Linux wgpu/Vulkan 实体 GPU 验证了 F32、ROI、恒等和零回退。记录驱动、两端回执及独立复算结果。[双端证据](evidence/m2-ap1-cross-device-receipt.json)
-- [ ] **M2-05** 在 macOS 24/60 MP 原生预览、监看和 032 冻结交付验证同设备纹理、同步和峰值，计量全幅拷贝和等待。严格模式已通过 24/60 MP 原生 FIT、原寸窗口、顶层监看和 60 MP 双格式 032。24 MP 已呈现到 AppKit drawable。组内监看和 60 MP drawable 待验收。[实机回执](evidence/m2-native-metal-textures.json)
-- [ ] **M2-06** 接入其余场景节点、13 种 blend 和有等价证据的 V3 点段，作 CPU/039 与融合/未融合像素对照。
-- [ ] **M2-07** 签收 6 MP 暖态图 p95 ≥1.3× 提速，固定 96 节点吞吐 ≥2×、峰值中间工作集 ≤50%。60 MP 的 PQ、JPEG 与双目标图阶段已通过相对 M1 的 15% 提速门，24 MP 实拍 FIT 通过 038 既有画布门槛。其余 038 行为和性能继续验收。[实测矩阵](evidence/m2-native-metal-textures.json)
+- [x] **M2-05** 在 macOS 24/60 MP 原生 FIT、原寸窗口、顶层和组内监看与 032 冻结交付验证同设备纹理、同步和峰值。两种实拍尺寸均已呈现 AppKit drawable。032 覆盖 24 MP SDR 和 60 MP PQ、SDR。[实机回执](evidence/m2-native-metal-textures.json) · [组内监看](evidence/m2-group-monitor.json)
+- [ ] **M2-06** 接入其余场景节点、13 种 blend 和有等价证据的 V3 点段，作 CPU/039 与融合/未融合像素对照。径向 coverage、交集和有序 Parallel 已通过两端实体组件与 macOS 全幅和 ROI 对照。[六节点证据](evidence/m2-six-node-operators.json)
+- [x] **M2-07** 6 MP 暖态图通过同构建 1.3× 和历史 p95 门。96 节点通过吞吐和中间工作集门，60 MP 的 PQ、JPEG 与双目标图阶段通过相对 M1 的 15% 提速门。实拍 FIT 和组内监看通过 038 既有门槛。043 的节点监看 p95 ≤20 ms 优化目标仍待达到。[6 MP](evidence/m2-six-node-operators.json) · [96 节点](evidence/m2-native-96-node.json) · [60 MP](evidence/m2-native-metal-textures.json) · [监看](evidence/m2-group-monitor.json)
 
 ## M3 · 资源、模型与原寸窗口
 

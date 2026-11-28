@@ -90,7 +90,9 @@ Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配�
 
 #### macOS 同设备纹理试验
 
-严格模式在 Apple M4 Max 上用同一图比较 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。24 MP 实拍从修改曝光到 AppKit drawable 的暖态 p50/p95 为 15.57/17.46 ms，达到 038 既有 FIT 门槛，原生 SDR 队列发布和重开也通过。组内监看、60 MP drawable 仍待验收。[八帧与画布证据](evidence/m2-native-metal-textures.json)
+严格模式在 Apple M4 Max 上用同一图比较 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。24 MP 实拍从修改曝光到 AppKit drawable 的暖态 p50/p95 为 15.57/17.46 ms，达到 038 既有 FIT 门槛，原生 SDR 队列发布和重开也通过。[八帧与画布证据](evidence/m2-native-metal-textures.json)
+
+24/60 MP 分别从正常 Graph 窗口切换组内节点与全局最终图，均提交到 AppKit drawable，监看时保存和队列冻结取最终根。每种尺寸与选择各预热 5 次、计量 30 次。24 MP 的节点及最终 p95 分别为 22.83 / 21.51 ms，60 MP 为 23.37 / 22.50 ms。两组均达到 038 既有门槛。节点 p95 仍高于 043 的 20 ms 优化目标。两层禁用祖先的 Metal ABI 对照验证父输入、组内 bypass 和返回保存的最终根。固定实拍 AP1 的两层组最终图另在实体 Metal/Vulkan 复验，最大缩放 RGB 误差 `2.27×10⁻⁷`，alpha 逐位一致。[窗口与双端回执](evidence/m2-group-monitor.json)
 
 60 MP 以同一 Release 测试二进制和 FlashRaw 分别跑严格 wgpu 与严格 039。每条路径一次首轮、五次预热、三十次计量。每个 wgpu 目标保持 35 个瓦片，图派发从 105 次降到 35 次，35 次提交与等待，1 次 pipeline build。图段整帧 CPU 搬运为 0 B，合计回收 140 B 有效性标志。图核算峰值 1,411,744,084 B，039 为 1,458,929,664 B。wgpu 内部输出初始化计入提交等待，DRT、落瓦片和编码分别计时。[分项与逐次样本](evidence/m2-native-metal-textures.json)
 
@@ -104,8 +106,8 @@ Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配�
 
 复跑 60 MP 使用 [原生分项脚本](../../scripts/performance/measure-043-scene-delivery.py) 的 `--backend wgpu` 与 `--backend rust`，为两轮提供各自的新输出目录。预算和组拒绝、提交完成后取消、取消后复用同一程序由 Metal ABI 探针验证。图段据此达到 60 MP 的提速判据，双目标组件的整体 p95 在这轮增加约 0.8%。
 
-- **6 MP。** 同机以 M0 的 039 当前执行器为参照，暖态图 p95 至少 1.3× 提速。
-- **96 节点。** 冻结图结构、ROI、缓存条件和未融合对照。吞吐 ≥2×，峰值中间工作集 ≤50%。中间工作集计量求值期间的临时纹理和缓冲，固定输入、终端输出及总峰值单列。
+- **6 MP。** 原 3000×2000 六节点图接入径向 coverage、交集和有序 Parallel。严格 039 和 wgpu 在 Apple M4 Max 复用同一份已完成初始化的私有 RGBA32F 纹理，分别预热 5 次、交替计量 30 次，只计 `prepareFinal` 到完成。039 p50/p95 为 12.96/14.56 ms，wgpu 为 3.59/4.82 ms，p95 提速 3.02×，达到同构建 1.3× 和历史 10.58 ms 两项门槛。完整 6 MP 读回对 039 的最大缩放 RGB 误差为 `7.45×10⁻⁷`，alpha 逐位一致。两端另用新图和相同实拍派生 AP1 复验完整、非居中 ROI 和两个根，最大跨端缩放 RGB 误差为 `8.95×10⁻⁷`，八次均单派发、零回退。[六节点测试和数据](evidence/m2-six-node-operators.json)
+- **96 节点。** 固定 6 MP 私有输入，96 个节点访问 97 个算子步骤。每次限定一瓦片，039 用冻结程序且无节点和 coverage 缓存命中。039 97 次派发，wgpu 单次派发。各预热 5 次并交替计量 30 次。吞吐按总像素量除以图执行墙钟之和，wgpu 为 039 的 10.60×。p50/p95 为 4.73/7.24 ms，039 为 54.52/58.05 ms。wgpu 中间核算为 32,772 B，039 保守下界为 462,028,800 B，达到 50% 门；两端总核算峰值分别为 194,347,012 和 656,343,040 B。完整输出缩放 RGB 误差最大 `1.67×10⁻⁶`，alpha 逐位一致。[逐样本与分配核算](evidence/m2-native-96-node.json)
 - **60 MP。** 对同一 60 MP 摄影加三节点和同一输出路由，DAG 阶段 p50 较 M1 下降至少 15%，核对瓦片数、DAG 派发及峰值。038 交互继续通过原生既有门槛。
 
 ### M3 · 资源、模型与原寸窗口
@@ -185,7 +187,11 @@ Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配�
 | 黑色 | 25.45 / 34.50 | 29.03 / 35.62 | 两项均在容差内 |
 | 色调 | 27.13 / 39.04 | 27.93 / 36.83 | 两项均在容差内 |
 
-LightFlow 的 24.35/25.92 ms 为 74 配方 2400×1600 RGBA8 精确读回的首次精确与最终结果中位上限。Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。三方同口径精确读回、1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
+37 项精确读回以同一实拍、同机 2400×1600 不透明 sRGB RGBA8 重测。RAWMaster 用显式 canonical 定稿，LightFlow 用锁定的 `2d41ab1`。每项 20 个暖态样本，首次变化、首个精确和最终读回三列均进入 LightFlow 容差。37 组输入各取两次首次状态。RAWMaster 首次变化 p50/p95 为 5.50/18.75 ms，LightFlow 为 7.19/175.22 ms。RAWMaster 首个精确与最终同为 87.36/413.02 ms，LightFlow 同为 24.77/184.44 ms，这两项仍超线。[分项与首次状态](evidence/m0-lightflow-canonical-readback.json)
+
+同一测试构建试用既有的局部蒙版分带、点蒙版区域、锐化分带和去雾分组开关后，首个精确 p50/p95 降到 80.23/355.12 ms。全部 814 对首次与最终 RGBA8 摘要相同，试验进程峰值约 5.26 GB。分项追踪还记录了冷去雾引导生成、局部锐化与降噪的全幅归约。正式口径使用 `RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical`。生产视口定稿返回带近似标记的结果，按自己的像素和时延口径验收。[试验数据](evidence/m0-lightflow-canonical-readback.json) · [精确读回入口](../../Tests/RAWMasterImagingTests/PanelDisplayReadbackTests.swift)
+
+Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 Camera Raw 同口径精确读回、三方 1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
 
 ## 5. 放行边界
 

@@ -1,0 +1,6008 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "qualification": "Same authorized RAW at 2400×1600 opaque sRGB RGBA8, actual Apple Metal. Isolated native canonical QA policy and pinned stock LightFlow. Two initial states and 20 warm trials per operation.",
+  "stockLightFlow": {
+    "build": "2d41ab1",
+    "engineSHA256": {
+      "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+      "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+    },
+    "adapter": {
+      "vendor": "apple",
+      "architecture": "metal-3",
+      "device": "",
+      "description": "",
+      "isFallbackAdapter": false
+    },
+    "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+    "reportSHA256": "98f243ff29140d9144ad1b7c0869e45dd6e31e7ba4815bcb190563f5fa7df286"
+  },
+  "rawmasterTest": {
+    "binarySHA256": "b7a476ecf6623bdf7e0388148f3779430e60708dcde35caf5cc59bd9863024e9",
+    "testSourceCommit": "33615534",
+    "canonicalReportSHA256": "e1aa42cb949793cd0e96a7d0ed3e324e8bac450311189833c590e7371fb03f5b",
+    "optionalQAReportSHA256": "f0d1c57551258e36281bd09301db24e22b05119608e2213b669f232ae4207229",
+    "settledTransport": "canonical",
+    "cachePolicy": "isolated default resource budget",
+    "realGPU": "Apple M4 Max",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "parameterManifestSHA256": "1ecab2311dfc3efc94d698aeff939708d5dd17c564a0e87c62712004c58ab4d4"
+  },
+  "optInTrial": {
+    "environmentFlags": [
+      "RAWMASTER_QA_CANONICAL_LOCAL_MASK_BANDS",
+      "RAWMASTER_QA_CANONICAL_POINT_MASK_REGION",
+      "RAWMASTER_QA_CANONICAL_SHARPEN_BANDS",
+      "RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION"
+    ],
+    "all814FirstAndFinalRGBA8PairsIdentical": true,
+    "processPeakFootprintBytes": 5262199448
+  },
+  "stageDiagnostic": {
+    "reportSHA256": "ad898aaf013e66521d926e4f4bd4bc2fb12e32e59668ea03ec6a005d94128118",
+    "scope": "Same canonical recipe outputs with telemetry. Nested stage measurements support root-cause analysis separately from the 74-state series."
+  },
+  "canonical": {
+    "qualifiedOperations": 37,
+    "warmPerOperation": 20,
+    "warmWithin": {
+      "first": 37,
+      "firstExact": 37,
+      "final": 37
+    },
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.1850000000000005,
+          "p95Ms": 175.215
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.4964585,
+          "p95Ms": 18.74675
+        },
+        "medianLimitMs": 8.185,
+        "p95LimitMs": 210.258,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 24.765,
+          "p95Ms": 184.435
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 87.3649375,
+          "p95Ms": 413.0205
+        },
+        "medianLimitMs": 27.241500000000002,
+        "p95LimitMs": 221.322,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 24.765,
+          "p95Ms": 184.435
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 87.3649375,
+          "p95Ms": 413.0205
+        },
+        "medianLimitMs": 27.241500000000002,
+        "p95LimitMs": 221.322,
+        "within": false
+      }
+    },
+    "operations": {
+      "color-wb-presets": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.04,
+              "p95Ms": 8.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1177915,
+              "p95Ms": 1.175375
+            },
+            "medianLimit": 6.04,
+            "p95Limit": 10.925,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.04,
+              "p95Ms": 8.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1177915,
+              "p95Ms": 1.175375
+            },
+            "medianLimit": 6.04,
+            "p95Limit": 10.925,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.042499999999997,
+              "p95Ms": 21.525
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.642625,
+              "p95Ms": 1.713209
+            },
+            "medianLimit": 22.046749999999996,
+            "p95Limit": 25.83,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.34,
+              6.69
+            ],
+            "firstExact": [
+              6.34,
+              6.69
+            ],
+            "final": [
+              18.685,
+              20.68
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.231084,
+              1.399209
+            ],
+            "firstExact": [
+              52.483167,
+              1.399209
+            ],
+            "final": [
+              52.483167,
+              1.948125
+            ]
+          }
+        }
+      },
+      "color-wb-as-shot": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 8.225
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1805625,
+              "p95Ms": 1.4365
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 10.225,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 8.225
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1805625,
+              "p95Ms": 1.4365
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 10.225,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.535,
+              "p95Ms": 23.415
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.700542,
+              "p95Ms": 1.978709
+            },
+            "medianLimit": 22.5885,
+            "p95Limit": 28.098,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.655,
+              7.375
+            ],
+            "firstExact": [
+              4.655,
+              7.375
+            ],
+            "final": [
+              17.885,
+              23.165
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.021708,
+              2.356208
+            ],
+            "firstExact": [
+              64.259916,
+              42.889416
+            ],
+            "final": [
+              64.259916,
+              42.889416
+            ]
+          }
+        }
+      },
+      "color-bw-treatment": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.3475,
+              "p95Ms": 8.795
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0165205,
+              "p95Ms": 1.245833
+            },
+            "medianLimit": 6.3475,
+            "p95Limit": 10.795,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.3475,
+              "p95Ms": 8.795
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0165205,
+              "p95Ms": 1.245833
+            },
+            "medianLimit": 6.3475,
+            "p95Limit": 10.795,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.05,
+              "p95Ms": 23.015
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4939795,
+              "p95Ms": 1.725625
+            },
+            "medianLimit": 22.055,
+            "p95Limit": 27.618000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.105,
+              6.975
+            ],
+            "firstExact": [
+              6.105,
+              6.975
+            ],
+            "final": [
+              18.705,
+              20.18
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              114.333958,
+              4.35125
+            ],
+            "firstExact": [
+              231.123292,
+              75.395333
+            ],
+            "final": [
+              231.123292,
+              75.395333
+            ]
+          }
+        }
+      },
+      "effects-pcv-style": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.69,
+              "p95Ms": 7.435
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.022542,
+              "p95Ms": 1.229083
+            },
+            "medianLimit": 5.69,
+            "p95Limit": 9.434999999999999,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.69,
+              "p95Ms": 7.435
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.022542,
+              "p95Ms": 1.229083
+            },
+            "medianLimit": 5.69,
+            "p95Limit": 9.434999999999999,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.05,
+              "p95Ms": 23.64
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5168125,
+              "p95Ms": 1.772
+            },
+            "medianLimit": 22.055,
+            "p95Limit": 28.368000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              11.305,
+              6.35
+            ],
+            "firstExact": [
+              11.305,
+              6.35
+            ],
+            "final": [
+              19.515,
+              22.79
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              3.285708,
+              3.121042
+            ],
+            "firstExact": [
+              63.873833,
+              54.545125
+            ],
+            "final": [
+              63.873833,
+              54.545125
+            ]
+          }
+        }
+      },
+      "effects-dehaze": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5325,
+              "p95Ms": 8.89
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2811460000000001,
+              "p95Ms": 1.622834
+            },
+            "medianLimit": 5.5325,
+            "p95Limit": 10.89,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5325,
+              "p95Ms": 8.89
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2811460000000001,
+              "p95Ms": 1.622834
+            },
+            "medianLimit": 5.5325,
+            "p95Limit": 10.89,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.369999999999997,
+              "p95Ms": 23.2
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 2.057979,
+              "p95Ms": 2.515625
+            },
+            "medianLimit": 22.406999999999996,
+            "p95Limit": 27.84,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              17.115,
+              9.47
+            ],
+            "firstExact": [
+              17.115,
+              9.47
+            ],
+            "final": [
+              23.515,
+              22.66
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              17.21175,
+              18.242917
+            ],
+            "firstExact": [
+              1010.860042,
+              285.48375
+            ],
+            "final": [
+              1010.860042,
+              285.48375
+            ]
+          }
+        }
+      },
+      "curve-point": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.0625,
+              "p95Ms": 8.27
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0113545,
+              "p95Ms": 1.157083
+            },
+            "medianLimit": 7.0625,
+            "p95Limit": 10.27,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.0625,
+              "p95Ms": 8.27
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0113545,
+              "p95Ms": 1.157083
+            },
+            "medianLimit": 7.0625,
+            "p95Limit": 10.27,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.259999999999998,
+              "p95Ms": 24.015
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4893960000000002,
+              "p95Ms": 1.693791
+            },
+            "medianLimit": 22.285999999999998,
+            "p95Limit": 28.818,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              10.51,
+              5.555
+            ],
+            "firstExact": [
+              10.51,
+              5.555
+            ],
+            "final": [
+              19.455,
+              22.17
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.302042,
+              4.149917
+            ],
+            "firstExact": [
+              92.357917,
+              74.198709
+            ],
+            "final": [
+              92.357917,
+              74.198709
+            ]
+          }
+        }
+      },
+      "curve-channels": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 8.845
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.058521,
+              "p95Ms": 1.235792
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 10.845,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 8.845
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.058521,
+              "p95Ms": 1.235792
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 10.845,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.4125,
+              "p95Ms": 22.705
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5523125,
+              "p95Ms": 1.726417
+            },
+            "medianLimit": 22.453750000000003,
+            "p95Limit": 27.246,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              7.15,
+              8.43
+            ],
+            "firstExact": [
+              7.15,
+              8.43
+            ],
+            "final": [
+              19.79,
+              21.28
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.324167,
+              4.064542
+            ],
+            "firstExact": [
+              79.5745,
+              71.318333
+            ],
+            "final": [
+              79.5745,
+              71.318333
+            ]
+          }
+        }
+      },
+      "curve-mask-curve": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8225,
+              "p95Ms": 8.555
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0886879999999999,
+              "p95Ms": 1.283875
+            },
+            "medianLimit": 5.8225,
+            "p95Limit": 10.555,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.105,
+              "p95Ms": 23.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0886879999999999,
+              "p95Ms": 1.283875
+            },
+            "medianLimit": 23.2155,
+            "p95Limit": 28.692,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.105,
+              "p95Ms": 23.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6337085,
+              "p95Ms": 1.823083
+            },
+            "medianLimit": 23.2155,
+            "p95Limit": 28.692,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              173.635,
+              7.255
+            ],
+            "firstExact": [
+              173.635,
+              21.985
+            ],
+            "final": [
+              179.88,
+              21.985
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              10.257875,
+              7.063041
+            ],
+            "firstExact": [
+              154.055625,
+              146.34075
+            ],
+            "final": [
+              154.055625,
+              146.34075
+            ]
+          }
+        }
+      },
+      "grading-luminance": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.557500000000001,
+              "p95Ms": 16.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0589585000000001,
+              "p95Ms": 1.19675
+            },
+            "medianLimit": 17.11325,
+            "p95Limit": 19.979999999999997,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.115000000000002,
+              "p95Ms": 25.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0589585000000001,
+              "p95Ms": 1.19675
+            },
+            "medianLimit": 24.326500000000003,
+            "p95Limit": 30.779999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.115000000000002,
+              "p95Ms": 25.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6004585,
+              "p95Ms": 1.743292
+            },
+            "medianLimit": 24.326500000000003,
+            "p95Limit": 30.779999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              21.6,
+              16.74
+            ],
+            "firstExact": [
+              28.66,
+              22.95
+            ],
+            "final": [
+              28.66,
+              22.95
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              1.143084,
+              4.772959
+            ],
+            "firstExact": [
+              1.143084,
+              77.523084
+            ],
+            "final": [
+              1.735875,
+              77.523084
+            ]
+          }
+        }
+      },
+      "grading-blending": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.485,
+              "p95Ms": 17.575
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0898545,
+              "p95Ms": 1.295292
+            },
+            "medianLimit": 17.0335,
+            "p95Limit": 21.09,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.6325,
+              "p95Ms": 24.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0898545,
+              "p95Ms": 1.295292
+            },
+            "medianLimit": 23.79575,
+            "p95Limit": 29.394000000000002,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.6325,
+              "p95Ms": 24.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6592704999999999,
+              "p95Ms": 1.850083
+            },
+            "medianLimit": 23.79575,
+            "p95Limit": 29.394000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.59,
+              15.74
+            ],
+            "firstExact": [
+              24.905,
+              24.355
+            ],
+            "final": [
+              24.905,
+              24.355
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.692416,
+              3.81525
+            ],
+            "firstExact": [
+              78.633,
+              78.901208
+            ],
+            "final": [
+              78.633,
+              78.901208
+            ]
+          }
+        }
+      },
+      "grading-balance": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.787500000000001,
+              "p95Ms": 16.69
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.091208,
+              "p95Ms": 1.214041
+            },
+            "medianLimit": 17.36625,
+            "p95Limit": 20.028000000000002,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.0375,
+              "p95Ms": 26.115
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.091208,
+              "p95Ms": 1.214041
+            },
+            "medianLimit": 24.24125,
+            "p95Limit": 31.337999999999997,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.0375,
+              "p95Ms": 26.115
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6618534999999999,
+              "p95Ms": 1.772709
+            },
+            "medianLimit": 24.24125,
+            "p95Limit": 31.337999999999997,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.395,
+              17.245
+            ],
+            "firstExact": [
+              22.805,
+              23.635
+            ],
+            "final": [
+              22.805,
+              23.635
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.990333,
+              4.073291
+            ],
+            "firstExact": [
+              78.834125,
+              69.367333
+            ],
+            "final": [
+              78.834125,
+              69.367333
+            ]
+          }
+        }
+      },
+      "detail-nr-lum-contrast": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6274999999999995,
+              "p95Ms": 12.715
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0853955,
+              "p95Ms": 1.350666
+            },
+            "medianLimit": 5.6274999999999995,
+            "p95Limit": 15.258,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0975,
+              "p95Ms": 25.13
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0853955,
+              "p95Ms": 1.350666
+            },
+            "medianLimit": 23.207250000000002,
+            "p95Limit": 30.156,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0975,
+              "p95Ms": 25.13
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6116245,
+              "p95Ms": 1.927958
+            },
+            "medianLimit": 23.207250000000002,
+            "p95Limit": 30.156,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.435,
+              6.025
+            ],
+            "firstExact": [
+              68.92,
+              69.235
+            ],
+            "final": [
+              68.92,
+              69.235
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              12.924916,
+              9.319875
+            ],
+            "firstExact": [
+              268.367541,
+              282.449458
+            ],
+            "final": [
+              268.367541,
+              282.449458
+            ]
+          }
+        }
+      },
+      "detail-nr-color-detail": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 7.705
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.009729,
+              "p95Ms": 1.247709
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 9.705,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.935000000000002,
+              "p95Ms": 22.265
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.009729,
+              "p95Ms": 1.247709
+            },
+            "medianLimit": 23.0285,
+            "p95Limit": 26.718,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.935000000000002,
+              "p95Ms": 22.265
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.495,
+              "p95Ms": 1.773584
+            },
+            "medianLimit": 23.0285,
+            "p95Limit": 26.718,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              16.275,
+              7.085
+            ],
+            "firstExact": [
+              69.02,
+              60.895
+            ],
+            "final": [
+              69.02,
+              60.895
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              11.247583,
+              9.225708
+            ],
+            "firstExact": [
+              252.43275,
+              243.946792
+            ],
+            "final": [
+              252.43275,
+              243.946792
+            ]
+          }
+        }
+      },
+      "grading-lut-select": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6525,
+              "p95Ms": 7.41
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0676875,
+              "p95Ms": 1.239458
+            },
+            "medianLimit": 5.6525,
+            "p95Limit": 9.41,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9175,
+              "p95Ms": 23.71
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0676875,
+              "p95Ms": 1.239458
+            },
+            "medianLimit": 23.00925,
+            "p95Limit": 28.452,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9175,
+              "p95Ms": 23.71
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.562625,
+              "p95Ms": 1.796083
+            },
+            "medianLimit": 23.00925,
+            "p95Limit": 28.452,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              47.33,
+              5.21
+            ],
+            "firstExact": [
+              59.1,
+              32.44
+            ],
+            "final": [
+              59.1,
+              32.44
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.322,
+              4.728458
+            ],
+            "firstExact": [
+              94.843375,
+              76.737708
+            ],
+            "final": [
+              94.843375,
+              76.737708
+            ]
+          }
+        }
+      },
+      "grading-lut-amount": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6375,
+              "p95Ms": 4.895
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.988334,
+              "p95Ms": 1.20025
+            },
+            "medianLimit": 5.6375,
+            "p95Limit": 6.895,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.314999999999998,
+              "p95Ms": 25.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.988334,
+              "p95Ms": 1.20025
+            },
+            "medianLimit": 24.546499999999998,
+            "p95Limit": 30.12,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.314999999999998,
+              "p95Ms": 25.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.496354,
+              "p95Ms": 1.678875
+            },
+            "medianLimit": 24.546499999999998,
+            "p95Limit": 30.12,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.6,
+              4.455
+            ],
+            "firstExact": [
+              25.62,
+              24.34
+            ],
+            "final": [
+              25.62,
+              24.34
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.68225,
+              3.950209
+            ],
+            "firstExact": [
+              84.177417,
+              68.726125
+            ],
+            "final": [
+              84.177417,
+              68.726125
+            ]
+          }
+        }
+      },
+      "grading-lut-stack": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.745,
+              "p95Ms": 7.35
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0743334999999998,
+              "p95Ms": 1.162958
+            },
+            "medianLimit": 5.745,
+            "p95Limit": 9.35,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.13,
+              "p95Ms": 26.125
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0743334999999998,
+              "p95Ms": 1.162958
+            },
+            "medianLimit": 23.243,
+            "p95Limit": 31.35,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.13,
+              "p95Ms": 26.125
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.575479,
+              "p95Ms": 1.711667
+            },
+            "medianLimit": 23.243,
+            "p95Limit": 31.35,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5,
+              7.815
+            ],
+            "firstExact": [
+              30.53,
+              29.08
+            ],
+            "final": [
+              30.53,
+              29.08
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              1.011042,
+              10.336333
+            ],
+            "firstExact": [
+              1.011042,
+              156.633042
+            ],
+            "final": [
+              1.502958,
+              156.633042
+            ]
+          }
+        }
+      },
+      "grading-lut-manage": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6675,
+              "p95Ms": 7.28
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0402909999999999,
+              "p95Ms": 1.15725
+            },
+            "medianLimit": 5.6675,
+            "p95Limit": 9.280000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1725,
+              "p95Ms": 24.445
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0402909999999999,
+              "p95Ms": 1.15725
+            },
+            "medianLimit": 23.289749999999998,
+            "p95Limit": 29.334,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1725,
+              "p95Ms": 24.445
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.529521,
+              "p95Ms": 1.656292
+            },
+            "medianLimit": 23.289749999999998,
+            "p95Limit": 29.334,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.5,
+              5.895
+            ],
+            "firstExact": [
+              19.495,
+              34.365
+            ],
+            "final": [
+              19.495,
+              34.365
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.248625,
+              5.022291
+            ],
+            "firstExact": [
+              124.274292,
+              113.304375
+            ],
+            "final": [
+              124.274292,
+              113.304375
+            ]
+          }
+        }
+      },
+      "grading-lut-mask": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6625,
+              "p95Ms": 6.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1674585,
+              "p95Ms": 1.298459
+            },
+            "medianLimit": 5.6625,
+            "p95Limit": 8.719999999999999,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0425,
+              "p95Ms": 23.85
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1674585,
+              "p95Ms": 1.298459
+            },
+            "medianLimit": 23.14675,
+            "p95Limit": 28.62,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0425,
+              "p95Ms": 23.85
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.736271,
+              "p95Ms": 1.87475
+            },
+            "medianLimit": 23.14675,
+            "p95Limit": 28.62,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              43.175,
+              4.64
+            ],
+            "firstExact": [
+              60.24,
+              25.125
+            ],
+            "final": [
+              60.24,
+              25.125
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              7.532,
+              7.710708
+            ],
+            "firstExact": [
+              150.534,
+              161.667416
+            ],
+            "final": [
+              150.534,
+              161.667416
+            ]
+          }
+        }
+      },
+      "light-mask-exposure": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.797499999999999,
+              "p95Ms": 7.14
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.091646,
+              "p95Ms": 1.179375
+            },
+            "medianLimit": 5.797499999999999,
+            "p95Limit": 9.14,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.8975,
+              "p95Ms": 22.9
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.091646,
+              "p95Ms": 1.179375
+            },
+            "medianLimit": 22.98725,
+            "p95Limit": 27.479999999999997,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.8975,
+              "p95Ms": 22.9
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6136460000000001,
+              "p95Ms": 1.72125
+            },
+            "medianLimit": 22.98725,
+            "p95Limit": 27.479999999999997,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              158.395,
+              7.48
+            ],
+            "firstExact": [
+              166.27,
+              25.245
+            ],
+            "final": [
+              166.27,
+              25.245
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.309334,
+              3.969958
+            ],
+            "firstExact": [
+              85.728584,
+              74.675083
+            ],
+            "final": [
+              85.728584,
+              74.675083
+            ]
+          }
+        }
+      },
+      "light-mask-contrast": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7175,
+              "p95Ms": 9.35
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0590625,
+              "p95Ms": 1.170875
+            },
+            "medianLimit": 5.7175,
+            "p95Limit": 11.35,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.165,
+              "p95Ms": 24.68
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0590625,
+              "p95Ms": 1.170875
+            },
+            "medianLimit": 23.281499999999998,
+            "p95Limit": 29.616,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.165,
+              "p95Ms": 24.68
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5426045,
+              "p95Ms": 1.674334
+            },
+            "medianLimit": 23.281499999999998,
+            "p95Limit": 29.616,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              156.23,
+              7.605
+            ],
+            "firstExact": [
+              165.165,
+              24.055
+            ],
+            "final": [
+              165.165,
+              24.055
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.428584,
+              3.825
+            ],
+            "firstExact": [
+              78.402375,
+              74.706042
+            ],
+            "final": [
+              78.402375,
+              74.706042
+            ]
+          }
+        }
+      },
+      "light-mask-highlights": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.65,
+              "p95Ms": 7.07
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0676665,
+              "p95Ms": 1.249125
+            },
+            "medianLimit": 5.65,
+            "p95Limit": 9.07,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.7875,
+              "p95Ms": 24.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0676665,
+              "p95Ms": 1.249125
+            },
+            "medianLimit": 23.966250000000002,
+            "p95Limit": 29.58,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.7875,
+              "p95Ms": 24.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5676459999999999,
+              "p95Ms": 1.773209
+            },
+            "medianLimit": 23.966250000000002,
+            "p95Limit": 29.58,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              175.215,
+              5.08
+            ],
+            "firstExact": [
+              184.435,
+              23.315
+            ],
+            "final": [
+              184.435,
+              23.315
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.089125,
+              4.151791
+            ],
+            "firstExact": [
+              82.325417,
+              75.594208
+            ],
+            "final": [
+              82.325417,
+              75.594208
+            ]
+          }
+        }
+      },
+      "light-mask-shadows": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.65,
+              "p95Ms": 7.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.072583,
+              "p95Ms": 1.250625
+            },
+            "medianLimit": 5.65,
+            "p95Limit": 9.52,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.932499999999997,
+              "p95Ms": 24.235
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.072583,
+              "p95Ms": 1.250625
+            },
+            "medianLimit": 23.02575,
+            "p95Limit": 29.082,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.932499999999997,
+              "p95Ms": 24.235
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.592854,
+              "p95Ms": 1.78175
+            },
+            "medianLimit": 23.02575,
+            "p95Limit": 29.082,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.41,
+              5.635
+            ],
+            "firstExact": [
+              24.625,
+              26.75
+            ],
+            "final": [
+              24.625,
+              26.75
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.508375,
+              3.923083
+            ],
+            "firstExact": [
+              82.733542,
+              72.7315
+            ],
+            "final": [
+              82.733542,
+              72.7315
+            ]
+          }
+        }
+      },
+      "light-mask-whites": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.665,
+              "p95Ms": 6.135
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0546255,
+              "p95Ms": 1.247916
+            },
+            "medianLimit": 5.665,
+            "p95Limit": 8.135,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.195,
+              "p95Ms": 24.595
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0546255,
+              "p95Ms": 1.247916
+            },
+            "medianLimit": 24.4145,
+            "p95Limit": 29.514,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.195,
+              "p95Ms": 24.595
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5474795000000001,
+              "p95Ms": 1.789541
+            },
+            "medianLimit": 24.4145,
+            "p95Limit": 29.514,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.025,
+              4.745
+            ],
+            "firstExact": [
+              23.555,
+              25.555
+            ],
+            "final": [
+              23.555,
+              25.555
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.657958,
+              3.973292
+            ],
+            "firstExact": [
+              77.256333,
+              72.307625
+            ],
+            "final": [
+              77.256333,
+              72.307625
+            ]
+          }
+        }
+      },
+      "light-mask-blacks": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8149999999999995,
+              "p95Ms": 6.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0314999999999999,
+              "p95Ms": 1.168875
+            },
+            "medianLimit": 5.8149999999999995,
+            "p95Limit": 8.925,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.795,
+              "p95Ms": 24.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0314999999999999,
+              "p95Ms": 1.168875
+            },
+            "medianLimit": 25.0745,
+            "p95Limit": 28.92,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.795,
+              "p95Ms": 24.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.558667,
+              "p95Ms": 1.646917
+            },
+            "medianLimit": 25.0745,
+            "p95Limit": 28.92,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.525,
+              5.07
+            ],
+            "firstExact": [
+              22.92,
+              25.55
+            ],
+            "final": [
+              22.92,
+              25.55
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.031541,
+              4.189875
+            ],
+            "firstExact": [
+              89.001291,
+              73.411917
+            ],
+            "final": [
+              89.001291,
+              73.411917
+            ]
+          }
+        }
+      },
+      "color-mask-temp": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.535,
+              "p95Ms": 6.775
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0388335,
+              "p95Ms": 1.1605
+            },
+            "medianLimit": 5.535,
+            "p95Limit": 8.775,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0075,
+              "p95Ms": 24.505
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0388335,
+              "p95Ms": 1.1605
+            },
+            "medianLimit": 23.10825,
+            "p95Limit": 29.406,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0075,
+              "p95Ms": 24.505
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5371044999999999,
+              "p95Ms": 1.724958
+            },
+            "medianLimit": 23.10825,
+            "p95Limit": 29.406,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              166.545,
+              4.47
+            ],
+            "firstExact": [
+              175.04,
+              26.01
+            ],
+            "final": [
+              175.04,
+              26.01
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.927375,
+              7.154959
+            ],
+            "firstExact": [
+              150.359167,
+              144.506834
+            ],
+            "final": [
+              150.359167,
+              144.506834
+            ]
+          }
+        }
+      },
+      "color-mask-tint": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5575,
+              "p95Ms": 7.46
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0549374999999999,
+              "p95Ms": 1.128167
+            },
+            "medianLimit": 5.5575,
+            "p95Limit": 9.46,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1075,
+              "p95Ms": 22.185
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0549374999999999,
+              "p95Ms": 1.128167
+            },
+            "medianLimit": 23.21825,
+            "p95Limit": 26.622,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1075,
+              "p95Ms": 22.185
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.558354,
+              "p95Ms": 1.749958
+            },
+            "medianLimit": 23.21825,
+            "p95Limit": 26.622,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.965,
+              6.605
+            ],
+            "firstExact": [
+              25.1,
+              23.14
+            ],
+            "final": [
+              25.1,
+              23.14
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              10.312875,
+              6.651667
+            ],
+            "firstExact": [
+              165.431084,
+              153.767459
+            ],
+            "final": [
+              165.431084,
+              153.767459
+            ]
+          }
+        }
+      },
+      "color-mask-hue": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.637499999999999,
+              "p95Ms": 7.665
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0900625000000002,
+              "p95Ms": 1.243416
+            },
+            "medianLimit": 5.637499999999999,
+            "p95Limit": 9.665,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.7575,
+              "p95Ms": 22.06
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0900625000000002,
+              "p95Ms": 1.243416
+            },
+            "medianLimit": 22.83325,
+            "p95Limit": 26.471999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.7575,
+              "p95Ms": 22.06
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.59375,
+              "p95Ms": 1.788291
+            },
+            "medianLimit": 22.83325,
+            "p95Limit": 26.471999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              189.925,
+              7.22
+            ],
+            "firstExact": [
+              199.635,
+              23.395
+            ],
+            "final": [
+              199.635,
+              23.395
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.735291,
+              3.736542
+            ],
+            "firstExact": [
+              78.206166,
+              72.626792
+            ],
+            "final": [
+              78.206166,
+              72.626792
+            ]
+          }
+        }
+      },
+      "color-mask-saturation": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4325,
+              "p95Ms": 7.305
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0209375,
+              "p95Ms": 1.135833
+            },
+            "medianLimit": 5.4325,
+            "p95Limit": 9.305,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9625,
+              "p95Ms": 23.32
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0209375,
+              "p95Ms": 1.135833
+            },
+            "medianLimit": 23.05875,
+            "p95Limit": 27.984,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9625,
+              "p95Ms": 23.32
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5535005,
+              "p95Ms": 1.659542
+            },
+            "medianLimit": 23.05875,
+            "p95Limit": 27.984,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              151.295,
+              4.485
+            ],
+            "firstExact": [
+              158.85,
+              23.905
+            ],
+            "final": [
+              158.85,
+              23.905
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.137042,
+              4.9225
+            ],
+            "firstExact": [
+              76.66025,
+              78.498208
+            ],
+            "final": [
+              76.66025,
+              78.498208
+            ]
+          }
+        }
+      },
+      "effects-mask-texture": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.535,
+              "p95Ms": 4.905
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.061292,
+              "p95Ms": 1.186167
+            },
+            "medianLimit": 5.535,
+            "p95Limit": 6.905,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.05,
+              "p95Ms": 22.425
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.061292,
+              "p95Ms": 1.186167
+            },
+            "medianLimit": 23.155,
+            "p95Limit": 26.91,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.05,
+              "p95Ms": 22.425
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.597167,
+              "p95Ms": 1.824
+            },
+            "medianLimit": 23.155,
+            "p95Limit": 26.91,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              177.43,
+              4.655
+            ],
+            "firstExact": [
+              197.81,
+              12.445
+            ],
+            "final": [
+              197.81,
+              12.445
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              12.598417,
+              13.297
+            ],
+            "firstExact": [
+              299.845167,
+              306.501458
+            ],
+            "final": [
+              299.845167,
+              306.501458
+            ]
+          }
+        }
+      },
+      "effects-mask-clarity": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7125,
+              "p95Ms": 6.965
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.100021,
+              "p95Ms": 2.753
+            },
+            "medianLimit": 5.7125,
+            "p95Limit": 8.965,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.79,
+              "p95Ms": 21.39
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.100021,
+              "p95Ms": 2.753
+            },
+            "medianLimit": 22.869,
+            "p95Limit": 25.668,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.79,
+              "p95Ms": 21.39
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.607937,
+              "p95Ms": 3.353791
+            },
+            "medianLimit": 22.869,
+            "p95Limit": 25.668,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.735,
+              4.195
+            ],
+            "firstExact": [
+              21.75,
+              27.42
+            ],
+            "final": [
+              21.75,
+              27.42
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              11.030083,
+              11.047667
+            ],
+            "firstExact": [
+              297.950292,
+              309.216
+            ],
+            "final": [
+              297.950292,
+              309.216
+            ]
+          }
+        }
+      },
+      "effects-mask-grain": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.422499999999999,
+              "p95Ms": 5.575
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.858499999999999,
+              "p95Ms": 6.575167
+            },
+            "medianLimit": 5.422499999999999,
+            "p95Limit": 7.575,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.07,
+              "p95Ms": 21.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.373374999999999,
+              "p95Ms": 7.093208
+            },
+            "medianLimit": 23.177,
+            "p95Limit": 26.064,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.07,
+              "p95Ms": 21.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.373374999999999,
+              "p95Ms": 7.093208
+            },
+            "medianLimit": 23.177,
+            "p95Limit": 26.064,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              163.375,
+              4.665
+            ],
+            "firstExact": [
+              172.43,
+              25.57
+            ],
+            "final": [
+              172.43,
+              25.57
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              9.483208,
+              4.123666
+            ],
+            "firstExact": [
+              302.646875,
+              291.639208
+            ],
+            "final": [
+              302.646875,
+              291.639208
+            ]
+          }
+        }
+      },
+      "grading-mask-wheels": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 16.7875,
+              "p95Ms": 18.24
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0749374999999999,
+              "p95Ms": 1.309083
+            },
+            "medianLimit": 18.466250000000002,
+            "p95Limit": 21.887999999999998,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.362499999999997,
+              "p95Ms": 23.335
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0749374999999999,
+              "p95Ms": 1.309083
+            },
+            "medianLimit": 24.598749999999995,
+            "p95Limit": 28.002000000000002,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.362499999999997,
+              "p95Ms": 23.335
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5875625,
+              "p95Ms": 1.887709
+            },
+            "medianLimit": 24.598749999999995,
+            "p95Limit": 28.002000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              175.65,
+              16.935
+            ],
+            "firstExact": [
+              184.265,
+              24.46
+            ],
+            "final": [
+              184.265,
+              24.46
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              8.703791,
+              6.984834
+            ],
+            "firstExact": [
+              164.892166,
+              152.52
+            ],
+            "final": [
+              164.892166,
+              152.52
+            ]
+          }
+        }
+      },
+      "detail-mask-sharpness": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5575,
+              "p95Ms": 7.45
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1030834999999999,
+              "p95Ms": 1.346458
+            },
+            "medianLimit": 5.5575,
+            "p95Limit": 9.45,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.78,
+              "p95Ms": 21.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1030834999999999,
+              "p95Ms": 1.346458
+            },
+            "medianLimit": 22.858,
+            "p95Limit": 25.823999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.78,
+              "p95Ms": 21.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5688125,
+              "p95Ms": 1.834333
+            },
+            "medianLimit": 22.858,
+            "p95Limit": 25.823999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              161.715,
+              5.195
+            ],
+            "firstExact": [
+              176.37,
+              18.69
+            ],
+            "final": [
+              176.37,
+              18.69
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              27.893666,
+              18.74675
+            ],
+            "firstExact": [
+              453.754125,
+              436.827375
+            ],
+            "final": [
+              453.754125,
+              436.827375
+            ]
+          }
+        }
+      },
+      "detail-mask-noise": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.67,
+              "p95Ms": 7.57
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.081979,
+              "p95Ms": 1.17425
+            },
+            "medianLimit": 5.67,
+            "p95Limit": 9.57,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.052500000000002,
+              "p95Ms": 21.365
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.081979,
+              "p95Ms": 1.17425
+            },
+            "medianLimit": 23.157750000000004,
+            "p95Limit": 25.637999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.052500000000002,
+              "p95Ms": 21.365
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5844585,
+              "p95Ms": 1.738791
+            },
+            "medianLimit": 23.157750000000004,
+            "p95Limit": 25.637999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              163.375,
+              5.595
+            ],
+            "firstExact": [
+              219.51,
+              58.585
+            ],
+            "final": [
+              219.51,
+              58.585
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              9.683625,
+              12.317625
+            ],
+            "firstExact": [
+              402.654791,
+              413.0205
+            ],
+            "final": [
+              402.654791,
+              413.0205
+            ]
+          }
+        }
+      },
+      "light-clipping-indicators": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4925,
+              "p95Ms": 7.565
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9838125,
+              "p95Ms": 1.1365
+            },
+            "medianLimit": 5.4925,
+            "p95Limit": 9.565000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0825,
+              "p95Ms": 22.95
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9838125,
+              "p95Ms": 1.1365
+            },
+            "medianLimit": 23.19075,
+            "p95Limit": 27.54,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0825,
+              "p95Ms": 22.95
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5015420000000002,
+              "p95Ms": 1.664584
+            },
+            "medianLimit": 23.19075,
+            "p95Limit": 27.54,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5.23,
+              4.37
+            ],
+            "firstExact": [
+              23.55,
+              21.915
+            ],
+            "final": [
+              23.55,
+              21.915
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.762458,
+              4.991333
+            ],
+            "firstExact": [
+              65.0955,
+              116.869125
+            ],
+            "final": [
+              65.0955,
+              116.869125
+            ]
+          }
+        }
+      },
+      "light-clipping-modifier": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.525,
+              "p95Ms": 7.19
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.012667,
+              "p95Ms": 1.189125
+            },
+            "medianLimit": 5.525,
+            "p95Limit": 9.190000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.27,
+              "p95Ms": 21.865
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.012667,
+              "p95Ms": 1.189125
+            },
+            "medianLimit": 22.297,
+            "p95Limit": 26.238,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.27,
+              "p95Ms": 21.865
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4804795,
+              "p95Ms": 1.683375
+            },
+            "medianLimit": 22.297,
+            "p95Limit": 26.238,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5,
+              7.265
+            ],
+            "firstExact": [
+              20.65,
+              20.705
+            ],
+            "final": [
+              20.65,
+              20.705
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              0.975042,
+              5.66875
+            ],
+            "firstExact": [
+              0.975042,
+              133.264
+            ],
+            "final": [
+              1.451209,
+              133.264
+            ]
+          }
+        }
+      },
+      "detail-mask-preview": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4399999999999995,
+              "p95Ms": 6.745
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0316665,
+              "p95Ms": 1.144208
+            },
+            "medianLimit": 5.4399999999999995,
+            "p95Limit": 8.745000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.115000000000002,
+              "p95Ms": 22.29
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0316665,
+              "p95Ms": 1.144208
+            },
+            "medianLimit": 23.2265,
+            "p95Limit": 26.747999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.115000000000002,
+              "p95Ms": 22.29
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.521958,
+              "p95Ms": 1.624417
+            },
+            "medianLimit": 23.2265,
+            "p95Limit": 26.747999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              8.315,
+              165.465
+            ],
+            "firstExact": [
+              31.83,
+              177.655
+            ],
+            "final": [
+              31.83,
+              177.655
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              15.644375,
+              77.54975
+            ],
+            "firstExact": [
+              198.767333,
+              259.970416
+            ],
+            "final": [
+              198.767333,
+              259.970416
+            ]
+          }
+        }
+      }
+    }
+  },
+  "optIn": {
+    "qualifiedOperations": 37,
+    "warmPerOperation": 20,
+    "warmWithin": {
+      "first": 37,
+      "firstExact": 37,
+      "final": 37
+    },
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.1850000000000005,
+          "p95Ms": 175.215
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.1030625,
+          "p95Ms": 22.624833
+        },
+        "medianLimitMs": 8.185,
+        "p95LimitMs": 210.258,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 24.765,
+          "p95Ms": 184.435
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 80.23377099999999,
+          "p95Ms": 355.125
+        },
+        "medianLimitMs": 27.241500000000002,
+        "p95LimitMs": 221.322,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 24.765,
+          "p95Ms": 184.435
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 80.23377099999999,
+          "p95Ms": 355.125
+        },
+        "medianLimitMs": 27.241500000000002,
+        "p95LimitMs": 221.322,
+        "within": false
+      }
+    },
+    "operations": {
+      "color-wb-presets": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.04,
+              "p95Ms": 8.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0441250000000002,
+              "p95Ms": 1.168667
+            },
+            "medianLimit": 6.04,
+            "p95Limit": 10.925,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.04,
+              "p95Ms": 8.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0441250000000002,
+              "p95Ms": 1.168667
+            },
+            "medianLimit": 6.04,
+            "p95Limit": 10.925,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.042499999999997,
+              "p95Ms": 21.525
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.546292,
+              "p95Ms": 1.691417
+            },
+            "medianLimit": 22.046749999999996,
+            "p95Limit": 25.83,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.34,
+              6.69
+            ],
+            "firstExact": [
+              6.34,
+              6.69
+            ],
+            "final": [
+              18.685,
+              20.68
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.737125,
+              1.412916
+            ],
+            "firstExact": [
+              51.020459,
+              1.412916
+            ],
+            "final": [
+              51.020459,
+              1.953458
+            ]
+          }
+        }
+      },
+      "color-wb-as-shot": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 8.225
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0619995000000002,
+              "p95Ms": 1.15575
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 10.225,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 8.225
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0619995000000002,
+              "p95Ms": 1.15575
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 10.225,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.535,
+              "p95Ms": 23.415
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5736665,
+              "p95Ms": 1.684458
+            },
+            "medianLimit": 22.5885,
+            "p95Limit": 28.098,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.655,
+              7.375
+            ],
+            "firstExact": [
+              4.655,
+              7.375
+            ],
+            "final": [
+              17.885,
+              23.165
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.642375,
+              2.222333
+            ],
+            "firstExact": [
+              60.251417,
+              33.259083
+            ],
+            "final": [
+              60.251417,
+              33.259083
+            ]
+          }
+        }
+      },
+      "color-bw-treatment": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.3475,
+              "p95Ms": 8.795
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.006667,
+              "p95Ms": 1.092291
+            },
+            "medianLimit": 6.3475,
+            "p95Limit": 10.795,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.3475,
+              "p95Ms": 8.795
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.006667,
+              "p95Ms": 1.092291
+            },
+            "medianLimit": 6.3475,
+            "p95Limit": 10.795,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.05,
+              "p95Ms": 23.015
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5019170000000002,
+              "p95Ms": 1.675834
+            },
+            "medianLimit": 22.055,
+            "p95Limit": 27.618000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.105,
+              6.975
+            ],
+            "firstExact": [
+              6.105,
+              6.975
+            ],
+            "final": [
+              18.705,
+              20.18
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              112.032958,
+              4.187875
+            ],
+            "firstExact": [
+              229.330666,
+              66.387625
+            ],
+            "final": [
+              229.330666,
+              66.387625
+            ]
+          }
+        }
+      },
+      "effects-pcv-style": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.69,
+              "p95Ms": 7.435
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0672915,
+              "p95Ms": 1.178875
+            },
+            "medianLimit": 5.69,
+            "p95Limit": 9.434999999999999,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.69,
+              "p95Ms": 7.435
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0672915,
+              "p95Ms": 1.178875
+            },
+            "medianLimit": 5.69,
+            "p95Limit": 9.434999999999999,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.05,
+              "p95Ms": 23.64
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5818545,
+              "p95Ms": 1.717584
+            },
+            "medianLimit": 22.055,
+            "p95Limit": 28.368000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              11.305,
+              6.35
+            ],
+            "firstExact": [
+              11.305,
+              6.35
+            ],
+            "final": [
+              19.515,
+              22.79
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              3.403459,
+              3.720042
+            ],
+            "firstExact": [
+              73.142417,
+              59.728167
+            ],
+            "final": [
+              73.142417,
+              59.728167
+            ]
+          }
+        }
+      },
+      "effects-dehaze": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5325,
+              "p95Ms": 8.89
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2574165000000002,
+              "p95Ms": 1.644833
+            },
+            "medianLimit": 5.5325,
+            "p95Limit": 10.89,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5325,
+              "p95Ms": 8.89
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2574165000000002,
+              "p95Ms": 1.644833
+            },
+            "medianLimit": 5.5325,
+            "p95Limit": 10.89,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.369999999999997,
+              "p95Ms": 23.2
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 2.0008334999999997,
+              "p95Ms": 2.426583
+            },
+            "medianLimit": 22.406999999999996,
+            "p95Limit": 27.84,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              17.115,
+              9.47
+            ],
+            "firstExact": [
+              17.115,
+              9.47
+            ],
+            "final": [
+              23.515,
+              22.66
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              22.624833,
+              16.85675
+            ],
+            "firstExact": [
+              914.263333,
+              285.921875
+            ],
+            "final": [
+              914.263333,
+              285.921875
+            ]
+          }
+        }
+      },
+      "curve-point": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.0625,
+              "p95Ms": 8.27
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.979021,
+              "p95Ms": 1.100458
+            },
+            "medianLimit": 7.0625,
+            "p95Limit": 10.27,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.0625,
+              "p95Ms": 8.27
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.979021,
+              "p95Ms": 1.100458
+            },
+            "medianLimit": 7.0625,
+            "p95Limit": 10.27,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.259999999999998,
+              "p95Ms": 24.015
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.421084,
+              "p95Ms": 1.583625
+            },
+            "medianLimit": 22.285999999999998,
+            "p95Limit": 28.818,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              10.51,
+              5.555
+            ],
+            "firstExact": [
+              10.51,
+              5.555
+            ],
+            "final": [
+              19.455,
+              22.17
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.346833,
+              3.779709
+            ],
+            "firstExact": [
+              91.247083,
+              72.31825
+            ],
+            "final": [
+              91.247083,
+              72.31825
+            ]
+          }
+        }
+      },
+      "curve-channels": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 8.845
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9929790000000001,
+              "p95Ms": 1.157333
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 10.845,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 8.845
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9929790000000001,
+              "p95Ms": 1.157333
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 10.845,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.4125,
+              "p95Ms": 22.705
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4631875,
+              "p95Ms": 1.652667
+            },
+            "medianLimit": 22.453750000000003,
+            "p95Limit": 27.246,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              7.15,
+              8.43
+            ],
+            "firstExact": [
+              7.15,
+              8.43
+            ],
+            "final": [
+              19.79,
+              21.28
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.765959,
+              4.479667
+            ],
+            "firstExact": [
+              79.267167,
+              72.95125
+            ],
+            "final": [
+              79.267167,
+              72.95125
+            ]
+          }
+        }
+      },
+      "curve-mask-curve": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8225,
+              "p95Ms": 8.555
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0670625,
+              "p95Ms": 1.2595
+            },
+            "medianLimit": 5.8225,
+            "p95Limit": 10.555,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.105,
+              "p95Ms": 23.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0670625,
+              "p95Ms": 1.2595
+            },
+            "medianLimit": 23.2155,
+            "p95Limit": 28.692,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.105,
+              "p95Ms": 23.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5992915,
+              "p95Ms": 1.837542
+            },
+            "medianLimit": 23.2155,
+            "p95Limit": 28.692,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              173.635,
+              7.255
+            ],
+            "firstExact": [
+              173.635,
+              21.985
+            ],
+            "final": [
+              179.88,
+              21.985
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              7.360916,
+              6.855375
+            ],
+            "firstExact": [
+              149.531208,
+              149.780375
+            ],
+            "final": [
+              149.531208,
+              149.780375
+            ]
+          }
+        }
+      },
+      "grading-luminance": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.557500000000001,
+              "p95Ms": 16.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0635625000000002,
+              "p95Ms": 1.203875
+            },
+            "medianLimit": 17.11325,
+            "p95Limit": 19.979999999999997,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.115000000000002,
+              "p95Ms": 25.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0635625000000002,
+              "p95Ms": 1.203875
+            },
+            "medianLimit": 24.326500000000003,
+            "p95Limit": 30.779999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.115000000000002,
+              "p95Ms": 25.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5830835,
+              "p95Ms": 1.762792
+            },
+            "medianLimit": 24.326500000000003,
+            "p95Limit": 30.779999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              21.6,
+              16.74
+            ],
+            "firstExact": [
+              28.66,
+              22.95
+            ],
+            "final": [
+              28.66,
+              22.95
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              1.091875,
+              4.972333
+            ],
+            "firstExact": [
+              1.091875,
+              75.496208
+            ],
+            "final": [
+              1.617125,
+              75.496208
+            ]
+          }
+        }
+      },
+      "grading-blending": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.485,
+              "p95Ms": 17.575
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0968955,
+              "p95Ms": 1.28675
+            },
+            "medianLimit": 17.0335,
+            "p95Limit": 21.09,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.6325,
+              "p95Ms": 24.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0968955,
+              "p95Ms": 1.28675
+            },
+            "medianLimit": 23.79575,
+            "p95Limit": 29.394000000000002,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.6325,
+              "p95Ms": 24.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6397914999999998,
+              "p95Ms": 1.797125
+            },
+            "medianLimit": 23.79575,
+            "p95Limit": 29.394000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.59,
+              15.74
+            ],
+            "firstExact": [
+              24.905,
+              24.355
+            ],
+            "final": [
+              24.905,
+              24.355
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.473709,
+              4.210208
+            ],
+            "firstExact": [
+              76.418542,
+              72.453791
+            ],
+            "final": [
+              76.418542,
+              72.453791
+            ]
+          }
+        }
+      },
+      "grading-balance": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 15.787500000000001,
+              "p95Ms": 16.69
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.178104,
+              "p95Ms": 1.345167
+            },
+            "medianLimit": 17.36625,
+            "p95Limit": 20.028000000000002,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.0375,
+              "p95Ms": 26.115
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.178104,
+              "p95Ms": 1.345167
+            },
+            "medianLimit": 24.24125,
+            "p95Limit": 31.337999999999997,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.0375,
+              "p95Ms": 26.115
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.712917,
+              "p95Ms": 1.954417
+            },
+            "medianLimit": 24.24125,
+            "p95Limit": 31.337999999999997,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.395,
+              17.245
+            ],
+            "firstExact": [
+              22.805,
+              23.635
+            ],
+            "final": [
+              22.805,
+              23.635
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.45225,
+              4.393333
+            ],
+            "firstExact": [
+              81.200375,
+              76.422666
+            ],
+            "final": [
+              81.200375,
+              76.422666
+            ]
+          }
+        }
+      },
+      "detail-nr-lum-contrast": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6274999999999995,
+              "p95Ms": 12.715
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9652704999999999,
+              "p95Ms": 1.134625
+            },
+            "medianLimit": 5.6274999999999995,
+            "p95Limit": 15.258,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0975,
+              "p95Ms": 25.13
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9652704999999999,
+              "p95Ms": 1.134625
+            },
+            "medianLimit": 23.207250000000002,
+            "p95Limit": 30.156,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0975,
+              "p95Ms": 25.13
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.436417,
+              "p95Ms": 1.690083
+            },
+            "medianLimit": 23.207250000000002,
+            "p95Limit": 30.156,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              15.435,
+              6.025
+            ],
+            "firstExact": [
+              68.92,
+              69.235
+            ],
+            "final": [
+              68.92,
+              69.235
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              21.423834,
+              9.276167
+            ],
+            "firstExact": [
+              278.758209,
+              269.327709
+            ],
+            "final": [
+              278.758209,
+              269.327709
+            ]
+          }
+        }
+      },
+      "detail-nr-color-detail": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.125,
+              "p95Ms": 7.705
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.99425,
+              "p95Ms": 1.261166
+            },
+            "medianLimit": 6.125,
+            "p95Limit": 9.705,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.935000000000002,
+              "p95Ms": 22.265
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.99425,
+              "p95Ms": 1.261166
+            },
+            "medianLimit": 23.0285,
+            "p95Limit": 26.718,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.935000000000002,
+              "p95Ms": 22.265
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4629375,
+              "p95Ms": 1.756208
+            },
+            "medianLimit": 23.0285,
+            "p95Limit": 26.718,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              16.275,
+              7.085
+            ],
+            "firstExact": [
+              69.02,
+              60.895
+            ],
+            "final": [
+              69.02,
+              60.895
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              10.469875,
+              9.479292
+            ],
+            "firstExact": [
+              274.555583,
+              256.813417
+            ],
+            "final": [
+              274.555583,
+              256.813417
+            ]
+          }
+        }
+      },
+      "grading-lut-select": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6525,
+              "p95Ms": 7.41
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0234584999999998,
+              "p95Ms": 1.195667
+            },
+            "medianLimit": 5.6525,
+            "p95Limit": 9.41,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9175,
+              "p95Ms": 23.71
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0234584999999998,
+              "p95Ms": 1.195667
+            },
+            "medianLimit": 23.00925,
+            "p95Limit": 28.452,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9175,
+              "p95Ms": 23.71
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.526729,
+              "p95Ms": 1.733042
+            },
+            "medianLimit": 23.00925,
+            "p95Limit": 28.452,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              47.33,
+              5.21
+            ],
+            "firstExact": [
+              59.1,
+              32.44
+            ],
+            "final": [
+              59.1,
+              32.44
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.080375,
+              3.694667
+            ],
+            "firstExact": [
+              87.78625,
+              73.069917
+            ],
+            "final": [
+              87.78625,
+              73.069917
+            ]
+          }
+        }
+      },
+      "grading-lut-amount": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6375,
+              "p95Ms": 4.895
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0093744999999998,
+              "p95Ms": 1.262667
+            },
+            "medianLimit": 5.6375,
+            "p95Limit": 6.895,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.314999999999998,
+              "p95Ms": 25.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0093744999999998,
+              "p95Ms": 1.262667
+            },
+            "medianLimit": 24.546499999999998,
+            "p95Limit": 30.12,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.314999999999998,
+              "p95Ms": 25.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5042710000000001,
+              "p95Ms": 1.785417
+            },
+            "medianLimit": 24.546499999999998,
+            "p95Limit": 30.12,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.6,
+              4.455
+            ],
+            "firstExact": [
+              25.62,
+              24.34
+            ],
+            "final": [
+              25.62,
+              24.34
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.726208,
+              3.770917
+            ],
+            "firstExact": [
+              78.093208,
+              68.662333
+            ],
+            "final": [
+              78.093208,
+              68.662333
+            ]
+          }
+        }
+      },
+      "grading-lut-stack": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.745,
+              "p95Ms": 7.35
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0428745,
+              "p95Ms": 1.204416
+            },
+            "medianLimit": 5.745,
+            "p95Limit": 9.35,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.13,
+              "p95Ms": 26.125
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0428745,
+              "p95Ms": 1.204416
+            },
+            "medianLimit": 23.243,
+            "p95Limit": 31.35,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.13,
+              "p95Ms": 26.125
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.541104,
+              "p95Ms": 1.743542
+            },
+            "medianLimit": 23.243,
+            "p95Limit": 31.35,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5,
+              7.815
+            ],
+            "firstExact": [
+              30.53,
+              29.08
+            ],
+            "final": [
+              30.53,
+              29.08
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              0.955666,
+              6.791542
+            ],
+            "firstExact": [
+              0.955666,
+              149.9755
+            ],
+            "final": [
+              1.444208,
+              149.9755
+            ]
+          }
+        }
+      },
+      "grading-lut-manage": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6675,
+              "p95Ms": 7.28
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0302085,
+              "p95Ms": 1.179584
+            },
+            "medianLimit": 5.6675,
+            "p95Limit": 9.280000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1725,
+              "p95Ms": 24.445
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0302085,
+              "p95Ms": 1.179584
+            },
+            "medianLimit": 23.289749999999998,
+            "p95Limit": 29.334,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1725,
+              "p95Ms": 24.445
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5382085,
+              "p95Ms": 1.69
+            },
+            "medianLimit": 23.289749999999998,
+            "p95Limit": 29.334,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.5,
+              5.895
+            ],
+            "firstExact": [
+              19.495,
+              34.365
+            ],
+            "final": [
+              19.495,
+              34.365
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              7.066583,
+              5.124625
+            ],
+            "firstExact": [
+              110.580208,
+              113.148833
+            ],
+            "final": [
+              110.580208,
+              113.148833
+            ]
+          }
+        }
+      },
+      "grading-lut-mask": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6625,
+              "p95Ms": 6.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.07625,
+              "p95Ms": 1.204208
+            },
+            "medianLimit": 5.6625,
+            "p95Limit": 8.719999999999999,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0425,
+              "p95Ms": 23.85
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.07625,
+              "p95Ms": 1.204208
+            },
+            "medianLimit": 23.14675,
+            "p95Limit": 28.62,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0425,
+              "p95Ms": 23.85
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5723544999999999,
+              "p95Ms": 1.762792
+            },
+            "medianLimit": 23.14675,
+            "p95Limit": 28.62,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              43.175,
+              4.64
+            ],
+            "firstExact": [
+              60.24,
+              25.125
+            ],
+            "final": [
+              60.24,
+              25.125
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              7.960625,
+              7.464458
+            ],
+            "firstExact": [
+              149.637459,
+              150.457125
+            ],
+            "final": [
+              149.637459,
+              150.457125
+            ]
+          }
+        }
+      },
+      "light-mask-exposure": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.797499999999999,
+              "p95Ms": 7.14
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0071875000000001,
+              "p95Ms": 1.101209
+            },
+            "medianLimit": 5.797499999999999,
+            "p95Limit": 9.14,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.8975,
+              "p95Ms": 22.9
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0071875000000001,
+              "p95Ms": 1.101209
+            },
+            "medianLimit": 22.98725,
+            "p95Limit": 27.479999999999997,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.8975,
+              "p95Ms": 22.9
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5105624999999998,
+              "p95Ms": 1.611417
+            },
+            "medianLimit": 22.98725,
+            "p95Limit": 27.479999999999997,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              158.395,
+              7.48
+            ],
+            "firstExact": [
+              166.27,
+              25.245
+            ],
+            "final": [
+              166.27,
+              25.245
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.390416,
+              4.009291
+            ],
+            "firstExact": [
+              69.128583,
+              67.680708
+            ],
+            "final": [
+              69.128583,
+              67.680708
+            ]
+          }
+        }
+      },
+      "light-mask-contrast": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7175,
+              "p95Ms": 9.35
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.023188,
+              "p95Ms": 1.1175
+            },
+            "medianLimit": 5.7175,
+            "p95Limit": 11.35,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.165,
+              "p95Ms": 24.68
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.023188,
+              "p95Ms": 1.1175
+            },
+            "medianLimit": 23.281499999999998,
+            "p95Limit": 29.616,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.165,
+              "p95Ms": 24.68
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.505292,
+              "p95Ms": 1.641125
+            },
+            "medianLimit": 23.281499999999998,
+            "p95Limit": 29.616,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              156.23,
+              7.605
+            ],
+            "firstExact": [
+              165.165,
+              24.055
+            ],
+            "final": [
+              165.165,
+              24.055
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.866667,
+              3.836875
+            ],
+            "firstExact": [
+              70.22025,
+              67.3995
+            ],
+            "final": [
+              70.22025,
+              67.3995
+            ]
+          }
+        }
+      },
+      "light-mask-highlights": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.65,
+              "p95Ms": 7.07
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.107646,
+              "p95Ms": 1.211916
+            },
+            "medianLimit": 5.65,
+            "p95Limit": 9.07,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.7875,
+              "p95Ms": 24.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.107646,
+              "p95Ms": 1.211916
+            },
+            "medianLimit": 23.966250000000002,
+            "p95Limit": 29.58,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.7875,
+              "p95Ms": 24.65
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6402505,
+              "p95Ms": 1.800792
+            },
+            "medianLimit": 23.966250000000002,
+            "p95Limit": 29.58,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              175.215,
+              5.08
+            ],
+            "firstExact": [
+              184.435,
+              23.315
+            ],
+            "final": [
+              184.435,
+              23.315
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.083584,
+              4.324125
+            ],
+            "firstExact": [
+              66.299459,
+              78.632208
+            ],
+            "final": [
+              66.299459,
+              78.632208
+            ]
+          }
+        }
+      },
+      "light-mask-shadows": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.65,
+              "p95Ms": 7.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1819169999999999,
+              "p95Ms": 1.291792
+            },
+            "medianLimit": 5.65,
+            "p95Limit": 9.52,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.932499999999997,
+              "p95Ms": 24.235
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1819169999999999,
+              "p95Ms": 1.291792
+            },
+            "medianLimit": 23.02575,
+            "p95Limit": 29.082,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.932499999999997,
+              "p95Ms": 24.235
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.7131669999999999,
+              "p95Ms": 1.88025
+            },
+            "medianLimit": 23.02575,
+            "p95Limit": 29.082,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.41,
+              5.635
+            ],
+            "firstExact": [
+              24.625,
+              26.75
+            ],
+            "final": [
+              24.625,
+              26.75
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.563042,
+              4.851917
+            ],
+            "firstExact": [
+              74.759625,
+              76.322167
+            ],
+            "final": [
+              74.759625,
+              76.322167
+            ]
+          }
+        }
+      },
+      "light-mask-whites": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.665,
+              "p95Ms": 6.135
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2589375,
+              "p95Ms": 1.333458
+            },
+            "medianLimit": 5.665,
+            "p95Limit": 8.135,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.195,
+              "p95Ms": 24.595
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.2589375,
+              "p95Ms": 1.333458
+            },
+            "medianLimit": 24.4145,
+            "p95Limit": 29.514,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.195,
+              "p95Ms": 24.595
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.7947085,
+              "p95Ms": 1.920084
+            },
+            "medianLimit": 24.4145,
+            "p95Limit": 29.514,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.025,
+              4.745
+            ],
+            "firstExact": [
+              23.555,
+              25.555
+            ],
+            "final": [
+              23.555,
+              25.555
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.763542,
+              5.000875
+            ],
+            "firstExact": [
+              76.586625,
+              75.942125
+            ],
+            "final": [
+              76.586625,
+              75.942125
+            ]
+          }
+        }
+      },
+      "light-mask-blacks": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8149999999999995,
+              "p95Ms": 6.925
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0200209999999998,
+              "p95Ms": 1.170167
+            },
+            "medianLimit": 5.8149999999999995,
+            "p95Limit": 8.925,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.795,
+              "p95Ms": 24.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0200209999999998,
+              "p95Ms": 1.170167
+            },
+            "medianLimit": 25.0745,
+            "p95Limit": 28.92,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.795,
+              "p95Ms": 24.1
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5038125,
+              "p95Ms": 1.733292
+            },
+            "medianLimit": 25.0745,
+            "p95Limit": 28.92,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              6.525,
+              5.07
+            ],
+            "firstExact": [
+              22.92,
+              25.55
+            ],
+            "final": [
+              22.92,
+              25.55
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.914,
+              3.8125
+            ],
+            "firstExact": [
+              79.092375,
+              69.8555
+            ],
+            "final": [
+              79.092375,
+              69.8555
+            ]
+          }
+        }
+      },
+      "color-mask-temp": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.535,
+              "p95Ms": 6.775
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1303334999999999,
+              "p95Ms": 1.231041
+            },
+            "medianLimit": 5.535,
+            "p95Limit": 8.775,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0075,
+              "p95Ms": 24.505
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.1303334999999999,
+              "p95Ms": 1.231041
+            },
+            "medianLimit": 23.10825,
+            "p95Limit": 29.406,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0075,
+              "p95Ms": 24.505
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.7046245,
+              "p95Ms": 1.814333
+            },
+            "medianLimit": 23.10825,
+            "p95Limit": 29.406,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              166.545,
+              4.47
+            ],
+            "firstExact": [
+              175.04,
+              26.01
+            ],
+            "final": [
+              175.04,
+              26.01
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              6.482334,
+              6.85725
+            ],
+            "firstExact": [
+              145.015959,
+              157.19325
+            ],
+            "final": [
+              145.015959,
+              157.19325
+            ]
+          }
+        }
+      },
+      "color-mask-tint": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5575,
+              "p95Ms": 7.46
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0367294999999999,
+              "p95Ms": 1.158958
+            },
+            "medianLimit": 5.5575,
+            "p95Limit": 9.46,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1075,
+              "p95Ms": 22.185
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0367294999999999,
+              "p95Ms": 1.158958
+            },
+            "medianLimit": 23.21825,
+            "p95Limit": 26.622,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.1075,
+              "p95Ms": 22.185
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5357705,
+              "p95Ms": 1.694416
+            },
+            "medianLimit": 23.21825,
+            "p95Limit": 26.622,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.965,
+              6.605
+            ],
+            "firstExact": [
+              25.1,
+              23.14
+            ],
+            "final": [
+              25.1,
+              23.14
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              10.139958,
+              7.257
+            ],
+            "firstExact": [
+              173.076958,
+              164.806875
+            ],
+            "final": [
+              173.076958,
+              164.806875
+            ]
+          }
+        }
+      },
+      "color-mask-hue": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.637499999999999,
+              "p95Ms": 7.665
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0225214999999999,
+              "p95Ms": 1.160917
+            },
+            "medianLimit": 5.637499999999999,
+            "p95Limit": 9.665,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.7575,
+              "p95Ms": 22.06
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0225214999999999,
+              "p95Ms": 1.160917
+            },
+            "medianLimit": 22.83325,
+            "p95Limit": 26.471999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.7575,
+              "p95Ms": 22.06
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.538042,
+              "p95Ms": 1.664875
+            },
+            "medianLimit": 22.83325,
+            "p95Limit": 26.471999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              189.925,
+              7.22
+            ],
+            "firstExact": [
+              199.635,
+              23.395
+            ],
+            "final": [
+              199.635,
+              23.395
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              5.0815,
+              4.214791
+            ],
+            "firstExact": [
+              70.295458,
+              69.949333
+            ],
+            "final": [
+              70.295458,
+              69.949333
+            ]
+          }
+        }
+      },
+      "color-mask-saturation": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4325,
+              "p95Ms": 7.305
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.003854,
+              "p95Ms": 1.177584
+            },
+            "medianLimit": 5.4325,
+            "p95Limit": 9.305,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9625,
+              "p95Ms": 23.32
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.003854,
+              "p95Ms": 1.177584
+            },
+            "medianLimit": 23.05875,
+            "p95Limit": 27.984,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.9625,
+              "p95Ms": 23.32
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.503041,
+              "p95Ms": 1.74425
+            },
+            "medianLimit": 23.05875,
+            "p95Limit": 27.984,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              151.295,
+              4.485
+            ],
+            "firstExact": [
+              158.85,
+              23.905
+            ],
+            "final": [
+              158.85,
+              23.905
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.544375,
+              3.967375
+            ],
+            "firstExact": [
+              68.612667,
+              74.064791
+            ],
+            "final": [
+              68.612667,
+              74.064791
+            ]
+          }
+        }
+      },
+      "effects-mask-texture": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.535,
+              "p95Ms": 4.905
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.160646,
+              "p95Ms": 1.231625
+            },
+            "medianLimit": 5.535,
+            "p95Limit": 6.905,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.05,
+              "p95Ms": 22.425
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.160646,
+              "p95Ms": 1.231625
+            },
+            "medianLimit": 23.155,
+            "p95Limit": 26.91,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.05,
+              "p95Ms": 22.425
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6739169999999999,
+              "p95Ms": 1.796542
+            },
+            "medianLimit": 23.155,
+            "p95Limit": 26.91,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              177.43,
+              4.655
+            ],
+            "firstExact": [
+              197.81,
+              12.445
+            ],
+            "final": [
+              197.81,
+              12.445
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              11.904125,
+              14.849834
+            ],
+            "firstExact": [
+              299.416416,
+              355.125
+            ],
+            "final": [
+              299.416416,
+              355.125
+            ]
+          }
+        }
+      },
+      "effects-mask-clarity": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7125,
+              "p95Ms": 6.965
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.097292,
+              "p95Ms": 2.823541
+            },
+            "medianLimit": 5.7125,
+            "p95Limit": 8.965,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.79,
+              "p95Ms": 21.39
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.097292,
+              "p95Ms": 2.823541
+            },
+            "medianLimit": 22.869,
+            "p95Limit": 25.668,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.79,
+              "p95Ms": 21.39
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5715214999999998,
+              "p95Ms": 3.339583
+            },
+            "medianLimit": 22.869,
+            "p95Limit": 25.668,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              4.735,
+              4.195
+            ],
+            "firstExact": [
+              21.75,
+              27.42
+            ],
+            "final": [
+              21.75,
+              27.42
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              13.843666,
+              12.1235
+            ],
+            "firstExact": [
+              383.358708,
+              429.448291
+            ],
+            "final": [
+              383.358708,
+              429.448291
+            ]
+          }
+        }
+      },
+      "effects-mask-grain": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.422499999999999,
+              "p95Ms": 5.575
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.7893545,
+              "p95Ms": 6.831583
+            },
+            "medianLimit": 5.422499999999999,
+            "p95Limit": 7.575,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.07,
+              "p95Ms": 21.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.319042,
+              "p95Ms": 7.390917
+            },
+            "medianLimit": 23.177,
+            "p95Limit": 26.064,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.07,
+              "p95Ms": 21.72
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.319042,
+              "p95Ms": 7.390917
+            },
+            "medianLimit": 23.177,
+            "p95Limit": 26.064,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              163.375,
+              4.665
+            ],
+            "firstExact": [
+              172.43,
+              25.57
+            ],
+            "final": [
+              172.43,
+              25.57
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              9.782042,
+              3.974417
+            ],
+            "firstExact": [
+              146.024709,
+              121.475458
+            ],
+            "final": [
+              146.024709,
+              121.475458
+            ]
+          }
+        }
+      },
+      "grading-mask-wheels": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 16.7875,
+              "p95Ms": 18.24
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0850205,
+              "p95Ms": 1.210208
+            },
+            "medianLimit": 18.466250000000002,
+            "p95Limit": 21.887999999999998,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.362499999999997,
+              "p95Ms": 23.335
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0850205,
+              "p95Ms": 1.210208
+            },
+            "medianLimit": 24.598749999999995,
+            "p95Limit": 28.002000000000002,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 22.362499999999997,
+              "p95Ms": 23.335
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.6019999999999999,
+              "p95Ms": 1.868625
+            },
+            "medianLimit": 24.598749999999995,
+            "p95Limit": 28.002000000000002,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              175.65,
+              16.935
+            ],
+            "firstExact": [
+              184.265,
+              24.46
+            ],
+            "final": [
+              184.265,
+              24.46
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              7.028916,
+              7.560375
+            ],
+            "firstExact": [
+              164.940458,
+              152.059042
+            ],
+            "final": [
+              164.940458,
+              152.059042
+            ]
+          }
+        }
+      },
+      "detail-mask-sharpness": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.5575,
+              "p95Ms": 7.45
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0670835,
+              "p95Ms": 1.33325
+            },
+            "medianLimit": 5.5575,
+            "p95Limit": 9.45,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.78,
+              "p95Ms": 21.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.0670835,
+              "p95Ms": 1.33325
+            },
+            "medianLimit": 22.858,
+            "p95Limit": 25.823999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.78,
+              "p95Ms": 21.52
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.5567915,
+              "p95Ms": 1.967541
+            },
+            "medianLimit": 22.858,
+            "p95Limit": 25.823999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              161.715,
+              5.195
+            ],
+            "firstExact": [
+              176.37,
+              18.69
+            ],
+            "final": [
+              176.37,
+              18.69
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              29.807917,
+              19.791167
+            ],
+            "firstExact": [
+              278.199125,
+              258.611375
+            ],
+            "final": [
+              278.199125,
+              258.611375
+            ]
+          }
+        }
+      },
+      "detail-mask-noise": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.67,
+              "p95Ms": 7.57
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.017166,
+              "p95Ms": 1.118084
+            },
+            "medianLimit": 5.67,
+            "p95Limit": 9.57,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.052500000000002,
+              "p95Ms": 21.365
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.017166,
+              "p95Ms": 1.118084
+            },
+            "medianLimit": 23.157750000000004,
+            "p95Limit": 25.637999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.052500000000002,
+              "p95Ms": 21.365
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.519625,
+              "p95Ms": 1.693542
+            },
+            "medianLimit": 23.157750000000004,
+            "p95Limit": 25.637999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              163.375,
+              5.595
+            ],
+            "firstExact": [
+              219.51,
+              58.585
+            ],
+            "final": [
+              219.51,
+              58.585
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              9.380292,
+              10.522333
+            ],
+            "firstExact": [
+              211.569042,
+              210.170083
+            ],
+            "final": [
+              211.569042,
+              210.170083
+            ]
+          }
+        }
+      },
+      "light-clipping-indicators": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4925,
+              "p95Ms": 7.565
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.999938,
+              "p95Ms": 1.150791
+            },
+            "medianLimit": 5.4925,
+            "p95Limit": 9.565000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0825,
+              "p95Ms": 22.95
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.999938,
+              "p95Ms": 1.150791
+            },
+            "medianLimit": 23.19075,
+            "p95Limit": 27.54,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.0825,
+              "p95Ms": 22.95
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.475188,
+              "p95Ms": 1.684708
+            },
+            "medianLimit": 23.19075,
+            "p95Limit": 27.54,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5.23,
+              4.37
+            ],
+            "firstExact": [
+              23.55,
+              21.915
+            ],
+            "final": [
+              23.55,
+              21.915
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              4.4895,
+              4.987416
+            ],
+            "firstExact": [
+              65.588083,
+              113.859375
+            ],
+            "final": [
+              65.588083,
+              113.859375
+            ]
+          }
+        }
+      },
+      "light-clipping-modifier": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.525,
+              "p95Ms": 7.19
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.988354,
+              "p95Ms": 1.12
+            },
+            "medianLimit": 5.525,
+            "p95Limit": 9.190000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.27,
+              "p95Ms": 21.865
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.988354,
+              "p95Ms": 1.12
+            },
+            "medianLimit": 22.297,
+            "p95Limit": 26.238,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 20.27,
+              "p95Ms": 21.865
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.449167,
+              "p95Ms": 1.653708
+            },
+            "medianLimit": 22.297,
+            "p95Limit": 26.238,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              5,
+              7.265
+            ],
+            "firstExact": [
+              20.65,
+              20.705
+            ],
+            "final": [
+              20.65,
+              20.705
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              0.875042,
+              6.662834
+            ],
+            "firstExact": [
+              0.875042,
+              135.946834
+            ],
+            "final": [
+              1.316167,
+              135.946834
+            ]
+          }
+        }
+      },
+      "detail-mask-preview": {
+        "warm": {
+          "first": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.4399999999999995,
+              "p95Ms": 6.745
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9916665,
+              "p95Ms": 1.130084
+            },
+            "medianLimit": 5.4399999999999995,
+            "p95Limit": 8.745000000000001,
+            "within": true
+          },
+          "firstExact": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.115000000000002,
+              "p95Ms": 22.29
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 0.9916665,
+              "p95Ms": 1.130084
+            },
+            "medianLimit": 23.2265,
+            "p95Limit": 26.747999999999998,
+            "within": true
+          },
+          "final": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 21.115000000000002,
+              "p95Ms": 22.29
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 1.4897295,
+              "p95Ms": 1.644667
+            },
+            "medianLimit": 23.2265,
+            "p95Limit": 26.747999999999998,
+            "within": true
+          }
+        },
+        "initial": {
+          "LightFlow": {
+            "first": [
+              8.315,
+              165.465
+            ],
+            "firstExact": [
+              31.83,
+              177.655
+            ],
+            "final": [
+              31.83,
+              177.655
+            ]
+          },
+          "RAWMaster": {
+            "first": [
+              13.359167,
+              79.268167
+            ],
+            "firstExact": [
+              210.052583,
+              251.082833
+            ],
+            "final": [
+              210.052583,
+              251.082833
+            ]
+          }
+        }
+      }
+    }
+  }
+}

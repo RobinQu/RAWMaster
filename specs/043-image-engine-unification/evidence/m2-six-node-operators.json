@@ -1,0 +1,1066 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "a67d9dd645e0c001e5ab2ce13675f88e7242d594",
+  "testExecutableAndRuntimeSHA256": {
+    "RAWMasterImagingTests": "10aafd7f8cc93cbda12eaa2c550a926082736286f743662baab46ce6b0c699ee",
+    "rawmaster-image.runtime": "882ce755f2e78429c1b14529db39d187958b4a612937c94008ac2889854fb44d",
+    "Cargo.lock": "2b86ee9258eae5956ee77ff5a4a64991c0cf9296e804c5adfa29b0ac8bbc5bb6"
+  },
+  "sourceNotes": "The Native tests also include diagnostic changes to the separate PanelDisplayReadback test. Rust engine and six-node test sources are bound to sourceCommit.",
+  "nativePerformance": {
+    "device": "Apple M4 Max",
+    "graph": {
+      "nodes": [
+        {
+          "id": "04360000-0000-4000-8000-000000000001",
+          "name": "Ramp",
+          "operation": {
+            "end": [
+              0.9,
+              1
+            ],
+            "kind": "linearCoverage",
+            "start": [
+              0.1,
+              0
+            ]
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000002",
+          "name": "Ellipse",
+          "operation": {
+            "center": [
+              0.5,
+              0.5
+            ],
+            "feather": 0.2,
+            "kind": "radialCoverage",
+            "radii": [
+              0.4,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000003",
+          "name": "Mask",
+          "operation": {
+            "base": "04360000-0000-4000-8000-000000000001",
+            "kind": "combineCoverage",
+            "mode": "intersect",
+            "other": "04360000-0000-4000-8000-000000000002"
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000004",
+          "name": "Light",
+          "operation": {
+            "curve": [
+              [
+                -4,
+                -3.5
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "enabled": true,
+            "exposureEV": 1.2,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": "04360000-0000-4000-8000-000000000003",
+            "strength": 0.8
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000005",
+          "name": "Dark",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.7,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04360000-0000-4000-8000-000000000006",
+          "name": "Mix",
+          "operation": {
+            "base": "$input",
+            "enabled": true,
+            "kind": "parallel",
+            "layers": [
+              {
+                "image": "04360000-0000-4000-8000-000000000004",
+                "mode": "normal",
+                "weight": 0.65
+              },
+              {
+                "image": "04360000-0000-4000-8000-000000000005",
+                "mode": "normal",
+                "weight": 0.35
+              }
+            ]
+          }
+        }
+      ],
+      "output": "04360000-0000-4000-8000-000000000006"
+    },
+    "historicM0Gate": {
+      "actualP95Ms": 4.816291,
+      "baselineP95Ms": 13.7605,
+      "passed": true,
+      "targetP95Ms": 10.58
+    },
+    "inputAllocatedBytes": 97288192,
+    "inputInitialization": "one joined same-device texture blit before both series",
+    "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+    "inputStorageMode": "private",
+    "measuredSamples": 30,
+    "modern039Gate": {
+      "actualP95Ms": 4.816291,
+      "actualSpeedup": 3.0232288705146764,
+      "passed": true,
+      "referenceP95Ms": 14.56075,
+      "requiredSpeedup": 1.3,
+      "targetP95Ms": 11.200576923076923
+    },
+    "order": "each pair runs serially and alternates its first backend, starting with rust",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p95Rule": "nearest rank",
+    "recipeSHA256": "b253536ea2b8df6638aae3c535fdcbda3394307d596910f8c80c084c4e412a5c",
+    "registryID": "4294968440",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rust039": {
+      "backend": [
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "dispatches": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "fallbackCount": 0,
+      "p50Ms": 12.961437,
+      "p95Ms": 14.56075,
+      "peakBytes": [
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992,
+        559316992
+      ],
+      "samplesMs": [
+        14.56075,
+        13.435875,
+        13.004208,
+        13.326208,
+        13.202083,
+        15.98475,
+        10.950209,
+        12.905167,
+        11.993209,
+        13.656417,
+        11.821875,
+        12.763542,
+        12.918666,
+        13.3475,
+        12.165542,
+        12.091125,
+        12.301875,
+        13.070375,
+        11.292167,
+        14.024042,
+        12.263042,
+        13.49925,
+        11.448583,
+        13.354459,
+        13.181333,
+        12.683791,
+        12.483333,
+        13.451625,
+        11.465792,
+        14.459125
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "scope": "host wall from prepareFinal invocation to its return",
+    "warmups": 5,
+    "wgpuMetal": {
+      "backend": [
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "dispatches": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "fallbackCount": 0,
+      "p50Ms": 3.593083,
+      "p95Ms": 4.816291,
+      "peakBytes": [
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900,
+        194314900
+      ],
+      "samplesMs": [
+        3.31575,
+        5.514917,
+        3.463083,
+        4.312417,
+        2.736167,
+        4.167708,
+        3.170375,
+        4.497667,
+        3.105375,
+        3.917583,
+        2.975875,
+        4.816291,
+        3.172625,
+        4.406334,
+        3.307542,
+        3.723083,
+        2.956583,
+        4.218792,
+        3.224833,
+        4.49725,
+        3.02425,
+        4.422042,
+        2.899833,
+        4.585875,
+        3.160292,
+        3.806208,
+        3.037292,
+        4.0625,
+        3.301666,
+        4.586125
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "nativeAP1Pixels": {
+    "alphaEquality": "bit pattern",
+    "cases": {
+      "full": {
+        "comparison": {
+          "aboveOnePixels": 719285,
+          "alphaBitDifferences": 0,
+          "candidateRGBA32FSHA256": "65b069f8da72cee9f1192ac102ef31c3097582c85b8f6c5945bbfe15065f4651",
+          "maxScaledRGBError": 7.44817043596413e-07,
+          "negativePixels": 881513,
+          "nonfinite": 0,
+          "opaquePixels": 4114286,
+          "partialAlphaPixels": 1028571,
+          "pixels": 6000000,
+          "referenceRGBA32FSHA256": "ac4250eeee011239467a86385bd9b39c985e717d81afa549cd315b61610cef96",
+          "rgbBitDifferences": 3091213,
+          "transparentPixels": 857143
+        },
+        "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+        "size": [
+          3000,
+          2000
+        ]
+      },
+      "roi": {
+        "comparison": {
+          "aboveOnePixels": 0,
+          "alphaBitDifferences": 0,
+          "candidateRGBA32FSHA256": "1f4548631eccdeb1439f9005a3ea535b54254e83e618004400e0735e15234271",
+          "maxScaledRGBError": 1.1920928955078125e-07,
+          "negativePixels": 0,
+          "nonfinite": 0,
+          "opaquePixels": 749,
+          "partialAlphaPixels": 178,
+          "pixels": 1081,
+          "referenceRGBA32FSHA256": "9654ee6257e4cba4a8df6bc978a9874b9c3efa32774ee5ac68cdc2ae563da8ef",
+          "rgbBitDifferences": 731,
+          "transparentPixels": 154
+        },
+        "fullInputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+        "origin": [
+          1771,
+          1093
+        ],
+        "rustAgainstOwnFullCrop": {
+          "aboveOnePixels": 0,
+          "alphaBitDifferences": 0,
+          "candidateRGBA32FSHA256": "9654ee6257e4cba4a8df6bc978a9874b9c3efa32774ee5ac68cdc2ae563da8ef",
+          "maxScaledRGBError": 0,
+          "negativePixels": 0,
+          "nonfinite": 0,
+          "opaquePixels": 749,
+          "partialAlphaPixels": 178,
+          "pixels": 1081,
+          "referenceRGBA32FSHA256": "9654ee6257e4cba4a8df6bc978a9874b9c3efa32774ee5ac68cdc2ae563da8ef",
+          "rgbBitDifferences": 0,
+          "transparentPixels": 154
+        },
+        "size": [
+          47,
+          23
+        ],
+        "wgpuAgainstOwnFullCrop": {
+          "aboveOnePixels": 0,
+          "alphaBitDifferences": 0,
+          "candidateRGBA32FSHA256": "1f4548631eccdeb1439f9005a3ea535b54254e83e618004400e0735e15234271",
+          "maxScaledRGBError": 0,
+          "negativePixels": 0,
+          "nonfinite": 0,
+          "opaquePixels": 749,
+          "partialAlphaPixels": 178,
+          "pixels": 1081,
+          "referenceRGBA32FSHA256": "1f4548631eccdeb1439f9005a3ea535b54254e83e618004400e0735e15234271",
+          "rgbBitDifferences": 0,
+          "transparentPixels": 154
+        }
+      },
+      "small": {
+        "comparison": {
+          "aboveOnePixels": 99,
+          "alphaBitDifferences": 0,
+          "candidateRGBA32FSHA256": "41804d37f71190a1c325604d7943630345bd64166b67fe63671ce4ebbc69f181",
+          "maxScaledRGBError": 3.5762786865234375e-07,
+          "negativePixels": 167,
+          "nonfinite": 0,
+          "opaquePixels": 658,
+          "partialAlphaPixels": 164,
+          "pixels": 960,
+          "referenceRGBA32FSHA256": "26c3018b5e867686e214e9999294d53591778db90c7c694873e7a49bd318228a",
+          "rgbBitDifferences": 464,
+          "transparentPixels": 138
+        },
+        "inputRGBA32FSHA256": "702bd9f6bd82411e30ee458c34a63abbabac7b3a226c071c8c86b7d4d7692948",
+        "size": [
+          40,
+          24
+        ]
+      }
+    },
+    "recipeSHA256": "b253536ea2b8df6638aae3c535fdcbda3394307d596910f8c80c084c4e412a5c",
+    "rgbScaledTolerance": 2e-05,
+    "scope": "untimed AP1 RGBA32F after prepareFinal"
+  },
+  "physicalPortableFixture": {
+    "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+    "calibrationSHA256": "35aa0357ba7fc15b544031f0ff5daa9d07d48a936d3e6397f900b1d2b0ae16ff",
+    "cargoLockSHA256": "2b86ee9258eae5956ee77ff5a4a64991c0cf9296e804c5adfa29b0ac8bbc5bb6",
+    "engineSourceSHA256": "ddafc371413360ac02e0d0d1297b288d7692e80c1a7602d7edb727258c33fe90",
+    "graphSHA256": "91f63d9dec553a7d2b1a37f7b209c9013d604893589a09b406b9206f18308869",
+    "ap1SHA256": "411585e7f2b05d1b16fbbe2d4317df0a791c1a886dc80b534e003ab6e9d840b9",
+    "full": {
+      "extent": [
+        2400,
+        1600
+      ],
+      "full": [
+        2400,
+        1600
+      ],
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "roi": {
+      "extent": [
+        629,
+        507
+      ],
+      "full": [
+        2400,
+        1600
+      ],
+      "origin": [
+        1771,
+        1093
+      ]
+    },
+    "sourceArchiveSHA256": "76672685620a72fe85a4b62c3844be6379f764ee29794b32b27a0926db70297e",
+    "passedBothSmallCPUGPUAndROIExercises": true,
+    "comparison": {
+      "metal": {
+        "adapter": {
+          "backend": "metal",
+          "device": 0,
+          "driver": "",
+          "driverInfo": "",
+          "name": "Apple M4 Max",
+          "type": "IntegratedGpu",
+          "vendor": 0
+        },
+        "reportSHA256": "a121af72ccff094e6207497e7896b7d47622e24d391378b7b4d9ce0928d4638c",
+        "frames": {
+          "final-full": {
+            "fileSHA256": "e2ad09adc8c19f486f7d3ef0a1ef8da919dc53d9c8502183ee4b2bf480e43881",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1545591,
+                1546661,
+                1548909,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 7.152557373046875e-07,
+              "maxScaledRGB": 4.76837158203125e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.5003913044929504,
+                "actualBits": 1056971173,
+                "channel": "r",
+                "pixelIndex": 1746855,
+                "reference": 0.5003917813301086,
+                "referenceBits": 1056971181,
+                "x": 2055,
+                "y": 727
+              }
+            },
+            "crossDeviceComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1175327,
+                1172121,
+                1175288,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 7.152557373046875e-07,
+              "maxScaledRGB": 5.960464477539062e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "referenceSHA256": "f1a1d21f72a0499bdceae0f37aa718979e76234d0f51ea007d77e389c23fe094",
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.5372107028961182,
+                "actualBits": 1057588900,
+                "channel": "r",
+                "pixelIndex": 1749284,
+                "reference": 0.5372112989425659,
+                "referenceBits": 1057588910,
+                "x": 2084,
+                "y": 728
+              }
+            }
+          },
+          "final-roi": {
+            "fileSHA256": "7ecca26e8002503f6048204316211cc23805a77a0c4d0ac086285d833095d8e3",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                99059,
+                99755,
+                99463,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 1.1920928955078125e-07,
+              "maxScaledRGB": 1.1920928955078125e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.27334359288215637,
+                "actualBits": 1049359281,
+                "channel": "r",
+                "pixelIndex": 13418,
+                "reference": 0.2733437120914459,
+                "referenceBits": 1049359285,
+                "x": 1980,
+                "y": 1114
+              }
+            },
+            "crossDeviceComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                84735,
+                84666,
+                84614,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 2.384185791015625e-07,
+              "maxScaledRGB": 2.1924079106462232e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "referenceSHA256": "4af6f77a47c18c1f02bd0da5d377ceb4135722dabe4023ba245ee49707e31450",
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 1.0874738693237305,
+                "actualBits": 1066087000,
+                "channel": "r",
+                "pixelIndex": 200688,
+                "reference": 1.0874736309051514,
+                "referenceBits": 1066086998,
+                "x": 1808,
+                "y": 1412
+              }
+            }
+          },
+          "monitor-full": {
+            "fileSHA256": "35ee2d1280942747c9884e9ad1048b7ce77ae02878ea94ca1e9b4b97054a1bf4",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1477548,
+                1477592,
+                1478185,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 7.152557373046875e-07,
+              "maxScaledRGB": 7.152557373046875e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.6198843121528625,
+                "actualBits": 1058975933,
+                "channel": "r",
+                "pixelIndex": 1746855,
+                "reference": 0.6198850274085999,
+                "referenceBits": 1058975945,
+                "x": 2055,
+                "y": 727
+              }
+            },
+            "crossDeviceComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1374469,
+                1374579,
+                1375071,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 9.5367431640625e-07,
+              "maxScaledRGB": 8.940696716308594e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "referenceSHA256": "1f24f78a803359873dc1b30f990e22bd84457f099182e09059538364d99c7d9f",
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.6488680243492126,
+                "actualBits": 1059462199,
+                "channel": "r",
+                "pixelIndex": 1749284,
+                "reference": 0.6488689184188843,
+                "referenceBits": 1059462214,
+                "x": 2084,
+                "y": 728
+              }
+            }
+          },
+          "monitor-roi": {
+            "fileSHA256": "30a6cfc09e0c8b1bf3c8d3f4f298d460e47d8258d3fba404506ac6e9c78189f9",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                84926,
+                84954,
+                84849,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 1.7881393432617188e-07,
+              "maxScaledRGB": 1.7881393432617188e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.3508186340332031,
+                "actualBits": 1051958912,
+                "channel": "r",
+                "pixelIndex": 13418,
+                "reference": 0.35081881284713745,
+                "referenceBits": 1051958918,
+                "x": 1980,
+                "y": 1114
+              }
+            },
+            "crossDeviceComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                88241,
+                88263,
+                88200,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 3.5762786865234375e-07,
+              "maxScaledRGB": 3.2782554626464844e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "referenceSHA256": "cecd6936480dc51605fd901d0b8e18fc7444dc5c8e7eec22087d1e4e37f90204",
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.32654327154159546,
+                "actualBits": 1051144366,
+                "channel": "r",
+                "pixelIndex": 14058,
+                "reference": 0.3265435993671417,
+                "referenceBits": 1051144377,
+                "x": 1991,
+                "y": 1115
+              }
+            }
+          }
+        }
+      },
+      "vulkan": {
+        "adapter": {
+          "backend": "vulkan",
+          "device": 9905,
+          "driver": "NVIDIA",
+          "driverInfo": "610.43.02",
+          "name": "NVIDIA RTX 6000 Ada Generation",
+          "type": "DiscreteGpu",
+          "vendor": 4318
+        },
+        "reportSHA256": "e1fbcc9e17324045d829978a3ef6903e570d88b2bc62ae54bbd9296f2859b2aa",
+        "frames": {
+          "final-full": {
+            "fileSHA256": "f1a1d21f72a0499bdceae0f37aa718979e76234d0f51ea007d77e389c23fe094",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1382571,
+                1383200,
+                1386499,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 7.152557373046875e-07,
+              "maxScaledRGB": 4.172325134277344e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.5400990843772888,
+                "actualBits": 1057637359,
+                "channel": "r",
+                "pixelIndex": 1581226,
+                "reference": 0.5400986671447754,
+                "referenceBits": 1057637352,
+                "x": 2026,
+                "y": 658
+              }
+            }
+          },
+          "final-roi": {
+            "fileSHA256": "4af6f77a47c18c1f02bd0da5d377ceb4135722dabe4023ba245ee49707e31450",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                98061,
+                98706,
+                98625,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 2.384185791015625e-07,
+              "maxScaledRGB": 2.1924074299810838e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 1.0874736309051514,
+                "actualBits": 1066086998,
+                "channel": "r",
+                "pixelIndex": 200688,
+                "reference": 1.0874738693237305,
+                "referenceBits": 1066087000,
+                "x": 1808,
+                "y": 1412
+              }
+            }
+          },
+          "monitor-full": {
+            "fileSHA256": "1f24f78a803359873dc1b30f990e22bd84457f099182e09059538364d99c7d9f",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                1206069,
+                1205838,
+                1206415,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 7.152557373046875e-07,
+              "maxScaledRGB": 6.556510925292969e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 3840000,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.6756839752197266,
+                "actualBits": 1059912096,
+                "channel": "r",
+                "pixelIndex": 1581226,
+                "reference": 0.675683319568634,
+                "referenceBits": 1059912085,
+                "x": 2026,
+                "y": 658
+              }
+            }
+          },
+          "monitor-roi": {
+            "fileSHA256": "cecd6936480dc51605fd901d0b8e18fc7444dc5c8e7eec22087d1e4e37f90204",
+            "rgbaCpuComparison": {
+              "alphaBitMismatches": 0,
+              "bitMismatchesRGBA": [
+                80509,
+                80495,
+                80518,
+                0
+              ],
+              "firstFailure": null,
+              "maxAbsRGB": 3.5762786865234375e-07,
+              "maxScaledRGB": 2.980232238769531e-07,
+              "mismatchedPixels": 0,
+              "mode": "scaled-rgb-exact-alpha",
+              "passed": true,
+              "pixels": 318903,
+              "rgbScaledTolerance": 2e-05,
+              "worstScaledRGB": {
+                "actual": 0.48544684052467346,
+                "actualBits": 1056476285,
+                "channel": "r",
+                "pixelIndex": 200687,
+                "reference": 0.4854465425014496,
+                "referenceBits": 1056476275,
+                "x": 1807,
+                "y": 1412
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2235 @@
+{
+  "schemaVersion": 1,
+  "rustOperatorImplementation": "a67d9dd645e0c001e5ab2ce13675f88e7242d594",
+  "testSourceCommit": "33cb0a08",
+  "testExecutableAndRuntimeSHA256": {
+    "RAWMasterImagingTests": "b7a476ecf6623bdf7e0388148f3779430e60708dcde35caf5cc59bd9863024e9",
+    "rawmaster-image.runtime": "882ce755f2e78429c1b14529db39d187958b4a612937c94008ac2889854fb44d"
+  },
+  "qualification": "6 MP RGBA32F, same initialized private input, frozen 039 controls, full AP1 output comparison. Texture accounting only.",
+  "nativePerformance": {
+    "accounting": {
+      "rust039": "Texture-pool budget high-water mark. The final output may be absent at the peak. Subtract the input, the actual final output and one measured positive heap estimate overshoot for a conservative lower bound.",
+      "scope": "Engine accounting. Driver and command staging, pipeline memory, unrelated allocations and test readback are outside these figures. The 039 receipt accounts for textures; its validation flag and shader arguments are outside that budget.",
+      "wgpuMetal": "Actual charge for the resident input and output textures and the graph parameter and validation buffers, with logical sizes as minimum charges. Subtract actual input and output allocations to obtain the intermediate charge."
+    },
+    "device": "Apple M4 Max",
+    "frozenDelivery": true,
+    "graph": {
+      "nodes": [
+        {
+          "id": "04960000-0000-4000-8000-000000000001",
+          "name": "Ramp",
+          "operation": {
+            "end": [
+              0.9,
+              1
+            ],
+            "kind": "linearCoverage",
+            "start": [
+              0.1,
+              0
+            ]
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000002",
+          "name": "Ellipse",
+          "operation": {
+            "center": [
+              0.5,
+              0.5
+            ],
+            "feather": 0.2,
+            "kind": "radialCoverage",
+            "radii": [
+              0.4,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000003",
+          "name": "Mask",
+          "operation": {
+            "base": "04960000-0000-4000-8000-000000000001",
+            "kind": "combineCoverage",
+            "mode": "intersect",
+            "other": "04960000-0000-4000-8000-000000000002"
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000004",
+          "name": "Exposure 1",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "$input",
+            "kind": "corrector",
+            "mask": "04960000-0000-4000-8000-000000000003",
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000005",
+          "name": "Exposure 2",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000004",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000006",
+          "name": "Exposure 3",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000005",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000007",
+          "name": "Exposure 4",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000006",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000008",
+          "name": "Exposure 5",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000007",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000009",
+          "name": "Exposure 6",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000008",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000A",
+          "name": "Exposure 7",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000009",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000B",
+          "name": "Exposure 8",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000C",
+          "name": "Exposure 9",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000D",
+          "name": "Exposure 10",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000E",
+          "name": "Exposure 11",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000000F",
+          "name": "Exposure 12",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000000E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000010",
+          "name": "Exposure 13",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000000F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000011",
+          "name": "Exposure 14",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000010",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000012",
+          "name": "Exposure 15",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000011",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000013",
+          "name": "Exposure 16",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000012",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000014",
+          "name": "Exposure 17",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000013",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000015",
+          "name": "Exposure 18",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000014",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000016",
+          "name": "Exposure 19",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000015",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000017",
+          "name": "Exposure 20",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000016",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000018",
+          "name": "Exposure 21",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000017",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000019",
+          "name": "Exposure 22",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000018",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001A",
+          "name": "Exposure 23",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000019",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001B",
+          "name": "Exposure 24",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001C",
+          "name": "Exposure 25",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001D",
+          "name": "Exposure 26",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001E",
+          "name": "Exposure 27",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000001F",
+          "name": "Exposure 28",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000001E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000020",
+          "name": "Exposure 29",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000001F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000021",
+          "name": "Exposure 30",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000020",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000022",
+          "name": "Exposure 31",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000021",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000023",
+          "name": "Exposure 32",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000022",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000024",
+          "name": "Exposure 33",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000023",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000025",
+          "name": "Exposure 34",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000024",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000026",
+          "name": "Exposure 35",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000025",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000027",
+          "name": "Exposure 36",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000026",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000028",
+          "name": "Exposure 37",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000027",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000029",
+          "name": "Exposure 38",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000028",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002A",
+          "name": "Exposure 39",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000029",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002B",
+          "name": "Exposure 40",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002C",
+          "name": "Exposure 41",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002D",
+          "name": "Exposure 42",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002E",
+          "name": "Exposure 43",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000002F",
+          "name": "Exposure 44",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000002E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000030",
+          "name": "Exposure 45",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000002F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000031",
+          "name": "Exposure 46",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000030",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000032",
+          "name": "Exposure 47",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000031",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000033",
+          "name": "Exposure 48",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000032",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000034",
+          "name": "Exposure 49",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000033",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000035",
+          "name": "Exposure 50",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000034",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000036",
+          "name": "Exposure 51",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000035",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000037",
+          "name": "Exposure 52",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000036",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000038",
+          "name": "Exposure 53",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000037",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000039",
+          "name": "Exposure 54",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000038",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003A",
+          "name": "Exposure 55",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000039",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003B",
+          "name": "Exposure 56",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003C",
+          "name": "Exposure 57",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003D",
+          "name": "Exposure 58",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003E",
+          "name": "Exposure 59",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000003F",
+          "name": "Exposure 60",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000003E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000040",
+          "name": "Exposure 61",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000003F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000041",
+          "name": "Exposure 62",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000040",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000042",
+          "name": "Exposure 63",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000041",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000043",
+          "name": "Exposure 64",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000042",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000044",
+          "name": "Exposure 65",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000043",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000045",
+          "name": "Exposure 66",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000044",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000046",
+          "name": "Exposure 67",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000045",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000047",
+          "name": "Exposure 68",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000046",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000048",
+          "name": "Exposure 69",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000047",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000049",
+          "name": "Exposure 70",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000048",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004A",
+          "name": "Exposure 71",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000049",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004B",
+          "name": "Exposure 72",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004C",
+          "name": "Exposure 73",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004D",
+          "name": "Exposure 74",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004E",
+          "name": "Exposure 75",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000004F",
+          "name": "Exposure 76",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000004E",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000050",
+          "name": "Exposure 77",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000004F",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000051",
+          "name": "Exposure 78",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000050",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000052",
+          "name": "Exposure 79",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000051",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000053",
+          "name": "Exposure 80",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000052",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000054",
+          "name": "Exposure 81",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000053",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000055",
+          "name": "Exposure 82",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000054",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000056",
+          "name": "Exposure 83",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000055",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000057",
+          "name": "Exposure 84",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000056",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000058",
+          "name": "Exposure 85",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000057",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000059",
+          "name": "Exposure 86",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-000000000058",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005A",
+          "name": "Exposure 87",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-000000000059",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005B",
+          "name": "Exposure 88",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000005A",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005C",
+          "name": "Exposure 89",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.0625,
+            "image": "04960000-0000-4000-8000-00000000005B",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005D",
+          "name": "Exposure 90",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.046875,
+            "image": "04960000-0000-4000-8000-00000000005C",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005E",
+          "name": "Light branch",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": 0.25,
+            "image": "04960000-0000-4000-8000-00000000005D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-00000000005F",
+          "name": "Dark branch",
+          "operation": {
+            "curve": [],
+            "enabled": true,
+            "exposureEV": -0.3125,
+            "image": "04960000-0000-4000-8000-00000000005D",
+            "kind": "corrector",
+            "mask": null,
+            "strength": 1
+          }
+        },
+        {
+          "id": "04960000-0000-4000-8000-000000000060",
+          "name": "Ordered layer",
+          "operation": {
+            "base": "04960000-0000-4000-8000-00000000005D",
+            "enabled": true,
+            "kind": "layer",
+            "layers": [
+              {
+                "image": "04960000-0000-4000-8000-00000000005E",
+                "mode": "normal",
+                "weight": 0.5
+              },
+              {
+                "image": "04960000-0000-4000-8000-00000000005F",
+                "mode": "normal",
+                "weight": 0.375
+              }
+            ]
+          }
+        }
+      ],
+      "output": "04960000-0000-4000-8000-000000000060"
+    },
+    "graphNodes": 96,
+    "inputAllocatedBytes": 97288192,
+    "inputInitialization": "one joined same-device texture blit before both series",
+    "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+    "inputStorageMode": "private",
+    "intermediateWorkingSetGate": {
+      "allowedBytes": 231014400,
+      "allowedFraction": 0.5,
+      "passed": true,
+      "rust039ConservativeLowerBytes": 462028800,
+      "wgpuIntermediateChargeBytes": 32772
+    },
+    "loweredSteps": 97,
+    "measuredSamples": 30,
+    "order": "each pair runs serially and alternates its first backend, starting with rust",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p95Rule": "nearest rank",
+    "passed": true,
+    "recipeSHA256": "5f3a961ef6d0bc30f7f340cc12fa3bbe68e64b07f8c06f035a1d281622ad52ea",
+    "registryID": "4294968440",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rust039": {
+      "backend": [
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust",
+        "rust"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "coverageCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "dispatches": [
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97
+      ],
+      "fallbackCount": 0,
+      "heapEstimateOvershootDeductionBytes": 0,
+      "hostWallSamplesMs": [
+        57.106541,
+        60.072,
+        55.797542,
+        56.364584,
+        54.905709,
+        54.541292,
+        54.539709,
+        55.110209,
+        55.296459,
+        56.744916,
+        56.197917,
+        55.184334,
+        53.941709,
+        58.048833,
+        53.180375,
+        53.449625,
+        51.995667,
+        55.709958,
+        52.751416,
+        53.710542,
+        53.79825,
+        54.498292,
+        54.334875,
+        54.262125,
+        53.537083,
+        57.967958,
+        54.114958,
+        52.637042,
+        52.786583,
+        54.000875
+      ],
+      "hostWallSumMs": 1646.5873780000002,
+      "intermediateLowerBytes": [
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800
+      ],
+      "maxIntermediateLowerBytes": 462028800,
+      "maxIntermediateUpperBytes": 559054848,
+      "maxTotalPeakBytes": 656343040,
+      "nodeCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outputAllocatedBytes": [
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048
+      ],
+      "p50Ms": 54.519000500000004,
+      "p95Ms": 58.048833,
+      "peakMinusInputAndOutputBytes": [
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800,
+        462028800
+      ],
+      "peakMinusInputBytes": [
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848,
+        559054848
+      ],
+      "pixelsPerSecond": 109317004.61510521,
+      "receiptNodes": [
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "totalPeakBytes": [
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040,
+        656343040
+      ]
+    },
+    "rust039HeapEstimateProbes": [
+      {
+        "allocatedBytes": 97026048,
+        "estimatedBytes": 97026048,
+        "format": "rgba32Float",
+        "positiveOvershootBytes": 0
+      },
+      {
+        "allocatedBytes": 24641536,
+        "estimatedBytes": 24641536,
+        "format": "r32Float",
+        "positiveOvershootBytes": 0
+      }
+    ],
+    "scope": "host wall from prepareFinal invocation to its return",
+    "sourceRevision": 0,
+    "throughputFormula": "width * height * measuredSamples / sum(host wall seconds)",
+    "throughputGate": {
+      "actualRatio": 10.600575270706555,
+      "passed": true,
+      "requiredRatio": 2
+    },
+    "tileEdge": 0,
+    "warmups": 5,
+    "wgpuMetal": {
+      "backend": [
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu",
+        "wgpu"
+      ],
+      "budgetBytes": [
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736,
+        1610612736
+      ],
+      "coverageCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "dispatches": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "fallbackCount": 0,
+      "heapEstimateOvershootDeductionBytes": 0,
+      "hostWallSamplesMs": [
+        4.684583,
+        4.798709,
+        4.655584,
+        4.379083,
+        5.348917,
+        4.465417,
+        4.730916,
+        4.775041,
+        5.613208,
+        5.297666,
+        4.54475,
+        4.557,
+        6.586209,
+        5.527792,
+        4.6205,
+        3.905,
+        9.949042,
+        4.71925,
+        4.660833,
+        4.508041,
+        7.237834,
+        4.236125,
+        6.98525,
+        3.824708,
+        5.249667,
+        4.878125,
+        5.720875,
+        4.687209,
+        5.767209,
+        4.415459
+      ],
+      "hostWallSumMs": 155.33000200000004,
+      "intermediateLowerBytes": [
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772
+      ],
+      "maxIntermediateLowerBytes": 32772,
+      "maxIntermediateUpperBytes": 97058820,
+      "maxTotalPeakBytes": 194347012,
+      "nodeCacheHits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outputAllocatedBytes": [
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048,
+        97026048
+      ],
+      "p50Ms": 4.725083,
+      "p95Ms": 7.237834,
+      "peakMinusInputAndOutputBytes": [
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772,
+        32772
+      ],
+      "peakMinusInputBytes": [
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820,
+        97058820
+      ],
+      "pixelsPerSecond": 1158823135.7905986,
+      "receiptNodes": [
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97,
+        97
+      ],
+      "tiles": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "totalPeakBytes": [
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012,
+        194347012
+      ]
+    }
+  },
+  "nativeAP1Pixels": {
+    "alphaEquality": "bit pattern",
+    "comparison": {
+      "aboveOnePixels": 3153231,
+      "alphaBitDifferences": 0,
+      "candidateRGBA32FSHA256": "9e7b3e36b0644f5e3adb580850872d830066c15e48221b096dffa2baa4cfd43d",
+      "maxScaledRGBError": 1.6653914372000145e-06,
+      "negativePixels": 881513,
+      "nonfinite": 0,
+      "opaquePixels": 4114286,
+      "partialAlphaPixels": 1028571,
+      "pixels": 6000000,
+      "referenceRGBA32FSHA256": "c51713919c92a78567ffe20c3c3b08246094fd4ba4d64ad206fb373174d83aab",
+      "rgbBitDifferences": 3152457,
+      "transparentPixels": 857143
+    },
+    "device": "Apple M4 Max",
+    "graphNodes": 96,
+    "inputRGBA32FSHA256": "200dff3ea0800e41461186ce8461d7ca907f07653ec0a90dceefff1b76b20d6e",
+    "loweredSteps": 97,
+    "recipeSHA256": "5f3a961ef6d0bc30f7f340cc12fa3bbe68e64b07f8c06f035a1d281622ad52ea",
+    "registryID": "4294968440",
+    "resolution": [
+      3000,
+      2000
+    ],
+    "rgbScaledTolerance": 2e-05,
+    "rust039": {
+      "backend": "rust",
+      "budgetBytes": 1610612736,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 54.951834,
+      "dispatches": 97,
+      "nodeCacheHits": 0,
+      "nodes": 96,
+      "peakBytes": 656343040,
+      "tiles": 1
+    },
+    "scope": "untimed full-frame AP1 RGBA32F after prepareFinal",
+    "wgpuMetal": {
+      "backend": "wgpu",
+      "budgetBytes": 1610612736,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 317.231625,
+      "dispatches": 1,
+      "nodeCacheHits": 0,
+      "nodes": 97,
+      "peakBytes": 194347012,
+      "tiles": 1
+    }
+  }
+}
