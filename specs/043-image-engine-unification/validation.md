@@ -71,6 +71,8 @@ M1-01 在相同实拍与 FlashRaw 运行库上完成三条路径各一次首轮�
 
 冻结源 RAW 9504×6336 生成 2400×1600 线性 AP1，非居中 ROI 为 `(1771, 1093, 629, 507)`。最终根和监看根各跑整幅与 ROI，两端共八次，均为一次派发与零回退。独立复算的双端缩放 RGB 误差最大 `2.65×10⁻⁷`，alpha 逐位相同。对 CPU 和 039 的误差均在门槛内。两端各自的 ROI 对整幅裁块四通道逐位相同。两台机器的合成硬件测试覆盖部分 alpha、透明像素、零 coverage、禁用和参数重绑定。该证据签收 CPU 上传的 AP1 缓冲区组件。 [双端证据](evidence/m2-ap1-cross-device-receipt.json)
 
+接入同设备纹理后，从 `7ccbefc4` 复跑两台实体 GPU。独立计算的引擎源码指纹一致。两端各四份读回摘要和两份生成的 shader 摘要均与本设备的首条组件证据一致。[组件复验](evidence/m2-native-metal-textures.json)
+
 Linux 使用同一 Rust 工具链和经 PAX 提交 ID、SHA-256 校验的源码归档。工作站的物理 GPU 身份另经 PCI 和 `vulkaninfo` 核对。Vulkan loader 与 NVIDIA EGL ICD 配置位于独立测试目录，调用现有 610.43.02 驱动。 [NVIDIA EGL ICD 说明](https://download.nvidia.com/XFree86/Linux-x86_64/620.70.06/README/installedcomponents.html)
 
 首条组件的冻结输入来自 `DevelopmentSceneRAWV1Tests/testOptInFrozenAP1SceneWGSLFixture`。用 `RAWMASTER_SCENE_60MP_ARW` 指定本节同源授权原片，`RAWMASTER_SCENE_WGSL_FIXTURE_DIR` 指定新目录。夹具写入 2400×1600 线性 AP1 F32、校准、冻结 039 图、右下 ROI 和四份严格 Rust Metal 参考。`manifest.json` 保存输入、输出及校准摘要。两端用同一份冻结输入。
@@ -85,6 +87,22 @@ cargo run --release --locked --manifest-path Modules/ImageEdit/Cargo.toml \
 ```
 
 Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配器，设置独立 `--output-dir`，并用 `--peer-dir` 传入 Metal 回执及读回结果。随报告保留 `vulkaninfo --summary` 和物理设备、驱动信息。组件比较同后端 RGBAf 裁块位模式，跨实现比较 RGB `2×10⁻⁵ × max(1, |reference|)` 和 alpha 位模式。报告分别标明 CPU 上传、GPU 完成等待、读回及核算缓冲区。 [首条组件入口](../../Modules/ImageEdit/examples/ap1_scene_probe.rs)
+
+#### macOS 同设备纹理试验
+
+严格模式在 Apple M4 Max 上用同一图比较 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。24 MP 实拍从修改曝光到 AppKit drawable 的暖态 p50/p95 为 15.57/17.46 ms，达到 038 既有 FIT 门槛，原生 SDR 队列发布和重开也通过。组内监看、60 MP drawable 仍待验收。[八帧与画布证据](evidence/m2-native-metal-textures.json)
+
+60 MP 以同一 Release 测试二进制和 FlashRaw 分别跑严格 wgpu 与严格 039。每条路径一次首轮、五次预热、三十次计量。每个 wgpu 目标保持 35 个瓦片，图派发从 105 次降到 35 次，35 次提交与等待，1 次 pipeline build。图段整帧 CPU 搬运为 0 B，合计回收 140 B 有效性标志。图核算峰值 1,411,744,084 B，039 为 1,458,929,664 B。wgpu 内部输出初始化计入提交等待，DRT、落瓦片和编码分别计时。[分项与逐次样本](evidence/m2-native-metal-textures.json)
+
+| 同机 60 MP 路径 | 039 端到端 p50 / p95，ms | wgpu 端到端 p50 / p95，ms | wgpu DAG p50，ms |
+| --- | ---: | ---: | ---: |
+| 032 PQ AVIF | 1372.12 / 1417.62 | 1320.47 / 1364.05 | 38.88 |
+| 032 SDR JPEG | 575.50 / 605.49 | 548.24 / 589.81 | 38.94 |
+| 双目标组件 | 1659.78 / 1719.87 | 1650.47 / 1733.85 | PQ 39.19，JPEG 40.36 |
+
+032 新回执在隔离资料库核对冻结版本、文件摘要和重开。Rust 目录进程中断回归覆盖旧值和 `wgpu` 值。各执行器每格式 36 个成片分别摘要一致。跨执行器文件摘要有差异。独立全图解码得到同尺寸、10-bit full range CICP 9/16/1 的 PQ AVIF 和 8-bit、ICC 摘要相同的 SDR JPEG。PQ 的 Y/U/V 绝对码值差 p95 各为 1、最大 13/13/12，JPEG 最大 2/3/1。保留这组实际偏差供放行评审。[输出与回执证据](evidence/m2-native-metal-textures.json)
+
+复跑 60 MP 使用 [原生分项脚本](../../scripts/performance/measure-043-scene-delivery.py) 的 `--backend wgpu` 与 `--backend rust`，为两轮提供各自的新输出目录。预算和组拒绝、提交完成后取消、取消后复用同一程序由 Metal ABI 探针验证。图段据此达到 60 MP 的提速判据，双目标组件的整体 p95 在这轮增加约 0.8%。
 
 - **6 MP。** 同机以 M0 的 039 当前执行器为参照，暖态图 p95 至少 1.3× 提速。
 - **96 节点。** 冻结图结构、ROI、缓存条件和未融合对照。吞吐 ≥2×，峰值中间工作集 ≤50%。中间工作集计量求值期间的临时纹理和缓冲，固定输入、终端输出及总峰值单列。

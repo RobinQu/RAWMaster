@@ -1,0 +1,2954 @@
+{
+  "schemaVersion": 1,
+  "scope": "strict macOS native RGBA32F top-level AP1 DAG, 24 MP FIT with AppKit drawable, 24/60 MP preview ROI, 60 MP 032 frozen delivery",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "warmups": 5,
+  "measuredSamplesPerRoute": 30,
+  "assetGeometry": [
+    9504,
+    6336
+  ],
+  "testImageRuntimeSHA256": "2c6d329ca529b73f6acf41d44930c217e718898cfd1ad0835d018584446aa7ab",
+  "method": {
+    "workbench": "same binary and parameters, one cold, five warmups and 30 measured for each 032 rendition and the double-target component. Strict wgpu then strict 039 sequentially.",
+    "variant": "Same RAW bytes, FlashRaw library, graph operation order, weights and photographic values. Runtime graph and frozen-version instance UUIDs differ between processes.",
+    "dagWall": "Swift bridge render call through backend completion. wgpu included pipeline build on each target's first tile. Device open separate. Submit and wait includes driver commands and internal output initialization, and is a subinterval of render wall.",
+    "transport": "Zero whole-frame CPU upload/readback within the DAG. wgpu output init, separate DRT/blit and codec readback are outside that count.",
+    "decodedFiles": "One deterministically repeated file per format and backend. Full sample code-value difference in native decoded YUV420. dav1d 1.5.4 via avifdec 1.4.2, FFmpeg 8.1.2 MJPEG."
+  },
+  "preview": {
+    "cases": [
+      {
+        "alphaBitsMatch": true,
+        "case": "fit-final",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 7.796583999999999,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 19661140,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "547725217f4f9b0c73a72b6bcc9f10f9b2d7a864db264ec340a9fcc1f30548ad",
+        "maxScaledRGBError": 1.6093254089355469e-06,
+        "nativeSize": [
+          4000,
+          6000
+        ],
+        "pixelSize": [
+          640,
+          960
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.78575,
+          "dispatches": 3,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 31948800,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "wgpuWitnessSHA256": "c3f339e0ad8be35f25c62ff6c2ba95d9e857bf68a952561526ad60f240dc1c2b"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "fit-monitor",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 1.197833,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 2,
+          "peakBytes": 19661124,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "6119e7315bd177cc7c0eea3adf79e23dec87c754e279566673c6ac58ff29e9b3",
+        "maxScaledRGBError": 1.9341034658282297e-06,
+        "nativeSize": [
+          4000,
+          6000
+        ],
+        "pixelSize": [
+          640,
+          960
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.05875,
+          "dispatches": 0,
+          "nodeCacheHits": 1,
+          "nodes": 0,
+          "peakBytes": 31948800,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "wgpuWitnessSHA256": "0a7c08158c8b22d90e7b80bd60f106abb265a05e4d02bcc4e843db2c0ec8d522"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "native-final",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.457375,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 12583252,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "71810cd50199aa2483376b2d2e6bb11e22dbdc0693379f8904b9b1488e3cbe6c",
+        "maxScaledRGBError": 3.427267074584961e-07,
+        "nativeSize": [
+          4000,
+          6000
+        ],
+        "pixelSize": [
+          500,
+          750
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.487458,
+          "dispatches": 3,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 42565632,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "wgpuWitnessSHA256": "4db5fbd6f63764c974fce6b880db3a6a0faefe0b2e2fd4f70e4beeffa7b0ffe3"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "native-monitor",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.426875,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 2,
+          "peakBytes": 12583236,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "18cd5c7e71c0afea30aefdb071d248c2e8adbf62c3271951bcd98621a24dcbd6",
+        "maxScaledRGBError": 5.364418029785156e-07,
+        "nativeSize": [
+          4000,
+          6000
+        ],
+        "pixelSize": [
+          500,
+          750
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.05075,
+          "dispatches": 0,
+          "nodeCacheHits": 1,
+          "nodes": 0,
+          "peakBytes": 42565632,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+        "wgpuWitnessSHA256": "354f46f2aab72f38523a37b25b5cf6e873f12ddff69fc1f3fc325d248613497a"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "fit-final",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 5.891208,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 19661140,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "ee2cea419a5c7946b9ec3971a244a0e15e2da0ef61e4ff98bd32e7c3bfdcc392",
+        "maxScaledRGBError": 2.682209014892578e-07,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "pixelSize": [
+          960,
+          640
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.66925,
+          "dispatches": 3,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 31948800,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "wgpuWitnessSHA256": "1042106bdb78b30315ad71fe975591546ca7a55af05823c8997221e082a8338a"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "fit-monitor",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.851333,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 2,
+          "peakBytes": 19661124,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "b4bbfb0a61f598b65f0c4489adf6edfef25861f885d31d03accd8e7d1e8a9da5",
+        "maxScaledRGBError": 2.8312206268310547e-07,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "pixelSize": [
+          960,
+          640
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.045667,
+          "dispatches": 0,
+          "nodeCacheHits": 1,
+          "nodes": 0,
+          "peakBytes": 31948800,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "wgpuWitnessSHA256": "6a33ce4ec202635f3aa8c7bc4eba08a7907bf41f3372c4658825e390aed4926b"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "native-final",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.528042,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 31129940,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "0b751fe440c42bcfa10fdb3e1307b8aded858a430062b6f056c4db28ea42a2e6",
+        "maxScaledRGBError": 1.2218952178955078e-06,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "pixelSize": [
+          1188,
+          792
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.803792,
+          "dispatches": 3,
+          "nodeCacheHits": 0,
+          "nodes": 3,
+          "peakBytes": 72859648,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "wgpuWitnessSHA256": "cb1da1d478822ead690dba982452c6adef764f1b2cf3e435f59ec3958cd438ee"
+      },
+      {
+        "alphaBitsMatch": true,
+        "case": "native-monitor",
+        "device": "Apple M4 Max",
+        "execution": {
+          "backend": "wgpu",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.6170420000000001,
+          "dispatches": 1,
+          "nodeCacheHits": 0,
+          "nodes": 2,
+          "peakBytes": 31129924,
+          "tiles": 1
+        },
+        "legacy039WitnessSHA256": "1d735242a465870b047d2d13ee26b1ec40424a04ec70e38ccd1f5b3fcf1174ca",
+        "maxScaledRGBError": 1.4603137969970703e-06,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "pixelSize": [
+          1188,
+          792
+        ],
+        "referenceExecution": {
+          "backend": "rust",
+          "budgetBytes": 671088640,
+          "coverageCacheHits": 0,
+          "cpuMilliseconds": 0.038417,
+          "dispatches": 0,
+          "nodeCacheHits": 1,
+          "nodes": 0,
+          "peakBytes": 72859648,
+          "tiles": 1
+        },
+        "registryID": "4294968440",
+        "sampleCount": 2048,
+        "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+        "wgpuWitnessSHA256": "1eb3d42523ef0e5f313e11e669c08f2e481ddfa4cfd5de51488ef40e103af46a"
+      }
+    ],
+    "nativeWindow": [
+      0.625,
+      0.25,
+      0.125,
+      0.125
+    ],
+    "recipeSHA256": "60f1749810432b3fa50f448879219a3d76d89550027b94dfb46c6d29594cbbb7",
+    "scope": "resident display-linear HDR texture before AppKit presentation"
+  },
+  "drawable24MP": {
+    "backingScale": 2,
+    "currentHeadroom": 16,
+    "device": "Apple M4 Max",
+    "os": "Version 27.0.1 (Build 26A434)",
+    "p50Ms": 15.571875,
+    "p95Ms": 17.464833,
+    "samplesMs": [
+      17.03,
+      16.637667,
+      25.889791,
+      15.698292,
+      16.080375,
+      15.388792,
+      16.585625,
+      14.630125,
+      16.110334,
+      17.325334,
+      15.1155,
+      15.469125,
+      17.464833,
+      15.346209,
+      15.317583,
+      14.917916,
+      16.257667,
+      15.079541,
+      14.979375,
+      14.306083,
+      14.217542,
+      17.096083,
+      16.274709,
+      14.966541,
+      14.479041,
+      14.903583,
+      15.230167,
+      15.674625,
+      15.890458,
+      16.554792
+    ],
+    "scope": "live scene exposure command to joined AppKit Metal drawable; warm FIT SDR derivative, no HID or photon readback",
+    "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+    "window": [
+      1240,
+      660
+    ]
+  },
+  "nativeABIProbe": {
+    "budgetFailure": 6,
+    "unsupportedGroup": 7,
+    "postSubmitStale": 5,
+    "postSubmitCallbackChecks": 2,
+    "reusableAfterStale": true,
+    "dispatches": 1,
+    "submissions": 1,
+    "hostWaits": 1,
+    "frameCopyBytes": 0,
+    "validationBytes": 4,
+    "signedRGBAndAlphaExactPixels": 1024
+  },
+  "legacyLoaderMissingOptionalSymbolsPassed": true,
+  "catalogInterruptionReadyPublishAcknowledgeReopenPassed": true,
+  "queueDecoded": {
+    "pqAvif": {
+      "bitDepth": 10,
+      "fullRange": true,
+      "CICP": [
+        9,
+        16,
+        1
+      ],
+      "planes": [
+        {
+          "plane": "Y",
+          "samples": 60217344,
+          "changed": 7501239,
+          "aboveOneCode": 2633652,
+          "meanAbsCode": 0.191406233,
+          "meanSquaredCode": 0.391408479,
+          "p95Code": 1,
+          "p99Code": 3,
+          "p999Code": 5,
+          "maxAbsCode": 13,
+          "worstXY": [
+            5824,
+            4630
+          ],
+          "worstM1": 157,
+          "worstWgpu": 144
+        },
+        {
+          "plane": "U",
+          "samples": 15054336,
+          "changed": 1629337,
+          "aboveOneCode": 368298,
+          "meanAbsCode": 0.142248652,
+          "meanSquaredCode": 0.239568919,
+          "p95Code": 1,
+          "p99Code": 2,
+          "p999Code": 4,
+          "maxAbsCode": 13,
+          "worstXY": [
+            3832,
+            2347
+          ],
+          "worstM1": 473,
+          "worstWgpu": 486
+        },
+        {
+          "plane": "V",
+          "samples": 15054336,
+          "changed": 1006962,
+          "aboveOneCode": 160963,
+          "meanAbsCode": 0.080311413,
+          "meanSquaredCode": 0.114779091,
+          "p95Code": 1,
+          "p99Code": 2,
+          "p999Code": 3,
+          "maxAbsCode": 12,
+          "worstXY": [
+            2859,
+            2404
+          ],
+          "worstM1": 541,
+          "worstWgpu": 529
+        }
+      ]
+    },
+    "sdrJpeg": {
+      "bitDepth": 8,
+      "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+      "planes": [
+        {
+          "plane": "Y",
+          "samples": 60217344,
+          "changed": 1237,
+          "aboveOneCode": 13,
+          "meanAbsCode": 2.0758e-05,
+          "meanSquaredCode": 2.119e-05,
+          "p95Code": 0,
+          "p99Code": 0,
+          "p999Code": 0,
+          "maxAbsCode": 2,
+          "worstXY": [
+            4272,
+            558
+          ],
+          "worstM1": 59,
+          "worstWgpu": 61
+        },
+        {
+          "plane": "U",
+          "samples": 15054336,
+          "changed": 172,
+          "aboveOneCode": 22,
+          "meanAbsCode": 1.3352e-05,
+          "meanSquaredCode": 1.8134e-05,
+          "p95Code": 0,
+          "p99Code": 0,
+          "p999Code": 0,
+          "maxAbsCode": 3,
+          "worstXY": [
+            3204,
+            2280
+          ],
+          "worstM1": 119,
+          "worstWgpu": 122
+        },
+        {
+          "plane": "V",
+          "samples": 15054336,
+          "changed": 103,
+          "aboveOneCode": 0,
+          "meanAbsCode": 6.842e-06,
+          "meanSquaredCode": 6.842e-06,
+          "p95Code": 0,
+          "p99Code": 0,
+          "p999Code": 0,
+          "maxAbsCode": 1,
+          "worstXY": [
+            1364,
+            80
+          ],
+          "worstM1": 110,
+          "worstWgpu": 111
+        }
+      ]
+    }
+  },
+  "backends": {
+    "rust": {
+      "fullSummarySHA256": "df2ef7cf5f22de33e13944d2a4ca26a688c0031afe38dc6fc94cb87e7503eb00",
+      "testBundleSHA256": {
+        "RAWMasterUITests": "c756fae93a2e9ce4a8d46bb317dfe6fbb986f20c91d1eee816725de76c1d5881",
+        "RAWMasterImagingTests": "a184cddf1ca9a852d35f6931fa9af5c9e5a9ecc382375950d9ba500d15950324"
+      },
+      "sourceCommit": "7ccbefc4bd93309083d5f20c5072c41dc00c806c",
+      "queueFiles": {
+        "avif": {
+          "count": 36,
+          "sha256": "cbc9026c0aac8fd3507e0d3c0124363daa22b1159fb6c8402f87406fe62520fa",
+          "byteCount": 13285431
+        },
+        "jpg": {
+          "count": 36,
+          "sha256": "861665410e945da9531d493f0ab6500b63e8f6420431d30f9e61e8e2a4c0f0c9",
+          "byteCount": 9591125
+        }
+      },
+      "workbenchMemoryOutsideTimedRegions": {
+        "beforeSweep": {
+          "metalAllocatedBytes": 5403033600,
+          "processPhysFootprintBytes": 3319301488
+        },
+        "afterEachTargetPair": [
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2137213424
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2126498360
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2151139920
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2159888952
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2180958800
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2190232120
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2202405456
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2205846096
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2203716176
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2220444264
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2225834576
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2222000696
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2226850384
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2231126584
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2233109048
+          },
+          {
+            "metalAllocatedBytes": 5484232704,
+            "processPhysFootprintBytes": 2238728784
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2239908504
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2236107368
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2232945232
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2236893776
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2240531024
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2241366608
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2245904928
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2249755216
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2249034296
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2249116240
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2244512360
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2244577872
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2244594256
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2241694312
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2245528120
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2245429816
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2248493648
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2248460880
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2248542776
+          },
+          {
+            "metalAllocatedBytes": 5485281280,
+            "processPhysFootprintBytes": 2249378360
+          }
+        ],
+        "afterClosingLibraryOwners": {
+          "metalAllocatedBytes": 133971968,
+          "processPhysFootprintBytes": 2032486824
+        }
+      },
+      "routes": {
+        "032-avif10": {
+          "firstRunWallMs": 1410.171959,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 1372.1174795000002,
+            "p95Ms": 1417.619458
+          },
+          "targets": {
+            "avif10": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 7192133632,
+                "maxSampledProcessPhysFootprintBytes": 3780594352
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.8853169999999997,
+                    "p95Ms": 4.533192
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 30.694603999999998,
+                    "p95Ms": 34.530128
+                  }
+                },
+                "avif.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 914.2964374999999,
+                    "p95Ms": 925.548791
+                  }
+                },
+                "dag.rust.dispatch_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 61.632771000000005,
+                    "p95Ms": 76.874122
+                  }
+                },
+                "dag.rust.open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.2804585,
+                    "p95Ms": 0.330292
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.0625835,
+                    "p95Ms": 0.072791
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.34820850000000003,
+                    "p95Ms": 0.964792
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 14.4123945,
+                    "p95Ms": 20.416112
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 37.994603,
+                    "p95Ms": 43.578627
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.45489599999999997,
+                    "p95Ms": 0.507583
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.9942085,
+                    "p95Ms": 44.498748
+                  }
+                }
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              1377.063125,
+              1381.969375,
+              1384.828541,
+              1410.79425,
+              1374.832541,
+              1372.8205,
+              1365.128959,
+              1371.625,
+              1372.403792,
+              1417.619458,
+              1371.831167,
+              1361.524958,
+              1360.040042,
+              1361.138083,
+              1354.813,
+              1358.491166,
+              1365.382791,
+              1377.8485,
+              1415.401834,
+              1384.475,
+              1359.288625,
+              1367.3415,
+              1363.028791,
+              1463.73525,
+              1391.024375,
+              1371.6625,
+              1373.65225,
+              1398.173833,
+              1368.499417,
+              1371.797375
+            ],
+            "avif10": {
+              "dagRenderWallMs": [
+                61.797127,
+                61.066419,
+                61.610212,
+                62.944375,
+                61.351793,
+                61.62404,
+                59.783837,
+                61.062464,
+                60.515917,
+                83.786087,
+                61.229833,
+                61.230501,
+                60.69033,
+                61.822584,
+                60.817917,
+                61.128627,
+                61.27504,
+                61.969087,
+                61.835333,
+                61.802042,
+                62.031254,
+                62.209379,
+                61.641502,
+                76.874122,
+                62.07317,
+                60.628466,
+                62.266334,
+                61.418374,
+                63.362293,
+                63.384249
+              ]
+            }
+          }
+        },
+        "032-jpeg8": {
+          "firstRunWallMs": 571.819375,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 575.5046665,
+            "p95Ms": 605.49275
+          },
+          "targets": {
+            "jpeg8": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 7192133632,
+                "maxSampledProcessPhysFootprintBytes": 3438971424,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.9994,
+                    "p95Ms": 5.431233
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 32.0101685,
+                    "p95Ms": 35.404877
+                  }
+                },
+                "dag.rust.dispatch_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 62.14975,
+                    "p95Ms": 66.65646
+                  }
+                },
+                "dag.rust.open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.2752915,
+                    "p95Ms": 0.311292
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.063167,
+                    "p95Ms": 0.071209
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.3762085,
+                    "p95Ms": 1.059167
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 14.8957315,
+                    "p95Ms": 19.035021
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.590688,
+                    "p95Ms": 42.890209
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.45237499999999997,
+                    "p95Ms": 0.513542
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 39.5438345,
+                    "p95Ms": 43.971791
+                  }
+                },
+                "sdr.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 104.4239585,
+                    "p95Ms": 106.746042
+                  }
+                }
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              575.221416,
+              570.761291,
+              572.290959,
+              570.649625,
+              570.129458,
+              575.613416,
+              595.643833,
+              568.794125,
+              573.512459,
+              585.302375,
+              586.765125,
+              561.633125,
+              575.446875,
+              571.399292,
+              567.025875,
+              582.080959,
+              568.426625,
+              563.083375,
+              605.49275,
+              564.23575,
+              563.248667,
+              575.562458,
+              587.35425,
+              591.636459,
+              623.312083,
+              579.091041,
+              583.048167,
+              589.252708,
+              578.828291,
+              591.218375
+            ],
+            "jpeg8": {
+              "dagRenderWallMs": [
+                61.555085,
+                62.319545,
+                60.650751,
+                60.829501,
+                62.749333,
+                62.637499,
+                62.760501,
+                62.535835,
+                61.745496,
+                61.828627,
+                62.68938,
+                61.435957,
+                61.405626,
+                61.137413,
+                60.79283,
+                61.236708,
+                62.869169,
+                60.742292,
+                65.063833,
+                61.823244,
+                60.694124,
+                61.979955,
+                63.172419,
+                62.402961,
+                67.65046,
+                63.156624,
+                61.715623,
+                66.65646,
+                63.282707,
+                64.995912
+              ]
+            }
+          }
+        },
+        "component": {
+          "firstRunWallMs": 1747.798125,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 1659.7806045,
+            "p95Ms": 1719.867708
+          },
+          "targets": {
+            "avif10": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 2088845312,
+                "maxSampledProcessPhysFootprintBytes": 3555822016
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.859336,
+                    "p95Ms": 4.576979
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 30.523378,
+                    "p95Ms": 33.122082
+                  }
+                },
+                "avif.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 885.9810835000001,
+                    "p95Ms": 923.119458
+                  }
+                },
+                "dag.rust.dispatch_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 61.440292,
+                    "p95Ms": 64.496293
+                  }
+                },
+                "dag.rust.open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.274646,
+                    "p95Ms": 0.309708
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.061521,
+                    "p95Ms": 0.072375
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.33029200000000003,
+                    "p95Ms": 0.361375
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 14.6803365,
+                    "p95Ms": 18.229401
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.167103499999996,
+                    "p95Ms": 41.696084
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.4555,
+                    "p95Ms": 0.558542
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 39.113313,
+                    "p95Ms": 42.603584
+                  }
+                }
+              }
+            },
+            "jpeg8": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 1720352768,
+                "maxSampledProcessPhysFootprintBytes": 3436497608,
+                "sdrBitmapBytes": 240869376
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 4.2929205,
+                    "p95Ms": 5.540651
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 36.611435,
+                    "p95Ms": 38.98225
+                  }
+                },
+                "dag.rust.dispatch_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 65.467646,
+                    "p95Ms": 68.523164
+                  }
+                },
+                "dag.rust.open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.352209,
+                    "p95Ms": 0.408041
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.0819585,
+                    "p95Ms": 0.092916
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.359458,
+                    "p95Ms": 0.406417
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 20.585568000000002,
+                    "p95Ms": 25.890233
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 44.3742075,
+                    "p95Ms": 49.301207
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.4903545,
+                    "p95Ms": 0.592625
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 45.290206,
+                    "p95Ms": 50.363248
+                  }
+                },
+                "sdr.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 102.8787705,
+                    "p95Ms": 104.294875
+                  }
+                }
+              }
+            },
+            "shared": {
+              "stages": {
+                "flashraw.metal_init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.3308955,
+                    "p95Ms": 0.360416
+                  }
+                },
+                "flashraw.mosaic_data": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.0021875,
+                    "p95Ms": 0.002666
+                  }
+                },
+                "flashraw.mosaic_upload": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 12.020146,
+                    "p95Ms": 12.417292
+                  }
+                },
+                "flashraw.sensor_frame": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 27.4214585,
+                    "p95Ms": 28.899792
+                  }
+                },
+                "photographic.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 50.1391665,
+                    "p95Ms": 61.934875
+                  }
+                },
+                "source.capture_stamp": {
+                  "observedRuns": 30,
+                  "stageSamples": 90,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.10743749999999999,
+                    "p95Ms": 0.12921
+                  }
+                },
+                "source.verified_copy": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 32.3815005,
+                    "p95Ms": 32.955958
+                  }
+                }
+              },
+              "exampleGraphReceipt": null,
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 135954432,
+                "maxSampledProcessPhysFootprintBytes": 1380485568
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              1663.726,
+              1679.804625,
+              1702.515958,
+              1660.946792,
+              1660.292375,
+              1680.588834,
+              1645.912084,
+              1660.418583,
+              1663.202709,
+              1665.744459,
+              1655.775875,
+              1656.829917,
+              1670.411417,
+              1710.121792,
+              1740.319708,
+              1649.882083,
+              1641.307917,
+              1658.786042,
+              1719.867708,
+              1640.800667,
+              1659.268834,
+              1675.567875,
+              1642.729917,
+              1631.621917,
+              1653.860292,
+              1668.914583,
+              1659.244959,
+              1647.232875,
+              1651.81425,
+              1646.53575
+            ],
+            "avif10": {
+              "dagRenderWallMs": [
+                62.495253,
+                64.496293,
+                66.059748,
+                60.709584,
+                60.798916,
+                62.333707,
+                60.188542,
+                61.512374,
+                61.018251,
+                61.817957,
+                60.553542,
+                61.366333,
+                62.177958,
+                60.815794,
+                61.716878,
+                60.205503,
+                59.975832,
+                60.779044,
+                63.430878,
+                61.708712,
+                61.36821,
+                61.875871,
+                62.084918,
+                61.270872,
+                60.850541,
+                60.813584,
+                61.543541,
+                61.249204,
+                62.165128,
+                61.708625
+              ]
+            },
+            "jpeg8": {
+              "dagRenderWallMs": [
+                65.837707,
+                64.482081,
+                62.271084,
+                66.200834,
+                62.826787,
+                64.875879,
+                66.190374,
+                64.789,
+                63.427958,
+                68.230793,
+                64.658873,
+                61.776498,
+                61.915418,
+                71.371293,
+                68.295043,
+                65.319459,
+                65.979127,
+                64.000792,
+                66.755002,
+                62.362251,
+                65.260709,
+                67.284126,
+                64.434916,
+                66.208836,
+                68.523164,
+                67.492,
+                68.08825,
+                64.824416,
+                65.615833,
+                65.628373
+              ]
+            }
+          }
+        }
+      }
+    },
+    "wgpu": {
+      "fullSummarySHA256": "2fc9c51a236a765f8408b27c311e04c87426d6716221777c3d6a4c97e2ecb9cc",
+      "testBundleSHA256": {
+        "RAWMasterUITests": "c756fae93a2e9ce4a8d46bb317dfe6fbb986f20c91d1eee816725de76c1d5881",
+        "RAWMasterImagingTests": "a184cddf1ca9a852d35f6931fa9af5c9e5a9ecc382375950d9ba500d15950324"
+      },
+      "sourceCommit": "7ccbefc4bd93309083d5f20c5072c41dc00c806c",
+      "queueFiles": {
+        "avif": {
+          "count": 36,
+          "sha256": "70661500055cd676a5aedfda8339bdf066a1dda0070301a095c701cd912dd6c9",
+          "byteCount": 13286687
+        },
+        "jpg": {
+          "count": 36,
+          "sha256": "db46c548f3be7932e6e38be8e96f11b3e72ca14e1c428f6dc01f5e52f92ef88e",
+          "byteCount": 9591173
+        }
+      },
+      "workbenchMemoryOutsideTimedRegions": {
+        "beforeSweep": {
+          "processPhysFootprintBytes": 3309520312,
+          "metalAllocatedBytes": 5481742336
+        },
+        "afterEachTargetPair": [
+          {
+            "processPhysFootprintBytes": 2106083800,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2086963768,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2112588320,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2117552672,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2126023248,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2129152592,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2141473336,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2142767696,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2148633192,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2149403168,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2153515576,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2149698104,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2146503224,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2152172112,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2153056872,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2170210920,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2170538600,
+            "metalAllocatedBytes": 5562941440
+          },
+          {
+            "processPhysFootprintBytes": 2173717072,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2170767952,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2171783784,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2174782032,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2178632248,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2179992216,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2179992216,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2180860544,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2175781480,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2175945368,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2183858816,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2188544616,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2188495440,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2201881216,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2205747816,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2202012288,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2205895320,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2205862528,
+            "metalAllocatedBytes": 5563990016
+          },
+          {
+            "processPhysFootprintBytes": 2206026344,
+            "metalAllocatedBytes": 5563990016
+          }
+        ],
+        "afterClosingLibraryOwners": {
+          "processPhysFootprintBytes": 1976043992,
+          "metalAllocatedBytes": 84508672
+        }
+      },
+      "routes": {
+        "032-avif10": {
+          "firstRunWallMs": 1321.150833,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 1320.4706044999998,
+            "p95Ms": 1364.0515
+          },
+          "targets": {
+            "avif10": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 7271366656,
+                "maxSampledProcessPhysFootprintBytes": 3651127960
+              },
+              "exampleWGPUTransport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.9447545,
+                    "p95Ms": 4.825479
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 31.1265615,
+                    "p95Ms": 35.235004
+                  }
+                },
+                "avif.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 882.3542915,
+                    "p95Ms": 919.818333
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.06297900000000001,
+                    "p95Ms": 0.079834
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.3588125,
+                    "p95Ms": 0.950583
+                  }
+                },
+                "dag.wgpu.device_open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.738729,
+                    "p95Ms": 0.887
+                  }
+                },
+                "dag.wgpu.render_wall": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.876545,
+                    "p95Ms": 41.806913
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 29.739708,
+                    "p95Ms": 31.978791
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 13.848775,
+                    "p95Ms": 22.786397
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 35.2827515,
+                    "p95Ms": 44.415875
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.508479,
+                    "p95Ms": 0.624875
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 36.467416,
+                    "p95Ms": 45.775916
+                  }
+                }
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              1276.917042,
+              1281.712375,
+              1272.818958,
+              1364.0515,
+              1282.044416,
+              1302.780208,
+              1281.2085,
+              1307.615833,
+              1294.381416,
+              1287.385084,
+              1310.4725,
+              1334.959875,
+              1306.191959,
+              1338.890208,
+              1353.714583,
+              1313.464541,
+              1331.539709,
+              1319.942584,
+              1315.471416,
+              1317.492542,
+              1337.394541,
+              1365.363208,
+              1325.805209,
+              1320.998625,
+              1334.836625,
+              1342.700542,
+              1326.609791,
+              1325.760916,
+              1340.380125,
+              1363.551291
+            ],
+            "avif10": {
+              "dagRenderWallMs": [
+                36.010209,
+                36.53096,
+                37.133961,
+                38.881671,
+                39.176707,
+                37.604289,
+                37.92079,
+                38.026375,
+                38.247331,
+                38.032417,
+                39.22596,
+                38.871419,
+                39.114752,
+                41.806913,
+                41.331835,
+                40.332711,
+                40.571502,
+                38.364585,
+                40.345543,
+                39.701131,
+                40.841793,
+                42.107043,
+                40.158246,
+                40.374664,
+                38.484289,
+                38.292331,
+                38.591786,
+                38.006004,
+                38.573751,
+                40.710541
+              ],
+              "dagSubmitAndWaitMs": [
+                27.446789,
+                27.791958,
+                28.348248,
+                29.801791,
+                30.05271,
+                28.962585,
+                29.014542,
+                29.031289,
+                28.889665,
+                28.968747,
+                30.178044,
+                29.677625,
+                30.093872,
+                31.978791,
+                31.266,
+                30.72521,
+                30.78125,
+                29.469707,
+                31.097584,
+                30.132833,
+                31.229498,
+                33.013794,
+                30.860876,
+                30.57621,
+                29.527168,
+                29.368124,
+                29.665873,
+                29.072791,
+                29.639122,
+                31.022336
+              ]
+            }
+          }
+        },
+        "032-jpeg8": {
+          "firstRunWallMs": 528.738666,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 548.2393955,
+            "p95Ms": 589.813708
+          },
+          "targets": {
+            "jpeg8": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 7271366656,
+                "maxSampledProcessPhysFootprintBytes": 3306523384,
+                "sdrBitmapBytes": 240869376
+              },
+              "exampleWGPUTransport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.9185005000000004,
+                    "p95Ms": 4.847402
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 30.866519,
+                    "p95Ms": 33.840041
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.06681300000000001,
+                    "p95Ms": 0.077792
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.38585400000000003,
+                    "p95Ms": 1.009917
+                  }
+                },
+                "dag.wgpu.device_open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.7539795,
+                    "p95Ms": 0.841292
+                  }
+                },
+                "dag.wgpu.render_wall": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.940021,
+                    "p95Ms": 45.124584
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 29.8341055,
+                    "p95Ms": 34.53946
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 16.638150500000002,
+                    "p95Ms": 20.853938
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 37.7458965,
+                    "p95Ms": 42.240537
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.5140415,
+                    "p95Ms": 0.61425
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 38.8749155,
+                    "p95Ms": 43.47229
+                  }
+                },
+                "sdr.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 104.8349375,
+                    "p95Ms": 106.178
+                  }
+                }
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              564.152708,
+              549.910958,
+              559.727375,
+              536.615625,
+              552.624833,
+              537.339625,
+              543.421083,
+              551.687667,
+              526.008708,
+              589.813708,
+              541.624417,
+              548.961667,
+              541.703459,
+              547.995791,
+              565.318584,
+              534.342291,
+              556.750333,
+              548.483,
+              548.700708,
+              555.478125,
+              548.518334,
+              545.923417,
+              542.563125,
+              539.586958,
+              536.08925,
+              540.435875,
+              539.521875,
+              534.75725,
+              605.556,
+              567.404375
+            ],
+            "jpeg8": {
+              "dagRenderWallMs": [
+                37.746918,
+                38.540335,
+                45.124584,
+                39.309041,
+                37.959251,
+                38.683708,
+                37.276541,
+                38.98579,
+                38.202833,
+                40.968335,
+                37.916416,
+                39.514957,
+                39.317789,
+                38.377794,
+                40.601292,
+                38.938625,
+                39.222418,
+                39.309916,
+                38.533127,
+                38.695706,
+                38.941417,
+                44.402333,
+                39.963956,
+                38.359792,
+                38.120169,
+                39.916875,
+                38.398251,
+                38.592453,
+                47.373666,
+                40.847044
+              ],
+              "dagSubmitAndWaitMs": [
+                28.91063,
+                29.365459,
+                33.223125,
+                30.092754,
+                29.145999,
+                29.723251,
+                28.43175,
+                29.94496,
+                29.306669,
+                31.481664,
+                29.014002,
+                30.196163,
+                30.136458,
+                29.242458,
+                31.080294,
+                29.526917,
+                30.012042,
+                30.06896,
+                29.55271,
+                29.708794,
+                29.970086,
+                34.53946,
+                30.708835,
+                29.426752,
+                29.108874,
+                30.768707,
+                29.360581,
+                29.541787,
+                35.50112,
+                31.469419
+              ]
+            }
+          }
+        },
+        "component": {
+          "firstRunWallMs": 1679.921208,
+          "elapsedWall": {
+            "n": 30,
+            "p50Ms": 1650.4687085,
+            "p95Ms": 1733.853542
+          },
+          "targets": {
+            "avif10": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "avifStagingBufferBytes": 481738752,
+                "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                "maxSampledProcessPhysFootprintBytes": 3573713344
+              },
+              "exampleWGPUTransport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 3.7784635,
+                    "p95Ms": 4.851188
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 31.1862505,
+                    "p95Ms": 34.383877
+                  }
+                },
+                "avif.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 938.8101664999999,
+                    "p95Ms": 958.868125
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.0632915,
+                    "p95Ms": 0.077041
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.331625,
+                    "p95Ms": 0.378166
+                  }
+                },
+                "dag.wgpu.device_open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.8419165,
+                    "p95Ms": 0.950958
+                  }
+                },
+                "dag.wgpu.render_wall": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 39.191397499999994,
+                    "p95Ms": 46.517248
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 30.051293,
+                    "p95Ms": 35.694873
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 15.0621685,
+                    "p95Ms": 45.339317
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 36.553731,
+                    "p95Ms": 68.483376
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.45929149999999996,
+                    "p95Ms": 0.550042
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 37.722835,
+                    "p95Ms": 69.784004
+                  }
+                }
+              }
+            },
+            "jpeg8": {
+              "exampleGraphReceipt": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 1719959552,
+                "maxSampledProcessPhysFootprintBytes": 3359443584,
+                "sdrBitmapBytes": 240869376
+              },
+              "exampleWGPUTransport": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              },
+              "stages": {
+                "assembly.blit.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 4.4030445,
+                    "p95Ms": 7.565069
+                  }
+                },
+                "assembly.blit.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 35.480897,
+                    "p95Ms": 40.041003
+                  }
+                },
+                "dag.swift_bridge.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.088646,
+                    "p95Ms": 0.130125
+                  }
+                },
+                "dag.swift_bridge.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.35333349999999997,
+                    "p95Ms": 0.38225
+                  }
+                },
+                "dag.wgpu.device_open": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.984792,
+                    "p95Ms": 1.396958
+                  }
+                },
+                "dag.wgpu.render_wall": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 40.3589575,
+                    "p95Ms": 47.175543
+                  }
+                },
+                "dag.wgpu.submit_and_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 30.689646,
+                    "p95Ms": 35.638498
+                  }
+                },
+                "drt.gpu": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 21.997441000000002,
+                    "p95Ms": 49.514938
+                  }
+                },
+                "drt.host_wait": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 43.3977295,
+                    "p95Ms": 75.678498
+                  }
+                },
+                "drt.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.5133540000000001,
+                    "p95Ms": 0.59825
+                  }
+                },
+                "drt.render": {
+                  "observedRuns": 30,
+                  "stageSamples": 1050,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 44.581147,
+                    "p95Ms": 77.292209
+                  }
+                },
+                "sdr.encode": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 102.823166,
+                    "p95Ms": 105.057833
+                  }
+                }
+              }
+            },
+            "shared": {
+              "stages": {
+                "flashraw.metal_init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.318083,
+                    "p95Ms": 0.340333
+                  }
+                },
+                "flashraw.mosaic_data": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.0021460000000000003,
+                    "p95Ms": 0.002833
+                  }
+                },
+                "flashraw.mosaic_upload": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 11.9616045,
+                    "p95Ms": 12.87725
+                  }
+                },
+                "flashraw.sensor_frame": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 27.773271,
+                    "p95Ms": 31.762917
+                  }
+                },
+                "photographic.init": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 49.835625,
+                    "p95Ms": 61.35825
+                  }
+                },
+                "source.capture_stamp": {
+                  "observedRuns": 30,
+                  "stageSamples": 90,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 0.107584,
+                    "p95Ms": 0.126292
+                  }
+                },
+                "source.verified_copy": {
+                  "observedRuns": 30,
+                  "stageSamples": 30,
+                  "unavailableSamples": 0,
+                  "perRunTotals": {
+                    "n": 30,
+                    "p50Ms": 32.327417,
+                    "p95Ms": 33.173
+                  }
+                }
+              },
+              "exampleGraphReceipt": null,
+              "memoryMaxima": {
+                "maxSampledMetalDeviceAllocatedBytes": 134905856,
+                "maxSampledProcessPhysFootprintBytes": 1618741720
+              }
+            }
+          },
+          "warmSamples": {
+            "elapsedWallMs": [
+              1629.773208,
+              1632.263625,
+              1703.955041,
+              1614.538083,
+              1620.807334,
+              1627.247834,
+              1640.590583,
+              1715.144041,
+              1631.627583,
+              1624.45375,
+              1624.867833,
+              1665.45225,
+              1629.539208,
+              1651.882542,
+              1647.030084,
+              1726.285291,
+              1687.082084,
+              1661.291709,
+              1677.081583,
+              1733.853542,
+              1704.138041,
+              1673.531209,
+              1647.689291,
+              1667.367875,
+              1642.555791,
+              1652.523166,
+              1641.572042,
+              1667.690917,
+              1649.054875,
+              1775.322083
+            ],
+            "avif10": {
+              "dagRenderWallMs": [
+                40.627289,
+                38.571083,
+                41.312081,
+                39.594124,
+                38.443541,
+                39.17875,
+                39.187127,
+                46.517248,
+                38.543207,
+                39.690542,
+                39.002876,
+                37.843875,
+                38.327954,
+                39.200754,
+                37.954957,
+                39.195668,
+                42.838539,
+                39.745003,
+                41.339627,
+                38.536875,
+                40.571664,
+                38.438456,
+                38.272959,
+                40.223832,
+                39.096626,
+                40.205167,
+                38.663997,
+                40.483625,
+                38.254419,
+                47.499791
+              ],
+              "dagSubmitAndWaitMs": [
+                31.271125,
+                29.297874,
+                31.151372,
+                30.41846,
+                29.268124,
+                30.033375,
+                30.143292,
+                35.694873,
+                29.330083,
+                30.070124,
+                30.033415,
+                28.964375,
+                29.379001,
+                30.026125,
+                29.015125,
+                29.830124,
+                32.889669,
+                30.646666,
+                31.223625,
+                29.582211,
+                30.827293,
+                29.555378,
+                29.39404,
+                30.991625,
+                30.069171,
+                30.887959,
+                29.603171,
+                30.974874,
+                29.25367,
+                35.992123
+              ]
+            },
+            "jpeg8": {
+              "dagRenderWallMs": [
+                38.512084,
+                43.691547,
+                41.620916,
+                38.458538,
+                41.351831,
+                40.230917,
+                43.184294,
+                39.067208,
+                40.535458,
+                40.367793,
+                38.959126,
+                42.743459,
+                39.944876,
+                41.944789,
+                40.848084,
+                47.175543,
+                39.701002,
+                38.285293,
+                40.827418,
+                48.787833,
+                44.526954,
+                39.476795,
+                39.633497,
+                40.350122,
+                39.242254,
+                38.837501,
+                40.91217,
+                38.334663,
+                40.053581,
+                42.46775
+              ],
+              "dagSubmitAndWaitMs": [
+                29.428622,
+                33.349624,
+                31.793462,
+                29.445583,
+                31.131458,
+                30.305167,
+                32.873915,
+                29.826251,
+                30.754291,
+                31.391333,
+                29.784916,
+                31.622208,
+                30.42671,
+                31.442956,
+                31.063669,
+                35.638498,
+                30.625001,
+                29.560793,
+                31.304128,
+                37.023625,
+                34.849119,
+                30.413462,
+                30.256209,
+                30.372458,
+                30.265205,
+                29.566749,
+                30.763001,
+                29.526953,
+                30.441082,
+                31.639165
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "compared": {
+    "032-avif10": {
+      "elapsedWallP50ChangeVsSameBuild039Percent": -3.764027189480923,
+      "elapsedWallP95ChangeVsSameBuild039Percent": -3.778726208765104,
+      "targets": {
+        "avif10": {
+          "m1DagP50Ms": 62.5796645,
+          "sameBuild039DagP50Ms": 61.632771000000005,
+          "wgpuDagP50Ms": 38.876545,
+          "wgpuDagP50ReductionVsM1Percent": 37.87671233040887,
+          "wgpuDagP50ReductionVsSameBuild039Percent": 36.92228279010853,
+          "m2_60MPDagGatePassed": true
+        }
+      }
+    },
+    "032-jpeg8": {
+      "elapsedWallP50ChangeVsSameBuild039Percent": -4.737628135288108,
+      "elapsedWallP95ChangeVsSameBuild039Percent": -2.589468164565134,
+      "targets": {
+        "jpeg8": {
+          "m1DagP50Ms": 63.4886855,
+          "sameBuild039DagP50Ms": 62.14975,
+          "wgpuDagP50Ms": 38.940021,
+          "wgpuDagP50ReductionVsM1Percent": 38.66620376003848,
+          "wgpuDagP50ReductionVsSameBuild039Percent": 37.34484692215173,
+          "m2_60MPDagGatePassed": true
+        }
+      }
+    },
+    "component": {
+      "elapsedWallP50ChangeVsSameBuild039Percent": -0.5610317396620657,
+      "elapsedWallP95ChangeVsSameBuild039Percent": 0.8131924295656345,
+      "targets": {
+        "avif10": {
+          "m1DagP50Ms": 62.739438,
+          "sameBuild039DagP50Ms": 61.440292,
+          "wgpuDagP50Ms": 39.191397499999994,
+          "wgpuDagP50ReductionVsM1Percent": 37.53307528830591,
+          "wgpuDagP50ReductionVsSameBuild039Percent": 36.21222128957331,
+          "m2_60MPDagGatePassed": true
+        },
+        "jpeg8": {
+          "m1DagP50Ms": 66.091478,
+          "sameBuild039DagP50Ms": 65.467646,
+          "wgpuDagP50Ms": 40.3589575,
+          "wgpuDagP50ReductionVsM1Percent": 38.93470274639643,
+          "wgpuDagP50ReductionVsSameBuild039Percent": 38.352820109035235,
+          "m2_60MPDagGatePassed": true
+        }
+      }
+    }
+  },
+  "componentRetest": {
+    "sourceCommit": "7ccbefc4bd93309083d5f20c5072c41dc00c806c",
+    "engineSourceSHA256": "c7924f5f5b57ffba13fcc5bf90e3f41878ccc6a8665d9ca03a69e310dbee7cb4",
+    "sourceArchiveSHA256": "18b9d14cde1eecd0a0762a31ef69edb7b4ac959b200641327e6f0ff6e3249880",
+    "sourceFingerprintIndependentlyRecomputedFromGitCommit": true,
+    "shaderAndEachOutputDigestMatchPriorPhysicalEvidence": true,
+    "results": {
+      "metal": {
+        "physicalAdapter": {
+          "backend": "metal",
+          "device": 0,
+          "driver": "",
+          "driverInfo": "",
+          "name": "Apple M4 Max",
+          "type": "IntegratedGpu",
+          "vendor": 0
+        },
+        "reportSHA256": "493800d17c84e7156e8ebba7f092b9d989d9c0e6373076ed138cfe889eab32cb",
+        "fixtureOutputSHA256": {
+          "final-full": "888513ce78dc7981fc855ef73fbc07b74519ba5e42419c96c4c46ed3f2ac1e98",
+          "final-roi": "327a08cf81c7b32c4ee1d11ae605cb59fc6430396d652e2d5c6006b3f75e9ced",
+          "monitor-full": "55e933537df4adbd2be6eb754192abe9e53d8337960c33cb83dcd48e7ceefb25",
+          "monitor-roi": "2277a048035e5ebad53a1eb2f59c51e73c6975ae763815459d603102bfa2cb82"
+        },
+        "sameDeviceOutputsMatchPriorSignedOffResult": true
+      },
+      "vulkan": {
+        "physicalAdapter": {
+          "backend": "vulkan",
+          "device": 9905,
+          "driver": "NVIDIA",
+          "driverInfo": "610.43.02",
+          "name": "NVIDIA RTX 6000 Ada Generation",
+          "type": "DiscreteGpu",
+          "vendor": 4318
+        },
+        "reportSHA256": "3d1f8f771756f7cdc846bc164016bedaba3f2c0efa4ce9c44fe7e9ebc42e9383",
+        "fixtureOutputSHA256": {
+          "final-full": "c7904aaf18192881e7a57519e672fee20f676ebff57bbceff4984c50192ccfa2",
+          "final-roi": "ca0b09b61e54fef4f3477bc2d92291a65e3b866a4e771f3ce3d8eecb22dd0516",
+          "monitor-full": "c9aa7036c79186736f48e49f69cc4dc0c16dc5f9a6361e4f2ef473002d861513",
+          "monitor-roi": "deac798aa03e38569bd25700a5d2c8f0453defcb144442454446cc8376782dd5"
+        },
+        "sameDeviceOutputsMatchPriorSignedOffResult": true
+      }
+    }
+  }
+}
