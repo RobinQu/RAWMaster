@@ -7,7 +7,18 @@ import RAWMasterCore
 /// One native preview request and the actual two inputs read by rmNoiseDetail.
 /// A completed bound may serve another strength on exactly the same resident operands.
 final class PreviewNativeNoiseDomain {
-  static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_RAW_NOISE_DOMAIN"] == "1"
+  private enum KernelKind { case compiled, runtime }
+  private static let kernelKind: KernelKind? = {
+    let environment = ProcessInfo.processInfo.environment
+    switch environment["RAWMASTER_QA_NATIVE_RAW_NOISE_DOMAIN"] {
+    case "1": return .runtime
+    case nil:
+      guard environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] != "1", !V3PreviewMaterializer.writesOwnedBitmap else { return nil }
+      return .compiled
+    default: return nil
+    }
+  }()
+  static var enabled: Bool { kernelKind != nil }
 
   final class Pair {
     let raw, based, gaussian: CIImage
@@ -37,8 +48,7 @@ final class PreviewNativeNoiseDomain {
     }
     guard let luma = definition("float gy(", end: "}"),
           let restore = definition("[[stitchable]] float4 rmNoiseDetail(", end: "\n}") else { return false }
-    let digest = SHA256.hash(data: Data((String(luma) + "\n" + String(restore)).utf8))
-    return digest.map { String(format: "%02x", $0) }.joined() == "98b2fefbfb31539ac11550ff1bd409e08ca4a86afb297756e83773ac51193617"
+    return digest(Data((String(luma) + "\n" + String(restore)).utf8)) == "98b2fefbfb31539ac11550ff1bd409e08ca4a86afb297756e83773ac51193617"
   }
 
   static func camera(for p: DevelopmentAdjustmentsV3) -> DevelopmentNoiseReductionV3? {
@@ -63,6 +73,7 @@ final class PreviewNativeNoiseDomain {
   private let pending: Bool
   private let controls: DevelopmentNoiseReductionV3
   private let pin: FlashRawCanonicalTexturePool.Pin
+  private let predicate: CIKernel
   private let checkAuthority: () throws -> Void
   private var boundOutput: CIImage?
   private var checked = false
@@ -72,27 +83,36 @@ final class PreviewNativeNoiseDomain {
                       asShotWhiteBalance: DevelopmentAsShotWhiteBalance?, device: MTLDevice, checkAuthority: @escaping () throws -> Void) throws -> PreviewNativeNoiseDomain? {
     let os = ProcessInfo.processInfo.operatingSystemVersion
     guard enabled, programIsKnown, os.majorVersion == 27, os.minorVersion == 0, os.patchVersion == 1,
-          device.hasUnifiedMemory, device.name == "Apple M4 Max", MTLCopyAllDevices().map(\.registryID) == [device.registryID],
+          device.hasUnifiedMemory, device.supportsDynamicLibraries, device.name == "Apple M4 Max",
+          MTLCopyAllDevices().map(\.registryID) == [device.registryID],
           let camera = camera(for: p), pin.image.extent.origin == .zero,
-          [CGSize(width: 9504, height: 6336), CGSize(width: 8640, height: 5760)].contains(pin.image.extent.size),
-          try pin.checkOpaqueUpload(pin.image, cancellation: checkAuthority) else { return nil }
+          [CGSize(width: 9504, height: 6336), CGSize(width: 8640, height: 5760)].contains(pin.image.extent.size) else { return nil }
+    try checkAuthority()
+    let predicate = Self.predicate
+    try Task.checkCancellation()
+    try checkAuthority()
+    guard pin.isCurrent(for: pin.image) else { throw PreviewPresentationError.allocationProtocol }
+    guard let predicate, try pin.checkOpaqueUpload(pin.image, cancellation: checkAuthority) else { return nil }
     try checkAuthority()
     let cached = pin.checkedNoiseCertificate()?.pair
     if let cached, cached.camera == camera {
-      return PreviewNativeNoiseDomain(pair: cached, pending: false, controls: p.noiseReduction, pin: pin, checkAuthority: checkAuthority)
+      return PreviewNativeNoiseDomain(pair: cached, pending: false, controls: p.noiseReduction, pin: pin,
+        predicate: predicate, checkAuthority: checkAuthority)
     }
     let based = try FlashRawImageFactory.applyInputAdjustments(p, to: pin.image, asShotWhiteBalance: asShotWhiteBalance)
     guard based.extent == pin.image.extent else { return nil }
     let pair = Pair(raw: pin.image, based: based, key: pin.noiseIdentity, camera: camera)
-    return PreviewNativeNoiseDomain(pair: pair, pending: true, controls: p.noiseReduction, pin: pin, checkAuthority: checkAuthority)
+    return PreviewNativeNoiseDomain(pair: pair, pending: true, controls: p.noiseReduction, pin: pin,
+      predicate: predicate, checkAuthority: checkAuthority)
   }
 
   private init(pair: Pair, pending: Bool, controls: DevelopmentNoiseReductionV3, pin: FlashRawCanonicalTexturePool.Pin,
-               checkAuthority: @escaping () throws -> Void) {
+               predicate: CIKernel, checkAuthority: @escaping () throws -> Void) {
     self.pair = pair
     self.pending = pending
     self.controls = controls
     self.pin = pin
+    self.predicate = predicate
     self.checkAuthority = checkAuthority
   }
 
@@ -122,7 +142,7 @@ final class PreviewNativeNoiseDomain {
     var outcome = ImagePerformanceOutcome.failed
     defer { ImagePerformanceTelemetry.shared.end(event, outcome: outcome, pixelCount: Int(image.extent.width * image.extent.height)) }
     if pending {
-      guard let mask = Self.predicate?.apply(extent: pair.raw.extent, roiCallback: { _, r in r },
+      guard let mask = predicate.apply(extent: pair.raw.extent, roiCallback: { _, r in r },
                                             arguments: [pair.raw, pair.based, pair.gaussian]),
             try DevelopmentCanonicalFiniteGPU.check(mask, domain: pair.raw.extent, context: context,
               workingBudget: DevelopmentCanonicalFiniteGPU.spatialWorkingBudget, allowPredicateMiss: true,
@@ -151,23 +171,46 @@ final class PreviewNativeNoiseDomain {
   // the chroma channels <= 16.01 and their differences <= 32.02. For coefficients
   // in [0,1], even the sum before the original final multiply has magnitude < 40.
   // This examines all three actual native operands, including every Gaussian edge sample.
+  private struct CompiledPredicateReceipt: Decodable {
+    let schemaVersion: Int
+    let function: String
+    let sourceSHA256: String
+    let librarySHA256: String
+  }
+
+  private static func digest(_ data: Data) -> String {
+    SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+  }
+
   private static let predicate: CIKernel? = {
-    let source = #"""
-    #include <metal_stdlib>
-    #include <CoreImage/CoreImage.h>
-    using namespace metal;
-    extern "C" { namespace coreimage {
-    bool inOpaqueNoiseRange(float4 value) {
-      uint4 bits = as_type<uint4>(value);
-      return all((bits.rgb & uint3(0x7fffffffu)) <= uint3(0x41000000u)) && bits.a == 0x3f800000u;
+    guard let kernelKind else { return nil }
+    let resources: URL?
+    if Bundle.main.bundleURL.pathExtension.lowercased() == "app" {
+      resources = Bundle.main.resourceURL.flatMap { url in
+        Bundle(url: url.appendingPathComponent("RAWMaster_RAWMasterImaging.bundle", isDirectory: true))?.resourceURL
+      }
+    } else {
+      resources = Bundle.module.resourceURL
     }
-    [[stitchable]] float4 checkedNoiseInputs(sampler raw, sampler src, sampler local) {
-      bool inside = inOpaqueNoiseRange(raw.sample(raw.coord())) && inOpaqueNoiseRange(src.sample(src.coord())) &&
-                    inOpaqueNoiseRange(local.sample(local.coord()));
-      return float4(inside ? 0.0f : 1.0f, 0.0f, 0.0f, 1.0f);
+    guard let resources, let source = try? Data(contentsOf: resources.appendingPathComponent("RawNoiseDomain.metal")) else { return nil }
+    let sourceSHA256 = digest(source)
+    guard sourceSHA256 == "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7" else { return nil }
+    let function = "checkedNoiseInputs"
+    switch kernelKind {
+    case .runtime:
+      return CanonicalPreviewDiagnostic.measure("compile runtime RAW noise predicate") {
+        guard let metal = String(data: source, encoding: .utf8) else { return nil }
+        return try? CIKernel.kernels(withMetalString: metal).first { $0.name == function }
+      }
+    case .compiled:
+      return CanonicalPreviewDiagnostic.measure("load precompiled RAW noise predicate") {
+        guard let manifest = try? Data(contentsOf: resources.appendingPathComponent("RawNoiseDomain.json")),
+              let receipt = try? JSONDecoder().decode(CompiledPredicateReceipt.self, from: manifest),
+              receipt.schemaVersion == 1, receipt.function == function, receipt.sourceSHA256 == sourceSHA256,
+              let library = try? Data(contentsOf: resources.appendingPathComponent("RawNoiseDomain.metallib")),
+              receipt.librarySHA256 == digest(library) else { return nil }
+        return try? CIKernel(functionName: function, fromMetalLibraryData: library)
+      }
     }
-    } }
-    """#
-    return try? CIKernel.kernels(withMetalString: source).first { $0.name == "checkedNoiseInputs" }
   }()
 }

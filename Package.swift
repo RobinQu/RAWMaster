@@ -15,7 +15,7 @@ let package = Package(
         .target(name: "CFlashRaw"),
         .target(name: "RAWMasterCore", dependencies: ["CSQLite", .product(name: "RAWMasterLibrary", package: "LibraryCatalog"), .product(name: "RAWMasterPhotoExport", package: "PhotoExport")], resources: [.copy("Resources/AdobePresetMigration-v1.json")]),
         .target(name: "RAWMasterImaging", dependencies: ["RAWMasterCore", "CFlashRaw", .product(name: "MaskAI", package: "MaskAI"), .product(name: "RAWMasterPhotoExport", package: "PhotoExport"), .product(name: "RAWMasterImage", package: "ImageEdit"), .product(name: "RAWMasterLibrary", package: "LibraryCatalog")],
-                resources: [.copy("Resources/PhotoFilters"), .copy("Resources/PhotoDenoise"), .copy("Resources/PhotoSuperResolution"), .copy("Resources/SceneColor")]),
+                resources: [.copy("Resources/PhotoFilters"), .copy("Resources/PhotoDenoise"), .copy("Resources/PhotoSuperResolution"), .copy("Resources/SceneColor"), .copy("Resources/RawNoiseDomain.metal")]),
         .target(name: "RAWMasterAI", dependencies: ["RAWMasterCore"], resources: [.copy("Resources")]),
         // VideoPlayer's SwiftUI overlay needs the Objective-C AVPlayerView superclass at runtime.
         // Importing AVKit alone can autolink only _AVKit_SwiftUI, causing an abort on first preview.

@@ -167,6 +167,9 @@ verify_photo_filter_resources "$imaging_resources"
 rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
 cp -R "$imaging_resources" "$app/Contents/Resources/"
 verify_photo_filter_resources "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
+if [[ "$configuration" == "release" ]]; then
+  zsh scripts/build-raw-noise-domain.sh "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle/Contents/Resources"
+fi
 
 mkdir -p "$app/Contents/Resources/FlashRaw"
 cp "$flashraw_library" "$app/Contents/Resources/FlashRaw/libflashraw_capi.dylib"
