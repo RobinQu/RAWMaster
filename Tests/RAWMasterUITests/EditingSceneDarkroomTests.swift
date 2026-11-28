@@ -75,7 +75,9 @@ final class EditingSceneDarkroomTests: XCTestCase {
         guard (1...64).contains(repeats) else { return XCTFail("Use 1–64 external export trials") }
         let raw = URL(fileURLWithPath: path)
         let sourceHash = "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
-        XCTAssertEqual(try FileSafety.hash(raw), sourceHash)
+        guard try FileSafety.hash(raw) == sourceHash else {
+            return XCTFail("Unexpected external-comparison RAW fingerprint")
+        }
         let root = URL(fileURLWithPath: reportPath, isDirectory: true)
         guard !FileManager.default.fileExists(atPath: root.path) else { return XCTFail("Use a fresh evidence directory") }
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -102,24 +104,35 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
             }
             let recipe = editing.recipe
+            guard let adjustment = recipe.sceneGraph?.graph.nodes.first,
+                  case let .corrector(_, _, exposureEV, _, _, enabled) = adjustment.operation,
+                  enabled, exposureEV == Float(exposure) else { throw EditingError.invalidRecipe }
             let recipeHash = try EditingFingerprint.of(recipe)
             model.activateWorkflow(.export)
-            var files: [(id: String, url: URL, elapsedNS: UInt64)] = []
+            var files: [(id: String, url: URL, fileElapsedNS: UInt64, workflowElapsedNS: UInt64)] = []
             for run in 0..<repeats {
                 let destination = root.appendingPathComponent("run-\(run)", isDirectory: true)
                 try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: false)
+                let observer = Task.detached(priority: .userInitiated) {
+                    try await Self.observeFinalBenchmarkJPEG(in: destination)
+                }
+                defer { observer.cancel() }
                 let start = DispatchTime.now().uptimeNanoseconds
                 model.submitWorkbenchPhotoDelivery(directory: destination, naming: "{name}",
                     configuration: .init(format: .jpeg8, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: nil)
                 let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
                 let task = try XCTUnwrap(model.workbenchPhotoDeliveryTask)
                 await task.value
-                let elapsed = DispatchTime.now().uptimeNanoseconds - start
+                let workflowElapsed = DispatchTime.now().uptimeNanoseconds - start
                 let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
                 XCTAssertEqual(completed.id, id)
                 let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
                 XCTAssertEqual(completed.files.count, 1)
-                files.append((id.uuidString.lowercased(), file, elapsed))
+                let (observedFile, observedAt) = try await observer.value
+                guard observedFile.standardizedFileURL == file.standardizedFileURL, observedAt > start else {
+                    throw DevelopmentError.unreadable
+                }
+                files.append((id.uuidString.lowercased(), file, observedAt - start, workflowElapsed))
             }
             await model.closeLibraryReads()
             await editing.shutdown()
@@ -149,7 +162,8 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 let height = try XCTUnwrap(properties[kCGImagePropertyPixelHeight] as? Int)
                 XCTAssertEqual(width, 9504)
                 XCTAssertEqual(height, 6336)
-                observations.append(["elapsedNS": entry.elapsedNS, "file": entry.url.path,
+                observations.append(["fileElapsedNS": entry.fileElapsedNS, "workflowElapsedNS": entry.workflowElapsedNS,
+                    "file": entry.url.path,
                     "sha256": sha, "width": width, "height": height, "batchID": entry.id,
                     "actualExecution": try JSONSerialization.jsonObject(with: encoder.encode(execution))])
             }
@@ -162,7 +176,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 "gpu": MTLCreateSystemDefaultDevice()?.name ?? "unknown",
                 "system": ProcessInfo.processInfo.operatingSystemVersionString,
                 "binarySHA256": try FileSafety.hash(XCTUnwrap(Bundle(for: Self.self).executableURL)),
-                "boundary": "AppModel submits one user-facing 032 batch until the delivery task completes publication and receipt acknowledgement. File verification follows timing.",
+                "boundary": "Monotonic time from submitting one 032 batch to the first 15 ms poll with one final JPEG and an EOI marker. Workflow completion includes receipt acknowledgement and is timed separately.",
                 "samples": observations]
             let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
             try data.write(to: root.appendingPathComponent("summary.json"), options: .withoutOverwriting)
@@ -170,6 +184,27 @@ final class EditingSceneDarkroomTests: XCTestCase {
             await editing.shutdown()
             throw error
         }
+    }
+
+    nonisolated private static func observeFinalBenchmarkJPEG(in directory: URL) async throws -> (URL, UInt64) {
+        let deadline = ContinuousClock.now + .seconds(30)
+        while ContinuousClock.now < deadline {
+            try Task.checkCancellation()
+            let contents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            if contents.count == 1, let file = contents.first, ["jpeg", "jpg"].contains(file.pathExtension.lowercased()),
+               let handle = try? FileHandle(forReadingFrom: file) {
+                defer { try? handle.close() }
+                let end = try handle.seekToEnd()
+                if end >= 4 {
+                    try handle.seek(toOffset: end - 2)
+                    if try handle.read(upToCount: 2) == Data([0xff, 0xd9]) {
+                        return (file, DispatchTime.now().uptimeNanoseconds)
+                    }
+                }
+            }
+            try await Task.sleep(nanoseconds: 15_000_000)
+        }
+        throw POSIXError(.ETIMEDOUT)
     }
 
     @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, repeats: Int = 1) async throws {

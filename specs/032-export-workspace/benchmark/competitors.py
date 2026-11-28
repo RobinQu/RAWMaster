@@ -4,26 +4,42 @@ import argparse
 from contextlib import contextmanager
 from functools import partial
 import hashlib
+import io
 import json
+import math
 from pathlib import Path
+import platform
+import statistics
 import subprocess
 import threading
 import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import urlsplit
 from urllib.request import urlopen
 import zipfile
 
-from PIL import Image, ImageCms, ImageDraw, ImageOps
+from PIL import Image, ImageCms, ImageDraw, ImageOps, ImageStat, JpegImagePlugin
 import websocket
 
 REPO = Path(__file__).resolve().parents[3]
 JPEG = "jpeg-source"
 RAW = "raw-source"
 TRIALS = [(JPEG, 1), (JPEG, 20), (JPEG, 200), (RAW, 1), (RAW, 20)]
+LIGHTFLOW_BUILD = "20261111155800-2d41ab1"
+LIGHTFLOW_EXPORT_ASSETS = {
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "assets/codecWorker-Dt1VOinP.js": "6ea14c9f2b5c8c5141597d9e28ea2fff807d50816c7c9c777706b43f895fbc4e",
+    f"_b/{LIGHTFLOW_BUILD}/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    f"_b/{LIGHTFLOW_BUILD}/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    f"_b/{LIGHTFLOW_BUILD}/rust/web-mt/lightflow_host_wasm_mt.js": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    f"_b/{LIGHTFLOW_BUILD}/rust/web-mt/lightflow_host_wasm_mt_bg.wasm": "99cd37e2b3a3d61d35ef9e9ccebec597043e9cc5b52fa9525b2b72ec42d90391",
+}
 
 
 def digest(path):
-    return hashlib.file_digest(path.open("rb"), "sha256").hexdigest()
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
 def fixtures(root, raw):
@@ -92,7 +108,7 @@ def read_output(folder, expected):
 
 
 @contextmanager
-def observe(folder, pid):
+def observe(folder, pid, final_file=None):
     """Read actual directory milestones and sample RSS for a process tree."""
     facts = {"first": None, "rssKiB": None}
     stopped = threading.Event()
@@ -102,8 +118,14 @@ def observe(folder, pid):
         next_sample = 0
         while not stopped.is_set():
             now = time.monotonic()
-            if facts["first"] is None and any(p.suffix.lower() in (".jpg", ".jpeg", ".zip") for p in folder.iterdir()):
-                facts["first"] = now - start
+            if facts["first"] is None:
+                if final_file is None:
+                    if any(p.suffix.lower() in (".jpg", ".jpeg", ".zip") for p in folder.iterdir()):
+                        facts["first"] = now - start
+                elif path := final_file(folder):
+                    facts["finalObservedUptimeNS"] = time.monotonic_ns()
+                    facts["path"] = path
+                    facts["first"] = now - start
             if pid and now >= next_sample:
                 next_sample = now + 0.25
                 items = []
@@ -205,13 +227,216 @@ class CDP:
         return result["result"].get("value")
 
 
+def finalized_jpeg(folder):
+    files = list(folder.iterdir())
+    if len(files) != 1 or files[0].suffix.lower() not in (".jpg", ".jpeg"):
+        return None
+    path = files[0]
+    try:
+        with path.open("rb") as stream:
+            if stream.seek(0, 2) >= 4:
+                stream.seek(-2, 2)
+                if stream.read(2) == b"\xff\xd9":
+                    return path
+    except FileNotFoundError:
+        pass  # Chromium can rename between directory enumeration and open.
+    return None
+
+
+def inspect_native_jpeg(path, expected_pixels):
+    with Image.open(path) as image:
+        icc = image.info.get("icc_profile")
+        if (image.format != "JPEG" or list(image.size) != expected_pixels or image.mode != "RGB" or image.bits != 8
+                or JpegImagePlugin.get_sampling(image) != 2 or image.info.get("progressive") or not icc
+                or not image.quantization):
+            raise ValueError("Expected an original-size 8-bit baseline RGB JPEG with embedded ICC and 4:2:0 sampling")
+        profile = ImageCms.getProfileDescription(ImageCms.ImageCmsProfile(io.BytesIO(icc))).strip()
+        if "srgb" not in profile.casefold():
+            raise ValueError(f"Unexpected JPEG ICC description {profile}")
+        image.load()
+        witness = image.resize((96, 64), Image.Resampling.BOX)
+        tables = {}
+        for index, values in sorted(image.quantization.items()):
+            encoded = json.dumps(values, separators=(",", ":")).encode("ascii")
+            tables[str(index)] = {"entries": len(values), "min": min(values), "max": max(values),
+                                  "sha256": hashlib.sha256(encoded).hexdigest()}
+        return {"name": path.name, "sha256": digest(path), "bytes": path.stat().st_size, "dimensions": list(image.size),
+                "format": "JPEG", "bitsPerComponent": image.bits, "subsampling": "4:2:0", "progressive": False,
+                "sofComponents": image.layer, "dqt": tables, "iccName": profile, "iccBytes": len(icc),
+                "iccSHA256": hashlib.sha256(icc).hexdigest(), "witnessRGBSHA256": hashlib.sha256(witness.tobytes()).hexdigest(),
+                "witnessMeanLuma": ImageStat.Stat(witness.convert("L")).mean[0]}
+
+
+def set_lightflow_exposure(cdp, photo_id, exposure):
+    ev = cdp.evaluate
+    ev("window.__lightflow.setWorkspace('develop');"
+       "window.__lightflow.stores.develop.set({target:{kind:'base'}});"
+       "window.__lightflow.develop.showSection('basic')")
+    label = wait(lambda: ev("""(() => {
+        const input = document.querySelector('lightflow-slider[data-id="base.exposure"] input');
+        if (!input || !input.getBoundingClientRect().width) return null;
+        input.scrollIntoView({block:'nearest'});
+        input.focus(); input.select();
+        return input.getAttribute('aria-label');
+    })()"""), 20)
+    cdp.send("Input.insertText", {"text": str(exposure)})
+    for action in ("keyDown", "keyUp"):
+        cdp.send("Input.dispatchKeyEvent", {"type": action, "key": "Enter", "code": "Enter", "windowsVirtualKeyCode": 13})
+    read = f"window.__lightflow.editOf({json.dumps(photo_id)}).base.exposure"
+    wait(lambda: ev(read) == exposure, 12)
+    return {"control": label, "actualEV": ev(read)}
+
+
+def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
+    ev = cdp.evaluate
+    result = {"schemaVersion": 1, "protocol": "single-native-jpeg-delivery-v1", "application": "LightFlow",
+              "build": LIGHTFLOW_BUILD, "assetSHA256": LIGHTFLOW_EXPORT_ASSETS, "sourceSHA256": source_sha,
+              "sourcePixels": args.output_pixels, "browser": cdp.send("Browser.getVersion")["product"],
+              "browserBinarySHA256": digest(args.chrome), "browserGPU": browser_gpu, "os": platform.mac_ver()[0],
+              "osBuild": subprocess.check_output(["sw_vers", "-buildVersion"], text=True).strip(),
+              "hardware": subprocess.check_output(["sysctl", "-n", "hw.model"], text=True).strip(),
+              "boundary": "Monotonic host time immediately before stock Export button dispatch to first 15 ms poll with one final JPEG, an EOI marker and no temporary download file. Queue and full decode verify the file after timing.",
+              "requestedWarmups": args.warmup, "requestedSamples": args.repeats, "warmups": [], "samples": [], "complete": False}
+
+    def save():
+        report = work / "results.json"
+        pending = work / "results.tmp"
+        pending.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+        pending.replace(report)
+
+    def settings(exposure):
+        ev("window.__lightflow.setWorkspace('export')")
+        wait(lambda: ev("!!document.querySelector('[data-id=export-now]')"), 45)
+        expected = {"file": {"format": "jpeg", "bitDepth": 8, "quality": args.quality, "chroma": "4:2:0",
+                             "progressive": False, "progressiveLarge": False, "fitLimits": False},
+                    "sizing": {"mode": "original", "allowEnlarge": False},
+                    "color": {"space": "srgb", "hdr": "off", "embedIcc": True},
+                    "sharpening": {"on": False}, "watermark": {"on": False},
+                    "metadata": {"policy": "none", "keywords": False, "embedEdit": False},
+                    "location": {"target": "downloads", "zip": "never", "useSubfolder": False}}
+        form = ev(f"""(() => {{
+            const api=window.__lightflowExport;
+            api.applyPreset('builtin.jpeg-full');
+            const s=api.form.get().settings;
+            const expected={json.dumps(expected)};
+            const overrides=Object.fromEntries(Object.entries(expected).map(([group, values])=>[group,{{...s[group],...values}}]));
+            api.setSettings({{...s,...overrides}});
+            return api.form.get().settings;
+        }})()""")
+        if any(form[group].get(key) != value for group, subset in expected.items() for key, value in subset.items()):
+            raise ValueError("LightFlow did not accept the native JPEG export settings")
+        if ev(exposure_read) != exposure:
+            raise ValueError("LightFlow did not preserve the committed exposure in its export workspace")
+        return form
+
+    def trial(label, exposure):
+        actual_exposure = ev(exposure_read)
+        if actual_exposure != exposure:
+            raise ValueError("The committed exposure changed before the export")
+        folder = work / label
+        folder.mkdir()
+        cdp.send("Browser.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(folder)})
+        previous = ev("window.__lightflowExport.queue.get().jobs.length")
+        with observe(folder, None, finalized_jpeg) as (_, watched):
+            start = time.monotonic_ns()
+            ev("document.querySelector('[data-id=export-now]').click()")
+
+            def job_done():
+                rows = ev(f"""window.__lightflowExport.queue.get().jobs.slice({previous}).map(
+                    x=>({{status:x.status,error:x.error,photoId:x.photoId,outName:x.outName,bytes:x.bytes,
+                        width:x.width,height:x.height,added:x.added,started:x.started,finished:x.finished,via:x.via??null}}))""")
+                if len(rows) > 1:
+                    raise ValueError("The stock export button submitted more than one file")
+                return rows[0] if rows and rows[0]["status"] in ("done", "failed", "cancelled", "interrupted") else None
+
+            job = wait(job_done)
+            if job["status"] != "done" or job["photoId"] != photo_id:
+                raise ValueError(f"LightFlow did not complete the selected RAW job {job}")
+            finish = wait(lambda: watched.get("finalObservedUptimeNS") if "path" in watched else None, 20)
+        file = inspect_native_jpeg(watched["path"], args.output_pixels)
+        if finish <= start or file["name"] != job["outName"] or file["bytes"] != job["bytes"]:
+            raise ValueError("Downloaded JPEG differs from the completed queue record")
+        return {"label": label, "exposureEV": actual_exposure, "submitUptimeNS": start, "finalWriteObservedUptimeNS": finish,
+                "elapsedMs": (finish - start) / 1e6, "job": job, "file": file}
+
+    try:
+        result["availableWebGPUAdapter"] = ev("""(async () => {
+            const adapter = await navigator.gpu?.requestAdapter();
+            if (!adapter) return null;
+            return Object.fromEntries(['vendor','architecture','device','description','isFallbackAdapter'].map(k=>[k,adapter.info[k]]));
+        })()""")
+        adapter = result["availableWebGPUAdapter"]
+        vendor = " ".join(str(adapter.get(key, "")).lower() for key in ("vendor", "architecture", "device", "description")) if adapter else ""
+        if not adapter or adapter.get("isFallbackAdapter") is not False or any(name in vendor for name in ("swiftshader", "llvmpipe", "software")):
+            raise ValueError("A physical WebGPU adapter is required for the LightFlow baseline")
+        ev("window.__lightflow.importUrls([" + json.dumps(origin + "/spec043/source.ARW") + "])")
+        photo = wait(lambda: ev("""(() => {
+            const catalog=window.__lightflow.stores.catalog.get();
+            const p=catalog.photos[catalog.order[0]];
+            return p && catalog.order.length===1 && (p.info?.width || p.error)
+                ? {id:catalog.order[0],kind:p.kind,name:p.name,info:p.info,error:p.error} : null;
+        })()"""), 180)
+        if (photo.get("error") or photo["kind"] != "raw" or photo["name"] != "source.ARW"
+                or [photo["info"]["width"], photo["info"]["height"]] != args.output_pixels or photo["info"]["orientation"] != 1):
+            raise ValueError("Expected one unrotated RAW with the declared native output size")
+        photo_id = photo["id"]
+        selected = json.dumps(photo_id)
+        ev(f"window.__lightflow.setActive({selected});window.__lightflow.select([{selected}])")
+        exposure_read = f"window.__lightflow.editOf({selected}).base.exposure"
+        result["sourceOrientation"] = photo["info"]["orientation"]
+        result["initialExposureEV"] = ev(exposure_read)
+        if result["initialExposureEV"] != 0:
+            raise ValueError("A clean default exposure is required in the isolated catalog")
+        result["exposure"] = (set_lightflow_exposure(cdp, photo_id, args.exposure) if args.exposure
+                              else {"control": None, "actualEV": result["initialExposureEV"]})
+        result["settings"] = settings(args.exposure)
+        result["firstExport"] = trial("first-export", args.exposure)
+        save()
+        for group, count in (("warmups", args.warmup), ("samples", args.repeats)):
+            for index in range(count):
+                result[group].append(trial(f"{group}-{index:02d}", args.exposure))
+                save()
+        if args.exposure:
+            result["neutralExposure"] = set_lightflow_exposure(cdp, photo_id, 0.0)
+            if settings(0.0) != result["settings"]:
+                raise ValueError("Neutral witness export output settings changed")
+            neutral = trial("neutral-witness", 0.0)["file"]
+            edited = [row["file"] for row in [result["firstExport"], *result["warmups"], *result["samples"]]]
+            minimum_delta = min(file["witnessMeanLuma"] - neutral["witnessMeanLuma"] for file in edited)
+            if minimum_delta <= 0 or any(file["witnessRGBSHA256"] == neutral["witnessRGBSHA256"] for file in edited):
+                raise ValueError("The committed exposure did not brighten the exported JPEG pixels")
+            result["neutralWitness"] = {"file": neutral, "minimumEditedMinusNeutralMeanLuma": minimum_delta}
+        result["sourceSHA256After"] = digest(args.raw)
+        if result["sourceSHA256After"] != source_sha:
+            raise ValueError("Source RAW changed during benchmark")
+        elapsed = sorted(row["elapsedMs"] for row in result["samples"])
+        result["statistics"] = {"n": len(elapsed), "p50Ms": statistics.median(elapsed),
+                                "p95Ms": elapsed[math.ceil(.95 * len(elapsed)) - 1]}
+        result["complete"] = True
+        return result
+    except (OSError, RuntimeError, ValueError) as error:
+        result["error"] = str(error)
+        raise
+    finally:
+        save()
+
+
 def lightflow(args):
-    work = args.root / "lightflow"
-    work.mkdir(exist_ok=True)
+    single_raw = getattr(args, "action", "lightflow") == "lightflow-native-raw"
+    if single_raw:
+        source_sha = digest(args.raw)
+        for relative, expected in LIGHTFLOW_EXPORT_ASSETS.items():
+            path = args.site / relative
+            if not path.is_file() or digest(path) != expected:
+                raise ValueError(f"Expected pinned LightFlow {LIGHTFLOW_BUILD} asset {relative}")
+    work = args.root / ("lightflow-native-raw" if single_raw else "lightflow")
+    work.mkdir(exist_ok=not single_raw)
 
     class Handler(SimpleHTTPRequestHandler):
         def translate_path(self, path):
-            if any(path.startswith("/" + kind + "/") for kind in [JPEG, RAW]):
+            if single_raw and urlsplit(path).path == "/spec043/source.ARW":
+                return str(args.raw)
+            if not single_raw and any(path.startswith("/" + kind + "/") for kind in [JPEG, RAW]):
                 return str(args.root / path.lstrip("/"))
             return super().translate_path(path)
 
@@ -230,9 +455,11 @@ def lightflow(args):
         threading.Thread(target=server.serve_forever, daemon=True).start()
         origin = f"http://127.0.0.1:{server.server_port}"
         profile = work / f"profile-{time.time_ns()}"
-        chrome = subprocess.Popen([str(args.chrome), "--disable-background-networking", "--enable-gpu", "--no-first-run",
-                                   "--remote-debugging-port=0", f"--user-data-dir={profile}", origin],
-                                  stdout=log, stderr=log)
+        command = [str(args.chrome), "--disable-background-networking", "--enable-gpu", "--no-first-run",
+                   "--remote-debugging-port=0", f"--user-data-dir={profile}"]
+        if single_raw:
+            command.append("--window-size=1600,1000")
+        chrome = subprocess.Popen([*command, origin], stdout=log, stderr=log)
         try:
             portfile = profile / "DevToolsActivePort"
             wait(portfile.exists, 30)
@@ -251,6 +478,19 @@ def lightflow(args):
                     return False
 
             wait(app_ready, 40)
+            if single_raw:
+                gpu = {"status": "unavailable"}
+                browser = None
+                try:
+                    with urlopen(f"http://127.0.0.1:{port}/json/version", timeout=5) as info:
+                        browser = CDP(json.load(info)["webSocketDebuggerUrl"])
+                    gpu = {"status": "observed", "devices": browser.send("SystemInfo.getInfo")["gpu"]["devices"]}
+                except (OSError, RuntimeError, KeyError, websocket.WebSocketException) as error:
+                    gpu["reason"] = type(error).__name__
+                finally:
+                    if browser:
+                        browser.socket.close()
+                return run_lightflow_native_raw(args, work, cdp, origin, source_sha, gpu)
             urls = [f"{origin}/{kind}/{p.name}" for kind in [JPEG, RAW] for p in files_in(args.root, kind)]
             for offset in range(0, len(urls), 20):
                 ev("window.__lightflow.importUrls(" + json.dumps(urls[offset:offset+20]) + ")")
@@ -326,14 +566,28 @@ def run_trials(args, name, trial):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("fixtures", "alcedo", "lightflow"))
+    parser.add_argument("action", choices=("fixtures", "alcedo", "lightflow", "lightflow-native-raw"))
     parser.add_argument("root", type=Path)
     parser.add_argument("--raw", type=Path)
     parser.add_argument("--alcedo", type=Path, default=Path("/Applications/AlcedoStudio.app/Contents/MacOS/alcedo-cli"))
     parser.add_argument("--site", type=Path)
     parser.add_argument("--chrome", type=Path)
-    parser.add_argument("--repeats", type=int, default=3)
+    parser.add_argument("--repeats", type=int, help="Measured runs (3 for batch benchmarks, 30 for lightflow-native-raw)")
+    parser.add_argument("--warmup", type=int, default=5, help="Unscored lightflow-native-raw exports after its first export")
+    parser.add_argument("--quality", type=int, default=95, help="JPEG quality for lightflow-native-raw")
+    parser.add_argument("--exposure", type=float, choices=(0.0, 0.5), default=0.5, help="LightFlow Develop exposure for the single RAW")
+    parser.add_argument("--output-pixels", type=int, nargs=2, default=[9504, 6336], metavar=("WIDTH", "HEIGHT"),
+                        help="Expected original-size JPEG dimensions for lightflow-native-raw")
     args = parser.parse_args()
+    if args.action == "lightflow-native-raw":
+        if not args.raw or not args.raw.is_file() or args.raw.suffix.lower() != ".arw":
+            parser.error("lightflow-native-raw requires one existing --raw .ARW file")
+        args.raw = args.raw.resolve()
+        args.repeats = 30 if args.repeats is None else args.repeats
+        if args.repeats < 1 or args.warmup < 0 or not 1 <= args.quality <= 100 or min(args.output_pixels) < 1:
+            parser.error("Use positive sample count and dimensions, nonnegative warmups, and JPEG quality 1–100")
+    elif args.repeats is None:
+        args.repeats = 3
     args.root = args.root.resolve()
     args.root.mkdir(parents=True, exist_ok=True)
     if args.action == "fixtures":
