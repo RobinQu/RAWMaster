@@ -69,6 +69,19 @@ M1-01 在相同实拍与 FlashRaw 运行库上完成三条路径各一次首轮�
 
 首条场景路径必须有以上双端实机证据再启用。M5 继续签收 Linux 的 RAW 到成片产品闭环。
 
+首条组件的冻结输入来自 `DevelopmentSceneRAWV1Tests/testOptInFrozenAP1SceneWGSLFixture`。用 `RAWMASTER_SCENE_60MP_ARW` 指定本节同源授权原片，`RAWMASTER_SCENE_WGSL_FIXTURE_DIR` 指定新目录。夹具写入 2400×1600 线性 AP1 F32、校准、冻结 039 图、右下 ROI 和四份严格 Rust Metal 参考。`manifest.json` 保存输入、输出及校准摘要。两端用同一份冻结输入。
+
+```sh
+cargo run --release --locked --manifest-path Modules/ImageEdit/Cargo.toml \
+  --no-default-features --features gpu --example ap1_scene_probe -- \
+  --backend metal --graph "$fixture/graph.json" --input "$fixture/input.rgba32f" \
+  --width 2400 --height 1600 --roi 1771,1093,629,507 \
+  --monitor 04300000-0000-4000-8000-000000000002 \
+  --legacy-dir "$fixture/legacy" --output-dir "$metal_report"
+```
+
+Linux 实测选择 `--backend vulkan --adapter` 绑定已确认的物理适配器，设置独立 `--output-dir`，并用 `--peer-dir` 传入 Metal 回执及读回结果。随报告保留 `vulkaninfo --summary` 和物理设备、驱动信息。组件比较同后端 RGBAf 裁块位模式，跨实现比较 RGB `2×10⁻⁵ × max(1, |reference|)` 和 alpha 位模式。报告分别标明 CPU 上传、GPU 完成等待、读回及核算缓冲区。 [首条组件入口](../../Modules/ImageEdit/examples/ap1_scene_probe.rs)
+
 - **6 MP。** 同机以 M0 的 039 当前执行器为参照，暖态图 p95 至少 1.3× 提速。
 - **96 节点。** 冻结图结构、ROI、缓存条件和未融合对照。吞吐 ≥2×，峰值中间工作集 ≤50%。中间工作集计量求值期间的临时纹理和缓冲，固定输入、终端输出及总峰值单列。
 - **60 MP。** 对同一 60 MP 摄影加三节点和同一输出路由，DAG 阶段 p50 较 M1 下降至少 15%，核对瓦片数、DAG 派发及峰值。038 交互继续通过原生既有门槛。
@@ -137,16 +150,18 @@ M1-01 在相同实拍与 FlashRaw 运行库上完成三条路径各一次首轮�
 
 用同一个 Release 测试二进制串行跑了 0.8、1.8、0.8 秒三组诊断，每组高光、阴影和色调各 6 次，原始画布帧均独立复算。两轮 0.8 秒里，高光和阴影各 6 次回零均遇到上一笔直方图。提交到旧任务返回分别等待 42.69–61.29 ms 和 40.56–57.35 ms，旧任务返回后 0.33–0.39 ms 内启动当前预览。1.8 秒组的回零均在旧任务返回后提交，两个成功的慢直方图总耗时 1029、1044 ms，显影结束到任务返回占 786、800 ms。两轮 0.8 秒的稳定 ROI 指纹一致，1.8 秒组与它们最多差一个 RGB8 码值。长间隔只用于定位排队。 [诊断结果](evidence/m0-histogram-worker-diagnostic.json)
 
-`1ebf4e0a` 复用两个最近的直方图结果，命中时保留预览上下文。14 项 Release 回归通过。按原 0.8 秒协议复测时，六项的目标像素指纹均一致。曝光、对比度、黑色和色调的两项指标进入新 LightFlow 容差，高光和阴影回零长尾仍在。[RAWMaster 复测](evidence/m0-screen-photo-response-retest.json)
+将清缓存从每块移到每行末尾后，高光和阴影完整直方图的 48 次同步采样分别从 735.84、747.32 ms 降到 226.33、219.43 ms。三组实拍采样的 RGBAf 和全量分箱摘要相同，分数 ROI 的 RGB 与蒙版夹具逐位相同。配对样本的内存采样高水维持约 2.81 GB Metal、3.70 GB 进程 footprint。每块同步返回与取消检查继续生效。0.8 秒短跑中，两项分别各三次回零均未与旧直方图重叠。 [逐行 A/B](evidence/m0-display-histogram-row-ab.json)
+
+`1ebf4e0a` 先复用了两个最近的直方图结果，四项进入 LightFlow 容差，高光、阴影 p95 分别为 75.13 和 77.75 ms。逐行采样落地后，关闭诊断按 0.8 秒、五次预热和三十次计量重新采集。全部 180 次独立复算通过，十二个稳定目标像素摘要与上一构建相同，六项的 p50 和 p95 均进入 LightFlow 容差。三方验收还需要当前 Camera Raw 样本。 [上次复测](evidence/m0-screen-photo-response-retest.json) · [逐行后正式复测](evidence/m0-screen-photo-response-row-retest.json)
 
 | 控件 | RAWMaster 复测 p50 / p95 | LightFlow p50 / p95 | 对本轮 LightFlow |
 | --- | ---: | ---: | --- |
-| 曝光 | 29.02 / 36.24 | 27.40 / 47.78 | 两项均在容差内 |
-| 对比度 | 25.99 / 39.98 | 29.41 / 39.77 | 两项均在容差内 |
-| 高光 | 50.89 / 75.13 | 29.58 / 37.78 | 两项超出容差 |
-| 阴影 | 51.94 / 77.75 | 28.66 / 39.02 | 两项超出容差 |
-| 黑色 | 27.33 / 35.86 | 29.03 / 35.62 | 两项均在容差内 |
-| 色调 | 29.32 / 40.80 | 27.93 / 36.83 | 两项均在容差内 |
+| 曝光 | 26.84 / 38.26 | 27.40 / 47.78 | 两项均在容差内 |
+| 对比度 | 24.87 / 35.93 | 29.41 / 39.77 | 两项均在容差内 |
+| 高光 | 28.22 / 37.51 | 29.58 / 37.78 | 两项均在容差内 |
+| 阴影 | 25.69 / 39.11 | 28.66 / 39.02 | 两项均在容差内 |
+| 黑色 | 25.45 / 34.50 | 29.03 / 35.62 | 两项均在容差内 |
+| 色调 | 27.13 / 39.04 | 27.93 / 36.83 | 两项均在容差内 |
 
 LightFlow 的 24.35/25.92 ms 为 74 配方 2400×1600 RGBA8 精确读回的首次精确与最终结果中位上限。Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。三方同口径精确读回、1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
 

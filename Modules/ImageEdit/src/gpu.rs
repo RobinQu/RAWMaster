@@ -1,3 +1,4 @@
+pub mod ap1_scene;
 #[cfg(all(target_os = "macos", feature = "metal-surface"))]
 pub mod metal_surface;
 

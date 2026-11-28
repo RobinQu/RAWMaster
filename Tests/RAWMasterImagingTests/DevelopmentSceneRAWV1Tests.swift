@@ -202,6 +202,106 @@ final class DevelopmentSceneRAWV1Tests: XCTestCase {
       .write(to:URL(fileURLWithPath:reportPath),options:.withoutOverwriting)
   }
 
+  func testOptInFrozenAP1SceneWGSLFixture() throws {
+    let env = ProcessInfo.processInfo.environment
+    guard let sourcePath = env["RAWMASTER_SCENE_60MP_ARW"],
+          let outputPath = env["RAWMASTER_SCENE_WGSL_FIXTURE_DIR"] else {
+      throw XCTSkip("Set the authorized 60 MP ARW and a new M2 fixture directory")
+    }
+    let source = URL(fileURLWithPath: sourcePath), output = URL(fileURLWithPath: outputPath)
+    func digest(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
+    let sourceSHA = try digest(Data(contentsOf: source, options: .mappedIfSafe))
+    guard sourceSHA == "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89" else {
+      throw RAW.Calibration.Failure.unqualifiedSource
+    }
+    let fm = FileManager.default
+    try fm.createDirectory(at: output, withIntermediateDirectories: false)
+    let legacy = output.appendingPathComponent("legacy", isDirectory: true)
+    try fm.createDirectory(at: legacy, withIntermediateDirectories: false)
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let decoder = try RAW(device: device)
+    let mosaic = try decoder.prepare(source)
+    let sensor = mosaic.sensor, rows = sensor.calibration.rows
+    let calibration: [String: Any] = ["sensorSize": [sensor.width, sensor.height], "orientation": sensor.orientation,
+      "active": (0..<4).map { sensor.active[$0] }, "crop": (0..<4).map { sensor.crop[$0] },
+      "cfa": (0..<4).map { sensor.colors[$0] }, "black": (0..<4).map { sensor.black[$0] },
+      "white": (0..<4).map { sensor.white[$0] }, "cameraToAP1": [rows.0, rows.1, rows.2].map { row in (0..<3).map { row[$0] } }]
+    let calibrationData = try JSONSerialization.data(withJSONObject: calibration, options: [.sortedKeys])
+    try calibrationData.write(to: output.appendingPathComponent("calibration.json"), options: .withoutOverwriting)
+    let dimensions = SIMD2<Int>(2400, 1600)
+    let full = try decoder.develop(mosaic, sampling: .fit(width: dimensions.x, height: dimensions.y)).image
+    let roi = MTLRegionMake2D(1771, 1093, 629, 507)
+    let roiPixels: [SIMD4<Float>] = try read(full.texture, region: roi)
+    let roiDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: roi.size.width, height: roi.size.height, mipmapped: false)
+    roiDescriptor.storageMode = .shared
+    roiDescriptor.usage = .shaderRead
+    let roiTexture = try XCTUnwrap(device.makeTexture(descriptor: roiDescriptor))
+    roiPixels.withUnsafeBytes {
+      roiTexture.replace(region: MTLRegionMake2D(0, 0, roi.size.width, roi.size.height), mipmapLevel: 0,
+        withBytes: $0.baseAddress!, bytesPerRow: roi.size.width * MemoryLayout<SIMD4<Float>>.stride)
+    }
+    let crop = DevelopmentSceneMetalV1.Image(texture: roiTexture, port: .working, origin: .init(roi.origin.x, roi.origin.y))
+
+    typealias Graph = DevelopmentSceneGraphV1
+    typealias Node = Graph.Node
+    struct Document: Encodable {
+      let schemaVersion = 1
+      let graph: Graph.Scope
+    }
+    func identifier(_ suffix: UInt8) -> UUID { UUID(uuid: (0x04, 0x30, 0, 0, 0, 0, 0x40, 0, 0x80, 0, 0, 0, 0, 0, 0, suffix)) }
+    let coverage = Node(id: identifier(1), name: "Coverage", operation: .linearCoverage(start: .init(0.25, 0.2), end: .init(0.9, 0.8)))
+    let inside = Node(id: identifier(2), name: "Exposure and curve", operation: .corrector(image: .input, mask: coverage.id,
+      exposureEV: 0.75, curve: [.init(-6, -5.5), .init(-2, -2.25), .init(0, 0.1), .init(3, 2.75)], strength: 0.85, enabled: true))
+    let disabled = Node(id: identifier(3), name: "Disabled corrector", operation: .corrector(image: .input, mask: nil,
+      exposureEV: 2, curve: [], strength: 1, enabled: false))
+    let outside = Node(id: identifier(4), name: "Secondary exposure", operation: .corrector(image: .node(disabled.id), mask: nil,
+      exposureEV: -0.5, curve: [], strength: 0.9, enabled: true))
+    let stacked = Node(id: identifier(5), name: "Ordered normal layers", operation: .layer(base: .input, layers: [
+      .init(.node(inside.id), weight: 0.625), .init(.node(outside.id), weight: 0.375)
+    ], enabled: true))
+    let scope = Graph.Scope(nodes: [coverage, inside, disabled, outside, stacked], output: .node(stacked.id))
+    let trim = try DevelopmentSceneOutputStateV1.SDRTrim(exposureEV: 0, mapping: .balanced, highlightCompression: 0)
+    let graph = try Graph(graph: scope, output: .init(sdrTrim: trim))
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    let graphData = try encoder.encode(Document(graph: scope))
+    try graphData.write(to: output.appendingPathComponent("graph.json"), options: .withoutOverwriting)
+
+    func write(_ texture: MTLTexture, to file: URL) throws -> String {
+      let pixels: [SIMD4<Float>] = try read(texture)
+      XCTAssertEqual(MemoryLayout<SIMD4<Float>>.stride, 16)
+      let data = pixels.withUnsafeBytes { Data($0) }
+      try data.write(to: file, options: .withoutOverwriting)
+      return digest(data)
+    }
+    let inputSHA = try write(full.texture, to: output.appendingPathComponent("input.rgba32f"))
+    let reference = try DevelopmentSceneGraphRendererV1(device: device, backend: .rust)
+    let geometry = DevelopmentSceneGraphRendererV1.Geometry(width: dimensions.x, height: dimensions.y)
+    var legacySHA: [String: String] = [:]
+    for (name, image) in [("full", full), ("roi", crop)] {
+      let final = try reference.prepareFinalInput(image, geometry: geometry, graph: graph, masks: [:]).image
+      XCTAssertEqual(reference.lastReceipt?.backend, .rust)
+      let finalName = "final-\(name).rgba32f"
+      legacySHA[finalName] = try write(final.texture, to: legacy.appendingPathComponent(finalName))
+      let monitor = try reference.preparePreviewInput(image, geometry: geometry, graph: graph,
+        view: .init(target: .node(inside.id)), masks: [:], sourceRevision: 0).image
+      XCTAssertEqual(reference.lastReceipt?.backend, .rust)
+      let monitorName = "monitor-\(name).rgba32f"
+      legacySHA[monitorName] = try write(monitor.texture, to: legacy.appendingPathComponent(monitorName))
+    }
+    let evidence: [String: Any] = ["schemaVersion": 1, "port": "AP1 premultiplied RGBA F32LE",
+      "sourceSHA256": sourceSHA, "sourcePixels": [mosaic.sensor.size.x, mosaic.sensor.size.y],
+      "photoDimensions": [dimensions.x, dimensions.y], "roi": [roi.origin.x, roi.origin.y, roi.size.width, roi.size.height],
+      "decoder": "FlashRaw 0.3.1 rawU16", "calibration": "DevelopmentSceneRAWV1 / DevelopmentCameraCalibrationV1",
+      "calibrationSHA256": digest(calibrationData),
+      "graphSHA256": digest(graphData), "inputSHA256": inputSHA, "legacyOutputSHA256": legacySHA,
+      "legacyExecutor": "039 Rust Metal", "monitorID": inside.id.uuidString, "device": device.name]
+    try JSONSerialization.data(withJSONObject: evidence, options: [.prettyPrinted, .sortedKeys])
+      .write(to: output.appendingPathComponent("manifest.json"), options: .withoutOverwriting)
+    XCTAssertEqual(try digest(Data(contentsOf: source, options: .mappedIfSafe)), sourceSHA)
+  }
+
   private func inspect(_ result: RAW.Result) throws -> [String:Any] {
     let width=result.image.texture.width, height=result.image.texture.height
     var negative=0, aboveOne=0, saturated=0, aboveOneAndNotSaturated=0

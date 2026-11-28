@@ -6,6 +6,8 @@
 use serde::Deserialize;
 use std::collections::{HashMap, HashSet};
 
+pub mod ap1;
+
 pub const MAX_NODES: usize = 96;
 pub const MAX_DEPTH: usize = 5;
 pub const MAX_LAYERS: usize = 8;
@@ -77,6 +79,7 @@ pub enum Blend {
     Luminosity,
 }
 impl Blend {
+    #[cfg(all(target_os = "macos", feature = "metal-surface"))]
     fn code(self) -> u32 {
         match self {
             Self::Normal => 0,
@@ -260,6 +263,7 @@ impl Operation {
     }
     /// Endpoints that must be evaluated before this operation. Coverage dependencies use the
     /// same node endpoint type; the executor checks the destination texture format.
+    #[cfg(all(target_os = "macos", feature = "metal-surface"))]
     fn active_inputs(&self) -> Vec<Endpoint> {
         let mut result: Vec<Endpoint> = match self {
             Self::Corrector {
@@ -496,10 +500,10 @@ pub fn parse(document: &[u8]) -> Result<(Document, Scope), SceneError> {
     Ok((document.clone(), document.graph))
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(all(target_os = "macos", feature = "metal-surface"))]
 pub mod metal_exec;
 
-#[cfg(target_os = "macos")]
+#[cfg(all(target_os = "macos", feature = "metal-surface"))]
 pub use metal_exec::SceneProgram;
 
 #[cfg(test)]

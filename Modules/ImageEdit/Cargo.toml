@@ -7,6 +7,10 @@ publish = false
 [lib]
 crate-type = ["rlib", "cdylib"]
 
+[[example]]
+name = "ap1_scene_probe"
+required-features = ["gpu"]
+
 [features]
 default = ["gpu", "metal-surface"]
 surface-fence-probe = ["metal-surface"]
