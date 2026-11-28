@@ -20,7 +20,7 @@ final class DevelopmentSceneTiledDeliveryV1 {
 
   init(decoder: DevelopmentSceneRAWV1, mosaic: DevelopmentSceneRAWV1.Mosaic, graph: DevelopmentSceneGraphV1,
        models: DevelopmentSceneModelProgramV1? = nil, capture: URL? = nil, surfaceBudget: Int = DevelopmentSceneGraphRendererV1.defaultSurfaceBudget,
-       maximumTileEdge: Int = 1536, directDRT: Bool = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DIRECT_DRT"] == "1") throws {
+       maximumTileEdge: Int = 1536, directDRT: Bool = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_DIRECT_DRT"] != "0") throws {
     try graph.validatePhotographicCoverage(using: models)
     guard surfaceBudget > 0, (1...4096).contains(maximumTileEdge) else { throw Renderer.Failure.surfaceBudget }
     guard let queue = mosaic.texture.device.makeCommandQueue() else { throw DevelopmentSceneColorV1.Failure.metalUnavailable }

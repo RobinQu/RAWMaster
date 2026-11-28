@@ -16,7 +16,7 @@
 
 - [x] **M1-01** 每个目标复用一个 renderer、冻结 SceneProgram 和输出阶段。输入、ROI、预算按瓦片绑定，旧运行库沿用逐瓦片 Rust。60 MP 三路核对 `rendererBuildCount`、`programCompileCount`、`libraryCompileCount`、成片与派发数。[实测回执](evidence/m1-60mp-frozen-tile-preparation.json)
 - [ ] **M1-02** 验证同一冻结输入可共享逐瓦片显影和 DAG，再分目标 DRT。只在输出、编码和总预算通过的路由启用，复验单目标失败、取消和 032 恢复。
-- [ ] **M1-03** 合并图、DRT、blit 的同队列工作，核对与解码和平台段的完成信号及资源生命期。
+- [ ] **M1-03** 合并图与 DRT 的同队列工作，核对与解码和平台段的完成信号及资源生命期。瓦片 DRT 直写已启用，60 MP 每个目标少 35 次 blit，逐份成片及瓦片后取消重试已通过。[实机对照](evidence/m1-direct-drt-assembly.json)
 - [ ] **M1-04** 按设备和规范化结构缓存编译产物，分别验证改参、跨照片、拓扑变更和源资源失效。
 - [ ] **M1-05** 对照分块/整幅、单/双目标、60 MP 成片像素。签收暖态端到端 p95 ≤M0 同路由基线的 105%，同意图的瓦片和 DAG 派发计数至多等于基线，重复准备下降。
 

@@ -1,0 +1,2386 @@
+{
+  "schemaVersion": 1,
+  "scope": "Direct DRT tile writes versus separate tile texture and assembly blit, 60 MP on physical Apple M4 Max Metal",
+  "sourceCommitAtStart": "49f5f088d23ff8950f1da65441ab05878099b470",
+  "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "testBundleSHA256": {
+    "RAWMasterUITests": "d9aea865dcb5a0766a29fe327f5811c98d6eedac7c8ef7b1b1f4af3d9019a522",
+    "RAWMasterImagingTests": "4828b548d7e0e61c8315a8344f28f1bf32693b4cd8e9c28e9cc4bacca4146219"
+  },
+  "warmups": 5,
+  "measuredSamplesPerRoute": 30,
+  "sourceSize": [
+    9504,
+    6336
+  ],
+  "sourceCommitMeaning": "49f5f088 tests both paths explicitly in the same Release test binaries for both DAG executors; product selection changes the default only.",
+  "nativeImageRuntimeSHA256": "91bfa70276e488bd99c097ce2703e53fc460ee458e307456caa25a428b468492",
+  "timingScope": "One first delivery per route with system caches intact, followed by five warmups and 30 measured. Separately timed phases overlap.",
+  "executionOrder": [
+    "wgpu blit",
+    "wgpu direct",
+    "039 direct",
+    "039 blit"
+  ],
+  "comparability": "Fixed graph values, output settings and RAW within each route. Random workflow and graph node IDs are generated independently per run.",
+  "retainedArtifacts": "36 files per format and route in each arm. Component renders both formats and their receipts independently of the 032 workbench batches.",
+  "memory": "Logical reserve for the old DRT tile kept in both modes. Sampled device allocation and process footprint are separate metrics at equivalent milestones. The old pure-frame blit payload is logical, not a device-traffic counter.",
+  "removedLogicalAssemblyPayloadPerTargetBytes": 963477504,
+  "m0WallP95UpperMs": {
+    "032-avif10": 1479.7027434000001,
+    "032-jpeg8": 631.4220066,
+    "component": 1894.9136934
+  },
+  "focusedRegression": {
+    "result": "12 Release XCTest cases passed",
+    "logSHA256": "85f0185b74266cdb6bc8de9e184318acc02a047273260fee3e1e6c7fa84f4fd6",
+    "cases": [
+      "bit equality including border tile, partial and zero alpha, nonzero DRT trims and untouched sentinel pixels",
+      "known invalid region and input alias rejection",
+      "actual cancellation after one completed tile and retry on the same owner"
+    ]
+  },
+  "arms": {
+    "rust039": {
+      "artifactsMatchedAcrossArms": {
+        "032-avif10": {
+          "count": 36,
+          "sha256": "cbc9026c0aac8fd3507e0d3c0124363daa22b1159fb6c8402f87406fe62520fa",
+          "byteCount": 13285431
+        },
+        "component-avif10": {
+          "count": 36,
+          "sha256": "f6df8d5c13631fa32c9fa9972da940b0d163d27bf2b0e72a4ea8a11e8cc77780",
+          "byteCount": 13285431
+        },
+        "032-jpeg8": {
+          "count": 36,
+          "sha256": "861665410e945da9531d493f0ab6500b63e8f6420431d30f9e61e8e2a4c0f0c9",
+          "byteCount": 9591125
+        },
+        "component-jpeg8": {
+          "count": 36,
+          "sha256": "7e7481e385266af87b47ec87f02b5f74c2f5c5cad54727c6ccf30fc750649e30",
+          "byteCount": 9593726
+        }
+      },
+      "routes": {
+        "032-avif10": {
+          "blit": {
+            "firstRunWallMs": 1379.500709,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1342.626396,
+              "p95Ms": 1451.997708
+            },
+            "warmWallMs": [
+              1322.8659,
+              1316.2628,
+              1339.1022,
+              1344.1447,
+              1331.2532,
+              1333.0619,
+              1335.7317,
+              1437.659,
+              1350.1999,
+              1451.9977,
+              1360.32,
+              1335.8725,
+              1350.1294,
+              1337.0309,
+              1456.0083,
+              1388.0564,
+              1343.0496,
+              1337.0203,
+              1341.1233,
+              1319.3391,
+              1324.0514,
+              1358.9916,
+              1370.4767,
+              1393.9801,
+              1364.9165,
+              1364.7358,
+              1350.2934,
+              1332.6659,
+              1315.6188,
+              1342.2032
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 61.500417999999996,
+                      "p95Ms": 67.66321
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.658604,
+                      "p95Ms": 49.629335
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 37.7538755,
+                      "p95Ms": 48.437582
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.319293,
+                      "p95Ms": 23.447067
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 31.2562085,
+                      "p95Ms": 34.964168
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.8477115,
+                      "p95Ms": 4.830481
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 876.7802710000001,
+                      "p95Ms": 915.493125
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 7320305664,
+                  "maxSampledProcessPhysFootprintBytes": 3705981520
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 1328.673375,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1301.1188545,
+              "p95Ms": 1341.777667
+            },
+            "warmWallMs": [
+              1263.6731,
+              1288.4592,
+              1264.0938,
+              1292.2132,
+              1286.6779,
+              1295.1686,
+              1309.7565,
+              1307.3744,
+              1274.7318,
+              1288.6688,
+              1319.731,
+              1292.9599,
+              1313.5743,
+              1282.4736,
+              1298.1904,
+              1341.7777,
+              1279.2967,
+              1321.1257,
+              1292.5804,
+              1306.9691,
+              1292.1088,
+              1323.019,
+              1304.0473,
+              1307.8105,
+              1307.024,
+              1329.8875,
+              1320.4408,
+              1359.0378,
+              1286.3685,
+              1322.716
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 61.301271,
+                      "p95Ms": 63.652958
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.829542000000004,
+                      "p95Ms": 50.137879
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.2059575,
+                      "p95Ms": 49.47963
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.20075,
+                      "p95Ms": 17.83732
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 857.7133125,
+                      "p95Ms": 880.370667
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 7123255296,
+                  "maxSampledProcessPhysFootprintBytes": 3664038432
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 1,
+                "libraryCompileCount": 3,
+                "programCompileCount": 1,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 1,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              }
+            }
+          }
+        },
+        "032-jpeg8": {
+          "blit": {
+            "firstRunWallMs": 625.360625,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 576.3919795,
+              "p95Ms": 603.870917
+            },
+            "warmWallMs": [
+              603.8709,
+              563.5797,
+              601.6085,
+              564.4815,
+              570.9913,
+              581.1144,
+              601.4934,
+              565.3731,
+              574.9348,
+              589.7413,
+              571.2458,
+              576.4851,
+              566.5032,
+              599.5087,
+              561.3076,
+              614.0736,
+              578.5188,
+              576.9792,
+              558.6797,
+              571.0852,
+              561.0331,
+              590.6509,
+              582.6639,
+              573.4056,
+              600.0734,
+              582.145,
+              560.1183,
+              579.2359,
+              576.2988,
+              561.2007
+            ],
+            "targets": {
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 61.8994365,
+                      "p95Ms": 64.542749
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 39.263108,
+                      "p95Ms": 41.883997
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.298083500000004,
+                      "p95Ms": 40.893289
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 15.082063,
+                      "p95Ms": 17.927109
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 30.6075825,
+                      "p95Ms": 34.664543
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.835298,
+                      "p95Ms": 4.713563
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 105.090542,
+                      "p95Ms": 111.22725
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 7320305664,
+                  "maxSampledProcessPhysFootprintBytes": 3407268360,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 544.041167,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 546.223292,
+              "p95Ms": 569.151917
+            },
+            "warmWallMs": [
+              534.7826,
+              541.7751,
+              524.1005,
+              557.0677,
+              539.2583,
+              532.5802,
+              536.9176,
+              562.0561,
+              527.3452,
+              546.3321,
+              539.363,
+              555.9853,
+              531.8949,
+              544.5774,
+              548.4769,
+              567.2065,
+              538.2278,
+              563.1158,
+              556.3103,
+              558.1917,
+              569.1519,
+              559.9547,
+              552.3793,
+              579.1592,
+              531.3323,
+              546.1145,
+              535.9056,
+              557.6908,
+              550.0691,
+              545.2568
+            ],
+            "targets": {
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 62.0682705,
+                      "p95Ms": 66.263127
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.981395500000005,
+                      "p95Ms": 48.005501
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.2981875,
+                      "p95Ms": 47.313291
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.743398,
+                      "p95Ms": 18.638981
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 105.0833125,
+                      "p95Ms": 106.86025
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 7123255296,
+                  "maxSampledProcessPhysFootprintBytes": 3368389080,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 1,
+                "libraryCompileCount": 3,
+                "programCompileCount": 1,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 1,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              }
+            }
+          }
+        },
+        "component": {
+          "blit": {
+            "firstRunWallMs": 1730.046709,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1640.344917,
+              "p95Ms": 1699.831833
+            },
+            "warmWallMs": [
+              1639.9267,
+              1644.9935,
+              1620.2438,
+              1699.8318,
+              1624.3996,
+              1657.4854,
+              1623.0751,
+              1647.0474,
+              1644.5178,
+              1634.3397,
+              1646.8575,
+              1640.3505,
+              1622.8129,
+              1640.2091,
+              1635.9969,
+              1656.2852,
+              1640.3394,
+              1633.6253,
+              1652.2878,
+              1630.9926,
+              1663.1915,
+              1707.7404,
+              1627.0675,
+              1634.1637,
+              1630.8394,
+              1643.1327,
+              1650.2435,
+              1623.8679,
+              1640.7463,
+              1653.7648
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 61.6181265,
+                      "p95Ms": 63.083711
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.367627,
+                      "p95Ms": 41.351044
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 37.476646,
+                      "p95Ms": 40.322503
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.231541,
+                      "p95Ms": 16.847938
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 31.412247,
+                      "p95Ms": 35.449669
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.9664805000000003,
+                      "p95Ms": 5.033357
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 869.80675,
+                      "p95Ms": 923.773125
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 2088845312,
+                  "maxSampledProcessPhysFootprintBytes": 3547564552
+                }
+              },
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 64.831646,
+                      "p95Ms": 69.457536
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 44.939939,
+                      "p95Ms": 50.249126
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.969770499999996,
+                      "p95Ms": 49.243918
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 20.564211,
+                      "p95Ms": 24.955237
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 35.324544,
+                      "p95Ms": 37.7925
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 4.338713,
+                      "p95Ms": 5.155814
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 102.7139375,
+                      "p95Ms": 104.804917
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 1720352768,
+                  "maxSampledProcessPhysFootprintBytes": 3411004080,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 1627.36775,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1590.5787289999998,
+              "p95Ms": 1644.784208
+            },
+            "warmWallMs": [
+              1596.2918,
+              1588.0135,
+              1591.4091,
+              1644.7842,
+              1563.9065,
+              1604.1601,
+              1578.6314,
+              1588.1772,
+              1561.8966,
+              1684.5318,
+              1580.986,
+              1566.5008,
+              1628.6933,
+              1581.195,
+              1611.6784,
+              1592.4078,
+              1593.4284,
+              1569.0197,
+              1565.3339,
+              1591.5124,
+              1598.4854,
+              1595.5492,
+              1569.9482,
+              1644.0805,
+              1586.254,
+              1635.4523,
+              1606.2459,
+              1583.9595,
+              1589.7484,
+              1581.1146
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 61.59171,
+                      "p95Ms": 64.318871
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.216477,
+                      "p95Ms": 47.404958
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 42.5369995,
+                      "p95Ms": 46.784453
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.212171,
+                      "p95Ms": 17.225275
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 876.4259374999999,
+                      "p95Ms": 919.854041
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 2088845312,
+                  "maxSampledProcessPhysFootprintBytes": 3559721408
+                }
+              },
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.rust.dispatch_and_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 65.44243750000001,
+                      "p95Ms": 68.931418
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 52.3188555,
+                      "p95Ms": 55.427253
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 51.6212915,
+                      "p95Ms": 54.739373
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 19.573131,
+                      "p95Ms": 23.287189
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 102.711375,
+                      "p95Ms": 103.615292
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 1682604032,
+                  "maxSampledProcessPhysFootprintBytes": 3443935872,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 1,
+                "libraryCompileCount": 3,
+                "programCompileCount": 1,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 1,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              }
+            },
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1458929664,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "rust",
+                "dispatches": 105,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 1,
+                "libraryCompileCount": 3,
+                "programCompileCount": 1,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 1,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "wgpu": {
+      "artifactsMatchedAcrossArms": {
+        "032-avif10": {
+          "count": 36,
+          "sha256": "70661500055cd676a5aedfda8339bdf066a1dda0070301a095c701cd912dd6c9",
+          "byteCount": 13286687
+        },
+        "component-avif10": {
+          "count": 36,
+          "sha256": "1303d599beac63f5c399e38ba21840f55647cc5390ce2be2618b89a19d74231d",
+          "byteCount": 13286687
+        },
+        "032-jpeg8": {
+          "count": 36,
+          "sha256": "db46c548f3be7932e6e38be8e96f11b3e72ca14e1c428f6dc01f5e52f92ef88e",
+          "byteCount": 9591173
+        },
+        "component-jpeg8": {
+          "count": 36,
+          "sha256": "59319c0744685af79ae5ea8b8af00dbdd5458f537ec5b8b7b8bcddcad8a638f5",
+          "byteCount": 9593917
+        }
+      },
+      "routes": {
+        "032-avif10": {
+          "blit": {
+            "firstRunWallMs": 1324.470958,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1336.9000625,
+              "p95Ms": 1451.49675
+            },
+            "warmWallMs": [
+              1293.0006,
+              1294.3798,
+              1304.1674,
+              1310.4874,
+              1314.9464,
+              1294.9537,
+              1335.8515,
+              1328.4296,
+              1355.0941,
+              1329.9871,
+              1338.5845,
+              1316.4902,
+              1337.9486,
+              1325.7218,
+              1315.4968,
+              1309.3008,
+              1364.2322,
+              1391.1322,
+              1343.2236,
+              1384.9358,
+              1375.4151,
+              1522.8171,
+              1451.4968,
+              1383.7195,
+              1348.3571,
+              1376.422,
+              1334.2344,
+              1349.5711,
+              1330.6094,
+              1409.3409
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.8473995,
+                      "p95Ms": 41.749375
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 36.8598535,
+                      "p95Ms": 43.055417
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 35.715226,
+                      "p95Ms": 41.844415
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 14.691983,
+                      "p95Ms": 20.192854
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 30.374418,
+                      "p95Ms": 33.140129
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.925335,
+                      "p95Ms": 5.067816
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 903.0998125,
+                      "p95Ms": 1010.175167
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 7240237056,
+                  "maxSampledProcessPhysFootprintBytes": 3654404832
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 1599.519584,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1326.834146,
+              "p95Ms": 1470.381791
+            },
+            "warmWallMs": [
+              1562.4197,
+              1470.3818,
+              1388.7186,
+              1326.2696,
+              1323.3402,
+              1327.3987,
+              1328.5223,
+              1329.1955,
+              1388.9554,
+              1352.4633,
+              1324.1671,
+              1408.4022,
+              1342.6082,
+              1324.3065,
+              1310.1405,
+              1321.1173,
+              1303.7145,
+              1295.9967,
+              1370.9722,
+              1302.6245,
+              1334.291,
+              1384.447,
+              1322.4604,
+              1299.5455,
+              1321.5999,
+              1288.898,
+              1360.5997,
+              1300.6695,
+              1308.7616,
+              1386.6952
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.844688,
+                      "p95Ms": 43.322668
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 44.949169999999995,
+                      "p95Ms": 67.554669
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 44.1393525,
+                      "p95Ms": 66.585957
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 17.054751500000002,
+                      "p95Ms": 36.016064
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 915.659375,
+                      "p95Ms": 1034.012958
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 7253852160,
+                  "maxSampledProcessPhysFootprintBytes": 3696134808
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 0,
+                "libraryCompileCount": 2,
+                "programCompileCount": 0,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 0,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              },
+              "wgpu": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              }
+            }
+          }
+        },
+        "032-jpeg8": {
+          "blit": {
+            "firstRunWallMs": 532.0465,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 546.15075,
+              "p95Ms": 617.095292
+            },
+            "warmWallMs": [
+              545.9486,
+              544.7957,
+              529.3185,
+              546.3529,
+              544.2727,
+              541.8066,
+              537.9252,
+              556.3502,
+              536.4462,
+              541.4031,
+              541.1041,
+              563.2453,
+              536.7447,
+              557.6409,
+              538.7654,
+              559.848,
+              559.346,
+              548.0121,
+              548.3823,
+              596.2591,
+              627.5284,
+              617.0953,
+              611.7434,
+              537.2653,
+              543.1641,
+              548.9302,
+              559.1321,
+              540.9205,
+              559.184,
+              543.9082
+            ],
+            "targets": {
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 39.41002,
+                      "p95Ms": 44.494916
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 37.9804995,
+                      "p95Ms": 64.169044
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 36.794874500000006,
+                      "p95Ms": 62.994585
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 15.6806695,
+                      "p95Ms": 42.064525
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 30.5952075,
+                      "p95Ms": 35.33313
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.8411465,
+                      "p95Ms": 5.788945
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 105.360375,
+                      "p95Ms": 107.468
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 7240237056,
+                  "maxSampledProcessPhysFootprintBytes": 3415575048,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 521.238708,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 511.69875,
+              "p95Ms": 582.065416
+            },
+            "warmWallMs": [
+              576.7701,
+              590.2801,
+              582.0654,
+              526.7848,
+              505.656,
+              506.6464,
+              512.2175,
+              509.4497,
+              508.5519,
+              511.8608,
+              502.5813,
+              547.6195,
+              509.846,
+              517.919,
+              502.2075,
+              506.7996,
+              513.0223,
+              501.7698,
+              501.5652,
+              513.1933,
+              518.7575,
+              510.3169,
+              513.8654,
+              511.5367,
+              506.2055,
+              510.3625,
+              537.1205,
+              508.0388,
+              551.5305,
+              520.598
+            ],
+            "targets": {
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.744480499999995,
+                      "p95Ms": 43.901997
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 43.001396,
+                      "p95Ms": 72.907333
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 42.253019,
+                      "p95Ms": 71.975796
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 13.8262125,
+                      "p95Ms": 42.466939
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 104.9055,
+                      "p95Ms": 107.59975
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 7253852160,
+                  "maxSampledProcessPhysFootprintBytes": 3352480528,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 0,
+                "libraryCompileCount": 2,
+                "programCompileCount": 0,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 0,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              },
+              "wgpu": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              }
+            }
+          }
+        },
+        "component": {
+          "blit": {
+            "firstRunWallMs": 1692.988417,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1649.2723125,
+              "p95Ms": 1856.533583
+            },
+            "warmWallMs": [
+              1630.5191,
+              1632.5305,
+              1647.3996,
+              1651.9407,
+              1616.4584,
+              1755.6165,
+              1687.0363,
+              1637.9802,
+              1642.2205,
+              1628.4535,
+              1618.7299,
+              1644.8544,
+              1644.247,
+              1651.145,
+              1631.782,
+              1639.6045,
+              1673.762,
+              1632.2939,
+              1742.4133,
+              1659.5619,
+              1642.1999,
+              1663.362,
+              1643.0865,
+              1716.7707,
+              1827.4748,
+              1726.1042,
+              1765.525,
+              1831.9806,
+              1935.5255,
+              1856.5336
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.648773000000006,
+                      "p95Ms": 46.066837
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 37.464643,
+                      "p95Ms": 73.268627
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 36.334809,
+                      "p95Ms": 71.868042
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 15.409692499999998,
+                      "p95Ms": 49.007646
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 30.7579385,
+                      "p95Ms": 34.226583
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 3.952297,
+                      "p95Ms": 5.703191
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 939.492563,
+                      "p95Ms": 1059.8195
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                  "maxSampledProcessPhysFootprintBytes": 3578956272
+                }
+              },
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 39.8776025,
+                      "p95Ms": 50.984
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 45.651353,
+                      "p95Ms": 96.142334
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 44.3820615,
+                      "p95Ms": 94.608336
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 23.091067,
+                      "p95Ms": 66.686233
+                    }
+                  },
+                  "assembly.blit.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 34.555229,
+                      "p95Ms": 41.359456
+                    }
+                  },
+                  "assembly.blit.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 4.2289185,
+                      "p95Ms": 9.083982
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 102.7455835,
+                      "p95Ms": 105.013417
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 1719959552,
+                  "maxSampledProcessPhysFootprintBytes": 3383888536,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "direct": {
+            "firstRunWallMs": 1706.819459,
+            "elapsedWall": {
+              "n": 30,
+              "p50Ms": 1545.9313955,
+              "p95Ms": 1632.848
+            },
+            "warmWallMs": [
+              1531.5918,
+              1517.0096,
+              1546.2906,
+              1607.7161,
+              1551.6498,
+              1560.9593,
+              1536.9319,
+              1618.5124,
+              1535.1512,
+              1525.8823,
+              1548.078,
+              1537.3812,
+              1632.848,
+              1519.5902,
+              1561.7772,
+              1550.1138,
+              1518.7949,
+              1548.4016,
+              1580.0433,
+              1528.6096,
+              1532.2448,
+              1557.4681,
+              1542.067,
+              1562.5283,
+              1536.616,
+              1558.1603,
+              1545.5722,
+              1526.7483,
+              1512.5805,
+              1655.1647
+            ],
+            "targets": {
+              "avif10": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 38.253125499999996,
+                      "p95Ms": 39.839878
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 45.505583,
+                      "p95Ms": 53.043708
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 44.7486275,
+                      "p95Ms": 52.154082
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 16.7185025,
+                      "p95Ms": 20.347568
+                    }
+                  },
+                  "avif.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 884.637292,
+                      "p95Ms": 975.832791
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "avifStagingBufferBytes": 481738752,
+                  "maxSampledMetalDeviceAllocatedBytes": 2087796736,
+                  "maxSampledProcessPhysFootprintBytes": 3586984336
+                }
+              },
+              "jpeg8": {
+                "counts": {
+                  "drt.render": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.host_wait": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "drt.gpu": {
+                    "perRun": 35,
+                    "observed": 1050,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.host_wait": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  },
+                  "assembly.blit.gpu": {
+                    "perRun": 0,
+                    "observed": 0,
+                    "unavailable": 0
+                  }
+                },
+                "stages": {
+                  "dag.wgpu.render_wall": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 39.554103,
+                      "p95Ms": 41.596418
+                    }
+                  },
+                  "drt.render": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 53.353582,
+                      "p95Ms": 57.286671
+                    }
+                  },
+                  "drt.host_wait": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 52.591916999999995,
+                      "p95Ms": 56.29629
+                    }
+                  },
+                  "drt.gpu": {
+                    "observedRuns": 30,
+                    "stageSamples": 1050,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 20.559561000000002,
+                      "p95Ms": 22.730773
+                    }
+                  },
+                  "sdr.encode": {
+                    "observedRuns": 30,
+                    "stageSamples": 30,
+                    "unavailableSamples": 0,
+                    "perRunTotals": {
+                      "n": 30,
+                      "p50Ms": 102.6288745,
+                      "p95Ms": 105.130167
+                    }
+                  }
+                },
+                "memoryMaxima": {
+                  "maxSampledMetalDeviceAllocatedBytes": 1719959552,
+                  "maxSampledProcessPhysFootprintBytes": 3426847312,
+                  "sdrBitmapBytes": 240869376
+                }
+              }
+            }
+          },
+          "sharedGraphAndTransport": {
+            "avif10": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 0,
+                "libraryCompileCount": 2,
+                "programCompileCount": 0,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 0,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              },
+              "wgpu": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              }
+            },
+            "jpeg8": {
+              "graph": {
+                "accountedPeakBytes": 1411744084,
+                "backend": "mixed",
+                "budgetBytes": 1610612736,
+                "coverageCacheHits": 0,
+                "dagBackend": "wgpu",
+                "dispatches": 35,
+                "nodeCacheHits": 0,
+                "nodes": 105,
+                "photographicEngine": "scene-photographic-v1-f32-metal",
+                "tiles": 35
+              },
+              "compilation": {
+                "frozenProgramBuildCount": 0,
+                "libraryCompileCount": 2,
+                "programCompileCount": 0,
+                "rendererBuildCount": 1,
+                "rustLibraryAPICallCount": 0,
+                "rustOpenAttemptsWithoutLibraryCount": 0,
+                "swiftLibraryAPICallCount": 2
+              },
+              "wgpu": {
+                "frameCopyBytes": 0,
+                "graphicsAPI": "metal",
+                "hostWaits": 35,
+                "pipelineBuilds": 1,
+                "submissions": 35,
+                "textureTransport": "same-device-native",
+                "validationBytes": 140
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "selection": "Direct tiles are now default. RAWMASTER_SCENE_DIRECT_DRT=0 invokes the measured blit route when needed."
+}
