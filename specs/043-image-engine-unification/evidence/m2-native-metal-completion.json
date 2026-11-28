@@ -39,9 +39,9 @@
     "validationBytes": 4,
     "rangeRejectionStatus": 7,
     "nonfiniteInputRejectionStatus": 3,
-    "returnsNullOutputAndEmptyReceiptOnRejection": true,
     "sameProgramRetry": true,
-    "stressResultSHA256": "179f35ad6c1f79272d93571a3a9dbac77f6379d6f832d93017fd52f7bb7d03ac"
+    "stressResultSHA256": "179f35ad6c1f79272d93571a3a9dbac77f6379d6f832d93017fd52f7bb7d03ac",
+    "rejectsWithNullTextureAndZeroReceiptDispatches": true
   },
   "releaseFocusedTests": 14,
   "sixNode": {
@@ -5003,5 +5003,401 @@
     "allROIExactToOwnFullCrop": true,
     "crossDeviceAlphaBitMismatches": 0,
     "maxCrossDeviceScaledRGB": 2.30856156991421e-07
+  },
+  "fitAndTopLevelMonitor": {
+    "warmupInputs": 5,
+    "strictBackendSetting": "wgpu",
+    "existing038Gate": {
+      "p50Ms": 25.92,
+      "p95Ms": 210.23
+    },
+    "fitDrawable24MP": {
+      "backingScale": 2,
+      "currentHeadroom": 16,
+      "device": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)",
+      "p50Ms": 16.848916,
+      "p95Ms": 18.842042,
+      "samplesMs": [
+        17.287084,
+        28.443958,
+        17.727333,
+        16.111541,
+        17.469292,
+        17.413708,
+        15.789584,
+        14.707667,
+        17.641666,
+        16.893416,
+        16.804416,
+        16.689917,
+        17.940333,
+        14.826458,
+        18.842042,
+        18.013792,
+        17.460667,
+        15.89375,
+        15.680833,
+        15.987584,
+        15.919959,
+        17.772041,
+        17.459417,
+        14.988416,
+        17.774125,
+        16.565208,
+        16.680208,
+        15.880333,
+        17.801375,
+        16.022417
+      ],
+      "scope": "live scene exposure command to joined AppKit Metal drawable; warm FIT SDR derivative, no HID or photon readback",
+      "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+      "window": [
+        1240,
+        660
+      ]
+    },
+    "residentPixels24And60MP": {
+      "cases": [
+        {
+          "alphaBitsMatch": true,
+          "case": "fit-final",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 6.664958,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 19661140,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "547725217f4f9b0c73a72b6bcc9f10f9b2d7a864db264ec340a9fcc1f30548ad",
+          "maxScaledRGBError": 1.6093254089355469e-06,
+          "nativeSize": [
+            4000,
+            6000
+          ],
+          "pixelSize": [
+            640,
+            960
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.717792,
+            "dispatches": 3,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 31948800,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+          "wgpuWitnessSHA256": "c3f339e0ad8be35f25c62ff6c2ba95d9e857bf68a952561526ad60f240dc1c2b"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "fit-monitor",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 2.064708,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 2,
+            "peakBytes": 19661124,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "6119e7315bd177cc7c0eea3adf79e23dec87c754e279566673c6ac58ff29e9b3",
+          "maxScaledRGBError": 1.9341034658282297e-06,
+          "nativeSize": [
+            4000,
+            6000
+          ],
+          "pixelSize": [
+            640,
+            960
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.047125,
+            "dispatches": 0,
+            "nodeCacheHits": 1,
+            "nodes": 0,
+            "peakBytes": 31948800,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+          "wgpuWitnessSHA256": "0a7c08158c8b22d90e7b80bd60f106abb265a05e4d02bcc4e843db2c0ec8d522"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "native-final",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 1.616417,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 12583252,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "71810cd50199aa2483376b2d2e6bb11e22dbdc0693379f8904b9b1488e3cbe6c",
+          "maxScaledRGBError": 3.427267074584961e-07,
+          "nativeSize": [
+            4000,
+            6000
+          ],
+          "pixelSize": [
+            500,
+            750
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.492458,
+            "dispatches": 3,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 42565632,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+          "wgpuWitnessSHA256": "4db5fbd6f63764c974fce6b880db3a6a0faefe0b2e2fd4f70e4beeffa7b0ffe3"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "native-monitor",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 1.594084,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 2,
+            "peakBytes": 12583236,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "18cd5c7e71c0afea30aefdb071d248c2e8adbf62c3271951bcd98621a24dcbd6",
+          "maxScaledRGBError": 5.364418029785156e-07,
+          "nativeSize": [
+            4000,
+            6000
+          ],
+          "pixelSize": [
+            500,
+            750
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.044042000000000005,
+            "dispatches": 0,
+            "nodeCacheHits": 1,
+            "nodes": 0,
+            "peakBytes": 42565632,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+          "wgpuWitnessSHA256": "354f46f2aab72f38523a37b25b5cf6e873f12ddff69fc1f3fc325d248613497a"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "fit-final",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 6.567208,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 19661140,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "ee2cea419a5c7946b9ec3971a244a0e15e2da0ef61e4ff98bd32e7c3bfdcc392",
+          "maxScaledRGBError": 2.682209014892578e-07,
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "pixelSize": [
+            960,
+            640
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.689291,
+            "dispatches": 3,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 31948800,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+          "wgpuWitnessSHA256": "1042106bdb78b30315ad71fe975591546ca7a55af05823c8997221e082a8338a"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "fit-monitor",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 1.9835420000000001,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 2,
+            "peakBytes": 19661124,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "b4bbfb0a61f598b65f0c4489adf6edfef25861f885d31d03accd8e7d1e8a9da5",
+          "maxScaledRGBError": 2.8312206268310547e-07,
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "pixelSize": [
+            960,
+            640
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.047291,
+            "dispatches": 0,
+            "nodeCacheHits": 1,
+            "nodes": 0,
+            "peakBytes": 31948800,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+          "wgpuWitnessSHA256": "6a33ce4ec202635f3aa8c7bc4eba08a7907bf41f3372c4658825e390aed4926b"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "native-final",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 1.588041,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 31129940,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "0b751fe440c42bcfa10fdb3e1307b8aded858a430062b6f056c4db28ea42a2e6",
+          "maxScaledRGBError": 1.2218952178955078e-06,
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "pixelSize": [
+            1188,
+            792
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.82425,
+            "dispatches": 3,
+            "nodeCacheHits": 0,
+            "nodes": 3,
+            "peakBytes": 72859648,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+          "wgpuWitnessSHA256": "cb1da1d478822ead690dba982452c6adef764f1b2cf3e435f59ec3958cd438ee"
+        },
+        {
+          "alphaBitsMatch": true,
+          "case": "native-monitor",
+          "device": "Apple M4 Max",
+          "execution": {
+            "backend": "wgpu",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 1.577041,
+            "dispatches": 1,
+            "nodeCacheHits": 0,
+            "nodes": 2,
+            "peakBytes": 31129924,
+            "tiles": 1
+          },
+          "legacy039WitnessSHA256": "1d735242a465870b047d2d13ee26b1ec40424a04ec70e38ccd1f5b3fcf1174ca",
+          "maxScaledRGBError": 1.4603137969970703e-06,
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "pixelSize": [
+            1188,
+            792
+          ],
+          "referenceExecution": {
+            "backend": "rust",
+            "budgetBytes": 671088640,
+            "coverageCacheHits": 0,
+            "cpuMilliseconds": 0.035333,
+            "dispatches": 0,
+            "nodeCacheHits": 1,
+            "nodes": 0,
+            "peakBytes": 72859648,
+            "tiles": 1
+          },
+          "registryID": "4294968440",
+          "sampleCount": 2048,
+          "sourceSHA256": "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89",
+          "wgpuWitnessSHA256": "1eb3d42523ef0e5f313e11e669c08f2e481ddfa4cfd5de51488ef40e103af46a"
+        }
+      ],
+      "nativeWindow": [
+        0.625,
+        0.25,
+        0.125,
+        0.125
+      ],
+      "recipeSHA256": "60f1749810432b3fa50f448879219a3d76d89550027b94dfb46c6d29594cbbb7",
+      "scope": "resident display-linear HDR texture before AppKit presentation"
+    },
+    "nativeRegressionCount": 3,
+    "renderedAndRead24MPSDRQueueItem": true
   }
 }

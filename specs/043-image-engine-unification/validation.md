@@ -110,7 +110,7 @@ Release 候选 `20261128.140826` 的安装前检查发现，旧路径等待的�
 
 Release `20261128.143506` 在打包后二进制上再次执行 80 次拒绝与恢复探针。安装版逐项核对四个 ABI 变体、包签名与四个二进制摘要。隔离资料库和真实窗口启动通过，031 的 17 项原生回归同轮复验通过。[安装回执](evidence/m2-native-metal-release-checkpoint.json) · [031 原型与原生验收](../031-preset-browser/filter-panel-validation.md)
 
-完成点修复前，严格模式在 Apple M4 Max 上用同一图比较 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。该轮 24 MP 实拍从修改曝光到 AppKit drawable 的暖态 p50/p95 为 15.57/17.46 ms，原生 SDR 队列发布和重开也通过。[历史八帧与画布证据](evidence/m2-native-metal-textures.json)
+完成点修复后，在 Apple M4 Max 上复跑严格 wgpu 的 24/60 MP 实拍。两种尺寸各跑 FIT 和非居中原寸窗口的最终根、顶层监看，八帧的显示线性 RGBA32F 各在两个 32×32 区域核对 039。最大缩放 RGB 误差 `1.94×10⁻⁶`，alpha 逐位一致。24 MP 实拍曝光到 AppKit drawable 预热 5 次后测 30 次，p50/p95 为 16.85/18.84 ms，达到 038 既有 FIT 门槛。24 MP SDR 队列发布和回读也通过。[完成点复测](evidence/m2-native-metal-completion.json)
 
 24/60 MP 分别从正常 Graph 窗口切换组内节点与全局最终图，均提交到 AppKit drawable，监看时保存和队列冻结取最终根。修复后每种尺寸与选择各预热 5 次、计量 30 次。24 MP 的节点及最终 p50/p95 分别为 22.14/23.72 和 20.68/22.11 ms，60 MP 为 22.08/22.70 和 20.56/21.40 ms。两组均达到 038 既有门槛。节点 p95 仍高于 043 的 20 ms 优化目标。两层禁用祖先的 Metal ABI 对照验证父输入、组内 bypass 和返回保存的最终根。固定实拍 AP1 的两层组最终图另在实体 Metal/Vulkan 验证，最大缩放 RGB 误差 `2.27×10⁻⁷`，alpha 逐位一致。[窗口与双端回执](evidence/m2-group-monitor.json) · [完成点复测](evidence/m2-native-metal-completion.json)
 

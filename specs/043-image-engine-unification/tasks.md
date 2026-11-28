@@ -28,7 +28,7 @@
 - [x] **M2-04** 首条链使用同源固定 AP1 夹具和冻结图，在 macOS wgpu/Metal 与 Linux wgpu/Vulkan 实体 GPU 验证了 F32、ROI、恒等和零回退。记录驱动、两端回执及独立复算结果。[双端证据](evidence/m2-ap1-cross-device-receipt.json)
 - [x] **M2-05** 在 macOS 24/60 MP 原生 FIT、原寸窗口、顶层和组内监看与 032 冻结交付验证同设备纹理、同步和峰值。两种实拍尺寸均已呈现 AppKit drawable。032 覆盖 24 MP SDR 和 60 MP PQ、SDR。读取有效性标志前等待实际 wgpu 提交，验收拒绝、取消、超时清理和复用。[实机回执](evidence/m2-native-metal-textures.json) · [完成点复测](evidence/m2-native-metal-completion.json)
 - [ ] **M2-06** 接入其余场景节点和有等价证据的 V3 点段，作 CPU/039 与融合/未融合像素对照。径向 coverage、交集、有序 Parallel、13 种 Layer blend、Add/Subtract/Adjust coverage 已在准入数值域内通过双端实机组件及 macOS 原生全幅与 ROI 对照。[六节点](evidence/m2-six-node-operators.json) · [混合与覆盖](evidence/m2-layer-blend-coverage.json)
-- [ ] **M2-07** 6 MP 暖态图 p95 提速 2.72×，96 节点吞吐提升 6.05×且通过中间工作集门。60 MP 的 PQ、JPEG 与双目标图阶段仍需达到相对 M1 的 15% 提速门。组内监看复测达到 038 既有门槛。24 MP FIT 以实际提交完成点复测，043 的节点监看继续向 p95 ≤20 ms 优化。[完成点复测](evidence/m2-native-metal-completion.json)
+- [ ] **M2-07** 6 MP 暖态图 p95 提速 2.72×，96 节点吞吐提升 6.05×且通过中间工作集门。60 MP 的 PQ、JPEG 与双目标图阶段仍需达到相对 M1 的 15% 提速门。24 MP FIT 与两种尺寸的组内监看复测均达到 038 既有门槛。043 的节点监看继续向 p95 ≤20 ms 优化。[完成点复测](evidence/m2-native-metal-completion.json)
 
 ## M3 · 资源、模型与原寸窗口
 
