@@ -30,7 +30,7 @@ final class ThumbnailWorkerContextV1: @unchecked Sendable {
       active:busy ? 1:0,reservedBytes:charged ? Self.reservedBytes:0,quarantined:failed,wrapperNil:!hasContext)
   }
   private func record(_ phase:String) {
-    guard PreviewQALifecycleTrace.isEnabled else{return}
+    guard PreviewQALifecycleTrace.includesResourceDiagnostics else{return}
     let s=snapshot
     PreviewQALifecycleTrace.recordThumbnailContext(.init(atNS:DispatchTime.now().uptimeNanoseconds,
       ownerID:s.ownerID,contextID:s.contextID,phase:phase,creations:s.creations,borrows:s.borrows,

@@ -710,11 +710,14 @@ enum EditingPreviewPromptDispatch {
         guard channel?.id == value.id, channelEpoch == target.epoch, desired?.revision == target.revision, !sourceInvalidated else { return }
         do {
             let request = makeRequest(target, lease: lease, progress: true)
+            let submittedAt = diagnosticsEnabled ? DispatchTime.now().uptimeNanoseconds : nil
             let receipt = try value.submit(request)
             latestTarget = receipt.work; lastSubmittedRevision = target.revision
             if target.intent.quality == .settled { finalSettledTarget = receipt.work.id } else { finalSettledTarget = nil }
             rendering = true; error = nil
-            InteractionTrace.shared.preview("preview.submission", input: target.input, role: role, revision: target.revision, lease: lease, quality: target.intent.quality, consumerID: consumerID, tokenID: receipt.work.id.rawValue, channelID: value.id.rawValue, publicationEpoch: target.epoch)
+            InteractionTrace.shared.preview("preview.submission", input: target.input, role: role, revision: target.revision, lease: lease,
+                quality: target.intent.quality, consumerID: consumerID, tokenID: receipt.work.id.rawValue, channelID: value.id.rawValue,
+                publicationEpoch: target.epoch, capturedAt: submittedAt)
             if let replaced = receipt.replacedBeforeAdmission { diagnoseProgressTerminal(replaced, outcome: "superseded", reason: "before-admission", channel: value.id) }
         } catch { if acceptsExact(target) { applyFailure(error, target: target) } }
     }

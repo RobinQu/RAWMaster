@@ -233,8 +233,19 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         try writeReport()
         throw XCTSkip("Release measurements required")
         #else
+        let workerPhasesRequested = env["RAWMASTER_QA_VIEWPORT_WORKER_PHASES"] == "1"
+        if workerPhasesRequested { report["workerPhasesRequested"] = true }
         do {
             try await runWindow(environment: env, output: output, report: &report)
+            if workerPhasesRequested {
+                guard report["pairedDiagnostic"] as? Bool == true,
+                      let capture = PreviewQALifecycleTrace.viewportCaptureForTesting(), !capture.phases.isEmpty else {
+                    throw ProbeFailure("Worker phases require the paired diagnostic window and an absolute interaction trace")
+                }
+                let workerTrace = output.appendingPathComponent("worker-phases.json")
+                try JSONEncoder().encode(capture).write(to: workerTrace, options: .withoutOverwriting)
+                guard !capture.overflow else { throw ProbeFailure("Worker phase trace capacity exceeded") }
+            }
             let gates = report["gates"] as? [String:Bool] ?? [:]
             let failures = gates.filter { !$0.value }.keys.sorted()
             guard !gates.isEmpty, failures.isEmpty else { throw ProbeFailure("Failed acceptance gates: " + failures.joined(separator: ", ")) }

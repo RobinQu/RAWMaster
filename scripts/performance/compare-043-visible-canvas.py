@@ -99,6 +99,18 @@ def inspect_capture(product, data):
         require(len(titles) == 1 and re.fullmatch(r"Camera Raw \d+(?:\.\d+)+", next(iter(titles)))
                 and data["finishedAt"], "missing original Camera Raw dialog identity")
         provenance["cameraRaw"] = next(iter(titles))
+        mode = data.get("inputMode", "numeric-field")
+        require(mode in ("numeric-field", "exposure-slider-click"), "unrecognized Camera Raw input clock")
+        provenance["inputMode"] = mode
+        if mode == "exposure-slider-click":
+            points = data["exposureSliderWindowBackingPixels"]
+            require(len(windows) == 1 and set(data["operations"]) == {"light-exposure"}
+                    and isinstance(points, list) and len(points) == 3 and all(type(n) is int for n in points),
+                    "click timing requires one Exposure row and two calibrated slider points")
+            zero_x, half_x, slider_y = points
+            require(0 <= zero_x < half_x < window_width and 0 <= slider_y < window_height,
+                    "Exposure slider points exceed the captured window")
+            provenance["exposureSliderWindowBackingPixels"] = points
     return provenance
 
 
@@ -246,6 +258,13 @@ def compare(paths, operations):
         return result
     if not missing_os_build:
         result["osBuild"] = native["osBuild"]
+    camera_raw_click = result["inputs"]["Camera Raw"]["inputMode"] == "exposure-slider-click"
+    result["inputBoundaries"] = {
+        "RAWMaster": "Submission of the complete numeric intent to the editing controller",
+        "LightFlow": "Return sent after the complete numeric value is entered",
+        "Camera Raw": "Mouse-down at a calibrated Exposure slider position" if camera_raw_click else
+        "First numeric key sent, followed by the remaining characters and Tab",
+    }
 
     for key in operations:
         row = compare_operation(captures, key, missing_os_build)

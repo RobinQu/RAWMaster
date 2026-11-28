@@ -31,7 +31,40 @@ enum PreviewQALifecycleTrace {
     guard enabled(bundleIdentifier:Bundle.main.bundleIdentifier,environment:env),let path=env["RAWMASTER_INTERACTION_TRACE"]else{return nil}
     return Sink(url:URL(fileURLWithPath:path).deletingLastPathComponent().appendingPathComponent("research022-worker-phases.jsonl"))
   }()
-  static var isEnabled:Bool {sink != nil}
+  struct ViewportPhase: Codable {
+    let atNS: UInt64
+    let kind, phase: String
+    let phaseID, sessionID, consumerID: UUID
+    let sourceGeneration, revision: UInt64
+    let quality, role: String
+    let maxPixel: Int
+    let frameID: UUID?
+  }
+  struct ViewportCapture: Codable {
+    var phases: [ViewportPhase] = []
+    var overflow = false
+  }
+  private final class ViewportBuffer: @unchecked Sendable {
+    private let lock = NSLock()
+    private var capture = ViewportCapture()
+    func append(_ phase: ViewportPhase) {
+      lock.withLock {
+        guard capture.phases.count < 4096 else { capture.overflow = true; return }
+        capture.phases.append(phase)
+      }
+    }
+    func snapshot() -> ViewportCapture { lock.withLock { capture } }
+  }
+  private static let viewportBuffer: ViewportBuffer? = {
+    let env = ProcessInfo.processInfo.environment
+    guard env["RAWMASTER_QA_VIEWPORT_WORKER_PHASES"] == "1",
+          env["RAWMASTER_INTERACTION_TRACE"]?.hasPrefix("/") == true,
+          NSClassFromString("XCTestCase") != nil else { return nil }
+    return ViewportBuffer()
+  }()
+  static func viewportCaptureForTesting() -> ViewportCapture? { viewportBuffer?.snapshot() }
+  static var includesResourceDiagnostics: Bool { sink != nil }
+  static var isEnabled: Bool { sink != nil || viewportBuffer != nil }
   // Mechanism-only QA: two warmups plus three candidate samples. No recipe/path/pixels.
   enum IPPurpose:String,Sendable { case fitCheck,output }
   struct IPTaskScalars:Sendable {
@@ -114,6 +147,12 @@ enum PreviewQALifecycleTrace {
                      raw:RawBaseStatisticsSnapshot?=nil,stats:PreviewStatistics?=nil,
                      thumbnails:DevelopmentThumbnailStatistics?=nil,receipt:PreviewNativePointwiseReceiptV1?=nil,frameID:UUID?=nil,ipEmitNS:UInt64?=nil,
                      sharedFITRequested:Bool?=nil,bitmapReplay:Bool=false,grainFinalTransport:String?=nil,presentationTicketID:UUID?=nil,thumbnailStep:ThumbnailStep?=nil) {
+    if let viewportBuffer, let request, kind == .render || kind == .histogram {
+      viewportBuffer.append(.init(atNS: DispatchTime.now().uptimeNanoseconds, kind: kind.rawValue, phase: phase.rawValue,
+        phaseID: id, sessionID: request.sessionID.rawValue, consumerID: request.consumerID.rawValue,
+        sourceGeneration: request.sourceGeneration, revision: request.revision, quality: request.quality.rawValue,
+        role: request.role.rawValue, maxPixel: request.viewport.maxPixel, frameID: frameID))
+    }
     guard let sink else{return}
     sink.record(kind,phase,id:id,request:request,sourceID:sourceID,raw:raw,stats:stats,thumbnails:thumbnails,receipt:receipt,frameID:frameID,ipEmitNS:ipEmitNS,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,grainFinalTransport:grainFinalTransport,presentationTicketID:presentationTicketID,thumbnailStep:thumbnailStep)
   }

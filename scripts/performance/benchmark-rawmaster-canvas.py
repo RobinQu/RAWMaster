@@ -46,6 +46,7 @@ def main():
                         help="FlashRaw dylib shipped in the release app (XCTest has its own bundle)")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--frames", type=Path, help="Retain raw ScreenCaptureKit ROI buffers and action timestamps for independent scoring")
+    parser.add_argument("--window-screenshot", type=Path, help="Save the complete fixture window before sending any measured edits")
     parser.add_argument("--source-roi", type=int, nargs=4, metavar=("X", "Y", "WIDTH", "HEIGHT"),
                         help="Capture these source pixels at physical 1:1 using the Exposure A/B workflow")
     parser.add_argument("--diagnostics", action="store_true",
@@ -60,7 +61,8 @@ def main():
     args = parser.parse_args()
     args.source, args.binary, args.output = (p.resolve() for p in (args.source, args.binary, args.output))
     args.flashraw_library = args.flashraw_library.resolve()
-    if (args.output.exists() or args.samples < 2 or args.warmup < 0 or args.settle < 0.5
+    if (args.output.exists() or (args.window_screenshot and args.window_screenshot.exists())
+            or args.samples < 2 or args.warmup < 0 or args.settle < 0.5
             or not args.binary.is_file() or not args.source.is_file()):
         parser.error("Provide an existing RAW and recorder, a new output, a nonnegative warmup and sufficient repetitions/settle interval")
     if args.source_roi and (min(args.source_roi[:2]) < 0 or min(args.source_roi[2:]) < 1 or
@@ -176,6 +178,9 @@ def main():
                 result.update(window=window, photoRectPixels=meta["photoRectPixels"], roi=roi,
                               sourcePixels=meta["sourcePixels"], previewPixels=meta["previewPixels"],
                               initialRecipe=meta["recipe"], decoder=meta["decoder"], testBundleSHA256=meta["testBundleSHA256"])
+                if args.window_screenshot:
+                    subprocess.run(["screencapture", "-x", "-o", "-l", str(window["id"]), args.window_screenshot], check=True)
+                    result["windowScreenshotSHA256"] = digest(args.window_screenshot)
                 write(args.output, result)
                 cases = ["Exposure"] if args.source_roi else args.operations or CASES
                 for label in cases:

@@ -160,8 +160,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
                            receipt:PreviewNativePointwiseReceiptV1?=nil,frameID:UUID?=nil,ipEmitNS:UInt64?=nil,
                            sharedFITRequested:Bool?=nil,bitmapReplay:Bool=false,grainFinalTransport:String?=nil,presentationTicketID:UUID?=nil,thumbnailStep:PreviewQALifecycleTrace.ThumbnailStep?=nil) {
     guard PreviewQALifecycleTrace.isEnabled else{return}
+    let includesResources = PreviewQALifecycleTrace.includesResourceDiagnostics
     PreviewQALifecycleTrace.record(kind,phase,id:id,request:request,sourceID:sourceID,raw:raw,
-      stats:statistics(),thumbnails:thumbnailStatistics(),receipt:receipt,frameID:frameID,ipEmitNS:ipEmitNS,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,grainFinalTransport:grainFinalTransport,presentationTicketID:presentationTicketID,thumbnailStep:thumbnailStep)
+      stats:includesResources ? statistics() : nil,thumbnails:includesResources ? thumbnailStatistics() : nil,
+      receipt:receipt,frameID:frameID,ipEmitNS:ipEmitNS,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,
+      grainFinalTransport:grainFinalTransport,presentationTicketID:presentationTicketID,thumbnailStep:thumbnailStep)
   }
   private var nativePointwiseLastReceipt:PreviewNativePointwiseReceiptV1?
   private var interactivePresentation:PreviewPresentationScope?
@@ -2188,7 +2191,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let step:PreviewQALifecycleTrace.ThumbnailStep = proxy==nil ? .proxy:((scalars != nil || batch.request.kind == .filters) ? .tile:.scalars)
     thumbnailStepRegistration=batch.request.registration;stats.activeNativeRenders=1;stats.maximumObservedNativeRenders=max(1,stats.maximumObservedNativeRenders)
     let started=now(),beforeStep=thumbnailStepWillBeginForTesting
-    let qaStep=PreviewQALifecycleTrace.isEnabled ? UUID():batch.request.registration.operationID
+    let qaStep=PreviewQALifecycleTrace.includesResourceDiagnostics ? UUID():batch.request.registration.operationID
     let qaKind:PreviewQALifecycleTrace.Kind = batch.request.kind == .filters ? .filterThumbnail:.summaryThumbnail
     qaLifecycle(qaKind,.admitted,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step)
     worker=Task{
