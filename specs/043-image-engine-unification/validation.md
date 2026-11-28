@@ -152,6 +152,8 @@ Release `20261128.151111` 安装到 `/Applications/RAWMaster.app`，构建与安
 
 Release `20261128.155215` 已安装到 `/Applications/RAWMaster.app`。原寸平移折返控制发布身份的回归、43 项浏览器场景、17 项滤镜原生专项及实拍原图取样均通过。非居中 60 MP 原寸曝光用 ScreenCaptureKit 采样六次，已独立复算。应用严格签名、隔离资料库、原生窗口和安装前后 80+4 次 ABI 拒绝与恢复通过。[Release 回执](evidence/m3-native-pan-release-checkpoint.json) · [原寸交互验收](../036-render-pipeline-performance/validation.md#原寸平移折返) · [滤镜验收](../031-preset-browser/filter-panel-validation.md)
 
+Release `20261128.163440` 已安装并复核严格签名、主程序及三个运行库摘要。原寸、源校验、缓存与协调专项通过 61 项，另有一项既有的显式整幅基图探针保持选跑。实际画布通过工具条首窗、平移、清退与均衡／极速自由缩放验证。滤镜 17 项及安装前后 80+4 次原生 ABI 复验通过。测试使用独立资料库。[安装回执](evidence/m3-budgeted-window-release-checkpoint.json) · [1:1 实测与验收差值](#原寸首窗与位图预算)
+
 - 记录 60 MP 的工作集、缓存、模型、输出和编码及同时驻留的总峰值，按同路由验证总峰值下降。
 - 模型逐项验证 tile+halo 的尺度、蒙版对齐、边界、取消和预算诊断。5K/6K 运行真实 1:1 窗口，并检查非居中区域与移动半步。
 - 验证异步取消、换片、切组、设备失败、迟到结果和资源释放。受支持的 60 MP 模型通过运行，其他组合给出具体原因。
