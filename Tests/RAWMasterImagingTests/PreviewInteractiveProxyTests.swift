@@ -371,6 +371,59 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     await service.closeAll()
   }
 
+  func testCanonicalLocalGrainTilesRequireAnOpaquePrimarySource() async throws {
+    let environment = ProcessInfo.processInfo.environment
+    guard let path = environment["RAWMASTER_PANEL_READBACK_RAW"],
+          let device = MTLCreateSystemDefaultDevice(), device.hasUnifiedMemory,
+          ProcessInfo.processInfo.physicalMemory >= 32 * 1024 * 1024 * 1024 else {
+      throw XCTSkip("Requires the paired photo operators RAW and a supported Metal device")
+    }
+    let url = URL(fileURLWithPath: path)
+    let sha = try RenderFiles.hash(url)
+    XCTAssertEqual(sha, "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c")
+    let size = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+    let source = EditingSourceSnapshot(projectID: "local-grain-finite", assetID: "sony", contentSHA256: sha,
+      byteCount: Int64(size), admissionFingerprint: "local-grain-finite", sourceLocation: url)
+    var parameters = DevelopmentAdjustmentsV3()
+    parameters.rawDecoder = .flashRaw031
+    parameters.masks = [.init(kind: .radial, radiusX: 0.35, radiusY: 0.30, feather: 0,
+      adjustments: .init(grain: 0.55, grainSize: 0.25, grainRoughness: 0.5))]
+    let recipe = DevelopmentRecipe(adjustmentsV3: parameters)
+    let buffer = UnsafeMutableRawBufferPointer.allocate(byteCount: 2400 * 1600 * 4, alignment: 64)
+    defer { buffer.deallocate() }
+    var digests = [SHA256.Digest]()
+    for role in [PreviewConsumerRole.primary, .comparison] {
+      let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .canonical))
+      do {
+        let lease = try await service.open(source: .raw(source))
+        let start = DispatchTime.now().uptimeNanoseconds
+        let frame = try await service.render(request(lease, PreviewConsumerID(), recipe, 1, quality: .settled, role: role))
+        XCTAssertFalse(frame.approximate)
+        try frame.copyDisplayRGBA8(into: buffer)
+        digests.append(SHA256.hash(data: Data(bytesNoCopy: buffer.baseAddress!, count: buffer.count, deallocator: .none)))
+        let scans = ImagePerformanceTelemetry.shared.snapshot().recent.filter {
+          $0.startedAtNanoseconds >= start && $0.operation == "显影有限值检查" &&
+            $0.boundary == .gpuCompletion && $0.outcome == .succeeded
+        }
+        let expectedRegion = role == .primary && FlashRawNativeFiniteCheck.enabled &&
+          PreviewPortableHalfFIT.supports(lease.orientedNativeSize, device: device) &&
+          environment["RAWMASTER_QA_CANONICAL_GRAIN_MASK_TILES"] != "0" &&
+          environment["RAWMASTER_CANONICAL_SPATIAL_MASK_TILES"] != "0"
+        if expectedRegion {
+          XCTAssertEqual(scans.filter { $0.stage == "原生局部归约" }.map(\.pixelCount), [29_360_128])
+        } else {
+          XCTAssertFalse(scans.contains { $0.stage == "原生局部归约" })
+          XCTAssertTrue(scans.contains { $0.stage == "全域归约" && $0.pixelCount == 60_217_344 })
+        }
+      } catch {
+        await service.closeAll()
+        throw error
+      }
+      await service.closeAll()
+    }
+    XCTAssertEqual(digests[0], digests[1])
+  }
+
   func testActualEXIFCropStraightenAndLateD4StayRegisteredAgainstCanonical()async throws {
     for orientation in [1,6,8] {
       let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}

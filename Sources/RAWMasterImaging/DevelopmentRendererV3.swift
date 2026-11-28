@@ -597,7 +597,8 @@ enum DevelopmentRendererV3 {
       }
       // The Core Image fallback certifies finite components. Only the physical
       // upload scan also certifies unit alpha on the input used by this region.
-      if request.transport == .pointwiseCompositeRegion, residentGlobalSource?.hasCheckedOpaqueUpload(for:image) != true {
+      if request.transport == .pointwiseCompositeRegion || request.requiresOpaqueGrainInput(p),
+         residentGlobalSource?.hasCheckedOpaqueUpload(for:image) != true {
         return nil
       }
       return request

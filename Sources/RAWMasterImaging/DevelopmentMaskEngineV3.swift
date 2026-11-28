@@ -88,7 +88,7 @@ enum DevelopmentMaskEngineV3 {
       static let current: Self = {
         let environment = ProcessInfo.processInfo.environment
         guard DevelopmentCanonicalFiniteGPU.enabled, environment["RAWMASTER_CANONICAL_SPATIAL_MASK_TILES"] != "0" else { return .disabled }
-        return environment["RAWMASTER_QA_CANONICAL_GRAIN_MASK_TILES"] == "1" ? .includingGrain : .textureAndClarity
+        return environment["RAWMASTER_QA_CANONICAL_GRAIN_MASK_TILES"] == "0" ? .textureAndClarity : .includingGrain
       }()
     }
 
@@ -112,6 +112,10 @@ enum DevelopmentMaskEngineV3 {
       self.transport = transport
       self.scalarBatching = scalarBatching
       self.checkCancellation = checkCancellation
+    }
+
+    func requiresOpaqueGrainInput(_ p: DevelopmentAdjustmentsV3) -> Bool {
+      transport == .spatialTileRegion && (p.masks.first?.adjustments.grain ?? 0) > 0
     }
 
     static func requestedTransport(for p: DevelopmentAdjustmentsV3?) -> Transport? {

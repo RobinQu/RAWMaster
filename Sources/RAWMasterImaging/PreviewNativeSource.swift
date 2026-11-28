@@ -750,12 +750,17 @@ final class PreviewNativeSource: @unchecked Sendable {
         let verifiedSpatial = request.transport == .spatialTileRegion || request.transport == .groupedFull
           || request.transport == .localNoiseBands
         let compositeRegion = request.transport == .pointwiseCompositeRegion
+        let grainRegion = request.requiresOpaqueGrainInput(adjustments)
         if verifiedSpatial || compositeRegion {
           guard verifiedCapture != nil, originalEXIFOrientation == 1, interactiveMetalDevice?.hasUnifiedMemory == true,
                 based === globalSource?.image, based.extent == CGRect(origin: .zero, size: nativeSize),
                 thumbnailNativeSink == nil, grainFinalTransport == nil, brillianceFinalTransport == nil,
                 spatialScan == nil, dehazeGuide == nil, checkDehazeTexture == nil,
                 checkCanonicalCache == nil, checkCanonicalHalfFIT == nil else { return nil }
+        }
+        if grainRegion {
+          guard adjustments.rawDetails == nil, nativeFiniteCheck?.mayCheckTexture == true,
+                let device = interactiveMetalDevice, PreviewPortableHalfFIT.supports(nativeSize, device: device) else { return nil }
         }
         if compositeRegion {
           guard adjustments.rawDetails == nil, nativeFiniteCheck?.mayCheckTexture == true,
@@ -781,7 +786,7 @@ final class PreviewNativeSource: @unchecked Sendable {
         return .init(transport:request.transport,scalarBatching:batching,checkCancellation:{
           try request.checkCancellation()
           try self.validateCaptureAuthority()
-          if grouped || compositeRegion {
+          if grouped || compositeRegion || grainRegion {
             guard globalSource?.isCurrent(for:based) == true else { throw PreviewPresentationError.allocationProtocol }
           }
         })
