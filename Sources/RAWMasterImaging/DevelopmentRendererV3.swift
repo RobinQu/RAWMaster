@@ -242,7 +242,8 @@ enum DevelopmentRendererV3 {
                       nativeNoiseDomain: PreviewNativeNoiseDomain? = nil,
                       advancedDetailWindow: CGRect? = nil,
                       advancedDetailCacheIdentity: String? = nil,
-                      advancedDetailDetailRequest: Bool = false, scenePhotographicInput: Bool = false) throws -> DevelopedV3Graph {
+                      advancedDetailDetailRequest: Bool = false, scenePhotographicInput: Bool = false,
+                      prepareRetainedMaskContext: (() throws -> CIContext?)? = nil) throws -> DevelopedV3Graph {
     let performanceToken = ImagePerformanceTelemetry.shared.begin(operation: "DevelopmentRendererV3.develop",
       stage: applyGeometry ? "完整显影图" : "分析图", queue: "显影引擎", boundary: .graphAndValidation)
     var performanceOutcome = ImagePerformanceOutcome.failed
@@ -250,7 +251,8 @@ enum DevelopmentRendererV3 {
     defer {
       ImagePerformanceTelemetry.shared.end(performanceToken, outcome: performanceOutcome, pixelCount: performancePixels)
     }
-    var context:CIContext{dehazeTIFFInvocation?.currentContext ?? suppliedContext ?? DevelopmentColorEngineV3.context}
+    var retainedMaskContext: CIContext?
+    var context:CIContext{dehazeTIFFInvocation?.currentContext ?? retainedMaskContext ?? suppliedContext ?? DevelopmentColorEngineV3.context}
     let isRAW = PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased())
     try validateSupport(recipe,sourceIsRAW:isRAW)
     let p = recipe.adjustmentsV3!
@@ -584,7 +586,7 @@ enum DevelopmentRendererV3 {
         if residentDehazeGuide != nil { checkedImage = image }
       }
     }
-    let admittedMaskValidation = localMaskValidation.flatMap { request -> DevelopmentMaskEngineV3.CanonicalValidation? in
+    var admittedMaskValidation = localMaskValidation.flatMap { request -> DevelopmentMaskEngineV3.CanonicalValidation? in
       let verifiedSpatial = request.transport == .spatialTileRegion || request.transport == .groupedFull
       guard request.transport.checksPointwiseRegion || verifiedSpatial else { return request }
       // These requests use the original pinned F16 input with no intervening edits.
@@ -602,6 +604,14 @@ enum DevelopmentRendererV3 {
         return nil
       }
       return request
+    }
+    // Only the admitted local graph may share cached intermediates with its display pass.
+    // A denied request validates and renders in the original context.
+    if let request = admittedMaskValidation, request.scalarBatching == .retainForRequest {
+      retainedMaskContext = try prepareRetainedMaskContext?()
+      if retainedMaskContext == nil {
+        admittedMaskValidation = .init(transport:request.transport,checkCancellation:request.checkCancellation)
+      }
     }
     image = try DevelopmentMaskEngineV3.apply(p.masks,to:image,context:context,glow:p.effects?.glow ?? .init(),optics:p.optics,checkCancellation:checkCancellation,canonicalValidation:admittedMaskValidation,scopeSelection:scopeSelection,legacyCoverage:legacyCoverage,
       previewHalfFIT:hasActiveMask ? previewHalfFIT:nil,nativeSharpenMean:nativeSharpenMean)

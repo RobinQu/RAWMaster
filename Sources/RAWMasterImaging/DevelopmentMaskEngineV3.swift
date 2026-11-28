@@ -95,7 +95,8 @@ enum DevelopmentMaskEngineV3 {
     private static let pointwiseRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_MASK_REGION"] == "1"
     private static let pointwiseCompositeRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_COMPOSITE_REGION"] == "1"
     private static let localNoiseBandsEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS"] == "1"
-    fileprivate static let textureRegionBandsEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_TEXTURE_REGION_BANDS"] == "1"
+    fileprivate static let textureRegionBandsEnabled = DevelopmentCheckedMaximumV3.groupedScalarsEnabled &&
+      ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_TEXTURE_REGION_BANDS"] == "1"
     private static let spatialTransport: Transport? = {
       let environment = ProcessInfo.processInfo.environment
       if DevelopmentCanonicalFiniteGPU.enabled && environment["RAWMASTER_QA_CANONICAL_LOCAL_MASK_BANDS"] == "1" {
@@ -134,7 +135,9 @@ enum DevelopmentMaskEngineV3 {
         return .localNoiseBands
       }
       if spatialLayer(p, transport: .spatialTileRegion, spatialTiles: .current) != nil { return .spatialTileRegion }
-      if DevelopmentCheckedMaximumV3.groupedScalarsEnabled, spatialLayer(p, transport: .groupedFull, spatialTiles: .current) != nil {
+      if DevelopmentCheckedMaximumV3.allowsScalarGrouping,
+         let layer = spatialLayer(p, transport: .groupedFull, spatialTiles: .current),
+         (layer.adjustments.noiseReduction ?? 0) > 0 || DevelopmentCheckedMaximumV3.groupedScalarsEnabled {
         return .groupedFull
       }
       return nil

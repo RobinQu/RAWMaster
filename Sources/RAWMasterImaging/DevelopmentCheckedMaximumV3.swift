@@ -9,8 +9,10 @@ enum DevelopmentCheckedMaximumV3 {
   static let tileSide: CGFloat = 1024
   enum CacheClearCadence { case everyTile, everyTwoTiles }
   enum ScalarBatching { case disabled, clearAfterGroup, retainForRequest }
-  static let groupedScalarsEnabled = DevelopmentCanonicalFiniteGPU.enabled &&
-    ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_GROUPED_SCALARS"] == "1"
+  private static let groupingOverride = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_GROUPED_SCALARS"]
+  private static let recordsScalarDiagnostics = ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] == "1"
+  static let allowsScalarGrouping = DevelopmentCanonicalFiniteGPU.enabled && groupingOverride != "0" && !recordsScalarDiagnostics
+  static let groupedScalarsEnabled = allowsScalarGrouping && groupingOverride == "1"
   private static let scalarGroupSize = 12
 
   struct ScalarRecordBudget {
@@ -61,7 +63,7 @@ enum DevelopmentCheckedMaximumV3 {
     let id=UUID().uuidString
     private var tile:Tile?
     static func enabled() -> ScalarValidation? {
-      ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] == "1" ? ScalarValidation():nil
+      DevelopmentCheckedMaximumV3.recordsScalarDiagnostics ? ScalarValidation():nil
     }
     private static func footprint() -> UInt64? {
       var info=task_vm_info_data_t()

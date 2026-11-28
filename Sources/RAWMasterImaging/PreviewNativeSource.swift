@@ -86,8 +86,7 @@ final class PreviewNativeSource: @unchecked Sendable {
   private let temperature: Float
   private let tint: Float
   private let contextMemoryLimitMiB: Int
-  private static let retainsFullValidationCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "1" &&
-    ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] != "1"
+  private static let fullValidationCacheOverride = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"]
   private static let reusesCanonicalContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] != "0"
   /// Opt-in candidate for the native path: cache intermediates so the validation scan and the
   /// final materialization evaluate the graph once. Default off; no production caller sets it.
@@ -767,9 +766,11 @@ final class PreviewNativeSource: @unchecked Sendable {
                 let device = interactiveMetalDevice, PreviewPortableHalfFIT.supports(nativeSize, device:device),
                 hasCanonicalCacheHeadroom(for:based.extent) else { return nil }
         }
-        let grouped = verifiedSpatial && adjustments.rawDetails == nil && DevelopmentCheckedMaximumV3.groupedScalarsEnabled &&
-          interactiveMetalDevice?.name == "Apple M4 Max" &&
-          (nativeSize == CGSize(width:9504,height:6336) || nativeSize == CGSize(width:8640,height:5760)) &&
+        let groupedTransport = request.transport == .spatialTileRegion || request.transport == .groupedFull
+          || DevelopmentCheckedMaximumV3.groupedScalarsEnabled
+        let grouped = verifiedSpatial && groupedTransport && adjustments.rawDetails == nil &&
+          DevelopmentCheckedMaximumV3.allowsScalarGrouping &&
+          interactiveMetalDevice.map { PreviewPortableHalfFIT.supports(nativeSize, device: $0) } == true &&
           (spatialMaskCache || hasCanonicalCacheHeadroom(for:based.extent))
         guard request.transport != .groupedFull || grouped else { return nil }
         if request.transport == .localNoiseBands {
@@ -778,7 +779,9 @@ final class PreviewNativeSource: @unchecked Sendable {
                 hasCanonicalCacheHeadroom(for: based.extent) else { return nil }
         }
         let batching: DevelopmentCheckedMaximumV3.ScalarBatching
-        if request.transport == .groupedFull && Self.retainsFullValidationCache {
+        let localNoise = (adjustments.masks.first?.adjustments.noiseReduction ?? 0) > 0
+        if request.transport == .groupedFull && Self.fullValidationCacheOverride != "0" &&
+           (localNoise || Self.fullValidationCacheOverride == "1") {
           batching = .retainForRequest
         } else {
           batching = grouped ? .clearAfterGroup : .disabled
@@ -816,11 +819,13 @@ final class PreviewNativeSource: @unchecked Sendable {
         checkedHalf = nil
       }
       let checkHalf = checkedHalf.map { request in { try request.requireCurrent() } }
-      let checkSpatialTiles = finalMaskValidation?.transport == .spatialTileRegion ? finalMaskValidation?.checkCancellation : nil
+      let checkMaskValidation = finalMaskValidation.flatMap { request in
+        request.transport == .spatialTileRegion || request.transport == .groupedFull ? request.checkCancellation : nil
+      }
       let checkPresentation = checkSpatialScan ?? checkCache
         ?? (finalMaskValidation?.transport == .pairedTiles ? nil : finalMaskValidation?.checkCancellation) ?? checkHalf
       if finalMaskValidation?.transport.checksPointwiseRegion == true { try finalMaskValidation?.checkCancellation() }
-      try checkSpatialTiles?()
+      try checkMaskValidation?()
       let nativeSharpenMean: PreviewNativeSharpenMean?
       if contextMemoryLimitMiB == 512, !cachesIntermediates,
          localMaskValidation == nil, spatialScan == nil, checkDehazeTexture == nil,
@@ -833,26 +838,33 @@ final class PreviewNativeSource: @unchecked Sendable {
       } else {
         nativeSharpenMean = nil
       }
-      let renderContext: CIContext
+      var retainedMaskContext: CIContext?
+      let prepareRetainedMaskContext: (() throws -> CIContext?)?
       if finalMaskValidation?.scalarBatching == .retainForRequest {
-        options[.cacheIntermediates] = true
-        renderContext = CanonicalPreviewDiagnostic.measure("create context for full validation cache") { CIContext(options:options) }
+        prepareRetainedMaskContext = {
+          try checkMaskValidation?()
+          guard self.hasCanonicalCacheHeadroom(for:based.extent) else { return nil }
+          var retainedOptions = options
+          retainedOptions[.cacheIntermediates] = true
+          let retained = CanonicalPreviewDiagnostic.measure("create context for full validation cache") { CIContext(options:retainedOptions) }
+          retainedMaskContext = retained
+          return retained
+        }
       } else {
-        renderContext = context
+        prepareRetainedMaskContext = nil
       }
-      defer {
-        if renderContext !== context { renderContext.clearCaches() }
-      }
+      defer { retainedMaskContext?.clearCaches() }
       let graph=try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(workingBudget) {
-          try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:based,context:renderContext,
+          try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:based,context:context,
             residentGlobalSource:globalSource,localMaskValidation:finalMaskValidation,residentDehazeGuide:dehazeGuide,
             sharpenOutput:sharpenOutput,thumbnailNativeSink:thumbnailNativeSink,
-            checkCancellation:checkSpatialScan ?? checkDehazeTexture ?? checkCache ?? checkHalf ?? checkSpatialTiles,
+            checkCancellation:checkSpatialScan ?? checkDehazeTexture ?? checkCache ?? checkHalf ?? checkMaskValidation,
             previewHalfFIT:checkedHalf,nativeFiniteCheck:verifiedFiniteRequest,localSourceValidation:bindingCheck,
             nativeSharpenMean:nativeSharpenMean,nativeNoiseDomain:noiseDomain,
             advancedDetailWindow:self.detailWindow(maxPixel:maxPixel,window:window),advancedDetailCacheIdentity:sourceKey,
-            advancedDetailDetailRequest:maxPixel == 0)
+            advancedDetailDetailRequest:maxPixel == 0,prepareRetainedMaskContext:prepareRetainedMaskContext)
       }
+      let renderContext = retainedMaskContext ?? context
       try checkPresentation?()
       try noiseDomain?.requireCurrent()
       try nativeSharpenMean?.requireCurrent()

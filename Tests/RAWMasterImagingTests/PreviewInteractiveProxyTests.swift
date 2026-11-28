@@ -424,6 +424,68 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     XCTAssertEqual(digests[0], digests[1])
   }
 
+  func testCanonicalLocalNoiseGroupsTheOriginalFullDomain() async throws {
+    let environment = ProcessInfo.processInfo.environment
+    guard let path = environment["RAWMASTER_PANEL_READBACK_RAW"], #available(macOS 27, *),
+          let device = MTLCreateSystemDefaultDevice(), device.hasUnifiedMemory,
+          ProcessInfo.processInfo.physicalMemory >= 32 * 1024 * 1024 * 1024 else {
+      throw XCTSkip("Requires the paired photo operators RAW and a supported Metal device")
+    }
+    let url = URL(fileURLWithPath: path)
+    let sha = try RenderFiles.hash(url)
+    XCTAssertEqual(sha, "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c")
+    let bytes = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+    let source = EditingSourceSnapshot(projectID: "local-noise-finite", assetID: "sony", contentSHA256: sha,
+      byteCount: Int64(bytes), admissionFingerprint: "local-noise-finite", sourceLocation: url)
+    var parameters = DevelopmentAdjustmentsV3()
+    parameters.rawDecoder = .flashRaw031
+    parameters.masks = [.init(kind: .radial, radiusX: 0.35, radiusY: 0.30, feather: 0,
+      adjustments: .init(noiseReduction: 0.45))]
+    let recipe = DevelopmentRecipe(adjustmentsV3: parameters)
+    let buffer = UnsafeMutableRawBufferPointer.allocate(byteCount: 2400 * 1600 * 4, alignment: 64)
+    defer { buffer.deallocate() }
+    let lanes: [(PreviewConsumerRole, Int)] = [(.primary, 512), (.comparison, 512), (.primary, 256)]
+    var fullMemoryDigests = [SHA256.Digest]()
+    for (role, memory) in lanes {
+      let service = DevelopmentPreviewService(policy: .init(contextMemoryLimitMiB: memory,
+        interactiveEvaluation: .proxyV1, settledTransport: .canonical))
+      do {
+        let lease = try await service.open(source: .raw(source))
+        let start = DispatchTime.now().uptimeNanoseconds
+        let frame = try await service.render(request(lease, PreviewConsumerID(), recipe, 1, quality: .settled, role: role))
+        XCTAssertFalse(frame.approximate)
+        if memory == 512 {
+          try frame.copyDisplayRGBA8(into: buffer)
+          fullMemoryDigests.append(SHA256.hash(data: Data(bytesNoCopy: buffer.baseAddress!, count: buffer.count, deallocator: .none)))
+        }
+        let joined = ImagePerformanceTelemetry.shared.snapshot().recent.filter {
+          $0.startedAtNanoseconds >= start && $0.boundary == .gpuCompletion && $0.outcome == .succeeded
+        }
+        let scans = joined.filter { $0.operation == "显影有限值检查" }
+        XCTAssertFalse(scans.contains { $0.stage == "原生局部归约" })
+        XCTAssertTrue(scans.contains { $0.stage == "全域归约" && $0.pixelCount == 60_217_344 })
+        let groups = joined.filter { $0.operation == "DevelopmentCheckedMaximumV3.groupedMaximum" }
+        let expectsGroups = role == .primary && memory == 512 &&
+          PreviewPortableHalfFIT.supports(lease.orientedNativeSize, device:device) &&
+          environment["RAWMASTER_CANONICAL_SERIAL_FINITE"] != "1" &&
+          environment["RAWMASTER_QA_CANONICAL_GROUPED_SCALARS"] != "0" &&
+          environment["RAWMASTER_MAXIMUM_QA_SCALARS"] != "1"
+        if expectsGroups {
+          let stage = environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "0"
+            ? "原生分组归约" : "原生分组归约 · 请求内缓存"
+          XCTAssertEqual(groups.map(\.stage), [stage])
+        } else {
+          XCTAssertTrue(groups.isEmpty)
+        }
+      } catch {
+        await service.closeAll()
+        throw error
+      }
+      await service.closeAll()
+    }
+    XCTAssertEqual(fullMemoryDigests[0], fullMemoryDigests[1])
+  }
+
   func testActualEXIFCropStraightenAndLateD4StayRegisteredAgainstCanonical()async throws {
     for orientation in [1,6,8] {
       let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}

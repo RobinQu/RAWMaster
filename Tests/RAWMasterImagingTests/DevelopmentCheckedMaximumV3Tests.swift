@@ -100,9 +100,8 @@ final class DevelopmentCheckedMaximumV3Tests: XCTestCase {
           })) { XCTAssertTrue($0 is CancellationError) }
         XCTAssertEqual(checks, revokeAt)
         requestContext.clearCaches()
-        let recoveryContext = try context(cacheIntermediates:cached)
-        defer { recoveryContext.clearCaches() }
-        let recovered = try DevelopmentCheckedMaximumV3.maximum(graph,domain:graph.extent,context:recoveryContext,scalarBatching:mode)
+        defer { requestContext.clearCaches() }
+        let recovered = try DevelopmentCheckedMaximumV3.maximum(graph,domain:graph.extent,context:requestContext,scalarBatching:mode)
         exact(recovered, original)
       }
     }

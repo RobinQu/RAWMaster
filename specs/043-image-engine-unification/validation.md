@@ -265,6 +265,14 @@ Release `20261128.172756` 已安装并严格验签。两个交付授权回归、
 
 Release `20261128.180152` 已安装并通过严格验签。19 项蒙版与交付授权、3 项原生回滚、24 项锐化与有限值、17 项滤镜和实拍自由缩放均通过。隔离资料库通过 SQLite 自检并显示实际窗口。安装前后通过 40+4 次 Metal C ABI 完成点复验。[构建与安装回执](evidence/m0-opaque-local-grain-release-checkpoint.json)
 
+M4 Max 的 9504×6336 和 8640×5760 已验证 FlashRaw 主画布在 2400 canonical 定稿按原 1024 格归约。局部降噪仍覆盖整个原片，纹理、清晰度和颗粒各用原区域。每组至多 12 个 Core Image 任务，等待每个任务结束，再按原顺序检查标量。单层硬边径向降噪在同源准入后按设备实际内存余量建立一次请求专用上下文，供最终校验和 FIT 共用。完成读回或退出请求时清理。比较通道、低资源、强制串行、标量诊断及显式关闭的实际入口已复验。[运行条件与回执](evidence/m0-grouped-local-validation.json)
+
+四轮同构建对照的 60 MP 296 个定稿及 50 MP 32 个定稿匹配完整 RGBA8。60 MP 局部降噪请求到读回 p50 从 401.79 降至 298.65 ms，有限值和显示分项分别从 242.00 和 143.25 降至 157.95 和 105.00 ms。整矩阵阶段 p50/p95 从 70.57/300.34 降至 62.72/282.27 ms，进程物理峰值 5.877→5.834 GB。50 MP 局部降噪 p50 从 373.97 降至 279.02 ms，峰值 3.217→3.241 GB。两张样片的局部清晰度、纹理和颗粒 p50 也下降。[逐状态像素、分项与阶段时钟](evidence/m0-grouped-local-validation.json)
+
+实际 RAW 的下游准入探针复验了拒绝保留上下文、创建前撤销、源 pin 缺失和正常保留。晚期拒绝继续走原上下文的串行全域校验，各完成分支的 FIT 摘要一致。私有 Metal 纹理在首格和裁尾格分别注入四通道 NaN 或无穷，三种完整校验均拒绝，区域对照可接受。重建的 `rmMaskComposite` 加中性尾段在蒙版内的极值也由三者拒绝。当前重建首格在旧路径通过，035 的历史首格拒绝与原全域等判沿用其归档。[当前拒绝、撤销与资源降级](evidence/m0-grouped-local-validation.json) · [035 归档全域等判](../035-portable-processing-cores/evidence/native-full-validation-cache.json)
+
+同机两轮 37/37 项暖态各达到 LightFlow 容差。每轮 1184 对正式帧及 222 对预热帧的完整定稿摘要与归档一致。74 个首次精确状态的 p50/p95 分别为 70.44/297.78 和 68.44/294.47 ms。同机 LightFlow 为 9.52/58.97 ms，首次精确仍超出门槛。[正式端到端比较](evidence/m0-grouped-local-validation.json)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)
