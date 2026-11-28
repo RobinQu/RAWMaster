@@ -106,8 +106,8 @@ final class DevelopmentVerifiedLocalSourceTests: XCTestCase {
   }
 
   func testClearedPointwiseContextIsRetiredAfterRevocationAndItsUseLimit() throws {
-    guard ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] == "1" else {
-      throw XCTSkip("Enable the canonical context reuse trial.")
+    guard ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] != "0" else {
+      throw XCTSkip("This test requires the default canonical context reuse path.")
     }
     try withRAW(memoryLimit: 512) { capture, native, _ in
       let sourceKey = capture.id.uuidString

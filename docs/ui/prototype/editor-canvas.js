@@ -54,13 +54,57 @@ function resolutionText(scale = S.editZoom, active = false) {
   return `${physical === null ? '' : Math.round(physical * 100) + '% · '}${active && Studio.data.prefs.performance === '极速' ? '缩放中 · 临时预览' : '按倍率取样'}（示意）`;
 }
 function resolutionChip() {
-  requestAnimationFrame(() => updateZoomStatus());
+  requestAnimationFrame(() => {
+    updateZoomStatus();
+    if (nativePanReview) updatePanReview($('.canvas-fit'));
+  });
   return '<small class="visually-hidden canvas-resolution" aria-live="polite"></small>';
 }
 function updateZoomStatus(active = false) {
   const status = $('.canvas-resolution');
   if (status) status.textContent = resolutionText(S.editZoom, active);
 }
+const nativePanReview = new URLSearchParams(location.search).get('nativePanReview') === '1';
+const panReviewFrames = new WeakMap();
+function updatePanReview(fit) {
+  if (!fit || !S.pixelView || S.compare || S.cropOpen || quickPromptVisible() || !Studio.asset(Studio.data.work).online) return;
+  const status = fit.closest('.canvas-panel').querySelector('.pan-preview-progress');
+  const view = fit.getBoundingClientRect(), photo = fit.querySelector('.edit-image').getBoundingClientRect();
+  const viewport = [
+    Math.max(0, view.left - photo.left), Math.max(0, view.top - photo.top),
+    Math.min(photo.width, view.right - photo.left), Math.min(photo.height, view.bottom - photo.top),
+  ];
+  const padX = (viewport[2] - viewport[0]) / 2, padY = (viewport[3] - viewport[1]) / 2;
+  const padded = [viewport[0] - padX, viewport[1] - padY, viewport[2] + padX, viewport[3] + padY];
+  let frame = panReviewFrames.get(fit);
+  if (!frame) {
+    frame = {served: padded, timer: 0};
+    panReviewFrames.set(fit, frame);
+    fit.dataset.presentedWindow = JSON.stringify(frame.served);
+  }
+  clearTimeout(frame.timer);
+  status.hidden = true;
+  if (frame.served[0] <= viewport[0] && frame.served[1] <= viewport[1] && frame.served[2] >= viewport[2] && frame.served[3] >= viewport[3]) {
+    fit.dataset.panPhase = 'settled';
+    return;
+  }
+  fit.dataset.panPhase = 'queued';
+  frame.timer = setTimeout(() => {
+    if (!fit.isConnected || !S.pixelView) return;
+    fit.dataset.panPhase = 'rendering';
+    status.hidden = false;
+    frame.timer = setTimeout(() => {
+      if (!fit.isConnected || !S.pixelView) return;
+      frame.served = padded;
+      fit.dataset.presentedWindow = JSON.stringify(frame.served);
+      fit.dataset.panPhase = 'settled';
+      status.hidden = true;
+    }, 320);
+  }, 120);
+}
+if (nativePanReview) document.addEventListener('scroll', event => {
+  if (event.target.matches?.('.canvas-fit')) updatePanReview(event.target);
+}, true);
 let canvasZoomEnd;
 document.addEventListener('wheel', (event) => {
   const fit = event.target.closest('.canvas-fit');
@@ -195,7 +239,7 @@ function canvasContent(r, id) {
   else contents = pane(base, overlay, comparisonModes[mode] + ' · ' + refName);
   return `<section class="canvas-panel${prompt ? ' has-quick-prompt' : ''}" data-photo="${h(id)}" aria-label="暗房画布">
     <div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
-    <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen && !S.canvasTool ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
+    <small class="look-preview pane-label" hidden></small>${nativePanReview ? '<small class="pan-preview-progress pane-label" role="status" hidden>计算中…</small>' : ''}${resolutionChip()}${S.cropOpen && !S.canvasTool ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
 }
 actions['canvas-nav'] = (direction) => {
   if (S.canvasTool?.kind === 'remove') return notify('请先完成或取消修复');

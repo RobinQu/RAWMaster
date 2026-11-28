@@ -342,6 +342,10 @@ RAWMASTER_PRESENTED_CANVAS_SOURCE=/absolute/path/to/sample.dng \
   swift test --jobs 4 --filter 'ImageCanvasTests|ImageViewportWindowGeometryTests|PreviewQualityPolicyTests|PreviewSettledTransportTests|EditingPreviewCoordinationTests|PhotosLocalCanvasInputTests|testOptInRealRAWFreeZoom'
 ```
 
+### 原寸平移折返
+
+[工作台走查](../025-editing-workspace/prototype-review.md#原寸平移折返)在 1440 × 900 深色与 560 × 800 浅色两种窗口验证越界、排队与计算中折返、在新区域停住和按 `0` 退出。Release 原生协调用例控制旧窗口何时完成，核对当前来源、实际显示配方和原寸窗口保持有效。覆盖按住及释放原片、均衡模式控件仍在调整时折返，以及已经撤销的请求晚于新输入返回。该轮协调、原件校验、几何和质量策略共 50 项通过。[原生回归](../../Tests/RAWMasterUITests/EditingPreviewCoordinationTests.swift)
+
 ## 未覆盖
 
 - **`RAWMasterUITests` 有 13 条失败与本次改动无关。** 同一组用例在 `main@d77d099e`（暂存全部改动后重建）与本次分支上失败名称、断言文本和数量一致：`EditingDevelopmentSessionTests.testDevelopmentPreset1075MetadataDirectorySearchStableReferencesAndHiddenRows`（4）、`PhotosDevelopmentIntegrationTests`（5）、`SessionWorkflowActionTests`（4）。报错为 `13 is not equal to 10`、`[] is not equal to [.light]` 与 `初筛会话已关闭…`，都与预览传输和有限值扫描无关，属本机既有状态。

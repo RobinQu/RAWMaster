@@ -88,7 +88,7 @@ final class PreviewNativeSource: @unchecked Sendable {
   private let contextMemoryLimitMiB: Int
   private static let retainsFullValidationCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "1" &&
     ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] != "1"
-  private static let reusesCanonicalContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] == "1"
+  private static let reusesCanonicalContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] != "0"
   /// Opt-in candidate for the native path: cache intermediates so the validation scan and the
   /// final materialization evaluate the graph once. Default off; no production caller sets it.
   private static let nativeIntermediateCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] == "1"

@@ -129,6 +129,8 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 均衡在缩放中请求按倍率渲染的细节；极速可暂用现有预览，结束后两种模式请求同一种最终帧。取消、缩回 FIT 或换片均不接受过时的细节帧。若原片不可用或渲染失败，使用既有离线或预览重试入口，不把代理帧当成最终结果。[原型走查](../025-editing-workspace/prototype-review.md#自由缩放与原图取样) · [原生验证](validation.md#自由缩放与原图取样)
 
+在 [1:1 平移走查](../../docs/ui/prototype/index.html?nativePanReview=1#edit/development) 打开一张照片，点 `1:1` 或按 `Z`。在原寸区域内移动仍显示现有细节。移出原寸区域后，主图在到达新区域时更新细节。若在提交前或「计算中…」时折返，当前区域继续显示当前草稿，旧区域的结果随请求撤回。用 `FIT` 或 `0` 退出。换片后从新照片的 FIT 开始。[折返走查](../025-editing-workspace/prototype-review.md#原寸平移折返)
+
 ## 极速模式（用户可选）
 
 设置 → 编辑 → 「渲染速度」提供 `均衡` / `极速`。默认 `均衡`，行为与上一版完全相同；`极速` 才启用降级项。选择保存在 `UserDefaults` 的 `editing.preview.performanceMode`，启动时应用到 `PreviewPerformancePreferences`，无法识别的值回落到 `均衡`。

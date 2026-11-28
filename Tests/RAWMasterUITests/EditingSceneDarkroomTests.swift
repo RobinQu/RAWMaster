@@ -73,6 +73,9 @@ final class EditingSceneDarkroomTests: XCTestCase {
         #endif
         let repeats = Int(environment["RAWMASTER_EXTERNAL_JPEG_REPEATS"] ?? "36") ?? 0
         guard (1...64).contains(repeats) else { return XCTFail("Use 1–64 external export trials") }
+        let quality = Int(environment["RAWMASTER_EXTERNAL_JPEG_QUALITY"] ?? "95") ?? 0
+        guard (5...100).contains(quality) else { return XCTFail("Use an integer JPEG quality from 5 through 100") }
+        let losslessReferences = environment["RAWMASTER_EXTERNAL_REFERENCE_PNG16"] == "1"
         let raw = URL(fileURLWithPath: path)
         let sourceHash = "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
         guard try FileSafety.hash(raw) == sourceHash else {
@@ -109,17 +112,20 @@ final class EditingSceneDarkroomTests: XCTestCase {
                   enabled, exposureEV == Float(exposure) else { throw EditingError.invalidRecipe }
             let recipeHash = try EditingFingerprint.of(recipe)
             model.activateWorkflow(.export)
-            var files: [(id: String, url: URL, fileElapsedNS: UInt64, workflowElapsedNS: UInt64)] = []
-            for run in 0..<repeats {
-                let destination = root.appendingPathComponent("run-\(run)", isDirectory: true)
+            var files: [(id: String, url: URL, fileElapsedNS: UInt64?, workflowElapsedNS: UInt64)] = []
+            let formats = Array(repeating: PhotoRenderFormat.jpeg8, count: repeats)
+                + Array(repeating: PhotoRenderFormat.png16, count: losslessReferences ? 2 : 0)
+            for (index, format) in formats.enumerated() {
+                let folder = format == .jpeg8 ? "run-\(index)" : "lossless-png16-\(index - repeats)"
+                let destination = root.appendingPathComponent(folder, isDirectory: true)
                 try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: false)
-                let observer = Task.detached(priority: .userInitiated) {
-                    try await Self.observeFinalBenchmarkJPEG(in: destination)
-                }
-                defer { observer.cancel() }
+                let observer: Task<(URL, UInt64), Error>? = format == .jpeg8
+                    ? Task.detached(priority: .userInitiated) { try await Self.observeFinalBenchmarkJPEG(in: destination) }
+                    : nil
+                defer { observer?.cancel() }
                 let start = DispatchTime.now().uptimeNanoseconds
                 model.submitWorkbenchPhotoDelivery(directory: destination, naming: "{name}",
-                    configuration: .init(format: .jpeg8, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: nil)
+                    configuration: .init(format: format, jpegQuality: Double(quality) / 100), ids: [asset.id], collision: "rename", pqReview: nil)
                 let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
                 let task = try XCTUnwrap(model.workbenchPhotoDeliveryTask)
                 await task.value
@@ -128,11 +134,15 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 XCTAssertEqual(completed.id, id)
                 let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
                 XCTAssertEqual(completed.files.count, 1)
-                let (observedFile, observedAt) = try await observer.value
-                guard observedFile.standardizedFileURL == file.standardizedFileURL, observedAt > start else {
-                    throw DevelopmentError.unreadable
+                var fileElapsed: UInt64?
+                if let observer {
+                    let (observedFile, observedAt) = try await observer.value
+                    guard observedFile.standardizedFileURL == file.standardizedFileURL, observedAt > start else {
+                        throw DevelopmentError.unreadable
+                    }
+                    fileElapsed = observedAt - start
                 }
-                files.append((id.uuidString.lowercased(), file, observedAt - start, workflowElapsed))
+                files.append((id.uuidString.lowercased(), file, fileElapsed, workflowElapsed))
             }
             await model.closeLibraryReads()
             await editing.shutdown()
@@ -141,6 +151,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
             let queue = WorkbenchDeliveryCatalog(database: db)
             let encoder = JSONEncoder()
             var observations: [[String: Any]] = []
+            var references: [[String: Any]] = []
             for entry in files {
                 let receipt = try await queue.receipt(batchID: entry.id)
                 let item = try XCTUnwrap(receipt.items.items.first)
@@ -162,22 +173,34 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 let height = try XCTUnwrap(properties[kCGImagePropertyPixelHeight] as? Int)
                 XCTAssertEqual(width, 9504)
                 XCTAssertEqual(height, 6336)
-                observations.append(["fileElapsedNS": entry.fileElapsedNS, "workflowElapsedNS": entry.workflowElapsedNS,
-                    "file": entry.url.path,
+                var record: [String: Any] = ["file": entry.url.path,
                     "sha256": sha, "width": width, "height": height, "batchID": entry.id,
-                    "actualExecution": try JSONSerialization.jsonObject(with: encoder.encode(execution))])
+                    "actualExecution": try JSONSerialization.jsonObject(with: encoder.encode(execution))]
+                if let observed = entry.fileElapsedNS {
+                    record["fileElapsedNS"] = observed
+                    record["workflowElapsedNS"] = entry.workflowElapsedNS
+                    observations.append(record)
+                } else {
+                    let depth = try XCTUnwrap(properties[kCGImagePropertyDepth] as? Int)
+                    XCTAssertEqual(depth, 16)
+                    XCTAssertEqual(CGImageSourceGetType(image) as String?, "public.png")
+                    record["format"] = "PNG"
+                    record["bitsPerComponent"] = depth
+                    references.append(record)
+                }
             }
             XCTAssertEqual(try FileSafety.hash(raw), sourceHash)
             XCTAssertEqual(Set(observations.compactMap { $0["sha256"] as? String }).count, 1)
-            let report: [String: Any] = ["schemaVersion": 1, "product": "RAWMaster 032",
+            var report: [String: Any] = ["schemaVersion": 1, "product": "RAWMaster 032",
                 "protocol": "single-raw-sdr-jpeg-workbench-v1", "sourceSHA256": sourceHash,
                 "recipeSHA256": recipeHash, "exposureEV": exposure,
-                "quality": 95, "progressive": false, "subsampling": "4:2:0", "metadata": "none", "resize": false,
+                "quality": quality, "progressive": false, "subsampling": "4:2:0", "metadata": "none", "resize": false,
                 "gpu": MTLCreateSystemDefaultDevice()?.name ?? "unknown",
                 "system": ProcessInfo.processInfo.operatingSystemVersionString,
                 "binarySHA256": try FileSafety.hash(XCTUnwrap(Bundle(for: Self.self).executableURL)),
                 "boundary": "Monotonic time from submitting one 032 batch to the first 15 ms poll with one final JPEG and an EOI marker. Workflow completion includes receipt acknowledgement and is timed separately.",
                 "samples": observations]
+            if losslessReferences { report["losslessReferences"] = references }
             let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
             try data.write(to: root.appendingPathComponent("summary.json"), options: .withoutOverwriting)
         } catch {

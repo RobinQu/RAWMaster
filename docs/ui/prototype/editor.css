@@ -624,6 +624,10 @@ body[data-route^='edit/'] .toast {
   background: #16191cdc;
   color: #fff;
 }
+.pan-preview-progress {
+  left: auto;
+  right: 6px;
+}
 .canvas-dock {
   position: absolute;
   z-index: 2;

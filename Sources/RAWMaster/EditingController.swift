@@ -1095,6 +1095,9 @@ import RAWMasterLibrary
             if let visible = lastVisibleDetailWindow {
                 detailWindow = prefetchedDetailWindow(visible, margin: PreviewPerformancePreferences.settledWindowMargin)
             }
+        } else {
+            detailWindowTask?.cancel(); detailWindowTask = nil
+            detailWindowExpandTask?.cancel(); detailWindowExpandTask = nil
         }
         actualPixels = value
         if requestPreview {
@@ -1221,22 +1224,56 @@ import RAWMasterLibrary
     func updateDetailVisibleWindow(_ visible: CGRect) {
         // Keep the last report even while the canvas is not yet in native pixels: the entry
         // gesture publishes it before it asks for a detail frame.
-        guard stage == .development, sourceReady else { return }
+        guard !shuttingDown, stage == .development, sourceReady, let work else { return }
         lastVisibleDetailWindow = visible
-        guard actualPixels, !previewInteracting else { return }
+        let turbo = PreviewPerformancePreferences.isTurbo
+        guard actualPixels, !(turbo && previewInteracting) else { return }
+        let pane = previews.primary
+        if let frame = pane.displayedNativeDetail(recipe: previewRecipe(for: work, editingDraft: true),
+                                                  presentationID: developmentPreviewPresentationID),
+           ImageViewportGeometry.window(frame.window ?? CGRect(x: 0, y: 0, width: 1, height: 1), covers: visible) {
+            detailWindowTask?.cancel(); detailWindowTask = nil
+            if detailWindow != frame.window || pane.pendingNativeDetailMisses(visible) {
+                detailWindow = frame.window
+                // Rebind the desired viewport before an already submitted window can publish.
+                requestPreview(input: .capture(control: "detail-window", phase: "discrete"))
+            }
+            return
+        }
         let desired = prefetchedDetailWindow(visible, margin: PreviewQualityPolicy.windowMargin(
-            interacting: previewInteracting, turbo: PreviewPerformancePreferences.isTurbo))
-        let served = previews.primary.frame?.window
-        if let served, ImageViewportGeometry.window(served, covers: visible) { return }
-        guard desired != detailWindow else { return }
-        detailWindow = desired
-        // Coalesce a burst of pan steps into one request.
+            interacting: previewInteracting, turbo: turbo))
+        let replacesPendingWindow = pane.pendingNativeDetailMisses(visible)
+        guard desired != detailWindow || replacesPendingWindow else { return }
         detailWindowTask?.cancel()
-        detailWindowTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 120_000_000)
-            guard !Task.isCancelled, let self, self.actualPixels else { return }
+        detailWindow = desired
+        if replacesPendingWindow {
+            detailWindowTask = nil
+            requestPreview(input: .capture(control: "detail-window", phase: "discrete"))
+            return
+        }
+        // Coalesce a burst of pan steps into one request.
+        let focus = focusGeneration, branch = developmentBranchID, sourceGeneration = pane.currentSourceGeneration
+        detailWindowTask = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .milliseconds(120)) } catch { return }
+            guard let self, !Task.isCancelled, !self.shuttingDown, self.actualPixels,
+                  self.sourceReady, self.stage == .development, self.focusGeneration == focus,
+                  self.developmentBranchID == branch, self.previews.primary.currentSourceGeneration == sourceGeneration,
+                  self.detailWindow == desired else { return }
+            self.detailWindowTask = nil
             self.requestPreview(input: .capture(control: "detail-window", phase: "discrete"))
         }
+    }
+    private func previewRecipe(for work: PhotoWork, editingDraft: Bool) -> DevelopmentRecipe {
+        guard editingDraft else { return selectedVersion?.recipe ?? recipe }
+        var current = developmentSessionStorage?.repairRecipe ?? recipe
+        if developmentShowingOriginal {
+            current = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
+        }
+        if cropEditing {
+            if current.schemaVersion == 3 { current.adjustmentsV3?.geometry.crop = .init() }
+            else { current.crop = .init() }
+        }
+        return current
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
         if let graph = visibleSceneGraph {
@@ -1270,14 +1307,7 @@ import RAWMasterLibrary
         guard !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
         let input = input ?? .capture(control: "view", phase: "discrete")
         let editingDraft = stage == .development && sourceReady
-        var currentRecipe = editingDraft ? developmentSessionStorage?.repairRecipe ?? recipe : (selectedVersion?.recipe ?? recipe)
-        if editingDraft && developmentShowingOriginal {
-            currentRecipe = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
-        }
-        if editingDraft && cropEditing {
-            if currentRecipe.schemaVersion == 3 { currentRecipe.adjustmentsV3?.geometry.crop = .init() }
-            else { currentRecipe.crop = .init() }
-        }
+        let currentRecipe = previewRecipe(for: work, editingDraft: editingDraft)
         let overlayOnly = cropEditing && previewControls == ["crop"]
         // Turbo keeps a 1:1 gesture on the canvas-sized proxy and only renders native pixels once
         // the gesture ends, which is what makes dragging at 100% responsive.
@@ -1359,6 +1389,8 @@ import RAWMasterLibrary
     }
     private func previewSourceInvalidated() {
         guard previews.primary.hasRawSource || previews.comparison.hasRawSource else { return }
+        detailWindowTask?.cancel(); detailWindowTask = nil
+        detailWindowExpandTask?.cancel(); detailWindowExpandTask = nil
         sourceReady = false; sourceNeedsRevalidation = true
         previews.invalidateRawSources()
     }

@@ -235,6 +235,8 @@ Release `20261128.151111` 安装到 `/Applications/RAWMaster.app`，构建与安
 
 单独启用 `RAWMASTER_QA_SETTLED_LOCAL_GRAIN_REPLAY=1` 后，同构建按原口径复跑，暖态由 36/37 项通过变为 37/37 项通过。局部颗粒首个精确 p95 由 7.65 ms 降至 2.84 ms，上限 6.73 ms。同一原片与配方已完成精确定稿后，六个预热和三十个暖样本的首帧直接复用该精确像素。两次首次请求仍按原流程取像素。全部 1184 对首次或计量帧与 222 对预热帧的最终 RGBA8 摘要一致。本次两个试验组的 74 个首次精确 p50/p95 分别为 90.78/421.88 和 82.43/473.81 ms，LightFlow 为 9.52/58.97 ms。该试验签收 canonical 暖态重放，生产画布的 viewport 路径继续按自己的像素与时延签收。[精确重放验收](evidence/m0-local-grain-exact-replay.json)
 
+37 项首次状态以相同 Release 阶段探针依次关、开、开、关复测上下文复用。每轮重新打开来源，74 个新状态各走一次交互和精确定稿。四轮交互与定稿的 148 个全幅 RGBA8 摘要逐项一致，两次开启各实际复用 43 次。每臂汇总 148 次定稿，p50/p95 从 80.75/406.20 ms 降至 63.06/398.08 ms，最高进程物理内存从 5.27 GB 升至 5.49 GB。默认启用限于既有的已验证横幅 RAW、原几何和点运算准入范围。每次清理上下文，最多使用八次，授权失效后清退。首次定稿仍超出 LightFlow 容差。局部锐化与降噪一次全域归约仍约 238–253 ms，之后显示位图约 136–145 ms。该轮正向去雾首次引导图约 592 ms。[逐状态与阶段样本](evidence/m0-cleared-context-cold-abba.json) · [复现探针](../../scripts/performance/run-settled-stage-profile.sh)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 Camera Raw 的 9504×6336 Photoshop 文档打开在独立区间记录。当前 Camera Raw 同口径精确读回、三方 1:1 窗口与 032 RAW 到成片的最快水平仍需取证。[035 封存矩阵](../035-portable-processing-cores/acceptance.md) · [Camera Raw 工作流原始数据](../../docs/research/camera-raw-parity/performance-data.json)
@@ -303,7 +305,7 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 - [ ] M0 Camera Raw 当前版本的同机基线与三产品外部通过
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
 - [x] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机组件回执
-- [ ] M2 6 MP、96 节点、60 MP A/B 和 macOS 原生产品路径
+- [x] M2 6 MP、96 节点、60 MP A/B 和已覆盖算子的 macOS 原生产品路径
 - [ ] M3 模型、5K/6K 原寸窗口、异步取消与峰值
 - [ ] M4 空间和输出算子证据、50 配方矩阵及 035 封存复跑
 - [ ] M5 041 Linux 完整链路与能力表

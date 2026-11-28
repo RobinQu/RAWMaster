@@ -370,6 +370,89 @@ final class EditingPreviewCoordinationTests: XCTestCase {
         await controller.shutdown()
     }
 
+    @MainActor func testReturningToServedPixelsRevokesQueuedAndInFlightPanWindows() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let previousMode = PreviewPerformancePreferences.mode
+        PreviewPerformancePreferences.mode = .balanced
+        defer { PreviewPerformancePreferences.mode = previousMode }
+        let backend = ControllablePreviewBackend(hold: true)
+        let controller = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: backend)
+        let origin = CGRect(x: 0.1, y: 0.1, width: 0.15, height: 0.15)
+        let far = CGRect(x: 0.65, y: 0.65, width: 0.15, height: 0.15)
+        controller.isPresented = true
+        controller.focus(fixture.assets[0]); try await wait { await backend.requests.count == 1 }
+        await backend.finish(0); try await wait { controller.preview != nil }
+        controller.setRecipe { $0.exposureEV = 0.5 }
+        try await wait { await backend.requests.count == 2 }
+        await backend.finish(1); try await wait { !controller.previews.primary.rendering }
+        controller.setDevelopmentOriginalHeld(true)
+        try await wait { await backend.requests.count == 3 }
+        await backend.finish(2); try await wait { !controller.previews.primary.rendering }
+        controller.updateDetailVisibleWindow(origin)
+        controller.setActualPixels(true)
+        try await wait { await backend.requests.count == 4 }
+        await backend.finish(3)
+        let pane = controller.previews.primary
+        try await wait { pane.frame?.window != nil && !pane.rendering }
+        let original = try XCTUnwrap(pane.frame)
+        XCTAssertNotEqual(pane.frameRecipe, controller.recipe)
+
+        controller.updateDetailVisibleWindow(far)
+        controller.updateDetailVisibleWindow(origin)
+        try await Task.sleep(for: .milliseconds(180))
+        let afterQueuedReturn = await backend.requests.count
+        XCTAssertEqual(afterQueuedReturn, 4)
+        XCTAssertEqual(controller.detailWindow, original.window)
+        XCTAssertEqual(pane.frame?.id, original.id)
+
+        controller.updateDetailVisibleWindow(far)
+        try await wait { await backend.requests.count == 5 }
+        let outsideRevision = pane.currentRevision
+        controller.updateDetailVisibleWindow(origin)
+        XCTAssertGreaterThan(pane.currentRevision, outsideRevision)
+        await backend.finish(4) // Simulate a renderer that completes after cancellation.
+        try await wait { await backend.requests.count == 6 }
+        XCTAssertEqual(pane.frame?.id, original.id)
+        let latest = await backend.requests.last
+        XCTAssertEqual(latest?.viewport.window, original.window)
+        await backend.finish(5)
+        try await wait { pane.frame?.revision == pane.currentRevision && !pane.rendering }
+
+        controller.updateDetailVisibleWindow(far)
+        try await wait { await backend.requests.count == 7 }
+        let heldFrameID = pane.frame?.id
+        controller.setDevelopmentOriginalHeld(false)
+        let draftOutsideRevision = pane.currentRevision
+        controller.updateDetailVisibleWindow(origin)
+        XCTAssertGreaterThan(pane.currentRevision, draftOutsideRevision)
+        await backend.finish(6)
+        try await wait { await backend.requests.count == 8 }
+        XCTAssertEqual(pane.frame?.id, heldFrameID)
+        let draft = await backend.requests.last
+        XCTAssertEqual(draft?.viewport.window, original.window)
+        XCTAssertEqual(draft?.recipe, controller.recipe)
+        await backend.finish(7)
+        try await wait { pane.frame?.revision == pane.currentRevision && !pane.rendering }
+        XCTAssertEqual(pane.frameRecipe, controller.recipe)
+
+        controller.updateDetailVisibleWindow(far)
+        try await wait { await backend.requests.count == 9 }
+        controller.previewInteractionChanged("exposure", active: true)
+        let interactingOutsideRevision = pane.currentRevision
+        controller.updateDetailVisibleWindow(origin)
+        XCTAssertGreaterThan(pane.currentRevision, interactingOutsideRevision)
+        controller.previewInteractionChanged("exposure", active: false)
+        await backend.finish(8)
+        try await wait { await backend.requests.count == 10 }
+        let afterInteraction = await backend.requests.last
+        XCTAssertEqual(afterInteraction?.viewport.window, original.window)
+        await backend.finish(9)
+        try await wait { pane.frame?.revision == pane.currentRevision && !pane.rendering }
+        XCTAssertTrue(controller.actualPixels)
+        await controller.shutdown()
+    }
+
     @MainActor func testControllerSourceInvalidationDisablesDevelopmentUntilCoreAndServiceRevalidate() async throws {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
         let backend = ControllablePreviewBackend(hold: true)
@@ -446,7 +529,8 @@ actor ControllablePreviewBackend: EditingPreviewBackend {
         let size = request.quality == .detail ? CGSize(width: 3000, height: 2000) : CGSize(width: 120, height: 80)
         return .init(id: UUID(), image: NSImage(size: size), leaseID: request.sessionID,
             generation: request.sourceGeneration, consumerID: request.consumerID, revision: request.revision + revisionOffset,
-            quality: request.quality, nativeSize: .init(width: 3000, height: 2000), outputSize: size, approximate: request.quality == .interactive)
+            quality: request.quality, nativeSize: .init(width: 3000, height: 2000), outputSize: size,
+            approximate: request.quality == .interactive, window: request.viewport.window)
     }
     func cancel(_ consumer: PreviewConsumerID) async {}
     func close(_ lease: DevelopmentPreviewSessionID) async { closed.append(lease) }

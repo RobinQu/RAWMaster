@@ -880,7 +880,7 @@ Apple 系统 SQLite 3.54.0 与独立进程中的 SQLite 3.53.2 在本机 APFS �
 
 ### 主画布点运算上下文复用
 
-`RAWMASTER_QA_CANONICAL_CONTEXT_REUSE=1` 试用同一已验证横幅 RAW 的 2400 像素主画布定稿。仅复用原几何、受支持的点算子和默认解码细节。`cacheIntermediates` 保持关闭，每次进入和退出均清理缓存。同一个上下文最多执行八次连续已完成请求。授权失效后清退，重试从新实例开始。分析、特殊缓存、缩略图、去雾和空间配方分别使用原上下文。试用默认关闭。[准入和生命周期](../../Sources/RAWMasterImaging/PreviewNativeSource.swift) · [故障与八次上限验证](../../Tests/RAWMasterImagingTests/DevelopmentVerifiedLocalSourceTests.swift)
+该轮使用 `RAWMASTER_QA_CANONICAL_CONTEXT_REUSE=1` 试用同一已验证横幅 RAW 的 2400 像素主画布定稿。仅复用原几何、受支持的点算子和默认解码细节。`cacheIntermediates` 保持关闭，每次进入和退出均清理缓存。同一个上下文最多执行八次连续已完成请求。授权失效后清退，重试从新实例开始。分析、特殊缓存、缩略图、去雾和空间配方分别使用原上下文。043 交叉复测后将这个准入域设为默认，仍可用环境值 `0` 重放对照臂。[准入和生命周期](../../Sources/RAWMasterImaging/PreviewNativeSource.swift) · [故障与八次上限验证](../../Tests/RAWMasterImagingTests/DevelopmentVerifiedLocalSourceTests.swift) · [043 复测](../043-image-engine-unification/evidence/m0-cleared-context-cold-abba.json)
 
 两张真实 RAW 各按关、开、开、关重放 37 个控件的两档配方。交互帧和定稿共 1,184 个完整显示摘要匹配。每张原片的每个启用轮中，74 次定稿有 39 次使用同一个已清空上下文。两臂各 148 次定稿的比较时钟从单独的定稿请求到完整像素读回。
 

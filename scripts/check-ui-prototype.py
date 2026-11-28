@@ -34,6 +34,7 @@ def main():
     parser.add_argument("--appearance-parity-only", action="store_true", help="Verify photographic controls, HDR histogram bands, range visualization, timed notices and utility Graph windows.")
     parser.add_argument("--appearance-activity-only", action="store_true", help="Review direct color appearance, scopes, background activity and saved results.")
     parser.add_argument("--editor-rails-only", action="store_true", help="Exercise the glass rails, filter tree, canvas notices and floating Graph.")
+    parser.add_argument("--canvas-pan-only", action="store_true", help="Check 1:1 canvas panning back from queued and running preview work.")
     parser.add_argument("--editor-scope-only", action="store_true", help="Verify the photo and node panels and the right-rail repair session.")
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
     parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
@@ -121,6 +122,34 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if args.canvas_pan_only:
+                browser(*options, "open", host + ENTRY + "?nativePanReview=1#library/project/river")
+                check_pan = """
+                  await page('.contact-grid');act('photo','r1');act('workflow','edit');await page('.canvas-fit');
+                  const photo=S.page==='edit'&&Studio.data.work;
+                  const zoom=el('[data-act=edit-zoom][data-val=pixels]');zoom.focus();zoom.click();
+                  const fit=el('.canvas-fit'), status=el('.pan-preview-progress');
+                  await wait(()=>fit.dataset.panPhase==='settled'&&S.pixelView);
+                  const initial=[fit.scrollLeft,fit.scrollTop], original=fit.dataset.presentedWindow;
+                  const move=(left,top)=>{fit.scrollTo(left,top);fit.dispatchEvent(new Event('scroll'));};
+                  const out=()=>move(0,0), back=()=>move(...initial);
+                  out();assert(fit.dataset.panPhase==='queued','outside the original service window');
+                  back();assert(fit.dataset.panPhase==='settled'&&fit.dataset.presentedWindow===original&&status.hidden,'cancel before submit');
+                  out();await wait(()=>fit.dataset.panPhase==='rendering'&&status.checkVisibility());
+                  back();await new Promise(ok=>setTimeout(ok,460));
+                  assert(fit.dataset.panPhase==='settled'&&fit.dataset.presentedWindow===original&&status.hidden,'late completion preserves the returned viewport');
+                  assert(fit.scrollLeft===initial[0]&&fit.scrollTop===initial[1]&&Studio.data.work===photo&&S.pixelView,'photo, magnification and pan stay correct');
+                  out();await wait(()=>fit.dataset.panPhase==='settled'&&fit.dataset.presentedWindow!==original);
+                  assert(fit.scrollLeft===0&&fit.scrollTop===0&&status.hidden,'remaining outside presents the settled target');
+                  key(el('#workspace'),'0');await wait(()=>S.editZoom===1&&!S.pixelView);
+                  assert(!el('.pan-preview-progress').checkVisibility(),'leaving 1:1 clears the pending state');
+                """
+                for width, height, scheme in ((1440, 900, "dark"), (560, 800, "light")):
+                    browser("set", "viewport", str(width), str(height))
+                    browser("set", "media", scheme)
+                    scenario(f"实际像素平移折返 {width}", "await hash('library/project/river');" + check_pan)
+                check_browser_errors()
+                return
             if args.local_library_only:
                 browser(*options, "open", host + ENTRY + "?batchNativeReview=1#welcome")
                 browser("set", "viewport", "1280", "800")

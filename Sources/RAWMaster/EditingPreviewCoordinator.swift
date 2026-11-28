@@ -317,6 +317,7 @@ enum EditingPreviewPromptDispatch {
     private(set) var frameRecipe: DevelopmentRecipe?
     private(set) var framePresentationID: String?
     private(set) var frameSourceKey: String?
+    private var frameViewport: PreviewViewport?
     var onChange: (() -> Void)?
     var onFailure: ((String) -> Void)?
     var onInvalidation: (() -> Void)?
@@ -332,6 +333,18 @@ enum EditingPreviewPromptDispatch {
     var currentSourceGeneration: UInt64? { lease?.generation }
     var canInspectDevelopmentSource: Bool {
         !stopped && !sourceInvalidated && desired?.intent.isRaw == true && lease != nil && boundSourceKey == desired?.intent.sourceKey
+    }
+    func displayedNativeDetail(recipe: DevelopmentRecipe, presentationID: String) -> EditingPreviewBitmap? {
+        guard canInspectDevelopmentSource, let frame, let frameViewport,
+              frame.leaseID == lease?.id, frame.generation == lease?.generation, frameSourceKey == boundSourceKey,
+              frame.quality == .detail, !frame.approximate, frameViewport.detailScale == nil,
+              frameRecipe == recipe, framePresentationID == presentationID else { return nil }
+        return frame
+    }
+    func pendingNativeDetailMisses(_ visible: CGRect) -> Bool {
+        guard rendering, let intent = desired?.intent, intent.quality == .detail,
+              intent.viewport.detailScale == nil, let requested = intent.viewport.window else { return false }
+        return !ImageViewportGeometry.window(requested, covers: visible)
     }
     func developmentSourceContext() async throws -> EditingPreviewSourceContext {
         guard canInspectDevelopmentSource, let lease, let target = desired,
@@ -772,7 +785,7 @@ enum EditingPreviewPromptDispatch {
                          token: PreviewSubmissionID?, channel: PreviewProgressChannelID?) {
         if output.quality != .detail, output.window == nil { fitFallback = output }
         frame = output; frameRecipe = request.recipe; framePresentationID = desired?.intent.presentationID
-        frameSourceKey = desired?.intent.sourceKey; frameInput = input; frameDrawn = false
+        frameSourceKey = desired?.intent.sourceKey; frameViewport = request.viewport; frameInput = input; frameDrawn = false
         displayedEpoch = epoch; displayedRevision = request.revision; displayedToken = token; displayedChannel = channel
     }
     private func acceptsExact(_ target: Desired) -> Bool { !stopped && !sourceInvalidated && desired?.revision == target.revision && publicationEpoch == target.epoch }
@@ -898,7 +911,7 @@ enum EditingPreviewPromptDispatch {
     }
     private func clearFrame(keepingFitFallback: Bool = false) {
         if !keepingFitFallback { fitFallback = nil }
-        frame = nil; frameRecipe = nil; framePresentationID = nil; frameSourceKey = nil; frameInput = nil
+        frame = nil; frameRecipe = nil; framePresentationID = nil; frameSourceKey = nil; frameViewport = nil; frameInput = nil
         displayedToken = nil; displayedChannel = nil; displayedRevision = 0; displayedEpoch = 0
     }
     private func requestFullRetirement() { desiredFingerprintMemo=nil; canonicalGestureIntent=nil; retireRequested &+= 1; resourceChild?.cancel() }

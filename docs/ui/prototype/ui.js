@@ -239,6 +239,7 @@ function withPhoto(id) {
   S.versionView = null;
   S.reference = 'original';
   S.editZoom = 1;
+  S.pixelView = false;
   S.cropOpen = false;
   S.canvasMenu = '';
 }

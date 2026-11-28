@@ -10,6 +10,7 @@ import math
 from pathlib import Path
 import platform
 import statistics
+import struct
 import subprocess
 import threading
 import time
@@ -227,20 +228,28 @@ class CDP:
         return result["result"].get("value")
 
 
-def finalized_jpeg(folder):
+def finalized_image(folder, suffixes, tail):
     files = list(folder.iterdir())
-    if len(files) != 1 or files[0].suffix.lower() not in (".jpg", ".jpeg"):
+    if len(files) != 1 or files[0].suffix.lower() not in suffixes:
         return None
     path = files[0]
     try:
         with path.open("rb") as stream:
-            if stream.seek(0, 2) >= 4:
-                stream.seek(-2, 2)
-                if stream.read(2) == b"\xff\xd9":
+            if stream.seek(0, 2) >= len(tail) + 2:
+                stream.seek(-len(tail), 2)
+                if stream.read(len(tail)) == tail:
                     return path
     except FileNotFoundError:
         pass  # Chromium can rename between directory enumeration and open.
     return None
+
+
+def finalized_jpeg(folder):
+    return finalized_image(folder, (".jpg", ".jpeg"), b"\xff\xd9")
+
+
+def finalized_png(folder):
+    return finalized_image(folder, (".png",), b"\x00\x00\x00\x00IEND\xaeB\x60\x82")
 
 
 def inspect_native_jpeg(path, expected_pixels):
@@ -267,6 +276,27 @@ def inspect_native_jpeg(path, expected_pixels):
                 "witnessMeanLuma": ImageStat.Stat(witness.convert("L")).mean[0]}
 
 
+def inspect_native_png(path, expected_pixels, depth):
+    with path.open("rb") as stream:
+        header = stream.read(29)
+    if len(header) != 29 or header[:16] != b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR":
+        raise ValueError("The lossless export did not produce a PNG header")
+    width, height, bits, color_type = struct.unpack(">IIBB", header[16:26])
+    if [width, height] != expected_pixels or bits != depth or color_type not in (2, 6):
+        raise ValueError("Expected the original full-size RGB(A) PNG and requested per-channel depth")
+    with Image.open(path) as image:
+        icc = image.info.get("icc_profile")
+        if not icc:
+            raise ValueError("Lossless PNG must embed its SDR RGB profile")
+        profile = ImageCms.getProfileDescription(ImageCms.ImageCmsProfile(io.BytesIO(icc))).strip()
+        if "srgb" not in profile.casefold():
+            raise ValueError(f"Unexpected PNG ICC description {profile}")
+        image.verify()
+    return {"name": path.name, "sha256": digest(path), "bytes": path.stat().st_size, "dimensions": [width, height],
+            "format": "PNG", "bitsPerComponent": bits, "colorType": color_type,
+            "iccName": profile, "iccSHA256": hashlib.sha256(icc).hexdigest()}
+
+
 def set_lightflow_exposure(cdp, photo_id, exposure):
     ev = cdp.evaluate
     ev("window.__lightflow.setWorkspace('develop');"
@@ -289,6 +319,7 @@ def set_lightflow_exposure(cdp, photo_id, exposure):
 
 def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
     ev = cdp.evaluate
+    reference_depths = getattr(args, "lossless_reference_depth", [])
     result = {"schemaVersion": 1, "protocol": "single-native-jpeg-delivery-v1", "application": "LightFlow",
               "build": LIGHTFLOW_BUILD, "assetSHA256": LIGHTFLOW_EXPORT_ASSETS, "sourceSHA256": source_sha,
               "sourcePixels": args.output_pixels, "browser": cdp.send("Browser.getVersion")["product"],
@@ -304,7 +335,7 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
         pending.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
         pending.replace(report)
 
-    def settings(exposure):
+    def settings(exposure, png_depth=None):
         ev("window.__lightflow.setWorkspace('export')")
         wait(lambda: ev("!!document.querySelector('[data-id=export-now]')"), 45)
         expected = {"file": {"format": "jpeg", "bitDepth": 8, "quality": args.quality, "chroma": "4:2:0",
@@ -314,9 +345,12 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
                     "sharpening": {"on": False}, "watermark": {"on": False},
                     "metadata": {"policy": "none", "keywords": False, "embedEdit": False},
                     "location": {"target": "downloads", "zip": "never", "useSubfolder": False}}
+        if png_depth:
+            expected["file"].update(format="png", bitDepth=png_depth, chroma="auto")
+        preset = "builtin.png16" if png_depth else "builtin.jpeg-full"
         form = ev(f"""(() => {{
             const api=window.__lightflowExport;
-            api.applyPreset('builtin.jpeg-full');
+            api.applyPreset({json.dumps(preset)});
             const s=api.form.get().settings;
             const expected={json.dumps(expected)};
             const overrides=Object.fromEntries(Object.entries(expected).map(([group, values])=>[group,{{...s[group],...values}}]));
@@ -329,7 +363,7 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
             raise ValueError("LightFlow did not preserve the committed exposure in its export workspace")
         return form
 
-    def trial(label, exposure):
+    def trial(label, exposure, png_depth=None):
         actual_exposure = ev(exposure_read)
         if actual_exposure != exposure:
             raise ValueError("The committed exposure changed before the export")
@@ -337,7 +371,7 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
         folder.mkdir()
         cdp.send("Browser.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(folder)})
         previous = ev("window.__lightflowExport.queue.get().jobs.length")
-        with observe(folder, None, finalized_jpeg) as (_, watched):
+        with observe(folder, None, finalized_png if png_depth else finalized_jpeg) as (_, watched):
             start = time.monotonic_ns()
             ev("document.querySelector('[data-id=export-now]').click()")
 
@@ -353,9 +387,10 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
             if job["status"] != "done" or job["photoId"] != photo_id:
                 raise ValueError(f"LightFlow did not complete the selected RAW job {job}")
             finish = wait(lambda: watched.get("finalObservedUptimeNS") if "path" in watched else None, 20)
-        file = inspect_native_jpeg(watched["path"], args.output_pixels)
+        file = (inspect_native_png(watched["path"], args.output_pixels, png_depth) if png_depth
+                else inspect_native_jpeg(watched["path"], args.output_pixels))
         if finish <= start or file["name"] != job["outName"] or file["bytes"] != job["bytes"]:
-            raise ValueError("Downloaded JPEG differs from the completed queue record")
+            raise ValueError("Downloaded image differs from the completed queue record")
         return {"label": label, "exposureEV": actual_exposure, "submitUptimeNS": start, "finalWriteObservedUptimeNS": finish,
                 "elapsedMs": (finish - start) / 1e6, "job": job, "file": file}
 
@@ -389,6 +424,8 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
             raise ValueError("A clean default exposure is required in the isolated catalog")
         result["exposure"] = (set_lightflow_exposure(cdp, photo_id, args.exposure) if args.exposure
                               else {"control": None, "actualEV": result["initialExposureEV"]})
+        edit_read = f"JSON.stringify(window.__lightflow.editOf({selected}))"
+        frozen_edit = ev(edit_read) if reference_depths else None
         result["settings"] = settings(args.exposure)
         result["firstExport"] = trial("first-export", args.exposure)
         save()
@@ -396,6 +433,19 @@ def run_lightflow_native_raw(args, work, cdp, origin, source_sha, browser_gpu):
             for index in range(count):
                 result[group].append(trial(f"{group}-{index:02d}", args.exposure))
                 save()
+        if reference_depths:
+            result["developmentStateSHA256"] = hashlib.sha256(frozen_edit.encode()).hexdigest()
+            result["losslessReferences"] = []
+            for depth in reference_depths:
+                reference = {"bitDepth": depth, "settings": settings(args.exposure, depth), "outputs": []}
+                result["losslessReferences"].append(reference)
+                for index in range(2):
+                    if ev(edit_read) != frozen_edit:
+                        raise ValueError("The original Develop recipe changed before generating a lossless reference")
+                    reference["outputs"].append(trial(f"lossless-png{depth}-{index}", args.exposure, depth))
+                    save()
+            if ev(edit_read) != frozen_edit:
+                raise ValueError("The original Develop recipe changed while generating lossless references")
         if args.exposure:
             result["neutralExposure"] = set_lightflow_exposure(cdp, photo_id, 0.0)
             if settings(0.0) != result["settings"]:
@@ -578,6 +628,8 @@ def main():
     parser.add_argument("--exposure", type=float, choices=(0.0, 0.5), default=0.5, help="LightFlow Develop exposure for the single RAW")
     parser.add_argument("--output-pixels", type=int, nargs=2, default=[9504, 6336], metavar=("WIDTH", "HEIGHT"),
                         help="Expected original-size JPEG dimensions for lightflow-native-raw")
+    parser.add_argument("--lossless-reference-depth", type=int, choices=(8, 16), nargs="+", default=[],
+                        help="After the measured JPEG series, export two original-size PNGs per requested depth")
     args = parser.parse_args()
     if args.action == "lightflow-native-raw":
         if not args.raw or not args.raw.is_file() or args.raw.suffix.lower() != ".arw":
@@ -586,6 +638,10 @@ def main():
         args.repeats = 30 if args.repeats is None else args.repeats
         if args.repeats < 1 or args.warmup < 0 or not 1 <= args.quality <= 100 or min(args.output_pixels) < 1:
             parser.error("Use positive sample count and dimensions, nonnegative warmups, and JPEG quality 1–100")
+        if len(args.lossless_reference_depth) != len(set(args.lossless_reference_depth)):
+            parser.error("Specify each lossless reference depth at most once")
+    elif args.lossless_reference_depth:
+        parser.error("Lossless reference depths require lightflow-native-raw")
     elif args.repeats is None:
         args.repeats = 3
     args.root = args.root.resolve()
