@@ -59,6 +59,8 @@ async function radialEvidence(pixels, radial) {
 export async function measurePanelSchedule(engine, view, neutral, config, selected, recipeFor, progress) {
   const id = 'scheduled', width = view.cw, height = view.ch;
   const extended = config.extendedPhotoOperators;
+  const warmupPairs = extended ? (config.warmupPairs ?? 0) : 0;
+  const warmupCount = 2 * warmupPairs;
   let editKey = 0, lastSeq = -1;
   engine.createViewer(id, null, false, false, true);
   engine.viewerSize(id, width, height);
@@ -113,6 +115,8 @@ export async function measurePanelSchedule(engine, view, neutral, config, select
     for (const key of selected) {
       const spec = config.panelControls[key];
       const out = {id:key, values:spec.values, fixed:spec.fixed, samples:[], status:'inconclusive'};
+      const warmupSamples = [];
+      if (warmupPairs) out.warmupSamples = warmupSamples;
       if (extended) {
         out.region = spec.region;
         out.unit = spec.unit;
@@ -120,29 +124,31 @@ export async function measurePanelSchedule(engine, view, neutral, config, select
       }
       const signatures = [new Set(), new Set()], references = [];
       try {
-      for (let i = 0; i < config.samples + 2; ++i) {
+      for (let i = 0; i < config.samples + 2 + warmupCount; ++i) {
         const state = i % 2;
+        const phase = i < 2 ? 'first' : i < 2 + warmupCount ? 'warmup' : 'warm';
         const observation = extended
           ? await submit(out.stateDescriptions[state].edit, out.stateDescriptions[state].view)
           : await submit(recipeFor(key,state));
         const pixels = observation.pixels;
         delete observation.pixels;
         const last = observation.frames.at(-1);
-        const sample = {state, phase:i < 2 ? 'first':'warm', ms:observation.renderToFinalMs, digest:last.digest,
+        const sample = {state, phase, ms:observation.renderToFinalMs, digest:last.digest,
           ...observation, finalSameStateDelta:references[state] ? delta(pixels, references[state]):null,
           finalOtherStateDelta:references[1-state] ? delta(pixels, references[1-state]):null};
         if (extended && spec.region === 'radial') sample.regions = await radialEvidence(pixels, extended.radial);
         references[state] ??= pixels;
         signatures[state].add(extended ? last.wholeRasterSHA256 : last.digest);
-        out.samples.push(sample);
+        (phase === 'warmup' ? warmupSamples : out.samples).push(sample);
       }
       } catch (e) {
         if (!extended) throw e;
         out.reason = String(e);
       }
-      const stable = out.samples.length === config.samples + 2 && signatures.every(set => set.size === 1) &&
+      const witnessed = [...out.samples, ...warmupSamples];
+      const stable = out.samples.length === config.samples + 2 && warmupSamples.length === warmupCount && signatures.every(set => set.size === 1) &&
         [...signatures[0]][0] !== [...signatures[1]][0];
-      if (stable && out.samples.every(s => {const f=s.frames.at(-1);return f.fullRes && !f.provisional && !f.interactive;})) {
+      if (stable && witnessed.every(s => {const f=s.frames.at(-1);return f.fullRes && !f.provisional && !f.interactive;})) {
         out.status = 'measured';
       }
       const equalsFinal = s => s.frames[0].wholeRasterSHA256 === s.frames.at(-1).wholeRasterSHA256;
@@ -153,9 +159,9 @@ export async function measurePanelSchedule(engine, view, neutral, config, select
       if (extended) {
         const [a,b] = out.finalWholeRasterDigestsByState;
         const validRegions = spec.region !== 'radial' || (stable &&
-          new Set(out.samples.map(s=>s.regions.outside)).size === 1 &&
+          new Set(witnessed.map(s=>s.regions.outside)).size === 1 &&
           out.samples[0].regions.inside !== out.samples[1].regions.inside &&
-          [0,1].every(i=>new Set(out.samples.filter(s=>s.state===i).map(s=>s.regions.inside)).size===1));
+          [0,1].every(i=>new Set(witnessed.filter(s=>s.state===i).map(s=>s.regions.inside)).size===1));
         if (a.length !== 1 || b.length !== 1 || a[0] === b[0] || !validRegions) {
           out.status = 'inconclusive';
           out.reason ??= !validRegions ? 'Masked interior or exterior did not meet the spatial witness' : 'Full A/B output was identical or not bit-repeatable';
@@ -165,6 +171,7 @@ export async function measurePanelSchedule(engine, view, neutral, config, select
       operations.push(out);
     }
     return {protocol:extended ? 'resident-photo-operators-stock-scheduler-v2' : 'resident-srgb8-panels-stock-scheduler-v1', samples:config.samples, pixels:[width,height],
+      ...(warmupPairs ? {warmupPairs} : {}),
       cachePolicy:'stock viewer residency, demand compilation, released input, unobstructed photo',
       timing:'Sample ms is first changed viewerFrame entry to the final complete CPU-readable RGBA8 buffer, including subsequent scheduling. renderToFirstExactFinalMs ends at the earliest whole-buffer match with that final output. Per-frame ms measures one viewerFrame. actionToPixelsMs includes the initial animation frame. idleConfirmedMs ends at the first following tick with neither draw nor busy. Pixel verification follows all timed work.',
       verification:extended ? 'Entire opaque sRGB RGBA8 SHA-256 must repeat separately per state and differ between A/B. On radial operations the interior must change while the far exterior repeats across both states. Final stock frame must be fullRes, non-interactive and non-provisional.' : 'Exact final 96×64 RGB grid per state across both first and all warm samples, distinct A/B, final stock fullRes=true, interactive=false and provisional=false. All intermediate frames are retained.',

@@ -57,8 +57,12 @@ def cube_bytes(manifest, name):
 
 def validate_source(data, manifest, product, expected_source=RAW):
     specs = manifest["controls"]
+    samples = data["samples"]
+    warmup_pairs = data.get("warmupPairs", 0)
+    require(type(samples) is int and 2 <= samples <= 100 and type(warmup_pairs) is int
+            and (warmup_pairs == 0 or 3 <= warmup_pairs <= 50), f"Invalid {product} warm sample counts")
     require(data["schemaVersion"] == 2 and data["protocol"] == PROTOCOL[product] and data["application"] == product
-            and data["samples"] == 20 and data["pixels"] == [2400, 1600]
+            and data["pixels"] == [2400, 1600]
             and valid_digest(expected_source) and data["sourceSHA256"] == data["sourceSHA256After"] == expected_source
             and data["parameterSHA256"] == sha(MANIFEST.read_bytes())
             and sorted(row["id"] for row in data["operations"]) == sorted(specs), f"Invalid {product} source or inventory")
@@ -75,6 +79,8 @@ def validate_source(data, manifest, product, expected_source=RAW):
                     and struct.pack("<24f", *table["data"]) == cube_bytes(manifest,name), f"Wrong registered {name} CUBE values")
     else:
         require(valid_digest(data["binarySHA256"]) and data["decoder"] == "flashraw-0.3.1-linear-srgb-bilinear", "Wrong native binary or decoder")
+        if samples != 20 or warmup_pairs:
+            require(data.get("settledTransport") == "canonical", "Configured sampling requires canonical RAWMaster readback")
 
 
 def validate_geometry(mask, radial, original):
@@ -217,6 +223,7 @@ def validate_recipe(key, spec, state, value, data, manifest, stock):
 
 def validated_rows(data, manifest, product, expected_source=RAW):
     validate_source(data, manifest, product, expected_source)
+    measured_count, warmup_count = data["samples"] + 2, 2 * data.get("warmupPairs", 0)
     out = {}
     stock = product == "LightFlow"
     previous_sequence = 0
@@ -227,14 +234,19 @@ def validated_rows(data, manifest, product, expected_source=RAW):
         for i, value in enumerate(spec["values"]):
             validate_recipe(key,spec,row["stateDescriptions"][i],value,data,manifest,stock)
         samples = row["samples"]
-        require(len(samples) <= 22, key)
+        warmups = row.get("warmupSamples", [])
+        require(len(samples) <= measured_count and len(warmups) <= warmup_count
+                and (not warmups or len(samples) >= 2)
+                and (len(samples) <= 2 or len(warmups) == warmup_count), f"Wrong sample counts for {key}")
+        chronological = ([("first", t) for t in samples[:2]] + [("warmup", t) for t in warmups]
+                         + [("warm", t) for t in samples[2:]])
         all_states, inside, outside = [set(),set()], [set(),set()], set()
         times = {p:[] for p in PHASES}
         first_matches = 0
         qualified_frames = True
-        for i, t in enumerate(samples):
+        for i, (sample_phase, t) in enumerate(chronological):
             s = i % 2
-            require(t["state"] == s and t["phase"] == ("first" if i < 2 else "warm"), key)
+            require(t["state"] == s and t["phase"] == sample_phase, key)
             if stock:
                 frames = t["frames"]
                 require(bool(frames), key)
@@ -267,11 +279,14 @@ def validated_rows(data, manifest, product, expected_source=RAW):
                         valid_digest(r["inside"]) and valid_digest(r["outside"]), key)
                 inside[s].add(r["inside"])
                 outside.add(r["outside"])
-            if i >= 2 and first_hash == final_hash:
+            if sample_phase == "warmup":
+                continue
+            if sample_phase == "warm" and first_hash == final_hash:
                 first_matches += 1
             for phase, ms in zip(PHASES, values):
                 times[phase].append(ms)
-        stable = len(samples) == 22 and all(len(a) == 1 for a in all_states) and all_states[0] != all_states[1]
+        stable = (len(samples) == measured_count and len(warmups) == warmup_count
+                  and all(len(a) == 1 for a in all_states) and all_states[0] != all_states[1])
         spatial = spec["region"] == "global" or (len(outside) == 1 and all(len(a)==1 for a in inside) and inside[0] != inside[1])
         verified = bool(stable and spatial and qualified_frames)
         require(row["status"] == ("measured" if verified else "inconclusive"), f"Qualification disagrees for {product}/{key}")
@@ -299,6 +314,9 @@ def comparison(lightflow, native, manifest):
             "Original 31-control manifest changed or inventories overlap")
     require(lightflow["system"]["chip"] == native["gpu"] and lightflow["system"]["os"].split("-")[1] in native["os"],
             "Operating system or physical GPU differs")
+    warm_samples, warmup_pairs = native["samples"], native.get("warmupPairs", 0)
+    require((warm_samples, warmup_pairs) == (lightflow["samples"], lightflow.get("warmupPairs", 0)),
+            "LightFlow and RAWMaster used different warm sample or warmup counts")
     all_rows = {p:validated_rows(d,manifest,p) for p,d in (("LightFlow",lightflow),("RAWMaster",native))}
     rows = {}
     for key, spec in manifest["controls"].items():
@@ -310,8 +328,11 @@ def comparison(lightflow, native, manifest):
             phases[phase] = {"LightFlow":a, "RAWMaster":b, **latency_limits(a, b)}
         rows[key] = {"values":spec["values"],"fixed":spec["fixed"],"unit":spec["unit"],"region":spec["region"],
                      "LightFlow":stocks,"RAWMaster":current,"qualified":comparable,"phases":phases}
-    return {"schemaVersion":2,"sourceSHA256":native["sourceSHA256"],"pixels":native["pixels"],"gpu":native["gpu"],
-            "parameterSHA256":native["parameterSHA256"],"binarySHA256":native["binarySHA256"],"operations":rows}
+    report = {"schemaVersion":2,"sourceSHA256":native["sourceSHA256"],"pixels":native["pixels"],"gpu":native["gpu"],
+              "parameterSHA256":native["parameterSHA256"],"binarySHA256":native["binarySHA256"],"operations":rows}
+    if warm_samples != 20 or warmup_pairs:
+        report["sampling"] = {"warmSamples": warm_samples, "warmupPairs": warmup_pairs}
+    return report
 
 
 def panel_photo_operators(sha256):
@@ -331,19 +352,23 @@ def markdown(result):
     verified = {p:sum(r[p]["status"]=="measured" for r in rows.values()) for p in FILES}
     within = {p:sum(r["phases"][p]["within"] for r in rows.values() if r["qualified"]) for p in PHASES}
     all_three = sum(all(r["phases"][p]["within"] for p in PHASES) for r in rows.values() if r["qualified"])
+    sampling = result.get("sampling", {})
+    warm_samples = sampling.get("warmSamples", 20)
+    warmup_count = 2 * sampling.get("warmupPairs", 0)
+    warmup = f"，按 A/B 顺序预热 {warmup_count} 次" if warmup_count else ""
     lines = ["# 驻留照片全幅读回 · 第二组 37 项","",
-             f"同一台 {result['gpu']}、同一张 9504 × 6336 Sony RAW。两端各交替提交 37 组 A/B 配方，每组先记录两次首次输入，再记录 20 次热输入。每次读回 2400 × 1600 不透明 sRGB RGBA8 的 15,360,000 个字节。"
+             f"同一台 {result['gpu']}、同一张 9504 × 6336 Sony RAW。两端各交替提交 37 组 A/B 配方，每组先记录两次首次输入{warmup}，再记录 {warm_samples} 次热输入。每次读回 2400 × 1600 不透明 sRGB RGBA8 的 15,360,000 个字节。"
              f" 原版 LightFlow 通过 {verified['LightFlow']}/37 项，RAWMaster 通过 {verified['RAWMaster']}/37 项，双方共同通过 {qualified}/37 项的输入与像素验证。","",
              f"按既有发版阈值，RAWMaster 的首张完整照片有 {within['first']}/{qualified} 项达线，首张与最终照片逐字节一致的照片有 {within['firstExact']}/{qualified} 项达线，"
              f"最终处理请求有 {within['final']}/{qualified} 项达线。三个终点同时达线 {all_three}/{qualified} 项。每个终点同时比较热采样中位数和 p95，前者容许 LightFlow 加 1 ms 或 10% 中较大者，后者容许加 2 ms 或 20% 中较大者。","",
              "## 采样边界","",
              "LightFlow 2d41ab1 使用发行版 Photo viewer 的公开 WASM 接口。操作先使视图失效，原版调度器随后经动画帧请求绘制；每次绘制都读回完整像素，直至原版首次报告无需绘制且不忙。表中从第一次实际绘制调用计时。第二、第三终点包含后续帧间等待。原始数据另记从失效到每帧及空闲确认的耗时。","",
              "RAWMaster 通过 ImageEngine 的正常入口，在同一会话中提交交互预览并完整读回，随即提交同配方的稳定预览并完整读回。计时包含 GPU 计算与完整 CPU 像素传输。两端在计时结束后对每个完整缓冲区计算 SHA-256。窗口输入、绘图层合成与显示器刷新各有独立测量。","",
-             "每个引擎必须在 22 次试验中按各自 A/B 状态精确复现完整最终像素，两态之间必须不同。18 项局部操作使用相同归一化椭圆，中心 (0.50, 0.50)，横纵半径 0.35 与 0.30，羽化 0、不透明度 1、向内、无旋转。中心 416 个采样点的 RGB 必须随状态改变，远外部 1,640 个点必须在所有输入中保持相同。每个引擎均从自己的显影结果核验 A/B。","",
-             "20 次热输入只包含这两个出现过的配方，允许各产品复用相同配方的缓存。每项首次 A/B 的三个耗时单列于下表。8 个基础滑杆另有 20 个连续新值的测量。","",
+             f"每个引擎必须在 {warm_samples + warmup_count + 2} 次试验中按各自 A/B 状态精确复现完整最终像素，两态之间必须不同。18 项局部操作使用相同归一化椭圆，中心 (0.50, 0.50)，横纵半径 0.35 与 0.30，羽化 0、不透明度 1、向内、无旋转。中心 416 个采样点的 RGB 必须随状态改变，远外部 1,640 个点必须在所有输入中保持相同。每个引擎均从自己的显影结果核验 A/B。","",
+             f"{warm_samples} 次热输入只包含这两个出现过的配方，允许各产品复用相同配方的缓存。每项首次 A/B 的三个耗时单列于下表。8 个基础滑杆另有 20 个连续新值的测量。","",
              "CUBE 记录含相同的浮点表数据、域、叠加顺序及强度。曝光按实际 EV 换算，局部黑场按提升黑位的方向换算。色相用各自正向拨盘行程分数，其他图像滑块按两端同一归一化强度。两端的降噪、锐化、提示色及默认显影算法各自生效。RAWMaster 的去朦胧先对源建立空气光模型，首次准备单独记录。","",
              "## 逐项","",
-             "各时间格先列 LightFlow、后列 RAWMaster，两者各为中位数 / p95（ms）。首帧命中数的分母是 20。末列从左至右对应三个时间终点，✓ 表示两个分位数同时达线。","",
+             f"各时间格先列 LightFlow、后列 RAWMaster，两者各为中位数 / p95（ms）。首帧命中数的分母是 {warm_samples}。末列从左至右对应三个时间终点，✓ 表示两个分位数同时达线。","",
              "| 操作与配方 | 首张完整照片 LF → RM | 首张等于最终照片 LF → RM | 最终请求结束 LF → RM | 首帧命中 LF / RM | 达线 |",
              "| --- | ---: | ---: | ---: | ---: | :---: |"]
     for key,r in rows.items():
@@ -385,19 +410,29 @@ def markdown(result):
               "现有对照另涵盖 8 项基础滑杆和 31 项面板操作。下列 17 项保留编辑器、分析、目录或解码各自的终点。与本报告 37 项合计覆盖 93 个有同义入口的控件。",""]
     for reason, ids in EXCLUDED.items():
         lines.append("- "+reason+"。"+"、".join("`"+key+"`" for key in ids)+"。")
+    stock_options = f"--samples {warm_samples}"
+    native_options = []
+    compare_command = ["python3 docs/research/camera-raw-parity/paired_photo_operator_report.py --check"]
+    if sampling:
+        native_options = [f"  RAWMASTER_PANEL_READBACK_SAMPLES={warm_samples} RAWMASTER_PANEL_READBACK_WARMUP_PAIRS={warmup_count // 2} \\"]
+        compare_command = ["python3 docs/research/camera-raw-parity/paired_photo_operator_report.py \\",
+                           '  --native "$NATIVE_JSON" --lightflow "$STOCK_JSON" --summary-json "$COMPARISON_JSON"']
+    if warmup_count:
+        stock_options += f" --warmup-pairs {warmup_count // 2}"
     lines += ["","## 复核与复现","",
               "锐化蒙版另有逐像素参考。独立程序以原生 9504 × 6336 线性亮度生成边缘蒙版，先写出全尺寸 RGBA16F，再缩放到共同的展示尺寸。实拍参考与定稿蒙版在 384 万个像素上均为精确灰阶，定稿有 145 个灰阶，绝对误差的 p99 为 0、最大为 1 个 8 位码值。第二个同时驻留的 Sony RAW 也通过不同源和重复取用核验。 [全分辨率参考](rawmaster-sharpen-mask-reference-v2.json) · [优化前单项](rawmaster-sharpen-mask-before-replay-v2.json) · [优化后单项](rawmaster-sharpen-mask-after-replay-v2.json)","",
               "两份原始记录保留了每次实际提交的 A/B 配方和每次读回时刻，LightFlow 还保留各中间帧、调度器状态和实际注册的 LUT。"
               " [LightFlow 原始数据](lightflow-photo-operators-v2.json) · [RAWMaster 当前发行构建](rawmaster-photo-operators-v2.json) · [RAWMaster 初次归档](rawmaster-photo-operators-initial-v2.json) · "
               "[公共配方](../../../../scripts/performance/paired-photo-operators-v2.json) · [逐项校验程序](../paired_photo_operator_report.py)","",
               "仓库根目录下可用下列入口生成新的原始记录。两个引擎分别独占同一台机器的 GPU。","",
-              "```sh","python3 scripts/performance/benchmark-lightflow.py --paired-photo-operators --samples 20 \\",
+              "```sh",f"python3 scripts/performance/benchmark-lightflow.py --paired-photo-operators {stock_options} \\",
               "  --raw \"$RAW\" --chrome \"$CHROME_HEADLESS_SHELL\" --output \"$STOCK_JSON\"",
               "RAWMASTER_FLASHRAW_LIBRARY=\"$FLASHRAW_DYLIB\" RAWMASTER_PANEL_READBACK_SET=photo-operators-v2 \\",
               "  RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical \\",
+              *native_options,
               "  RAWMASTER_PANEL_READBACK_RAW=\"$RAW\" RAWMASTER_PANEL_READBACK_REPORT=\"$NATIVE_JSON\" \\",
               "  xcrun xctest -XCTest RAWMasterImagingTests.IndividualControlPerformanceTests/testPanelDisplayReadback \\",
-              "  \"$RELEASE_TEST_BUNDLE\"","python3 docs/research/camera-raw-parity/paired_photo_operator_report.py --check","```",""]
+              "  \"$RELEASE_TEST_BUNDLE\"",*compare_command,"```",""]
     return "\n".join(lines)
 
 

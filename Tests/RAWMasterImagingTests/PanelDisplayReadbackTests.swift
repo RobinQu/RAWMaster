@@ -23,6 +23,14 @@ extension IndividualControlPerformanceTests {
         let extended = env["RAWMASTER_PANEL_READBACK_SET"] == "photo-operators-v2"
         let measureSettlement = extended || env["RAWMASTER_PANEL_READBACK_SETTLED"] == "1"
         let canonicalSettlement = measureSettlement && env["RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT"] == "canonical"
+        let sampleOption = extended ? env["RAWMASTER_PANEL_READBACK_SAMPLES"] : nil
+        let warmupOption = extended ? env["RAWMASTER_PANEL_READBACK_WARMUP_PAIRS"] : nil
+        guard canonicalSettlement || (sampleOption == nil && warmupOption == nil),
+              let repeats = Int(sampleOption ?? "20"), (2...100).contains(repeats),
+              let warmupPairs = Int(warmupOption ?? "0"), warmupPairs == 0 || (3...50).contains(warmupPairs) else {
+            throw InvalidPanelReadback(description: "For canonical photo-operators-v2 use 2–100 measured samples and 0 or 3–50 warmup A/B pairs")
+        }
+        let warmupCount = 2 * warmupPairs
         let parameterFile = URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().appendingPathComponent(extended
                 ? "scripts/performance/paired-photo-operators-v2.json" : "scripts/performance/paired-panel-controls.json")
@@ -60,7 +68,7 @@ extension IndividualControlPerformanceTests {
                     return Control(id:id,states:states)
                 }
             } else { catalog = try controls(decoder:decoder,facts:facts) }
-            let width = 2400, height = 1600, repeats = 20
+            let width = 2400, height = 1600
             let target = UnsafeMutableRawBufferPointer.allocate(byteCount:width*height*4,alignment:64)
             let finalBuffer = measureSettlement ? UnsafeMutableRawBufferPointer.allocate(byteCount:target.count,alignment:64) : nil
             defer { target.deallocate() }
@@ -71,7 +79,7 @@ extension IndividualControlPerformanceTests {
             ImageEnginePrewarming.run()
             for control in catalog {
                 guard selected.contains(control.id), let inputs = parameters[control.id] else { continue }
-                var states = [Set<String>(),Set<String>()], samples = [[String:Any]]()
+                var states = [Set<String>(),Set<String>()], samples = [[String:Any]](), warmupSamples = [[String:Any]]()
                 var firstStateFullFrameDigests = [String]()
                 var usesWholeFrame = false
                 let radial = (inputs["region"] as? String == "radial") ? extra?.radial : nil
@@ -84,7 +92,7 @@ extension IndividualControlPerformanceTests {
                     let bytes=Data(bytesNoCopy:buffer.baseAddress!,count:buffer.count,deallocator:.none)
                     return SHA256.hash(data:bytes).map { String(format:"%02x",$0) }.joined()
                 }
-                do { for index in 0..<(repeats+2) {
+                do { for index in 0..<(repeats+2+warmupCount) {
                     revision += 1
                     let state = index % 2, recipe = control.states[state]
                     let request = DevelopmentPreviewRequest(sessionID:session.id,sourceGeneration:session.sourceGeneration,
@@ -114,10 +122,12 @@ extension IndividualControlPerformanceTests {
                         let firstHash = try fullDigest(target), finalHash = try fullDigest(finalBuffer)
                         if index < 2 { firstStateFullFrameDigests.append(finalHash) }
                         states[state].insert(finalHash)
-                        var sample: [String:Any] = ["state":state,"phase":index<2 ? "first":"warm","ms":total,"firstMs":ms,
+                        let samplePhase = index < 2 ? "first" : (index < 2 + warmupCount ? "warmup" : "warm")
+                        var sample: [String:Any] = ["state":state,"phase":samplePhase,"ms":total,"firstMs":ms,
                             "firstSHA256":firstHash,"digest":finalHash,"firstExactFinalMs":firstHash == finalHash ? ms : total]
                         if let radial { sample["regions"] = try radial.witness(finalBuffer,width:width,height:height) }
-                        samples.append(sample)
+                        if samplePhase == "warmup" { warmupSamples.append(sample) }
+                        else { samples.append(sample) }
                         continue
                     }
                     if let frameFolder, index < 2 {
@@ -145,12 +155,14 @@ extension IndividualControlPerformanceTests {
                     guard extended else { throw error }
                     failure = "\(phase) · \(error)"
                 }
-                var verified = samples.count == repeats+2 && states.allSatisfy { $0.count == 1 } && states[0] != states[1]
+                var verified = samples.count == repeats+2 && warmupSamples.count == warmupCount
+                    && states.allSatisfy { $0.count == 1 } && states[0] != states[1]
                 if radial != nil {
-                    let regions = samples.compactMap { $0["regions"] as? [String:Any] }
+                    let observations = Array(samples.prefix(2)) + warmupSamples + Array(samples.dropFirst(2))
+                    let regions = observations.compactMap { $0["regions"] as? [String:Any] }
                     let insideA = regions.enumerated().compactMap { $0.offset % 2 == 0 ? $0.element["inside"] as? String:nil }
                     let insideB = regions.enumerated().compactMap { $0.offset % 2 == 1 ? $0.element["inside"] as? String:nil }
-                    let localized = regions.count == repeats+2 && Set(insideA).count == 1 && Set(insideB).count == 1 &&
+                    let localized = regions.count == repeats+2+warmupCount && Set(insideA).count == 1 && Set(insideB).count == 1 &&
                         insideA.first != insideB.first && Set(regions.compactMap { $0["outside"] as? String }).count == 1
                     if !localized { failure = failure ?? "Masked interior or exterior did not meet the spatial witness" }
                     verified = verified && localized
@@ -158,6 +170,7 @@ extension IndividualControlPerformanceTests {
                 var row = inputs
                 row["id"] = control.id
                 row["samples"] = samples
+                if warmupPairs > 0 { row["warmupSamples"] = warmupSamples }
                 row["status"] = verified ? "measured" : "inconclusive"
                 row["pixelWitness"] = usesWholeFrame || measureSettlement ? "entire-opaque-sRGB-RGBA8" : "96x64-RGB-grid"
                 row["firstStateFullFrameDigests"] = firstStateFullFrameDigests
@@ -176,7 +189,7 @@ extension IndividualControlPerformanceTests {
             let protocolID = extended ? "resident-photo-operators-interactive-settled-v2" :
                 (measureSettlement ? "resident-srgb8-panels-interactive-settled-v1" : "resident-srgb8-panels-v1")
             let settlement = !measureSettlement ? "none" : (canonicalSettlement ? "canonical" : "production")
-            let evidence: [String:Any] = ["schemaVersion":extended ? 2:1,"protocol":protocolID,"application":"RAWMaster",
+            var evidence: [String:Any] = ["schemaVersion":extended ? 2:1,"protocol":protocolID,"application":"RAWMaster",
                 "settledTransport":settlement,
                 "cachePolicy":canonicalSettlement ? "isolated default resource budget" : "shipping defaults",
                 "pixels":[width,height],"samples":repeats,"distinctInputCount":0,
@@ -188,6 +201,7 @@ extension IndividualControlPerformanceTests {
                   ? "First production interactive request through full sRGB8 readback, then immediate canonical settled request and full sRGB8 readback. Both full hashes after timing; app gesture debounce excluded."
                   : "Changed recipe on resident source through full CPU-readable 2400×1600 sRGB RGBA8 output; RGB check outside time",
                 "operations":rows]
+            if warmupPairs > 0 { evidence["warmupPairs"] = warmupPairs }
             try JSONSerialization.data(withJSONObject:evidence,options:[.prettyPrinted,.sortedKeys])
                 .write(to:URL(fileURLWithPath:report),options:.withoutOverwriting)
             await engine.close(session.id)

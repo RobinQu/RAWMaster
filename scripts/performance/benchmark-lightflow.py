@@ -46,6 +46,8 @@ def main():
         "--operation", action="append", default=[], help="restrict to this feature ID; repeatable"
     )
     parser.add_argument("--samples", type=int, default=20, choices=range(2, 101), metavar="2–100")
+    parser.add_argument("--warmup-pairs", type=int, default=0, metavar="0 or 3–50",
+                        help="Record extra unscored A/B pairs between the two first samples and the warm samples (paired photo operators only)")
     parser.add_argument(
         "--size", type=int, default=2400, help="exact long side of the rendered image in pixels"
     )
@@ -68,6 +70,8 @@ def main():
     args = parser.parse_args()
     if args.panel_schedule and not args.panel_readback:
         parser.error("--panel-schedule requires --panel-readback")
+    if args.warmup_pairs != 0 and not (3 <= args.warmup_pairs <= 50 and args.paired_photo_operators):
+        parser.error("use --warmup-pairs 3–50 with --paired-photo-operators")
     if not (64 <= args.size <= 8192) or args.output.exists():
         parser.error("choose a size of 64–8192 px and a new output file")
     resources = {name: args.engine / name for name in PINNED}
@@ -90,10 +94,13 @@ def main():
     panel_file = HERE / "paired-panel-controls.json"
     extended_file = HERE / "paired-photo-operators-v2.json"
     extended = json.loads(extended_file.read_bytes()) if args.paired_photo_operators else None
-    config = json.dumps({"samples": args.samples, "size": args.size, "operations": args.operation,
+    settings = {"samples": args.samples, "size": args.size, "operations": args.operation,
                          "displayReadback": args.display_readback or args.panel_readback or args.paired_photo_operators, "autoAnalysis": args.auto_analysis, "viewerTools": args.viewer_tools,
                          "panelControls": extended["controls"] if extended else json.loads(panel_file.read_bytes()) if args.panel_readback else None,
-                         "extendedPhotoOperators": extended,"panelSchedule": args.panel_schedule or args.paired_photo_operators, "vectorscope": args.vectorscope}).encode()
+                         "extendedPhotoOperators": extended,"panelSchedule": args.panel_schedule or args.paired_photo_operators, "vectorscope": args.vectorscope}
+    if args.warmup_pairs:
+        settings["warmupPairs"] = args.warmup_pairs
+    config = json.dumps(settings).encode()
     token = secrets.token_urlsafe(24)
     route = f"/{token}/"
     result = {}
