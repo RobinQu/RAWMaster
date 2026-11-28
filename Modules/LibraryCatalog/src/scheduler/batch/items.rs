@@ -64,6 +64,10 @@ struct SceneExecution {
     cpu_milliseconds: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
     fallback_reason: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    photographic_engine: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dag_backend: Option<SceneBackend>,
 }
 
 #[derive(Clone, Deserialize, Serialize, PartialEq)]

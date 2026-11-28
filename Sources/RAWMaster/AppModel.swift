@@ -1213,11 +1213,13 @@ final class AppModel: ObservableObject {
         guard editing?.showJobs != true, editing?.showSettings != true, editing?.showExport != true, editing?.unknownRetryJobID == nil else { return false }
         guard !showImport, !showExport, !showTimelapse, !showGroups, !showGroupReview, !showGroupHistory, !showRelocation, !showCompletion, !showQualityReview, !showPairReview, !showTagPreview, !showTagHistory else { return false }
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-        if event.keyCode == 48, !flags.contains(.command), !flags.contains(.control), !flags.contains(.option) {
+        if event.keyCode == 48, !(isNativeEditing && editing?.repairEditing == true),
+           !flags.contains(.command), !flags.contains(.control), !flags.contains(.option) {
             cycleWorkflow(reverse: flags.contains(.shift)); return true
         }
         if isNativeEditing {
             if [123, 124].contains(Int(event.keyCode)), flags.intersection([.command, .control, .option, .shift]).isEmpty {
+                if editing?.repairEditing == true { return false }
                 move(event.keyCode == 123 ? -1 : 1); return true
             }
             return editing?.handleDevelopmentKey(event) ?? false

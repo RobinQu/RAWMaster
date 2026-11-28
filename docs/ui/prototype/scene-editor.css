@@ -1,7 +1,7 @@
 .scene-badge { flex: none; white-space: nowrap; color: var(--muted); font-size: 11px; }
 .scene-mode-bar { grid-column: 1 / -1; border-bottom: 1px solid var(--line); padding: 8px 10px; }
 .scene-mode-row { display: flex; align-items: center; gap: 8px; }
-.scene-mode-bar { margin-bottom: 10px; padding: 0 0 8px; }
+.scene-mode-bar { margin-bottom: 0; padding: 8px 0; border-top: 1px solid var(--line); }
 .appearance-heading { display:flex; align-items:center; gap:6px; margin:0 0 6px; font-size:12px; }
 .appearance-heading h3 { margin:0; font:inherit; font-weight:650; flex:1; }
 .scene-mode-bar .scene-rendition { margin-top:6px; }
@@ -66,7 +66,9 @@
 .bw-mixer {margin:0 0 10px}.bw-mixer h3 {font-size:12px}
 
 .photo-tools-readonly {border:0;margin:0;padding:0;min-width:0}
-.photo-node-scope {border-top:1px solid var(--line);margin-top:12px;padding-top:8px}
+.photo-adjustments > summary { padding-block:8px; font-size:12px; cursor:pointer; }
+.photo-adjustments .inspector-content { padding:8px 0 8px 10px; }
+.photo-node-scope > :first-child { margin-top:0; }
 
 .scene-chart { display: block; width: 100%; background: var(--inset); border-radius: 6px; }
 .scene-chart text { font-size: 8px; fill: var(--text); }

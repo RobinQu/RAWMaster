@@ -552,6 +552,8 @@ function render() {
   const previous = document.activeElement;
   const details = $$('.mask-group[data-mask-group]');
   if (details.length) S.maskGroups = new Set(details.filter((group) => group.open).map((group) => group.dataset.maskGroup));
+  const photoAdjustments = $('.photo-adjustments');
+  if (photoAdjustments) S.photoAdjustmentsOpen = photoAdjustments.open;
   const root = $('#workspace'),
     exp = S.page === 'export';
   $('#chrome').innerHTML = chrome();
@@ -565,9 +567,10 @@ function render() {
   const left = root.querySelector('.photos-scroll')?.scrollTop ?? 0,
     strip = root.querySelector('.filmstrip')?.scrollLeft ?? 0,
     stripFocus = root.querySelector('.filmstrip .chosen')?.dataset.val,
-    side = root.querySelector('.inspector,.inspector-content')?.scrollTop ?? 0,
+    side = root.querySelector('.inspector,#adjustment-panel')?.scrollTop ?? 0,
+    photoScroll = root.querySelector('.edit-photo-panel')?.scrollTop ?? 0,
     toolsLeft = root.querySelector('.edit-left')?.scrollTop ?? 0,
-    previousDock = root.querySelector('.canvas-tool-dock'),
+    previousDock = root.querySelector('.canvas-tool-dock,.repair-inspector'),
     toolScroll = previousDock?.querySelector('.canvas-tool-body').scrollTop ?? 0,
     darkroom = root.querySelector('.edit-body')?.scrollTop ?? 0,
     pan =
@@ -593,7 +596,7 @@ function render() {
   if (S.page === 'edit') {PhotographicScopes.drawImagePreview();refreshSamplerPanel();}
   if (S.renderRoute === location.hash) {
     const scroll = root.querySelector('.photos-scroll'),
-      ins = root.querySelector('.inspector,.inspector-content');
+      ins = root.querySelector('.inspector,#adjustment-panel');
     if (scroll) scroll.scrollTop = left;
     if (ins) ins.scrollTop = side;
     const film = root.querySelector('.filmstrip');
@@ -608,7 +611,9 @@ function render() {
   if (S.page === 'edit' && S.renderRoute?.startsWith('#edit/')) {
     root.querySelector('.edit-left').scrollTop = toolsLeft;
     root.querySelector('.edit-body').scrollTop = darkroom;
-    const dock = root.querySelector('.canvas-tool-dock');
+    const photo = root.querySelector('.edit-photo-panel');
+    if (photo) photo.scrollTop = photoScroll;
+    const dock = root.querySelector('.canvas-tool-dock,.repair-inspector');
     if (dock && dock.dataset.canvasExpanded === previousDock?.dataset.canvasExpanded) dock.querySelector('.canvas-tool-body').scrollTop = toolScroll;
     $$('.canvas-fit').forEach((fit, i) => {
       if (pan[i]) [fit.scrollLeft, fit.scrollTop] = pan[i];

@@ -54,12 +54,6 @@ struct EditingSceneModeStrip: View {
                         Button("复位派生曝光") { editing.setSceneTrimExposure(0, ticket: ticket) }.buttonStyle(PhotosFlatButtonStyle())
                     }.font(.caption)
                 }
-                if let monitor = editing.sceneGraphMonitorText {
-                    HStack {
-                        Text(monitor).accessibilityIdentifier("editing.scene.graph.monitor")
-                        Button("返回最终结果") { editing.stopSceneGraphMonitor() }.buttonStyle(PhotosFlatButtonStyle())
-                    }.font(.caption)
-                }
             }
             outputDetails
         }
@@ -115,33 +109,20 @@ private struct SceneSliderCommand: View {
     }
 }
 
-struct EditingSceneInspector: View {
+struct EditingSceneModelControls: View {
     @ObservedObject var editing: EditingController
     let graph: DevelopmentSceneGraphV1
-    var showsNode = false
-    @State private var expandedSections: Set<String> = ["scene.models"]
+    @State private var expanded = true
 
     var body: some View {
-        if let ticket = editing.sceneGraphTicket {
-            if showsNode, editing.sceneGraphNode != nil {
-                panel(key: "scene.node", title: "当前节点参数", symbol: "point.3.connected.trianglepath.dotted") {
-                    inspector(ticket)
-                    if case .corrector = editing.sceneGraphNode?.operation { curveControls(ticket) }
-                }
-            } else if !showsNode {
-                panel(key: "scene.models", title: "照片模型", symbol: "cpu") { modelControls(ticket) }
-                    .accessibilityIdentifier("editing.scene.inspector")
+        if let ticket = editing.sceneGraphPresentationTicket {
+            VStack(spacing: 0) {
+                PhotosAdjustmentSection(key: "scene.models", title: "照片模型", symbol: "cpu",
+                    expanded: expanded, enabled: false, modified: false, onExpand: { expanded.toggle() },
+                    onEnable: nil, onReset: nil) { modelControls(ticket) }
+                Divider().opacity(0.65)
             }
-        }
-    }
-
-    private func panel<Content: View>(key: String, title: String, symbol: String, @ViewBuilder content: @escaping () -> Content) -> some View {
-        VStack(spacing: 0) {
-            PhotosAdjustmentSection(key: key, title: title, symbol: symbol, expanded: expandedSections.contains(key),
-                enabled: false, modified: false, onExpand: {
-                    if expandedSections.remove(key) == nil { expandedSections.insert(key) }
-                }, onEnable: nil, onReset: nil, content: content)
-            Divider().opacity(0.65)
+            .accessibilityIdentifier("editing.scene.inspector")
         }
     }
 
@@ -171,10 +152,39 @@ struct EditingSceneInspector: View {
         }
         Text("模型按原始分辨率执行，应用前会验证资源与内存。").foregroundStyle(.secondary)
     }
+}
 
-    @ViewBuilder private func curveControls(_ ticket: EditingController.SceneGraphTicket) -> some View {
-        if let node = editing.sceneGraphNode, case let .corrector(input, mask, ev, curve, strength, enabled) = node.operation {
-            Text(node.name + " · 场景亮度（EV）").foregroundStyle(.secondary)
+struct EditingSceneInspector: View {
+    @ObservedObject var editing: EditingController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let ticket = editing.sceneGraphPresentationTicket, let node = editing.sceneGraphNode {
+                VStack(alignment: .leading, spacing: 8) {
+                    inspector(node, ticket)
+                    if case .corrector = node.operation { curveControls(node, ticket) }
+                }.id(node.id)
+            } else {
+                Text(selectionMessage).foregroundStyle(.secondary)
+            }
+        }
+        .font(.callout).frame(maxWidth: .infinity, alignment: .leading).padding(12)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("editing.scene.nodeParameters")
+    }
+
+    private var selectionMessage: String {
+        if editing.sceneGraphState.connection != nil { return "应用或取消连接草稿后可以编辑节点参数。" }
+        if editing.sceneGraphState.edge != nil { return "已选中连接，可在 Graph 中调整连接。" }
+        if editing.sceneGraphState.selection.count > 1 { return "多选支持组和连接等结构操作。" }
+        if editing.sceneGraphScope?.nodes.contains(where: { !$0.operation.isCoverage }) != true {
+            return "从上方下拉菜单添加节点。"
+        }
+        return "选择一个节点查看参数。"
+    }
+
+    @ViewBuilder private func curveControls(_ node: DevelopmentSceneGraphV1.Node, _ ticket: EditingController.SceneGraphTicket) -> some View {
+        if case let .corrector(input, mask, ev, curve, strength, enabled) = node.operation {
             if curve.isEmpty {
                 Button("添加亮度曲线") {
                     update(node, ticket, .corrector(image: input, mask: mask, exposureEV: ev,
@@ -193,39 +203,31 @@ struct EditingSceneInspector: View {
                 Button("复位亮度曲线") { update(node, ticket, .corrector(image: input, mask: mask, exposureEV: ev,
                     curve: [], strength: strength, enabled: enabled)) }.buttonStyle(.borderless)
             }
-        } else { Text("在 Graph 中选中调色节点后编辑亮度曲线。") }
+        }
     }
 
-    @ViewBuilder private func inspector(_ ticket: EditingController.SceneGraphTicket) -> some View {
-        if let node = editing.sceneGraphNode {
-            Text(node.name).font(.headline).accessibilityIdentifier("editing.scene.graph.current")
-            Text(node.operation.sceneTypeName + " · 场景线性 AP1").font(.caption).foregroundStyle(.secondary)
-            Toggle("启用当前节点", isOn: Binding(get: { node.operation.sceneEnabled }, set: { enabled in
-                update(node, ticket, node.operation.withSceneEnabled(enabled))
-            }))
-            switch node.operation {
-            case let .corrector(image, mask, ev, curve, strength, enabled):
-                SceneSliderCommand(title: "节点曝光（EV）", value: Double(ev), range: -12...12,
-                    identifier: "editing.scene.exposure", context: AnyHashable(ticket)) { value in
-                        update(node, ticket, .corrector(image: image, mask: mask, exposureEV: Float(value), curve: curve, strength: strength, enabled: enabled))
-                    }
-                SceneSliderCommand(title: "节点强度（%）", value: Double(strength) * 100, range: 0...100,
-                    identifier: "editing.scene.graph.strength", context: AnyHashable(ticket)) { value in
-                        update(node, ticket, .corrector(image: image, mask: mask, exposureEV: ev, curve: curve, strength: Float(value / 100), enabled: enabled))
-                    }
-                if mask != nil { Text("使用本节点的覆盖 · 素材编辑尚未接入").font(.caption).foregroundStyle(.secondary) }
-            case let .group(image, inner, strength, enabled):
-                SceneValueCommand(title: "组强度（%）", value: Double(strength) * 100, range: 0...100,
-                    identifier: "editing.scene.graph.group.strength", context: AnyHashable(ticket)) { value in
-                        update(node, ticket, .group(image: image, graph: inner, strength: Float(value / 100), enabled: enabled))
-                    }
-                Button("进入组") { editing.moveSceneGraphPath(editing.sceneGraphState.path + [node.id], ticket: ticket) }
-            case let .parallel(base, layers, enabled), let .layer(base, layers, enabled):
-                mixer(node: node, ticket: ticket, base: base, layers: layers, enabled: enabled)
-            default: EmptyView()
-            }
-        } else {
-            Text(editing.sceneGraphState.selection.count > 1 ? "多选仅管理，不广播参数" : "选择一个节点查看参数").font(.headline)
+    @ViewBuilder private func inspector(_ node: DevelopmentSceneGraphV1.Node, _ ticket: EditingController.SceneGraphTicket) -> some View {
+        Text(node.operation.sceneTypeName + " · 场景线性 AP1").font(.caption).foregroundStyle(.secondary)
+        switch node.operation {
+        case let .corrector(image, mask, ev, curve, strength, enabled):
+            SceneSliderCommand(title: "节点曝光（EV）", value: Double(ev), range: -12...12,
+                identifier: "editing.scene.exposure", context: AnyHashable(ticket)) { value in
+                    update(node, ticket, .corrector(image: image, mask: mask, exposureEV: Float(value), curve: curve, strength: strength, enabled: enabled))
+                }
+            SceneSliderCommand(title: "节点强度（%）", value: Double(strength) * 100, range: 0...100,
+                identifier: "editing.scene.graph.strength", context: AnyHashable(ticket)) { value in
+                    update(node, ticket, .corrector(image: image, mask: mask, exposureEV: ev, curve: curve, strength: Float(value / 100), enabled: enabled))
+                }
+            if mask != nil { Text("使用本节点的覆盖 · 素材编辑尚未接入").font(.caption).foregroundStyle(.secondary) }
+        case let .group(image, inner, strength, enabled):
+            SceneValueCommand(title: "组强度（%）", value: Double(strength) * 100, range: 0...100,
+                identifier: "editing.scene.graph.group.strength", context: AnyHashable(ticket)) { value in
+                    update(node, ticket, .group(image: image, graph: inner, strength: Float(value / 100), enabled: enabled))
+                }
+            Button("进入组") { editing.moveSceneGraphPath(editing.sceneGraphState.path + [node.id], ticket: ticket) }
+        case let .parallel(base, layers, enabled), let .layer(base, layers, enabled):
+            mixer(node: node, ticket: ticket, base: base, layers: layers, enabled: enabled)
+        default: EmptyView()
         }
     }
 

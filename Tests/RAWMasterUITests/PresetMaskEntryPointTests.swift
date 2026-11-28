@@ -323,40 +323,170 @@ import RAWMasterCore
         await editing.shutdown(finishPreviews: false)
     }
 
-    func testScenePresetDirectorySupportsSearchAndKeepsSDRControlsReadOnly() async throws {
+    func testSceneFilterPanelPreviewsAndAppliesOnRealRAW() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        guard let path = environment["RAWMASTER_FILTER_PANEL_RAW"] else { throw XCTSkip("Use the authorized portrait ARW fixture") }
+        let xmp = URL(fileURLWithPath: environment["RAWMASTER_FILTER_PANEL_ADAPTIVE_XMP"] ??
+            "/Library/Application Support/Adobe/CameraRaw/Settings/Premium/Adaptive - Subject/Soft.xmp")
+        guard FileManager.default.fileExists(atPath: xmp.path) else { throw XCTSkip("The verified subject XMP fixture is required") }
         _ = NSApplication.shared
-        let fixture = try EditingWorkflowTests.Fixture()
-        defer { fixture.clean() }
-        let catalog = DevelopmentPresetCatalog(root: fixture.root.appendingPathComponent("hdr-directory"))
-        var patch = DevelopmentPresetPatch()
-        patch.exposure = 0.4
-        let imported = try catalog.create(name: "自定义天空", group: "个人", patch: patch)
+        let activation = NSApp.activationPolicy()
+        NSApp.setActivationPolicy(.regular)
+        defer { NSApp.setActivationPolicy(activation) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = root.appending(path: "test.sqlite")
+        let asset = try NativePresentedCanvasTests.register(source: URL(fileURLWithPath: path), library: library)
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: root.lastPathComponent))
+        defer { defaults.removePersistentDomain(forName: root.lastPathComponent) }
+        let catalog = DevelopmentPresetCatalog(root: root.appending(path: "filter-catalog"))
+        let stage = try DevelopmentPresetExchange.inspectFiles([xmp], catalog: catalog)
+        _ = try stage.commit(to: catalog)
+        let adaptive = try XCTUnwrap(try catalog.records().first)
+        XCTAssertNotNil(try DevelopmentPresetExchange.semanticReconstruction(for: adaptive).patch.semanticMasks)
+        let model = AppModel(libraryURL: library, defaults: defaults)
+        let editing = try XCTUnwrap(model.editing)
         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
         let old = NSApp.accessibilityAttributeValue(ax)
         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
-        let host = NSHostingView(rootView: ScrollView {
-            ScenePresetDirectory(catalog: catalog, sectionExpanded: .constant(true), favoriteLooks: [.vivid]) {
-                XCTFail("Failed to read the fixture catalog: \($0)")
-            }
-        })
-        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 360, height: 650),
+        let host = NSHostingView(rootView: HStack(spacing: 8) {
+            EditingLeftSidebar(editing: editing, presetCatalog: catalog)
+            EditingImageCanvas(editing: editing)
+        }.environmentObject(model))
+        let window = NSWindow(contentRect: NSRect(x: 40, y: 65, width: 1100, height: 660),
             styleMask: [.titled, .resizable], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
-        window.contentView = host; window.makeKeyAndOrderFront(nil)
+        window.acceptsMouseMovedEvents = true
+        window.contentView = host
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
         defer { window.orderOut(nil); window.close() }
-        try await eventually("The HDR directory should expose four browsable categories") {
-            ["adaptive","classic","film","imported"].allSatisfy { self.element("editing.presets.folder." + $0, in: window) != nil }
+        editing.isPresented = true; editing.focus(asset); editing.beginDevelopmentInterface()
+        try await eventually("The real RAW should open in the SDR editor") {
+            editing.developmentContext != nil && editing.previews.primary.frame != nil
         }
+        let startingContext = try XCTUnwrap(editing.developmentContext)
+        let session = editing.developmentSession
+        var adjustment = DevelopmentPresetPatch()
+        adjustment.exposure = 0.2
+        let before = DevelopmentPresetRecord(id: "initial-exposure", name: "初始曝光", group: "测试", kind: .user, patch: adjustment)
+        try session.adoptPreset(before, context: startingContext, revision: session.revision)
+        let sdr = editing.recipe, history = session.history.entryCount
+        editing.enterSceneDraft(ticket: try XCTUnwrap(editing.sceneTicket))
+        try await eventually("HDR and source capabilities must both be ready") {
+            editing.sceneFrame != nil && editing.developmentContext != nil && editing.filterInteractionIssue == nil
+        }
+        let hdr = editing.recipe
+        let hdrHistory = session.history.entryCount
         let field = try XCTUnwrap(textField(in: host))
-        try search(imported.name, field: field, window: window)
-        try await eventually("Search should narrow the HDR tree to the matching source folder") {
-            self.element("editing.presets.folder.imported", in: window) != nil && self.element("editing.presets.folder.film", in: window) == nil
+        let originalPointer = NSEvent.mouseLocation
+        let screenHeight = try XCTUnwrap(NSScreen.screens.first).frame.height
+        func movePointer(_ screenPoint: CGPoint) throws {
+            let point = CGPoint(x: screenPoint.x, y: screenHeight - screenPoint.y)
+            CGWarpMouseCursorPosition(point)
+            let event = try XCTUnwrap(CGEvent(mouseEventSource: nil, mouseType: .mouseMoved, mouseCursorPosition: point, mouseButton: .left))
+            event.postToPid(ProcessInfo.processInfo.processIdentifier)
         }
-        XCTAssertNil(element("editing.preset." + imported.id, in: window))
+        func routePointerEvents() {
+            while let event = NSApp.nextEvent(matching: [.mouseEntered, .mouseExited, .mouseMoved], until: .distantPast,
+                                               inMode: .default, dequeue: true) {
+                NSApp.sendEvent(event)
+            }
+        }
+        defer { try? movePointer(originalPointer) }
+        func centralPoint(_ id: String) throws -> CGPoint {
+            let item = try XCTUnwrap(element(id, in: window), id)
+            let bounds = try XCTUnwrap(item.value(forKey: "accessibilityFrame") as? NSValue).rectValue
+            XCTAssertGreaterThan(bounds.width, 30)
+            return .init(x: bounds.midX, y: bounds.midY)
+        }
+        func hover(_ name: String, id: String, preset: String) async throws -> Data {
+            try movePointer(window.convertPoint(toScreen: .init(x: 650, y: 300)))
+            try search(name, field: field, window: window)
+            try await eventually("Search should expose " + name) { self.element(id, in: window) != nil }
+            let location = try centralPoint(id)
+            try movePointer(location)
+            do {
+                try await eventually("Pointer should present " + name + " on the current canvas") {
+                    routePointerEvents()
+                    return editing.hoveredPresetID == preset && editing.filterHoverFrame != nil
+                        && self.element("editing.scene.filters.preview", in: window) != nil
+                }
+            } catch {
+                let counts = await editing.developmentMaskInput.candidateCounts()
+                print("Filter review \(name): pointer \(NSEvent.mouseLocation) expected \(location), key=\(window.isKeyWindow), canPost=\(CGPreflightPostEventAccess()), preset=\(editing.hoveredPresetID ?? "none"), frame=\(editing.filterHoverFrame != nil), issue=\(editing.filterInteractionIssue ?? "none"), masks=\(counts)")
+                await editing.shutdown()
+                throw error
+            }
+            XCTAssertEqual(editing.recipe, hdr)
+            XCTAssertEqual(session.history.entryCount, hdrHistory)
+            let pixels = try XCTUnwrap(editing.filterHoverFrame?.image.tiffRepresentation)
+            try movePointer(window.convertPoint(toScreen: .init(x: 650, y: 300)))
+            try await eventually("Pointer exit restores HDR") {
+                routePointerEvents()
+                return editing.filterHoverFrame == nil && self.element("editing.scene.filters.preview", in: window) == nil
+            }
+            XCTAssertEqual(editing.recipe, hdr)
+            return pixels
+        }
+        let adaptivePixels = try await hover("柔和", id: "editing.preset." + adaptive.id, preset: adaptive.id)
+        let basicPixels = try await hover(DevelopmentPhotoFilterV3.vivid.photosName, id: "editing.filter.vivid", preset: "classic.vivid")
+        let film = DevelopmentPhotoFilterV3.spektraVelvia100
+        let filmID = "editing.filter." + film.rawValue
+        let filmPixels = try await hover(film.photosName, id: filmID, preset: "classic." + film.rawValue)
+        XCTAssertNotEqual(adaptivePixels, basicPixels)
+        XCTAssertNotEqual(filmPixels, basicPixels)
         XCTAssertNil(element("editing.filters.amount", in: window))
-        XCTAssertNil(element("editing.presets.adoptFull", in: window))
-        XCTAssertEqual(try catalog.snapshot().records, [imported])
+
+        let point = window.convertPoint(fromScreen: try centralPoint(filmID))
+        for type in [NSEvent.EventType.leftMouseDown, .leftMouseUp] {
+            let event = try XCTUnwrap(NSEvent.mouseEvent(with: type, location: point, modifierFlags: [], timestamp: 0,
+                windowNumber: window.windowNumber, context: nil, eventNumber: 1, clickCount: 1, pressure: 1))
+            window.sendEvent(event)
+        }
+        try await eventually("Click should apply the film in the same photo's SDR draft") {
+            editing.recipe.sceneGraph == nil && session.parameters.filter.selection == film && session.history.entryCount == history + 1
+        }
+        XCTAssertEqual(editing.asset?.id, asset.id)
+        XCTAssertEqual(session.parameters.light.exposure, 0.2)
+        XCTAssertEqual(textField(in: host)?.stringValue, film.photosName)
+        editing.undoDevelopment(context: try XCTUnwrap(editing.developmentContext))
+        XCTAssertEqual(editing.recipe, sdr)
+        editing.enterSceneDraft(ticket: try XCTUnwrap(editing.sceneTicket))
+        try await eventually("Return to the identical HDR draft") { editing.recipe == hdr && !editing.sceneStarting }
+        try await eventually("HDR filter controls rebound to the same photo") { editing.filterInteractionIssue == nil }
+        let adaptiveID = "editing.preset." + adaptive.id
+        try search("柔和", field: try XCTUnwrap(textField(in: host)), window: window)
+        try await eventually("The adaptive row stays searchable") { self.element(adaptiveID, in: window) != nil }
+        try press(adaptiveID, in: window)
+        try await eventually("The adaptive effect requires confirmation") { self.element("editing.presets.prepareMasks", in: window) != nil }
+        try press("editing.presets.prepareMasks", in: window)
+        try await eventually("A source-bound selection is ready") { self.element("editing.presets.adoptMasks", in: window) != nil }
+        XCTAssertEqual(editing.recipe, hdr)
+        try press("editing.presets.adoptMasks", in: window)
+        try await eventually("Adaptive confirmation commits exactly one SDR change") {
+            editing.recipe.sceneGraph == nil && session.parameters.masks.count == 1 && session.history.entryCount == history + 1
+        }
+        XCTAssertEqual(session.parameters.masks.first?.semanticSnapshot?.source.sourceContentID,
+                       editing.work?.source.contentSHA256)
+        XCTAssertEqual(session.parameters.light.exposure, 0.2)
+        await editing.shutdown()
+    }
+
+    func testFilterDirectoryUsesNeutralDisplayTextAndKeepsOriginalFields() throws {
+        let record = DevelopmentPresetRecord(id: "vendor-import", name: "Adobe Warm", group: "Spektrafilm",
+            kind: .imported, patch: DevelopmentPresetPatch())
+        let directory = DevelopmentPresetDirectory.folders(records: [record], favorites: [], looks: [],
+            favoriteLooks: [], query: record.name)
+        let group = try XCTUnwrap(directory.first?.children.first)
+        XCTAssertEqual(group.name, "未分组")
+        XCTAssertEqual(group.rows.first?.name, "Warm")
+        XCTAssertEqual(group.rows.first?.id, record.id)
+        XCTAssertEqual(DevelopmentPresetDirectory.presentationText("Adobe 与 SpeKtraFilm 外观"), "与 外观")
+        XCTAssertEqual(record.name, "Adobe Warm")
+        XCTAssertEqual(record.group, "Spektrafilm")
     }
 
     func testAllScopedAdobeRowsHaveChineseDisplayLabelsAndKeepTheirOriginalNames() throws {

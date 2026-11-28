@@ -24,7 +24,6 @@ struct EditingSceneGraphToolbar: View {
         let ignoreLabel = ignored ? "恢复该节点" : "忽略该节点"
         let ignoreReason = active == nil ? "请选择单个节点" : nodes.count <= 1 ? "当前组只有一个可编辑节点" : nil
         VStack(alignment: .leading, spacing: 4) {
-            Text("当前节点").font(.caption2).foregroundStyle(.secondary)
             HStack(spacing: 6) {
                 GraphActionMenu(title: state.selection.count > 1 ? "已选 \(state.selection.count) 个节点" : active?.name ?? "请选择节点",
                                 stretches: true) {

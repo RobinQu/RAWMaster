@@ -39,7 +39,7 @@
 .canvas-tool-grid :is(select,input) { width:100%; min-width:0; padding:5px; }
 .canvas-tool-grid button { min-height:30px; padding:5px; font-size:11px; }
 .canvas-tool-footer { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
-.canvas-tool-dock:is([data-canvas-expanded=mask],[data-canvas-expanded=remove]) { width:min(656px,calc(100% - 20px)); padding:9px 12px; border-radius:18px; }
+.canvas-tool-dock[data-canvas-expanded=mask] { width:min(656px,calc(100% - 20px)); padding:9px 12px; border-radius:18px; }
 .canvas-panel:has(.canvas-compact-tool) { display:flex; flex-direction:column; gap:8px; padding:12px 0 6px; min-height:440px; }
 .canvas-panel:has(.canvas-compact-tool) .dark-canvas { position:relative; inset:auto; flex:1; min-height:150px; }
 .canvas-compact-tool.canvas-dock { position:relative; inset:auto; transform:none; margin-inline:auto; flex:none; }
@@ -77,6 +77,11 @@
 .canvas-tool-list button { min-width:24px; min-height:24px; height:24px; padding:2px; }
 .canvas-remove-modes { margin-block:4px; }
 .canvas-remove-modes > button { padding-inline:2px; }
+.repair-inspector .canvas-tool-body { flex:1; min-height:0; max-height:none; padding:8px 12px; }
+.repair-inspector .canvas-tool-footer { flex:none; margin:0; padding:8px 12px; }
+.repair-inspector .canvas-slider-grid { grid-template-columns:minmax(0,1fr); }
+.repair-inspector .canvas-remove-modes button { min-width:0; gap:3px; }
+.repair-inspector .canvas-remove-modes svg { flex:none; width:13px; height:13px; }
 @media(max-width:500px) {
   .canvas-mask-family { grid-template-columns:1fr; }
   .canvas-slider-grid { gap:2px 7px; }

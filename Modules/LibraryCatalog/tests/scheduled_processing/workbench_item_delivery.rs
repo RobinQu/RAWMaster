@@ -195,13 +195,25 @@ fn crash_after(run: &Run, command: &Value, field: &str, expected: Value) -> Resu
 #[test]
 fn actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and_terminal_count(
 ) -> Result<()> {
+    let legacy = json!({"backend":"rust","tiles":3,"nodes":2,"dispatches":6,"coverageCacheHits":0,
+        "nodeCacheHits":1,"peakBytes":1024,"budgetBytes":8192,"cpuMilliseconds":0.4});
+    preserve_after_process_loss(&legacy)?;
+    let mut photographic = legacy;
+    photographic["backend"] = json!("mixed");
+    photographic["photographicEngine"] = json!("scene-photographic-v1-f32-metal");
+    photographic["dagBackend"] = json!("rust");
+    preserve_after_process_loss(&photographic)
+}
+
+fn preserve_after_process_loss(execution: &Value) -> Result<()> {
     let mut r = Run::new("skip", 2)?;
     let lease = r.claim(1, 90000)?;
     let stage = r.stage()?;
     let mut prepare = r.prepare(&lease, &stage, 1);
-    let execution = json!({"backend":"rust","tiles":3,"nodes":2,"dispatches":6,"coverageCacheHits":0,
-        "nodeCacheHits":1,"peakBytes":1024,"budgetBytes":8192,"cpuMilliseconds":0.4});
     prepare["sceneExecution"] = execution.clone();
+    let mut unknown = prepare.clone();
+    unknown["sceneExecution"]["unknownField"] = json!(true);
+    assert!(batch(&r.l.path, unknown).is_err());
     let digest = hex::encode(Sha256::digest(DATA));
     let expected = json!({"ordinal":1,"state":"prepared","attempt":1,"generation":1,"filename":r.path(1,1).file_name().unwrap().to_str(),
         "sha256":digest,"byteCount":DATA.len(),"reason":null,"sceneExecution":execution});
@@ -214,13 +226,19 @@ fn actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and
     assert!(batch(&r.l.path, r.publish(&lease)).is_err());
     let fresh = r.claim(1, 90000)?;
     assert!(batch(&r.l.path, r.prepare(&fresh, &stage, 1)).is_err());
-    assert_eq!(r.items()?["items"][0]["sceneExecution"], execution);
+    let mut changed = r.prepare(&fresh, &stage, 1);
+    changed["sceneExecution"] = execution.clone();
+    changed["sceneExecution"]["dagBackend"] = json!("swift");
+    assert!(batch(&r.l.path, changed).is_err());
+    assert_eq!(&r.items()?["items"][0]["sceneExecution"], execution);
     crash_after(&r, &r.publish(&fresh), "status", json!("published"))?;
     assert_eq!(fs::read(r.path(1, 1))?, DATA);
     assert_eq!(r.items()?["items"][0]["state"], "prepared");
     crash_after(&r, &r.ack(1), "status", json!("delivered"))?;
     assert_eq!(batch(&r.l.path, r.ack(1))?["status"], "delivered");
-    assert_eq!(r.items()?["items"][0]["state"], "delivered");
+    let items = r.items()?;
+    assert_eq!(items["items"][0]["state"], "delivered");
+    assert_eq!(&items["items"][0]["sceneExecution"], execution);
     let other = r.claim(2, 90000)?;
     fs::write(r.path(2, 1), b"external")?;
     let mut skip = other;

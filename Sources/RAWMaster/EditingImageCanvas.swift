@@ -21,6 +21,8 @@ struct EditingImageCanvas: View {
     @State private var beforeAfterSplit = 0.5
     @State private var canvasWidth: CGFloat = 1100
     @FocusState private var fitFocused: Bool
+    @FocusState private var repairFocused: Bool
+    @AccessibilityFocusState private var repairAccessibilityFocused: Bool
     @State private var quickPromptShowCandidate = true
     @State private var quickPromptReviewTransform = ImageTransform()
     @State private var quickPromptDetail: QuickPromptDetail?
@@ -94,6 +96,11 @@ struct EditingImageCanvas: View {
             }
         }
         .onChange(of: model.focusedID) { _, _ in navigationPreviewOffset = nil }
+        .onChange(of: editing.repairEditing) { wasRepairing, repairing in
+            if wasRepairing, !repairing, editing.sourceReady, editing.stage == .development {
+                repairFocused = true; repairAccessibilityFocused = true
+            }
+        }
         .onChange(of: editing.developmentPicker?.id) { _, pickerID in
             editing.colorReadout.clear()
             if pickerID != nil, pickerPresentationSnapshot == nil, let context = editing.developmentContext {
@@ -133,10 +140,11 @@ struct EditingImageCanvas: View {
                         in: RoundedRectangle(cornerRadius: 6))
             }
             .foregroundStyle(editing.cropEditing ? AppPalette.accent : .primary)
-            .disabled(editing.stage != .development || editing.developmentContext == nil)
+            .disabled(editing.stage != .development || editing.developmentContext == nil || editing.repairEditing)
             .help("裁切与拉直 · C").accessibilityLabel("裁切与拉直")
             .accessibilityIdentifier("editing.crop")
             .accessibilityAddTraits(editing.cropEditing ? .isSelected : [])
+            repairButton
             Divider().frame(height: 18)
             Menu {
                 comparisonModeButton(.off)
@@ -175,7 +183,7 @@ struct EditingImageCanvas: View {
             }
             .menuStyle(.borderlessButton)
             .foregroundStyle(editing.comparing ? AppPalette.accent : .primary)
-            .disabled(editing.cropEditing || editing.visibleSceneGraph != nil)
+            .disabled(editing.cropEditing || editing.repairEditing || editing.visibleSceneGraph != nil)
             .help(editing.visibleSceneGraph != nil ? "此 HDR 阶段未开放比较" : "对比模式 · V 开关；可在此选择参考版本")
             .accessibilityLabel("对比模式")
             .accessibilityIdentifier("editing.beforeAfter")
@@ -237,16 +245,26 @@ struct EditingImageCanvas: View {
         }
     }
 
+    private var repairButton: some View {
+        let reason = editing.repairEditing ? editing.repairCompletionReason : editing.repairEntryReason
+        return AppIconButton(systemName: "bandage", label: "修复", isSelected: editing.repairEditing,
+            isEnabled: reason == nil, action: editing.toggleDevelopmentRepair)
+            .focused($repairFocused).accessibilityFocused($repairAccessibilityFocused)
+            .help(reason ?? "修复这张照片")
+            .accessibilityHint(reason ?? "打开修复画布工具")
+            .accessibilityIdentifier("editing.repair")
+    }
+
     private func navigationButton(offset: Int, symbol: String, title: String) -> some View {
         Button {
             navigationPreviewOffset = nil
             model.move(offset)
         } label: { Image(systemName: symbol).frame(width: 25, height: 26) }
-            .disabled(navigationAsset(offset) == nil)
+            .disabled(navigationAsset(offset) == nil || editing.repairEditing)
             .onHover { hovering in
-                withAnimation(.easeOut(duration: 0.16)) { navigationPreviewOffset = hovering ? offset : nil }
+                withAnimation(.easeOut(duration: 0.16)) { navigationPreviewOffset = hovering && !editing.repairEditing ? offset : nil }
             }
-            .help(title + (offset < 0 ? " · ←" : " · →"))
+            .help(editing.repairEditing ? "请先完成或取消修复" : title + (offset < 0 ? " · ←" : " · →"))
             .accessibilityLabel(title)
             .accessibilityIdentifier(offset < 0 ? "editing.previousPhoto" : "editing.nextPhoto")
     }
@@ -527,6 +545,22 @@ struct EditingImageCanvas: View {
     private var scenePane: some View {
         EditingSceneScopesCanvas(editing: editing, scopes: editing.sceneScopes, transform: $transform)
             .accessibilityIdentifier("editing.scene.canvas")
+            .overlay {
+                if let frame = editing.filterHoverFrame, editing.hoveredPresetID != nil {
+                    ZoomableImageView(image: nil, actualPixels: false, transform: $transform,
+                                      backgroundColor: editing.darkroomBackground.nsColor, canvasPixelSize: frame.nativeSize)
+                        .borrowingImage(frame.image)
+                        .lowLatency(true)
+                        .fitting(around: EditingLayout.fitInsets)
+                        .overlay(alignment: .bottom) {
+                            Text("SDR 滤镜预览").font(.caption.weight(.medium))
+                                .padding(.horizontal, 10).padding(.vertical, 5)
+                                .background(AppPalette.overlay, in: Capsule()).padding(.bottom, 58)
+                                .accessibilityIdentifier("editing.scene.filters.preview")
+                        }
+                        .allowsHitTesting(false)
+                }
+            }
     }
 
     private func quickPromptReviewCanvas(_ review: QuickPromptReview) -> some View {

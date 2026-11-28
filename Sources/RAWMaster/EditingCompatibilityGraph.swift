@@ -376,7 +376,7 @@ struct GraphPhotoTools: DynamicProperty {
         local = editing.developmentLocalInput
     }
     var isActive: Bool {
-        editing.cropEditing || editing.quickPromptPresented || editing.developmentPicker != nil || mask.isActive || local.tool != nil
+        editing.cropEditing || editing.repairEditing || editing.quickPromptPresented || editing.developmentPicker != nil || mask.isActive || local.tool != nil
     }
 }
 
@@ -408,9 +408,8 @@ struct EditingCompatibilityGraphToolbar: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("当前节点").font(.caption2).foregroundStyle(.secondary)
             HStack {
-                Text("兼容显影").font(.system(size: 12, weight: .semibold))
+                Text("兼容显影 · 整图").font(.system(size: 12, weight: .semibold))
                 Spacer()
                 AppIconButton(systemName: "eye", label: "忽略该节点（兼容显影节点固定）", isEnabled: false) {}
                 AppIconButton(systemName: "square.3.layers.3d", label: "Graph 窗口",

@@ -25,6 +25,7 @@ struct EditingWorkspace: View {
             BrowserView()
             HStack(alignment: .top, spacing: 0) {
                 EditingLeftSidebar(editing: editing)
+                    .disabled(editing.repairEditing)
                 Spacer(minLength: 0)
                 NativeEditingInspector(editing: editing)
                     .frame(width: EditingLayout.sidebarWidth)

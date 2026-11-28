@@ -74,7 +74,7 @@ import RAWMasterImaging
     }
     func presetCandidate(capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget) async throws -> DevelopmentMaskCandidate {
         guard [.subject,.background,.sky,.water].contains(target) else { throw DevelopmentMaskError.invalidPrompt }
-        return try await generateCandidate(capture,source,target,[],rawDecoder:editing?.developmentSession.parameters.rawDecoder)
+        return try await generateCandidate(capture, source, target, [], rawDecoder: editing?.filterDraft.adjustmentsV3?.rawDecoder)
     }
     func allowsInput(_ context: EditingInteractionContext) -> Bool {
         editing?.allowsDevelopmentMaskInput(context) == true

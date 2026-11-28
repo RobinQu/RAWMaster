@@ -154,29 +154,30 @@ const RMPhotos = (() => {
     tungsten: { name: 'VISION3 500T / 2383', contrast: 14, sat: -8, warmth: -18 },
   };
   function displayLook(r) {
-    const film = Object.hasOwn(filmStocks, r.filmStock) ? filmStocks[r.filmStock] : null;
-    const amount = film && r.filmEnabled !== false ? (r.filmAmount ?? 100) / 100 : 0;
+    const look = Object.hasOwn(filmStocks, r.filmStock) ? filmStocks[r.filmStock] : r.basicFilter?.values;
+    const amount = look && r.filmEnabled !== false ? (r.filmAmount ?? 100) / 100 : 0;
     const enabled = (group) => r.sectionEnabled?.[group] !== false;
     const n = (key, group) => enabled(group) ? Number(r[key]) || 0 : 0;
     const light = (key) => n(key, 'light');
     return cleanLook({
       ev:
-        light('ev') + (light('high') + light('shadow') + light('white') + light('black') + n('levels', 'levels') + n('luminance', 'mix')) * 0.002,
+        light('ev') + (light('high') + light('shadow') + light('white') + light('black') + n('levels', 'levels') + n('luminance', 'mix')) * 0.002 +
+        (look?.ev ?? 0) * amount,
       contrast:
         light('contrast') +
         (n('curveHigh', 'curves') - n('curveLow', 'curves') + n('dehaze', 'dehaze') + n('clarity', 'clarity') + n('definition', 'definition') + n('texture', 'detail')) * 0.22 +
         n('sharp', 'detail') * 0.1 +
-        (film?.contrast ?? 0) * amount,
+        (look?.contrast ?? 0) * amount,
       sat:
         (100 + n('sat', 'color') + n('vibrance', 'color') * 0.4 + (r.profile === '相机鲜艳' ? 15 : 0)) *
-          (1 + ((film?.sat ?? 0) * amount) / 100) -
+          (1 + ((look?.sat ?? 0) * amount) / 100) -
         100,
       warmth:
         (r.wbApplied === 'temperature' ? (r.wbTemperature == null ? 0 : r.wbTemperature >= 2000 ? (r.wbTemperature - 5500) / 65 : r.wbTemperature) * (enabled('whiteBalance') ? 1 : 0) + n('tint', 'whiteBalance') * 0.25 : n('warmth', 'whiteBalance')) +
-        (film?.warmth ?? 0) * amount +
+        (look?.warmth ?? 0) * amount +
         (n('warmHighlights', 'grading') - n('coolShadows', 'grading') + n('balance', 'grading')) * 0.35 +
         (enabled('lut') ? r.lut === '柔和胶片' ? 25 : r.lut === '冷调' ? -25 : 0 : 0),
-      mono: r.colorMode ? r.colorMode === 'bw' : r.mono,
+      mono: (r.colorMode ? r.colorMode === 'bw' : r.mono) || (look?.mono === true && amount > 0),
     });
   }
   return { photos, file, url, readHandoff, cleanLook, displayLook, filter, filmStocks };

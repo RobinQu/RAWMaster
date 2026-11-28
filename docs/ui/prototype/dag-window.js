@@ -126,7 +126,7 @@ function compatibilityGraphReason() {
 }
 function compatibilityGraphToolbar() {
   const reason = compatibilityGraphReason();
-  return `<section class="dag-scope-head" aria-label="节点作用域"><span class="dag-picker-label">当前节点</span><div class="dag-picker-row"><strong>兼容显影</strong>
+  return `<section class="dag-scope-head" aria-label="节点作用域"><div class="dag-picker-row"><strong>兼容显影 · 整图</strong>
     ${btn('忽略该节点','compatibility-ignore','',{icon:'eye',only:true,cls:'icon-btn',disabled:true,title:'兼容显影节点固定'})}
     ${btn('Graph 窗口','compatibility-graph-toggle','',{icon:'layers',only:true,cls:'icon-btn',pressed:!reason && compatibilityGraphPhoto===Studio.data.work,disabled:!!reason,title:reason || '打开只读兼容图'})}</div>
     <small>${h(reason || '只读兼容图 · 现有调整仍作用于整张照片')}</small></section>`;
@@ -140,6 +140,7 @@ function compatibilityGraphFrame() {
   return dagWindowFrame(compatibilityGraphFrames.get(id));
 }
 function compatibilityGraphWindow() {
+  if (S.canvasTool?.kind === 'remove' && compatibilityGraphPhoto === Studio.data.work) return '';
   if (compatibilityGraphPhoto !== Studio.data.work || S.tool === 'versions' || compatibilityGraphReason()) {
     compatibilityGraphPhoto = null;
     return '';

@@ -6,42 +6,117 @@ import RAWMasterImaging
 
 struct NativeEditingInspector: View {
     @ObservedObject var editing: EditingController
+    @State private var photoDestination: PhotosAdjustmentDestination = .basic
+    @State private var photoAdjustmentsExpanded = false
+    @State private var photoContentHeight: CGFloat = 0
+
     var body: some View {
-        VStack(spacing: EditingLayout.panelSpacing) {
+        Group {
             if editing.stage == .development, editing.work != nil, !editing.loading {
-                Group {
-                    if editing.recipe.sceneGraph != nil {
-                        EditingSceneGraphToolbar(editing: editing)
-                    } else if EditingCompatibilityGraphPanel.isEnabled {
-                        EditingCompatibilityGraphToolbar(editing: editing)
+                GeometryReader { geometry in
+                    let showingCanvasTool = editing.repairEditing || editing.cropEditing
+                    ZStack {
+                        VStack(spacing: EditingLayout.panelSpacing) {
+                            photoPanel(maxHeight: geometry.size.height * 0.56)
+                            currentEdit
+                        }
+                        .opacity(showingCanvasTool ? 0 : 1)
+                        .allowsHitTesting(!showingCanvasTool)
+                        .disabled(showingCanvasTool)
+                        .accessibilityHidden(showingCanvasTool)
+                        if editing.repairEditing, let context = editing.developmentContext {
+                            PhotosRepairInspector(editing: editing, session: editing.developmentSession,
+                                input: editing.developmentLocalInput, context: context)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .floatingSelectionSurface()
+                                .accessibilityElement(children: .contain)
+                                .accessibilityIdentifier("editing.rail.repair")
+                        } else if editing.cropEditing, let context = editing.developmentPresentationContext {
+                            PhotosCropPanel(editing: editing, session: editing.developmentSession, context: context)
+                                .disabled(editing.developmentContext == nil)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                                .floatingSelectionSurface()
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .floatingSelectionSurface()
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("editing.rail.nodes")
+                .onAppear { editing.beginDevelopmentInterface() }
+                .onDisappear { editing.endDevelopmentInterface() }
+            } else {
+                status
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .floatingSelectionSurface()
             }
-            inspector
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .floatingSelectionSurface()
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("editing.rail.parameters")
         }
         .environment(\.developmentNumberInputOwner, editing.developmentNumberInputOwner)
         .onChange(of: editing.stage) { _, _ in editing.previewContextChanged() }
     }
 
-    @ViewBuilder private var inspector: some View {
+    private func photoPanel(maxHeight: CGFloat) -> some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                PhotosColorScopes(editing: editing, floating: false)
+                    .padding(.horizontal, 12).padding(.vertical, 8)
+                if editing.recipe.sceneGraph != nil, editing.sourceReady {
+                    Divider()
+                    DisclosureGroup("整图调整", isExpanded: $photoAdjustmentsExpanded) {
+                        PhotosDevelopmentInspector(editing: editing, destination: $photoDestination)
+                            .frame(height: min(320, max(210, maxHeight - 38)))
+                    }
+                    .padding(.horizontal, 12).padding(.vertical, 8)
+                    .accessibilityIdentifier("editing.photo.adjustments")
+                }
+                if EditingController.sceneReviewEnabled {
+                    Divider()
+                    EditingSceneModeStrip(editing: editing)
+                }
+            }
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { photoContentHeight = $0 }
+        }
+        .frame(height: min(maxHeight, photoContentHeight > 0 ? photoContentHeight : maxHeight))
+        .frame(maxWidth: .infinity)
+        .floatingSelectionSurface()
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("照片外观与示波器")
+        .accessibilityIdentifier("editing.rail.photo")
+    }
+
+    private var currentEdit: some View {
+        VStack(spacing: 0) {
+            Text("当前编辑").font(.system(size: 13, weight: .semibold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12).padding(.top, 10)
+                .accessibilityAddTraits(.isHeader)
+            if editing.recipe.sceneGraph != nil {
+                EditingSceneGraphToolbar(editing: editing)
+            } else if EditingCompatibilityGraphPanel.isEnabled {
+                EditingCompatibilityGraphToolbar(editing: editing)
+            }
+            if !editing.sourceReady {
+                status
+            } else if editing.recipe.sceneGraph != nil {
+                Divider()
+                ScrollView { EditingSceneInspector(editing: editing) }
+            } else {
+                PhotosDevelopmentInspector(editing: editing, destination: $photoDestination)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .floatingSelectionSurface()
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("editing.rail.parameters")
+    }
+
+    @ViewBuilder private var status: some View {
         if editing.loading {
             ProgressView("准备照片…").padding()
         } else if editing.work == nil {
             Text("选择资料库中的照片开始编辑。").foregroundStyle(.secondary).padding()
-        } else if editing.stage == .development && editing.sourceReady {
-            PhotosDevelopmentInspector(editing: editing)
         } else {
             VStack(alignment: .leading, spacing: 12) {
-                Label(editing.selectedVersion?.editingTitle ?? "已有编辑结果", systemImage: "photo")
-                    .font(.headline)
+                if editing.stage == .versions {
+                    Label(editing.selectedVersion?.editingTitle ?? "已有编辑结果", systemImage: "photo")
+                        .font(.headline)
+                }
                 if editing.sourceReady {
                     Button("返回当前编辑") { editing.returnToCurrentEdit() }
                         .accessibilityIdentifier("editing.returnToAdjustments")

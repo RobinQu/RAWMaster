@@ -18,28 +18,33 @@ function neighbors() {
   const i = ids.indexOf(Studio.data.work);
   return { previous: i > 0 ? ids[i - 1] : null, next: i >= 0 ? ids[i + 1] : null };
 }
-function navButton(direction, name, glyph, id) {
-  return `<span class="nav-target">${btn(name, 'canvas-nav', direction, { icon: glyph, only: true, disabled: !id, title: id ? name + ' · ' + Studio.displayName(id) : name + '（已到范围边界）' })}
+function navButton(direction, name, glyph, id, blocked = '') {
+  return `<span class="nav-target">${btn(name, 'canvas-nav', direction, { icon: glyph, only: true, disabled: !id || !!blocked, title: blocked || (id ? name + ' · ' + Studio.displayName(id) : name + '（已到范围边界）') })}
     ${id ? `<span class="neighbor-preview" aria-hidden="true">${libraryPhoto(id)}<span>${h(Studio.displayName(id))}</span></span>` : ''}</span>`;
 }
 function dock() {
-  if (S.canvasTool) return canvasToolDock();
+  const repairing = S.canvasTool?.kind === 'remove';
+  if (S.canvasTool && !repairing) return canvasToolDock();
   if (quickPromptVisible()) return promptDock();
   const { previous, next } = neighbors();
+  const blocked = repairing ? '请先完成或取消修复' : '';
+  const repairReason = repairing ? '' : repairEntryReason();
   const command = (name, act, key, glyph, options = {}) =>
     btn(name, act, key, { icon: glyph, only: !!glyph, ...options });
   return `<div class="canvas-dock" role="toolbar" aria-label="照片查看工具">
-    ${navButton('previous', '上一张', 'previous', previous)}${navButton('next', '下一张', 'chevron', next)}
+    ${navButton('previous', '上一张', 'previous', previous, blocked)}${navButton('next', '下一张', 'chevron', next, blocked)}
     <span class="dock-divider"></span>
     ${command('缩小 · −', 'edit-zoom', 'out', 'zoomOut', { disabled: S.editZoom <= 1 })}
     ${command('放大 · +', 'edit-zoom', 'in', 'zoomIn', { disabled: S.editZoom >= 64 })}
     ${command('FIT', 'edit-zoom', 'fit', null, { title: '适合可用画面 · 0 / ⌘0', cls: 'dock-fit' })}
     ${command('1:1', 'edit-zoom', 'pixels', null, { title: '按原生像素查看 · Z', cls: 'dock-fit' })}
-    <span data-canvas-tool="crop">${command('Crop · 裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' })}</span><span data-canvas-tool="mask">${command('Mask · 蒙版', 'edit-tool', 'masks', 'mask', { disabled: S.tool === 'versions' })}</span><span data-canvas-tool="remove">${command('Remove · 修饰', 'edit-tool', 'repair', 'repair', { disabled: S.tool === 'versions' })}</span>
+    <span data-canvas-tool="crop">${command('Crop · 裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' || repairing, title: blocked || '裁切与拉直 · C' })}</span>
+    <span data-canvas-tool="remove">${command('修复', 'canvas-repair', '', 'repair', { pressed: repairing, disabled: !!repairReason, title: repairReason || '修复' })}</span>
+    <span data-canvas-tool="mask">${command('Mask · 蒙版', 'edit-tool', 'masks', 'mask', { disabled: S.tool === 'versions' || repairing, title: blocked || '蒙版' })}</span>
     <span class="dock-divider"></span>
-    ${command('对比模式 · V', 'canvas-menu', 'compare', 'compare', { pressed: S.compare, expanded: S.canvasMenu === 'compare', disabled: S.cropOpen })}
+    ${command('对比模式 · V', 'canvas-menu', 'compare', 'compare', { pressed: S.compare, expanded: S.canvasMenu === 'compare', disabled: S.cropOpen || repairing, title: blocked || '对比模式 · V' })}
     ${command('暗房背景 · B', 'canvas-menu', 'ground', 'background', { expanded: S.canvasMenu === 'ground' })}
-    <span class="dock-divider"></span>${quickEntry()}</div>`;
+    ${repairing ? '' : '<span class="dock-divider"></span>' + quickEntry()}</div>`;
 }
 function resolutionText(scale = S.editZoom, active = false) {
   if (S.pixelView) return '100% · 原生像素（示意）';
@@ -121,7 +126,11 @@ function editingMarks(r) {
   if (S.cropOpen) { const box=S.canvasTool?.cropBox || {x:0,y:0,width:100,height:100}; return `<span class="thirds"></span><span class="canvas-crop-box" aria-label="裁切范围示意" style="left:${box.x}%;top:${box.y}%;width:${box.width}%;height:${box.height}%"><i></i><i></i><i></i><i></i></span>`; }
   const mark = (m, label, kind, style = '') =>
     `<span class="marker ${kind}" style="left:${m.x}%;top:${m.y}%;${style}">${h(label)}</span>`;
-  if (S.tool === 'basic') return colorSamplerPoints().map((point, i) => mark(point, i + 1, 'sampler-mark')).join('');
+  if (S.canvasTool?.kind === 'remove') {
+    const donor = S.canvasTool.donor;
+    return (donor ? mark(donor, '源', 'repair-mark') : '') +
+      r.repairs.map((m, i) => mark(m, i + 1, 'repair-mark') + (m.source ? mark(m.source, '源', 'repair-mark') : '')).join('');
+  }
   if (S.tool === 'masks') {
     const draft = S.canvasSelection;
     const strokes = (m) => (m.strokes || []).map((p) => mark(p, p.mode === 'add' ? '+' : '−', 'mask-stroke ' + p.mode)).join('');
@@ -133,15 +142,25 @@ function editingMarks(r) {
     const style = `opacity:${0.2 + 0.007 * (m.opacity ?? 100)};backdrop-filter:brightness(${Math.pow(2, exposure * 0.5)})`;
     return mark(m, r.masks.indexOf(m) + 1, 'mask-mark' + (m.invert ? ' inverse' : ''), style) + strokes(m);
   }
-  if (S.tool === 'repair' && r.sectionEnabled?.repair !== false)
-    return r.repairs
-      .map((m, i) => mark(m, i + 1, 'repair-mark') + (m.source ? mark(m.source, '源', 'repair-mark') : ''))
-      .join('');
-  return '';
+  return colorSamplerPoints().map((point, i) => mark(point, i + 1, 'sampler-mark')).join('');
 }
 function editImageRatio(recipe, id) {
   const p = Studio.photo(id);
   return { '1:1': 1, '4:5': 0.8, '3:2': 1.5, '16:9': 16 / 9 }[recipe.crop] ?? p.w / p.h;
+}
+function editImageTransform(recipe) {
+  const angle = (recipe.angle || 0) + (recipe.quarterTurns || 0) * 90;
+  return `rotate(${angle}deg) scaleX(${recipe.flipH ? -1 : 1}) scaleY(${recipe.flipV ? -1 : 1})`;
+}
+function adaptiveFilterLayers(recipe, id) {
+  const masks = (recipe.masks ?? []).filter(m => m.preset && m.values && m.on !== false);
+  return masks.map(mask => {
+    const region = mask.kind === '天空' ? 'linear-gradient(#000 12%, transparent 48%)' : mask.kind === '背景' ?
+      'radial-gradient(ellipse at 50% 51%, transparent 22%, #000 67%)' : 'radial-gradient(ellipse at 45% 53%, #000 16%, transparent 58%)';
+    const filter = RMPhotos.filter(RMPhotos.displayLook({ ...recipe, ...mask.values }));
+    const blur = mask.values.blur ? ` blur(${mask.values.blur / 3}px)` : '';
+    return `<img src="${h(RMPhotos.url(Studio.photo(id)))}" alt="" style="filter:${h(filter + blur)};mask-image:${region};transform:${editImageTransform(recipe)}">`;
+  }).join('');
 }
 function canvasContent(r, id) {
   const p = Studio.photo(id), ratio = editImageRatio(r, id);
@@ -158,9 +177,9 @@ function canvasContent(r, id) {
       const filter = RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(recipe)));
       const version = current ? (S.tool === 'versions' ? S.versionView || currentEdit().adopted : null) : ref;
       const original = pic(id, current ? 'developed' : 'reference-image',
-        'style="filter:' + filter + ';transform:rotate(' + ((recipe.angle || 0) + (recipe.quarterTurns || 0) * 90) + 'deg) scaleX(' + (recipe.flipH ? -1 : 1) + ') scaleY(' + (recipe.flipV ? -1 : 1) + ')"');
+        'style="filter:' + filter + ';transform:' + editImageTransform(recipe) + '"');
       const result = quickCanvasEffect(id, recipe, version);
-      return `<div class="canvas-layer ${cls}">${original}${result}</div>`;
+      return `<div class="canvas-layer ${cls}">${original}<div class="adaptive-layers" aria-hidden="true">${adaptiveFilterLayers(recipe, id)}</div>${result}</div>`;
     };
     return `<div class="canvas-fit"><div class="zoom-plane"><div class="edit-image" ${side === 'current' && mode === 'off' && !prompt ? 'data-act="canvas-point"' : ''} role="img" aria-label="${h(p.scene)}，${h(label || '调整预览')}">
       ${image(side)}${layer ? image(layer, 'comparison-layer') : ''}${side === 'current' && mode === 'off' ? (prompt ? quickCanvasControls(id) : editingMarks(r) + SceneEditor.overlayMarkup()) : ''}</div></div>${label ? `<small class="pane-label">${h(label)}</small>` : ''}</div>`;
@@ -179,6 +198,7 @@ function canvasContent(r, id) {
     <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen && !S.canvasTool ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
 }
 actions['canvas-nav'] = (direction) => {
+  if (S.canvasTool?.kind === 'remove') return notify('请先完成或取消修复');
   const id = neighbors()[direction];
   if (id) actions['edit-photo'](id);
 };

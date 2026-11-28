@@ -50,23 +50,30 @@ struct EditingLeftSidebar: View {
     }
 
     @ViewBuilder private var content: some View {
-        if editing.recipe.sceneGraph == nil, let context = editing.developmentPresentationContext, let work = editing.work {
+        if let work = editing.work, editing.stage == .development || editing.visibleSceneGraph != nil {
             let session = editing.developmentSession
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, assetID: work.presentationID, scroller: proxy,
-                            catalog: presetCatalog, sectionExpanded: $filtersExpanded)
+                        DevelopmentPresetBrowser(editing: editing, session: session, context: editing.developmentContext,
+                            assetID: work.presentationID, scroller: proxy, catalog: presetCatalog, sectionExpanded: $filtersExpanded)
                         Divider().opacity(0.65)
-                        LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
-                                        accessory: resultsMenu, actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create") {
-                            createSnapshot(context: context)
-                        } content: {
-                            snapshotList(session: session, context: context)
-                        }
-                        Divider().opacity(0.65)
-                        LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
-                            history(session: session, context: context)
+                        if editing.visibleSceneGraph != nil || editing.recipe.sceneGraph != nil {
+                            sceneSnapshotsAndHistory
+                        } else if let context = editing.developmentPresentationContext {
+                            LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
+                                            accessory: resultsMenu, actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create") {
+                                createSnapshot(context: context)
+                            } content: {
+                                snapshotList(session: session, context: context)
+                            }
+                            Divider().opacity(0.65)
+                            LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
+                                history(session: session, context: context)
+                            }
+                            .disabled(editing.developmentContext == nil)
+                        } else {
+                            unavailableSnapshots
                         }
                     }
                 }
@@ -79,62 +86,57 @@ struct EditingLeftSidebar: View {
                     if historyExpanded { scrollToCurrent(session: session, proxy: proxy) }
                 }
             }
-            .disabled(editing.developmentContext == nil)
-        } else if editing.visibleSceneGraph != nil, let work = editing.work {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ScenePresetDirectory(catalog: presetCatalog, sectionExpanded: $filtersExpanded,
-                                         favoriteLooks: editing.favoriteDevelopmentFilters) { error in
-                        editing.postNotice("无法读取滤镜目录。\(error.localizedDescription)", kind: .error, for: work.presentationID)
-                    }
-                    Divider()
-                    let ticket = editing.sceneTicket
-                    LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu,
-                                    actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create",
-                                    action: ticket.map { ticket in { editing.createSceneSnapshot(ticket: ticket) } }) {
-                        if editing.sceneSnapshots.isEmpty {
-                            Text("尚无快照").photosInspectorParagraph().foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 14).padding(.bottom, 12)
-                        } else if let ticket {
-                            ForEach(editing.sceneSnapshots) { snapshot in
-                                HStack(spacing: 2) {
-                                    Button { editing.restoreSceneSnapshot(snapshot.id, ticket: ticket) } label: {
-                                        EditingSidebarRowLabel(title: snapshot.name, symbol: "photo", active: snapshot.recipe == editing.recipe) { _ in }
-                                    }
-                                    .buttonStyle(.plain).accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
-                                    Menu {
-                                        Button("重命名…") { renamingSnapshot = editing.snapshotRenameRequest(for: snapshot) }
-                                        Button("删除", role: .destructive) { editing.updateSceneSnapshot(snapshot.id, name: nil, ticket: ticket) }
-                                    } label: {
-                                        snapshotMenuLabel(snapshot)
-                                    }
-                                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-                                    .help("快照操作 · " + snapshot.name)
-                                    .accessibilityLabel("快照操作 · " + snapshot.name)
-                                    .accessibilityIdentifier("editing.snapshot.menu." + snapshot.id.uuidString)
-                                }.padding(.horizontal, 12)
-                            }
-                        }
-                    }
-                    Divider()
-                    LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
-                        HStack {
-                            Button { editing.stepSceneHistory(redo: false) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
-                                .disabled(!editing.sceneCanUndo).accessibilityIdentifier("editing.history.undo")
-                            Button { editing.stepSceneHistory(redo: true) } label: { Label("重做", systemImage: "arrow.uturn.forward") }
-                                .disabled(!editing.sceneCanRedo).accessibilityIdentifier("editing.history.redo")
-                        }.font(.caption).padding(.bottom, 10)
-                    }
-                }
-            }
         } else {
-            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu) {
-                    Text("原片可用后可以继续调整和创建快照。")
-                        .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14)
+            unavailableSnapshots.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+    }
+
+    private var unavailableSnapshots: some View {
+        LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu) {
+            Text("原片可用后可以继续调整和创建快照。")
+                .photosInspectorParagraph().foregroundStyle(.secondary).padding(.horizontal, 14)
+        }
+    }
+
+    private var sceneSnapshotsAndHistory: some View {
+        let ticket = editing.sceneTicket
+        return Group {
+            LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded, accessory: resultsMenu,
+                            actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create",
+                            action: ticket.map { ticket in { editing.createSceneSnapshot(ticket: ticket) } }) {
+                if editing.sceneSnapshots.isEmpty {
+                    Text("尚无快照").photosInspectorParagraph().foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 14).padding(.bottom, 12)
+                } else if let ticket {
+                    ForEach(editing.sceneSnapshots) { snapshot in
+                        HStack(spacing: 2) {
+                            Button { editing.restoreSceneSnapshot(snapshot.id, ticket: ticket) } label: {
+                                EditingSidebarRowLabel(title: snapshot.name, symbol: "photo", active: snapshot.recipe == editing.recipe) { _ in }
+                            }
+                            .buttonStyle(.plain).accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
+                            Menu {
+                                Button("重命名…") { renamingSnapshot = editing.snapshotRenameRequest(for: snapshot) }
+                                Button("删除", role: .destructive) { editing.updateSceneSnapshot(snapshot.id, name: nil, ticket: ticket) }
+                            } label: {
+                                snapshotMenuLabel(snapshot)
+                            }
+                            .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                            .help("快照操作 · " + snapshot.name)
+                            .accessibilityLabel("快照操作 · " + snapshot.name)
+                            .accessibilityIdentifier("editing.snapshot.menu." + snapshot.id.uuidString)
+                        }.padding(.horizontal, 12)
+                    }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            Divider()
+            LeftRailSection(title: "历史", symbol: "clock.arrow.circlepath", expanded: $historyExpanded) {
+                HStack {
+                    Button { editing.stepSceneHistory(redo: false) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+                        .disabled(!editing.sceneCanUndo).accessibilityIdentifier("editing.history.undo")
+                    Button { editing.stepSceneHistory(redo: true) } label: { Label("重做", systemImage: "arrow.uturn.forward") }
+                        .disabled(!editing.sceneCanRedo).accessibilityIdentifier("editing.history.redo")
+                }.font(.caption).padding(.bottom, 10)
+            }
         }
     }
 
@@ -280,7 +282,7 @@ struct EditingLeftSidebar: View {
                                 Image(systemName: item.isCurrent ? "checkmark.circle.fill" : "circle")
                                     .font(.system(size: 10))
                                     .foregroundColor(item.isCurrent ? AppPalette.accent : Color.secondary)
-                                Text(item.title).font(.system(size: 11))
+                                Text(DevelopmentPresetDirectory.presentationText(item.title)).font(.system(size: 11))
                                     .foregroundColor(item.isFuture ? Color.secondary : Color.primary)
                                     .lineLimit(2).multilineTextAlignment(.leading)
                                 Spacer(minLength: 0)

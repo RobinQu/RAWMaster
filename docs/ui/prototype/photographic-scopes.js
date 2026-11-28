@@ -24,10 +24,10 @@ const PhotographicScopes = (() => {
   function chart(docked) {
     const hdr=SceneEditor.hdr(), fig=hdr ? SceneEditor.rgbPlot() : histogram(Studio.data.work);
     if (!docked || !fig) return fig;
-    const why=hdr ? SceneEditor.unavailable() : '';
+    const why=!Studio.asset(Studio.data.work).online ? '原片离线' : hdr ? SceneEditor.unavailable() : '';
     const white=hdr ? 56.25 : 100;
     const cells=regions().map(([key,label,min,max],i)=>`<div tabindex="${why ? -1 : 0}" role="slider" class="hist-band"${why ? ' aria-disabled="true" title="'+h(why)+'"' : ''} data-band="${key}"
-      aria-label="${h((i>=5?'HDR ':'')+label)}" aria-valuemin="${min}" aria-valuemax="${max}" aria-valuenow="${value(key)}"
+      aria-label="${h((i>=5?'HDR 输出 · ':'整图光效 · ')+label)}" aria-valuemin="${min}" aria-valuemax="${max}" aria-valuenow="${value(key)}"
       aria-describedby="histogram-instructions" style="width:${i<5 ? white/5 : (100-white)/4}%"></div>`).join('');
     return `<div class="tone-control" data-histogram="${hdr?'hdr':'sdr'}">${fig}
       <div class="hist-bands" role="group" aria-label="可调亮度区段">${cells}</div>

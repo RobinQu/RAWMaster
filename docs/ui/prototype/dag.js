@@ -274,7 +274,7 @@ function dagToolbar() {
   const status = S.dagConnectionDraft ? '请先应用或取消连接草稿' : dagEnabled() && v.selection.length !== 1
     ? v.selection.length ? '多选仅管理，不广播参数' : '请选择节点编辑参数'
     : dagEnabled() && (!enabled || n?.mask?.missing || n && !dagReachable(graph).has(n.id)) ? dagStateText(n) : '';
-  return `<section class="dag-scope-head" aria-label="节点作用域"><span class="dag-picker-label">当前节点</span><div class="dag-picker-row">
+  return `<section class="dag-scope-head" aria-label="节点作用域"><div class="dag-picker-row">
     <button type="button" name="dagNode" data-act="dag-picker" aria-label="当前节点" aria-expanded="false" aria-controls="dag-node-picker"${S.canvasTool ? ' disabled title="请先完成或取消画布工具"' : ''}><span>${h(pickerLabel)}</span>${icon('down',12)}</button>
     ${btn(enabled?'忽略该节点':'恢复该节点','dag-toggle-current',n?.id || '',{icon:enabled?'eye':'eyeOff',only:true,cls:'icon-btn',pressed:v.selection.length===1&&!enabled,disabled:!!reason,title:reason || (enabled?'忽略该节点':'恢复该节点（已忽略）')}).replace('<button ','<button data-photo="'+h(Studio.data.work)+'" ')}
     ${btn('Graph 窗口','dag-view-toggle','',{icon:'layers',only:true,cls:'icon-btn',pressed:v.mode==='graph',expanded:v.mode==='graph',controls:'dag-floating-window'})}</div>
@@ -334,7 +334,7 @@ function dagInspector() {
   if (S.dagConnectionDraft) return '<h2>连接草稿</h2><p>右侧数值暂停编辑。应用有效连接或取消，照片保持上一有效结果。</p>' + btn('检查连接草稿', 'dag-connect-menu');
   const p = n.params;
   if (v.mask && n.mask) return dagMaskInspector(n);
-  const head = `<h2>${h(n.name)}</h2><p class="dag-hint">${h(dagKinds[n.kind])}节点 · ${h(dagStateText(n))}</p>`;
+  const head = `<p class="dag-hint">${h(dagKinds[n.kind])}节点 · ${h(dagStateText(n))}</p>`;
   if (n.kind === 'group') return head + dagRange('nodeAmount','组强度',0,100,1,p.nodeAmount ?? 100) + btn('进入组', 'dag-enter', n.id, { cls: 'primary wide' }) + btn('保存组工作流…', 'dag-template-save', 'group') + '<p>组只提供管理与忽略；进入组后编辑具体节点。</p>';
   if (n.kind === 'output') return head + '<p>最终输出固定连接，交付始终冻结此输出，不受查看的节点影响。</p>' + btn('打开导出工作台', 'export') + btn('模拟渲染失败', 'dag-failure');
   if (n.kind === 'geometry') return head + '<p>固定照片几何阶段。请使用照片底部 Crop 工具；此处只显示阶段，不提供节点裁切参数。</p>' + fact('比例',p.crop || '原始');
@@ -487,10 +487,17 @@ function dagSoloCandidate(node) {
   return node?.kind === 'grade' && node.enabled !== false && dagView().selection.length === 1;
 }
 function dagViewRecipe(r) {
+  if (S.canvasTool?.kind === 'remove') return r;
   const v = dagView(), preview = dagPreviewState();
   if (preview.bypass) return dagProject(r.dag, r.dag.nodes.find(n => n.kind === 'source').id);
   const target = preview.solo || v.target;
   return target ? dagProject(r.dag, target, v.path) : r;
+}
+function dagScopeSource() {
+  const v = dagView(), preview = dagPreviewState();
+  if (preview.bypass) return '旁路全部调色';
+  const monitored = dagCurrent().nodes.find(n => n.id === (preview.solo || v.target));
+  return monitored ? (preview.solo ? 'Solo · ' : '监看 · ') + monitored.name : '最终结果';
 }
 function dagPhotoFilter() {
   return RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(dagViewRecipe(currentEdit().recipe))));
@@ -504,11 +511,10 @@ function dagPhotoCanvas(r, id) {
   const hasWorkflow = dagAllNodes(currentEdit().recipe.dag).filter(({node}) => ['grade','mix','group'].includes(node.kind)).length > 1;
   const failed = S.dagRenderFailed;
   const message = failed ? '预览失败 · 保留上次画面（模拟）' : solo ? `Solo：${solo.name} · 不用于导出` : preview.bypass ? '调色已旁路 · 仅查看，不用于导出' : target ? `中间预览：${target.name} · 不用于导出` : '最终结果';
-  const prefix = !failed && (temporary || hasWorkflow && v.mode === 'graph') ? `<div class="dag-photo-status${failed ? ' failed' : temporary ? ' intermediate' : ''}">${icon(failed ? 'pulse' : temporary ? 'eye' : 'layers', 14)}<span role="status">${h(message)}</span>${failed ? btn('重试预览','dag-retry') : ''}${temporary ? btn('返回最终结果','dag-preview-final') : ''}</div>` : '';
+  const prefix = S.canvasTool?.kind !== 'remove' && !failed && (temporary || hasWorkflow && v.mode === 'graph') ? `<div class="dag-photo-status${failed ? ' failed' : temporary ? ' intermediate' : ''}">${icon(failed ? 'pulse' : temporary ? 'eye' : 'layers', 14)}<span role="status">${h(message)}</span>${failed ? btn('重试预览','dag-retry') : ''}${temporary ? btn('返回最终结果','dag-preview-final') : ''}</div>` : '';
   let content = canvasContent(recipe, id);
   const s = S.canvasTool, mask = s?.kind === 'mask' && !s.legacy ? s.mask : null;
   if (mask && s.overlay !== false) content = content.replace('</div></div>', `<span class="dag-mask-overlay" style="left:${mask.x}%;top:${mask.y}%;width:${mask.width}%;height:${mask.height}%;opacity:${(mask.opacity ?? 100) / 170}" aria-label="${h(mask.kind)}覆盖示意"></span></div></div>`);
-  if (s?.kind === 'remove') content = content.replace('</div></div>', (s.draft.repairs || []).map((m,i) => `<span class="marker repair-mark" style="left:${m.x}%;top:${m.y}%">${i+1}</span>`).join('') + '</div></div>');
   return prefix + content;
 }
 actions['dag-view'] = mode => {

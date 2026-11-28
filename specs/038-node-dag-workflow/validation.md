@@ -4,6 +4,20 @@
 
 [现行系统图窗及物理拖动验证](#系统图窗与真实拖动)覆盖可编辑图和只读兼容图。下文保留无标题图窗和较早的矮窗方案，供比对当时的交互。[上一轮工作台走查](../025-editing-workspace/editor-rails.md)
 
+## 照片右栏与修复会话
+
+2026-11-28 · 从[工作台](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1)选「岸边的水鸟」，进入编辑，在上方「色彩外观」选择 HDR。用下方「当前编辑」添加第二个调色节点，分别设曝光 +1.25 和 +0.50 EV。展开上卡「整图调整」改白平衡，再切换 Parallel、连线、多选和组。两张卡片分别滚动。下卡显示所选类型的控件，上卡的示波器标明最终结果或监看输出。[桌面右栏](evidence/inspector-repair/prototype-editor.png)
+
+在组内开启监看，然后点照片底部「裁切」旁的修复按钮。右栏替换成当前照片的修复草案，Graph 暂收。加一笔后按 Escape，核对配方、历史、组路径、当前节点和监看恢复，焦点回到修复按钮。重开，做两笔，草案撤销再重做。点「完成」后核对照片历史增加一项，并用照片撤销和重做核对两笔一同变化。空草案完成保持历史。390 px 下模拟系统浅色和深色，工作台仍用深色，照片与修复卡片顺序可见。初始离线时修复入口说明原因。Graph 预演另覆盖仿制待取样、填充失败、原位重试和取消。[窄窗修复](evidence/inspector-repair/prototype-repair-narrow.png)
+
+原生改动前运行 `python3 scripts/check-ui-prototype.py --editor-scope-only`，7 个场景通过。编辑与 Graph 的 31 个回归场景通过，原生阶段 Graph 的 9 个场景、外观的 14 个场景及兼容图的 5 个场景通过。原型用样片模拟修复和填充。
+
+原生用 `snow.ARW` 在 1200 × 640 的 AppKit 窗口复验。从上卡进入 HDR，添加第二个调色节点和 Parallel，选 Parallel 时下卡显示输入权重，选连线时收起参数。两个 Corrector 的独立曝光通过 Solo 的实际浮点预览核对。迟到的节点参数回调及多选写入被拒绝。为使矮窗里也可找到照片级参数，「整图调整」移到示波器下方，工作台先验证入口在上卡可见，再同步原生。[原生双卡与 Parallel](evidence/inspector-repair/native-parallel.png)
+
+在组内看中间节点时，从底部点「修复」。Graph 暂收，右栏显示修复，主图显示最终结果。以 Option 取样做一笔仿制，取消后恢复进入前的配方、组路径、选择和监看。重开，在真实 RAW 上先后仿制两处，完成后一次照片撤销移除两笔。兼容配方回归覆盖空草案退出、草案撤销和重做、失败重试、取消后迟到的结果，以及恢复进入前的对比方式。[原生修复](evidence/inspector-repair/native-repair.png) · [真实 RAW 窗口用例](../../Tests/RAWMasterUITests/EditingSceneGraphWindowTests.swift) · [会话与失败重试用例](../../Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift)
+
+最终浏览器专项 7 项通过。原生定向回归 59 项通过，包括裁切、兼容图、示波器、开发会话和真实 RAW Graph／修复。用 `RAWMASTER_SCENE_DELIVERY_SNOW_ARW` 指向 037 固定雪景，`RAWMASTER_FLASHRAW_LIBRARY` 指向本机解码库。将 `RAWMASTER_EDITOR_REPAIR_EVIDENCE` 设为已有目录可同时记录窗口截图。[命令与测试结果](evidence/inspector-repair/checks.txt) · [实拍样片与解码准备](../037-color-film-hdr/validation.md#合格-arw-的场景线性入口)
+
 ## 玻璃图窗与自由布局
 
 2026-11-28 · 从原型选「岸边的水鸟」→ 编辑 → 色彩外观 HDR → 当前节点 → Graph。运行 `python3 scripts/check-ui-prototype.py --native-graph-only`，9 个场景通过。模拟像素用于检查添加顺序、三个 Mixer 端口的连线落点、Solo 上游、全局旁路、侧栏眼睛与照片撤销。真实指针检查拖动时连线随动、Escape 取消、键盘移动、重开和整理。连接草稿阻止交付，离线提示禁用原因，模拟重试回到同一图。另通过 31 个编辑与 DAG 回归场景。[原型入口](../../docs/ui/prototype/index.html?sceneNativeReview=1&graphNativeReview=1) · [390 px 浅色](evidence/free-layout/prototype-390-light.png) · [390 px 深色](evidence/free-layout/prototype-390-dark.png) · [Lightflow 行为依据](lightflow-nodes.md)

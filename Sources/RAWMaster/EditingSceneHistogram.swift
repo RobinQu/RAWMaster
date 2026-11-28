@@ -60,7 +60,7 @@ struct EditingSceneHistogram: View {
             }
         }
         var title: String {
-            switch self { case .tone(let tone): "SDR " + tone.title; case .hdr(let band): "HDR " + band.caption }
+            switch self { case .tone(let tone): "整图光效 · " + tone.title; case .hdr(let band): "HDR 输出 · " + band.caption }
         }
         var identifier: String {
             switch self { case .tone(let tone): tone.fieldID; case .hdr(let band): "hdr\(band.rawValue)" }

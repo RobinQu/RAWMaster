@@ -335,7 +335,18 @@ final class EditingLayoutInteractionTests: XCTestCase {
                 && $0.responds(to: NSSelectorFromString("accessibilityPerformPress")) }
         }
         try press(try XCTUnwrap(button("矢量示波器")))
-        try await wait { element("photos.scopes.vectorscope") != nil }
+        do {
+            try await wait {
+                if editing.developmentToolsPaused { editing.beginDevelopmentInterface() }
+                host.layoutSubtreeIfNeeded()
+                return element("photos.scopes.vectorscope") != nil
+            }
+        } catch {
+            let ids = accessibleElements(window).compactMap { axValue($0, "accessibilityIdentifier") as? String }
+            XCTFail("Vectorscope state. histogram=\(editing.developmentHistogram != nil) context=\(editing.developmentContext != nil) mode=\(UserDefaults.standard.bool(forKey: "editing.scope.vectorscope")) ids=\(ids)")
+            await editing.shutdown()
+            throw error
+        }
         host.layoutSubtreeIfNeeded()
         let vector = try XCTUnwrap(element("photos.scopes.vectorscope"))
         if vector.responds(to: NSSelectorFromString("accessibilityFrame")) {

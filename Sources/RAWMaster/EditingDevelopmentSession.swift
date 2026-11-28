@@ -171,6 +171,13 @@ enum EditingDevelopmentTransaction {
         var lastApplied: DevelopmentRecipe
     }
     private var gesture: Gesture?
+    private struct RepairDraft {
+        let baseline: DevelopmentRecipe
+        var candidate: DevelopmentRecipe
+        var history: DevelopmentUndoHistory
+    }
+    private var repairDraft: RepairDraft?
+    var repairDraftChanged: (() -> Void)?
     private var pendingAnalysis: EditingDevelopmentAnalysisTicket?
     private var latestSave: EditingDevelopmentSaveTicket?
     /// Only forwards cancellation to the real owner later; it does not claim native work has joined.
@@ -196,7 +203,10 @@ enum EditingDevelopmentTransaction {
         self.history = .init(limits: historyLimits)
         self.readRecipe = readRecipe; self.commitRecipe = commitRecipe
     }
-    var recipe: DevelopmentRecipe { readRecipe() }
+    var recipe: DevelopmentRecipe { repairDraft?.candidate ?? readRecipe() }
+    var repairRecipe: DevelopmentRecipe? { repairDraft?.candidate }
+    var repairCanUndo: Bool { repairDraft?.history.canUndo == true }
+    var repairCanRedo: Bool { repairDraft?.history.canRedo == true }
     /// A UI-only projection. It never calls promotingToV3 or changes the current recipe.
     var parameters: DevelopmentAdjustmentsV3 { recipe.adjustmentsV3 ?? .init() }
     var summaryAmounts: [DevelopmentAdjustmentID: Double] {
@@ -229,6 +239,66 @@ enum EditingDevelopmentTransaction {
             guard let gesture, gesture.token == token, token.context == expected else { throw EditingDevelopmentSessionError.wrongGesture }
             guard gesture.lastApplied == recipe else { throw EditingDevelopmentSessionError.recipeDiverged }
         } else if gesture != nil { throw EditingDevelopmentSessionError.unfinishedGesture }
+    }
+
+    func beginRepair(context expected: EditingInteractionContext) throws {
+        try validateInteraction(expected)
+        guard repairDraft == nil, page == .adjust else { throw EditingDevelopmentSessionError.commitRejected }
+        invalidatePendingAnalysis()
+        let baseline = readRecipe()
+        var changes = DevelopmentUndoHistory(limits: history.limits)
+        changes.activate(expected.historyKey, current: baseline)
+        repairDraft = .init(baseline: baseline, candidate: baseline, history: changes)
+        publish(keepingPreset: true)
+    }
+
+    @discardableResult
+    func endRepair(context expected: EditingInteractionContext, accept: Bool) throws -> Bool {
+        try require(expected)
+        guard let draft = repairDraft else { return false }
+        if accept, readRecipe() != draft.baseline { throw EditingDevelopmentSessionError.recipeDiverged }
+        invalidatePendingAnalysis()
+        repairDraft = nil
+        guard accept, draft.candidate != draft.baseline else {
+            publish(keepingPreset: true)
+            return false
+        }
+        let title = "完成修复"
+        do {
+            try commit(draft.candidate, event: .init(context: expected, control: .init(group: .retouch, name: title),
+                nativeInput: .capture(control: "photos.repair.finish", phase: "discrete", nativeEvent: true)))
+        } catch {
+            if context == expected { repairDraft = draft; publish(keepingPreset: true) }
+            throw error
+        }
+        let beforeUI = summaryUI.validating(for: draft.baseline)
+        summaryUI = history.record(before: draft.baseline, after: draft.candidate, title: title,
+            beforeUI: beforeUI, afterUI: beforeUI.reconciling(to: draft.candidate))
+        publish()
+        return true
+    }
+
+    func stepRepairHistory(redo: Bool, context expected: EditingInteractionContext) throws {
+        try require(expected)
+        guard var draft = repairDraft else { return }
+        let next = redo ? draft.history.redoCandidate(current: draft.candidate) : draft.history.undoCandidate(current: draft.candidate)
+        guard let next else { return }
+        invalidatePendingAnalysis()
+        if redo { draft.history.didRedo() } else { draft.history.didUndo() }
+        draft.candidate = next; repairDraft = draft
+        repairDraftChanged?()
+        publish(keepingPreset: true)
+    }
+
+    private func recordRepairChange(_ candidate: DevelopmentRecipe, title: String) throws -> Bool {
+        guard var draft = repairDraft, readRecipe() == draft.baseline else { throw EditingDevelopmentSessionError.recipeDiverged }
+        guard candidate != draft.candidate else { return false }
+        try candidate.validate()
+        draft.history.record(before: draft.candidate, after: candidate, title: title)
+        draft.candidate = candidate; repairDraft = draft
+        repairDraftChanged?()
+        publish(keepingPreset: true)
+        return true
     }
 
     /// Call prepareForBranchReplacement BEFORE replacing Controller's recipe, then activate the
@@ -277,6 +347,7 @@ enum EditingDevelopmentTransaction {
     }
     @discardableResult func changePage(_ page: EditingDevelopmentPage, context expected: EditingInteractionContext) throws -> EditingInteractionContext {
         try require(expected)
+        guard repairDraft == nil else { throw EditingDevelopmentSessionError.commitRejected }
         guard self.page != page else { return expected }
         if let gesture { try endGesture(gesture.token, .commit) }
         try advanceEpoch(); acceptingInput = false; invalidatePendingAnalysis(); self.page = page
@@ -327,6 +398,7 @@ enum EditingDevelopmentTransaction {
     }
     func beginGesture(_ control: EditingControlID, context expected: EditingInteractionContext) throws -> EditingGestureToken {
         try require(expected)
+        guard repairDraft == nil else { throw EditingDevelopmentSessionError.commitRejected }
         guard gesture == nil else { throw EditingDevelopmentSessionError.unfinishedGesture }
         invalidatePendingAnalysis()
         let token = EditingGestureToken(id: UUID(), context: expected)
@@ -343,10 +415,11 @@ enum EditingDevelopmentTransaction {
 
     /// Preview, click and Amount all resolve against the same immutable pre-adoption recipe.
     func previewPreset(_ record: DevelopmentPresetRecord, context expected: EditingInteractionContext,
-                       revision expectedRevision: UUID, preparedMasks: [DevelopmentMaskLayerV3]? = nil) throws -> DevelopmentRecipe {
+                       revision expectedRevision: UUID, preparedMasks: [DevelopmentMaskLayerV3]? = nil,
+                       baseline: DevelopmentRecipe? = nil) throws -> DevelopmentRecipe {
         try validateInteraction(expected)
         guard revision == expectedRevision else { throw EditingDevelopmentSessionError.staleInteraction }
-        return try resolvePreset(record, baseline: recipe, amount: 1, context: expected, preparedMasks: preparedMasks)
+        return try resolvePreset(record, baseline: baseline ?? recipe, amount: 1, context: expected, preparedMasks: preparedMasks)
     }
 
     private func resolvePreset(_ record: DevelopmentPresetRecord, baseline: DevelopmentRecipe, amount: Double,
@@ -389,7 +462,7 @@ enum EditingDevelopmentTransaction {
     @discardableResult
     func adoptPreset(_ record: DevelopmentPresetRecord, amount: Double = 1, context expected: EditingInteractionContext,
                      revision expectedRevision: UUID, adjustingAmount: Bool = false, gesture token: EditingGestureToken? = nil,
-                     preparedMasks: [DevelopmentMaskLayerV3]? = nil) throws -> Bool {
+                     preparedMasks: [DevelopmentMaskLayerV3]? = nil, displayName: String? = nil) throws -> Bool {
         try validateInteraction(expected, gesture: token)
         guard revision == expectedRevision else { throw EditingDevelopmentSessionError.staleInteraction }
         let before = recipe
@@ -428,7 +501,7 @@ enum EditingDevelopmentTransaction {
         }
         let omitted = record.metadata["confirmedOmissions"].map { " · 略过 " + String($0.prefix(160)) } ?? ""
         let action = record.metadata["semanticReconstruction"] == "true" ? "本张重建 · " : "预设 · "
-        let title = adjustingAmount ? Self.presetAmountControl : action + record.name + omitted
+        let title = adjustingAmount ? Self.presetAmountControl : action + (displayName ?? record.name) + omitted
         invalidatePendingAnalysis()
         try commit(after, event: .init(context: expected, control: .init(group: nil, name: title),
             nativeInput: .capture(control: adjustingAmount ? "preset.amount" : "preset.apply",
@@ -456,6 +529,19 @@ enum EditingDevelopmentTransaction {
                                                     stage: DevelopmentAnalysisStage,
                                                     summary: (DevelopmentAdjustmentID, Double)? = nil) throws -> Bool {
         try require(event.context)
+        if repairDraft != nil {
+            guard token == nil, summary == nil, commands.allSatisfy({ command in
+                switch command {
+                case .removeLocal, .setEnabled(.retouch, _), .setEnabled(.redEye, _), .reset(.retouch), .reset(.redEye):
+                    return true
+                default: return false
+                }
+            }) else { throw EditingDevelopmentSessionError.commitRejected }
+            let candidate = try EditingDevelopmentTransaction.applying(commands, to: recipe, context: try commandContext(stage: stage),
+                noiseReduction: noiseReductionCapability)
+            invalidatePendingAnalysis()
+            return try recordRepairChange(candidate, title: title)
+        }
         if let token {
             guard token.context == event.context, let current = gesture, current.token == token else {
                 throw EditingDevelopmentSessionError.wrongGesture
@@ -589,6 +675,7 @@ enum EditingDevelopmentTransaction {
         _ = try changeSnapshots(.delete(id), context: expected)
     }
     private func changeSnapshots(_ edit: DevelopmentSnapshotEdit, context: EditingInteractionContext) throws -> [DevelopmentSnapshot] {
+        guard repairDraft == nil else { throw EditingDevelopmentSessionError.commitRejected }
         var items: [DevelopmentSnapshot]
         if let snapshotCatalog {
             items = try snapshotCatalog(context, edit)
@@ -738,6 +825,7 @@ enum EditingDevelopmentTransaction {
             dehazeContextV1: current.dehazeContextV1)
         let after = try before.applying(.appendResolvedLocalBatch(result), context: context)
         pendingAnalysis = nil
+        if repairDraft != nil { return try recordRepairChange(after, title: title) }
         guard after != before else { return false }
         try commit(after, event: .init(context: ticket.context, control: .init(group: nil, name: title), nativeInput: ticket.nativeInput))
         history.record(before: before, after: after, title: title, beforeUI: beforeUI, afterUI: beforeUI.reconciling(to: after))
@@ -801,6 +889,7 @@ enum EditingDevelopmentTransaction {
                      supportedGrainSamplingVersions: grainVersions)
     }
     private func commit(_ candidate: DevelopmentRecipe, event: EditingCommandEvent) throws {
+        guard repairDraft == nil else { throw EditingDevelopmentSessionError.commitRejected }
         try require(event.context); try candidate.validate(); try commitRecipe(candidate, event)
         try require(event.context)
         guard recipe == candidate else { throw EditingDevelopmentSessionError.commitRejected }
@@ -825,7 +914,7 @@ enum EditingDevelopmentTransaction {
         // synchronous observer cannot admit an old callback while context's nil is being published.
         acceptingInput = false
         context = nil; source = nil; gesture = nil; summaryUI = .init(); noiseReductionCapability = nil
-        pendingAnalysis = nil; latestSave = nil; history.deactivate()
+        pendingAnalysis = nil; latestSave = nil; repairDraft = nil; history.deactivate()
         // Even epoch exhaustion cannot prevent closing. Future activate() then fails closed.
         if epoch < .max { epoch += 1 }
         publish()

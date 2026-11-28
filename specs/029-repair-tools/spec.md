@@ -7,6 +7,8 @@
 
 ## 执行摘要
 
+当前入口位于照片底部悬浮工具条的「裁切」旁。编辑当前照片草稿时，修复、移除、仿制及红眼共用专用右栏。主图预览临时配方，完成一次提交，取消丢弃草案，两种退出均回到原来的编辑上下文。后文同时记录未来修复能力的设计。[工作台走查与原生证据](../038-node-dag-workflow/validation.md#照片右栏与修复会话)
+
 RAWMaster 已具备可靠的修复事务基础：操作保存在源空间，按顺序重放，支持压感、来源点、单笔删除、分组启停、撤销／快照、内容身份校验和全尺寸 canonical 输出。当前主要问题不是“没有修复”，而是**已有笔划只能删除后重画，Erase 与 Heal 实际共用同一纹理转移算子，补丁引用尚无渲染实现，并且任何有效局部修复都会使交互代理回退 canonical**。这些问题分别对应交互、算法语义、AI 生命周期和性能，不能靠新增一个 AI 按钮解决。[局部数据模型](kimi-cite://text?path=%2FUsers%2Frobinqu%2FWorkspace%2Fgithub%2Frobinqu%2FRAWMaster%2FSources%2FRAWMasterCore%2FDevelopmentLocalEditModels.swift&text=public%20enum%20DevelopmentRetouchMode%3A%20String%2C%20Codable%2C%20Sendable%20%7B%20case%20remove%2C%20heal%2C%20clone%20%7D "citation") [局部渲染核](kimi-cite://text?path=%2FUsers%2Frobinqu%2FWorkspace%2Fgithub%2Frobinqu%2FRAWMaster%2FSources%2FRAWMasterImaging%2FDevelopmentLocalEngineV3.swift&text=float3%20healed%3Dd.rgb%2Fd.a-ld.rgb%2Fld.a%2Blt.rgb%2Flt.a "citation") [代理回退](kimi-cite://text?path=%2FUsers%2Frobinqu%2FWorkspace%2Fgithub%2Frobinqu%2FRAWMaster%2FSources%2FRAWMasterImaging%2FPreviewInteractiveProxyV3.swift&text=if%20DevelopmentLocalEngineV3.active(p.localEdits)%7Breturn%20.canonical(.local)%7D "citation")
 
 目标面板采用 Camera Raw 易理解的 **Remove / Heal / Clone** 三种顶层模式；Remove 内部再选择“内容感知”或“本地 AI”，不另造与 Remove 并列、语义重叠的第四个画笔。近期必须交付：选中笔划的大小／羽化／不透明度、目标与来源拖动、单笔启停、覆盖层、快捷键、换来源、Visualize Spots，以及支持域内不触发 canonical fallback 的代理渲染。真正的 Remove 使用可确定的 PatchMatch 或经验证的本地模型；旧 `.remove` 操作继续按 `toolVersion = 1` 的原纹理转移算法重放，不得因名称升级而改变历史图像。

@@ -46,7 +46,7 @@ enum DevelopmentPresetDirectory {
         let classic = availableLooks.filter { !$0.isSpektrafilm }.map(DevelopmentPresetBrowserItem.classic)
             .filter { matches($0.name) || matches("基础滤镜 Basic Filters") }
         let films = availableLooks.filter(\.isSpektrafilm).map(DevelopmentPresetBrowserItem.classic)
-            .filter { matches($0.name) || matches("胶片模拟 Film Spektrafilm") }
+            .filter { matches($0.name) || matches("胶片模拟 Film") }
         let visible = records.filter { record in
             guard record.isBrowsable, !favoritesOnly || favorites.contains(record.id) else { return false }
             let category: String
@@ -54,7 +54,8 @@ enum DevelopmentPresetDirectory {
                 let group = adaptiveGroup(record)
                 category = "自适应滤镜 Adaptive " + groupLabel(group) + " " + group
             } else { category = "用户导入滤镜 Imported" }
-            return [displayName(record), record.name, record.group, category, record.metadata["sortName"] ?? ""].contains(where: matches)
+            return [displayName(record), record.name, displayGroup(record.group), record.group, category,
+                    record.metadata["sortName"] ?? ""].contains(where: matches)
         }
         let adaptive = visible.filter(isAdaptive)
         let groupOrder = ["adaptive.Portrait", "adaptive.Sky", "adaptive.Subject", "adaptive.Landscape", "adaptive.Blur Background", "adaptive.Profiles"]
@@ -69,7 +70,7 @@ enum DevelopmentPresetDirectory {
         let imported = visible.filter { !isAdaptive($0) }
         let grouped = Dictionary(grouping: imported) { $0.kind.rawValue + "." + $0.group }
         let importedGroups = grouped.map { id, rows in
-            DevelopmentPresetFolder(id: id, name: rows[0].group == "Imported" ? "未分组" : rows[0].group,
+            DevelopmentPresetFolder(id: id, name: displayGroup(rows[0].group),
                 rows: rows.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted))
         }.sorted {
             let order = $0.name.localizedStandardCompare($1.name)
@@ -85,14 +86,27 @@ enum DevelopmentPresetDirectory {
     }
 
     static func displayName(_ record: DevelopmentPresetRecord) -> String {
-        guard isAdaptive(record) else { return record.name }
-        if let path = record.metadata["relativePath"] {
-            let stem = URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent
-            if let label = adaptiveNames[stem] { return label }
+        let name = presentationText(record.name)
+        if isAdaptive(record) {
+            if let path = record.metadata["relativePath"] {
+                let stem = URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent
+                if let label = adaptiveNames[stem] { return label }
+            }
+            let short = name.components(separatedBy: " - ").last ?? name
+            if let label = adaptiveNames[name] ?? adaptiveNames[short] { return label }
         }
-        let name = record.name.hasPrefix("Adobe ") ? String(record.name.dropFirst(6)) : record.name
-        let short = name.components(separatedBy: " - ").last ?? name
-        return adaptiveNames[name] ?? adaptiveNames[short] ?? name
+        return name.isEmpty ? "未命名滤镜" : name
+    }
+
+    static func presentationText(_ value: String) -> String {
+        value.replacingOccurrences(of: "(?:adobe|spektrafilm|lightroom(?: classic)?|camera[ -]?raw)[ \\t]*", with: "",
+                                   options: [.regularExpression, .caseInsensitive])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private static func displayGroup(_ group: String) -> String {
+        let name = presentationText(group)
+        return name.isEmpty || name == "Imported" ? "未分组" : name
     }
 
     private static func isAdaptive(_ record: DevelopmentPresetRecord) -> Bool {
@@ -105,8 +119,7 @@ enum DevelopmentPresetDirectory {
         let sourceFolder = path.split(separator: "/").dropLast().last.map(String.init)
         let prefix = "Adaptive - "
         if let sourceFolder, sourceFolder.hasPrefix(prefix) { return String(sourceFolder.dropFirst(prefix.count)) }
-        var group = record.group
-        if group.hasPrefix("Adobe ") { group.removeFirst("Adobe ".count) }
+        var group = presentationText(record.group)
         if group.hasPrefix(prefix) { group.removeFirst(prefix.count) }
         else if group.hasPrefix("Adaptive: ") { group.removeFirst("Adaptive: ".count) }
         return group == "Adaptive" || group == "Imported" ? "其他" : group
@@ -120,7 +133,7 @@ enum DevelopmentPresetDirectory {
         case "Landscape": "风景"
         case "Blur Background": "模糊背景"
         case "Profiles": "配置文件"
-        default: group
+        default: displayGroup(group)
         }
     }
 
@@ -207,11 +220,48 @@ private struct PresetBrowserSearch: View {
     }
 }
 
+private struct PresetDirectoryLabel: View {
+    let title: String
+    let symbol: String
+    var folder: (expanded: Bool, count: Int)? = nil
+    var selected = false
+    var highlighted = false
+    var onHover: (Bool) -> Void = { _ in }
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var hovering = false
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if let folder {
+                Image(systemName: folder.expanded ? "chevron.down" : "chevron.right")
+                    .font(.system(size: 8)).frame(width: 9).foregroundStyle(.secondary)
+            } else {
+                Color.clear.frame(width: 9, height: 1).accessibilityHidden(true)
+            }
+            Image(systemName: symbol).frame(width: 13).foregroundStyle(.secondary)
+            Text(title).lineLimit(1)
+            Spacer(minLength: 0)
+            if let folder { Text(String(folder.count)).monospacedDigit().foregroundStyle(.secondary) }
+            else if selected { Image(systemName: "checkmark").font(.system(size: 9)) }
+        }
+        .font(.system(size: 11))
+        .foregroundStyle(AppDesign.Ink.primary(colorScheme))
+        .padding(.horizontal, 6)
+        .frame(maxWidth: .infinity, minHeight: 23, alignment: .leading)
+        .background(Color.primary.opacity(selected ? 0.14 : hovering || highlighted ? 0.10 : folder == nil ? 0 : 0.06),
+                    in: RoundedRectangle(cornerRadius: 4))
+        .contentShape(Rectangle())
+        .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+        .onHover { inside in hovering = inside; onHover(inside) }
+    }
+}
+
 private struct PresetDirectoryTree<Row: View>: View {
     let folders: [DevelopmentPresetFolder]
     let isExpanded: (String) -> Bool
     let toggle: (String) -> Void
     @ViewBuilder let row: (DevelopmentPresetBrowserItem, DevelopmentPresetFolder) -> Row
+    private let indent: CGFloat = 14
 
     var body: some View {
         if folders.isEmpty {
@@ -221,45 +271,31 @@ private struct PresetDirectoryTree<Row: View>: View {
             ForEach(folders) { folder in
                 folderHeader(folder)
                 if isExpanded(folder.id) {
-                    if folder.id == "film" {
-                        Text("Spektrafilm 官方模型 · SDR 色彩外观")
-                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
-                            .accessibilityIdentifier("editing.presets.film.scope")
-                    }
                     if folder.count == 0 {
                         Text(emptyMessage(for: folder.id))
-                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
+                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, indent)
                     }
                     ForEach(folder.children) { child in
-                        folderHeader(child).padding(.leading, 13)
+                        folderHeader(child).padding(.leading, indent)
                         if isExpanded(child.id) {
                             ForEach(child.rows) { item in row(item, child) }
-                                .padding(.leading, 13)
+                                .padding(.leading, indent * 2)
                         }
                     }
-                    ForEach(folder.rows) { item in row(item, folder) }
+                    ForEach(folder.rows) { item in row(item, folder) }.padding(.leading, indent)
                 }
             }
         }
     }
 
     private func folderHeader(_ folder: DevelopmentPresetFolder) -> some View {
-        Button { toggle(folder.id) } label: {
-            HStack(spacing: 5) {
-                let open = isExpanded(folder.id)
-                Image(systemName: open ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 8)).frame(width: 9)
-                Image(systemName: open ? "folder.fill" : "folder").foregroundStyle(.secondary)
-                Text(folder.name).lineLimit(1)
-                Spacer(minLength: 0)
-                Text(String(folder.count)).foregroundStyle(.secondary).monospacedDigit()
-            }
-            .frame(minHeight: 23)
-            .contentShape(Rectangle()).overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
+        let open = isExpanded(folder.id)
+        return Button { toggle(folder.id) } label: {
+            PresetDirectoryLabel(title: folder.name, symbol: open ? "folder.fill" : "folder", folder: (open, folder.count))
         }
-        .buttonStyle(.plain).font(.system(size: 11, weight: .semibold))
+        .buttonStyle(.plain)
         .accessibilityLabel(folder.name + "文件夹")
-        .accessibilityValue(isExpanded(folder.id) ? "已展开" : "已折叠")
+        .accessibilityValue(open ? "已展开" : "已折叠")
         .accessibilityIdentifier("editing.presets.folder." + folder.id)
     }
     private func emptyMessage(for folder: String) -> String {
@@ -273,68 +309,10 @@ private struct PresetDirectoryTree<Row: View>: View {
 
 }
 
-/// The scene graph and the compatibility recipe have different operators. Browsing a preset
-/// in an HDR draft must never start an SDR hover render or mutate the compatibility session.
-struct ScenePresetDirectory: View {
-    let catalog: DevelopmentPresetCatalog
-    @Binding var sectionExpanded: Bool
-    let favoriteLooks: Set<DevelopmentPhotoFilterV3>
-    let onLoadError: (Error) -> Void
-    @State private var folders: [DevelopmentPresetFolder] = []
-    @State private var records: [DevelopmentPresetRecord] = []
-    @State private var favorites: Set<String> = []
-    @State private var query = ""
-    @State private var favoritesOnly = false
-    @State private var expanded: Set<String> = ["adaptive"]
-    @State private var searchCollapsed: Set<String> = []
-    @State private var reload = 0
-
-    var body: some View {
-        let searching = !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: $sectionExpanded,
-            headingIdentifier: "editing.leftRail.filters") {
-            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                Text("HDR 草稿可浏览收藏与目录。滤镜强度和外观采用需要 SDR 编辑。")
-                    .photosInspectorParagraph().foregroundStyle(.secondary)
-                PresetBrowserSearch(query: $query, favoritesOnly: $favoritesOnly)
-                PresetDirectoryTree(folders: folders,
-                    isExpanded: { searching ? !searchCollapsed.contains($0) : expanded.contains($0) },
-                    toggle: { id in
-                        if searching {
-                            if !searchCollapsed.insert(id).inserted { searchCollapsed.remove(id) }
-                        } else if !expanded.insert(id).inserted { expanded.remove(id) }
-                    }) { item, _ in
-                    Text(item.name).font(.system(size: 11)).foregroundStyle(.secondary)
-                        .padding(.leading, 12).accessibilityHint("此滤镜适用于 SDR 编辑")
-                }
-            }
-            .padding(.horizontal, 12).padding(.bottom, 12)
-        }
-        .onChange(of: query) { _, _ in searchCollapsed = []; rebuild() }
-        .onChange(of: favoritesOnly) { _, _ in rebuild() }
-        .onChange(of: favoriteLooks) { _, _ in rebuild() }
-        .onReceive(NotificationCenter.default.publisher(for: DevelopmentPresetCatalog.didChange).receive(on: RunLoop.main)) { _ in reload += 1 }
-        .task(id: reload) {
-            let store = catalog
-            do {
-                let snapshot = try await Task.detached(priority: .userInitiated) { try store.snapshot() }.value
-                guard !Task.isCancelled else { return }
-                records = snapshot.records; favorites = snapshot.favorites; rebuild()
-            } catch {
-                if !Task.isCancelled { onLoadError(error); rebuild() }
-            }
-        }
-    }
-    private func rebuild() {
-        folders = DevelopmentPresetDirectory.folders(records: records, favorites: favorites,
-            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: favoriteLooks, query: query, favoritesOnly: favoritesOnly)
-    }
-}
-
 struct DevelopmentPresetBrowser: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
-    let context: EditingInteractionContext
+    let context: EditingInteractionContext?
     let assetID: String
     let scroller: ScrollViewProxy
     var catalog: DevelopmentPresetCatalog = .shared
@@ -342,12 +320,18 @@ struct DevelopmentPresetBrowser: View {
     @State private var query = ""
     @State private var favoritesOnly = false
     @State private var records: [DevelopmentPresetRecord] = []
+    @State private var reconstructed: [String: DevelopmentPresetRecord] = [:]
     @State private var favoriteIDs: Set<String> = []
     @State private var folders: [DevelopmentPresetFolder] = []
     @State private var expanded: Set<String> = ["adaptive", "film", "user.个人预设"]
     @State private var searchCollapsed: Set<String> = []
     @State private var reload = 0
     @State private var selectedID: String?
+    private enum Adoption {
+        case look(DevelopmentPhotoFilterV3)
+        case preset(DevelopmentPresetRecord, masks: [DevelopmentMaskLayerV3]? = nil)
+    }
+    @State private var pendingAdoption: (Adoption, EditingController.SceneTicket)?
     @State private var fullOperation: Task<Void, Never>?
     @State private var hoverOperation: Task<Void, Never>?
     @State private var hoverKey: String?
@@ -359,16 +343,25 @@ struct DevelopmentPresetBrowser: View {
     @FocusState private var focusRow: String?
 
     private var selected: DevelopmentPresetRecord? { records.first { $0.id == selectedID } }
-    private var selection: DevelopmentFilterV3 { session.parameters.filter }
+    private var hdr: Bool { editing.recipe.sceneGraph != nil || editing.visibleSceneGraph != nil }
+    private var selection: DevelopmentFilterV3 { editing.filterDraft.adjustmentsV3?.filter ?? .init() }
+    private var sdrContext: EditingInteractionContext? { hdr ? nil : context }
 
     var body: some View {
         monitored
         .task(id: reload) {
             do {
                 let store = catalog
-                let result = try await Task.detached(priority: .userInitiated) { try store.snapshot() }.value
+                let (result, recipes) = try await Task.detached(priority: .userInitiated) {
+                    let snapshot = try store.snapshot()
+                    let recipes = snapshot.records.compactMap { record in
+                        (try? DevelopmentPresetExchange.semanticReconstruction(for: record)).map { (record.id, $0) }
+                    }
+                    return (snapshot, Dictionary(uniqueKeysWithValues: recipes))
+                }.value
                 guard !Task.isCancelled else { return }
                 records = result.records
+                reconstructed = recipes
                 if let ticket = preparation.ticket, records.first(where: { $0.id == ticket.record.id })?.version != ticket.record.version {
                     preparation.cancel()
                 }
@@ -379,11 +372,13 @@ struct DevelopmentPresetBrowser: View {
                 }
                 if let id = selectedID, !id.hasPrefix("classic."), !records.contains(where: { $0.id == id }) { selectedID = nil }
                 rebuild()
-            } catch { if !Task.isCancelled { postNotice("无法读取滤镜目录。\(error.localizedDescription)", .error) } }
+            } catch {
+                if !Task.isCancelled { postNotice("无法读取滤镜目录。\(error.localizedDescription)", .error); rebuild() }
+            }
         }
         .sheet(item: $editor) { request in
             DevelopmentPresetEditor(request: request, catalog: catalog, onError: report) { saved in
-                postNotice("已保存预设「\(saved.name)」。")
+                postNotice("已保存预设「\(DevelopmentPresetDirectory.displayName(saved))」。")
                 if editing.developmentContext == context {
                     selectedID = saved.id
                     expanded.formUnion(["imported", saved.kind.rawValue + "." + saved.group])
@@ -396,11 +391,11 @@ struct DevelopmentPresetBrowser: View {
             Button("删除", role: .destructive) {
                 if let record = deleting {
                     let store = catalog
-                    write(success: "已删除预设「\(record.name)」。") { try store.delete(record) }
+                    write(success: "已删除预设「\(DevelopmentPresetDirectory.displayName(record))」。") { try store.delete(record) }
                 }
                 deleting = nil
             }
-        } message: { Text(deleting?.name ?? "") }
+        } message: { Text(deleting.map(DevelopmentPresetDirectory.displayName) ?? "") }
     }
 
     private var monitored: some View {
@@ -417,19 +412,25 @@ struct DevelopmentPresetBrowser: View {
             fullOperation?.cancel()
             if let ticket = preparation.ticket, ticket.record.id != id { preparation.cancel() }
         }
-        .onChange(of: editing.comparing || editing.cropEditing || editing.developmentShowingOriginal
-                  || editing.actualPixels || editing.quickPromptPresented || editing.developmentContext == nil) { _, busy in
+        .onChange(of: editing.filterInteractionIssue != nil || editing.actualPixels) { _, busy in
             if busy { preparation.cancel(); endRowPreview() }
         }
-        .onChange(of: context.historyKey) { _, _ in
+        .onChange(of: context) { _, active in
             preparation.cancel()
-            endRowPreview()
-            selectedID = nil
+            rebuild()
             editor = nil
+            if let active { finishPendingAdoption(in: active) }
+        }
+        .onChange(of: editing.sceneTicket) { _, ticket in
+            if let pendingAdoption, pendingAdoption.1 != ticket { self.pendingAdoption = nil }
+        }
+        .onChange(of: assetID) { _, _ in
+            selectedID = nil
             focusRow = nil
         }
-        .onExitCommand { fullOperation?.cancel(); preparation.cancel(); endRowPreview(); editing.cancelPresetHover(); focusRow = nil }
+        .onExitCommand(perform: cancelPreviewAndPreparation)
         .onDisappear {
+            pendingAdoption = nil
             fullOperation?.cancel()
             preparation.cancel()
             endRowPreview()
@@ -445,16 +446,23 @@ struct DevelopmentPresetBrowser: View {
 
     private var content: some View {
         let revision = session.revision
+        let editable = sdrContext != nil && editing.filterInteractionIssue == nil
         return LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: sectionExpanded,
             headingIdentifier: "editing.leftRail.filters",
-            enabled: Binding(get: { selection.enabled && selection.selection != .original },
-                             set: { changeFilter(.setEnabled(.filter, $0)) }),
-            enableDisabled: editing.availableDevelopmentFilters.count <= 1 || selection.selection == .original,
-            resetAction: { changeFilter(.reset(.filter)) }, resetDisabled: selection.selection == .original,
-            accessory: AnyView(headerActions(revision))) {
+            enabled: hdr ? nil : Binding(get: { selection.enabled && selection.selection != .original },
+                                         set: { changeFilter(.setEnabled(.filter, $0)) }),
+            enableDisabled: !editable || editing.availableDevelopmentFilters.count <= 1 || selection.selection == .original,
+            resetAction: hdr ? nil : { changeFilter(.reset(.filter)) }, resetDisabled: !editable || selection.selection == .original,
+            accessory: sdrContext.map { AnyView(headerActions(revision, context: $0).disabled(!editable)) }) {
             VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                 VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
-                    amountControl
+                    if let reason = editing.filterInteractionIssue {
+                        Text(reason).photosInspectorParagraph().foregroundStyle(.secondary)
+                    } else if hdr {
+                        Text("悬停试看 SDR 效果。采用时进入 SDR 编辑，HDR 草稿保留。")
+                            .photosInspectorParagraph().foregroundStyle(.secondary)
+                    }
+                    if let context = sdrContext { amountControl(context).disabled(!editable) }
                     PresetBrowserSearch(query: $query, favoritesOnly: $favoritesOnly)
                     directory(revision)
                 }
@@ -465,13 +473,12 @@ struct DevelopmentPresetBrowser: View {
             .buttonStyle(PhotosFlatButtonStyle())
             .padding(.horizontal, 12).padding(.bottom, 12)
             .onDisappear {
-                fullOperation?.cancel(); preparation.cancel(); endRowPreview(); focusRow = nil
-                if let id = editing.hoveredPresetID, !id.hasPrefix("snapshot.") { editing.cancelPresetHover(id: id) }
+                cancelPreviewAndPreparation()
             }
         }
     }
 
-    private func headerActions(_ revision: UUID) -> some View {
+    private func headerActions(_ revision: UUID, context: EditingInteractionContext) -> some View {
         HStack(spacing: 4) {
             Button { openEditor(.create) } label: {
                 Image(systemName: "plus").font(.system(size: 12)).frame(width: 26, height: 28).contentShape(Rectangle())
@@ -479,7 +486,7 @@ struct DevelopmentPresetBrowser: View {
             }
             .buttonStyle(.plain).help("保存当前设置为滤镜").accessibilityLabel("保存当前设置为滤镜")
             .accessibilityIdentifier("editing.presets.create")
-            exchangeControls(revision)
+            exchangeControls(revision, context: context)
         }
     }
 
@@ -506,46 +513,52 @@ struct DevelopmentPresetBrowser: View {
     }
 
     @ViewBuilder private func selectedDetails(_ renderedRevision: UUID) -> some View {
-        if let selected {
+        if let selected, let context {
+            let working = workingRecord(selected)
+            let issue = editing.sourceIssueForPreset(working, context: context)
             Text(detailLabel(selected))
                 .font(.caption2).foregroundStyle(.secondary).textSelection(.enabled)
-            if selected.patch.hasFullRecipe, editing.sourceIssueForPreset(selected, context: context) == nil {
+            if selected.patch.hasFullRecipe, issue == nil {
                 Button(editing.hoveredPresetID == selected.id ? "结束预览" : "查看高质量预览") {
                     if editing.hoveredPresetID == selected.id { editing.cancelPresetHover() }
-                    else { useFull(selected, revision: renderedRevision, preview: true) }
+                    else { useFull(selected, context: context, revision: renderedRevision, preview: true) }
                 }.controlSize(.small).accessibilityIdentifier("editing.presets.previewFull")
-                Button("采用完整配方") {
-                    useFull(selected, revision: renderedRevision, preview: false)
+                Button(hdr ? "在 SDR 编辑中采用完整配方" : "采用完整配方") {
+                    useFull(selected, context: context, revision: renderedRevision, preview: false)
                 }.controlSize(.small).accessibilityIdentifier("editing.presets.adoptFull")
             }
-            if let reason = editing.sourceIssueForPreset(selected, context: context) {
+            if let issue {
+                let reason = DevelopmentPresetDirectory.presentationText(issue)
                 Text(reason).photosInspectorParagraph().foregroundStyle(.secondary).help(reason)
             }
             if selected.metadata["capability"] == "lensBlur", selected.metadata["analysis"] == "perPhotoDepth" {
-                let ticket = PresetLensBlurReconstructionControls.Ticket(id: selected.id, version: selected.version,
-                    context: context, revision: renderedRevision)
-                PresetLensBlurReconstructionControls(editing: editing, session: session, catalog: catalog,
-                    record: selected, ticket: ticket, assetID: assetID).id(ticket)
+                if hdr {
+                    Button("打开 SDR 编辑以准备散景") {
+                        do { _ = try editing.openSDRFilterDraft(context: context) } catch { report(error) }
+                    }.controlSize(.small)
+                } else {
+                    let ticket = PresetLensBlurReconstructionControls.Ticket(id: selected.id, version: selected.version,
+                        context: context, revision: renderedRevision)
+                    PresetLensBlurReconstructionControls(editing: editing, session: session, catalog: catalog,
+                        record: selected, ticket: ticket, assetID: assetID).id(ticket)
+                }
             }
-        }
-        if let selected {
-            let working = workingRecord(selected)
-            if working.patch.semanticMasks != nil, editing.sourceIssueForPreset(working, context: context) == nil {
-                maskControls(working, revision: renderedRevision)
+            if working.patch.semanticMasks != nil, issue == nil {
+                maskControls(working, context: context, revision: renderedRevision)
             }
         }
     }
 
     private func workingRecord(_ row: DevelopmentPresetRecord) -> DevelopmentPresetRecord {
         if let staged = preparation.ticket?.record, staged.id == row.id { return staged }
-        return row
+        return reconstructed[row.id] ?? row
     }
 
     private func detailLabel(_ row: DevelopmentPresetRecord) -> String {
         [sourceName(row), "v" + String(row.version)].joined(separator: " · ")
     }
 
-    @ViewBuilder private var amountControl: some View {
+    @ViewBuilder private func amountControl(_ context: EditingInteractionContext) -> some View {
         if let anchor = session.presetAmountSession, anchor.record.id == selectedID,
            anchor.record.supportsAmount(from: anchor.baseline) {
             PhotosRecipeValueRow(session: session, context: context, title: "滤镜强度", control: EditingDevelopmentSession.presetAmountControl,
@@ -556,7 +569,7 @@ struct DevelopmentPresetBrowser: View {
                 }, onError: report)
                 .accessibilityIdentifier("editing.presets.amount")
         } else {
-            classicAmount
+            classicAmount(context)
             if selection.selection == .original {
                 Text("采用支持强度的滤镜后可调整").photosInspectorParagraph().foregroundStyle(.secondary)
             } else if !selection.enabled {
@@ -565,15 +578,14 @@ struct DevelopmentPresetBrowser: View {
         }
     }
 
-    private func exchangeControls(_ renderedRevision: UUID) -> some View {
+    private func exchangeControls(_ renderedRevision: UUID, context: EditingInteractionContext) -> some View {
         PresetExchangeControls(catalog: catalog, selected: selected, currentRecipe: session.recipe,
             onChange: { expanded.insert("imported"); reload += 1 }, onApplySubset: { record in
-                editing.cancelPresetHover()
-                do { try session.adoptPreset(record, context: context, revision: renderedRevision) }
+                do { try adopt(.preset(record), context: context, revision: renderedRevision) }
                 catch { report(error) }
             }, onPrepareSemantic: { record in
                 selectedID = record.id
-                startMasks(record, revision: renderedRevision)
+                startMasks(record, context: context, revision: renderedRevision)
             }, onImportNative: importNative, postNotice: postNotice, compact: true,
             additionalActions: selected?.kind == .user ? AnyView(managementActions) : nil).id(context.historyKey)
     }
@@ -582,7 +594,8 @@ struct DevelopmentPresetBrowser: View {
         fullOperation?.cancel()
         endRowPreview()
         folders = DevelopmentPresetDirectory.folders(records: records, favorites: favoriteIDs,
-            looks: editing.availableDevelopmentFilters, favoriteLooks: editing.favoriteDevelopmentFilters, query: query, favoritesOnly: favoritesOnly)
+            looks: editing.developmentContext == nil ? DevelopmentPhotoFilterV3.allCases : editing.availableDevelopmentFilters,
+            favoriteLooks: editing.favoriteDevelopmentFilters, query: query, favoritesOnly: favoritesOnly)
         if let focusRow, !visibleRows.contains(where: { $0.key == focusRow }) { self.focusRow = nil }
     }
     private var searching: Bool { !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -594,7 +607,7 @@ struct DevelopmentPresetBrowser: View {
         } else if !expanded.insert(id).inserted { expanded.remove(id) }
         endRowPreview()
     }
-    private var classicAmount: some View {
+    private func classicAmount(_ context: EditingInteractionContext) -> some View {
         PhotosRecipeValueRow(session: session, context: context, title: "滤镜强度", control: "filter.intensity",
             value: selection.intensity, range: 0...100, step: 1, digits: 0, apply: { amount, token in
                 var filter = session.parameters.filter
@@ -605,11 +618,12 @@ struct DevelopmentPresetBrowser: View {
         .accessibilityIdentifier("editing.filters.amount")
     }
     private func changeFilter(_ command: DevelopmentAdjustmentCommand) {
+        guard let context = sdrContext, editing.filterInteractionIssue == nil else { return }
         do { try session.apply(command, event: .init(context: context, control: .init(group: .filter, name: "滤镜"))) }
         catch { report(error) }
     }
     private func sourceName(_ record: DevelopmentPresetRecord) -> String {
-        switch record.kind { case .user: return "个人预设"; case .profile: return "Profile"; default: return "XMP" }
+        switch record.kind { case .user: return "个人预设"; case .profile: return "配置文件"; default: return "XMP" }
     }
     private func rowKey(_ item: DevelopmentPresetBrowserItem, _ folder: DevelopmentPresetFolder) -> String {
         String(folder.id.utf8.count) + "." + folder.id + item.id
@@ -623,59 +637,70 @@ struct DevelopmentPresetBrowser: View {
     }
     private func row(_ item: DevelopmentPresetBrowserItem, in folder: DevelopmentPresetFolder, revision: UUID) -> some View {
         let key = rowKey(item, folder)
+        let context = self.context
         let favorite: Bool, available: Bool, detail: String, active: Bool, highlighted: Bool, identifier: String, hint: String
         switch item {
         case .classic(let look):
             favorite = editing.favoriteDevelopmentFilters.contains(look)
             available = true
-            detail = look.isSpektrafilm ? "Spektrafilm 官方模型 · SDR 色彩外观" : "经典滤镜"
-            hint = look.isSpektrafilm ? detail + "。聚焦试看，回车采用滤镜" : "聚焦试看，回车采用滤镜"
+            detail = look.isSpektrafilm ? "胶片模拟" : "基础滤镜"
+            hint = hdr ? "聚焦试看，回车在 SDR 编辑中采用滤镜" : "聚焦试看，回车采用滤镜"
             active = look == .original ? !selection.enabled || selection.selection == .original : selection.enabled && selection.selection == look
             highlighted = active
             identifier = "editing.filter." + look.rawValue
         case .record(let record):
+            let candidate = workingRecord(record)
+            let issue = context.flatMap { editing.sourceIssueForPreset(candidate, context: $0) }
             favorite = favoriteIDs.contains(record.id)
-            available = editing.sourceIssueForPreset(record, context: context) == nil
-            detail = available ? sourceName(record) : editing.sourceIssueForPreset(record, context: context) ?? "待验证"
+            available = context != nil && issue == nil
+            detail = issue.map(DevelopmentPresetDirectory.presentationText) ?? sourceName(record)
             if !available { hint = "回车查看详情。" + detail }
-            else if record.patch.hasFullRecipe { hint = "回车查看高质量预览与完整采用选项" }
-            else if record.patch.semanticMasks != nil { hint = "回车查看准备选区与确认采用选项" }
-            else { hint = "聚焦试看，回车采用" }
+            else if candidate.patch.hasFullRecipe { hint = "回车查看高质量预览与完整采用选项" }
+            else if candidate.patch.semanticMasks != nil { hint = "聚焦试看，回车查看选区与采用选项" }
+            else { hint = hdr ? "聚焦试看，回车在 SDR 编辑中采用" : "聚焦试看，回车采用" }
             active = session.presetAmountSession?.record.id == item.id
             highlighted = active || selectedID == item.id
             identifier = "editing.preset." + record.id
         }
         let activate = {
-                guard session.revision == revision else { report(EditingDevelopmentSessionError.staleInteraction); return }
-                selectedID = item.id
-                endRowPreview()
-                editing.cancelPresetHover()
-                do {
-                    switch item {
-                    case .classic(let look): try editing.changeDevelopmentFilter(look, context: context)
-                    case .record(let record) where available && record.patch.semanticMasks == nil && !record.patch.hasFullRecipe:
-                        try session.adoptPreset(record, context: context, revision: revision)
-                    default:
+            guard let context, editing.filterInteractionIssue == nil else { return }
+            guard session.revision == revision, context == editing.developmentContext else {
+                report(EditingDevelopmentSessionError.staleInteraction)
+                return
+            }
+            selectedID = item.id
+            endRowPreview()
+            editing.cancelPresetHover()
+            do {
+                switch item {
+                case .classic(let look):
+                    try adopt(.look(look), context: context, revision: revision)
+                case .record(let record):
+                    let candidate = workingRecord(record)
+                    if available, candidate.patch.semanticMasks == nil, !candidate.patch.hasFullRecipe {
+                        try adopt(.preset(candidate), context: context, revision: revision)
+                    } else {
                         DispatchQueue.main.async { scroller.scrollTo("editing.presets.details", anchor: .bottom) }
                     }
-                } catch { report(error) }
+                }
+            } catch { report(error) }
         }
         return HStack(spacing: 4) {
             Button(action: activate) {
-                EditingSidebarRowLabel(title: item.name, symbol: available ? "slider.horizontal.3" : "info.circle",
-                    active: highlighted) { inside in
+                PresetDirectoryLabel(title: item.name, symbol: available ? "slider.horizontal.3" : "info.circle",
+                    selected: active, highlighted: highlighted) { inside in
                     if inside { preview(item, key: key) }
                     else { endRowPreview(key) }
                 }
-                .overlay(alignment: .bottom) { WorkbenchFocusUnderline() }
             }.buttonStyle(.plain).focused($focusRow, equals: key)
+                .disabled(editing.filterInteractionIssue != nil)
                 .accessibilityLabel(item.name).accessibilityHint(hint)
                 .accessibilityIdentifier(identifier).accessibilityAddTraits(active ? .isSelected : [])
                 .help(available ? hint : detail)
                 .onKeyPress(.return) { activate(); return .handled }
                 .onKeyPress(.upArrow) { move(key, by: -1) }.onKeyPress(.downArrow) { move(key, by: 1) }
                 .onKeyPress(.escape) {
-                    fullOperation?.cancel(); preparation.cancel(); endRowPreview(); editing.cancelPresetHover(); focusRow = nil
+                    cancelPreviewAndPreparation()
                     return .handled
                 }
                 .onDisappear { endRowPreview(key) }
@@ -705,8 +730,48 @@ struct DevelopmentPresetBrowser: View {
                     .accessibilityIdentifier(item.id.hasPrefix("classic.") ? "editing.filter.favorite." + String(item.id.dropFirst(8)) : "editing.preset.favorite." + item.id)
             }
         }
-        .font(.system(size: 11)).padding(.leading, 9).padding(.trailing, 3)
+        .font(.system(size: 11)).padding(.trailing, 3)
         .id(key)
+    }
+
+    private func adopt(_ adoption: Adoption, context: EditingInteractionContext, revision: UUID) throws {
+        guard context == editing.developmentContext, session.revision == revision, editing.filterInteractionIssue == nil else {
+            throw EditingDevelopmentSessionError.staleInteraction
+        }
+        editing.cancelPresetHover()
+        if hdr {
+            switch adoption {
+            case .look(let look):
+                guard editing.availableDevelopmentFilters.contains(look) else { throw DevelopmentPresetError.unavailable }
+            case .preset(let record, let masks):
+                _ = try session.previewPreset(record, context: context, revision: revision, preparedMasks: masks, baseline: editing.filterDraft)
+            }
+            let ticket = try editing.openSDRFilterDraft(context: context)
+            pendingAdoption = (adoption, ticket)
+            if let active = editing.developmentContext { finishPendingAdoption(in: active) }
+        } else {
+            try apply(adoption, context: context, revision: revision)
+        }
+    }
+
+    private func finishPendingAdoption(in context: EditingInteractionContext) {
+        guard let (adoption, ticket) = pendingAdoption, !hdr, editing.sceneTicket == ticket,
+              context == editing.developmentContext else { return }
+        pendingAdoption = nil
+        guard editing.filterInteractionIssue == nil else { return }
+        do { try apply(adoption, context: context, revision: session.revision) }
+        catch { report(error) }
+    }
+
+    private func apply(_ adoption: Adoption, context: EditingInteractionContext, revision: UUID) throws {
+        switch adoption {
+        case .look(let look): try editing.changeDevelopmentFilter(look, context: context)
+        case .preset(let record, let masks):
+            let name = DevelopmentPresetDirectory.displayName(record)
+            let changed = try session.adoptPreset(record, context: context, revision: revision, preparedMasks: masks, displayName: name)
+            if changed, masks != nil { postNotice("已采用「\(name)」的选区调整。") }
+            if changed, record.patch.hasFullRecipe { postNotice("已采用「\(name)」的完整配方。") }
+        }
     }
     private func move(_ key: String, by offset: Int) -> KeyPress.Result {
         let rows = visibleRows
@@ -725,18 +790,28 @@ struct DevelopmentPresetBrowser: View {
         hoverID = nil
     }
 
+    private func cancelPreviewAndPreparation() {
+        pendingAdoption = nil
+        fullOperation?.cancel()
+        preparation.cancel()
+        endRowPreview()
+        if let id = editing.hoveredPresetID, !id.hasPrefix("snapshot.") { editing.cancelPresetHover(id: id) }
+        focusRow = nil
+    }
+
     private func preview(_ item: DevelopmentPresetBrowserItem, key: String) {
-        guard context == editing.developmentContext, !editing.quickPromptPresented, hoverKey != key else { return }
+        guard let context, context == editing.developmentContext, editing.filterInteractionIssue == nil,
+              session.activeGesture == nil, !editing.actualPixels, hoverKey != key else { return }
         endRowPreview()
         hoverKey = key
         hoverID = item.id
         switch item {
         case .classic(let look): editing.previewDevelopmentFilter(look, context: context)
-        case .record(let row): previewRecord(workingRecord(row), key: key)
+        case .record(let row): previewRecord(workingRecord(row), context: context, key: key)
         }
     }
 
-    private func previewRecord(_ record: DevelopmentPresetRecord, key: String) {
+    private func previewRecord(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, key: String) {
         guard let candidate = editing.presetForHover(record, context: context) else { return }
         let revision = session.revision
         let ticket = DevelopmentPresetMaskPreparation.Ticket(record: candidate, context: context, revision: revision)
@@ -764,12 +839,12 @@ struct DevelopmentPresetBrowser: View {
             }
         }
     }
-    @ViewBuilder private func maskControls(_ record: DevelopmentPresetRecord, revision: UUID) -> some View {
+    @ViewBuilder private func maskControls(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, revision: UUID) -> some View {
         let ticket = DevelopmentPresetMaskPreparation.Ticket(record: record, context: context, revision: revision)
         let current = preparation.ticket == ticket
         VStack(alignment: .leading, spacing: 5) {
-            if current, preparation.busy, !preparation.status.isEmpty {
-                Text(preparation.status).font(.caption2).foregroundStyle(.secondary)
+            if current, !preparation.status.isEmpty {
+                Text(DevelopmentPresetDirectory.presentationText(preparation.status)).font(.caption2).foregroundStyle(.secondary)
             } else {
                 Text((record.patch.semanticMasks ?? []).map { $0.target.title }.joined(separator: "、") + " · 逐片识别")
                     .font(.caption2).foregroundStyle(.secondary)
@@ -779,7 +854,7 @@ struct DevelopmentPresetBrowser: View {
                     ForEach(layers.prefix(4)) { layer in
                         if let data = layer.subjectPNG, let image = NSImage(data: data) {
                             Image(nsImage: image).resizable().scaledToFit().frame(width: 38, height: 34)
-                                .background(.black).accessibilityLabel(layer.name + "选区")
+                                .background(.black).accessibilityLabel(DevelopmentPresetDirectory.presentationText(layer.name) + "选区")
                         }
                     }
                 }
@@ -788,18 +863,16 @@ struct DevelopmentPresetBrowser: View {
                         if editing.hoveredPresetID == record.id { editing.cancelPresetHover() }
                         else { editing.previewDevelopmentPreset(record, context: context, explicit: true, preparedMasks: layers) }
                     }
-                    Button("确认采用") {
+                    Button(hdr ? "在 SDR 编辑中确认采用" : "确认采用") {
                         do {
-                            editing.cancelPresetHover()
-                            try session.adoptPreset(record, context: context, revision: ticket.revision, preparedMasks: layers)
-                            postNotice("已采用「\(DevelopmentPresetDirectory.displayName(record))」的选区调整。")
+                            try adopt(.preset(record, masks: layers), context: context, revision: ticket.revision)
                             preparation.cancel()
                         } catch { report(error) }
                     }.accessibilityIdentifier("editing.presets.adoptMasks")
                 }
             } else if current && preparation.busy { ProgressView().controlSize(.small) }
             else {
-                Button("准备选区") { startMasks(record, revision: revision) }
+                Button(current ? "重试准备选区" : "准备选区") { startMasks(record, context: context, revision: revision) }
                     .accessibilityIdentifier("editing.presets.prepareMasks")
             }
             if current {
@@ -808,7 +881,7 @@ struct DevelopmentPresetBrowser: View {
         }.controlSize(.small)
     }
 
-    private func useFull(_ record: DevelopmentPresetRecord, revision: UUID, preview: Bool) {
+    private func useFull(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, revision: UUID, preview: Bool) {
         fullOperation?.cancel()
         editing.cancelPresetHover()
         let store = catalog, ctx = context
@@ -817,21 +890,17 @@ struct DevelopmentPresetBrowser: View {
                 let hydrated = try await Task.detached(priority: .userInitiated) { try store.materialize(record) }.value
                 guard !Task.isCancelled, ctx == editing.developmentContext, session.revision == revision, selectedID == record.id else { return }
                 if preview { editing.previewDevelopmentPreset(hydrated, context: ctx, explicit: true) }
-                else {
-                    try session.adoptPreset(hydrated, context: ctx, revision: revision)
-                    postNotice("已采用「\(DevelopmentPresetDirectory.displayName(record))」的完整配方。")
-                }
+                else { try adopt(.preset(hydrated), context: ctx, revision: revision) }
             } catch { if !Task.isCancelled { report(error) } }
         }
     }
 
     private func canPreview(_ ticket: DevelopmentPresetMaskPreparation.Ticket) -> Bool {
         editing.developmentContext == ticket.context && session.revision == ticket.revision && editing.isPresented
-            && !editing.comparing && !editing.cropEditing && !editing.developmentShowingOriginal
-            && !editing.actualPixels && !editing.quickPromptPresented
+            && editing.filterInteractionIssue == nil && session.activeGesture == nil && !editing.actualPixels
     }
 
-    private func startMasks(_ record: DevelopmentPresetRecord, revision: UUID) {
+    private func startMasks(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, revision: UUID) {
         endRowPreview()
         editing.cancelPresetHover()
         let ticket = DevelopmentPresetMaskPreparation.Ticket(record: record, context: context, revision: revision)
@@ -843,7 +912,8 @@ struct DevelopmentPresetBrowser: View {
                               using owner: DevelopmentPresetMaskPreparation) -> Bool {
         guard canPreview(ticket), let source = session.source, let capture = editing.work?.source.sourceLocation,
               editing.sourceIssueForPreset(ticket.record, context: ticket.context) == nil else { return false }
-        owner.start(ticket, source: source, existingLayerCount: session.parameters.masks.count,
+        let baseline = editing.filterDraft.adjustmentsV3
+        owner.start(ticket, source: source, existingLayerCount: baseline?.masks.count ?? 0,
             isCurrent: { canPreview(ticket) }, onResult: owner === preparation ? postNotice : nil, generate: { target in
                 let mask = try await editing.developmentMaskInput.presetCandidate(capture: capture, source: source, target: target)
                 return try await Task.detached(priority: .userInitiated) { try mask.layer() }.value
@@ -852,10 +922,11 @@ struct DevelopmentPresetBrowser: View {
     }
 
     private func postNotice(_ text: String, _ kind: EditingWorkspaceNotice.Kind = .information) {
-        editing.postNotice(text, kind: kind, for: assetID)
+        editing.postNotice(DevelopmentPresetDirectory.presentationText(text), kind: kind, for: assetID)
     }
     private func report(_ error: Error) { postNotice("预设操作未完成。\(error.localizedDescription)", .error) }
     private func openEditor(_ mode: DevelopmentPresetEditorRequest.Mode) {
+        guard let context = sdrContext else { return }
         editing.cancelPresetHover()
         editor = .init(mode: mode, recipe: session.recipe, sourceID: context.sourceContentID)
     }
@@ -879,7 +950,7 @@ struct DevelopmentPresetBrowser: View {
         Task {
             do {
                 let row = try await Task.detached(priority: .userInitiated) { try store.importNative(DevelopmentPresetCatalog.data(at: url)) }.value
-                postNotice("已导入预设「\(row.name)」。")
+                postNotice("已导入预设「\(DevelopmentPresetDirectory.displayName(row))」。")
                 guard editing.developmentContext == context else { return }
                 selectedID = row.id
                 expanded.formUnion(["imported", row.kind.rawValue + "." + row.group])

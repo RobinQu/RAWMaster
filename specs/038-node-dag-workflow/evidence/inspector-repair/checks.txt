@@ -1,0 +1,29 @@
+$ python3 scripts/check-ui-prototype.py --editor-scope-only
+✓ 整图与节点各自写入，节点选择更换参数
+✓ 修复接管右栏，Escape 恢复节点、组和监看
+✓ 两笔修复一次提交，可撤销与重做
+✓ 窄窗 light 系统外观下离线与修复返回
+✓ 窄窗 light 取消还焦
+✓ 窄窗 dark 系统外观下离线与修复返回
+✓ 窄窗 dark 取消还焦
+
+$ swift test --jobs 4 --filter 'EditingLayoutInteractionTests|EditingCompatibilityGraphTests|CropWorkspaceEnhancementTests|EditingSceneGraphWindowTests|testProductionInspectorNeverMountsOrSchedulesAdjustmentThumbnails|testRepairDraftRetriesAndPublishesOneUndoableChange|testLocalRetouchUsesActualProjectedSourceDonorAndOneAtomicHistoryEntry|testCancelledLocalPreparationIgnoresLateBackendResultSilently|PhotosHistogramInteractionTests|EditingDevelopmentSessionTests'
+Build complete! (12.65 sec)
+Test Suite 'CropWorkspaceEnhancementTests' passed at 2026-11-28 09:31:46.414.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.594 (0.594) seconds
+Test Suite 'EditingCompatibilityGraphTests' passed at 2026-11-28 09:31:52.548.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 6.133 (6.134) seconds
+Test Suite 'EditingDevelopmentSessionTests' passed at 2026-11-28 09:31:52.676.
+	 Executed 35 tests, with 0 failures (0 unexpected) in 0.125 (0.128) seconds
+Test Suite 'EditingLayoutInteractionTests' passed at 2026-11-28 09:31:59.035.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 6.358 (6.359) seconds
+Test Case '-[RAWMasterUITests.EditingSceneGraphWindowTests testOptInEditableGraphWindowScopedCommandsAndSaveWhileMonitoring]' passed (4.884 seconds).
+Test Suite 'EditingSceneGraphWindowTests' passed at 2026-11-28 09:32:03.919.
+	 Executed 1 test, with 0 failures (0 unexpected) in 4.884 (4.884) seconds
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRepairDraftRetriesAndPublishesOneUndoableChange]' passed (0.237 seconds).
+Test Suite 'PhotosDevelopmentIntegrationTests' passed at 2026-11-28 09:32:05.055.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 1.135 (1.136) seconds
+Test Suite 'PhotosHistogramInteractionTests' passed at 2026-11-28 09:32:05.057.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+	 Executed 59 tests, with 0 failures (0 unexpected) in 19.231 (19.237) seconds
+	 Executed 59 tests, with 0 failures (0 unexpected) in 19.231 (19.238) seconds

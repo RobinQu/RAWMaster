@@ -146,19 +146,28 @@ const adaptivePresets = [
   { id:'日出天空', name: '日出', value: 'sky', group: '天空', target: '天空', source: 'Sunrise', values: { ev: -.18, warmth: 36 } },
   { id:'主体柔光', name: '柔和', value: 'subject', group: '主体', target: '主体', source: 'Soft', values: { ev: .22, contrast: -8 } },
   { id:'adaptive.warm-light', name: '暖光', value: 'warm-light', group: '主体', target: '主体', source: 'Warm Light', values: { ev: .22, warmth: 12 } },
-  { id:'adaptive.landscape', name: '春季 01', value: 'landscape', group: '风景', target: '风景', source: 'Spring01', values: { sat: 12 } },
+  { id:'adaptive.landscape', name: '春季 01', value: 'landscape', group: '风景', target: '风景', source: 'Spring01', issue: '此滤镜的风景选区与局部参数尚不可用。' },
   { id:'adaptive.background', name: '气泡', value: 'background', group: '模糊背景', target: '背景', source: 'Bubble', values: { blur: 12 } },
 ];
-function presetRow(action, key, name, favoriteID, active = false) {
-  const scene = SceneEditor.nativeReview && SceneEditor.hdr();
-  return `<div class="preset-item">${btn(name, action, key, { icon: 'sliders', cls: active ? 'sidebar-row current' : 'sidebar-row', pressed: active, disabled:scene, title:scene ? name + ' · 适用于 SDR 编辑' : name })}
-    ${btn('收藏 ' + name, 'favorite', favoriteID, { icon: 'star', only: true, disabled:scene, pressed: Studio.data.favorites.includes(favoriteID), cls: 'icon-btn' })}</div>`;
+const presetDisplayText = (text) => text.replace(/(?:adobe|spektrafilm|lightroom(?: classic)?|camera[ -]?raw)[ \t]*/gi, '').trim() || '未命名';
+function filterBlockReason() {
+  if (!Studio.asset(Studio.data.work).online) return '原片离线。接回原片后可预览和采用滤镜。';
+  if (S.tool === 'versions' || S.canvasTool || S.cropOpen || S.dagConnectionDraft || quickPromptVisible()) return '请先完成或取消当前工具。';
+  if (S.compare) return '请先退出比较。';
+  return '';
+}
+function presetRow(action, key, name, favoriteID, active = false, issue = '') {
+  name = presetDisplayText(name);
+  const blocked = filterBlockReason(), reason = blocked || issue;
+  return `<div class="preset-item"><button type="button" class="sidebar-row${active ? ' current' : ''}" data-act="${action}" data-val="${h(key)}" aria-pressed="${active}" title="${h(reason ? name + ' · ' + reason : name)}"${blocked ? ' disabled' : ''}>
+    ${icon(issue ? 'info' : 'sliders', 12)}<span>${h(name)}</span>${active ? icon('check', 11) : ''}</button>
+    ${btn('收藏 ' + name, 'favorite', favoriteID, { icon: 'star', only: true, pressed: Studio.data.favorites.includes(favoriteID), cls: 'icon-btn' })}</div>`;
 }
 function presetFolder(id, label, count, content, expanded = false) {
   const term = (S.presetQuery || '').trim();
   const open = (term ? S.presetSearchFolders : S.presetFolders)?.get(id) ?? (term ? true : expanded);
   return `<details class="preset-folder" data-folder="${h(id)}"${open ? ' open' : ''}><summary>
-    ${icon('chevron', 12)}${icon('folder', 13)}<span>${h(label)}</span><small>${count}</small></summary>
+    ${icon('chevron', 10)}${icon('folder', 13)}<span>${h(presetDisplayText(label))}</span><small>${count}</small></summary>
     <div class="preset-children">${content}</div></details>`;
 }
 document.addEventListener('click', (event) => {
@@ -179,8 +188,9 @@ function filterDirectory(recipe) {
     .filter(([key, p]) => show('film.' + key, p.name, '胶片模拟 Film'));
   const basic = Studio.data.presets.filter((p) => p.group === 'Classic Filters' && show(p.name, p.name, '基础滤镜'));
   const imported = Studio.data.presets.filter((p) => p.group !== 'Classic Filters' && show(p.name, p.name, p.group, '用户导入滤镜 Imported'));
-  const renderAdaptive = (p) => presetRow('adaptive-preset', p.value, p.name, p.id);
-  const renderPreset = (p) => presetRow('apply-preset', p.name, p.name, p.name, recipe.preset === p.name);
+  const renderAdaptive = (p) => presetRow('adaptive-preset', p.value, p.name, p.id, recipe.masks.some(m => m.preset === p.id), p.issue);
+  const renderPreset = (p) => presetRow('apply-preset', p.name, p.name, p.name, p.group === 'Classic Filters' ?
+    recipe.basicFilter?.name === p.name && recipe.filmEnabled !== false : recipe.preset === p.name);
   const children = (prefix, entries, row) => {
     const groups = Object.entries(Object.groupBy(entries, p => p.group));
     if (prefix === 'imported.') groups.sort(([a], [b]) => a.localeCompare(b, 'zh-CN'));
@@ -189,9 +199,8 @@ function filterDirectory(recipe) {
   const folders = [
     adaptive.length && presetFolder('adaptive', '自适应滤镜', adaptive.length, children('adaptive.', adaptive, renderAdaptive), true),
     basic.length && presetFolder('basic', '基础滤镜', basic.length, basic.map(renderPreset).join('')),
-    film.length && presetFolder('film', '胶片模拟', film.length,
-      '<p class="muted">Spektrafilm 官方模型 · SDR 色彩外观</p>' + film.map(([key, p]) =>
-      presetRow('film-stock', key, p.name, 'film.' + key, recipe.filmStock === key)).join(''), true),
+    film.length && presetFolder('film', '胶片模拟', film.length, film.map(([key, p]) =>
+      presetRow('film-stock', key, p.name, 'film.' + key, recipe.filmStock === key && recipe.filmEnabled !== false)).join(''), true),
     (imported.length || !term && !S.favoriteOnly) && presetFolder('imported', '用户导入滤镜', imported.length,
       children('imported.', imported, renderPreset) || '<p class="muted">尚无导入预设</p>'),
   ].filter(Boolean);
@@ -211,9 +220,10 @@ document.addEventListener('toggle', event => {
 function presetList() {
   const e = currentEdit();
   const recipe = e.recipe;
-  const nativeHDR = SceneEditor.nativeReview && SceneEditor.hdr();
-  const filmAmountEnabled = !!recipe.filmStock && !nativeHDR;
-  const available = Studio.asset(Studio.data.work).online;
+  const hdr = SceneEditor.hdr();
+  const blockReason = filterBlockReason();
+  const filmAmountEnabled = !!(recipe.filmStock || recipe.basicFilter) && !hdr;
+  const available = !blockReason;
   const enabled = recipe.filmEnabled !== false;
   const expanded = S.filtersExpanded !== false;
   return `<aside class="edit-left" aria-label="照片工具"${S.tool === 'versions' ? ' inert' : ''}>
@@ -221,19 +231,19 @@ function presetList() {
     <section aria-labelledby="preset-heading">
       <div class="filter-panel-heading">
         <button class="filter-disclosure" data-act="filters-panel-toggle" aria-expanded="${expanded}" aria-label="滤镜，${expanded ? '收起' : '展开'}">${icon('chevron', 10)}${icon('photo', 13)}<span id="preset-heading">滤镜</span></button>
-        <div class="filter-header-actions">
+        ${hdr ? '' : `<div class="filter-header-actions">
           ${btn('复位滤镜', 'remove-film', '', { icon: 'undo', only: true, cls: 'icon-btn', disabled: !available || !filmAmountEnabled })}
           <button class="filter-enabled" data-act="filter-enabled" aria-label="启用滤镜" aria-pressed="${enabled && filmAmountEnabled}"${!available || !filmAmountEnabled ? ' disabled' : ''}><span aria-hidden="true"></span></button>
           <details class="filter-options"${!available ? ' inert' : ''}><summary aria-label="滤镜与预设操作">${icon('ellipsis', 14)}</summary><div>
             ${btn('保存当前设置为滤镜…', 'preset-manage', 'save', { icon: 'plus' })}
-            ${btn('导入 Lightroom / Camera Raw 预设…', 'preset-import', '', { icon: 'import' })}
+            ${btn('导入 XMP 预设…', 'preset-import', '', { icon: 'import' })}
             ${btn('导出原生预设…', 'preset-manage', 'export', { icon: 'export' })}
           </div></details>
-        </div>
+        </div>`}
       </div>
-      ${expanded ? `<div class="filter-panel-content"><div class="film-strength">${nativeHDR ? '<p class="muted">HDR 草稿可浏览收藏与目录。滤镜强度和外观采用需要 SDR 编辑。</p>' : rangeRow('filmAmount', '滤镜强度', 0, 100, 1, recipe.filmAmount ?? 100, !filmAmountEnabled || !available)}
-        ${!nativeHDR && !filmAmountEnabled ? '<p class="muted">采用支持强度的滤镜后可调整</p>' : !enabled ? '<p class="muted">滤镜已关闭，已保留选择与强度。</p>' : ''}</div>
-      <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
+      ${expanded ? `<div class="filter-panel-content"><div class="film-strength">${hdr ? '' : rangeRow('filmAmount', '滤镜强度', 0, 100, 1, recipe.filmAmount ?? 100, !filmAmountEnabled || !available)}
+        ${blockReason ? `<p class="muted">${h(blockReason)}</p>` : hdr ? '<p class="muted">悬停试看 SDR 效果。采用时进入 SDR 编辑，HDR 草稿保留。</p>' : !filmAmountEnabled ? '<p class="muted">采用支持强度的滤镜后可调整</p>' : !enabled ? '<p class="muted">滤镜已关闭，已保留选择与强度。</p>' : ''}</div>
+      <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="搜索名称或组" name="presetQuery" placeholder="搜索名称或组" value="${h(S.presetQuery)}"></label>
       ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
       ${filterDirectory(recipe)}</div>` : ''}</section>
     <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2><div class="snapshot-actions">${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}<details class="snapshot-menu results-menu"><summary aria-label="更多快照操作">${icon('ellipsis',15)}</summary><div>${btn('已有编辑结果…','open-versions')}</div></details></div></div>
@@ -474,8 +484,10 @@ function scopesPanel(docked) {
   const mode = S.scopePlot ?? 'histogram';
   const plots = [['histogram', '直方图'], ['vector', '矢量示波器']];
   const vector = `<svg class="vector-plot" viewBox="0 0 120 48" role="img" aria-label="矢量分布示意"><g fill="none" stroke="#52616a"><circle cx="60" cy="24" r="16"/><circle cx="60" cy="24" r="8"/><path d="M44 24h32m-16-16v32"/></g><path fill="#aab8bd" opacity=".6" d="M52 28l7-11 9 3 4 5-10 6z"/><path stroke="#ffbb80" stroke-dasharray="2 2" d="M60 24l11-12"/></svg>`;
+  const source = dagEnabled() ? dagScopeSource() : '最终结果';
   return `<section class="editing-scopes${docked ? ' docked' : ''}"><div class="row">${flatTabs('示波器', 'scope-plot', plots, mode)}${docked ? btn('在独立窗口显示示波器', 'scopes', '', {icon:'pulse', only: true, cls:'icon-btn'}) : ''}</div>
     ${mode === 'vector' ? vector : PhotographicScopes.chart(docked)}
+    <small class="scope-source">${h(source)}</small>
     ${colorSamplerPanel()}</section>`;
 }
 const maskTools = [['主体', '背景', '前景实例', '画笔'], ['线性渐变', '径向渐变', '亮度范围']];
@@ -513,6 +525,11 @@ function developInspector(r) {
   return `<div class="row between"><h2>${editTools[S.tool][0]}</h2></div>
     ${toolFields(r)}
     <div class="ins-block">${btn('复位当前照片…', 'reset-recipe', '', { cls: 'link' })}</div>`;
+}
+function editorToolsContent(r) {
+  if (S.tool === 'agent') return agentInspector();
+  if (S.tool === 'smart') return smartInspector();
+  return developInspector(r);
 }
 const cards = {
   人像: ['逆光人物提亮', '明暗黑白人像'],
@@ -569,15 +586,17 @@ function agentInspector() {
     }
     ${btn('制作任务', 'goto', 'jobs', { cls: 'link' })}</section>`;
 }
-function inspectorRail() {
+function inspectorRail(photographic) {
   const active = S.tool === 'agent' ? 'smart' : S.tool;
+  const tools = photographic ? ['basic','tones','color','detail','optics','effects','grading','masks'] : dagCapabilities();
+  const target = dagEnabled() && photographic ? 'photo-adjustment-panel' : 'adjustment-panel';
   return `<div class="inspector-rail" role="toolbar" aria-label="调整面板" aria-orientation="vertical">${Object.entries(
     panelIcons,
   )
-    .filter(([key]) => (photoControls() ? [...dagPanels,'optics'] : dagCapabilities()).includes(key) || key === 'smart' && !dagEnabled())
+    .filter(([key]) => tools.includes(key) || key === 'smart' && !dagEnabled())
     .map(([key, symbol]) =>
       `<button type="button" class="rail-tool" data-act="edit-tool" data-val="${key}"
-        aria-label="${h(editTools[key][0])}"${S.canvasTool ? ' disabled' : ''} aria-controls="adjustment-panel" aria-pressed="${active === key}">${icon(symbol)}</button>`,
+        aria-label="${h(editTools[key][0])}"${S.canvasTool ? ' disabled' : ''} aria-controls="${target}" aria-pressed="${active === key}">${icon(symbol)}</button>`,
     )
     .join('')}</div>`;
 }
@@ -649,6 +668,13 @@ const narrowEditor = matchMedia('(max-width:860px)');
 narrowEditor.addEventListener('change', () => {
   if (S.page === 'edit') render();
 });
+function photoInspector(r, hasPhotographicStage) {
+  const diagnostics = SceneEditor.hdr() ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${SceneEditor.scope(true)}</details>` : '';
+  const adjustments = hasPhotographicStage ? `<details class="photo-adjustments"${S.photoAdjustmentsOpen ? ' open' : ''}><summary>整图调整</summary>
+    <fieldset class="photo-tools-readonly edit-inspector-body"${S.dagConnectionDraft ? ' disabled' : ''}>${inspectorRail(true)}
+    <div class="inspector-content manual-inspector" id="photo-adjustment-panel" tabindex="-1">${editorToolsContent(photoParameters(r))}</div></fieldset></details>` : '';
+  return `<section class="edit-photo-panel" aria-label="照片外观与示波器">${scopesPanel(true)}${adjustments}${SceneEditor.modeBar()}${diagnostics}</section>`;
+}
 function editorView() {
   SceneEditor.reportRuntime();
   if (S.canvasRouteTool) { const tool = S.canvasRouteTool; S.canvasRouteTool = null; queueMicrotask(() => { if (S.page === 'edit' && !S.canvasTool) canvasToolOpen(tool); }); }
@@ -656,23 +682,22 @@ function editorView() {
     e = currentEdit(),
     versions = S.tool === 'versions';
   const r = canvasToolPreview(versions ? versionRecipe(S.versionView || e.adopted) : e.recipe);
-  if (!photoControls() && dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
-  const inspector = S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && !photoControls() && dagEnabled() && !['smart', 'agent'].includes(S.tool)
-    ? dagInspector()
-    : S.tool === 'agent'
-      ? agentInspector()
-      : S.tool === 'smart'
-        ? smartInspector()
-        : developInspector(photoControls() ? photoParameters(r) : r);
+  const editingGraph = !versions && dagEnabled();
+  const hasPhotographicStage = editingGraph && photoControls();
+  if (editingGraph && !hasPhotographicStage && !S.canvasTool && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
+  const inspector = S.canvasTool ? '<p>在照片底部完成或取消画布工具。</p>' : editingGraph
+    ? `<section class="photo-node-scope" aria-label="当前节点参数">${dagInspector()}</section>`
+    : editorToolsContent(r);
   const left = presetList();
   const canvas = `<div class="edit-center">${dagPhotoCanvas(r, id)}${editorNotices(id)}</div>`;
-  const basic = S.tool === 'basic' && !S.canvasTool;
-  const sceneControls = basic ? scopesPanel(true) + SceneEditor.modeBar() + (SceneEditor.hdr() ? `<details class="scope-native-review" ${SceneEditor.scopeOpen() ? 'open' : ''}><summary>HDR 示波器与诊断</summary>${SceneEditor.scope(true)}</details>` : '') : '';
-  const right = `<div class="edit-right">${versions ? '' : usesCompatibilityGraph() ? compatibilityGraphToolbar() : dagToolbar()}
-    <aside class="edit-inspector" aria-label="调整工具">${inspectorRail()}
-    <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">` +
-    sceneControls + (S.dagConnectionDraft && photoControls() ? '<fieldset class="photo-tools-readonly" disabled>'+inspector+'</fieldset>' : inspector) + (dagEnabled() && photoControls() && S.tool==='basic' ? '<section class="photo-node-scope" aria-label="当前节点参数">'+dagInspector()+'</section>' : '') +
-    '</div></aside></div>';
+  const right = `<div class="edit-right">${S.canvasTool?.kind === 'remove' ? repairInspector(S.canvasTool) : `
+    ${versions || S.canvasTool ? '' : photoInspector(r, hasPhotographicStage)}
+    <aside class="edit-inspector" aria-label="当前编辑">
+      <header class="edit-inspector-head"><h2>当前编辑</h2>${versions ? '' : usesCompatibilityGraph() ? compatibilityGraphToolbar() : dagToolbar()}</header>
+      <div class="edit-inspector-body">${hasPhotographicStage || S.canvasTool ? '' : inspectorRail(!editingGraph)}
+        <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">${inspector}</div>
+      </div>
+    </aside>`}</div>`;
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
       <strong>${h(Studio.displayName(id))}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
 </header>
@@ -692,9 +717,14 @@ function focusEditDestination() {
   }
 }
 actions['edit-tool'] = (key, event, el) => {
+  const photo = dagEnabled() && photoControls();
+  if (photo) {
+    if ($('.photo-adjustments')) $('.photo-adjustments').open = true;
+    S.photoAdjustmentsOpen = true;
+  }
   const focus = el?.closest('.inspector-rail')
     ? '.inspector-rail [data-val="' + key + '"]'
-    : '#adjustment-panel';
+    : photo ? '#photo-adjustment-panel' : '#adjustment-panel';
   editPanel('edit/' + key, focus);
 };
 actions['open-versions'] = requested => {
@@ -777,7 +807,7 @@ function adjusted(el) {
     }
   } else {
     r[k] = Number(el.value);
-    if (k === 'filmAmount' && r.filmStock) r.filmEnabled = true;
+    if (k === 'filmAmount' && (r.filmStock || r.basicFilter)) r.filmEnabled = true;
     if (['wbTemperature','tint','warmth'].includes(k)) { r.wbApplied = k === 'warmth' ? wbMode(r) : 'temperature'; r.wbPreset = ''; }
   }
   return r;
@@ -1010,7 +1040,7 @@ function point(x, y) {
   if (S.tool === 'repair' && currentEdit().recipe.sectionEnabled?.repair === false) return;
   if (S.cropOpen || S.compare) return;
   const draft = S.canvasSelection;
-  if (draft?.id === Studio.data.work && draft.kind === 'sampler' && S.tool === 'basic') {
+  if (draft?.id === Studio.data.work && draft.kind === 'sampler') {
     const points = [...colorSamplerPoints()], point = sampleGeometry()?.map({x,y},true);
     if (!point || [point.x,point.y].some(v=>v<0 || v>=100)) return;
     if (draft.replacing == null) { if (points.length >= 9) return; points.push(point); }
@@ -1069,42 +1099,68 @@ actions['canvas-point'] = (_, event, el) => {
 actions['center-repair'] = () => point(50, 50);
 actions['remove-repair'] = (i) =>
   adjustments('移除修复点', { repairs: currentEdit().recipe.repairs.filter((_, n) => n !== Number(i)) });
+const filterDraft = () => SceneEditor.hdr() ? SceneEditor.sdrFilterDraft() : currentEdit().recipe;
+function filterChanges(label, fields) {
+  if (filterBlockReason()) return;
+  endEditPreview();
+  if (SceneEditor.hdr()) SceneEditor.openSDRFilterDraft();
+  setPhotoParameters(label, fields);
+  render();
+  endEditPreview();
+}
+function filmFields(key, recipe) {
+  return { filmStock: key, basicFilter: null, filmAmount: filterAmount(recipe, recipe.filmStock === key), filmEnabled: true };
+}
+function filterAmount(recipe, sameLook) {
+  return (sameLook ? recipe.filmAmount : recipe.filmAmount || 100) ?? 100;
+}
+function presetFields(preset, recipe) {
+  if (preset.group !== 'Classic Filters') return { ...preset.values, preset: preset.name };
+  return { basicFilter: { name: preset.name, values: preset.values }, filmStock: null, filmEnabled: true,
+    filmAmount: filterAmount(recipe, recipe.basicFilter?.name === preset.name) };
+}
+function adaptiveFields(p, recipe) {
+  return { masks: [...recipe.masks.filter(m => m.preset !== p.id), { preset: p.id, name: p.target, kind: p.target, values: p.values }] };
+}
+function adaptiveIssue(p) {
+  return p.issue || (p.target === '人像' && Studio.photo(Studio.data.work).series !== 'mirror' ? '本张未找到人像。' : '');
+}
 actions['apply-preset'] = (name) => {
-  if (SceneEditor.hdr()) return notify('该预设尚未验证 HDR 母版运算。请使用支持的场景工具，或在单独的 SDR 版本中采用。', 'error');
   const p = Studio.data.presets.find((p) => p.name === name);
-  adjustments('套用 ' + name, { ...p.values, preset: name });
+  if (p) filterChanges('套用 ' + presetDisplayText(name), presetFields(p, filterDraft()));
 };
 actions['adaptive-preset'] = (key) => {
-  if (SceneEditor.hdr()) return notify('当前版本的自适应预设适用于 SDR 编辑。', 'error');
+  if (filterBlockReason()) return;
   const p = adaptivePresets.find((item) => item.value === key);
+  if (!p) return;
+  endEditPreview();
+  const issue = adaptiveIssue(p);
+  if (issue) return dialog(p.name, `<p>${h(issue)}</p>`, btn('关闭', 'close'));
   dialog(p.name, `<p>在当前照片上生成${p.target}蒙版。确认覆盖范围后再采用。</p>`,
     btn('取消', 'close') + btn('生成预览', 'adaptive-mask-preview', key, { cls: 'primary' }));
 };
 actions['adaptive-mask-preview'] = (key) => {
   const p = adaptivePresets.find((item) => item.value === key);
-  dialog(p.name, `<figure class="adaptive-mask-proof">${pic(Studio.data.work, '')}<span aria-hidden="true" class="${key}"></span></figure><p>已重建${p.target}蒙版 · ${p.name}</p>`,
+  const base = filterDraft(), recipe = { ...base, ...adaptiveFields(p, base) };
+  dialog(p.name, `<figure class="adaptive-mask-proof"><img src="${h(RMPhotos.url(Studio.photo(Studio.data.work)))}" alt="${h(p.target)}选区效果" style="filter:${h(RMPhotos.filter(RMPhotos.displayLook(base)))}"><div class="adaptive-layers">${adaptiveFilterLayers(recipe, Studio.data.work)}</div></figure><p>已准备本张${p.target}选区。${SceneEditor.hdr() ? '采用后进入 SDR 编辑。' : ''}</p>`,
     btn('取消', 'close') + btn('采用蒙版', 'adaptive-mask-apply', key, { cls: 'primary' }));
 };
 actions['adaptive-mask-apply'] = (key) => {
   const p = adaptivePresets.find((item) => item.value === key);
-  const masks = currentEdit().recipe.masks;
   closeSheet();
-  adjustments('套用 ' + p.name, { masks: [...masks, { name: p.target, kind: p.target, values: p.values }] });
+  if (p && !adaptiveIssue(p)) filterChanges('套用 ' + p.name, adaptiveFields(p, filterDraft()));
 };
 actions['film-stock'] = (key) => {
-  if (!Object.hasOwn(RMPhotos.filmStocks, key) || S.tool === 'versions' || SceneEditor.film(key) || currentEdit().recipe.filmStock === key) return;
-  adjustments('胶片模拟 · ' + RMPhotos.filmStocks[key].name, { filmStock: key, filmAmount: 100, filmEnabled: true });
+  if (Object.hasOwn(RMPhotos.filmStocks, key)) filterChanges('胶片模拟 · ' + RMPhotos.filmStocks[key].name, filmFields(key, filterDraft()));
 };
 actions['filters-panel-toggle'] = () => { S.filtersExpanded = S.filtersExpanded === false; render(); };
 actions['filter-enabled'] = () => {
-  if (!Studio.asset(Studio.data.work).online || !currentEdit().recipe.filmStock) return;
+  if (!currentEdit().recipe.filmStock && !currentEdit().recipe.basicFilter) return;
   const enable = currentEdit().recipe.filmEnabled === false;
-  adjustments(enable ? '启用滤镜' : '停用滤镜', { filmEnabled: enable });
+  filterChanges(enable ? '启用滤镜' : '停用滤镜', { filmEnabled: enable });
 };
 actions['remove-film'] = () => {
-  const { filmStock, filmAmount, filmEnabled, ...recipe } = currentEdit().recipe;
-  Studio.setRecipe(Studio.data.work, '移除胶片模拟', recipe);
-  render();
+  filterChanges('复位滤镜', { filmStock: null, basicFilter: null, filmAmount: 100, filmEnabled: false });
 };
 actions.favorite = (name) => {
   const f = Studio.data.favorites;
@@ -1129,7 +1185,9 @@ function paintEditPreview(recipe) {
   const img = $('.developed');
   if (!img) return;
   img.style.filter = RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(recipe)));
-  img.style.transform = 'rotate(' + (recipe.angle || 0) + 'deg)';
+  img.style.transform = editImageTransform(recipe);
+  const layers = img.parentElement.querySelector('.adaptive-layers');
+  if (layers) layers.innerHTML = adaptiveFilterLayers(recipe, Studio.data.work);
   $('.dark-canvas').style.setProperty('--ratio', editImageRatio(recipe, Studio.data.work));
 }
 function endEditPreview() {
@@ -1137,21 +1195,27 @@ function endEditPreview() {
   const connected = previewChoice.isConnected;
   previewChoice = null;
   if (connected) {
-    paintEditPreview(currentEdit().recipe);
+    const recipe = currentEdit().recipe;
+    paintEditPreview(dagEnabled() ? dagViewRecipe(recipe) : recipe);
     $('.look-preview').hidden = true;
   }
 }
 function rowPreview(el) {
-  const recipe = currentEdit().recipe;
+  const recipe = filterDraft();
   const key = el.dataset.val;
-  if (SceneEditor.hdr() && el.dataset.act !== 'restore-snap') return;
   switch (el.dataset.act) {
     case 'film-stock':
-      return { ...recipe, filmStock: key, filmAmount: recipe.filmStock === key ? (recipe.filmAmount ?? 100) : 100 };
-    case 'apply-preset':
-      return { ...recipe, ...Studio.data.presets.find((p) => p.name === key)?.values };
-    case 'adaptive-preset':
-      return { ...recipe, ...adaptivePresets.find((p) => p.value === key)?.values };
+      return { ...recipe, ...filmFields(key, recipe) };
+    case 'apply-preset': {
+      const p = Studio.data.presets.find((p) => p.name === key);
+      if (p) return { ...recipe, ...presetFields(p, recipe) };
+      return undefined;
+    }
+    case 'adaptive-preset': {
+      const p = adaptivePresets.find((p) => p.value === key);
+      if (p && !adaptiveIssue(p)) return { ...recipe, ...adaptiveFields(p, recipe) };
+      return undefined;
+    }
     case 'restore-snap':
       return currentEdit().snapshots[key]?.recipe;
   }
@@ -1159,8 +1223,7 @@ function rowPreview(el) {
 for (const type of ['pointerover', 'focusin', 'pointerout', 'focusout']) {
   document.addEventListener(type, (event) => {
     const el = event.target.closest(previewSelector);
-    if (!el || el.contains(event.relatedTarget) || S.page !== 'edit' || S.tool === 'versions' ||
-      S.compare || S.cropOpen || quickPromptVisible() || sheet.open) return;
+    if (!el || el.contains(event.relatedTarget) || S.page !== 'edit' || filterBlockReason() || sheet.open) return;
     if (type === 'pointerout' || type === 'focusout') {
       if (previewChoice === el) endEditPreview();
       return;
@@ -1170,7 +1233,7 @@ for (const type of ['pointerover', 'focusin', 'pointerout', 'focusout']) {
     previewChoice = el;
     paintEditPreview(recipe);
     const note = $('.look-preview');
-    note.textContent = '临时预览 · ' + el.getAttribute('aria-label');
+    note.textContent = (SceneEditor.hdr() && el.dataset.act !== 'restore-snap' ? 'SDR 滤镜预览' : '临时预览') + ' · ' + (el.getAttribute('aria-label') || el.querySelector('span')?.textContent);
     note.hidden = false;
   });
 }
@@ -1191,7 +1254,7 @@ document.addEventListener('keydown', (event) => {
   const keys = ['ArrowUp', 'ArrowDown'];
   if (!keys.includes(event.key)) return;
   event.preventDefault();
-  const rows = [...el.closest('.preset-children,.snapshot-list').querySelectorAll(previewSelector)].filter((row) => row.getClientRects().length),
+  const rows = [...el.closest('.preset-directory,.snapshot-list').querySelectorAll(previewSelector)].filter((row) => !row.disabled && row.getClientRects().length),
     step = event.key === keys[0] ? -1 : 1;
   rows[Math.max(0, Math.min(rows.length - 1, rows.indexOf(el) + step))].focus();
 });
@@ -1207,8 +1270,8 @@ actions['preset-manage'] = (operation) => {
       select(
         '操作',
         'presetOperation',
-        operation === 'import' ? ['导入 Lightroom / Camera Raw 预设'] : operation === 'export' ? ['导出原生预设'] : ['保存当前调整'],
-        operation === 'import' ? '导入 Lightroom / Camera Raw 预设' : operation === 'export' ? '导出原生预设' : '保存当前调整',
+        operation === 'import' ? ['导入 XMP 预设'] : operation === 'export' ? ['导出原生预设'] : ['保存当前调整'],
+        operation === 'import' ? '导入 XMP 预设' : operation === 'export' ? '导出原生预设' : '保存当前调整',
       ) +
       (operation === 'import'
         ? '<p id="preset-detail" class="muted">为示例预设命名，导入后可在「用户导入滤镜」中查看。</p>'
@@ -1218,7 +1281,7 @@ actions['preset-manage'] = (operation) => {
 };
 changes.presetOperation = (el) => {
   $('#preset-detail').textContent = {
-    '导入 Lightroom / Camera Raw 预设': '选择 .xmp 或 .zip 后先查看支持的字段与缺失依赖。',
+    '导入 XMP 预设': '选择 .xmp 或 .zip 后先查看支持的字段与缺失依赖。',
     导出原生预设: '可查看和下载本次选择的示例参数。',
     保存当前调整: '保存可跨片复用的调整字段。',
   }[el.value];

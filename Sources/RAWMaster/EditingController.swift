@@ -58,11 +58,11 @@ import RAWMasterLibrary
         canvasCommand = EditingCanvasCommand(action: action)
     }
     func toggleBeforeAfter() {
-        guard !cropEditing, visibleSceneGraph == nil else { return }
+        guard !cropEditing, !repairEditing, visibleSceneGraph == nil else { return }
         setComparisonMode(comparing ? .off : .wipeHorizontal)
     }
     func setComparisonMode(_ mode: EditingComparisonMode) {
-        guard !shuttingDown, isPresented, work != nil else { return }
+        guard !shuttingDown, isPresented, work != nil, !repairEditing else { return }
         if mode != .off { guard visibleSceneGraph == nil, comparison.reference.resolve(work: work, versions: versions) != nil else { return } }
         guard comparison.mode != mode else { return }
         comparison.mode = mode
@@ -76,7 +76,7 @@ import RAWMasterLibrary
         if requestPreview { self.requestPreview() }
     }
     func setComparisonReference(_ reference: EditingComparisonReference) {
-        guard !shuttingDown, isPresented, !cropEditing,
+        guard !shuttingDown, isPresented, !cropEditing, !repairEditing,
               reference.resolve(work: work, versions: versions) != nil else { return }
         let activating = comparison.mode == .off
         let changed = comparison.reference != reference
@@ -153,7 +153,13 @@ import RAWMasterLibrary
     @Published private(set) var preview: NSImage?
     @Published private(set) var previewDimensions = ""
     @Published private(set) var sourceReady = false {
-        willSet { if !newValue { invalidateDevelopmentInteraction(reason: .sourceInvalidated) } }
+        willSet {
+            if !newValue {
+                let discardedRepair = repairEditing
+                invalidateDevelopmentInteraction(reason: .sourceInvalidated)
+                if discardedRepair { postNotice("原片已离线，未提交的修复已取消。", kind: .error) }
+            }
+        }
     }
     @Published private(set) var sourceNeedsRevalidation = false
     @Published private(set) var revalidatingSource = false
@@ -247,6 +253,15 @@ import RAWMasterLibrary
     private var developmentCurrentAnalysis: PendingDevelopmentAnalysis?
     // Delivery is revoked immediately; this scalar marker survives until the same child actually joins.
     private var retiringDevelopmentLocal: (id: UUID, tool: DevelopmentLocalTool, automatic: Bool)?
+    private var repairComparison: EditingComparisonState?
+    struct RepairFailure {
+        let message: String
+        fileprivate let operation: DevelopmentAnalysisOperation
+        fileprivate let title: String
+        fileprivate let input: DevelopmentLocalInputV1
+        fileprivate let context: EditingInteractionContext
+    }
+    @Published private(set) var repairFailure: RepairFailure?
     private var retiringDevelopmentCropAuto: (id: UUID, context: EditingInteractionContext)?
     private var developmentHistogramTask: Task<DevelopmentAnalysisResult, Error>?
     private var developmentHistogramOperationID: UUID?
@@ -838,7 +853,7 @@ import RAWMasterLibrary
     }
     func setRecipe(control: String = "adjustment", nativeEvent: Bool = false, input suppliedInput: EditingPreviewInput? = nil,
                    _ mutation: (inout DevelopmentRecipe) -> Void) {
-        guard !shuttingDown, !quickPromptAdopting else { return }
+        guard !shuttingDown, !quickPromptAdopting, !repairEditing else { return }
         var candidate = recipe
         mutation(&candidate)
         do { try candidate.validate() } catch { message = "调整数值无效，请检查范围。"; return }
@@ -1218,8 +1233,9 @@ import RAWMasterLibrary
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
         if let graph = visibleSceneGraph {
+            if filterHoverToken != nil { cancelDevelopmentFilterHover() }
             if stage == .development, sourceReady, let work, let intent = try? EditingPreviewIntent(
-                source: .raw(work.source), recipe: photographicUIRecipe, quality: .settled,
+                source: .raw(work.source), recipe: developmentSessionStorage?.repairRecipe ?? photographicUIRecipe, quality: .settled,
                 presentationID: "scene.source." + work.id, sourceFactsOnly: true) {
                 previews.primary.submit(intent, input: input ?? .capture(control: "scene.source", phase: "metadata"))
                 prepareDevelopmentSessionIfNeeded()
@@ -1247,7 +1263,7 @@ import RAWMasterLibrary
         guard !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
         let input = input ?? .capture(control: "view", phase: "discrete")
         let editingDraft = stage == .development && sourceReady
-        var currentRecipe = editingDraft ? recipe : (selectedVersion?.recipe ?? recipe)
+        var currentRecipe = editingDraft ? developmentSessionStorage?.repairRecipe ?? recipe : (selectedVersion?.recipe ?? recipe)
         if editingDraft && developmentShowingOriginal {
             currentRecipe = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
         }
@@ -1363,6 +1379,7 @@ import RAWMasterLibrary
     /// An unchanged draft needs no duplicate version; a failed save keeps the editor open.
     func completeDevelopment() {
         guard !shuttingDown, !saving else { return }
+        if repairEditing { completeDevelopmentRepair(); return }
         guard stage == .development, isDirty else { leaveBrowsingContext(); return }
         saveDevelopment(returnAfterSaving: true)
     }
@@ -2646,6 +2663,12 @@ import RAWMasterLibrary
             self.previewInteractionChanged(control.name == "crop" ? "crop" : "photos." + control.name, active: active)
         }
         session.presetAdoptionsChanged = { [weak self] in self?.scheduleLiveStatePersistence() }
+        session.repairDraftChanged = { [weak self] in
+            guard let self else { return }
+            self.repairFailure = nil
+            self.developmentLocalInput.recipeWillChange()
+            self.requestPreview()
+        }
         session.presetCapabilityIssue = { [weak self] row, context in self?.capabilityIssueForPreset(row, context: context) }
         session.currentDehazeContext = { [weak self] context in try self?.admittedDevelopmentDehazeContext(context: context) }
         session.currentGrainSamplingVersions = { [weak self] context in
@@ -2888,6 +2911,8 @@ import RAWMasterLibrary
         cancelDevelopmentBackgroundWork()
     }
     private func cancelDevelopmentBackgroundWork(preserveThumbnails: Bool = false) {
+        if filterHoverToken != nil { cancelDevelopmentFilterHover() }
+        repairComparison = nil; repairFailure = nil
         developmentMaskInput.release()
         cancelSceneDepth()
         cancelCurrentDevelopmentCropAutomatic()
@@ -3067,17 +3092,39 @@ import RAWMasterLibrary
             + available.filter { !favoriteDevelopmentFilters.contains($0) }
     }
     func toggleDevelopmentFilterFavorite(_ look: DevelopmentPhotoFilterV3) {
-        guard look != .original, availableDevelopmentFilters.contains(look) else { return }
+        guard look != .original else { return }
         if favoriteDevelopmentFilters.contains(look) { favoriteDevelopmentFilters.remove(look) }
         else { favoriteDevelopmentFilters.insert(look) }
         defaults.set(favoriteDevelopmentFilters.map(\.rawValue).sorted(), forKey: "editing.filterFavorites.v1")
     }
-    func previewDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, context: EditingInteractionContext) {
-        guard availableDevelopmentFilters.contains(look), var candidate = try? recipe.promotingToV3(),
-              var filter = candidate.adjustmentsV3?.filter else { return }
+    var filterDraft: DevelopmentRecipe {
+        recipe.sceneGraph == nil ? recipe : legacyDraftForScene
+    }
+    var filterInteractionIssue: String? {
+        guard stage == .development else { return "返回编辑后可预览和采用滤镜。" }
+        guard sourceReady, !sourceNeedsRevalidation else { return "原片离线。接回原片后可预览和采用滤镜。" }
+        guard developmentContext != nil else { return "正在确认照片能力。" }
+        if recipe.sceneGraph != nil, let reason = sceneModeBlockReason { return reason }
+        if cropEditing || comparing || developmentShowingOriginal || quickPromptPresented || saving ||
+            developmentLocalInput.tool != nil || developmentPicker != nil || repairEditing ||
+            developmentMaskInput.candidate != nil || developmentMaskInput.busy || developmentMaskInput.selecting != nil {
+            return "请先完成或取消当前工具。"
+        }
+        return nil
+    }
+    private func choosingDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, from current: DevelopmentFilterV3) -> DevelopmentFilterV3 {
+        var filter = current
         filter.enabled = look != .original
-        if look != .original { filter.selection = look }
-        candidate.adjustmentsV3?.filter = filter
+        if look != .original, look != current.selection {
+            filter.selection = look
+            if filter.intensity == 0 { filter.intensity = 100 }
+        }
+        return filter
+    }
+    func previewDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, context: EditingInteractionContext) {
+        guard availableDevelopmentFilters.contains(look), var candidate = try? filterDraft.promotingToV3(),
+              let filter = candidate.adjustmentsV3?.filter else { return }
+        candidate.adjustmentsV3?.filter = choosingDevelopmentFilter(look, from: filter)
         previewPresetCandidate(candidate, id: "classic." + look.rawValue, look: look, context: context)
     }
     func sourceIssueForPreset(_ record: DevelopmentPresetRecord, context: EditingInteractionContext) -> String? {
@@ -3110,7 +3157,8 @@ import RAWMasterLibrary
     func previewDevelopmentPreset(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, explicit: Bool = false,
                                   preparedMasks: [DevelopmentMaskLayerV3]? = nil) {
         guard record.patch.fullRecipe == nil || explicit else { cancelDevelopmentFilterHover(); return }
-        guard let candidate = try? developmentSession.previewPreset(record, context: context, revision: developmentSession.revision, preparedMasks: preparedMasks) else {
+        guard let candidate = try? developmentSession.previewPreset(record, context: context, revision: developmentSession.revision,
+            preparedMasks: preparedMasks, baseline: recipe.sceneGraph == nil ? nil : filterDraft) else {
             cancelDevelopmentFilterHover()
             return
         }
@@ -3353,15 +3401,83 @@ import RAWMasterLibrary
     }
     func changeDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, context: EditingInteractionContext) throws {
         try developmentSession.validateInteraction(context)
-        guard availableDevelopmentFilters.contains(look) else { throw DevelopmentThumbnailError.unsupportedGraph }
+        guard recipe.sceneGraph == nil, availableDevelopmentFilters.contains(look) else { throw DevelopmentThumbnailError.unsupportedGraph }
         cancelDevelopmentFilterHover()
         let command: DevelopmentAdjustmentCommand
         if look == .original { command = .setEnabled(.filter, false) }
         else {
-            var value = developmentSession.parameters.filter; value.enabled = true; value.selection = look
-            command = .setParameters(.filter(value))
+            command = .setParameters(.filter(choosingDevelopmentFilter(look, from: developmentSession.parameters.filter)))
         }
         try developmentSession.apply(command, event: .init(context: context, control: .init(group: .filter, name: "滤镜")))
+    }
+    var repairEditing: Bool { developmentSessionStorage?.repairRecipe != nil }
+    var repairTools: [DevelopmentLocalTool] {
+        let groups = availablePhotosGroups
+        return [DevelopmentLocalTool.retouch, .redEye].filter { groups.contains($0 == .retouch ? .retouch : .redEye) }
+    }
+    var repairEntryReason: String? {
+        guard isPresented, stage == .development else { return "请返回当前编辑" }
+        guard sourceReady, !sourceNeedsRevalidation else { return "原片离线，请先接回或验证原片" }
+        guard developmentContext != nil else { return "正在读取照片调整信息" }
+        guard !repairTools.isEmpty else { return "此照片来源不支持修复" }
+        if let reason = scenePendingEditReason { return reason }
+        if cropEditing || quickPromptPresented || developmentPicker != nil || developmentMaskInput.isActive ||
+            developmentShowingOriginal || sceneScopes.picking {
+            return "请先完成或取消当前画布工具"
+        }
+        if saving || sceneStarting || developmentAnalysisBusy || developmentDehazeInput.hasPendingInput {
+            return "请等待当前调整完成"
+        }
+        return nil
+    }
+    var repairCompletionReason: String? {
+        if !sourceReady || sourceNeedsRevalidation { return "原片离线，请先接回或验证原片" }
+        if developmentAnalysisBusy || hasPendingDevelopmentLocalInput { return "请等待这笔修复完成" }
+        if repairFailure != nil { return "请重试或放弃失败的这一笔" }
+        if recipe.sceneGraph != nil, scenePreviewError != nil { return "请重试照片预览或取消修复" }
+        return nil
+    }
+    func toggleDevelopmentRepair() {
+        if repairEditing { completeDevelopmentRepair(); return }
+        if let reason = repairEntryReason { postNotice(reason); return }
+        finishDevelopmentNumberInput()
+        guard let context = developmentContext, let tool = repairTools.first else { return }
+        do {
+            if let token = developmentSession.activeGesture { try developmentSession.endGesture(token, .commit) }
+            try developmentSession.beginRepair(context: context)
+            repairComparison = comparing ? comparison : nil
+            stopComparing(requestPreview: false)
+            cancelDevelopmentFilterHover()
+            selectDevelopmentLocalTool(tool, context: context)
+            if recipe.sceneGraph != nil, sceneGraphState.viewing != .init() { sceneFrame = nil }
+            requestPreview()
+        } catch { postNotice("无法开始修复，请检查当前编辑。", kind: .error) }
+    }
+    func completeDevelopmentRepair() {
+        if let reason = repairCompletionReason { postNotice(reason); return }
+        closeDevelopmentRepair(accept: true)
+    }
+    func cancelDevelopmentRepair() { closeDevelopmentRepair(accept: false) }
+    private func closeDevelopmentRepair(accept: Bool) {
+        guard repairEditing, let context = developmentContext else { return }
+        cancelDevelopmentLocalInput()
+        if recipe.sceneGraph != nil, sceneGraphState.viewing != .init() { sceneFrame = nil }
+        do {
+            let changed = try developmentSession.endRepair(context: context, accept: accept)
+            cancelDevelopmentLocalInput(clearTool: true)
+            repairFailure = nil
+            let restoreComparison = repairComparison
+            repairComparison = nil
+            if let restoreComparison { comparison = restoreComparison }
+            if !changed || restoreComparison != nil { requestPreview() }
+        } catch { postNotice("未能完成修复，请重试或取消。", kind: .error) }
+    }
+    func discardDevelopmentRepairFailure() { repairFailure = nil }
+    func retryDevelopmentRepair() {
+        guard repairEditing, let failure = repairFailure, developmentContext == failure.context,
+              !developmentAnalysisBusy, sourceReady, !sourceNeedsRevalidation else { return }
+        requestDevelopmentAnalysis(failure.operation, title: failure.title, context: failure.context,
+            nativeEvent: true, localInputV1: failure.input)
     }
     func supportsDevelopmentRedEyeAutomatic() -> Bool {
         availablePhotosGroups.contains(.redEye)
@@ -3404,9 +3520,9 @@ import RAWMasterLibrary
         }
         do {
             try developmentSession.validateInteraction(context)
-            let projection = try photographicUIRecipe.prospectiveLocalInputV1(source: source, sourceGeneration: facts.sourceGeneration,
+            let projection = try developmentSession.recipe.prospectiveLocalInputV1(source: source, sourceGeneration: facts.sourceGeneration,
                 decoderContractFingerprint: decoder, targetTool: .redEye)
-            cancelDevelopmentLocalInput(clearTool: true); developmentPicker = nil
+            cancelDevelopmentLocalInput(clearTool: !repairEditing); developmentPicker = nil
             requestDevelopmentAnalysis(.redEyeAutomatic, title: "自动修正红眼", context: context,
                 nativeEvent: true, localInputV1: projection.input)
         } catch {
@@ -3441,22 +3557,23 @@ import RAWMasterLibrary
               developmentContext == context, developmentSession.page == .adjust,
               !developmentShowingOriginal, !comparing, !cropEditing, developmentPicker == nil,
               let source = developmentSession.source else { return nil }
+        let displayedRecipe = developmentSession.recipe
         if recipe.sceneGraph != nil {
-            guard let frame = sceneFrame, !scenePreviewBusy, sceneGraphState.viewing == .init(),
+            guard let frame = sceneFrame, !scenePreviewBusy, developmentSceneViewing == .init(),
                   let mapping = try? developmentGeometry.mapping(sourceSize: source.sourceSize),
                   frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height),
-                  let fingerprint = try? EditingFingerprint.of(photographicUIRecipe) else { return nil }
+                  let fingerprint = try? EditingFingerprint.of(displayedRecipe) else { return nil }
             return .init(context: context, frameID: frame.id, sourceGeneration: context.sourceGeneration,
                 recipeFingerprint: fingerprint, mapping: mapping, source: source)
         }
         guard let frame = previews.primary.frame,
               frame.generation == context.sourceGeneration, frame.revision == previews.primary.currentRevision,
               previews.primary.currentFrameWasDrawn,
-              frame.quality != .interactive, previews.primary.frameRecipe == recipe,
+              frame.quality != .interactive, previews.primary.frameRecipe == displayedRecipe,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let mapping = try? developmentGeometry.mapping(sourceSize: source.sourceSize),
               frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height),
-              let fingerprint = try? EditingFingerprint.of(recipe) else { return nil }
+              let fingerprint = try? EditingFingerprint.of(displayedRecipe) else { return nil }
         return .init(context: context, frameID: frame.id, sourceGeneration: frame.generation,
             recipeFingerprint: fingerprint, mapping: mapping, source: source)
     }
@@ -3475,7 +3592,7 @@ import RAWMasterLibrary
                 strength: stroke.strength * point.pressure)
         }
         do {
-            let projection = try photographicUIRecipe.prospectiveLocalInputV1(source: frame.source, sourceGeneration: frame.sourceGeneration,
+            let projection = try developmentSession.recipe.prospectiveLocalInputV1(source: frame.source, sourceGeneration: frame.sourceGeneration,
                 decoderContractFingerprint: decoder, targetTool: tool)
             requestDevelopmentAnalysis(operation, title: tool == .retouch ? "修饰" : "修正红眼", context: frame.context,
                 nativeEvent: true, localInputV1: projection.input, localGestureID: gestureID)
@@ -3510,7 +3627,7 @@ import RAWMasterLibrary
     func allowsDevelopmentMaskInput(_ context: EditingInteractionContext) -> Bool {
         developmentContext == context && developmentInterfaceActive && isPresented && sourceReady && !shuttingDown
             && stage == .development && developmentSession.page == .adjust && !developmentSavePreviewSuspended
-            && !developmentShowingOriginal && !comparing && !cropEditing && developmentPicker == nil
+            && !developmentShowingOriginal && !comparing && !cropEditing && !repairEditing && developmentPicker == nil
     }
     func createDevelopmentSubjectMask(context: EditingInteractionContext) {
         developmentMaskInput.begin(.subject, context: context)
@@ -3652,7 +3769,7 @@ import RAWMasterLibrary
     func beginDevelopmentPicker(_ kind: EditingDevelopmentPicker.Kind, context: EditingInteractionContext) {
         guard developmentInterfaceActive, isPresented, !shuttingDown, sourceReady, stage == .development,
               developmentContext == context, (kind.isLensBlur || availablePhotosGroups.contains(kind.group)), !developmentAnalysisBusy,
-              !developmentShowingOriginal, !comparing, !cropEditing, developmentSession.page == .adjust else { return }
+              !developmentShowingOriginal, !comparing, !cropEditing, !repairEditing, developmentSession.page == .adjust else { return }
         if kind.group == .curves, kind != .parametricCurveTargeted, !supportsDevelopmentCurvePicker { return }
         do {
             cancelDevelopmentLocalInput(clearTool: true)
@@ -4025,6 +4142,8 @@ import RAWMasterLibrary
             if let targeted { try? developmentSession.endGesture(targeted.gesture,.cancel) }
             if let curveTargeted { try? developmentSession.endGesture(curveTargeted.gesture,.cancel) };return
         }
+        if repairEditing && localInputV1 == nil { return }
+        if localInputV1 != nil { repairFailure = nil }
         developmentPicker = nil
         if dehazeInputV1 == nil { developmentDehazeInput.cancel() }
         if localInputV1 == nil { developmentLocalInput.cancel(clearTool: true) }
@@ -4088,10 +4207,14 @@ import RAWMasterLibrary
                         await previews.primary.joinDevelopmentAnalysis(request)
                         try Task.checkCancellation()
                         guard !child.isCancelled, !shuttingDown, developmentSession.context == pending.ticket.context,
-                              developmentCurrentAnalysis?.ticket.operationID == pending.ticket.operationID,
-                              result.operationID == pending.ticket.operationID,
-                              result.sourceBinding == developmentSession.source else { continue }
+                              developmentCurrentAnalysis?.ticket.operationID == pending.ticket.operationID else { continue }
                         failureStage = .accept
+                        let validatingRepair = repairEditing && pending.localInputV1 != nil
+                        guard result.operationID == pending.ticket.operationID,
+                              result.sourceBinding == developmentSession.source else {
+                            if validatingRepair { throw EditingDevelopmentSessionError.staleAnalysis }
+                            continue
+                        }
                         if request.sampling == .blackAndWhiteSummaryStripes32V2 {
                             guard try request.matchesSamplingVersion(result.samplingVersion),
                                   previews.primary.isCurrentDevelopmentAnalysisRequest(request),
@@ -4132,13 +4255,17 @@ import RAWMasterLibrary
                             let changed = try developmentSession.acceptGeometryAnalysis(resolved, ticket: geometryTicket,
                                 expectedPresentedFingerprint: request.presentedRecipeFingerprint, title: pending.title)
                             if !changed, case .noResult(let reason) = resolved.resolution { message = developmentCropAutomaticNoResultMessage(reason) }
-                        } else if case .local(let batch) = result.value, let expected = pending.localInputV1 {
-                            guard result.sessionID == request.preview.sessionID, result.consumerID == request.preview.consumerID,
+                        } else if let expected = pending.localInputV1 {
+                            guard case .local(let batch) = result.value,
+                                  result.sessionID == request.preview.sessionID, result.consumerID == request.preview.consumerID,
                                   result.revision == request.preview.revision, result.role == request.preview.role,
                                   result.quality == request.preview.quality, result.clientCorrelation == request.preview.clientCorrelation,
                                   result.actualRecipe == pending.ticket.analysisRecipe, result.roi == request.roi,
                                   result.binding == batch.binding, result.binding.stage == pending.ticket.stage,
-                                  result.presentedRecipeFingerprint == pending.ticket.draftRecipeFingerprint else { continue }
+                                  result.presentedRecipeFingerprint == pending.ticket.draftRecipeFingerprint else {
+                                if validatingRepair { throw EditingDevelopmentSessionError.staleAnalysis }
+                                continue
+                            }
                             let changed = try developmentSession.acceptLocalAnalysis(batch, ticket: pending.ticket,
                                 expectedInput: expected, title: pending.title)
                             if !changed, case .noResult(let reason) = batch.resolution { message = developmentLocalNoResultMessage(reason, operation: pending.operation) }
@@ -4208,7 +4335,12 @@ import RAWMasterLibrary
                            developmentCurrentAnalysis?.ticket.operationID == pending.ticket.operationID,
                            developmentPendingAnalysis == nil, !(error is CancellationError),
                            !developmentErrorIsCancellation(error) {
-                            message = developmentAnalysisFailureMessage(error, operation: pending.operation, title: pending.title)
+                            let explanation = developmentAnalysisFailureMessage(error, operation: pending.operation, title: pending.title)
+                            if let local = pending.localInputV1, repairEditing {
+                                repairFailure = .init(message: explanation, operation: pending.operation, title: pending.title,
+                                    input: local, context: pending.ticket.context)
+                                try? developmentSession.cancelAnalysis(operationID: pending.ticket.operationID, context: pending.ticket.context)
+                            } else { message = explanation }
                             if pending.dehazeInputV1 != nil || pending.geometryTicket != nil {
                                 developmentDehazeInput.analysisRevoked(pending.ticket.operationID)
                                 try? developmentSession.cancelAnalysis(operationID: pending.ticket.operationID, context: pending.ticket.context)
@@ -4224,8 +4356,11 @@ import RAWMasterLibrary
             if let curveTargeted { try? developmentSession.endGesture(curveTargeted.gesture,.cancel) }
             developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentTargetedCurve=nil;developmentTargetedCurveReady=false
             if let operationID, dehazeInputV1 != nil { developmentDehazeInput.analysisRevoked(operationID) }
-            message = localInputV1 == nil && dehazeInputV1 == nil && operation != .cropAutomatic ? "未开始\(title)：\(error.localizedDescription)"
+            let explanation = localInputV1 == nil && dehazeInputV1 == nil && operation != .cropAutomatic ? "未开始\(title)：\(error.localizedDescription)"
                 : developmentAnalysisFailureMessage(error, operation: operation, title: title)
+            if let localInputV1, repairEditing {
+                repairFailure = .init(message: explanation, operation: operation, title: title, input: localInputV1, context: context)
+            } else { message = explanation }
         }
     }
     func finishDevelopmentSummary(_ token: EditingGestureToken) {
@@ -4277,6 +4412,10 @@ import RAWMasterLibrary
         if developmentCropAutomaticInProgress { cancelDevelopmentCropAutomatic(context: context); return }
         if developmentDehazeInput.hasPendingInput { developmentDehazeInput.cancel(); return }
         if hasPendingDevelopmentLocalInput { cancelDevelopmentLocalInput(); return }
+        if repairEditing {
+            try? developmentSession.stepRepairHistory(redo: redo, context: context)
+            return
+        }
         let input = EditingPreviewInput.capture(control: redo ? "photos.redo" : "photos.undo", phase: "discrete", nativeEvent: true)
         do { if redo { try developmentSession.redo(context: context, input: input) } else { try developmentSession.undo(context: context, input: input) } }
         catch { /* Old keyboard callbacks stay consumed by the editing owner. */ }
@@ -4291,6 +4430,11 @@ import RAWMasterLibrary
         cancelPresetHover()
         finishDevelopmentNumberInput()
         developmentInterfaceActive = false
+        if repairEditing {
+            developmentLocalInput.cancelCollection()
+            developmentLocalInput.setPanHeld(false)
+            return
+        }
         // The native pointer owner also cancels on resign. Use the same policy regardless of
         // observer order; session.suspend revokes unconditionally even when restoration fails.
         let cancel = developmentSessionStorage?.page == .crop || developmentSessionStorage?.activeControl?.name.hasPrefix("legacy.grading.") == true
@@ -4318,7 +4462,7 @@ import RAWMasterLibrary
             color: recipe.schemaVersion == 2 ? recipe.color : nil)
     }
     var developmentGeometry: DevelopmentGeometryV3 {
-        let recipe = photographicUIRecipe
+        let recipe = developmentSessionStorage?.repairRecipe ?? photographicUIRecipe
         return recipe.adjustmentsV3?.geometry ?? .init(version: recipe.schemaVersion == 2 ? .legacyV2 : .legacyV1,
             straightenDegrees: recipe.straightenDegrees, crop: recipe.crop)
     }
@@ -4542,7 +4686,7 @@ import RAWMasterLibrary
             geometry: projectedDevelopmentGeometry(expected), plane: mapping.cropPlane, outputPixelSize: frame.outputSize)
     }
     func changeDevelopmentPage(_ page: EditingDevelopmentPage, context: EditingInteractionContext) {
-        guard developmentContext == context else { return }
+        guard developmentContext == context, !repairEditing else { return }
         let enteringCrop = page == .crop && !cropEditing
         let leavingCrop = page != .crop && cropEditing
         if enteringCrop {
@@ -4586,10 +4730,15 @@ import RAWMasterLibrary
     }
     func handleDevelopmentKey(_ event: NSEvent) -> Bool {
         guard isPresented else { return false }
+        if event.keyCode == 53, hoveredPresetID != nil { cancelPresetHover(); return true }
         let responder = NSApplication.shared.keyWindow?.firstResponder
         if responder is NSTextView || responder is NSTextField { return false }
         let flags = event.modifierFlags
         let key = event.charactersIgnoringModifiers?.lowercased()
+        if repairEditing, event.keyCode == 53 { cancelDevelopmentRepair(); return true }
+        if repairEditing, event.keyCode == 36, flags.intersection([.command, .control, .option]).isEmpty {
+            completeDevelopmentRepair(); return true
+        }
         if event.keyCode == 53, cancelSceneInspection() { return true }
         if quickPromptPresented {
             if event.keyCode == 53 {
@@ -4677,7 +4826,7 @@ import RAWMasterLibrary
         return true
     }
     func setDevelopmentOriginalHeld(_ held: Bool) {
-        guard !shuttingDown, isPresented, stage == .development, developmentShowingOriginal != held else { return }
+        guard !shuttingDown, isPresented, stage == .development, developmentShowingOriginal != held, !held || !repairEditing else { return }
         if held {
             developmentMaskInput.cancel()
             cancelCurrentDevelopmentCropAutomatic()
@@ -4764,6 +4913,10 @@ extension EditingController {
     /// Includes original and already-committed version views, but never uses stale focus/draft on either.
     var visibleSceneGraph: DevelopmentSceneGraphV1? {
         if stage == .development && sourceReady {
+            if let draft = developmentSessionStorage?.repairRecipe, let parameters = draft.adjustmentsV3,
+               let graph = recipe.sceneGraph, draft != photographicUIRecipe {
+                return try? graph.replacingPhotographic(parameters)
+            }
             if let draft = sceneBandDraft, draft.ticket == sceneTicket { return draft.graph }
             if cropEditing, let graph = recipe.sceneGraph, var p = graph.photographic, p.geometry.crop != .init() {
                 p.geometry.crop = .init()
@@ -4777,6 +4930,7 @@ extension EditingController {
         sceneRequestedHDR && !sceneVisualizeHDR && sceneHeadroom > 1 ? .hdr2020 : .sdr709
     }
     private var scenePendingEditReason: String? {
+        if repairEditing { return "请先完成或取消修复。" }
         if let draft = sceneBandDraft, draft.ticket == sceneTicket { return "请先完成直方图的亮度调整。" }
         if sceneGraphState.connection != nil { return "先应用或取消 Graph 连接草稿。" }
         return nil
@@ -4849,16 +5003,27 @@ extension EditingController {
     func cancelSceneStart() { sceneStart?.cancel(); sceneStart = nil; sceneStarting = false }
 
     func leaveSceneDraft(ticket: SceneTicket, monochrome: Bool) {
-        guard ticket == sceneTicket, recipe.sceneGraph != nil, let work else { return }
+        guard ticket == sceneTicket, recipe.sceneGraph != nil else { return }
         if let reason = sceneModeBlockReason { message = reason; return }
+        changeLegacyColorMode(ticket: ticket, monochrome: monochrome, base: legacyDraftForScene)
+    }
+
+    func openSDRFilterDraft(context: EditingInteractionContext) throws -> SceneTicket {
+        try developmentSession.validateInteraction(context)
+        guard recipe.sceneGraph != nil, sceneTicket != nil, filterInteractionIssue == nil,
+              applySceneCommit(legacyDraftForScene), let next = sceneTicket else { throw EditingDevelopmentSessionError.staleInteraction }
+        return next
+    }
+
+    private var legacyDraftForScene: DevelopmentRecipe {
+        if let alternate = alternateAppearance?.recipe, alternate.sceneGraph == nil { return alternate }
+        guard let work else { return .init() }
         var parent = draftParentID
-        var safeLegacy = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
         while let id = parent, let node = versions.first(where: { $0.id == id }) {
-            if node.recipe.sceneGraph == nil, node.kind == .original || node.kind == .development { safeLegacy = node.recipe; break }
+            if node.recipe.sceneGraph == nil, node.kind == .original || node.kind == .development { return node.recipe }
             parent = node.parentVersionID
         }
-        let legacy = alternateAppearance.flatMap { $0.recipe.sceneGraph == nil ? $0.recipe : nil } ?? safeLegacy
-        changeLegacyColorMode(ticket: ticket, monochrome: monochrome, base: legacy)
+        return versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
     }
 
     func setLegacyColorMode(ticket: SceneTicket, monochrome: Bool) {
@@ -5058,7 +5223,10 @@ extension EditingController {
     private func updateSceneScopes() {
         guard isPresented, sourceReady, !sourceNeedsRevalidation, !shuttingDown, let graph = visibleSceneGraph,
               let work else { sceneScopes.invalidate(); return }
-        sceneScopes.update(source: work.source, graph: graph, view: stage == .development ? sceneGraphState.viewing : .init(), using: scenePreview)
+        sceneScopes.update(source: work.source, graph: graph, view: developmentSceneViewing, using: scenePreview)
+    }
+    private var developmentSceneViewing: DevelopmentSceneGraphV1.View {
+        stage == .development && !repairEditing ? sceneGraphState.viewing : .init()
     }
     func scenePresentationFailed() {
         guard visibleSceneGraph != nil else { return }
@@ -5085,7 +5253,7 @@ extension EditingController {
         sceneRequestID = id; scenePreviewError = nil; scenePreviewBusy = true
         let source = work.source, sampling = sceneSampling, target = sceneTarget, service = scenePreview
         let visualize = sceneVisualizeHDR
-        let viewing = stage == .development ? sceneGraphState.viewing : .init()
+        let viewing = developmentSceneViewing
         sceneTask = Task { [weak self] in
             do {
                 let frame = try await service.render(source: source, graph: graph, view: viewing,
@@ -5108,6 +5276,10 @@ extension EditingController {
         let generation: UUID
     }
     var sceneGraphTicket: SceneGraphTicket? {
+        repairEditing ? nil : sceneGraphPresentationTicket
+    }
+    /// Keep the inspector mounted at its prior scroll position while canvas tools own input.
+    var sceneGraphPresentationTicket: SceneGraphTicket? {
         guard let sceneTicket, sourceReady, !sourceNeedsRevalidation, !saving,
               recipe.sceneGraph != nil, sceneGraphState.connection == nil else { return nil }
         return .init(draft: sceneTicket, generation: sceneGraphState.generation)
@@ -5125,7 +5297,7 @@ extension EditingController {
         return sceneGraphScope?.nodes.first { $0.id == id }
     }
     var sceneGraphMonitorText: String? {
-        guard stage == .development else { return nil }
+        guard stage == .development, !repairEditing else { return nil }
         switch sceneGraphState.preview {
         case .final: return nil
         case .node(let id), .solo(let id):

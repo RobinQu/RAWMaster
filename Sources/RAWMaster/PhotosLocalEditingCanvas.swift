@@ -38,6 +38,7 @@ struct PhotosLocalEditingCanvas: View {
                 window: frame?.window, canvasPixelSize: frame?.nativeSize ?? fit?.nativeSize)
                 .borrowingImage(frame?.image ?? fit?.image)
                 .fallbackImage(frame?.window == nil ? nil : fit?.image)
+                .fitting(around: EditingLayout.fitInsets)
                 .trackingFreeZoom { active, snapshot in
                     guard editing.developmentContext == context else { return }
                     editing.updateCanvasSampling(snapshot, role: .primary, zooming: active)

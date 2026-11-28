@@ -12,27 +12,20 @@ struct PhotosLocalAdjustmentControls: View {
     private var operations: [DevelopmentLocalEdit] { session.parameters.localEdits.operations.filter { $0.tool == tool } }
     private var modeDescription: String {
         switch input.retouchMode {
-        case .remove: return "Erase：涂抹需要移除的区域，自动匹配周围纹理。"
-        case .heal: return "Heal：混合来源与目标的颜色、明暗和纹理。"
-        case .clone: return "Clone：直接复制所选来源；按住 Option 选择来源。"
+        case .remove: return "点击或涂抹要移除的区域。按住 Option 点击干净区域可指定来源。"
+        case .heal: return "点击或涂抹要修复的区域。按住 Option 点击干净区域可指定来源。"
+        case .clone: return "按住 Option 点击干净区域取样，再点击或涂抹目标区域。"
         }
     }
     var body: some View {
         VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
             if tool == .retouch {
-                PhotosFlatTabs(title: "修复方式", selection: $input.retouchMode,
-                    options: [DevelopmentRetouchMode.remove, .heal, .clone], label: { mode in
-                        switch mode { case .remove: "移除"; case .heal: "修复"; case .clone: "仿制" }
-                    }).accessibilityIdentifier("photos.retouch.mode")
                 Text(modeDescription).photosInspectorParagraph().foregroundStyle(.secondary)
             }
             PhotosSliderRow(title: title + "大小", value: .init(get: { input.size(for: tool) },
                 set: { input.setSize($0, tool: tool) }), range: input.sizeRange, step: 1, digits: 0) {
                     input.setSize($0, tool: tool)
                 }.help("放大照片不会改变修饰范围。")
-            Button(input.tool == tool ? "结束" + title : "在照片上" + (tool == .retouch ? "修饰" : "修正红眼")) {
-                editing.selectDevelopmentLocalTool(input.tool == tool ? nil : tool, context: context)
-            }.disabled(editing.developmentAnalysisBusy).accessibilityIdentifier("photos." + (tool == .retouch ? "retouch" : "redEye") + ".tool")
             if editing.developmentLocalAnalysisInProgress(tool) {
                 HStack {
                     ProgressView().controlSize(.mini)
@@ -46,10 +39,10 @@ struct PhotosLocalAdjustmentControls: View {
                 }
             }
             if tool == .retouch {
-                Text("点击或涂抹修饰区域。按住 Option 点击干净区域，可指定修复来源。")
-                    .photosInspectorParagraph().foregroundStyle(.secondary)
                 if input.donor != nil {
-                    Button(editing.developmentSourceFacts?.localCapabilities.contains(.automaticDonor) == true ? "使用自动来源" : "清除来源") { input.clearDonor() }
+                    let canChooseAutomatically = input.retouchMode != .clone &&
+                        editing.developmentSourceFacts?.localCapabilities.contains(.automaticDonor) == true
+                    Button(canChooseAutomatically ? "使用自动来源" : "清除来源") { input.clearDonor() }
                         .buttonStyle(.borderless).font(.caption)
                 }
             } else {
@@ -72,6 +65,95 @@ struct PhotosLocalAdjustmentControls: View {
                     }
                 }
             }
-        }.onDisappear { if input.tool == tool, editing.developmentContext == context { editing.cancelDevelopmentLocalInput(clearTool: true) } }
+        }
+    }
+}
+
+struct PhotosRepairInspector: View {
+    private enum Choice: Hashable {
+        case retouch(DevelopmentRetouchMode)
+        case redEye
+
+        var tool: DevelopmentLocalTool {
+            if case .retouch = self { return .retouch }
+            return .redEye
+        }
+
+        var title: String {
+            switch self {
+            case .retouch(.remove): "移除"
+            case .retouch(.heal): "修复"
+            case .retouch(.clone): "仿制"
+            case .redEye: "红眼"
+            }
+        }
+    }
+    @ObservedObject var editing: EditingController
+    @ObservedObject var session: EditingDevelopmentSession
+    @ObservedObject var input: EditingLocalInputSession
+    let context: EditingInteractionContext
+    @FocusState private var cancelFocused: Bool
+    @AccessibilityFocusState private var repairHeadingFocused: Bool
+
+    var body: some View {
+        let tool = input.tool ?? editing.repairTools.first ?? .retouch
+        let choices = [Choice.retouch(.remove), .retouch(.heal), .retouch(.clone), .redEye]
+            .filter { editing.repairTools.contains($0.tool) }
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("修复").font(.system(size: 13, weight: .semibold))
+                    .accessibilityAddTraits(.isHeader).accessibilityFocused($repairHeadingFocused)
+                if let asset = editing.asset {
+                    Text(asset.editingDisplayName + " · 未提交草案").font(.caption).foregroundStyle(.secondary)
+                }
+            }.padding(12)
+            Divider()
+            ScrollView {
+                if choices.count > 1 {
+                    PhotosFlatTabs(title: "修复方式", selection: Binding(get: {
+                        tool == .retouch ? .retouch(input.retouchMode) : .redEye
+                    }, set: { choice in
+                        input.cancelCollection()
+                        if case let .retouch(mode) = choice { input.retouchMode = mode }
+                        if choice.tool != tool { editing.selectDevelopmentLocalTool(choice.tool, context: context) }
+                    }), options: choices, label: \.title)
+                    .disabled(editing.developmentAnalysisBusy)
+                    .padding(.horizontal, 12).padding(.top, 10)
+                    .accessibilityIdentifier("photos.retouch.mode")
+                }
+                PhotosDevelopmentContent(editing: editing, session: session, context: context, viewportHeight: 0,
+                    destination: .group(tool == .retouch ? .retouch : .redEye))
+                if let failure = editing.repairFailure {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(failure.message).font(.caption)
+                        HStack {
+                            Button("重试") { editing.retryDevelopmentRepair() }.accessibilityIdentifier("editing.repair.retry")
+                            Button("放弃这一笔") { editing.discardDevelopmentRepairFailure() }
+                        }
+                    }.padding(.horizontal, 12).padding(.vertical, 6).disabled(editing.developmentAnalysisBusy)
+                }
+            }
+            Divider()
+            HStack(spacing: 6) {
+                AppIconButton(systemName: "arrow.uturn.backward", label: "撤销草案",
+                    isEnabled: session.repairCanUndo && !editing.developmentAnalysisBusy && !input.collecting) {
+                    editing.undoDevelopment(context: context)
+                }.accessibilityIdentifier("editing.repair.undo")
+                AppIconButton(systemName: "arrow.uturn.forward", label: "重做草案",
+                    isEnabled: session.repairCanRedo && !editing.developmentAnalysisBusy && !input.collecting) {
+                    editing.undoDevelopment(context: context, redo: true)
+                }.accessibilityIdentifier("editing.repair.redo")
+                Spacer(minLength: 4)
+                Button("取消", action: editing.cancelDevelopmentRepair)
+                    .focused($cancelFocused).accessibilityIdentifier("editing.repair.cancel")
+                Button("完成", action: editing.completeDevelopmentRepair)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(editing.repairCompletionReason != nil)
+                    .help(editing.repairCompletionReason ?? "应用本次修复")
+                    .accessibilityIdentifier("editing.repair.done")
+            }.controlSize(.small).padding(12)
+        }
+        .toggleStyle(PhotosFlatCheckboxStyle())
+        .onAppear { cancelFocused = true; repairHeadingFocused = true }
     }
 }

@@ -167,6 +167,7 @@ const SceneEditor = (() => {
     const next = { ...base };
     if (sceneOutput) next.sceneOutput = sceneOutput;
     else delete next.sceneOutput;
+    if (sceneOutput && !next.dag) next.dag = dagSeed(next);
     if (next.dag) {
       const root = structuredClone(next.dag);
       const {sceneOutput, colorMode} = next;
@@ -253,7 +254,7 @@ const SceneEditor = (() => {
       refreshCanvasLook();
       return;
     }
-    const docked = $('.inspector-content .scene-scopes');
+    const docked = $('.edit-photo-panel .scene-scopes');
     if ($('.scope-native-review')) view().scopeOpen = $('.scope-native-review').open;
     if (!inSheet) {
       const rendition = $('.scene-rendition');
@@ -323,20 +324,16 @@ const SceneEditor = (() => {
     ($(`[data-act="scene-overlay"][data-val="${last}"]`) || $('[name=visualizeHDR]') || $('.scene-modes [aria-pressed=true]'))?.focus({preventScroll:true});
     e.preventDefault(); e.stopImmediatePropagation();
   }, true);
-  function film(key) {
-    if (!hdr()) return false;
-    entrySelector = '[data-act="film-stock"][data-val="' + CSS.escape(key) + '"]';
-    const why = reason();
-    const recipe = { ...edit().recipe, filmStock:key, filmEnabled:true, filmAmount:100 };
-    const filter = RMPhotos.filter(RMPhotos.displayLook(recipe));
-    dialog('仅 SDR 的胶片外观', `<p>${h(RMPhotos.filmStocks[key].name)}仅在 SDR 派生中使用。不会套用到 HDR 母版。</p>${why ? `<p>${h(why)}</p>` : pic(id(), 'scene-film-preview', `style="filter:${h(filter)}"`) + '<p class="small">SDR 派生试看 · 模拟</p>'}`,
-      btn('取消','close') + btn('在 SDR 派生中采用','scene-film',key,{disabled:!!why}));
-    return true;
+  const sdrFilterDraft = () => edit().appearanceDrafts?.sdr ?? Studio.freshRecipe();
+  function openSDRFilterDraft() {
+    const e = edit();
+    (e.appearanceDrafts ??= {}).hdr = structuredClone(e.recipe);
+    Studio.setRecipe(id(), '切换到 SDR 编辑', sdrFilterDraft());
   }
-  actions['scene-film'] = key => {
+  actions['scene-film'] = () => {
     const c = config();
-    if (!c || versions() || reason() || key && !Object.hasOwn(RMPhotos.filmStocks,key)) return;
-    c.film = key; view().preview = 'sdr'; commit(key ? '在 SDR 派生中采用胶片' : '移除派生胶片', c);
+    if (!c?.film || versions() || reason()) return;
+    c.film = ''; view().preview = 'sdr'; commit('移除派生胶片', c);
   };
   function samplerFrame() {
     const v = view();
@@ -346,5 +343,5 @@ const SceneEditor = (() => {
   }
   const preview = r => !hdr() || fallback() ? RMSceneOutput.sdrPreview(r, config(r)) : r;
   const overlayMarkup = () => !hdr() ? (mode()==='bw' ? '<canvas class="bw-range-preview" hidden aria-hidden="true"></canvas>' : '') : reason() ? '' : `<div class="scene-marks" aria-hidden="true">${[...view().overlays].filter(k=>k!=='bands').map(k=>`<i class="${k}"></i>`).join('')}<canvas class="hdr-range-preview" data-visualize="${view().overlays.has('bands')}" hidden></canvas></div>`;
-  return { modeBar, badge, reportRuntime, unavailable: () => blocked() || reason(), scope, rgbPlot, film, preview, config, hdr, overlayMarkup, rendition, nativeReview, visualizeControl, bands, scopesReview, scopePick, samplerFrame, scopeOpen: () => view().scopeOpen };
+  return { modeBar, badge, reportRuntime, unavailable: () => blocked() || reason(), scope, rgbPlot, sdrFilterDraft, openSDRFilterDraft, preview, config, hdr, overlayMarkup, rendition, nativeReview, visualizeControl, bands, scopesReview, scopePick, samplerFrame, scopeOpen: () => view().scopeOpen };
 })();

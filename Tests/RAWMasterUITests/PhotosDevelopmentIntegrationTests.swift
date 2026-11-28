@@ -785,6 +785,7 @@ actor PhotosDevelopmentBackend: EditingPreviewBackend {
     private var dehazeNoResult: DevelopmentDehazeNoResult?
     private var dehazeOuterMismatch = false
     private var localNoResult = false
+    private var nextLocalFailure: DevelopmentLocalPreparationError?
     struct ProgressSubmission: Sendable { let box: ProgressPresentationBox; let request: DevelopmentPreviewRequest }
     private(set) var progressSubmissions: [ProgressSubmission] = []
     private var progressBoxes: [ProgressPresentationBox] = []
@@ -832,6 +833,7 @@ actor PhotosDevelopmentBackend: EditingPreviewBackend {
     }
     func setGate(_ gate: PhotosAnalysisGate) { self.gate = gate }
     func setLocalNoResult(_ value: Bool) { localNoResult = value }
+    func failNextLocal(_ error: DevelopmentLocalPreparationError) { nextLocalFailure = error }
     func setRedEyeAutomaticNoResult(_ reason: DevelopmentLocalNoResult) { redEyeAutomaticNoResult = reason }
     func setRedEyeAutomaticFailure(_ error: DevelopmentLocalPreparationError) { redEyeAutomaticFailure = error }
     func setLocalOuterMismatch() { localOuterMismatch = true }
@@ -933,6 +935,7 @@ actor PhotosDevelopmentBackend: EditingPreviewBackend {
                     presentedRecipeFingerprint: request.presentedRecipeFingerprint, input: input,
                     resolution: resolution))
             } else if let input = request.localInputV1 {
+                if let failure = nextLocalFailure { nextLocalFailure = nil; throw failure }
                 if request.operation == .redEyeAutomatic, let redEyeAutomaticFailure { throw redEyeAutomaticFailure }
                 if request.operation == .redEyeAutomatic, let detail = request.preview.recipe.adjustmentsV3?.advancedDetail,
                    detail.dehaze.enabled, detail.dehaze.amount != 0, detail.preparedDehaze == nil {
@@ -1574,6 +1577,85 @@ extension PhotosDevelopmentIntegrationTests {
             if !busy, !delivered { delivered = true; finished.fulfill() }
         }
         await fulfillment(of: [finished], timeout: 5); observer.cancel()
+    }
+    @MainActor func testRepairDraftRetriesAndPublishesOneUndoableChange() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend(localCapabilitiesEnabled: true)
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: backend)
+        addTeardownBlock { await editing.shutdown() }
+        try await ready(editing, asset: fixture.assets[0])
+        let context = try await activate(editing), original = editing.recipe
+        let session = editing.developmentSession
+        editing.setComparisonMode(.wipeHorizontal)
+        let compare = editing.comparison
+        editing.toggleDevelopmentRepair()
+        editing.completeDevelopmentRepair()
+        XCTAssertEqual(editing.recipe, original)
+        XCTAssertEqual(session.history.entryCount, 0)
+        XCTAssertEqual(editing.comparison, compare)
+        editing.toggleDevelopmentRepair()
+        XCTAssertTrue(editing.repairEditing)
+        XCTAssertFalse(editing.comparing)
+        editing.developmentLocalInput.setSize(3)
+
+        func addStroke(at point: DevelopmentSourcePoint) async throws -> UUID {
+            let (frame, viewport) = try await localFrame(editing, context: context), id = UUID()
+            let input = editing.developmentLocalInput
+            XCTAssertTrue(input.pointer(try localEvent(.began, id: id, frame: frame, viewport: viewport, source: point), context: context))
+            XCTAssertTrue(input.pointer(try localEvent(.ended, id: id, frame: frame, viewport: viewport, source: point), context: context))
+            return id
+        }
+        let first = try await addStroke(at: .init(x: 0.58, y: 0.55))
+        await localFinished(editing)
+        XCTAssertEqual(session.parameters.localEdits.operations.map(\.id), [first])
+        XCTAssertEqual(editing.recipe, original)
+        XCTAssertEqual(session.history.entryCount, 0)
+        XCTAssertFalse(editing.isDirty)
+        editing.openExport()
+        XCTAssertFalse(editing.showExport, "A pending tool cannot publish the committed or staged recipe from the current edit entry")
+        await backend.failNextLocal(.staleInput)
+        _ = try await addStroke(at: .init(x: 0.61, y: 0.58))
+        await localFinished(editing)
+        XCTAssertNotNil(editing.repairFailure)
+        XCTAssertNotNil(editing.repairCompletionReason)
+        XCTAssertEqual(session.parameters.localEdits.operations.count, 1)
+        editing.retryDevelopmentRepair()
+        await localFinished(editing)
+        let expected = session.parameters.localEdits.operations
+        XCTAssertEqual(expected.count, 2)
+        let requests = await backend.userRequests
+        XCTAssertEqual(requests.suffix(3).compactMap { $0.localInputV1?.prefixCount }, [0, 1, 1])
+        XCTAssertNil(editing.repairFailure)
+        editing.undoDevelopment(context: context); XCTAssertEqual(session.parameters.localEdits.operations.count, 1)
+        editing.undoDevelopment(context: context, redo: true); XCTAssertEqual(session.parameters.localEdits.operations, expected)
+        XCTAssertEqual(editing.recipe, original)
+
+        editing.completeDevelopmentRepair()
+        XCTAssertFalse(editing.repairEditing)
+        XCTAssertNil(editing.developmentLocalInput.tool)
+        XCTAssertEqual(editing.comparison, compare)
+        XCTAssertEqual(editing.recipe.adjustmentsV3?.localEdits.operations, expected)
+        XCTAssertEqual(session.history.entryCount, 1)
+        XCTAssertEqual(session.undoTitle, "完成修复")
+        editing.undoDevelopment(context: context); XCTAssertEqual(editing.recipe, original)
+        editing.undoDevelopment(context: context, redo: true)
+        XCTAssertEqual(editing.recipe.adjustmentsV3?.localEdits.operations, expected)
+
+        editing.toggleDevelopmentRepair()
+        editing.removeDevelopmentLocalOperation(first, context: context)
+        XCTAssertEqual(session.parameters.localEdits.operations.count, 1)
+        editing.suspendDevelopmentFocus()
+        XCTAssertTrue(editing.repairEditing, "A focus change keeps the tool draft")
+        editing.beginDevelopmentInterface()
+        let gate = PhotosAnalysisGate(); await backend.setGate(gate)
+        _ = try await addStroke(at: .init(x: 0.65, y: 0.58))
+        await gate.waitUntilEntered()
+        editing.cancelDevelopmentRepair()
+        await gate.waitUntilCancelled(); await gate.release(); await localFinished(editing)
+        XCTAssertFalse(editing.repairEditing)
+        XCTAssertEqual(editing.recipe.adjustmentsV3?.localEdits.operations, expected)
+        XCTAssertEqual(session.history.entryCount, 1)
+        XCTAssertNil(editing.repairFailure)
     }
     @MainActor func testLocalRetouchUsesActualProjectedSourceDonorAndOneAtomicHistoryEntry() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
@@ -3029,7 +3111,7 @@ extension PhotosDevelopmentIntegrationTests {
         let initial = await backend.thumbnailRequests
         XCTAssertTrue(initial.isEmpty, "No thumbnail work may precede the real view attachment")
 
-        let host = NSHostingView(rootView: PhotosDevelopmentInspector(editing: editing).frame(width: 360, height: 700))
+        let host = NSHostingView(rootView: NativeEditingInspector(editing: editing).frame(width: 360, height: 700))
         let window = NSWindow(contentRect: .init(x: 40, y: 40, width: 360, height: 700), styleMask: [.titled], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false; window.contentView = host
         defer { window.orderOut(nil); window.contentView = nil; window.close() }

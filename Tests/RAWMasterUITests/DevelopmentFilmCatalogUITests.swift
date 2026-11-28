@@ -94,8 +94,9 @@ import RAWMasterCore
             if let field = view as? NSTextField, field.placeholderString == "搜索名称或组" { return field }
             return view.subviews.lazy.compactMap { textField($0) }.first
         }
-        try await eventually("Film origin and search must be reachable") {
-            element("editing.presets.film.scope") != nil && element("editing.presets.search") != nil
+        let filmID = "editing.filter." + DevelopmentPhotoFilterV3.spektraPortra400Endura.rawValue
+        try await eventually("Film catalog and search must be reachable") {
+            element(filmID) != nil && element("editing.presets.search") != nil
         }
         let field = try XCTUnwrap(textField(host))
         func search(_ text: String) throws {
@@ -127,7 +128,7 @@ import RAWMasterCore
         let requests = await backend.thumbnailRequests
         XCTAssertFalse(requests.contains { $0.kind == .filters })
         try search("")
-        try await eventually("Clearing search must restore film metadata") { element("editing.presets.film.scope") != nil }
+        try await eventually("Clearing search must restore the film catalog") { element(filmID) != nil }
         if let path = ProcessInfo.processInfo.environment["RAWMASTER_FILM_CATALOG_UI_OUTPUT"] {
             let output = URL(fileURLWithPath: path, isDirectory: true)
             try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)

@@ -27,3 +27,9 @@
 保留旧版设置窗口状态后升级，冷启动只打开工作台。主动打开设置后退出，再次启动只打开工作台。启动路径指向不可用资料库时显示开始页，随后通过 Finder 打开测试库包。⌘, 打开通用设置，快速 Prompt 的模型配置打开本机 AI 设置，关闭后回到当前照片。[启动与设置窗口记录](evidence/workbench-chrome/native-startup.txt)
 
 Swift 回归覆盖外观、资料库会话、设置路由、工作台模型、界面规范和 Graph。44 个用例中 41 个通过，3 个需显式启用的截图或固定样片用例跳过。
+
+## 安装版复验
+
+上次交付的验收包在独立目录，项目默认产物 `output/RAWMaster.app` 与已安装的 `/Applications/RAWMaster.app` 仍是旧构建。用旧安装包冷启动复现了紧凑分组和设置自动出现。重新打包构建 `20261128.084009`，更新两个位置并保留旧包。两份应用的二进制摘要一致，均通过严格签名校验。[旧安装版顶栏](evidence/workbench-chrome/installed-before-toolbar.png) · [新安装版顶栏](evidence/workbench-chrome/installed-toolbar.png)
+
+从安装路径用同一资料库冷启动只打开工作台。⌘, 可打开设置。保持设置打开并退出，再按应用名正常启动，系统打开 `/Applications/RAWMaster.app`，只显示工作台。实测胶囊高 34pt，三项按钮各高 28pt。[安装构建与原生走查记录](evidence/workbench-chrome/installed-release.txt)

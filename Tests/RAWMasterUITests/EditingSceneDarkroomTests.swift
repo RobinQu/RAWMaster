@@ -52,9 +52,20 @@ final class EditingSceneDarkroomTests: XCTestCase {
     }
 
     @MainActor func testOptIn60MPEditorAndPublishedBatchReceipts() async throws {
+        try await verify60MPEditorAndPublishedBatchReceipts(photographic: false)
+    }
+
+    @MainActor func testOptIn60MPPhotographicPublishedBatchReceipts() async throws {
+        try await verify60MPEditorAndPublishedBatchReceipts(photographic: true)
+    }
+
+    @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool) async throws {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
-        let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { URL(fileURLWithPath: $0) }
+        let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { path in
+            let directory = URL(fileURLWithPath: path)
+            return photographic ? directory.appendingPathComponent("photographic", isDirectory: true) : directory
+        }
         let directory = retained ?? FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         defer { if retained == nil { try? FileManager.default.removeItem(at: directory) } }
@@ -80,6 +91,21 @@ final class EditingSceneDarkroomTests: XCTestCase {
             try await wait("60 MP exposure dispatch") {
                 !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
             }
+            if photographic {
+                editing.beginDevelopmentInterface()
+                try await wait("60 MP photographic controls") { editing.developmentContext != nil }
+                let context = try XCTUnwrap(editing.developmentContext)
+                let session = editing.developmentSession
+                let control = EditingControlID(group: .color, name: "饱和度")
+                var color = session.parameters.color
+                color.enabled = true
+                color.saturation = 0.23
+                XCTAssertTrue(try session.apply(.setParameters(.color(color)), event: .init(context: context, control: control)))
+                XCTAssertEqual(editing.recipe.sceneGraph?.photographic?.color.saturation, 0.23)
+                try await wait("60 MP photographic preview") {
+                    !editing.scenePreviewBusy && editing.sceneFrame?.execution?.photographicEngine != nil
+                }
+            }
             let captured = editing.recipe
             editing.createSceneSnapshot(ticket: try XCTUnwrap(editing.sceneTicket))
             let snapshot = try XCTUnwrap(editing.sceneSnapshots.first)
@@ -100,6 +126,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
             XCTAssertEqual(frozen.parentVersionID, original.id)
             XCTAssertNotEqual(frozen.id, original.id)
             model.activateWorkflow(.export)
+            var deliveries: [(batchID: String, file: URL)] = []
             for format in [PhotoRenderFormat.avif10, .jpeg8] {
                 let review = format == .avif10 ? try await model.reviewWorkbenchPQ([asset]) : nil
                 if let review {
@@ -111,23 +138,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 await model.workbenchPhotoDeliveryTask?.value
                 let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
                 let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
-                let queue = WorkbenchDeliveryCatalog(database: db)
-                let receipt = try await queue.receipt(batchID: id.uuidString.lowercased())
-                let item = try XCTUnwrap(receipt.items.items.first)
-                let execution = try XCTUnwrap(item.sceneExecution)
-                XCTAssertEqual(item.sha256, try FileSafety.hash(file))
-                XCTAssertEqual(item.state, .delivered)
-                XCTAssertGreaterThan(execution.tiles, 1)
-                XCTAssertGreaterThan(execution.dispatches, 0)
-                XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
-                let input = try await queue.input(batchID: id.uuidString.lowercased(), ordinal: 1)
-                XCTAssertEqual(input.version.id, frozen.id)
-                XCTAssertEqual(input.version.recipe, recipe)
-                XCTAssertTrue(input.version.isLiveSceneDelivery)
-                let image = try XCTUnwrap(CGImageSourceCreateWithURL(file as CFURL, nil))
-                let facts = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any])
-                XCTAssertEqual(facts[kCGImagePropertyPixelWidth] as? Int, 9504)
-                XCTAssertEqual(facts[kCGImagePropertyPixelHeight] as? Int, 6336)
+                deliveries.append((id.uuidString.lowercased(), file))
             }
             try await wait("live HDR persisted") {
                 (try? model.store?.photoWork(id: workID).liveRecipe) == recipe
@@ -140,6 +151,36 @@ final class EditingSceneDarkroomTests: XCTestCase {
             XCTAssertEqual(try fixtureVersions(model: model, workID: workID).map(\.id), [original.id])
             XCTAssertEqual(try XCTUnwrap(model.store).photoWork(id: workID).adoptedVersionID, original.id)
             await editing.shutdown()
+
+            let queue = WorkbenchDeliveryCatalog(database: db)
+            for (batchID, file) in deliveries {
+                let receipt = try await queue.receipt(batchID: batchID)
+                XCTAssertEqual(receipt.batch.phase, .done)
+                let item = try XCTUnwrap(receipt.items.items.first)
+                let execution = try XCTUnwrap(item.sceneExecution)
+                XCTAssertEqual(item.sha256, try FileSafety.hash(file))
+                XCTAssertEqual(item.state, .delivered)
+                XCTAssertGreaterThan(execution.tiles, 1)
+                XCTAssertGreaterThan(execution.dispatches, 0)
+                XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
+                if photographic {
+                    XCTAssertEqual(execution.backend, .mixed)
+                    XCTAssertEqual(execution.photographicEngine, "scene-photographic-v1-f32-metal")
+                    XCTAssertEqual(execution.dagBackend, .rust)
+                    XCTAssertNil(execution.fallbackReason)
+                } else {
+                    XCTAssertNil(execution.photographicEngine)
+                    XCTAssertNil(execution.dagBackend)
+                }
+                let input = try await queue.input(batchID: batchID, ordinal: 1)
+                XCTAssertEqual(input.version.id, frozen.id)
+                XCTAssertEqual(input.version.recipe, recipe)
+                XCTAssertTrue(input.version.isLiveSceneDelivery)
+                let image = try XCTUnwrap(CGImageSourceCreateWithURL(file as CFURL, nil))
+                let facts = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any])
+                XCTAssertEqual(facts[kCGImagePropertyPixelWidth] as? Int, 9504)
+                XCTAssertEqual(facts[kCGImagePropertyPixelHeight] as? Int, 6336)
+            }
         } catch { await editing.shutdown(); throw error }
     }
 

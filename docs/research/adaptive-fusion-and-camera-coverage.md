@@ -120,6 +120,22 @@ Swift/Metal 渲染也已跑通（9 个 256×256 瓦片，覆盖画面 15%／50%�
 
 回归：`DevelopmentSceneRAWV1Tests` 5 项（1 项 opt-in 实拍跳过）0 失败；spike 1 项通过。
 
+### 1.6 DNG profile 语义：BaselineExposure 是必需项
+
+T0c 不能只“接受矩阵”。DNG 文件还带 `BaselineExposure`、`ProfileToneCurve`、`HueSatMap`、`NoiseProfile`；它们不是可选装饰。
+
+- Q3 43：`BaselineExposure=0`，无 tone curve／HueSatMap／噪声 profile；场景渲染与相机预览、Apple `sips` 渲染的明暗关系接近。
+- DJI FC9313：`BaselineExposure=1.5`，带内嵌 profile、tone curve（36×10×1、2 组）和噪声 profile。**不应用 BE 时，场景显示均值约 0.13；应用 `2^1.5` 后约 0.29；相机预览／Apple `sips` 约 0.45。** 应用 BE 是必需的，否则默认渲染明显欠曝。
+- 应用 BE 后，DJI 仍比相机／Apple 暗约 0.65 EV，且更平；剩余差异来自 `ProfileToneCurve`／`HueSatMap` 和默认显示 look，不是矩阵选择。
+
+因此，正式 spec 必须把 DNG profile 分成两层：
+
+1. **场景参考层**：`BaselineExposure` 必须进入输入变换；`AsShotNeutral` 已用于白平衡。
+2. **相机外观层**：`ProfileToneCurve`／`HueSatMap` 是“相机默认 look”，应作为可开关、可 Amount 的外观，不应偷偷塞进场景线性基底；忽略时必须显示原因。
+
+这一步没有产品决策就不能定稿：把 DNG tone curve 当“相机匹配”默认，还是当可选 look？两种都合理，但会影响 L1a/L1b 的输入和用户预期。
+
+
 ## 2. 覆盖阶梯
 
 | 层 | 方法 | 单机成本 | 覆盖 | 质量 | 用途 |
@@ -177,7 +193,7 @@ L0 可信输入        L1 场景自适应基础        L2 风格与局部
 
 **L1a 全局自动**（先做）
 
-- 曝光：保留拍摄者曝光，只做高光保护 + 暗部地板；默认 ±0.35 EV 内，明显欠曝／过曝才放宽。
+- 曝光：保留拍摄者曝光，只做高光保护 + 暗部地板；默认 ±0.35 EV 内，明显欠曝／过曝才放宽。spike 的“中位亮度到 18%”规则给出 Q3 +2.36 EV、A7R5 +0.84 EV、DJI +0.55 EV，说明单靠曝光保护不够，L1a 需要基础 tone curve 或相机 look。
 - 白平衡：as-shot + 光照估计；肤色保护；保留刻意的冷暖。
 - 影调：按直方图做高光压缩／阴影提升；对比按场景 key。
 - 颜色：饱和／自然饱和，保护肤色和天空；不做全局色相偏移。
@@ -280,6 +296,7 @@ V1 的门槛是**初始压力值**，不是行业标准；如果 T0 普遍超过
 - YM 核验：[yellowmoon-vs-adaptive.md](yellowmoon-vs-adaptive.md)
 - 当前 037 入口：`../../Sources/CFlashRaw/CFlashRaw.c:261-270`；`../../Sources/RAWMasterImaging/DevelopmentSceneRAWV1.swift`
 - 037 计划 T06：`../../specs/037-color-film-hdr/plan.md:42`
+- Spec 就绪度评审：[adaptive-spec-readiness.md](adaptive-spec-readiness.md)
 - 相机基线：`../planning/06-validation-baseline.md`
 - 030 卡片：`../../specs/030-ai-retouching/scene-presets.md`
 - Adobe Adaptive 结构：[lightroom-preset-browser-plan.md](lightroom-preset-browser-plan.md)

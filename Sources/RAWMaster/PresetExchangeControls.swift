@@ -40,7 +40,7 @@ struct PresetExchangeControls: View {
 
   var body: some View {
     Menu {
-      Button("导入 Lightroom / Camera Raw 预设…") { chooseFiles() }
+      Button("导入 XMP 预设…") { chooseFiles() }
       Button("导入 RAWMaster 预设…", action: onImportNative)
       Button("撤销导入批次…") {
         do {
@@ -95,7 +95,7 @@ struct PresetExchangeControls: View {
         case .details:
           if let reviewed { details(reviewed) }
         case .sourceFields:
-          Text("原始 XMP 字段").font(.headline)
+          Text("XMP 字段").font(.headline)
           TextField("按字段路径或值筛选", text: $fieldQuery)
           ScrollView {
             LazyVStack(alignment: .leading, spacing: 6) {
@@ -103,8 +103,8 @@ struct PresetExchangeControls: View {
                 fieldQuery.isEmpty || field.path.localizedCaseInsensitiveContains(fieldQuery)
                   || field.value.localizedCaseInsensitiveContains(fieldQuery)
               }, id: \.offset) { _, field in
-                Text(field.path).font(.caption2).foregroundStyle(.secondary)
-                Text(field.value).textSelection(.enabled)
+                Text(DevelopmentPresetDirectory.presentationText(field.path)).font(.caption2).foregroundStyle(.secondary)
+                Text(DevelopmentPresetDirectory.presentationText(field.value)).textSelection(.enabled)
               }
             }.frame(maxWidth: .infinity, alignment: .leading)
           }.frame(height: 260)
@@ -113,11 +113,11 @@ struct PresetExchangeControls: View {
         case .projection:
           if let projection {
             Text("另存 XMP").font(.headline)
-            LabeledContent("写入参数", value: projection.included.joined(separator: ", "))
+            LabeledContent("写入参数", value: DevelopmentPresetDirectory.presentationText(projection.included.joined(separator: ", ")))
             if !projection.excluded.isEmpty {
-              LabeledContent("无法完整表达", value: projection.excluded.joined(separator: ", "))
+              LabeledContent("无法完整表达", value: DevelopmentPresetDirectory.presentationText(projection.excluded.joined(separator: ", ")))
             }
-            Text("写入 Process Version 15.4。Adobe 与 RAWMaster 的像素表现仍待对齐。").font(.caption)
+            Text("写入 Process Version 15.4，跨应用的渲染结果可能有差异。").font(.caption)
             Button(projection.excluded.isEmpty ? "保存 XMP…" : "仅保存列出的可写参数…") {
               save(projection.data, name: filename + ".xmp", ext: "xmp")
             }
@@ -125,7 +125,7 @@ struct PresetExchangeControls: View {
         case .original:
           if let reviewed {
             Text("导出原始 XMP").font(.headline)
-            Text("「\(reviewed.name)」的原始文件可能含有第三方 Look、版权信息和未映射字段。请确认你有权导出此文件。")
+            Text("「\(DevelopmentPresetDirectory.displayName(reviewed))」的原始文件可能含有第三方 Look、版权信息和未映射字段。请确认你有权导出此文件。")
             Button("我有导出权限，选择位置…") {
               do { save(try DevelopmentPresetExchange.originalXMP(for: reviewed, catalog: catalog, confirmedRights: true),
                         name: reviewed.name + ".xmp", ext: "xmp") }
@@ -150,7 +150,7 @@ struct PresetExchangeControls: View {
             }
           }
           Text("撤销这次加入目录的引用。其他批次仍引用的条目和已保存照片使用的原始字节会保留。")
-          Text(pendingBatch ?? "").font(.caption).textSelection(.enabled)
+          Text(DevelopmentPresetDirectory.presentationText(pendingBatch ?? "")).font(.caption).textSelection(.enabled)
           Button("撤销本批目录引用") {
             guard let pendingBatch else { return }
             do {
@@ -181,8 +181,8 @@ struct PresetExchangeControls: View {
         LazyVStack(alignment: .leading, spacing: 6) {
           ForEach(stage.items) { item in
             VStack(alignment: .leading, spacing: 1) {
-              Text(reviewLabel(item, stage: stage) + " · " + item.path).lineLimit(2)
-              Text(item.detail).font(.caption).foregroundStyle(.secondary)
+              Text(reviewLabel(item, stage: stage) + " · " + DevelopmentPresetDirectory.presentationText(item.path)).lineLimit(2)
+              Text(DevelopmentPresetDirectory.presentationText(item.detail)).font(.caption).foregroundStyle(.secondary)
             }.frame(maxWidth: .infinity, alignment: .leading)
           }
         }
@@ -215,12 +215,14 @@ struct PresetExchangeControls: View {
   private func details(_ row: DevelopmentPresetRecord) -> some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 8) {
-        Text(row.name).font(.headline)
-        Text(row.metadata["relativePath"] ?? "").font(.caption)
+        Text(DevelopmentPresetDirectory.displayName(row)).font(.headline)
+        Text(DevelopmentPresetDirectory.presentationText(row.metadata["relativePath"] ?? "")).font(.caption)
         if let raw = row.metadata["sourceLocationsV1"],
            let sources = try? JSONDecoder().decode([String].self, from: Data(raw.utf8)), sources.count > 1 {
           DisclosureGroup("来源记录 · \(sources.count) 个位置") {
-            ForEach(sources, id: \.self) { Text($0).font(.caption) }
+            ForEach(sources, id: \.self) { source in
+              Text(DevelopmentPresetDirectory.presentationText(source.replacingOccurrences(of: "adobeBuiltin / ", with: "内置滤镜 / "))).font(.caption)
+            }
           }
         }
         ForEach([("类型", "capability"), ("来源", "origin"), ("Process Version", "processVersion"),
@@ -228,21 +230,23 @@ struct PresetExchangeControls: View {
                  ("来源条件", "sourceRestriction"), ("Look UUID", "lookUUID"), ("逐图目标", "semanticTarget"),
                  ("局部参数候选", "localMapped"), ("局部待验证", "localPending"), ("校正数", "corrections"),
                  ("蒙版组件数", "maskComponents"), ("分析要求", "analysis")], id: \.1) { pair in
-          if let value = row.metadata[pair.1], !value.isEmpty { LabeledContent(pair.0, value: value) }
+          if let value = row.metadata[pair.1], !value.isEmpty {
+            LabeledContent(pair.0, value: value == "adobeBuiltin" ? "内置滤镜" : DevelopmentPresetDirectory.presentationText(value))
+          }
         }
         if let hash = row.sourceSHA256 { Text("SHA-256 " + hash).font(.caption) }
-        Button("查看原始字段路径和值…") {
+        Button("查看字段路径和值…") {
           let store = catalog
           run("正在校验并读取原始字段…", operation: { try DevelopmentPresetExchange.sourceFields(for: row, catalog: store) }) { result in
             sourceFields = result.fields; additionalFields = result.additional; fieldQuery = ""; page = .sourceFields
           }
         }
         ForEach(Array(row.blockingReasons.enumerated()), id: \.offset) { reason in
-          Text(reason.element).foregroundStyle(.secondary)
+          Text(DevelopmentPresetDirectory.presentationText(reason.element)).foregroundStyle(.secondary)
         }
         if let lookup = row.metadata["lookSHA256"], let look = detailRows.first(where: { $0.sourceSHA256 == lookup }) {
-          DisclosureGroup("内部 Look · " + look.name) {
-            Text(look.metadata["relativePath"] ?? "").font(.caption)
+          DisclosureGroup("内部 Look · " + DevelopmentPresetDirectory.displayName(look)) {
+            Text(DevelopmentPresetDirectory.presentationText(look.metadata["relativePath"] ?? "")).font(.caption)
             Text(lookup).font(.caption2)
           }
         }

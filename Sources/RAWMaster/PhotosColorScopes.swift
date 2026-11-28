@@ -89,6 +89,15 @@ struct PhotosColorScopes: View {
                         if let context = editing.developmentContext { editing.setDevelopmentClippingPreview(value, context: context) }
                     }, plotHeight: Self.plotHeight)
             }
+            HStack(spacing: 4) {
+                let monitor = editing.sceneGraphMonitorText
+                Text(monitor ?? "最终结果").foregroundStyle(.secondary)
+                    .accessibilityIdentifier("editing.scene.graph.monitor")
+                Spacer(minLength: 0)
+                if monitor != nil {
+                    Button("返回最终结果") { editing.stopSceneGraphMonitor() }.buttonStyle(PhotosFlatButtonStyle())
+                }
+            }.font(.caption2)
             if !isScene { PhotosColorReadoutView(readout: editing.colorReadout) }
             if let context = editing.developmentContext {
                 PhotosColorSamplerRows(samplers: editing.colorSamplers, frame: isScene ? nil : editing.previews.primary.frame,

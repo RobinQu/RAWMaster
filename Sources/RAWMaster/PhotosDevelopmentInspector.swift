@@ -3,62 +3,37 @@ import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
 
-/// Navigation and measurements stay mounted when editing input focus or the active color engine changes.
+/// The photographic controls shared by compatibility development and the HDR photo stage.
 struct PhotosDevelopmentInspector: View {
     @ObservedObject var editing: EditingController
-    @State private var destination: PhotosAdjustmentDestination = .basic
+    @Binding var destination: PhotosAdjustmentDestination
     @State private var hoveredDestination: PhotosAdjustmentDestination?
     @FocusState private var focusedTool: PhotosAdjustmentDestination?
     @State private var viewportHeight: CGFloat = 0
-    private let destinations: [PhotosAdjustmentDestination] = [.basic, .local, .tones, .color, .detail, .optics, .effects, .grading, .masks]
+    private let destinations: [PhotosAdjustmentDestination] = [.basic, .tones, .color, .detail, .optics, .effects, .grading, .masks]
 
     var body: some View {
-        Group {
-            if editing.cropEditing, let context = editing.developmentPresentationContext {
-                PhotosCropPanel(editing: editing, session: editing.developmentSession, context: context)
-                    .disabled(editing.developmentContext == nil)
-            } else {
-                VStack(spacing: 0) {
-                    HStack {
-                        Text("当前编辑").font(.system(size: 13, weight: .semibold))
-                        Spacer()
-                        if let context = editing.developmentContext {
-                            Menu {
-                                Button("复位照片调整") { reset(all: false, context: context) }
-                                Button("复位全部编辑") { reset(all: true, context: context) }
-                            } label: { Image(systemName: "arrow.counterclockwise") }
-                                .menuStyle(.borderlessButton).frame(width: 28, height: 28)
-                                .accessibilityLabel("复位调整")
-                        }
-                    }.padding(.horizontal, 12).padding(.top, 12)
-                    HStack(spacing: 0) {
-                        toolNavigator.frame(width: 48).padding(.top, 10).zIndex(2)
-                        Divider()
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 0) {
-                                if destination == .basic {
-                                    PhotosColorScopes(editing: editing, floating: false)
-                                        .padding(.horizontal, 12).padding(.vertical, 6)
-                                    Divider()
-                                    if EditingController.sceneReviewEnabled {
-                                        EditingSceneModeStrip(editing: editing)
-                                        Divider()
-                                    }
-                                }
-                                controls
-                            }
-                        }
-                        .coordinateSpace(name: "photos.inspector.scroll")
-                        .background(GeometryReader { geometry in
-                            Color.clear.onAppear { viewportHeight = geometry.size.height }
-                                .onChange(of: geometry.size.height) { _, value in viewportHeight = value }
-                        })
-                    }
-                }
+        VStack(spacing: 0) {
+            if let context = editing.developmentContext {
+                Menu {
+                    Button("复位照片调整") { reset(all: false, context: context) }
+                    Button("复位照片调整及滤镜") { reset(all: true, context: context) }
+                } label: { Image(systemName: "arrow.counterclockwise") }
+                    .menuStyle(.borderlessButton).frame(width: 28, height: 28)
+                    .accessibilityLabel("复位照片调整")
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.horizontal, 12)
+            }
+            HStack(spacing: 0) {
+                ScrollView { toolNavigator }
+                    .scrollIndicators(.hidden).frame(width: 48).zIndex(2)
+                Divider()
+                ScrollView { controls }
+                    .coordinateSpace(name: "photos.inspector.scroll")
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { viewportHeight = $0 }
             }
         }
         .toggleStyle(PhotosFlatCheckboxStyle())
-        .onAppear { editing.beginDevelopmentInterface() }.onDisappear { editing.endDevelopmentInterface() }
     }
 
     @ViewBuilder private var controls: some View {
@@ -140,7 +115,7 @@ struct PhotosDevelopmentInspector: View {
 }
 
 enum PhotosAdjustmentDestination: Hashable {
-    case basic, tones, color, detail, optics, effects, grading, masks, local
+    case basic, tones, color, detail, optics, effects, grading, masks
     case group(DevelopmentAdjustmentID)
 
     var title: String {
@@ -153,7 +128,6 @@ enum PhotosAdjustmentDestination: Hashable {
         case .effects: return "效果"
         case .grading: return "分级"
         case .masks: return "蒙版"
-        case .local: return "修复"
         case .group(let group): return group.photosTitle
         }
     }
@@ -167,7 +141,6 @@ enum PhotosAdjustmentDestination: Hashable {
         case .effects: return "sparkles"
         case .grading: return "circle.dashed.inset.filled"
         case .masks: return "square.on.square"
-        case .local: return "bandage"
         case .group(let group): return group.photosSymbol
         }
     }
@@ -180,13 +153,12 @@ enum PhotosAdjustmentDestination: Hashable {
         case .optics: return [.vignette, .optics]
         case .effects: return [.texture, .clarity, .dehaze]
         case .grading, .masks: return []
-        case .local: return [.retouch, .redEye]
         case .group(let group): return [group]
         }
     }
 }
 
-private struct PhotosDevelopmentContent: View {
+struct PhotosDevelopmentContent: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
     let context: EditingInteractionContext
@@ -227,7 +199,7 @@ private struct PhotosDevelopmentContent: View {
             VStack(spacing: 0) {
                 if destination == .detail {
                     if let graph = editing.recipe.sceneGraph {
-                        EditingSceneInspector(editing: editing, graph: graph)
+                        EditingSceneModelControls(editing: editing, graph: graph)
                     } else {
                     VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                         PhotosAIDenoiseControls(editing: editing, session: session, context: context)
@@ -240,9 +212,6 @@ private struct PhotosDevelopmentContent: View {
                 ForEach(destination.groups, id: \.self) { group in
                     section(group)
                     Divider().opacity(0.65)
-                }
-                if destination == .basic, let graph = editing.recipe.sceneGraph {
-                    EditingSceneInspector(editing: editing, graph: graph, showsNode: true)
                 }
             }
         }
@@ -298,7 +267,7 @@ private struct PhotosDevelopmentContent: View {
             modified: PhotosAdjustmentCommands.isModified(group, in: session.parameters),
             onExpand: { perform { try session.setExpanded(group, expanded: !session.expandedGroups.contains(group), context: context) } },
             onEnable: { enabled in perform {
-                if group == .retouch || group == .redEye { editing.cancelDevelopmentLocalInput(clearTool: true) }
+                if group == .retouch || group == .redEye { editing.cancelDevelopmentLocalInput(clearTool: !editing.repairEditing) }
                 try finishGesture(); try session.apply(.setEnabled(group, enabled), event: event(group, "启用"))
             } },
             onReset: { perform { try finishGesture(); try session.apply(.reset(group), event: event(group, "复位")) } },

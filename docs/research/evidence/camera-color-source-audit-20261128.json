@@ -19,7 +19,9 @@
       "files": 8810,
       "colorSource": "camera-db",
       "colorMatrixCount": 1,
-      "illuminants": ["D65"],
+      "illuminants": [
+        "D65"
+      ],
       "forwardMatrix": false,
       "calibration": false,
       "dngProfileToneCurve": null,
@@ -34,7 +36,9 @@
       "files": 4502,
       "colorSource": "camera-db",
       "colorMatrixCount": 1,
-      "illuminants": ["D65"],
+      "illuminants": [
+        "D65"
+      ],
       "forwardMatrix": false,
       "calibration": false,
       "dngProfileToneCurve": null,
@@ -49,14 +53,22 @@
       "files": 1078,
       "colorSource": "file",
       "colorMatrixCount": 2,
-      "illuminants": ["Standard Light A (2856 K)", "D65 (6500 K)"],
+      "illuminants": [
+        "Standard Light A (2856 K)",
+        "D65 (6500 K)"
+      ],
       "forwardMatrix": false,
       "calibration": false,
-      "asShotNeutral": [0.5517241379310345, 1.0, 0.41830065359477125],
+      "asShotNeutral": [
+        0.5517241379310345,
+        1.0,
+        0.41830065359477125
+      ],
       "dngProfileToneCurve": false,
       "dngHueSatMap": false,
       "dngNoiseProfile": false,
-      "currentSceneColorGate": "reject: file source and two color matrices"
+      "currentSceneColorGate": "reject: file source and two color matrices",
+      "baselineExposure": 0.0
     },
     {
       "model": "FC9313",
@@ -65,16 +77,30 @@
       "files": 1122,
       "colorSource": "file",
       "colorMatrixCount": 2,
-      "illuminants": ["Standard Light A (2856 K)", "D65 (6500 K)"],
+      "illuminants": [
+        "Standard Light A (2856 K)",
+        "D65 (6500 K)"
+      ],
       "forwardMatrix": false,
       "calibration": false,
-      "asShotNeutral": [0.4400042969169621, 1.0, 0.6274509803921569],
+      "asShotNeutral": [
+        0.4400042969169621,
+        1.0,
+        0.6274509803921569
+      ],
       "baselineExposure": 1.5,
       "dngProfileName": "Embedded",
       "dngProfileToneCurve": true,
-      "dngHueSatMapDims": [36, 10, 1],
+      "dngHueSatMapDims": [
+        36,
+        10,
+        1
+      ],
       "dngHueSatMapCount": 2,
-      "dngNoiseProfile": [8.069488261e-05, 2.238967267e-07],
+      "dngNoiseProfile": [
+        8.069488261e-05,
+        2.238967267e-07
+      ],
       "currentSceneColorGate": "reject: file source and two color matrices"
     }
   ],
@@ -103,8 +129,16 @@
         "pixelsAbove0_01": 8457,
         "pixels": 589824,
         "maxPairAP1": {
-          "matrix0": [1.4817066, 0.5165318, 2.9250314],
-          "matrix1": [1.747684, 0.5910908, 3.1380093]
+          "matrix0": [
+            1.4817066,
+            0.5165318,
+            2.9250314
+          ],
+          "matrix1": [
+            1.747684,
+            0.5910908,
+            3.1380093
+          ]
         }
       },
       {
@@ -116,8 +150,16 @@
         "pixelsAbove0_01": 86,
         "pixels": 589824,
         "maxPairAP1": {
-          "matrix0": [0.20723827, 0.17706914, 0.07830402],
-          "matrix1": [0.21000664, 0.16376822, 0.065847434]
+          "matrix0": [
+            0.20723827,
+            0.17706914,
+            0.07830402
+          ],
+          "matrix1": [
+            0.21000664,
+            0.16376822,
+            0.065847434
+          ]
         }
       },
       {
@@ -131,12 +173,62 @@
         "note": "Control: one database matrix, matrix index 1 falls back to 0."
       }
     ],
-    "interpretation": "The global mean is small, but the Q3 p95 and maximum show locally meaningful changes on saturated or bright pixels; a colour-chart comparison is still needed before choosing between nearest-illuminant and mired interpolation."
+    "interpretation": "The global mean is small, but the Q3 p95 and maximum show locally meaningful changes on saturated or bright pixels; a colour-chart comparison is still needed before choosing between nearest-illuminant and mired interpolation.",
+    "baselineExposure": {
+      "applied": {
+        "LEICA Q3 43": 0.0,
+        "DJI FC9313": 1.5,
+        "Sony ILCE-7RM5": 0.0
+      },
+      "djiDisplayMean": {
+        "before": [
+          0.131,
+          0.13,
+          0.139
+        ],
+        "after": [
+          0.291,
+          0.289,
+          0.302
+        ],
+        "cameraPreview": [
+          0.439,
+          0.453,
+          0.461
+        ],
+        "appleSips": [
+          0.446,
+          0.445,
+          0.465
+        ]
+      },
+      "toneGap": "After BaselineExposure and ACES 2 SDR, the DJI render is still about 0.65 EV darker than the camera/Apple render; ProfileToneCurve/HueSatMap and a default look are not applied."
+    }
   },
   "limitations": [
     "Only the cameras present in the local library were scanned; other brands and file modes are not represented.",
     "Metadata only: black/white level, CFA geometry, orientation and crop were not re-qualified in this scan.",
     "A pass of the color gate does not prove color accuracy; it only means the current qualification accepts the file.",
     "The DNG profile tone curve and HueSatMap are recorded but their rendering policy is not decided."
-  ]
+  ],
+  "profileSemantics": {
+    "q3": {
+      "baselineExposure": 0.0,
+      "profileToneCurve": false,
+      "hueSatMap": false,
+      "noiseProfile": false
+    },
+    "dji": {
+      "baselineExposure": 1.5,
+      "profileToneCurve": true,
+      "hueSatMapDims": [
+        36,
+        10,
+        1
+      ],
+      "hueSatMapCount": 2,
+      "noiseProfile": true
+    },
+    "note": "BaselineExposure must be applied in the scene-linear input transform. ProfileToneCurve/HueSatMap are part of the DNG profile and need an explicit product policy; ignoring them leaves the DJI render visibly darker and flatter than the camera/Apple reference."
+  }
 }
