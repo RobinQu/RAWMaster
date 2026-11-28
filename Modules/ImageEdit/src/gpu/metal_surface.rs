@@ -36,7 +36,7 @@ pub struct SurfaceFrame {
     pub surface_ids: [u32; 3],
 }
 
-struct NativeJoin(metal::CommandBuffer);
+pub(super) struct NativeJoin(pub(super) metal::CommandBuffer);
 impl Drop for NativeJoin {
     fn drop(&mut self) {
         match self.0.status() {
@@ -456,7 +456,7 @@ impl SurfaceFrame {
     }
 
     /// A worker retains every lease while the native command drains, including on a failed wgpu poll.
-    fn drain_native(fence: &metal::CommandBufferRef) -> Result<(), String> {
+    pub(super) fn drain_native(fence: &metal::CommandBufferRef) -> Result<(), String> {
         if fence.status() == MTLCommandBufferStatus::NotEnqueued {
             return Err("Metal rejected the encoded command before submission".into());
         }

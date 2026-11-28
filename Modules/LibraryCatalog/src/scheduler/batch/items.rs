@@ -74,6 +74,7 @@ struct SceneExecution {
 #[serde(rename_all = "camelCase")]
 enum SceneBackend {
     Rust,
+    Wgpu,
     Swift,
     SwiftFallback,
     Mixed,

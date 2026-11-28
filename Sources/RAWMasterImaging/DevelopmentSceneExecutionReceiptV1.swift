@@ -6,6 +6,7 @@ import Foundation
 package struct DevelopmentSceneExecutionReceiptV1: Codable, Equatable, Sendable {
   package enum Backend: String, Codable, Sendable {
     case rust
+    case wgpu
     case swift
     case swiftFallback
     case passthrough

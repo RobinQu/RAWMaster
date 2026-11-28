@@ -37,7 +37,7 @@ def timing(values):
     }
 
 
-def summarize(paths, warmups, sample_count):
+def summarize(paths, warmups, sample_count, backend):
     samples = sorted((json.loads(path.read_bytes()) for path in paths), key=lambda record: record["startedUptimeNS"])
     if len(samples) != 1 + warmups + sample_count or any(record["outcome"] != "succeeded" for record in samples):
         raise ValueError("A cold sample, all warmups and all successful measured deliveries are required for each route")
@@ -62,14 +62,26 @@ def summarize(paths, warmups, sample_count):
                 stages[stage]["perRunTotals"] = timing(valid)
         graph = [record["graph"] for record in records if "graph" in record]
         if target != "shared" and (len(graph) != sample_count or any(
-            item.get("dagBackend") != "rust" or item["dispatches"] < 3 for item in graph
+            item.get("dagBackend") != backend or item["dispatches"] < 3 for item in graph
         )):
-            raise ValueError(f"Missing the actual photographic Rust DAG receipt for {target}")
+            raise ValueError(f"Missing the actual photographic {backend} DAG receipt for {target}")
+        transport = [record.get("wgpu") for record in records] if backend == "wgpu" and target != "shared" else []
+        if transport and any(
+            receipt is None or receipt["graphicsAPI"] != "metal"
+            or receipt["textureTransport"] != "same-device-native" or receipt["frameCopyBytes"] != 0
+            or receipt["submissions"] != item["dispatches"] or receipt["hostWaits"] != item["dispatches"]
+            or receipt["validationBytes"] != 4 * item["dispatches"]
+            for item, receipt in zip(graph, transport, strict=True)
+        ):
+            raise ValueError(f"Incomplete or unexpected wgpu texture transport for {target}")
         memory = {}
         for record in records:
             for key, value in record["memory"].items():
                 memory[key] = max(memory.get(key, 0), value)
-        result["targets"][target] = {"stages": stages, "exampleGraphReceipt": next(iter(graph), None), "memoryMaxima": memory}
+        target_summary = {"stages": stages, "exampleGraphReceipt": next(iter(graph), None), "memoryMaxima": memory}
+        if transport:
+            target_summary["exampleWGPUTransport"] = transport[0]
+        result["targets"][target] = target_summary
     return result
 
 
@@ -80,6 +92,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--scratch-path", type=Path, default=ROOT / ".build")
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--backend", choices=("rust", "wgpu"), default="rust")
     parser.add_argument("--warmup", type=int, default=5)
     parser.add_argument("--samples", type=int, default=30)
     args = parser.parse_args()
@@ -102,7 +115,7 @@ def main():
         os.environ,
         RAWMASTER_SCENE_60MP_ARW=str(raw),
         RAWMASTER_FLASHRAW_LIBRARY=str(flashraw),
-        RAWMASTER_SCENE_BACKEND="rust",
+        RAWMASTER_SCENE_BACKEND=args.backend,
         RAWMASTER_EDITOR_ACCEPTANCE_DIR=str(output / "queue"),
         RAWMASTER_SCENE_DELIVERY_TRACE_DIR=str(traces),
         RAWMASTER_SCENE_DELIVERY_PROFILE_REPEATS=str(repeats),
@@ -147,7 +160,7 @@ def main():
         "sourceCommitAtStart": commit,
         "worktreeChangesAtStart": changes,
         "testBundleSHA256": test_bundles,
-        "configuration": "Swift Release with testability, Rust scene, 9504×6336 Bayer fixture",
+        "configuration": f"Swift Release with testability, {args.backend} scene, 9504×6336 Bayer fixture",
         "warmups": args.warmup,
         "measuredSamplesPerRoute": args.samples,
         "firstRunBoundary": "first delivery of this route in the test process with system file caches intact",
@@ -158,7 +171,7 @@ def main():
             "afterEachTargetPair": checkpoints[1:-1],
             "afterClosingLibraryOwners": checkpoints[-1],
         },
-        "routes": {route: summarize(paths, args.warmup, args.samples) for route, paths in routes.items()},
+        "routes": {route: summarize(paths, args.warmup, args.samples, args.backend) for route, paths in routes.items()},
     }
     (output / "summary.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
     print(output / "summary.json")

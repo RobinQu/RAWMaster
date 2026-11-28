@@ -273,6 +273,137 @@ final class DevelopmentScenePreviewV1Tests: XCTestCase {
     await service.releaseSource()
   }
 
+  func testOptInWGSLRealRAWPreviewAndMonitorMatchStrict039() async throws {
+    let environment = ProcessInfo.processInfo.environment
+    guard environment["RAWMASTER_SCENE_BACKEND"]?.lowercased() == "wgpu",
+          let snow = environment["RAWMASTER_SCENE_DELIVERY_SNOW_ARW"],
+          let large = environment["RAWMASTER_SCENE_60MP_ARW"] else {
+      throw XCTSkip("Select strict wgpu and supply the authorized 24 and 60 MP ARW fixtures")
+    }
+    typealias Graph = DevelopmentSceneGraphV1
+    func nodeID(_ suffix: UInt8) -> UUID { UUID(uuid: (4, 3, 0, 0, 0, 0, 0x40, 0, 0x80, 0, 0, 0, 0, 0, 0, suffix)) }
+    let coverage = Graph.Node(id: nodeID(1), name: "Coverage",
+      operation: .linearCoverage(start: .init(0.15, 0.10), end: .init(0.85, 0.90)))
+    let lift = Graph.Node(id: nodeID(2), name: "Exposure and curve",
+      operation: .corrector(image: .input, mask: coverage.id, exposureEV: 1,
+        curve: [.init(-6, -5.5), .init(-2, -2.25), .init(0, 0.1), .init(3, 2.75)], strength: 0.85, enabled: true))
+    let layer = Graph.Node(id: nodeID(3), name: "Ordered Layer",
+      operation: .layer(base: .input, layers: [.init(.node(lift.id), weight: 0.5)], enabled: true))
+    let graph = try Graph(graph: .init(nodes: [coverage, lift, layer], output: .node(layer.id)),
+      output: .init(sdrTrim: .init(exposureEV: 0, mapping: .balanced, highlightCompression: 0)))
+    let views: [(String, Graph.View)] = [("final", .init()), ("monitor", .init(target: .node(lift.id)))]
+    let window = CGRect(x: 0.625, y: 0.25, width: 0.125, height: 0.125)
+    let fixtures = [
+      ("24MP", snow, "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2", 4000, 6000),
+      ("60MP", large, "7798bebb0b45d68e44d5794385eeb361498858e4f477d9f658a066c41786dc89", 9504, 6336),
+    ]
+    struct Witness {
+      let label: String
+      let size: [Int]
+      let device: String
+      let registryID: UInt64
+      let execution: DevelopmentSceneExecutionReceiptV1
+      let samples: [SIMD4<Float>]
+    }
+    var evidence: [[String: Any]] = []
+    for (label, path, sha, nativeWidth, nativeHeight) in fixtures {
+      let url = URL(fileURLWithPath: path)
+      XCTAssertEqual(try RenderFiles.hash(url), sha)
+      let bytes = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+      let source = EditingSourceSnapshot(projectID: "m2-05", assetID: label, contentSHA256: sha,
+        byteCount: Int64(bytes), admissionFingerprint: String(repeating: "a", count: 64), sourceLocation: url)
+      let fitSize = nativeWidth > nativeHeight ? [960, 640] : [640, 960]
+      let samplings: [(String, DevelopmentScenePreviewV1.Sampling, [Int], CGRect?)] = [
+        ("fit", .fit(maximumEdge: 960), fitSize, nil),
+        ("native", .pixels(window: window), [nativeWidth / 8, nativeHeight / 8], window),
+      ]
+      func capture(_ service: DevelopmentScenePreviewV1, backend: DevelopmentSceneExecutionReceiptV1.Backend) async throws -> [Witness] {
+        do {
+          var captures: [Witness] = []
+          for (samplingLabel, sampling, expectedSize, expectedWindow) in samplings {
+            for (viewLabel, view) in views {
+              let frame = try await service.render(source: source, graph: graph, view: view, target: .hdr2020, sampling: sampling)
+              let expectedNative = CGSize(width: nativeWidth, height: nativeHeight)
+              let execution = try XCTUnwrap(frame.execution)
+              XCTAssertEqual(frame.nativeSize, expectedNative)
+              XCTAssertEqual(frame.window, expectedWindow)
+              XCTAssertEqual(frame.target, .hdr2020)
+              XCTAssertEqual(execution.backend, backend)
+              XCTAssertNil(execution.fallbackReason)
+              if backend == .rust {
+                XCTAssertGreaterThan(execution.dispatches + execution.nodeCacheHits, 0)
+              } else {
+                XCTAssertEqual(execution.dispatches, 1)
+              }
+              XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
+              let texture = frame.texture, size = [texture.width, texture.height]
+              XCTAssertEqual(size, expectedSize)
+              XCTAssertEqual(texture.pixelFormat, .rgba32Float)
+              XCTAssertEqual(texture.storageMode, .private)
+              XCTAssertTrue(texture.usage.contains(.shaderRead))
+              guard size == expectedSize else { throw DevelopmentScenePreviewV1.Failure.invalidViewport }
+              // Small, aligned witnesses at two distinct points avoid full-frame test readbacks.
+              let witnesses = [MTLRegionMake2D(texture.width / 4, texture.height / 4, 32, 32),
+                               MTLRegionMake2D(texture.width * 3 / 4, texture.height * 3 / 4, 32, 32)]
+              let samples = try witnesses.flatMap { try pixels(texture, region: $0) }
+              captures.append(.init(label: samplingLabel + "-" + viewLabel, size: size, device: texture.device.name,
+                registryID: texture.device.registryID, execution: execution, samples: samples))
+            }
+          }
+          let observed = await service.observations()
+          XCTAssertEqual([observed.raw, observed.graph, observed.display], [1, 4, 4])
+          XCTAssertEqual(Set(captures.map(\.registryID)).count, 1)
+          XCTAssertTrue(captures[0].samples != captures[1].samples, "FIT final and monitor must differ")
+          XCTAssertTrue(captures[2].samples != captures[3].samples, "Native final and monitor must differ")
+          await service.releaseSource()
+          return captures
+        } catch {
+          await service.releaseSource()
+          throw error
+        }
+      }
+      let wgpu = try await capture(DevelopmentScenePreviewV1(), backend: .wgpu)
+      let legacy = try await capture(DevelopmentScenePreviewV1(backend: .rust), backend: .rust)
+      XCTAssertEqual(wgpu.map(\.label), legacy.map(\.label))
+      for (actual, reference) in zip(wgpu, legacy) {
+        XCTAssertEqual(actual.registryID, reference.registryID)
+        XCTAssertEqual(actual.size, reference.size)
+        XCTAssertEqual(actual.samples.count, reference.samples.count)
+        var maxScaledRGBError: Float = 0
+        var finite = true, alphaMatches = true
+        for (a, b) in zip(actual.samples, reference.samples) {
+          alphaMatches = alphaMatches && a.w.bitPattern == b.w.bitPattern
+          for channel in 0..<3 {
+            finite = finite && a[channel].isFinite && b[channel].isFinite
+            maxScaledRGBError = max(maxScaledRGBError, abs(a[channel] - b[channel]) / max(1, abs(b[channel])))
+          }
+        }
+        XCTAssertTrue(finite, label + "/" + actual.label)
+        XCTAssertTrue(alphaMatches, label + "/" + actual.label)
+        XCTAssertLessThanOrEqual(maxScaledRGBError, 0.00002, label + "/" + actual.label)
+        if environment["RAWMASTER_SCENE_WGPU_PREVIEW_REPORT"] != nil {
+          func digest(_ samples: [SIMD4<Float>]) -> String {
+            samples.withUnsafeBytes { SHA256.hash(data: Data($0)) }.map { String(format: "%02x", $0) }.joined()
+          }
+          evidence.append(["sourceSHA256": sha, "nativeSize": [nativeWidth, nativeHeight], "case": actual.label,
+            "pixelSize": actual.size, "device": actual.device, "registryID": String(actual.registryID),
+            "sampleCount": actual.samples.count, "wgpuWitnessSHA256": digest(actual.samples),
+            "legacy039WitnessSHA256": digest(reference.samples), "maxScaledRGBError": maxScaledRGBError, "alphaBitsMatch": alphaMatches,
+            "execution": try JSONSerialization.jsonObject(with: JSONEncoder().encode(actual.execution)),
+            "referenceExecution": try JSONSerialization.jsonObject(with: JSONEncoder().encode(reference.execution))])
+        }
+      }
+      XCTAssertEqual(try RenderFiles.hash(url), sha)
+    }
+    if let path = environment["RAWMASTER_SCENE_WGPU_PREVIEW_REPORT"] {
+      let report: [String: Any] = ["scope": "resident display-linear HDR texture before AppKit presentation",
+        "recipeSHA256": try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: graph)),
+        "nativeWindow": [window.minX, window.minY, window.width, window.height], "cases": evidence]
+      try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+        .write(to: URL(fileURLWithPath: path), options: .withoutOverwriting)
+    }
+  }
+
   private func makeSource(_ url: URL, count: Int64) -> EditingSourceSnapshot {
     .init(projectID: "test", assetID: "test", contentSHA256: "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
           byteCount: count, admissionFingerprint: String(repeating: "a", count: 64), sourceLocation: url)

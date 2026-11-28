@@ -202,6 +202,8 @@ fn actual_process_loss_after_prepare_publication_and_ack_preserves_each_file_and
     photographic["backend"] = json!("mixed");
     photographic["photographicEngine"] = json!("scene-photographic-v1-f32-metal");
     photographic["dagBackend"] = json!("rust");
+    preserve_after_process_loss(&photographic)?;
+    photographic["dagBackend"] = json!("wgpu");
     preserve_after_process_loss(&photographic)
 }
 

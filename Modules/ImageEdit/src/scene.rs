@@ -18,14 +18,17 @@ pub enum SceneError {
     Backend(String),
     Render(String),
     Budget(String),
+    Unsupported(String),
 }
 
 impl std::fmt::Display for SceneError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Invalid(s) | Self::Backend(s) | Self::Render(s) | Self::Budget(s) => {
-                f.write_str(s)
-            }
+            Self::Invalid(s)
+            | Self::Backend(s)
+            | Self::Render(s)
+            | Self::Budget(s)
+            | Self::Unsupported(s) => f.write_str(s),
         }
     }
 }

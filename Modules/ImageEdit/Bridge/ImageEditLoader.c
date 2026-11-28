@@ -32,6 +32,10 @@ struct RMImageRuntime {
     int32_t (*scene_render_surface)(const RMSceneProgram *, void *, void **, const uint8_t *, size_t, const char *const *, void *const *, size_t, uint64_t, RMSceneIsCurrent, void *);
     int32_t (*scene_receipt)(const RMSceneProgram *, RMSceneReceiptV1 *);
     void (*scene_close)(RMSceneProgram *);
+    int32_t (*scene_ap1_metal_open)(void *, RMSceneAP1MetalProgram **);
+    int32_t (*scene_ap1_metal_render)(RMSceneAP1MetalProgram *, const uint8_t *, size_t, void *,
+        void **, const uint8_t *, size_t, RMSceneAP1MetalReceiptV1 *, uint64_t, RMSceneIsCurrent, void *);
+    void (*scene_ap1_metal_close)(RMSceneAP1MetalProgram *);
     void (*metal_program_close)(RMImageMetalProgram *);
     int32_t (*metal_half_program_open)(const RMImagePlan *, void *, RMImageMetalHalfProgram **);
     int32_t (*metal_half_render)(const RMImageMetalHalfProgram *, const RMImagePlan *, void *, void *,
@@ -91,6 +95,9 @@ RMImageRuntime *rm_image_host_open(const char *path) {
         runtime->scene_render_surface = dlsym(library, "rm_scene_program_render_surface_v1");
         runtime->scene_receipt = dlsym(library, "rm_scene_program_receipt_v1");
         runtime->scene_close = dlsym(library, "rm_scene_program_close_v1");
+        runtime->scene_ap1_metal_open = dlsym(library, "rm_scene_ap1_metal_open_v1");
+        runtime->scene_ap1_metal_render = dlsym(library, "rm_scene_ap1_metal_render_v1");
+        runtime->scene_ap1_metal_close = dlsym(library, "rm_scene_ap1_metal_close_v1");
         runtime->metal_program_close = dlsym(library, "rm_image_metal_program_close_v1");
         runtime->metal_half_program_open = dlsym(library, "rm_image_metal_half_program_open_v1");
         runtime->metal_half_render = dlsym(library, "rm_image_metal_half_render_v1");
@@ -286,4 +293,24 @@ int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,
 }
 void rm_image_host_scene_close(const RMImageRuntime *runtime, RMSceneProgram *program) {
     if (runtime && runtime->scene_close) runtime->scene_close(program);
+}
+
+int32_t rm_image_host_scene_ap1_metal_open(const RMImageRuntime *runtime,
+    void *device, RMSceneAP1MetalProgram **out) {
+    if (out) *out = NULL;
+    if (!runtime || !runtime->scene_ap1_metal_open || !runtime->scene_ap1_metal_render ||
+        !runtime->scene_ap1_metal_close) return 2;
+    return runtime->scene_ap1_metal_open(device, out);
+}
+int32_t rm_image_host_scene_ap1_metal_render(const RMImageRuntime *runtime,
+    RMSceneAP1MetalProgram *program, const uint8_t *graph, size_t graph_bytes,
+    void *input, void **retained_output, const uint8_t *view, size_t view_bytes,
+    RMSceneAP1MetalReceiptV1 *receipt, uint64_t revision, RMSceneIsCurrent current, void *context) {
+    if (retained_output) *retained_output = NULL;
+    if (!runtime || !runtime->scene_ap1_metal_render) return 2;
+    return runtime->scene_ap1_metal_render(program, graph, graph_bytes, input, retained_output,
+        view, view_bytes, receipt, revision, current, context);
+}
+void rm_image_host_scene_ap1_metal_close(const RMImageRuntime *runtime, RMSceneAP1MetalProgram *program) {
+    if (runtime && runtime->scene_ap1_metal_close) runtime->scene_ap1_metal_close(program);
 }

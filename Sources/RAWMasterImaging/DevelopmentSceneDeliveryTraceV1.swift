@@ -2,6 +2,7 @@ import Darwin
 import Foundation
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 
 /// Per-delivery QA sidecar. Its key space is bounded by the stages and rendition formats below.
 package final class SceneDeliveryTrace: @unchecked Sendable {
@@ -26,6 +27,9 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     case dagOpen = "dag.rust.open"
     case dagUpdate = "dag.rust.update"
     case dagDispatch = "dag.rust.dispatch_and_wait"
+    case dagWGPUOpen = "dag.wgpu.device_open"
+    case dagWGPURender = "dag.wgpu.render_wall"
+    case dagWGPUWait = "dag.wgpu.submit_and_wait"
     case dagSwiftWait = "dag.swift.host_wait"
     case dagSwiftGPU = "dag.swift.gpu"
     case drtInitialize = "drt.init"
@@ -131,9 +135,28 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     var memory = Memory()
     var compilation = Compilation()
     var graph: Graph?
+    var wgpu: WGPU?
     var flashRawNative: FlashRawDecodeStatistics?
     var flashRawNativeStatisticsStatus: String?
     var outcome: String?
+  }
+
+  private struct WGPU: Encodable {
+    let graphicsAPI = "metal"
+    let textureTransport = "same-device-native"
+    var submissions = 0
+    var hostWaits = 0
+    var pipelineBuilds = 0
+    var frameCopyBytes: UInt64 = 0
+    var validationBytes: UInt64 = 0
+
+    mutating func add(_ receipt: RAWMasterImageKernel.AP1MetalProgram.Receipt) {
+      submissions += receipt.submissions
+      hostWaits += receipt.hostWaits
+      pipelineBuilds += receipt.pipelineBuilds
+      frameCopyBytes += receipt.frameCopyBytes
+      validationBytes += receipt.validationBytes
+    }
   }
 
   private struct Report: Encodable {
@@ -153,6 +176,7 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     var outcome = "failed"
     let gpuUnavailable = [
       "dag.rust": "ffi_returns_dispatch_and_completion_wall_only",
+      "dag.wgpu": "ffi_returns_native_submit_and_completion_wall_only",
       "photographic": "core_image_owns_command_buffers",
       "model": "model_provider_owns_execution",
       "avif.encode": "image_io_owns_execution",
@@ -280,6 +304,19 @@ package final class SceneDeliveryTrace: @unchecked Sendable {
     guard let bound = binding else { return }
     bound.trace.lock.withLock {
       bound.trace.report.targets[bound.target, default: Target()].compilation.add(event)
+    }
+  }
+
+  static func recordWGPU(_ receipt: RAWMasterImageKernel.AP1MetalProgram.Receipt) {
+    guard let bound = binding else { return }
+    bound.trace.lock.withLock {
+      let target = bound.target
+      var wgpu = bound.trace.report.targets[target]?.wgpu ?? WGPU()
+      wgpu.add(receipt)
+      bound.trace.report.targets[target, default: Target()].wgpu = wgpu
+    }
+    if receipt.hostWaits > 0 {
+      bound.trace.add(.dagWGPUWait, duration: receipt.submitWaitNanoseconds, target: bound.target)
     }
   }
 

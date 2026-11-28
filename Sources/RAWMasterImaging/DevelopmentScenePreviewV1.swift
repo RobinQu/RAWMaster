@@ -45,13 +45,13 @@ package actor DevelopmentScenePreviewV1 {
     let decoder: DevelopmentSceneRAWV1
     let graph: DevelopmentSceneGraphRendererV1
     let modelProvider: DevelopmentSceneProductionModelProvider?
-    init() throws {
+    init(backend: RustSceneGraphRenderer.Mode) throws {
       guard let device = MTLCreateSystemDefaultDevice() else {
         throw DevelopmentSceneColorV1.Failure.metalUnavailable
       }
       self.device = device
       decoder = try DevelopmentSceneRAWV1(device: device)
-      graph = try DevelopmentSceneGraphRendererV1(device: device, surfaceBudget: 640 * 1024 * 1024)
+      graph = try DevelopmentSceneGraphRendererV1(device: device, surfaceBudget: 640 * 1024 * 1024, backend: backend)
       modelProvider = try? DevelopmentSceneProductionModelProvider(device: device)
     }
   }
@@ -88,6 +88,7 @@ package actor DevelopmentScenePreviewV1 {
   // Keep final and node display suffixes resident, but never pin multiple graph masters.
   private static let suffixCacheBytes = 96 * 1024 * 1024
   private static let maximumSuffixes = 4
+  private let backend: RustSceneGraphRenderer.Mode
   private var context: Context?
   private var upstream: Upstream?
   private var input: Input?
@@ -100,7 +101,8 @@ package actor DevelopmentScenePreviewV1 {
   private var scopeAnalyzer: SceneScopesAnalyzerV1?
   private var scopePreGamut: DevelopmentSceneOutputV1?
 
-  package init() {}
+  package init() { backend = RustSceneGraphRenderer.mode }
+  init(backend: RustSceneGraphRenderer.Mode) { self.backend = backend }
   package func observations() -> Counts { counts }
   package func releaseSource(matching source: EditingSourceSnapshot? = nil) {
     if source == nil || upstream?.source == source { clearSource() }
@@ -231,7 +233,7 @@ package actor DevelopmentScenePreviewV1 {
     guard let stamp = try? PreviewFileStamp.read(source.sourceLocation), stamp.size == source.byteCount else {
       clearSource(); throw Failure.unavailableSource
     }
-    let ctx = try context ?? Context()
+    let ctx = try context ?? Context(backend: backend)
     context = ctx
     if let upstream, upstream.source == source, upstream.stamp == stamp { return (ctx, upstream) }
     clearSource()

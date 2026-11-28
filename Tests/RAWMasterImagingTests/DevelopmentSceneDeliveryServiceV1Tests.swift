@@ -173,6 +173,8 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
 
   private func verifyFrozenGraph(path: String, hash: String, name: String, width: Int, height: Int, photographic: DevelopmentAdjustmentsV3? = nil) async throws {
     typealias Graph = DevelopmentSceneGraphV1
+    let backend: DevelopmentSceneExecutionReceiptV1.Backend =
+      ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]?.lowercased() == "wgpu" ? .wgpu : .rust
     let root = try tempDirectory(), database = root.appendingPathComponent("library.sqlite")
     let sourceURL = URL(fileURLWithPath: path)
     let sourceHash = try FileSafety.hash(sourceURL), count = try FileSafety.stat(sourceURL).size
@@ -225,8 +227,8 @@ final class DevelopmentSceneDeliveryServiceV1Tests: XCTestCase {
     let receipts = try [hdr, sdr].map { receipt in
       XCTAssertEqual(receipt.artifact.pixelWidth, width); XCTAssertEqual(receipt.artifact.pixelHeight, height)
       let execution = try XCTUnwrap(receipt.execution)
-      XCTAssertEqual(execution.backend, photographic == nil ? .rust : .mixed); XCTAssertNil(execution.fallbackReason)
-      if photographic != nil { XCTAssertEqual(execution.dagBackend, .rust); XCTAssertNotNil(execution.photographicEngine) }
+      XCTAssertEqual(execution.backend, photographic == nil ? backend : .mixed); XCTAssertNil(execution.fallbackReason)
+      if photographic != nil { XCTAssertEqual(execution.dagBackend, backend); XCTAssertNotNil(execution.photographicEngine) }
       XCTAssertGreaterThan(execution.dispatches, 0)
       XCTAssertLessThanOrEqual(execution.peakBytes, execution.budgetBytes)
       if width == 9504 { XCTAssertGreaterThan(execution.tiles, 1) }

@@ -1,6 +1,7 @@
 import Foundation
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 
 /// Executes a validated AP1 graph without CPU pixel transport. Public delivery can only take `prepareFinal`.
 final class DevelopmentSceneGraphRendererV1 {
@@ -216,6 +217,15 @@ final class DevelopmentSceneGraphRendererV1 {
         guard let operation = scope.nodes.first(where: { $0.id == id })?.operation, !operation.isCoverage else {
           throw Graph.Failure.unknownNode(id)
         }
+      }
+      if backend == .wgpu {
+        guard view.groupPath.isEmpty, externalCoverages.isEmpty else { throw RAWMasterImageKernel.Failure.unsupportedScene }
+        let (texture, raw) = try rust.renderWGSL(input: t, scope: scope, view: view, origin: image.origin,
+          geometry: .init(geometry.width, geometry.height), surfaceBudget: maximum)
+        lastReceipt = .init(backend: .wgpu, tiles: raw.dispatches == 0 ? 0 : 1, nodes: raw.nodes,
+          dispatches: raw.dispatches, coverageCacheHits: 0, nodeCacheHits: 0,
+          peakBytes: raw.peakBytes, budgetBytes: raw.budgetBytes, cpuMilliseconds: raw.cpuMilliseconds, fallbackReason: nil)
+        return Surface(texture: texture, origin: image.origin, domain: .image)
       }
       let effectiveTileEdge = tileEdge ?? rustTileEdge(input: t, surfaceBudget: maximum)
       do {

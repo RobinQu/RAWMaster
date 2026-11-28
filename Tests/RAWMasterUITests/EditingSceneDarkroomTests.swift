@@ -65,6 +65,7 @@ final class EditingSceneDarkroomTests: XCTestCase {
     @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, repeats: Int = 1) async throws {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
+        let useWGSL = environment["RAWMASTER_SCENE_BACKEND"]?.lowercased() == "wgpu"
         let retained = environment["RAWMASTER_EDITOR_ACCEPTANCE_DIR"].map { path in
             let root = URL(fileURLWithPath: path)
             return photographic ? root.appendingPathComponent("photographic", isDirectory: true) : root
@@ -205,11 +206,15 @@ final class EditingSceneDarkroomTests: XCTestCase {
                 if photographic {
                     XCTAssertEqual(execution.backend, .mixed)
                     XCTAssertEqual(execution.photographicEngine, "scene-photographic-v1-f32-metal")
-                    XCTAssertEqual(execution.dagBackend, .rust)
+                    XCTAssertEqual(execution.dagBackend, useWGSL ? .wgpu : .rust)
                     XCTAssertNil(execution.fallbackReason)
                 } else {
                     XCTAssertNil(execution.photographicEngine)
                     XCTAssertNil(execution.dagBackend)
+                    if useWGSL {
+                        XCTAssertEqual(execution.backend, .wgpu)
+                        XCTAssertNil(execution.fallbackReason)
+                    }
                 }
                 let input = try await queue.input(batchID: batchID, ordinal: 1)
                 XCTAssertEqual(input.version.id, frozen.id)

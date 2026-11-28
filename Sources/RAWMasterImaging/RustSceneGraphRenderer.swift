@@ -3,8 +3,7 @@ import Metal
 import RAWMasterCore
 import RAWMasterImage
 
-/// Thin Swift owner for the Rust scene-linear graph executor. The Swift Metal graph remains the
-/// reference implementation; this backend is only selected after the shadow comparison passes.
+/// Swift owner for the legacy and wgpu Rust scene executors.
 final class RustSceneGraphRenderer {
     typealias FrozenOpen = (Data, any MTLDevice, inout UInt32) throws -> RAWMasterImageKernel.SceneProgram?
     private typealias Program = RAWMasterImageKernel.SceneProgram
@@ -21,6 +20,8 @@ final class RustSceneGraphRenderer {
     private let openFrozen: FrozenOpen
     private var reuse: Reuse
     private var programs: [String: Program] = [:]
+    private var ap1: RAWMasterImageKernel.AP1MetalProgram?
+    private var ap1Document: (scope: Scope, data: Data)?
 
     init(device: any MTLDevice, frozenDelivery: Bool = false,
          openFrozen: @escaping FrozenOpen = RAWMasterImageKernel.SceneProgram.openFrozenDelivery) {
@@ -29,12 +30,13 @@ final class RustSceneGraphRenderer {
         reuse = frozenDelivery ? .frozenDelivery : .editable
     }
 
-    enum Mode { case auto, rust, swift }
+    enum Mode { case auto, rust, swift, wgpu }
 
     static var mode: Mode {
         switch ProcessInfo.processInfo.environment["RAWMASTER_SCENE_BACKEND"]?.lowercased() {
         case "rust": return .rust
         case "swift", "off", "0": return .swift
+        case "wgpu": return .wgpu
         default: return .auto
         }
     }
@@ -46,14 +48,9 @@ final class RustSceneGraphRenderer {
                 coverages: [UUID: any MTLTexture] = [:]) throws
       -> (texture: any MTLTexture, receipt: RAWMasterImageKernel.SceneProgram.SceneReceipt) {
         let program = try preparedProgram(graph.graph)
-        let sceneView: RAWMasterImageKernel.SceneView = switch view.target {
-        case .final: .final
-        case .bypass: .bypass
-        case .node(let id): .node(id.uuidString)
-        }
         do {
             let texture = try SceneDeliveryTrace.measure(.dagDispatch) {
-                try program.renderSurface(input: input, view: sceneView, groupPath: view.groupPath,
+                try program.renderSurface(input: input, view: Self.selector(view), groupPath: view.groupPath,
                     origin: origin, geometry: geometry, surfaceBudget: surfaceBudget,
                     tileEdge: tileEdge, sourceRevision: sourceRevision, coverages: coverages)
             }
@@ -62,6 +59,44 @@ final class RustSceneGraphRenderer {
             return (texture, receipt)
         } catch RAWMasterImageKernel.Failure.surfaceBudget {
             throw DevelopmentSceneGraphRendererV1.Failure.surfaceBudget
+        }
+    }
+
+    func renderWGSL(input: any MTLTexture, scope: DevelopmentSceneGraphV1.Scope, view: DevelopmentSceneGraphV1.View,
+                    origin: SIMD2<Int>, geometry: SIMD2<Int>, surfaceBudget: Int)
+      throws -> (texture: any MTLTexture, receipt: RAWMasterImageKernel.AP1MetalProgram.Receipt) {
+        let document: Data
+        if let previous = ap1Document, previous.scope == scope {
+            document = previous.data
+        } else {
+            document = try Self.encode(scope)
+            ap1Document = (scope, document)
+        }
+        let program = try ap1 ?? SceneDeliveryTrace.measure(.dagWGPUOpen) {
+            try RAWMasterImageKernel.AP1MetalProgram(device: device)
+        }
+        ap1 = program
+        do {
+            let result = try SceneDeliveryTrace.measure(.dagWGPURender) {
+                try program.render(graph: document, input: input, view: Self.selector(view), origin: origin,
+                    geometry: geometry, surfaceBudget: surfaceBudget, isCurrent: { _ in !Task.isCancelled })
+            }
+            SceneDeliveryTrace.recordWGPU(result.receipt)
+            SceneDeliveryTrace.sampleMemory(device: device)
+            return result
+        } catch RAWMasterImageKernel.Failure.surfaceBudget {
+            throw DevelopmentSceneGraphRendererV1.Failure.surfaceBudget
+        } catch RAWMasterImageKernel.Failure.staleFrame {
+            try Task.checkCancellation()
+            throw RAWMasterImageKernel.Failure.staleFrame
+        }
+    }
+
+    private static func selector(_ view: DevelopmentSceneGraphV1.View) -> RAWMasterImageKernel.SceneView {
+        switch view.target {
+        case .final: .final
+        case .bypass: .bypass
+        case .node(let id): .node(id.uuidString)
         }
     }
 

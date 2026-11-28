@@ -9,6 +9,9 @@ use std::sync::{mpsc, Arc};
 use std::time::Instant;
 use wgpu::{BufferUsages, ComputePipeline, DeviceType};
 
+#[cfg(all(target_os = "macos", feature = "metal-surface"))]
+pub(crate) mod metal_texture;
+
 const GROUP_EDGE: u32 = 16;
 pub const DEFAULT_BUDGET_BYTES: u64 = 512 * 1024 * 1024;
 
@@ -191,14 +194,7 @@ impl SceneDevice {
         region
             .validate_pixels(pixels)
             .map_err(|error| error.to_string())?;
-        let mut rows = region.header().to_vec();
-        rows.extend(
-            prepared
-                .parameters()
-                .rows
-                .iter()
-                .map(|row| row.map(f32::to_bits)),
-        );
+        let rows = parameter_rows(prepared, region);
         let size = std::mem::size_of_val(pixels) as u64;
         let parameter_bytes = std::mem::size_of_val(rows.as_slice()) as u64;
         let readback_bytes = size + 4;
@@ -344,6 +340,24 @@ fn run_ap1(@builtin(global_invocation_id) gid: vec3<u32>) {
     if !lawful(p0) { atomicOr(&invalid, 1u); return; }
 "#,
     );
+    write_steps(&mut code, plan);
+    writeln!(code, "    target_pixels[index] = p{};\n}}", plan.output.0).unwrap();
+    code
+}
+
+fn parameter_rows(prepared: &Prepared, region: Region) -> Vec<[u32; 4]> {
+    let mut rows = region.header().to_vec();
+    rows.extend(
+        prepared
+            .parameters()
+            .rows
+            .iter()
+            .map(|row| row.map(f32::to_bits)),
+    );
+    rows
+}
+
+fn write_steps(code: &mut String, plan: &Plan) {
     for step in &plan.steps {
         let output = match *step {
             Step::LinearCoverage { output, row } => {
@@ -388,6 +402,39 @@ fn run_ap1(@builtin(global_invocation_id) gid: vec3<u32>) {
         )
         .unwrap();
     }
-    writeln!(code, "    target_pixels[index] = p{};\n}}", plan.output.0).unwrap();
-    code
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::scene::ap1::Root;
+    use sha2::{Digest, Sha256};
+
+    #[test]
+    fn buffer_shader_retains_the_signed_off_component_shape() {
+        // The literal values and IDs can vary. This is the active shape of the archived real
+        // Metal/Vulkan final and monitor shader hashes in the 043 evidence.
+        let document = br#"{"schemaVersion":1,"graph":{"output":"final","nodes":[
+          {"id":"m","name":"Coverage","operation":{"kind":"linearCoverage","start":[0.25,0.2],"end":[0.9,0.8]}},
+          {"id":"c","name":"Masked","operation":{"kind":"corrector","image":"$input","mask":"m","exposureEV":1,"curve":[],"strength":1,"enabled":true}},
+          {"id":"d","name":"Secondary","operation":{"kind":"corrector","image":"$input","mask":null,"exposureEV":-0.5,"curve":[],"strength":1,"enabled":true}},
+          {"id":"final","name":"Mix","operation":{"kind":"layer","base":"$input","enabled":true,"layers":[{"image":"c","weight":0.625,"mode":"normal"},{"image":"d","weight":0.375,"mode":"normal"}]}}
+        ]}}"#;
+        for (root, pinned) in [
+            (
+                Root::Final,
+                "4095653fc19ec06834f5406c2583d0a6cda45844118531427c44f49fcf6e7107",
+            ),
+            (
+                Root::Monitor("c"),
+                "63287f0e7f006afb868384d6d45b9cc787c1ec5ef55391999db3372cc7e0ecb8",
+            ),
+        ] {
+            let prepared = Prepared::from_039(document, root).unwrap();
+            assert_eq!(
+                format!("{:x}", Sha256::digest(wgsl(prepared.plan()))),
+                pinned
+            );
+        }
+    }
 }

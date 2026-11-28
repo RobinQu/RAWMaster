@@ -1,8 +1,9 @@
 //! C ABI for the scene-linear AP1 graph executor (macOS Metal only).
 
+use crate::gpu::ap1_scene::metal_texture::{admits_source, MetalProgram, MetalReceipt};
 use crate::scene::{
     metal_exec::{Receipt, SceneProgram},
-    ViewSpec,
+    SceneError, ViewSpec,
 };
 use foreign_types::{ForeignType, ForeignTypeRef};
 use std::collections::HashMap;
@@ -10,6 +11,7 @@ use std::ffi::{c_char, c_void, CStr};
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::slice;
 use std::sync::Arc;
+use std::time::Instant;
 
 type Current = extern "C" fn(*mut c_void, u64) -> u32;
 
@@ -67,7 +69,7 @@ unsafe fn open(
         };
         let program = match result {
             Ok(program) => program,
-            Err(crate::scene::SceneError::Invalid(_)) => return 1,
+            Err(SceneError::Invalid(_) | SceneError::Unsupported(_)) => return 1,
             Err(crate::scene::SceneError::Backend(_)) => return 2,
             Err(crate::scene::SceneError::Render(_)) | Err(crate::scene::SceneError::Budget(_)) => {
                 return 3
@@ -95,7 +97,7 @@ pub unsafe extern "C" fn rm_scene_program_update_v1(
         let document = slice::from_raw_parts(graph, graph_bytes);
         match program.update(document) {
             Ok(()) => 0,
-            Err(crate::scene::SceneError::Invalid(_)) => 1,
+            Err(SceneError::Invalid(_) | SceneError::Unsupported(_)) => 1,
             Err(crate::scene::SceneError::Backend(_)) => 2,
             Err(crate::scene::SceneError::Budget(_)) | Err(crate::scene::SceneError::Render(_)) => {
                 3
@@ -259,7 +261,7 @@ unsafe fn render(
                 }
                 0
             }
-            Err(crate::scene::SceneError::Invalid(_)) => 1,
+            Err(SceneError::Invalid(_) | SceneError::Unsupported(_)) => 1,
             Err(crate::scene::SceneError::Backend(_)) => 2,
             Err(crate::scene::SceneError::Render(message)) if message.contains("stale") => 5,
             Err(crate::scene::SceneError::Render(_)) => 3,
@@ -288,5 +290,138 @@ pub unsafe extern "C" fn rm_scene_program_receipt_v1(
 pub unsafe extern "C" fn rm_scene_program_close_v1(program: *mut SceneProgram) {
     if !program.is_null() {
         drop(Box::from_raw(program));
+    }
+}
+
+extern "C" {
+    fn rm_is_metal_device(object: *mut c_void) -> bool;
+}
+
+fn ap1_status(error: SceneError) -> i32 {
+    match error {
+        SceneError::Invalid(_) => 1,
+        SceneError::Backend(_) => 2,
+        SceneError::Render(_) => 3,
+        SceneError::Budget(_) => 6,
+        SceneError::Unsupported(_) => 7,
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_ap1_metal_open_v1(
+    metal_device: *mut c_void,
+    out: *mut *mut MetalProgram,
+) -> i32 {
+    if out.is_null() {
+        return 1;
+    }
+    out.write(std::ptr::null_mut());
+    catch_unwind(AssertUnwindSafe(|| {
+        if metal_device.is_null() || !rm_is_metal_device(metal_device) {
+            return 1;
+        }
+        let device = metal::DeviceRef::from_ptr(metal_device.cast());
+        match MetalProgram::open(device) {
+            Ok(program) => {
+                out.write(Box::into_raw(Box::new(program)));
+                0
+            }
+            Err(error) => ap1_status(error),
+        }
+    }))
+    .unwrap_or(4)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_ap1_metal_render_v1(
+    program: *mut MetalProgram,
+    graph: *const u8,
+    graph_bytes: usize,
+    input: *mut c_void,
+    retained_output: *mut *mut c_void,
+    view_json: *const u8,
+    view_bytes: usize,
+    receipt: *mut MetalReceipt,
+    revision: u64,
+    current: Option<Current>,
+    context: *mut c_void,
+) -> i32 {
+    if !retained_output.is_null() {
+        retained_output.write(std::ptr::null_mut());
+    }
+    if !receipt.is_null() {
+        receipt.write(MetalReceipt::default());
+    }
+    if program.is_null()
+        || graph.is_null()
+        || input.is_null()
+        || retained_output.is_null()
+        || receipt.is_null()
+        || !(1..=1024 * 1024).contains(&graph_bytes)
+        || view_bytes > 4096
+        || (view_json.is_null() && view_bytes != 0)
+    {
+        return 1;
+    }
+    let started = Instant::now();
+    catch_unwind(AssertUnwindSafe(|| {
+        let check = || {
+            current
+                .map(|callback| callback(context, revision) != 0)
+                .unwrap_or(true)
+        };
+        if !check() {
+            return 5;
+        }
+        if !admits_source(input) {
+            return 1;
+        }
+        let view = if view_bytes == 0 {
+            ViewSpec::default()
+        } else {
+            match serde_json::from_slice(slice::from_raw_parts(view_json, view_bytes)) {
+                Ok(view) => view,
+                Err(_) => return 1,
+            }
+        };
+        let source = metal::TextureRef::from_ptr(input.cast());
+        let document = slice::from_raw_parts(graph, graph_bytes);
+        // Serial C callers make this exclusive borrow cover the cache and synchronous queue work.
+        let (output, mut result) = match (&mut *program).render(document, &view, source) {
+            Ok(rendered) => rendered,
+            Err(error) => return ap1_status(error),
+        };
+        if !check() {
+            return 5;
+        }
+        result.cpu_ms = started.elapsed().as_secs_f64() * 1_000.0;
+        receipt.write(result);
+        retained_output.write(output.into_ptr().cast());
+        0
+    }))
+    .unwrap_or(4)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn rm_scene_ap1_metal_close_v1(program: *mut MetalProgram) {
+    if !program.is_null() {
+        drop(Box::from_raw(program));
+    }
+}
+
+#[cfg(test)]
+mod ap1_tests {
+    use super::*;
+
+    #[test]
+    fn native_ap1_receipt_matches_the_v1_c_layout() {
+        use std::mem::{offset_of, size_of};
+        assert_eq!(size_of::<MetalReceipt>(), 72);
+        assert_eq!(offset_of!(MetalReceipt, pipeline_builds), 16);
+        assert_eq!(offset_of!(MetalReceipt, peak_bytes), 24);
+        assert_eq!(offset_of!(MetalReceipt, frame_copy_bytes), 40);
+        assert_eq!(offset_of!(MetalReceipt, validation_bytes), 48);
+        assert_eq!(offset_of!(MetalReceipt, submit_wait_ns), 56);
+        assert_eq!(offset_of!(MetalReceipt, cpu_ms), 64);
     }
 }

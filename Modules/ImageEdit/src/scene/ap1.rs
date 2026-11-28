@@ -59,6 +59,20 @@ pub struct Region {
 
 impl Region {
     pub fn new(full: [u32; 2], origin: [u32; 2], extent: [u32; 2]) -> Result<Self, SceneError> {
+        let region = Self::native(full, origin, extent)?;
+        if region.pixel_count() as u64 > MAX_PROBE_PIXELS {
+            return Err(SceneError::Budget(
+                "scene probe exceeds 6,000,000 bound pixels".into(),
+            ));
+        }
+        Ok(region)
+    }
+
+    pub(crate) fn native(
+        full: [u32; 2],
+        origin: [u32; 2],
+        extent: [u32; 2],
+    ) -> Result<Self, SceneError> {
         for axis in 0..2 {
             if !(1..=16_384).contains(&full[axis])
                 || extent[axis] == 0
@@ -69,11 +83,6 @@ impl Region {
                     "scene ROI is outside its full geometry".into(),
                 ));
             }
-        }
-        if u64::from(extent[0]) * u64::from(extent[1]) > MAX_PROBE_PIXELS {
-            return Err(SceneError::Budget(
-                "scene probe exceeds 6,000,000 bound pixels".into(),
-            ));
         }
         Ok(Self {
             full,
@@ -136,6 +145,7 @@ impl Region {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Root<'a> {
     Final,
     Monitor(&'a str),
@@ -196,7 +206,7 @@ impl Prepared {
             Root::Monitor(id) => {
                 // The 039 top-level monitor takes this image root. Group paths are outside v1.
                 if lowering.operation(id)?.is_coverage() {
-                    return Err(SceneError::Invalid(format!(
+                    return Err(SceneError::Unsupported(format!(
                         "coverage node {id} is not previewable"
                     )));
                 }
@@ -376,7 +386,7 @@ impl<'a> Lowering<'a> {
 }
 
 fn unsupported(id: &str) -> SceneError {
-    SceneError::Invalid(format!(
+    SceneError::Unsupported(format!(
         "node {id} uses an operation outside the portable AP1 scene subset"
     ))
 }

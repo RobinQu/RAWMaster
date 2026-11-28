@@ -74,3 +74,10 @@ int32_t rm_image_host_scene_render_surface(const RMImageRuntime *runtime,
 int32_t rm_image_host_scene_receipt(const RMImageRuntime *runtime,
     const RMSceneProgram *program, RMSceneReceiptV1 *out);
 void rm_image_host_scene_close(const RMImageRuntime *runtime, RMSceneProgram *program);
+int32_t rm_image_host_scene_ap1_metal_open(const RMImageRuntime *runtime,
+    void *device, RMSceneAP1MetalProgram **out);
+int32_t rm_image_host_scene_ap1_metal_render(const RMImageRuntime *runtime,
+    RMSceneAP1MetalProgram *program, const uint8_t *graph, size_t graph_bytes,
+    void *input, void **retained_output, const uint8_t *view, size_t view_bytes,
+    RMSceneAP1MetalReceiptV1 *receipt, uint64_t revision, RMSceneIsCurrent current, void *context);
+void rm_image_host_scene_ap1_metal_close(const RMImageRuntime *runtime, RMSceneAP1MetalProgram *program);

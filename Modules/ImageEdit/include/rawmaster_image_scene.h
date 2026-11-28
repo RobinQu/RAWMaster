@@ -63,6 +63,37 @@ int32_t rm_scene_program_render_surface_v1(const RMSceneProgram *program,
                                             void *context);
 int32_t rm_scene_program_receipt_v1(const RMSceneProgram *program, RMSceneReceiptV1 *out);
 void rm_scene_program_close_v1(RMSceneProgram *program);
+
+/* Strict, optional wgpu/Metal execution for the supported AP1 graph subset. The caller
+   serializes open/render/close and keeps the initialized, producer-joined, private source
+   immutable until render returns. The callback may not re-enter the same handle. View JSON
+   uses the final or top-level node root, origin, full geometry and surfaceBudget. */
+typedef struct RMSceneAP1MetalProgram RMSceneAP1MetalProgram;
+typedef struct RMSceneAP1MetalReceiptV1 {
+    uint32_t nodes;
+    uint32_t dispatches;
+    uint32_t submissions;
+    uint32_t host_waits;
+    uint32_t pipeline_builds;
+    uint32_t reserved;
+    uint64_t peak_bytes;
+    uint64_t budget_bytes;
+    /* Whole-frame transport bytes across the host boundary. wgpu's own texture
+       initialization is internal GPU work and is outside this count. */
+    uint64_t frame_copy_bytes;
+    uint64_t validation_bytes;
+    uint64_t submit_wait_ns;
+    double cpu_ms;
+} RMSceneAP1MetalReceiptV1;
+/* 0 success, 1 invalid, 2 backend unavailable, 3 render failed, 4 panic, 5 stale,
+   6 budget, 7 unsupported graph or view. On success retained_output is a +1 Metal
+   texture whose real command has completed. A failed call transfers no texture. */
+int32_t rm_scene_ap1_metal_open_v1(void *metal_device, RMSceneAP1MetalProgram **out);
+int32_t rm_scene_ap1_metal_render_v1(RMSceneAP1MetalProgram *program,
+    const uint8_t *graph, size_t graph_bytes, void *input, void **retained_output,
+    const uint8_t *view_json, size_t view_bytes, RMSceneAP1MetalReceiptV1 *receipt,
+    uint64_t revision, RMSceneIsCurrent current, void *context);
+void rm_scene_ap1_metal_close_v1(RMSceneAP1MetalProgram *program);
 #ifdef __cplusplus
 }
 #endif

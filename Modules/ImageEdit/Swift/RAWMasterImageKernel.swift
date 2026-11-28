@@ -5,7 +5,9 @@ import Metal
 #endif
 
 public enum RAWMasterImageKernel {
-    public enum Failure: Error { case unavailable, invalidParameters, invalidShader, renderFailed, staleFrame, surfaceBudget }
+    public enum Failure: Error {
+        case unavailable, invalidParameters, invalidShader, renderFailed, staleFrame, surfaceBudget, unsupportedScene
+    }
     public enum Kernel: UInt32 { case photoFilter = 1, exposure, mask, maskAnalytic, colorGrainLattice }
     public enum FilterFamily: UInt32 { case classicColor = 0, classicMonochrome, spektrafilm }
     public enum Backend: UInt32, Sendable { case cpu, gpu }
@@ -394,6 +396,90 @@ public enum RAWMasterImageKernel {
         case final
         case node(String)
         case bypass
+
+        fileprivate var selector: [String: Any] {
+            switch self {
+            case .final: ["target": "final"]
+            case .bypass: ["target": "bypass"]
+            case .node(let id): ["target": "node", "id": id]
+            }
+        }
+    }
+
+    /// Strict wgpu scene execution over a completed native Metal input.
+    public final class AP1MetalProgram {
+        public struct Receipt: Sendable {
+            public let nodes, dispatches, submissions, hostWaits, pipelineBuilds: Int
+            public let peakBytes, budgetBytes: Int
+            public let frameCopyBytes, validationBytes, submitWaitNanoseconds: UInt64
+            public let cpuMilliseconds: Double
+        }
+
+        private let runtime: Runtime
+        private let program: OpaquePointer
+        private let lock = NSLock()
+
+        public init(device: any MTLDevice) throws {
+            let runtime = try RAWMasterImageKernel.runtime.get()
+            var handle: OpaquePointer?
+            let status = withExtendedLifetime(device) {
+                rm_image_host_scene_ap1_metal_open(runtime.handle,
+                    Unmanaged.passUnretained(device as AnyObject).toOpaque(), &handle)
+            }
+            guard status == 0, let handle else {
+                throw status == 2 ? Failure.unavailable : Failure.renderFailed
+            }
+            self.runtime = runtime
+            program = handle
+        }
+
+        public func render(graph: Data, input: any MTLTexture, view: SceneView,
+                           origin: SIMD2<Int>, geometry: SIMD2<Int>, surfaceBudget: Int,
+                           revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true })
+            throws -> (texture: any MTLTexture, receipt: Receipt) {
+            var payload = view.selector
+            payload["origin"] = [origin.x, origin.y]
+            payload["geometry"] = [geometry.x, geometry.y]
+            payload["surfaceBudget"] = surfaceBudget
+            let viewData = try JSONSerialization.data(withJSONObject: payload)
+            var output: UnsafeMutableRawPointer?
+            var raw = RMSceneAP1MetalReceiptV1()
+            let status = lock.withLock {
+                withExtendedLifetime(input) {
+                    RAWMasterImageKernel.withFrameAuthorization(isCurrent) { current, context in
+                        graph.withUnsafeBytes { document in
+                            viewData.withUnsafeBytes { selection in
+                                rm_image_host_scene_ap1_metal_render(runtime.handle, program,
+                                    document.bindMemory(to: UInt8.self).baseAddress, document.count,
+                                    Unmanaged.passUnretained(input as AnyObject).toOpaque(), &output,
+                                    selection.bindMemory(to: UInt8.self).baseAddress, selection.count,
+                                    &raw, revision, current, context)
+                            }
+                        }
+                    }
+                }
+            }
+            switch status {
+            case 0: break
+            case 1: throw Failure.invalidParameters
+            case 2: throw Failure.unavailable
+            case 5: throw Failure.staleFrame
+            case 6: throw Failure.surfaceBudget
+            case 7: throw Failure.unsupportedScene
+            default: throw Failure.renderFailed
+            }
+            guard let output,
+                  let texture = Unmanaged<AnyObject>.fromOpaque(output).takeRetainedValue() as? any MTLTexture else {
+                throw Failure.renderFailed
+            }
+            let receipt = Receipt(nodes: Int(raw.nodes), dispatches: Int(raw.dispatches),
+                submissions: Int(raw.submissions), hostWaits: Int(raw.host_waits), pipelineBuilds: Int(raw.pipeline_builds),
+                peakBytes: Int(raw.peak_bytes), budgetBytes: Int(raw.budget_bytes), frameCopyBytes: raw.frame_copy_bytes,
+                validationBytes: raw.validation_bytes, submitWaitNanoseconds: raw.submit_wait_ns, cpuMilliseconds: raw.cpu_ms)
+            return (texture, receipt)
+        }
+
+        deinit { rm_image_host_scene_ap1_metal_close(runtime.handle, program) }
     }
 
     public final class SceneProgram {
@@ -495,11 +581,7 @@ public enum RAWMasterImageKernel {
                                   origin: SIMD2<Int>, geometry: SIMD2<Int>?, surfaceBudget: Int?, tileEdge: Int?,
                                   sourceRevision: UInt64, coverages: [UUID: any MTLTexture], revision: UInt64,
                                   isCurrent: @escaping (UInt64) -> Bool) throws -> any MTLTexture {
-            var payload: [String: Any] = switch view {
-            case .final: ["target": "final"]
-            case .bypass: ["target": "bypass"]
-            case .node(let id): ["target": "node", "id": id]
-            }
+            var payload = view.selector
             payload["origin"] = [origin.x, origin.y]
             if !groupPath.isEmpty { payload["groupPath"] = groupPath.map(\.uuidString) }
             if let geometry { payload["geometry"] = [geometry.x, geometry.y] }
