@@ -1,0 +1,653 @@
+{
+  "schemaVersion": 1,
+  "protocol": "single-raw-jpeg-settings-and-own-reference-fidelity-v1",
+  "sourceCodeCommit": "de247b01616dab0ef35f3b4f995a1aa2e0a75fd5",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "dimensions": [
+    9504,
+    6336
+  ],
+  "exposureEV": 0.5,
+  "device": "Mac16,5",
+  "osBuild": "26A434",
+  "gpu": "Apple M4 Max",
+  "boundary": "Submit one photo to the app's normal queue, to the first independent 15 ms observation of the only final JPEG with EOI. The RAWMaster queue acknowledgement has a separate clock.",
+  "sequence": {
+    "firstSamples": 1,
+    "unscoredWarmup": 5,
+    "scoredWarm": 30
+  },
+  "settings": {
+    "quality": 95,
+    "progressive": false,
+    "subsampling": "4:2:0",
+    "metadata": "none",
+    "resize": false
+  },
+  "lightflow": {
+    "product": "LightFlow",
+    "quality": 95,
+    "reportSHA256": "7768b4826be5d42e8dab8cd90ba62313cbf46351bacf44c32d4123f57ae08a39",
+    "recipeSHA256": "7b8d90cf40cfa9c0d3800955a6068aac10dcca01bbd75056caa4793c80832280",
+    "release": "20261111155800-2d41ab1",
+    "runtimeSHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+    "referenceCount": 2,
+    "jpegCount": 36,
+    "references": [
+      {
+        "format": "PNG",
+        "bitsPerComponent": 16,
+        "pngColorType": 2,
+        "dimensions": [
+          9504,
+          6336
+        ],
+        "iccSHA256": "7b6524d739687d6f3849960743b613ce4d040be81376cef23b032eb8761d2737",
+        "sourceFileSHA256": "189d82da9b14f7bbf97aef932887bcaa4b477e13b08e5641fab47244e131cc1c",
+        "canonicalRGB16SHA256": "b1c1ba593cf10752b491f20607cacb65e4cf62c06adfc3c0d0538839f4ac1117"
+      }
+    ],
+    "jpegs": [
+      {
+        "format": "JPEG",
+        "bitsPerComponent": 8,
+        "subsampling": "4:2:0",
+        "progressive": false,
+        "dqtSHA256": "2f3b657faddcbddcf335ccddd1904175fe7a36377901f93a81632a97f926b3de",
+        "dimensions": [
+          9504,
+          6336
+        ],
+        "iccSHA256": "7b6524d739687d6f3849960743b613ce4d040be81376cef23b032eb8761d2737",
+        "sourceFileSHA256": "5e6ed630578d80cf559657be6fa25d57a407bf425afe2619ade8ec17b7b1a26f",
+        "canonicalRGB16SHA256": "d49b586c2dd72ac37a03b10cf4e56f9819d4f1622c01e7735581bef5d89ce0d9"
+      }
+    ],
+    "metrics": {
+      "rgbMSE16": 225767.61,
+      "rgbPSNRdB": 42.7928497201097,
+      "rgbSSIM": 0.958384,
+      "componentPSNRdB": {
+        "r": "41.86",
+        "g": "46.16",
+        "b": "41.65"
+      },
+      "componentSSIM": {
+        "r": 0.952058,
+        "g": 0.980082,
+        "b": 0.943013
+      }
+    },
+    "observerMs": {
+      "firstMs": 3074.661084,
+      "warmupMs": [
+        1830.066959,
+        1811.70825,
+        1800.734541,
+        1810.64825,
+        1813.826875
+      ],
+      "sampleMs": [
+        1811.724958,
+        1825.400708,
+        1816.988833,
+        1809.769459,
+        1812.361083,
+        1832.683542,
+        1819.842375,
+        1821.198375,
+        1820.718458,
+        1832.014333,
+        1833.228334,
+        1808.3765,
+        1830.798959,
+        1832.923958,
+        1840.87575,
+        1821.672792,
+        1834.540875,
+        1829.962125,
+        1824.103375,
+        1819.554291,
+        1838.366791,
+        1831.774166,
+        1835.999833,
+        1828.021292,
+        1818.906542,
+        1830.056375,
+        1821.803167,
+        1830.553083,
+        1816.471625,
+        1826.1405
+      ],
+      "p50Ms": 1825.7706039999998,
+      "p95Ms": 1838.366791
+    },
+    "actualExport": "rust web-mt 12t",
+    "jpegBytes": 9511460
+  },
+  "rawmaster": {
+    "product": "RAWMaster",
+    "quality": 95,
+    "reportSHA256": "216fdbc9e90cea67a968e92d25f263cf32e753c447b4210e242797e637c357c2",
+    "recipeSHA256": "dbf12a4b99995e1fb14eeed8f73de4cd60c3dff3fd05f0fd4e3e7589cff6545d",
+    "runtimeSHA256": "79e368a63a0d3d84862a10e8dc326f51b5d7c9d776724db52ed9374015f35417",
+    "referenceCount": 2,
+    "jpegCount": 36,
+    "references": [
+      {
+        "format": "PNG",
+        "bitsPerComponent": 16,
+        "pngColorType": 6,
+        "dimensions": [
+          9504,
+          6336
+        ],
+        "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+        "sourceFileSHA256": "98723fdd8414705b3292b0b5a13a42f8ce0da76af920d0c2a9544c4331678ec9",
+        "canonicalRGB16SHA256": "ba8ff131c67a324db4e55180205db748a0e5653ab71beb05d90008653e9d9596"
+      }
+    ],
+    "jpegs": [
+      {
+        "format": "JPEG",
+        "bitsPerComponent": 8,
+        "subsampling": "4:2:0",
+        "progressive": false,
+        "dqtSHA256": "f67e35fd0dcd2fd9f999077e2aae8560e6327a8477c45427f6ea2e0a224cd187",
+        "dimensions": [
+          9504,
+          6336
+        ],
+        "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+        "sourceFileSHA256": "1b07b66c5c80ffa4973b41b89aea4eb94ce21ec39d171789749194724392ca83",
+        "canonicalRGB16SHA256": "7d6965c11a1b0e6c0e695093148abd9ca0268b9642be147cee3f9bbb779f0509"
+      }
+    ],
+    "metrics": {
+      "rgbMSE16": 111180.71,
+      "rgbPSNRdB": 45.869171644145965,
+      "rgbSSIM": 0.968124,
+      "componentPSNRdB": {
+        "r": "45.20",
+        "g": "47.77",
+        "b": "45.12"
+      },
+      "componentSSIM": {
+        "r": 0.970316,
+        "g": 0.980418,
+        "b": 0.953639
+      }
+    },
+    "psnrDeltaDB": 3.0763219240362645,
+    "ssimDelta": 0.00974,
+    "matchesAnchor": false,
+    "observerMs": {
+      "firstMs": 535.497959,
+      "warmupMs": [
+        435.9645,
+        503.411334,
+        447.708166,
+        421.618291,
+        428.418291
+      ],
+      "sampleMs": [
+        443.977709,
+        438.669541,
+        448.189084,
+        429.287167,
+        434.190125,
+        446.433417,
+        501.04575,
+        437.447917,
+        486.679667,
+        447.723375,
+        436.1895,
+        449.774584,
+        446.426916,
+        442.145542,
+        442.507542,
+        433.778042,
+        446.903417,
+        450.553,
+        451.804209,
+        441.291875,
+        430.725958,
+        428.228792,
+        438.210292,
+        433.258875,
+        433.280167,
+        435.360333,
+        428.405208,
+        431.906875,
+        449.900375,
+        432.675
+      ],
+      "p50Ms": 439.980708,
+      "p95Ms": 486.679667
+    },
+    "workflowMs": {
+      "firstMs": 522.107584,
+      "warmupMs": [
+        427.146375,
+        503.312875,
+        430.693916,
+        423.081708,
+        420.012375
+      ],
+      "sampleMs": [
+        427.050709,
+        438.560416,
+        429.320917,
+        430.758709,
+        427.785083,
+        426.034834,
+        486.048667,
+        437.99525,
+        470.993417,
+        449.270875,
+        429.590833,
+        437.349167,
+        438.550541,
+        443.498417,
+        427.889667,
+        427.466542,
+        433.065625,
+        440.201417,
+        433.127584,
+        442.828417,
+        430.6085,
+        429.765167,
+        429.404333,
+        422.685958,
+        426.286042,
+        437.012083,
+        429.979042,
+        433.566333,
+        441.5375,
+        428.133334
+      ],
+      "p50Ms": 431.912167,
+      "p95Ms": 470.993417
+    },
+    "publishedFileBytes": 7330990,
+    "firstExecutionReceipt": {
+      "backend": "rust",
+      "budgetBytes": 1610612736,
+      "coverageCacheHits": 0,
+      "cpuMilliseconds": 26.036545000000004,
+      "dispatches": 35,
+      "nodeCacheHits": 0,
+      "nodes": 35,
+      "peakBytes": 1212776448,
+      "tiles": 35
+    }
+  },
+  "relativeFidelity": {
+    "pairedReferenceMetric": "Pooled full-frame normalized sRGB RGB16 PSNR and FFmpeg RGB SSIM against each product's repeated same-recipe PNG16",
+    "magick": "Version: ImageMagick 7.1.2-29 Q16-HDRI aarch64 b919b37fd:20260727 https://imagemagick.org",
+    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "canonicalICCProfileSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+    "passRequiresAbsolutePSNRDbDeltaAtMost": 0.25,
+    "passRequiresAbsoluteSSIMDeltaAtMost": 0.001,
+    "allReferencesWithinEachProductReproduceOneFullRGB16SHA256": true,
+    "calibrationExecutableSHA256": "8dfb907495bf9b32e7f29d4b99deb1167953ee3fc8ab3e71e0d1829d39aa7ce5",
+    "calibration": [
+      {
+        "quality": 62,
+        "reportSHA256": "d4e3d784fa1f8998a28e2d93c0ad293a1652e49e96601607c886221edfa38b41",
+        "recipeSHA256": "c7469751a915af456104f621a34ddcffaabed458d788beeb4d4ff2465877ecdd",
+        "metrics": {
+          "rgbMSE16": 206093.75,
+          "rgbPSNRdB": 43.18881785968021,
+          "rgbSSIM": 0.938867,
+          "componentPSNRdB": {
+            "r": "42.01",
+            "g": "45.20",
+            "b": "42.95"
+          },
+          "componentSSIM": {
+            "r": 0.948112,
+            "g": 0.964745,
+            "b": 0.903744
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 0.39596813957051324,
+        "ssimDelta": -0.019517,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "c88543e27d712136613451725737cb927495448eb6165d69f2f34e48f8ed224a",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "920f7e2db5a59b8ebf3a8a80dac0ebc301a04cc3586f5e6c175e4e438af33bbc",
+            "canonicalRGB16SHA256": "888011fe340ea4585315af171f7f2046af986739e494821e088a22f4a6d70068"
+          }
+        ]
+      },
+      {
+        "quality": 68,
+        "reportSHA256": "91b618aca38aa137792257bdeca3bee18262e0b94c9188e0db717f4b30d4b433",
+        "recipeSHA256": "aa628675bfe56993a83d5cb3b2ab88661088f7a08a869b3a050bda3cd04b56c7",
+        "metrics": {
+          "rgbMSE16": 181671.33,
+          "rgbPSNRdB": 43.73660211896783,
+          "rgbSSIM": 0.946886,
+          "componentPSNRdB": {
+            "r": "42.68",
+            "g": "45.53",
+            "b": "43.47"
+          },
+          "componentSSIM": {
+            "r": 0.951979,
+            "g": 0.964982,
+            "b": 0.923698
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 0.9437523988581304,
+        "ssimDelta": -0.011498,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "b1a9e74df24e7722ee43a474eeca7c42ebf4394144f8380ac0c4a30c4dd32732",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "617391ff2815fccaa806839581b532979d7ef9461e6c7eee4fe78d1eaf7a5ae8",
+            "canonicalRGB16SHA256": "f80454765664140ffd6246362bd97be80b1e276da8d016ef4745d40a863a8270"
+          }
+        ]
+      },
+      {
+        "quality": 74,
+        "reportSHA256": "d43309c58a9b8447cd5c5dd4c9508ddbe916b46230ef298c10f69d648220a209",
+        "recipeSHA256": "3ba2d6331aa4ef5a0e98c551d6921f5fe37935bf56ed1fc5d4d41ae6ab823347",
+        "metrics": {
+          "rgbMSE16": 161186.24,
+          "rgbPSNRdB": 44.2561864293448,
+          "rgbSSIM": 0.953578,
+          "componentPSNRdB": {
+            "r": "43.29",
+            "g": "46.02",
+            "b": "43.90"
+          },
+          "componentSSIM": {
+            "r": 0.957106,
+            "g": 0.97235,
+            "b": 0.931277
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 1.4633367092351008,
+        "ssimDelta": -0.004806,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "d35494100621c4fb13d51e86df484dc54a65801e21ead8ada54d6e55550e8feb",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "413ba5e4071fed913d33d019374532546af18490b77845c3f7f5ce637595cd28",
+            "canonicalRGB16SHA256": "ba0dd870f9461a846e486784389474e8c5252b281c929d6f709e32a277673231"
+          }
+        ]
+      },
+      {
+        "quality": 80,
+        "reportSHA256": "f9bc1d75fcd31e555e68fa813090d412cfc62708c6bc6130a607a5d66a17fdd7",
+        "recipeSHA256": "a41a7d6109136987b5aa35c36b2db4abc9a69c5da1aa6a738c7fd2b309f7efbe",
+        "metrics": {
+          "rgbMSE16": 149520.85,
+          "rgbPSNRdB": 44.582448502641896,
+          "rgbSSIM": 0.954037,
+          "componentPSNRdB": {
+            "r": "43.58",
+            "g": "46.33",
+            "b": "44.28"
+          },
+          "componentSSIM": {
+            "r": 0.95989,
+            "g": 0.973546,
+            "b": 0.928675
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 1.7895987825321953,
+        "ssimDelta": -0.004347,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "2d16e89447b28b118d96eee25a52ee836aac802cee695d6f8820082ff07bcc6c",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "bf1f0072a1fd53060fe21cec7c074cf50b763b71db8ef69775192e51511ad886",
+            "canonicalRGB16SHA256": "731ccd4e1213998f482fd61c1adc8fbcacafc93cfb83580e14298e1809ecb42d"
+          }
+        ]
+      },
+      {
+        "quality": 84,
+        "reportSHA256": "b8706ce61900e296da61552643ec3559cffa285a1a295266738b15c6d79b5690",
+        "recipeSHA256": "dcc59df009fa3ca7b6ffb6bd80fadeee2086366dc86822c44495a5c6e0b3e909",
+        "metrics": {
+          "rgbMSE16": 139424.5,
+          "rgbPSNRdB": 44.88607511818078,
+          "rgbSSIM": 0.954472,
+          "componentPSNRdB": {
+            "r": "43.99",
+            "g": "46.58",
+            "b": "44.49"
+          },
+          "componentSSIM": {
+            "r": 0.962301,
+            "g": 0.974617,
+            "b": 0.926499
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 2.093225398071077,
+        "ssimDelta": -0.003912,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "563a52d841a2775ece40d9557aa3047c1a3ed8421aaa45e29422e1bc01b354c4",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "53e5bc24fcd9dbd7a0a5701f047a4ac4a68e1e296aa8ebeb2a29751d000d6df9",
+            "canonicalRGB16SHA256": "2cbd8a18607bb863565eb90fd3d1be06d81f81531981858c3ecec94daf4c18f3"
+          }
+        ]
+      },
+      {
+        "quality": 88,
+        "reportSHA256": "dab06dedb79a36702919304d35425b19bda0df1c99036666cfe278fa7837ea84",
+        "recipeSHA256": "499af35aa96fb2036d08e0dedf9cd906d8c04b5335aeceb03ca06c4f0d06fe35",
+        "metrics": {
+          "rgbMSE16": 133515.02,
+          "rgbPSNRdB": 45.07416482382784,
+          "rgbSSIM": 0.962251,
+          "componentPSNRdB": {
+            "r": "44.31",
+            "g": "46.83",
+            "b": "44.51"
+          },
+          "componentSSIM": {
+            "r": 0.964832,
+            "g": 0.975817,
+            "b": 0.946103
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 2.2813151037181427,
+        "ssimDelta": 0.003867,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "1b73f4c13ce4f2ef2359e6fe47a0eb047d8dbe4774a87cdba2b33732c6eb3a48",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "f306aad4e2c134ae56baa1bbe24b544ceebfb953c10cfff3dc570d97542b459e",
+            "canonicalRGB16SHA256": "9613bffe87132953f78c6a293fe48ec1d0ee2e9e7ec6eda5f969af37dbf44a57"
+          }
+        ]
+      },
+      {
+        "quality": 93,
+        "reportSHA256": "b0fd489fbdeb85e2541fd3c8cf5bc1c04f924f4e4094da9f3f02475d294c52eb",
+        "recipeSHA256": "eb68f67cfd7790175fd0180b4bb44c7239bdc185cc9cd3c8f5e4736bcb95b793",
+        "metrics": {
+          "rgbMSE16": 118131.31,
+          "rgbPSNRdB": 45.60581587494745,
+          "rgbSSIM": 0.966158,
+          "componentPSNRdB": {
+            "r": "44.92",
+            "g": "47.44",
+            "b": "44.92"
+          },
+          "componentSSIM": {
+            "r": 0.968554,
+            "g": 0.979141,
+            "b": 0.950778
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 2.8129661548377527,
+        "ssimDelta": 0.007774,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "e8494ca4d837b38437e42af35cd39d8f6b5be999210ddf7d094dc29f5ba866a3",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "d4b4b8592b2ae7c8a8b2ce760354527ca08a89ff53dd4ead283f7b57fc19f139",
+            "canonicalRGB16SHA256": "78b23a994eb17ccd1cb4a62c79dfd1d226eacf30e6e00600035ddd2b79542f15"
+          }
+        ]
+      },
+      {
+        "quality": 95,
+        "reportSHA256": "b9156756f774e2f184ee85d53057916bb84ef3f81378ed5361a42fc60b8ef6fa",
+        "recipeSHA256": "a15fd9633c110a613ac3ddac0253c627b4118b0bac89ee61f45285b36b8f0480",
+        "metrics": {
+          "rgbMSE16": 111180.71,
+          "rgbPSNRdB": 45.869171644145965,
+          "rgbSSIM": 0.968124,
+          "componentPSNRdB": {
+            "r": "45.20",
+            "g": "47.77",
+            "b": "45.12"
+          },
+          "componentSSIM": {
+            "r": 0.970316,
+            "g": 0.980418,
+            "b": 0.953639
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 3.0763219240362645,
+        "ssimDelta": 0.00974,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "f67e35fd0dcd2fd9f999077e2aae8560e6327a8477c45427f6ea2e0a224cd187",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "1b07b66c5c80ffa4973b41b89aea4eb94ce21ec39d171789749194724392ca83",
+            "canonicalRGB16SHA256": "7d6965c11a1b0e6c0e695093148abd9ca0268b9642be147cee3f9bbb779f0509"
+          }
+        ]
+      },
+      {
+        "quality": 97,
+        "reportSHA256": "d9920a1e630426d44d275f9d46a980b90c6770996b89b0bec5dde2785f59d408",
+        "recipeSHA256": "4155b16351243c5d1485c1cb9d6ff929af8a339f6538e4d9325bf38f4eab8291",
+        "metrics": {
+          "rgbMSE16": 102803.86,
+          "rgbPSNRdB": 46.20937186011047,
+          "rgbSSIM": 0.970555,
+          "componentPSNRdB": {
+            "r": "45.59",
+            "g": "48.30",
+            "b": "45.32"
+          },
+          "componentSSIM": {
+            "r": 0.972561,
+            "g": 0.982303,
+            "b": 0.956802
+          }
+        },
+        "matchesAnchor": false,
+        "psnrDeltaDB": 3.4165221400007724,
+        "ssimDelta": 0.012171,
+        "jpegs": [
+          {
+            "format": "JPEG",
+            "bitsPerComponent": 8,
+            "subsampling": "4:2:0",
+            "progressive": false,
+            "dqtSHA256": "5a0bec6cb719891893a8057e91331d015bf10214288c906631a62817207682c1",
+            "dimensions": [
+              9504,
+              6336
+            ],
+            "iccSHA256": "c9c7abae508475da3317232f906089502f275692449be804a986b56405803a7f",
+            "sourceFileSHA256": "b35b53583bbb84699981db8e895c59a16a0d73844644ffc814a755a270f75415",
+            "canonicalRGB16SHA256": "34e343cb5c76c0df774c9dc1683c9bd2635201d55e22f8668928f7cc2fdc1ff3"
+          }
+        ]
+      }
+    ],
+    "equalFidelityQualified": false
+  },
+  "speedupAtSameSettings": {
+    "p50": 4.149660589209288,
+    "p95": 3.777365104098339
+  }
+}

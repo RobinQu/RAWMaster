@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "build": "20261128.155215",
+  "mode": "Release",
+  "installedPath": "/Applications/RAWMaster.app",
+  "sourceCommit": "de247b01616dab0ef35f3b4f995a1aa2e0a75fd5",
+  "previousBuild": "20261128.151111",
+  "previousBundlePreservedAndVerified": true,
+  "builtStagedAndInstalledStrictCodeSign": true,
+  "cdhash": "f889fe18641a225761bbda3b1178237aa0529206",
+  "builtAndInstalledSHA256": {
+    "Contents/MacOS/RAWMaster": "73be1d72b1e1c078103a3df6dc7d105c05376f98e0358d398930c91822a3598d",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "smoke": {
+    "actualWindowPresent": true,
+    "isolatedSQLiteQuickCheck": "ok",
+    "nativeFilterRegression": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "d07ca5d896e6a8e4ca29818e8e1a1156471561f4af0b3781641cd953fef86649"
+    },
+    "nativeWindowCoordinationAndSourceValidation": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "6a99a3d10dc8ae8886af70aabcfdea2eb1f72fc31ba585a511623585a3a22fa3"
+    },
+    "nativeRealRAWFreeZoom": {
+      "passed": 1,
+      "modes": [
+        "balanced",
+        "turbo"
+      ],
+      "logSHA256": "1fb5004b2f90c0569ee86793779ce36baa32dc2b26be4615496754cc35c36273"
+    },
+    "nativePhysicalExposureSmoke": {
+      "captureReplaySHA256": "e9bcf8d13d224418ba8bab5e700472531f6a22e1450d0e2234d6d2bdf7cf00d4",
+      "sourceROIPixels": [
+        4096,
+        3072,
+        1536,
+        1024
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "testBundleSHA256": "79e368a63a0d3d84862a10e8dc326f51b5d7c9d776724db52ed9374015f35417",
+      "scoredTrials": 6,
+      "calibrationRGB8SHA256": [
+        "381c919c2873e3189790a5ed786979241f14a7aa5572e48fb781a134fefd7894",
+        "2225f101e8d9b9b160840196238bfdb872169ef4f216c05f1a40c2ae2df88c06"
+      ]
+    },
+    "prototype": {
+      "canvas-pan-only": {
+        "passed": 2,
+        "logSHA256": "7a711a6b6156ebfd0fe7c8af3ee7266f28be7006a0476d1f75e68834d29e9ae4"
+      },
+      "editing-only": {
+        "passed": 31,
+        "logSHA256": "f73811acd73d8a76639aaff1c492fb6f1593921df7293430ef698ce6092db3f5"
+      },
+      "editor-rails-only": {
+        "passed": 6,
+        "logSHA256": "aec9543ddcf17bdf2ba9997bb8d9aefb4463f9a0e6783432f335b4a402418ed9"
+      },
+      "hdr-only": {
+        "passed": 4,
+        "logSHA256": "a191ad3ffe9424bf60416598c014f622dcb2dc53d25e51978cff3a40c99fcd6b"
+      }
+    },
+    "current032JPEGReferenceSHA256": "1117fa8d9f69c0469c0bf7e0a47462355c796b7f11d7d535a1a7eb3f1097d2bf",
+    "nativeWGPUMetalABI": {
+      "budgetFailure": 6,
+      "unknownGroup": 1,
+      "postSubmitStale": 5,
+      "postSubmitCallbackChecks": 2,
+      "reusableAfterStale": true,
+      "dispatches": 1,
+      "submissions": 1,
+      "hostWaits": 1,
+      "frameCopyBytes": 0,
+      "validationBytes": 4,
+      "signedRGBAndAlphaExactPixels": 1024,
+      "nestedGroupPasses": 4,
+      "layerAddAndRetryExactPixels": 2048,
+      "layerRangeFailure": 7
+    },
+    "validationAndRetry": {
+      "boundedWaitOverride": null,
+      "stagedChecksPerCase": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "installedChecksPerCase": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "expectedCABIStatuses": [
+        7,
+        7,
+        3,
+        7
+      ],
+      "stagedSHA256byVariant": [
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74",
+        "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+      ],
+      "installedSHA256": "304e44c8862bad9b83daf809876b8663a34e820c107d5cd1ee13afb1ffc8e44d"
+    }
+  },
+  "executionDefaults": {
+    "sceneDelivery": "039 with direct tiled DRT",
+    "strictMetalWGPUSubmissionWait": "bounded polling and blocking wait on the same actual submission",
+    "balancedNativeView": "standard pan margin with pending viewport supersession",
+    "canonicalContextReuse": "enabled for the existing validated pointwise admission",
+    "qaNarrowWindow": false,
+    "qaSettledLocalGrainReplay": false
+  }
+}
