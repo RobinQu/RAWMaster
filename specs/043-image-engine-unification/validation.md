@@ -25,11 +25,11 @@
 - **分项记录口径。** 原生队列与双目标组件现在可以写隔离 JSON。032 从新编码尝试计到发布确认，独立组件共享一次来源捕获和 mosaic。Swift Metal 只从现有完成点读取 GPU 时间戳。Core Image、ImageIO、模型提供者和 Rust ABI 的不可见阶段注明原因。每项 CPU 墙钟、阻塞和 GPU 区间可能重叠。进程 footprint 和 Metal 已分配大小在现有阶段边界采样，图预算保持单独的保守核算。[分项记录](../../Sources/RAWMasterImaging/DevelopmentSceneDeliveryTraceV1.swift) · [复跑脚本](../../scripts/performance/measure-043-scene-delivery.py)
 - **基线报告。** 取得 6 MP 六节点、038 FIT/监看和 036 1:1 的同构建基线。记录提交、锁定依赖、构建与运行库摘要、样片和校准 SHA、设备/驱动/屏幕及阶段时间边界，说明缺失或跳过的量。V2 草案应有版本、实际执行者、图形 API 和旧票据兼容策略。[回执草案](plan.md#43-receiptv2)
 
-`1ebf4e0a` 同源码的 Release 实跑通过 6 MP、038 编辑窗口和 036 原寸窗口用例。6 MP 六节点暖测每个执行器 15 次，Rust Metal p50/p95 为 12.81/14.08 ms，Swift Metal 为 15.09/16.64 ms。038 原生窗口的组内节点监看和最终根切换各采 30 次，p50/p95 分别为 23.34/26.07 和 22.05/24.08 ms。036 的 50 配方原寸窗口为 122.02/1,538.16 ms，p95 取配方之间的分布。三项长尾依次为自适应 Brilliance 4,259.76 ms、正向去雾 v2 1,804.34 ms 和局部纹理加清晰度 1,538.16 ms。[原生结果与构建指纹](evidence/m0-scene-and-detail-matrices.json)
+同一生产渲染源码的 Release 实跑通过 6 MP、038 编辑窗口和 036 原寸窗口用例。6 MP 六节点在同一次新测试构建中各预热 5 次并计量 30 次，Rust Metal p50/p95 为 12.75/13.76 ms，Swift Metal 为 15.14/16.48 ms。038 原生窗口的组内节点监看和最终根切换各采 30 次，p50/p95 分别为 23.34/26.07 和 22.05/24.08 ms。036 的 50 配方原寸窗口为 122.02/1,538.16 ms，p95 取配方之间的分布。三项长尾依次为自适应 Brilliance 4,259.76 ms、正向去雾 v2 1,804.34 ms 和局部纹理加清晰度 1,538.16 ms。[6 MP 现行实测](evidence/m0-6mp-warm-baseline.json) · [038 与 036 结果](evidence/m0-scene-and-detail-matrices.json)
 
 60 MP 夹具经固定 FlashRaw C ABI 的 `rawU16` 和现行 Swift 校准读取。证据固定 Bayer 区域、CFA、黑白电平、白平衡、XYZ→相机矩阵和相机→AP1 三行，供首条场景 DAG 固定输入使用。[校准证据](evidence/m0-60mp-calibration.json)
 
-`1ebf4e0a` 的 Release 用同一 9504×6336 原片、摄影曝光 +0.25 EV、饱和度 0.32、自然饱和度 −0.15，以及 coverage、+1 EV Corrector 和有序 Layer 三节点测量。每路由一次首跑、五次预热、三十次计量。032 使用同一个工作台和冻结草稿，每轮申请新的两个批次和输出位置。验证两种成片和执行回执后重开目录。[三路分项、构建指纹和内存检查点](evidence/m0-60mp-stage-baseline.json)
+`1ebf4e0a` 的 Release 用同一 9504×6336 原片、摄影曝光 +0.25 EV、饱和度 0.32、自然饱和度 −0.15，以及 coverage、+1 EV Corrector 和有序 Layer 三节点测量。每路由一次首跑、五次预热、三十次计量。032 使用同一个工作台和冻结草稿，每轮申请新的两个批次和输出位置。目录重开后核对 72 个实际成片的状态和执行回执，两种格式各自的 36 份成片摘要一致。[三路分项、构建指纹和内存检查点](evidence/m0-60mp-stage-baseline.json)
 
 | 路由 | 首跑 ms | 暖态 p50 / p95 ms | DAG 瓦片 / 派发 |
 | --- | ---: | ---: | ---: |
@@ -171,6 +171,8 @@ python3 scripts/performance/measure-043-scene-delivery.py \
 
 # Rust 场景解析器/执行器
 cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.toml --lib scene::tests
+RAWMASTER_SCENE_BACKEND_PERFORMANCE="$PWD/output/spec043-6mp-$(date +%Y%m%d-%H%M%S).json" \
+  swift test -c release --jobs 4 -Xswiftc -enable-testing --filter testOptInRustBackendPerformance
 
 # 现有 WGSL 点算子和 Metal 纹理借用
 cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.toml \
@@ -186,7 +188,8 @@ cargo test --release --offline --locked --manifest-path Modules/ImageEdit/Cargo.
 
 - [x] M0 摄影场景 032 准备、发布、目录重开与队列中断恢复
 - [x] M0 60 MP 三路同构建分项，固定校准和运行库
-- [ ] M0 6 MP 形式化采样和同机 Camera Raw 当前版本的三产品外部通过
+- [x] M0 6 MP 5 次预热、每执行器 30 次，原生 FIT/监看及 1:1 复跑
+- [ ] M0 Camera Raw 当前版本的同机基线与三产品外部通过
 - [ ] M1 瓦片与双目标的像素、性能、预算和发布恢复
 - [ ] M2 首条 WGSL 场景 DAG 的 macOS Metal 和 Linux 实体 Vulkan 实机回执
 - [ ] M2 6 MP、96 节点、60 MP A/B 和 macOS 原生产品路径

@@ -424,9 +424,10 @@ final class RustSceneGraphRendererTests: XCTestCase {
     ], enabled: true))
     let graph = try workflow([gradient, radial, mask, light, dark, mix], final: mix)
     let swift = try Renderer(device: device, backend: .swift), rust = try rustRenderer(device)
+    let warmups = 5, measuredSamples = 30
     func measure(_ renderer: Renderer) throws -> [Double] {
-      for _ in 0..<3 { _ = try renderer.prepareFinal(raw, geometry: geometry, graph: graph) }
-      return try (0..<15).map { _ in
+      for _ in 0..<warmups { _ = try renderer.prepareFinal(raw, geometry: geometry, graph: graph) }
+      return try (0..<measuredSamples).map { _ in
         let start = DispatchTime.now().uptimeNanoseconds
         _ = try renderer.prepareFinal(raw, geometry: geometry, graph: graph)
         return Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
@@ -436,19 +437,24 @@ final class RustSceneGraphRendererTests: XCTestCase {
     _ = try rust.prepareFinal(raw, geometry: geometry, graph: graph)
     let rustColdMs = Double(DispatchTime.now().uptimeNanoseconds - rustColdStart) / 1e6
     let swiftSamples = try measure(swift), rustSamples = try measure(rust)
-    func percentile(_ values: [Double], _ p: Double) -> Double {
-      values.sorted()[min(values.count - 1, Int((Double(values.count - 1) * p).rounded()))]
+    func median(_ values: [Double]) -> Double {
+      let ordered = values.sorted()
+      return (ordered[(ordered.count - 1) / 2] + ordered[ordered.count / 2]) / 2
+    }
+    func p95(_ values: [Double]) -> Double {
+      values.sorted()[Int((Double(values.count) * 0.95).rounded(.up)) - 1]
     }
     let report: [String: Any] = [
       "device": device.name, "resolution": [geometry.width, geometry.height],
       "scope": "six-node AP1 graph with two coverage nodes and a two-branch parallel mix; excluding RAW, DRT and UI",
+      "warmups": warmups, "measuredSamples": measuredSamples,
       "swiftMs": swiftSamples, "rustMs": rustSamples, "rustColdMs": rustColdMs,
-      "swiftP50": percentile(swiftSamples, 0.5), "swiftP95": percentile(swiftSamples, 0.95),
-      "rustP50": percentile(rustSamples, 0.5), "rustP95": percentile(rustSamples, 0.95)
+      "swiftP50": median(swiftSamples), "swiftP95": p95(swiftSamples),
+      "rustP50": median(rustSamples), "rustP95": p95(rustSamples)
     ]
     try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
       .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
-    XCTAssertLessThanOrEqual(percentile(rustSamples, 0.95), percentile(swiftSamples, 0.95) * 1.2,
+    XCTAssertLessThanOrEqual(p95(rustSamples), p95(swiftSamples) * 1.2,
       "Rust backend must stay within 20% of the Swift executor at 6MP")
   }
 
