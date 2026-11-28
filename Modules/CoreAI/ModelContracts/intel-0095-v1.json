@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "capability": "face-embedding-intel-0095-v1",
+  "model": {
+    "path": "face/face-reidentification-retail-0095.onnx",
+    "bytes": 4466624,
+    "sha256": "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373",
+    "upstream": "https://github.com/openvinotoolkit/open_model_zoo/blob/2c9b5c563ab3a202d085a42e2bbfc48f77961f4b/models/intel/face-reidentification-retail-0095/model.yml",
+    "conversion": "Modules/LibraryCatalog/Tools/convert-intel-face-model.py",
+    "license": "Apache-2.0",
+    "input": {"name": "0", "element": "Float32", "shape": [1, 3, 128, 128]},
+    "output": {"name": "658/sink_port_0", "element": "Float32", "shape": [1, 256, 1, 1]},
+    "preprocessing": "upright unassociated sRGB8, Discovery five-point similarity, OpenCV 1/32 bilinear with black border, BGR NCHW in 0...255",
+    "postprocessing": "L2 normalization over 256 features"
+  },
+  "runtime": {
+    "wheel": "onnxruntime-1.27.0-cp312-cp312-macosx_14_0_arm64.whl",
+    "wheelBytes": 18433506,
+    "wheelSHA256": "a14c2ce45312def86b77aea651f46565e45960cf5f0721bfdff449165086ab76",
+    "library": "libonnxruntime.1.27.0.dylib",
+    "librarySHA256": "49422a138fff12d7fcbd544373aefbffd510e473e08e18af28a8ecc3581029bf",
+    "version": "1.27.0",
+    "api": 27,
+    "source": "https://pypi.org/project/onnxruntime/1.27.0/"
+  }
+}

@@ -157,6 +157,17 @@ test -f "$image_runtime"
 /usr/bin/codesign --verify "$image_runtime"
 cp "$image_runtime" "$app/Contents/Frameworks/librawmaster_image.dylib"
 /usr/bin/codesign --verify "$app/Contents/Frameworks/librawmaster_image.dylib"
+if [[ -n "${RAWMASTER_CORE_MODELS_DIR:-}" ]]; then
+  python3 Modules/CoreAI/Tools/stage_assets.py "$RAWMASTER_CORE_MODELS_DIR" "$app"
+  core_ai_runtime="$binary_dir/CoreAI_RAWMasterCoreAI.bundle/Contents/Resources/rawmaster-core-ai.runtime"
+  /usr/bin/codesign --verify "$core_ai_runtime"
+  cp "$core_ai_runtime" "$app/Contents/Frameworks/librawmaster_core_ai.dylib"
+  /usr/bin/codesign --force --sign - "$app/Contents/Frameworks/libonnxruntime.1.27.0.dylib"
+  /usr/bin/codesign --verify "$app/Contents/Frameworks/libonnxruntime.1.27.0.dylib"
+elif [[ -e "$app/Contents/Resources/CoreModels/v1" || -e "$app/Contents/Frameworks/librawmaster_core_ai.dylib" || -e "$app/Contents/Frameworks/libonnxruntime.1.27.0.dylib" ]]; then
+  print -u2 'Use a fresh application output when omitting staged CoreAI assets.'
+  exit 1
+fi
 ditto "$catalog_bundle" "$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle"
 imaging_resources="$binary_dir/RAWMaster_RAWMasterImaging.bundle"
 if [[ ! -d "$imaging_resources" ]]; then
