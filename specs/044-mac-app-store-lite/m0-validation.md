@@ -34,3 +34,5 @@ RAWMASTER_BUILD_VERSION=1.0.1 RAWMASTER_DISTRIBUTION_OUTPUT="$PWD/output/m0/webs
 常规 Release `20261128.234100` 已重新构建、严格验签并安装。安装前后通过不同分支合计 44 次 Metal ABI 实测，两条 CoreAI 人脸调用回执相同。隔离资料库正常启动并通过 SQLite 检查。库包、资料库会话和 FLUX 清单共有 18 项本机回归通过。
 
 M0-07 待在无开发环境的 Mac 上用这两个签名候选复跑离线主路径。
+
+独立 QA 虚拟机已用 Apple 恢复镜像安装 macOS 27.2.1（26B131），使用 4 个虚拟 CPU、8 GiB 内存并在无虚拟网络设备的配置下启动。两份 `1.0.1` 签名候选和冻结样片已备到只读共享目录，首次设置停在 Apple 软件许可。确认许可后再启动样片流程。[Apple Virtualization](https://developer.apple.com/documentation/virtualization/installing-macos-on-a-virtual-machine)

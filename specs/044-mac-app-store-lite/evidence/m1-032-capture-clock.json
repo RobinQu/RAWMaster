@@ -17,6 +17,21 @@
   "receiptSource": "Published files copied from the opt-in Release XCTest using the 032 production exporter.",
   "targetedReleaseTests": 13,
   "originalUnchanged": true,
+  "installedRelease": {
+    "sourceCommit": "1164e57f84a7f34d4c871f1ba8b5b0faa0be9583",
+    "buildVersion": "20261129.004656",
+    "previousBuildVersion": "20261128.234100",
+    "applicationPath": "/Applications/RAWMaster.app",
+    "cdhash": "6101d27797330b20ea18189b8494d4e78e7ebff6",
+    "strictDeepSignatureVerified": true,
+    "isolatedWindowAndSQLiteQuickCheck": "ok",
+    "metalABIBeforeAndAfterInstallMatched": true,
+    "coreAIAssetsBeforeAndAfterInstallMatched": true,
+    "coreAIABIBeforeAndAfterInstallSHA256": {
+      "yuNet": "732d34e5cda7f817dbdf48d3fc53f874a269b8a306277f6d79640b4d0396d46f",
+      "intel0095": "d588d00fd7a5c19e716340efc368486cdfe67057a4826a7ab4eff522070d857b"
+    }
+  },
   "imageIOReopen": {
     "jpeg8": [
       "photo",
