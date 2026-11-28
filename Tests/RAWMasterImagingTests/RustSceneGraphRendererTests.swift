@@ -672,7 +672,200 @@ final class RustSceneGraphRendererTests: XCTestCase {
       .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
   }
 
+  func testOptInWGSLNative96NodePerformance() throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_WGPU_96_NODE_PERFORMANCE"] else {
+      throw XCTSkip("Set RAWMASTER_SCENE_WGPU_96_NODE_PERFORMANCE to a new JSON report path")
+    }
+    let input = try nativePerformanceInput(width: 3000, height: 2000)
+    let device = input.image.texture.device, graph = try ninetySixNodePerformanceGraph()
+    let rust = try Renderer(device: device, backend: .rust, frozenDelivery: true)
+    let wgpu = try Renderer(device: device, backend: .wgpu, frozenDelivery: true)
+    let inputBytes = input.image.texture.allocatedSize
+    let pixels = input.geometry.width * input.geometry.height
+    let warmups = 5, sampleCount = 30
+
+    // 039 reserves one estimated allocation at a time, then reconciles to allocatedSize.
+    // Probe the exact descriptors used by its full-frame texture pool outside the timed series.
+    let estimates = try autoreleasepool {
+      try [("rgba32Float", MTLPixelFormat.rgba32Float), ("r32Float", .r32Float)].map { name, format in
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format,
+          width: input.geometry.width, height: input.geometry.height, mipmapped: false)
+        descriptor.storageMode = .private
+        descriptor.usage = [.shaderRead, .shaderWrite]
+        let estimated = device.heapTextureSizeAndAlign(descriptor: descriptor).size
+        let actual = try XCTUnwrap(device.makeTexture(descriptor: descriptor)).allocatedSize
+        return (format: name, estimated: estimated, actual: actual)
+      }
+    }
+    let maximumEstimateOvershoot = estimates.map { max(0, $0.estimated - $0.actual) }.max()!
+
+    struct Trial {
+      let elapsedMs: Double
+      let execution: DevelopmentSceneExecutionReceiptV1
+      let outputBytes: Int
+    }
+    func trial(_ renderer: Renderer, backend: DevelopmentSceneExecutionReceiptV1.Backend) throws -> Trial {
+      try autoreleasepool {
+        let start = DispatchTime.now().uptimeNanoseconds
+        let master = try renderer.prepareFinal(input.image, geometry: input.geometry, graph: graph,
+          sourceRevision: 0, tileEdge: 0)
+        let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start) / 1e6
+        let execution = try assertNative96NodeExecution(renderer, backend: backend, input: input.image, output: master.image)
+        return Trial(elapsedMs: elapsed, execution: execution, outputBytes: master.image.texture.allocatedSize)
+      }
+    }
+    var rustTrials: [Trial] = [], wgpuTrials: [Trial] = []
+    for index in 0..<(warmups + sampleCount) {
+      let old: Trial, candidate: Trial
+      if index.isMultiple(of: 2) {
+        old = try trial(rust, backend: .rust)
+        candidate = try trial(wgpu, backend: .wgpu)
+      } else {
+        candidate = try trial(wgpu, backend: .wgpu)
+        old = try trial(rust, backend: .rust)
+      }
+      if index >= warmups {
+        rustTrials.append(old)
+        wgpuTrials.append(candidate)
+      }
+    }
+    func summarize(_ trials: [Trial], estimateOvershoot: Int)
+      -> (pixelsPerSecond: Double, peakIntermediateLowerBytes: Int, record: [String: Any]) {
+      let elapsed = trials.map(\.elapsedMs), sorted = elapsed.sorted()
+      let p50 = (sorted[(sorted.count - 1) / 2] + sorted[sorted.count / 2]) / 2
+      let p95 = sorted[Int((Double(sorted.count) * 0.95).rounded(.up)) - 1]
+      let wallMs = elapsed.reduce(0, +)
+      let pixelsPerSecond = Double(pixels * trials.count) * 1000 / wallMs
+      let peaks = trials.map { $0.execution.peakBytes }
+      let withoutInput = peaks.map { max(0, $0 - inputBytes) }
+      let withoutEndpoints = zip(withoutInput, trials).map { max(0, $0.0 - $0.1.outputBytes) }
+      let lowerBounds = withoutEndpoints.map { max(0, $0 - estimateOvershoot) }
+      let lower = lowerBounds.max()!
+      return (pixelsPerSecond, lower, [
+        "hostWallSamplesMs": elapsed, "hostWallSumMs": wallMs, "p50Ms": p50, "p95Ms": p95,
+        "pixelsPerSecond": pixelsPerSecond, "backend": trials.map { $0.execution.backend.rawValue },
+        "receiptNodes": trials.map { $0.execution.nodes }, "dispatches": trials.map { $0.execution.dispatches },
+        "tiles": trials.map { $0.execution.tiles }, "budgetBytes": trials.map { $0.execution.budgetBytes },
+        "coverageCacheHits": trials.map { $0.execution.coverageCacheHits }, "nodeCacheHits": trials.map { $0.execution.nodeCacheHits },
+        "fallbackCount": trials.filter { $0.execution.fallbackReason != nil }.count,
+        "outputAllocatedBytes": trials.map(\.outputBytes), "totalPeakBytes": peaks, "maxTotalPeakBytes": peaks.max()!,
+        "peakMinusInputBytes": withoutInput, "maxIntermediateUpperBytes": withoutInput.max()!,
+        "peakMinusInputAndOutputBytes": withoutEndpoints, "intermediateLowerBytes": lowerBounds,
+        "maxIntermediateLowerBytes": lower, "heapEstimateOvershootDeductionBytes": estimateOvershoot,
+      ])
+    }
+    let legacy = summarize(rustTrials, estimateOvershoot: maximumEstimateOvershoot)
+    let candidate = summarize(wgpuTrials, estimateOvershoot: 0)
+    let throughputRatio = candidate.pixelsPerSecond / legacy.pixelsPerSecond
+    let requiredThroughputRatio = 2.0
+    let allowedWorkingSetFraction = 0.5
+    let allowedWorkingSetBytes = Double(legacy.peakIntermediateLowerBytes) * allowedWorkingSetFraction
+    let throughputPassed = throughputRatio >= requiredThroughputRatio
+    // wgpu's reported peak charges both endpoint textures and the simultaneously bound buffers.
+    let wgpuIntermediateBytes = candidate.peakIntermediateLowerBytes
+    let workingSetPassed = legacy.peakIntermediateLowerBytes > 0 && Double(wgpuIntermediateBytes) <= allowedWorkingSetBytes
+    let report: [String: Any] = [
+      "device": device.name, "registryID": String(device.registryID), "os": ProcessInfo.processInfo.operatingSystemVersionString,
+      "resolution": [input.geometry.width, input.geometry.height], "inputRGBA32FSHA256": input.sha256,
+      "inputStorageMode": "private", "inputInitialization": "one joined same-device texture blit before both series",
+      "inputAllocatedBytes": inputBytes, "recipeSHA256": try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: graph)),
+      "graph": try JSONSerialization.jsonObject(with: JSONEncoder().encode(graph.graph)),
+      "graphNodes": graph.graph.nodes.count, "loweredSteps": 97,
+      "tileEdge": 0, "sourceRevision": 0, "frozenDelivery": true,
+      "scope": "host wall from prepareFinal invocation to its return",
+      "order": "each pair runs serially and alternates its first backend, starting with rust",
+      "warmups": warmups, "measuredSamples": sampleCount, "p95Rule": "nearest rank",
+      "throughputFormula": "width * height * measuredSamples / sum(host wall seconds)",
+      "accounting": [
+        "rust039": "Texture-pool budget high-water mark. The final output may be absent at the peak. Subtract the input, the actual final output and one measured positive heap estimate overshoot for a conservative lower bound.",
+        "wgpuMetal": "Actual charge for the resident input and output textures and the graph parameter and validation buffers, with logical sizes as minimum charges. Subtract actual input and output allocations to obtain the intermediate charge.",
+        "scope": "Engine accounting. Driver and command staging, pipeline memory, unrelated allocations and test readback are outside these figures. The 039 receipt accounts for textures; its validation flag and shader arguments are outside that budget.",
+      ],
+      "rust039HeapEstimateProbes": estimates.map { sample in
+        ["format": sample.format, "estimatedBytes": sample.estimated, "allocatedBytes": sample.actual,
+          "positiveOvershootBytes": max(0, sample.estimated - sample.actual)] as [String: Any]
+      },
+      "rust039": legacy.record, "wgpuMetal": candidate.record,
+      "throughputGate": ["actualRatio": throughputRatio, "requiredRatio": requiredThroughputRatio, "passed": throughputPassed] as [String: Any],
+      "intermediateWorkingSetGate": ["rust039ConservativeLowerBytes": legacy.peakIntermediateLowerBytes,
+        "wgpuIntermediateChargeBytes": wgpuIntermediateBytes, "allowedFraction": allowedWorkingSetFraction,
+        "allowedBytes": allowedWorkingSetBytes, "passed": workingSetPassed] as [String: Any],
+      "passed": throughputPassed && workingSetPassed,
+    ]
+    try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+      .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
+  }
+
+  func testOptInWGSLNative96NodePixelEvidence() throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_SCENE_WGPU_96_NODE_PIXELS"] else {
+      throw XCTSkip("Set RAWMASTER_SCENE_WGPU_96_NODE_PIXELS to a new JSON report path")
+    }
+    let input = try nativePerformanceInput(width: 3000, height: 2000)
+    let device = input.image.texture.device, graph = try ninetySixNodePerformanceGraph()
+    let rust = try Renderer(device: device, backend: .rust, frozenDelivery: true)
+    let wgpu = try Renderer(device: device, backend: .wgpu, frozenDelivery: true)
+    let old = try rust.prepareFinal(input.image, geometry: input.geometry, graph: graph, sourceRevision: 0, tileEdge: 0)
+    let oldReceipt = try assertNative96NodeExecution(rust, backend: .rust, input: input.image, output: old.image)
+    let new = try wgpu.prepareFinal(input.image, geometry: input.geometry, graph: graph, sourceRevision: 0, tileEdge: 0)
+    let newReceipt = try assertNative96NodeExecution(wgpu, backend: .wgpu, input: input.image, output: new.image)
+    let encoder = JSONEncoder()
+    let report: [String: Any] = [
+      "scope": "untimed full-frame AP1 RGBA32F after prepareFinal",
+      "device": device.name, "registryID": String(device.registryID),
+      "resolution": [input.geometry.width, input.geometry.height], "inputRGBA32FSHA256": input.sha256,
+      "graphNodes": graph.graph.nodes.count, "loweredSteps": 97,
+      "recipeSHA256": try EditingFingerprint.of(DevelopmentRecipe(sceneGraph: graph)),
+      "rust039": try JSONSerialization.jsonObject(with: encoder.encode(oldReceipt)),
+      "wgpuMetal": try JSONSerialization.jsonObject(with: encoder.encode(newReceipt)),
+      "rgbScaledTolerance": 0.00002, "alphaEquality": "bit pattern",
+      "comparison": try pixelWitness(new.image.texture, reference: old.image.texture, label: "full"),
+    ]
+    try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+      .write(to: URL(fileURLWithPath: path), options: [.withoutOverwriting])
+  }
+
   // MARK: - Helpers
+
+  private func ninetySixNodePerformanceGraph() throws -> Graph {
+    func id(_ index: UInt8) -> UUID { UUID(uuid: (0x04, 0x96, 0, 0, 0, 0, 0x40, 0, 0x80, 0, 0, 0, 0, 0, 0, index)) }
+    let gradient = Node(id: id(1), name: "Ramp", operation: .linearCoverage(start: .init(0.1, 0), end: .init(0.9, 1)))
+    let radial = Node(id: id(2), name: "Ellipse", operation: .radialCoverage(center: .init(0.5, 0.5), radii: .init(0.4, 0.6), feather: 0.2))
+    let mask = Node(id: id(3), name: "Mask", operation: .combineCoverage(base: gradient.id, other: radial.id, mode: .intersect))
+    func corrector(_ index: UInt8, _ name: String, image: Graph.Endpoint, exposure: Float, mask: UUID? = nil) -> Node {
+      Node(id: id(index), name: name, operation: .corrector(image: image, mask: mask, exposureEV: exposure,
+        curve: [], strength: 1, enabled: true))
+    }
+    var nodes = [gradient, radial, mask]
+    var tail: Graph.Endpoint = .input
+    for index in 1...90 {
+      let exposure: Float = index.isMultiple(of: 2) ? -0.046875 : 0.0625
+      let node = corrector(UInt8(3 + index), "Exposure \(index)", image: tail, exposure: exposure, mask: index == 1 ? mask.id : nil)
+      nodes.append(node)
+      tail = .node(node.id)
+    }
+    let light = corrector(94, "Light branch", image: tail, exposure: 0.25)
+    let dark = corrector(95, "Dark branch", image: tail, exposure: -0.3125)
+    let layer = Node(id: id(96), name: "Ordered layer", operation: .layer(base: tail, layers: [
+      .init(.node(light.id), weight: 0.5), .init(.node(dark.id), weight: 0.375),
+    ], enabled: true))
+    let graph = try workflow(nodes + [light, dark, layer], final: layer)
+    XCTAssertEqual(graph.graph.nodes.count, 96)
+    return graph
+  }
+
+  private func assertNative96NodeExecution(_ renderer: Renderer, backend: DevelopmentSceneExecutionReceiptV1.Backend,
+                                           input: Image, output: Image) throws -> DevelopmentSceneExecutionReceiptV1 {
+    let receipt = try assertNativeExecution(renderer, backend: backend, input: input, output: output)
+    // 039's node field counts visited graph nodes. wgpu's counts lowered steps, including both Layer blends.
+    let expectedNodes = backend == .wgpu ? 97 : 96
+    let expectedDispatches = backend == .wgpu ? 1 : 97
+    guard receipt.tiles == 1, receipt.nodes == expectedNodes, receipt.dispatches == expectedDispatches,
+          receipt.coverageCacheHits == 0, receipt.nodeCacheHits == 0 else {
+      XCTFail("Unexpected 96-node \(backend.rawValue) execution \(receipt)")
+      throw Renderer.Failure.invalidImage
+    }
+    return receipt
+  }
 
   private func sixNodePerformanceGraph() throws -> Graph {
     func id(_ index: UInt8) -> UUID { UUID(uuid: (0x04, 0x36, 0, 0, 0, 0, 0x40, 0, 0x80, 0, 0, 0, 0, 0, 0, index)) }
