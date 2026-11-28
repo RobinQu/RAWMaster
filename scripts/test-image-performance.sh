@@ -177,7 +177,8 @@ fi
 python3 scripts/check-display-readback.py "${panel_args[@]}" || failures+=(panel-readback-comparison)
 print 'Measuring first and final complete photo buffers in one production edit…'
 RAWMASTER_PANEL_READBACK_RAW="$raw_source" RAWMASTER_PANEL_READBACK_SET='' RAWMASTER_PANEL_READBACK_ONLY='' \
-RAWMASTER_PANEL_READBACK_SETTLED=1 RAWMASTER_PANEL_READBACK_REPORT="$report_dir/panel-schedule.json" \
+RAWMASTER_PANEL_READBACK_SETTLED=1 RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical \
+RAWMASTER_PANEL_READBACK_REPORT="$report_dir/panel-schedule.json" \
   python3 scripts/run-performance-command.py --timeout 180 --log "$report_dir/panel-schedule.log" -- \
   "$xctest_executable" -XCTest "RAWMasterImagingTests.IndividualControlPerformanceTests/testPanelDisplayReadback" "$test_products/RAWMasterImagingTests.xctest" || failures+=(panel-schedule)
 schedule_args=("$report_dir/panel-schedule.json" --output "$report_dir/panel-schedule-comparison.json")
@@ -187,6 +188,7 @@ fi
 python3 scripts/check-display-readback.py "${schedule_args[@]}" || failures+=(panel-schedule-comparison)
 print 'Measuring 37 matched photo edits, including LUTs and spatially verified radial masks…'
 RAWMASTER_PANEL_READBACK_RAW="$raw_source" RAWMASTER_PANEL_READBACK_SET=photo-operators-v2 RAWMASTER_PANEL_READBACK_ONLY='' \
+RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical \
 RAWMASTER_PANEL_READBACK_REPORT="$report_dir/photo-operators-v2.json" \
   python3 scripts/run-performance-command.py --timeout 300 --log "$report_dir/photo-operators-v2.log" -- \
   "$xctest_executable" -XCTest "RAWMasterImagingTests.IndividualControlPerformanceTests/testPanelDisplayReadback" "$test_products/RAWMasterImagingTests.xctest" || failures+=(photo-operators-v2)

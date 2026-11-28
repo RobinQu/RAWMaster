@@ -5,6 +5,10 @@ import XCTest
 import RAWMasterCore
 @testable import RAWMasterImaging
 
+private struct InvalidPanelReadback: Error, CustomStringConvertible {
+    let description: String
+}
+
 extension IndividualControlPerformanceTests {
     /// The stock LightFlow viewer and this test consume the same paired-panel-controls manifest.
     func testPanelDisplayReadback() async throws {
@@ -17,6 +21,8 @@ extension IndividualControlPerformanceTests {
         #endif
         let url = URL(fileURLWithPath:path)
         let extended = env["RAWMASTER_PANEL_READBACK_SET"] == "photo-operators-v2"
+        let measureSettlement = extended || env["RAWMASTER_PANEL_READBACK_SETTLED"] == "1"
+        let canonicalSettlement = measureSettlement && env["RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT"] == "canonical"
         let parameterFile = URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().appendingPathComponent(extended
                 ? "scripts/performance/paired-photo-operators-v2.json" : "scripts/performance/paired-panel-controls.json")
@@ -32,7 +38,13 @@ extension IndividualControlPerformanceTests {
         let source = EditingSourceSnapshot(projectID:"panel-display",assetID:"sony",contentSHA256:sha,
             byteCount:Int64(try XCTUnwrap(url.resourceValues(forKeys:[.fileSizeKey]).fileSize)),
             admissionFingerprint:"panel-display-v1",sourceLocation:url)
-        let engine = ImageEngines.editing, session = try await engine.open(source:.raw(source))
+        let engine: any ImageEngine
+        if canonicalSettlement {
+            engine = DevelopmentPreviewService(policy: .init(interactiveEvaluation:.proxyV1,settledTransport:.canonical))
+        } else {
+            engine = ImageEngines.editing
+        }
+        let session = try await engine.open(source:.raw(source))
         do {
             let facts = try await engine.sourceFacts(sessionID:session.id,sourceGeneration:session.sourceGeneration)
             let decoder = try XCTUnwrap(DevelopmentRAWSourcePolicy.decoderForNewWork(at:url))
@@ -50,7 +62,6 @@ extension IndividualControlPerformanceTests {
             } else { catalog = try controls(decoder:decoder,facts:facts) }
             let width = 2400, height = 1600, repeats = 20
             let target = UnsafeMutableRawBufferPointer.allocate(byteCount:width*height*4,alignment:64)
-            let measureSettlement = extended || env["RAWMASTER_PANEL_READBACK_SETTLED"] == "1"
             let finalBuffer = measureSettlement ? UnsafeMutableRawBufferPointer.allocate(byteCount:target.count,alignment:64) : nil
             defer { target.deallocate() }
             defer { finalBuffer?.deallocate() }
@@ -65,8 +76,11 @@ extension IndividualControlPerformanceTests {
                 var usesWholeFrame = false
                 let radial = (inputs["region"] as? String == "radial") ? extra?.radial : nil
                 var failure: String?
+                var phase = "interactive render"
                 func fullDigest(_ buffer: UnsafeMutableRawBufferPointer) throws -> String {
-                    guard stride(from:3,to:buffer.count,by:4).allSatisfy({ buffer[$0] == 255 }) else { throw DevelopmentError.unreadable }
+                    guard stride(from:3,to:buffer.count,by:4).allSatisfy({ buffer[$0] == 255 }) else {
+                        throw InvalidPanelReadback(description: "Non-opaque RGBA8 readback")
+                    }
                     let bytes=Data(bytesNoCopy:buffer.baseAddress!,count:buffer.count,deallocator:.none)
                     return SHA256.hash(data:bytes).map { String(format:"%02x",$0) }.joined()
                 }
@@ -75,21 +89,28 @@ extension IndividualControlPerformanceTests {
                     let state = index % 2, recipe = control.states[state]
                     let request = DevelopmentPreviewRequest(sessionID:session.id,sourceGeneration:session.sourceGeneration,
                         consumerID:consumer,role:.primary,revision:revision,recipe:recipe,quality:.interactive,viewport:.init(maxPixel:width))
+                    phase = "interactive render"
                     let start = DispatchTime.now().uptimeNanoseconds
                     let photo = try await engine.render(request)
-                    guard photo.outputPixelSize == CGSize(width:width,height:height) else { throw DevelopmentError.unreadable }
+                    guard photo.outputPixelSize == CGSize(width:width,height:height) else {
+                        throw InvalidPanelReadback(description: "Expected \(width)×\(height), got \(photo.outputPixelSize)")
+                    }
+                    phase = "interactive readback"
                     try photo.copyDisplayRGBA8(into:target)
                     let ms = Double(DispatchTime.now().uptimeNanoseconds-start)/1_000_000
                     if let finalBuffer {
                         revision += 1
                         let stable = DevelopmentPreviewRequest(sessionID:session.id,sourceGeneration:session.sourceGeneration,
                             consumerID:consumer,role:.primary,revision:revision,recipe:recipe,quality:.settled,viewport:.init(maxPixel:width))
+                        phase = "settled render"
                         let final = try await engine.render(stable)
                         guard !final.approximate, final.quality == .settled, final.outputPixelSize == photo.outputPixelSize else {
-                            throw DevelopmentError.unreadable
+                            throw InvalidPanelReadback(description: "Got \(final.outputPixelSize), \(final.quality), approximate=\(final.approximate)")
                         }
+                        phase = "settled readback"
                         try final.copyDisplayRGBA8(into:finalBuffer)
                         let total = Double(DispatchTime.now().uptimeNanoseconds-start)/1_000_000
+                        phase = "pixel witness"
                         let firstHash = try fullDigest(target), finalHash = try fullDigest(finalBuffer)
                         if index < 2 { firstStateFullFrameDigests.append(finalHash) }
                         states[state].insert(finalHash)
@@ -122,7 +143,7 @@ extension IndividualControlPerformanceTests {
                     samples.append(["state":state, "phase":index<2 ? "first":"warm", "ms":ms, "digest":digest])
                 }} catch {
                     guard extended else { throw error }
-                    failure = String(describing:error)
+                    failure = "\(phase) · \(error)"
                 }
                 var verified = samples.count == repeats+2 && states.allSatisfy { $0.count == 1 } && states[0] != states[1]
                 if radial != nil {
@@ -154,8 +175,11 @@ extension IndividualControlPerformanceTests {
             XCTAssertEqual(sha,after)
             let protocolID = extended ? "resident-photo-operators-interactive-settled-v2" :
                 (measureSettlement ? "resident-srgb8-panels-interactive-settled-v1" : "resident-srgb8-panels-v1")
+            let settlement = !measureSettlement ? "none" : (canonicalSettlement ? "canonical" : "production")
             let evidence: [String:Any] = ["schemaVersion":extended ? 2:1,"protocol":protocolID,"application":"RAWMaster",
-                "cachePolicy":"shipping defaults","pixels":[width,height],"samples":repeats,"distinctInputCount":0,
+                "settledTransport":settlement,
+                "cachePolicy":canonicalSettlement ? "isolated default resource budget" : "shipping defaults",
+                "pixels":[width,height],"samples":repeats,"distinctInputCount":0,
                 "sourceSHA256":sha,"sourceSHA256After":after,"decoder":decoder.rawValue,
                 "gpu":MTLCreateSystemDefaultDevice()?.name ?? "", "os":ProcessInfo.processInfo.operatingSystemVersionString,
                 "parameterSHA256":try RenderFiles.hash(parameterFile),"recordedAt":ISO8601DateFormatter().string(from:Date()),

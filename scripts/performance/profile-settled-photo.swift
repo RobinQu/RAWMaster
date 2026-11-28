@@ -30,7 +30,8 @@ import RAWMasterCore
         guard !selected.isEmpty, Set(selected).count == selected.count else { throw DevelopmentError.invalidEncoding }
         let source=EditingSourceSnapshot(projectID:"release-settlement-stages",assetID:"sony",contentSHA256:expected,
             byteCount:Int64((try raw.resourceValues(forKeys:[.fileSizeKey]).fileSize) ?? 0),admissionFingerprint:"settlement-stages",sourceLocation:raw)
-        let engine=ImageEngines.editing, session=try await engine.open(source:.raw(source)), consumer=PreviewConsumerID()
+        let engine=DevelopmentPreviewService(policy:.init(interactiveEvaluation:.proxyV1,settledTransport:.canonical))
+        let session=try await engine.open(source:.raw(source)), consumer=PreviewConsumerID()
         let buffer=UnsafeMutableRawBufferPointer.allocate(byteCount:2400*1600*4,alignment:64)
         defer{buffer.deallocate()}
         var revision:UInt64=0, results=[[String:Any]](), passed=true

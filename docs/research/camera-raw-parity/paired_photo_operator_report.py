@@ -394,6 +394,7 @@ def markdown(result):
               "```sh","python3 scripts/performance/benchmark-lightflow.py --paired-photo-operators --samples 20 \\",
               "  --raw \"$RAW\" --chrome \"$CHROME_HEADLESS_SHELL\" --output \"$STOCK_JSON\"",
               "RAWMASTER_FLASHRAW_LIBRARY=\"$FLASHRAW_DYLIB\" RAWMASTER_PANEL_READBACK_SET=photo-operators-v2 \\",
+              "  RAWMASTER_PANEL_READBACK_SETTLED_TRANSPORT=canonical \\",
               "  RAWMASTER_PANEL_READBACK_RAW=\"$RAW\" RAWMASTER_PANEL_READBACK_REPORT=\"$NATIVE_JSON\" \\",
               "  xcrun xctest -XCTest RAWMasterImagingTests.IndividualControlPerformanceTests/testPanelDisplayReadback \\",
               "  \"$RELEASE_TEST_BUNDLE\"","python3 docs/research/camera-raw-parity/paired_photo_operator_report.py --check","```",""]
