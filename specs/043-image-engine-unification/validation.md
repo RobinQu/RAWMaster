@@ -194,7 +194,7 @@ LightFlow 的 24.35/25.92 ms 为 74 配方 2400×1600 RGBA8 精确读回的首�
 - 回滚用同一配方、来源和目标重放，回执记录实际执行。旧 V1 票据及已发布目标能通过目录重开验证。
 - 035、036、037、038 既有验收门继续按对应产品路径复验。M2 以双端实机的首条 WGSL DAG 签收执行器，M5 按完整 RAW 到文件链路开放 041 能力。
 
-2026-11-28 的本机 Release `20261128.114819` 已安装到 `/Applications/RAWMaster.app`。构建和安装包均通过严格签名校验，应用与三个运行库摘要一致。隔离资料库启动至主窗口，SQLite `quick_check` 通过，上一版应用包已保存。当前包交付 032 回执修复、031 滤镜、逐行直方图与单目标瓦片程序复用。[现行安装回执](evidence/m1-release-checkpoint.json) · [M0 安装回执](evidence/m0-release-checkpoint.json)
+2026-11-28 的本机 Release `20261128.123348` 已安装到 `/Applications/RAWMaster.app`。构建与安装包通过严格验签，主程序和三个运行库摘要一致。隔离资料库启动至主窗口，SQLite `quick_check` 通过。安装包内的运行库另通过严格原生纹理 ABI 验证。上一版应用包已保存并通过验签。[现行安装回执](evidence/m2-release-checkpoint.json) · [M1 安装回执](evidence/m1-release-checkpoint.json) · [M0 安装回执](evidence/m0-release-checkpoint.json)
 
 ## 6. 现有原生基线复现
 
