@@ -1,0 +1,1667 @@
+{
+  "productionSourceCommit": "9289488d7d4a988abb453140a20507df4d4af830",
+  "initialOpaqueGPUCheckSourceRetirement": {
+    "test": "testOptInRealRawRetirementAfterOpaqueUploadRevokesTheRequest",
+    "log": {
+      "path": "output/spec043-noise-compiled.ntqrc0/build-after-retirement-fix.log",
+      "sha256": "ae6d2f650d20678c907abeeb24073b2c07ab96ac14e7ba3c3ca537158abb75fe"
+    },
+    "acceptedStaleSource": false
+  },
+  "schemaVersion": 1,
+  "qualification": "Native macOS canonical RAW noise input range proof on Apple M4 Max, macOS 27.0.1 (26A434).",
+  "previousReleaseSource": "a401b03c408d1c07757a491b3178aed168900495",
+  "previousInstalledBuild": "20261128.203238",
+  "clock": "Unique states on the actual native interactive then canonical worker and full 2400 by 1600 readback. Process launches do not purge the system shader cache. Formal timings run without stage instrumentation.",
+  "kernel": {
+    "manifest": {
+      "path": "output/spec043-noise-compiled.ntqrc0/production-metal/RawNoiseDomain.json",
+      "sha256": "9c3ef027badeca22b9d819c0e05cd44bae9b3adf5a6cab47eb3668aab912ac79"
+    },
+    "schemaVersion": 1,
+    "function": "checkedNoiseInputs",
+    "sourceSHA256": "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7",
+    "librarySHA256": "d33c0c04b03fc61fd16e68f33d520b1696ec7952c741cd71388c4ad174d30a6c",
+    "compiler": "Apple metal version 32023.921 (metalfe-32023.921.6)\nTarget: air64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.gmuqE2/Metal.xctoolchain/usr/metal/current/bin",
+    "sdkVersion": "27.0",
+    "compileFlags": [
+      "-c",
+      "-std=metal3.1"
+    ],
+    "linkFlags": [
+      "-framework",
+      "CoreImage"
+    ]
+  },
+  "exploratory": {
+    "probeBinarySHA256": "cecac0e91d3e489bb2d00e3d1ab614e5cdc6d04bfb8d5c3a9fa32f65e6bd6684",
+    "independentProcesses": 32,
+    "fullRGBA8Frames": 384,
+    "bySource": {
+      "primary": {
+        "original": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-1-original.json",
+              "sha256": "a9a66734fa07e4d8db4b692936c1d6a8f9eb84de303b4e57a7c1277711cc0697"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-16-original.json",
+              "sha256": "2d51275db4be74890978bf4fe07edd7b2185bf81201a083d022d8d65309ba971"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-8-original.json",
+              "sha256": "6637eed2d4d685eb7be8450fe076cbdf346e81f1b3ab81c170a7b675843c655d"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-9-original.json",
+              "sha256": "90799eca2b211e61e84beba101eb0504483c498fa4209cdeefd747fab47c54f5"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakPhysicalFootprintBytes": 4102621320,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 333.05141649999996,
+                "p95Ms": 756.59475,
+                "minimumMs": 274.893542,
+                "maximumMs": 756.59475
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 283.743271,
+                "p95Ms": 290.015042,
+                "minimumMs": 265.081834,
+                "maximumMs": 290.015042
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 337.78274999999996,
+                "p95Ms": 375.299916,
+                "minimumMs": 310.909667,
+                "maximumMs": 375.299916
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 299.9185215,
+                "p95Ms": 310.249125,
+                "minimumMs": 272.335166,
+                "maximumMs": 310.249125
+              }
+            }
+          }
+        },
+        "runtime": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-10-runtime.json",
+              "sha256": "2f658510598c02cb75c2c22c35229b2648513883c02199e179998a1818d1d788"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-15-runtime.json",
+              "sha256": "463bf9bc51e6d6113d4526f2153a4f6a6518bc948a67034dfcee70624aa839a6"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-2-runtime.json",
+              "sha256": "15f0994fd0df36492723c1185492057bcd71f790ca9215c514107bc673b2add1"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-7-runtime.json",
+              "sha256": "19771a0006ff2eae26a77658297d12c3e1501acdb03730d3289c66f53a86e65a"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3672148224,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 296.492937,
+                "p95Ms": 708.045,
+                "minimumMs": 248.704791,
+                "maximumMs": 708.045
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 169.8351455,
+                "p95Ms": 178.761833,
+                "minimumMs": 161.620708,
+                "maximumMs": 178.761833
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 295.636979,
+                "p95Ms": 348.208916,
+                "minimumMs": 246.537959,
+                "maximumMs": 348.208916
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 167.72368749999998,
+                "p95Ms": 182.222958,
+                "minimumMs": 158.205958,
+                "maximumMs": 182.222958
+              }
+            }
+          }
+        },
+        "aot": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-11-aot.json",
+              "sha256": "9dc1eb6089694fd09224391c79b21bc69fc0587f71e7337d0bf04e61f1a79a2d"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-14-aot.json",
+              "sha256": "fb094dc9dae8f81efa0aa27d6f2592d952ec43ede5e39e96f1df50b78f50aaf2"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-3-aot.json",
+              "sha256": "99ae55e701d2adda49094edc11a5806f44fc78cd4547c5ff2a84938692e7dd40"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-6-aot.json",
+              "sha256": "c557752828f87620f56f12e912efde305e07ebe9f7435cf930cc3a9db6d835ec"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3678882024,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 297.8753335,
+                "p95Ms": 402.801959,
+                "minimumMs": 243.04875,
+                "maximumMs": 402.801959
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 167.96945799999997,
+                "p95Ms": 179.19725,
+                "minimumMs": 159.261167,
+                "maximumMs": 179.19725
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 290.81733299999996,
+                "p95Ms": 336.583,
+                "minimumMs": 249.944459,
+                "maximumMs": 336.583
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 168.1880415,
+                "p95Ms": 181.327458,
+                "minimumMs": 152.439667,
+                "maximumMs": 181.327458
+              }
+            }
+          }
+        },
+        "aot-cache": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-12-aot-cache.json",
+              "sha256": "992a543ecb082112f3e3c10de11876b7c61708b1706552e0069f80d8488ae471"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-13-aot-cache.json",
+              "sha256": "ce22d471c9a89d527b975abde52a677abaa838f0efa47e8ca1d3da9ca860dfe4"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-4-aot-cache.json",
+              "sha256": "1e27a7f3471fa3b2bc44694da553cbc8a4b788ba24d15bc4dfced7a987f9a8f4"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-primary-5-aot-cache.json",
+              "sha256": "f775832f1955a0c0335ac03dc438ad24b773b654dd211bb3a17aa7a6f5942c22"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3762898936,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 259.95216700000003,
+                "p95Ms": 321.119875,
+                "minimumMs": 222.662041,
+                "maximumMs": 321.119875
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 154.470875,
+                "p95Ms": 155.657417,
+                "minimumMs": 153.033708,
+                "maximumMs": 155.657417
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 279.807146,
+                "p95Ms": 335.088666,
+                "minimumMs": 226.294875,
+                "maximumMs": 335.088666
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 158.6537085,
+                "p95Ms": 159.290666,
+                "minimumMs": 151.549875,
+                "maximumMs": 159.290666
+              }
+            }
+          }
+        }
+      },
+      "secondary": {
+        "original": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-1-original.json",
+              "sha256": "3f4eff3e6ea8d66d9cd2d7c607c653efc08cadbd91f523a049e783872b469d08"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-16-original.json",
+              "sha256": "40df9eab02edf1a77e8f1f616f0a5ac4b35dc0ade7fb8b03646b33ac26f22701"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-8-original.json",
+              "sha256": "17e066897fd37d3adc216aafb93bb076dae23e5fd151db5fce1537c5f10c38ec"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-9-original.json",
+              "sha256": "778f6f421c0a9f0bc911879d0b3f6d4895ab8809d16c7e1b547d8b375d71d0c5"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakPhysicalFootprintBytes": 3638429664,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 261.8757705,
+                "p95Ms": 303.576459,
+                "minimumMs": 219.541,
+                "maximumMs": 303.576459
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 220.19875000000002,
+                "p95Ms": 232.923916,
+                "minimumMs": 213.396334,
+                "maximumMs": 232.923916
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 263.31127100000003,
+                "p95Ms": 293.172042,
+                "minimumMs": 213.7195,
+                "maximumMs": 293.172042
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 242.142917,
+                "p95Ms": 250.828125,
+                "minimumMs": 216.8285,
+                "maximumMs": 250.828125
+              }
+            }
+          }
+        },
+        "runtime": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-10-runtime.json",
+              "sha256": "02c852f0c8f8c210b7a4280ab96724e0f7fbe06bd20753f7f8285c200cf044de"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-15-runtime.json",
+              "sha256": "8c2ccba50d8531851c99c6194a006623382b7e77e006e89ab97949392fddb1a8"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-2-runtime.json",
+              "sha256": "5d6f922934cc9c8725a241233692fbaf22277d3e9481621f5f6aae02bb8c03b2"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-7-runtime.json",
+              "sha256": "55ffb4c4459f87180b0861db08d8ec53e82ee32d21a2787cc3307845918aef3c"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3448735784,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 241.11197900000002,
+                "p95Ms": 281.252542,
+                "minimumMs": 199.331291,
+                "maximumMs": 281.252542
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 140.72835450000002,
+                "p95Ms": 150.9185,
+                "minimumMs": 135.772,
+                "maximumMs": 150.9185
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 239.344271,
+                "p95Ms": 277.489,
+                "minimumMs": 200.698667,
+                "maximumMs": 277.489
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 144.43285400000002,
+                "p95Ms": 161.750167,
+                "minimumMs": 140.493041,
+                "maximumMs": 161.750167
+              }
+            }
+          }
+        },
+        "aot": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-11-aot.json",
+              "sha256": "aa108bf6d490b5fdc34fb8b5441d1d58983bca9157beeb00f6b3e4feca622337"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-14-aot.json",
+              "sha256": "d7fae790934ef1547a1875aa39af9210eedec8f86ffc7077a33f8ae6a34751f3"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-3-aot.json",
+              "sha256": "b123ae0c78303699c88f09b63e77f0051b9d3923d6b70e1a900f8416cb0d8299"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-6-aot.json",
+              "sha256": "defc8ab2e204268a19e7610cc06130726ff935cb2c995b0fece0b3ae48c655ee"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3458238648,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 238.59756249999998,
+                "p95Ms": 276.476875,
+                "minimumMs": 205.808333,
+                "maximumMs": 276.476875
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 143.073708,
+                "p95Ms": 147.132459,
+                "minimumMs": 142.25975,
+                "maximumMs": 147.132459
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 241.41641650000003,
+                "p95Ms": 282.511583,
+                "minimumMs": 199.806583,
+                "maximumMs": 282.511583
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 145.669312,
+                "p95Ms": 151.6765,
+                "minimumMs": 141.153625,
+                "maximumMs": 151.6765
+              }
+            }
+          }
+        },
+        "aot-cache": {
+          "reportsInArmOrder": [
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-12-aot-cache.json",
+              "sha256": "6ca5dd2f608b7049e05cbbbff7fc913e2c78d7ab02d8ac32323d29e3e9f50de1"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-13-aot-cache.json",
+              "sha256": "cb58cbdd16bf40f41d58f00ef6f2261bce5d861e5eeede5397f55c766ec0ac59"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-4-aot-cache.json",
+              "sha256": "88acf1a451d0cc3b3b53ada5deaffba4ee648da9ecbd75a365dd223df38e4bf8"
+            },
+            {
+              "path": "output/spec043-noise-compiled.ntqrc0/experiment-secondary-5-aot-cache.json",
+              "sha256": "09e728d4f65c1da1c88c2b0a5f68289f62eded661de7c4b3955c8dcd04c77d1f"
+            }
+          ],
+          "realProofEventsPerProcess": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "peakPhysicalFootprintBytes": 3457681448,
+          "settled": {
+            "detail-nr-color-detail": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 237.595937,
+                "p95Ms": 307.433666,
+                "minimumMs": 192.288,
+                "maximumMs": 307.433666
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 133.0367085,
+                "p95Ms": 135.19925,
+                "minimumMs": 130.445459,
+                "maximumMs": 135.19925
+              }
+            },
+            "detail-nr-lum-contrast": {
+              "firstCameraParameters": {
+                "n": 4,
+                "p50Ms": 249.5890415,
+                "p95Ms": 287.135208,
+                "minimumMs": 201.614458,
+                "maximumMs": 287.135208
+              },
+              "unchangedCameraParameters": {
+                "n": 4,
+                "p50Ms": 131.2820625,
+                "p95Ms": 135.321875,
+                "minimumMs": 129.200875,
+                "maximumMs": 135.321875
+              }
+            }
+          }
+        }
+      }
+    },
+    "largestRuntimeCompile": {
+      "control": "detail-nr-color-detail",
+      "state": 0,
+      "fullFrameMs": 708.045,
+      "ms": 360.061333,
+      "stage": "compile runtime RAW noise predicate",
+      "source": "primary"
+    },
+    "libraryLoads": {
+      "runtime": {
+        "n": 8,
+        "p50Ms": 0.598375,
+        "p95Ms": 360.061333,
+        "minimumMs": 0.220458,
+        "maximumMs": 360.061333
+      },
+      "aot": {
+        "n": 8,
+        "p50Ms": 0.7505620000000001,
+        "p95Ms": 9.1275,
+        "minimumMs": 0.192584,
+        "maximumMs": 9.1275
+      },
+      "aot-cache": {
+        "n": 8,
+        "p50Ms": 1.514583,
+        "p95Ms": 9.358875,
+        "minimumMs": 0.189458,
+        "maximumMs": 9.358875
+      }
+    }
+  },
+  "finalStageABBA": {
+    "probeBinarySHA256": "58c8fd0ee4c68d07e4553be021bed68cc9fa637ce43eeccb7088db398e3a3643",
+    "fullRGBA8Frames": 1184,
+    "bySource": {
+      "primary": {
+        "source": {
+          "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "dimensions": [
+            9504,
+            6336
+          ],
+          "fullFrameReferenceSHA256": "e59b8e164e70916eeddaa43d969f76b925546c77801f9564a95f06b2ca221bda"
+        },
+        "runs": [
+          {
+            "mode": "original",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-primary-1.json",
+              "sha256": "b7bbb52b2a0e452046af0452fa46d3e23549baa7c32269b3dde60900934f40cf"
+            },
+            "libraryLoad": [],
+            "proof": [],
+            "peakPhysicalFootprintBytes": 5830642208
+          },
+          {
+            "mode": "precompiled",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-primary-2.json",
+              "sha256": "248c7c80d55a1d2efb1dbeee75a0c31d710960e9062fa35dc22884842803c4ef"
+            },
+            "libraryLoad": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 276.282125,
+                "ms": 0.974166,
+                "stage": "load precompiled RAW noise predicate"
+              }
+            ],
+            "proof": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 276.282125,
+                "ms": 76.106458,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-color-detail",
+                "state": 1,
+                "fullFrameMs": 191.066333,
+                "ms": 0.0175,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 0,
+                "fullFrameMs": 282.234583,
+                "ms": 78.357791,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 1,
+                "fullFrameMs": 199.240667,
+                "ms": 0.016083,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              }
+            ],
+            "peakPhysicalFootprintBytes": 5265476104
+          },
+          {
+            "mode": "precompiled",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-primary-3.json",
+              "sha256": "56669ce204a47cf3ec5c6ebfebd40d73e59ee20c207e3f0089638168b9ef9148"
+            },
+            "libraryLoad": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 268.688167,
+                "ms": 0.662333,
+                "stage": "load precompiled RAW noise predicate"
+              }
+            ],
+            "proof": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 268.688167,
+                "ms": 72.279458,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-color-detail",
+                "state": 1,
+                "fullFrameMs": 176.01125,
+                "ms": 0.01475,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 0,
+                "fullFrameMs": 280.173,
+                "ms": 77.13275,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 1,
+                "fullFrameMs": 203.466666,
+                "ms": 0.01425,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              }
+            ],
+            "peakPhysicalFootprintBytes": 5301291480
+          },
+          {
+            "mode": "original",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-primary-4.json",
+              "sha256": "a5687d845b20d51cd2994c9848ffaa6a7c2793af4f2337636564af4077bd51fb"
+            },
+            "libraryLoad": [],
+            "proof": [],
+            "peakPhysicalFootprintBytes": 5834230280
+          }
+        ],
+        "stats": {
+          "original": {
+            "allSettled": {
+              "n": 148,
+              "p50Ms": 68.07264599999999,
+              "p95Ms": 323.019125,
+              "minimumMs": 0.534292,
+              "maximumMs": 374.995
+            },
+            "targetedSettled": {
+              "detail-nr-color-detail": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 312.93543750000003,
+                  "p95Ms": 316.48,
+                  "minimumMs": 309.390875,
+                  "maximumMs": 316.48
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 313.707979,
+                  "p95Ms": 323.019125,
+                  "minimumMs": 304.396833,
+                  "maximumMs": 323.019125
+                }
+              },
+              "detail-nr-lum-contrast": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 322.5165415,
+                  "p95Ms": 328.11,
+                  "minimumMs": 316.923083,
+                  "maximumMs": 328.11
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 318.753562,
+                  "p95Ms": 343.906208,
+                  "minimumMs": 293.600916,
+                  "maximumMs": 343.906208
+                }
+              }
+            }
+          },
+          "precompiled": {
+            "allSettled": {
+              "n": 148,
+              "p50Ms": 66.59454149999999,
+              "p95Ms": 294.85575,
+              "minimumMs": 0.505042,
+              "maximumMs": 366.688667
+            },
+            "targetedSettled": {
+              "detail-nr-color-detail": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 272.485146,
+                  "p95Ms": 276.282125,
+                  "minimumMs": 268.688167,
+                  "maximumMs": 276.282125
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 183.5387915,
+                  "p95Ms": 191.066333,
+                  "minimumMs": 176.01125,
+                  "maximumMs": 191.066333
+                }
+              },
+              "detail-nr-lum-contrast": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 281.20379149999997,
+                  "p95Ms": 282.234583,
+                  "minimumMs": 280.173,
+                  "maximumMs": 282.234583
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 201.3536665,
+                  "p95Ms": 203.466666,
+                  "minimumMs": 199.240667,
+                  "maximumMs": 203.466666
+                }
+              }
+            }
+          }
+        }
+      },
+      "secondary": {
+        "source": {
+          "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "dimensions": [
+            8640,
+            5760
+          ],
+          "fullFrameReferenceSHA256": "da2a03346a82cc5c45d31c5e0b10a3b0ea8be2ed72bef776648b699cca9ad69c"
+        },
+        "runs": [
+          {
+            "mode": "original",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-secondary-1.json",
+              "sha256": "48d73d623c6f9610fb242c6ea15378feaa63cd1d275c6b14f69d973dc24124b8"
+            },
+            "libraryLoad": [],
+            "proof": [],
+            "peakPhysicalFootprintBytes": 5159455144
+          },
+          {
+            "mode": "precompiled",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-secondary-2.json",
+              "sha256": "637f597a2d467f24de580f74501d0b090b32f56c954317f2cda44cabfaa130b5"
+            },
+            "libraryLoad": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 192.554041,
+                "ms": 0.315792,
+                "stage": "load precompiled RAW noise predicate"
+              }
+            ],
+            "proof": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 192.554041,
+                "ms": 60.832084,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-color-detail",
+                "state": 1,
+                "fullFrameMs": 136.89825,
+                "ms": 0.017417,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 0,
+                "fullFrameMs": 208.400209,
+                "ms": 56.486917,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 1,
+                "fullFrameMs": 148.719292,
+                "ms": 0.013292,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              }
+            ],
+            "peakPhysicalFootprintBytes": 4772448656
+          },
+          {
+            "mode": "precompiled",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-secondary-3.json",
+              "sha256": "83b4fed12a348336ed2654d75421b2fdb6e558279788fb5a585b395ebd6bf0e2"
+            },
+            "libraryLoad": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 216.289625,
+                "ms": 0.322083,
+                "stage": "load precompiled RAW noise predicate"
+              }
+            ],
+            "proof": [
+              {
+                "control": "detail-nr-color-detail",
+                "state": 0,
+                "fullFrameMs": 216.289625,
+                "ms": 64.424208,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-color-detail",
+                "state": 1,
+                "fullFrameMs": 161.099584,
+                "ms": 0.018875,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 0,
+                "fullFrameMs": 219.488708,
+                "ms": 62.363166,
+                "stage": "验证原生降噪输入与高斯邻域"
+              },
+              {
+                "control": "detail-nr-lum-contrast",
+                "state": 1,
+                "fullFrameMs": 156.316958,
+                "ms": 0.018458,
+                "stage": "复用已验证的同一降噪输入与高斯邻域"
+              }
+            ],
+            "peakPhysicalFootprintBytes": 4772153792
+          },
+          {
+            "mode": "original",
+            "report": {
+              "path": "output/spec043-noise-compiled.ntqrc0/qualified/stages-secondary-4.json",
+              "sha256": "a0fd5a8134d8f058261093d9fa93620bb28c2ff95dbeb17aeedc38bc8f0f2187"
+            },
+            "libraryLoad": [],
+            "proof": [],
+            "peakPhysicalFootprintBytes": 5159848288
+          }
+        ],
+        "stats": {
+          "original": {
+            "allSettled": {
+              "n": 148,
+              "p50Ms": 76.6050415,
+              "p95Ms": 261.45425,
+              "minimumMs": 0.632334,
+              "maximumMs": 322.236625
+            },
+            "targetedSettled": {
+              "detail-nr-color-detail": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 227.80541599999998,
+                  "p95Ms": 235.010666,
+                  "minimumMs": 220.600166,
+                  "maximumMs": 235.010666
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 239.2572705,
+                  "p95Ms": 240.592,
+                  "minimumMs": 237.922541,
+                  "maximumMs": 240.592
+                }
+              },
+              "detail-nr-lum-contrast": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 234.8075205,
+                  "p95Ms": 243.8375,
+                  "minimumMs": 225.777541,
+                  "maximumMs": 243.8375
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 234.70077049999998,
+                  "p95Ms": 248.009833,
+                  "minimumMs": 221.391708,
+                  "maximumMs": 248.009833
+                }
+              }
+            }
+          },
+          "precompiled": {
+            "allSettled": {
+              "n": 148,
+              "p50Ms": 75.3627915,
+              "p95Ms": 260.423792,
+              "minimumMs": 0.525375,
+              "maximumMs": 334.115208
+            },
+            "targetedSettled": {
+              "detail-nr-color-detail": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 204.421833,
+                  "p95Ms": 216.289625,
+                  "minimumMs": 192.554041,
+                  "maximumMs": 216.289625
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 148.998917,
+                  "p95Ms": 161.099584,
+                  "minimumMs": 136.89825,
+                  "maximumMs": 161.099584
+                }
+              },
+              "detail-nr-lum-contrast": {
+                "firstCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 213.9444585,
+                  "p95Ms": 219.488708,
+                  "minimumMs": 208.400209,
+                  "maximumMs": 219.488708
+                },
+                "unchangedCameraParameters": {
+                  "n": 2,
+                  "p50Ms": 152.518125,
+                  "p95Ms": 156.316958,
+                  "minimumMs": 148.719292,
+                  "maximumMs": 156.316958
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "nativeAuthorityAndFloatReadbacks": {
+    "primary-compiled": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/primary-compiled.json",
+        "sha256": "11f6ddf236588d2dd0a77173c9e7e9e7dbf9a59580251c15f7a574159cea4656"
+      },
+      "cancellations": [
+        {
+          "fault": "supersession",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "revokedAfterBitmapJoin": true
+        },
+        {
+          "fault": "pin-retirement",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "revokedAfterBitmapJoin": true
+        }
+      ],
+      "numeric": [
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "fullFloatPixels": 60217344,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "aa8fb325124aa86a5398ef3dd800f83cf95380e84b5fbc3b9fd96a98773df8c3"
+        },
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          "fullFloatPixels": 60217344,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "3be87433c37f0610a1c803c69b148fa712c7280f92697f83e21560837dba81b1"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          "fullFloatPixels": 60217344,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "b8ea9dce81e3d5c9d6bd14d41bbc2fd621e3504cc427d08abe727ac91fedccbd"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+          "fullFloatPixels": 60217344,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "d8d25e88c6acfc30182d9a5629912bed54ff6b37b834cee1b12e5d5096cb1490"
+        }
+      ],
+      "selection": "precompiled",
+      "sourceDimensions": [
+        9504,
+        6336
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "primary-runtime": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/primary-runtime.json",
+        "sha256": "805234f48cf8f756dfad2ff758dfc6a3806d325597d4e25392ab631c40ba02d7"
+      },
+      "cancellations": [
+        {
+          "fault": "supersession",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "revokedAfterBitmapJoin": true
+        },
+        {
+          "fault": "pin-retirement",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "revokedAfterBitmapJoin": true
+        }
+      ],
+      "numeric": [
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "fullFloatPixels": 60217344,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "aa8fb325124aa86a5398ef3dd800f83cf95380e84b5fbc3b9fd96a98773df8c3"
+        },
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          "fullFloatPixels": 60217344,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "3be87433c37f0610a1c803c69b148fa712c7280f92697f83e21560837dba81b1"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          "fullFloatPixels": 60217344,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "b8ea9dce81e3d5c9d6bd14d41bbc2fd621e3504cc427d08abe727ac91fedccbd"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+          "fullFloatPixels": 60217344,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "d8d25e88c6acfc30182d9a5629912bed54ff6b37b834cee1b12e5d5096cb1490"
+        }
+      ],
+      "selection": "runtime",
+      "sourceDimensions": [
+        9504,
+        6336
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "secondary-compiled": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/secondary-compiled.json",
+        "sha256": "65de3ad7e68d4ee651682246086ab73af969154e716050916ce6962bffcdcf1c"
+      },
+      "cancellations": [
+        {
+          "fault": "supersession",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "revokedAfterBitmapJoin": true
+        },
+        {
+          "fault": "pin-retirement",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "revokedAfterBitmapJoin": true
+        }
+      ],
+      "numeric": [
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "fullFloatPixels": 49766400,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "5dd03df2ff63944032878131c562bfdd6bca9ba34fce7d34a85c692a23d95874"
+        },
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+          "fullFloatPixels": 49766400,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "e23f1b7bf59b89709b07b61ea88a4b83844c045be2e754bce38f113362bf87e6"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+          "fullFloatPixels": 49766400,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "80e73553fa881f3993e8edad8388b2f8673b18755cb7359919342e2c8519ddab"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+          "fullFloatPixels": 49766400,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "30d6eea2ef386fd503bb0cde5d4315f830c59cf65da79b40fe13a26f3cc079ac"
+        }
+      ],
+      "selection": "precompiled",
+      "sourceDimensions": [
+        8640,
+        5760
+      ],
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+    },
+    "secondary-runtime": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/secondary-runtime.json",
+        "sha256": "f8e73b441dbd3c75b9625b102a3425bb39993144f80a11ead2496d757f431d74"
+      },
+      "cancellations": [
+        {
+          "fault": "supersession",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "revokedAfterBitmapJoin": true
+        },
+        {
+          "fault": "pin-retirement",
+          "frameUndelivered": true,
+          "recomputedProofOnRetry": true,
+          "retryRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "revokedAfterBitmapJoin": true
+        }
+      ],
+      "numeric": [
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "fullFloatPixels": 49766400,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "5dd03df2ff63944032878131c562bfdd6bca9ba34fce7d34a85c692a23d95874"
+        },
+        {
+          "control": "detail-nr-color-detail",
+          "fitRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+          "fullFloatPixels": 49766400,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "e23f1b7bf59b89709b07b61ea88a4b83844c045be2e754bce38f113362bf87e6"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+          "fullFloatPixels": 49766400,
+          "proofStage": "验证原生降噪输入与高斯邻域",
+          "state": 0,
+          "wholeRGBAfSHA256": "80e73553fa881f3993e8edad8388b2f8673b18755cb7359919342e2c8519ddab"
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "fitRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+          "fullFloatPixels": 49766400,
+          "proofStage": "复用已验证的同一降噪输入与高斯邻域",
+          "state": 1,
+          "wholeRGBAfSHA256": "30d6eea2ef386fd503bb0cde5d4315f830c59cf65da79b40fe13a26f3cc079ac"
+        }
+      ],
+      "selection": "runtime",
+      "sourceDimensions": [
+        8640,
+        5760
+      ],
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+    }
+  },
+  "rangeBoundaries": {
+    "report": {
+      "path": "output/spec043-noise-compiled.ntqrc0/qualified/range.json",
+      "sha256": "83e93aa489d09f4b9619db43fe80f3baf055527a0c081650cbf1a40f67578586"
+    },
+    "cases": [
+      {
+        "case": "positive-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 0
+      },
+      {
+        "case": "positive-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 1
+      },
+      {
+        "case": "positive-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 2
+      },
+      {
+        "case": "negative-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 0
+      },
+      {
+        "case": "negative-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 1
+      },
+      {
+        "case": "negative-bound",
+        "compiled": true,
+        "lastPixelOnly": true,
+        "runtime": true,
+        "slot": 2
+      },
+      {
+        "case": "above-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "above-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "above-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "case": "below-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "below-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "below-bound",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "case": "alpha-below-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "alpha-below-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "alpha-below-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "case": "alpha-above-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "alpha-above-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "alpha-above-one",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "case": "above-bound-infinite",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "above-bound-infinite",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "above-bound-infinite",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "case": "undefined",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 0
+      },
+      {
+        "case": "undefined",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 1
+      },
+      {
+        "case": "undefined",
+        "compiled": false,
+        "lastPixelOnly": true,
+        "runtime": false,
+        "slot": 2
+      },
+      {
+        "authorityCalls": 2,
+        "case": "already-submitted-work-cancellation",
+        "encodedBandsBeforeCancellation": 2,
+        "postJoinCancellation": true,
+        "sameContextRetry": true
+      }
+    ]
+  },
+  "fallback": {
+    "missing": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-missing.json",
+        "sha256": "e1c427a4d94992be0e69cb34c9928b4f19e490c55a02d85b5507ae305e932d17"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 1,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "corrupt": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-corrupt.json",
+        "sha256": "7a5b298ef227efa9e36785446473ef78d36a285b35e496e97d47ac5f775beb51"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 1,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "unloadable": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-unloadable.json",
+        "sha256": "fd9eb18240d5563dbc34bde2249ae88fbdc50c01ff7f255b0d58270fca18150f"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 1,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "mismatch": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-mismatch.json",
+        "sha256": "02cadec24cba7a3c5cd3ed0a7c7f56cb540067746a24303450c76064f1c60a7b"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 0,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "expired": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-expired.json",
+        "sha256": "35e2448230f2c6f1e8d1a8502a78e7fd56f923bb046d9256e80686f9ec424fdd"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 1,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "alternate": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-alternate.json",
+        "sha256": "8cd2d10bfefbf86b485728ba7b22fe981fa6a59d42591e97782640da0b711294"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 1,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "disabled": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-disabled.json",
+        "sha256": "99b3f18ef1cf248383ca681fa66dc54debe64312bc469c8f5f3c96e99c687fd4"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 0,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "unknown": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-unknown.json",
+        "sha256": "a000a6ab2dbf43ff9cd2db163cac04de106981a7ea688ae9fe9627181a9273d3"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 0,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "owned": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-owned.json",
+        "sha256": "c8fe57c5d545e1f488f18eeb25463344dea2b7fd437d64045d26ee0f626feeae"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 0,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    },
+    "intermediates": {
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/qualified/fallback-intermediates.json",
+        "sha256": "406cd3aae6fa219ea568660743dafb2f1ba5446a1075d601e0b89ae3ceb1d8a7"
+      },
+      "matchedFullRGBA8Frames": 8,
+      "precompiledLoadAttempts": 0,
+      "runtimeCompiles": 0,
+      "proofEvents": 0
+    }
+  },
+  "formal": {
+    "previousPixelReport": {
+      "path": "output/spec043-spatial-request.jDHHSU/current/formal-2.json",
+      "sha256": "0f50060ab386ef567d2238b902677837d3f73e4262c4eb1efa70acacee4a5a90"
+    },
+    "runs": [
+      {
+        "slowestFirstExact": [
+          {
+            "ms": 392.875333,
+            "control": "detail-mask-noise",
+            "state": 0
+          },
+          {
+            "ms": 373.591958,
+            "control": "effects-dehaze",
+            "state": 0
+          },
+          {
+            "ms": 346.958792,
+            "control": "detail-mask-noise",
+            "state": 1
+          },
+          {
+            "ms": 302.114584,
+            "control": "detail-mask-preview",
+            "state": 1
+          },
+          {
+            "ms": 289.3555,
+            "control": "effects-mask-clarity",
+            "state": 1
+          }
+        ],
+        "raw": {
+          "path": "output/spec043-noise-compiled.ntqrc0/qualified/formal-1.json",
+          "sha256": "574d3213e3e347a950ca82666b5787af91e918159ea98db0fb25c48aab43a7bb"
+        },
+        "paired": {
+          "path": "output/spec043-noise-compiled.ntqrc0/qualified/formal-1-paired.json",
+          "sha256": "775e7905549dbe627eda265922538e0c3350dc46fb0f6a86d0a467866d8a4986"
+        },
+        "testBinarySHA256": "da5d0dfa41e04034d3d9842b57721dc103a1798bf4899d4f210dbf5b732f966d",
+        "matchingPairsPerTransport": {
+          "samples": 1184,
+          "warmupSamples": 222
+        },
+        "qualifiedWarmControls": 37,
+        "firstExact": {
+          "RAWMaster": {
+            "n": 74,
+            "p50Ms": 77.4985415,
+            "p95Ms": 302.114584,
+            "minimumMs": 1.115916,
+            "maximumMs": 392.875333
+          },
+          "LightFlow": {
+            "n": 74,
+            "p50Ms": 9.515,
+            "p95Ms": 58.97,
+            "minimumMs": 4.225,
+            "maximumMs": 79.695
+          }
+        },
+        "firstExactWithinLightFlowLimit": false
+      },
+      {
+        "slowestFirstExact": [
+          {
+            "ms": 361.946208,
+            "control": "detail-mask-noise",
+            "state": 1
+          },
+          {
+            "ms": 353.939417,
+            "control": "effects-dehaze",
+            "state": 0
+          },
+          {
+            "ms": 343.892542,
+            "control": "detail-mask-noise",
+            "state": 0
+          },
+          {
+            "ms": 300.942584,
+            "control": "effects-mask-clarity",
+            "state": 1
+          },
+          {
+            "ms": 299.278917,
+            "control": "detail-nr-lum-contrast",
+            "state": 0
+          }
+        ],
+        "raw": {
+          "path": "output/spec043-noise-compiled.ntqrc0/qualified/formal-2.json",
+          "sha256": "b619d75a2a2fb56e3e743089ca9e7887399862aa5ca14d42ae54a6b12c381179"
+        },
+        "paired": {
+          "path": "output/spec043-noise-compiled.ntqrc0/qualified/formal-2-paired.json",
+          "sha256": "eddb0ed7dc167977519142751bec52811e626a2529ed3207af12849db0d4714d"
+        },
+        "testBinarySHA256": "da5d0dfa41e04034d3d9842b57721dc103a1798bf4899d4f210dbf5b732f966d",
+        "matchingPairsPerTransport": {
+          "samples": 1184,
+          "warmupSamples": 222
+        },
+        "qualifiedWarmControls": 37,
+        "firstExact": {
+          "RAWMaster": {
+            "n": 74,
+            "p50Ms": 74.0818125,
+            "p95Ms": 300.942584,
+            "minimumMs": 0.974583,
+            "maximumMs": 361.946208
+          },
+          "LightFlow": {
+            "n": 74,
+            "p50Ms": 9.515,
+            "p95Ms": 58.97,
+            "minimumMs": 4.225,
+            "maximumMs": 79.695
+          }
+        },
+        "firstExactWithinLightFlowLimit": false
+      }
+    ]
+  }
+}

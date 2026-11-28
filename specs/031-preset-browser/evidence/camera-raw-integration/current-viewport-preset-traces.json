@@ -1,0 +1,229 @@
+{
+  "countsTowardAcceptance": false,
+  "matchedExposureCountPerWindow": 30,
+  "warmFramesWithMatchedTrace": 120,
+  "actualRendersByWindow": {
+    "normal": {
+      "preset": {
+        "inputToSubmit": {
+          "medianMs": 0.5199585,
+          "p95Ms": 0.583125
+        },
+        "submitToPublish": {
+          "medianMs": 5.854042,
+          "p95Ms": 7.673834
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.3182705000000001,
+          "p95Ms": 6.131541
+        },
+        "draw": {
+          "medianMs": 0.0053335,
+          "p95Ms": 0.012792
+        },
+        "inputToDraw": {
+          "medianMs": 7.701146,
+          "p95Ms": 14.00925
+        }
+      },
+      "manual": {
+        "inputToSubmit": {
+          "medianMs": 0.35666699999999996,
+          "p95Ms": 0.452208
+        },
+        "submitToPublish": {
+          "medianMs": 5.9056045,
+          "p95Ms": 8.018083
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.3208745,
+          "p95Ms": 4.288458
+        },
+        "draw": {
+          "medianMs": 0.0053545,
+          "p95Ms": 0.0095
+        },
+        "inputToDraw": {
+          "medianMs": 7.5804375,
+          "p95Ms": 11.99475
+        }
+      }
+    },
+    "mirror": {
+      "preset": {
+        "inputToSubmit": {
+          "medianMs": 0.5213755,
+          "p95Ms": 0.600501
+        },
+        "submitToPublish": {
+          "medianMs": 6.0262294999999995,
+          "p95Ms": 7.661875
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.4483329999999999,
+          "p95Ms": 5.166958
+        },
+        "draw": {
+          "medianMs": 0.0058755000000000005,
+          "p95Ms": 0.007375
+        },
+        "inputToDraw": {
+          "medianMs": 8.3049585,
+          "p95Ms": 12.895667
+        }
+      },
+      "manual": {
+        "inputToSubmit": {
+          "medianMs": 0.3530005,
+          "p95Ms": 0.405625
+        },
+        "submitToPublish": {
+          "medianMs": 5.826541000000001,
+          "p95Ms": 8.765083
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.3649369999999998,
+          "p95Ms": 5.120333
+        },
+        "draw": {
+          "medianMs": 0.005521,
+          "p95Ms": 0.008
+        },
+        "inputToDraw": {
+          "medianMs": 8.122104499999999,
+          "p95Ms": 12.78425
+        }
+      }
+    }
+  },
+  "boundary": "submission and publication are observed by the application. GPU completion is unmeasured.",
+  "sourceCodeCommit": "a401b03c408d1c07757a491b3178aed168900495",
+  "profile": "Repetition against the 20261128.203238 source. Runtime policy remains the AppKit shipping viewport.",
+  "verifier": {
+    "path": "specs/031-preset-browser/compare-window-traces.py",
+    "sha256": "03a2a3cd19c468c7eb0bf4f81e068791509e923457c3ab8d27877ef47f06e752"
+  },
+  "historicalComparisonReplayedExactly": true,
+  "provenance": {
+    "normal": {
+      "trace": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-normal/interaction.jsonl",
+        "sha256": "c51ffe26dd2add57d4e5f7e2ef7d1cc8161e7393615c9ae2c9fa3ba2331a1288"
+      },
+      "receipt": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-normal/editing-interaction-performance.json",
+        "sha256": "151d8f65baf9d3e1cb70b86c962a6cae311a609060f2f493798b3f49eb91ee1a"
+      },
+      "testLog": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-normal/test.log",
+        "sha256": "55ec14a02222323190cfe9415d1e515838c9f92f384ce320d7c6da51be00cb95"
+      },
+      "terminalRingGapEvents": 60,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "window": {
+        "backingScale": 2,
+        "height": 760,
+        "width": 1100
+      },
+      "timingCounts": {
+        "manual": {
+          "bitmapHits": 0,
+          "fallbacks": 0,
+          "renders": 30,
+          "submitted": 30
+        },
+        "preset": {
+          "bitmapHits": 0,
+          "fallbacks": 0,
+          "renders": 30,
+          "submitted": 30
+        }
+      }
+    },
+    "mirror": {
+      "trace": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-mirror/interaction.jsonl",
+        "sha256": "803ca8a958bb1721ad576bdebbe92769192f04d8cbbb4568881687e92b8a9f26"
+      },
+      "receipt": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-mirror/editing-interaction-performance.json",
+        "sha256": "9054e44a14cb39054b73a8848b5f9c3121ae1ae4086eb5b9ee98de4661fe3695"
+      },
+      "testLog": {
+        "path": "output/spec043-noise-compiled.ntqrc0/preset-mirror/test.log",
+        "sha256": "8ad703e1a672c870e5f4e844dbc0ecb1aeae78dc5d23f34d87b1960f7b7ab05e"
+      },
+      "terminalRingGapEvents": 60,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "window": {
+        "backingScale": 2,
+        "height": 760,
+        "width": 1100
+      },
+      "timingCounts": {
+        "manual": {
+          "bitmapHits": 0,
+          "fallbacks": 0,
+          "renders": 30,
+          "submitted": 30
+        },
+        "preset": {
+          "bitmapHits": 0,
+          "fallbacks": 0,
+          "renders": 30,
+          "submitted": 30
+        }
+      }
+    }
+  },
+  "p95SamplePerWindow": {
+    "normal": {
+      "preset": {
+        "pair": 23,
+        "exposure": 0.235,
+        "recipe": "e45868dce6d5e752bae10d0e3d331a177b9eac03baa757e250c3d63bd3e45057",
+        "frameID": "E9D291B2-80F9-412C-8A31-A7FB0AC58604",
+        "inputToSubmit": 0.529751,
+        "submitToPublish": 7.339833,
+        "publishToDrawBegin": 6.131541,
+        "draw": 0.008125,
+        "inputToDraw": 14.00925
+      },
+      "manual": {
+        "pair": 19,
+        "exposure": 0.215,
+        "recipe": "ce8d2c6d589568b452e890f3adc7372a41fdcb0e95eb4eb638261514d63e1535",
+        "frameID": "6B064BC3-6275-4269-B8DE-21E005FE0C65",
+        "inputToSubmit": 0.333333,
+        "submitToPublish": 7.366709,
+        "publishToDrawBegin": 4.288458,
+        "draw": 0.00625,
+        "inputToDraw": 11.99475
+      }
+    },
+    "mirror": {
+      "preset": {
+        "pair": 7,
+        "exposure": 0.155,
+        "recipe": "9aeaebcca8320c94b98bf1b1cdc2c3462c2956131350188302d6cf4f96337688",
+        "frameID": "6E485D0F-2BA2-439F-A445-86FBEB7218A6",
+        "inputToSubmit": 0.508,
+        "submitToPublish": 10.297292,
+        "publishToDrawBegin": 2.084416,
+        "draw": 0.005959,
+        "inputToDraw": 12.895667
+      },
+      "manual": {
+        "pair": 8,
+        "exposure": 0.16,
+        "recipe": "8ea7c92907669ea11a710766d7fc23e4a3545934845068385d7eabdd6f9e184d",
+        "frameID": "B54B46A1-95E7-4AC2-AE33-E661CECE2F2A",
+        "inputToSubmit": 0.336292,
+        "submitToPublish": 7.320917,
+        "publishToDrawBegin": 5.120333,
+        "draw": 0.006708,
+        "inputToDraw": 12.78425
+      }
+    }
+  }
+}

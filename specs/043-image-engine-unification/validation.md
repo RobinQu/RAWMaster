@@ -320,6 +320,14 @@ Release `20261128.195700` 已安装并通过严格验签。104 项定向回归�
 
 Release `20261128.203238` 已安装并通过严格验签、隔离资料库自检与真实窗口启动。105 项定向原生回归通过，安装前后完成 40+4 次实际 Metal C ABI 检查。修正后的绘制回执报告实际位图尺寸。经典滤镜两轮 AppKit 测量均达门槛，普通预设两轮中有一轮慢于等价手调。最终测试构建另跑完整 37 项，两轮暖态均全过，首次精确 p95 为 255.74 和 306.27 ms。[构建、窗口及正式回执](evidence/m0-native-spatial-request-release-checkpoint.json) · [滤镜与预设验收](../031-preset-browser/integration-validation.md#11-月-28-日画布回执与窗口复测)
 
+同一 Release 探针用 32 个新进程在两张冻结 RAW 上对照原校验、运行期编译、预编译和预编译加全局缓存。384 幅完整交互和定稿画面逐态一致。主片一次运行期编译耗时 360.06 ms，该次定稿为 708.05 ms。仅预编译的 8 次首次合格库装载为 0.19–9.13 ms，进程重启沿用系统 shader 缓存。最终接线对两张 RAW 完成 1184 幅完整 RGBA8 对照。主片色彩细节和亮度对比首次定稿的中位数分别从 312.94 和 322.52 ms 降至 272.49 和 281.20 ms，原校验和预编译各两次。[阶段与像素证据](evidence/m0-precompiled-raw-noise-proof.json)
+
+Release 将同一 Metal 源及编译回执放进 Imaging 资源包。M4 Max、macOS 27.0.1、原几何已验证的两种 RAW 尺寸，在 2400 canonical 定稿中确认源 pin、实际输入和预算后，才可用预编译内核证明 RAW、基础输入和高斯邻域都满足原下游算子的有限范围。16 组完整 RGBAf 与 FIT 回读，24 个末像素范围检查，以及已提交后取消、源 pin 失效和同源重试均通过。源纹理上传校验结束时的 pin 退役由实拍回归验证，失效请求在回退前停止。资源缺失、摘要不符、内核装载失败及显式关闭等十个条件沿用旧校验，80 幅完整画面与归档一致。[准入、故障和复验](evidence/m0-precompiled-raw-noise-proof.json)
+
+生产接线两轮无阶段追踪的正式测试各有 37/37 项暖态通过 LightFlow 门槛。每轮逐笔核对 1184 对正式帧和 222 对预热帧的交互与定稿摘要。74 个首次状态的精确读回 p50/p95 为 77.50/302.11 和 74.08/300.94 ms，同机 LightFlow 为 9.52/58.97 ms。首次门仍超线，主要慢项包括局部降噪、清晰度和正向去雾。[正式数据](evidence/m0-precompiled-raw-noise-proof.json)
+
+Release `20261128.212312` 已安装，旧包已备份。构建与安装后的可执行文件、运行库和三份着色器资源逐个核对摘要，严格签名、隔离资料库自检、实际窗口和 44 次 Metal C ABI 检查通过。从已安装签名包复制资源到原生探针验证，预编译内核运行和缺失回执回退各有八幅完整画面一致。定向回归共 105 个不同用例通过，其中实拍滤镜悬停在取得焦点的独立宿主中通过。普通预设 SC-02 独立复测仍超线。[安装及逐项回执](evidence/m0-precompiled-raw-noise-release-checkpoint.json)
+
 60 MP 单张工作流用同一 Sony RAW、+0.5 EV、9504×6336、8-bit baseline JPEG、4:2:0 和 q95 各取一次首次出片、五次预热及三十次计量。共同计时从产品提交到独立 15 ms 观察第一次看到唯一最终 JPEG 及完整尾标记。RAWMaster 032 默认 039 和直写 DRT 为 441.66/463.92 ms，LightFlow 的原版导出队列为 1819.59/1859.82 ms，实际执行回执为 `rust web-mt 12t`。两边嵌入 ICC 的 4096 色网格转换到 sRGB 后给出相同 RGB 码值。两产品的 JPEG 量化表不同，本轮签收同设置工作流时钟，等质量编码门另外验收。[逐次计时与成片参数](evidence/m0-single-jpeg-lightflow.json)
 
 同设置正式复测保留了新构建与 LightFlow 原版队列各 36 份 JPEG。两边各有两份同配方 PNG16。验证真实位深、4:2:0、ICC、完全不透明及各产品重复解码摘要，再用统一 ICC 转为 RGB16 比较 JPEG 与各自参考图。对 LightFlow q95 锚预定绝对差 ≤0.25 dB PSNR 且 ≤0.001 SSIM。RAWMaster 测过的九档均未满足双门，q95 相对各自无损参考的两个分数更高。同设置时钟通过 LightFlow 本项标准，等保真与 Camera Raw 仍待验收。[逐次计时、成片摘要与九档校准](evidence/m0-jpeg-fidelity-reference.json) · [保真比较器](../032-export-workspace/benchmark/qualify-jpeg-fidelity.py)

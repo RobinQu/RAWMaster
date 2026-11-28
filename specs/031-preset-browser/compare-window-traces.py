@@ -52,19 +52,29 @@ def summarize(values):
     return {"medianMs": median(values), "p95Ms": sorted(values)[math.ceil(.95*len(values))-1]}
 
 
+def matched_arms(samples, state):
+    arms = {arm: [samples[(i, arm, state)] for i in range(1, 31)] for arm in ("preset", "manual")}
+    for p, m in zip(arms["preset"], arms["manual"]):
+        require((p["exposure"], p["recipe"]) == (m["exposure"], m["recipe"]), "uncoupled recipes")
+    stages = ["inputToSubmit", "submitToPublish", "publishToDrawBegin", "draw", "inputToDraw"]
+    return {arm: {stage: summarize([r[stage] for r in rows]) for stage in stages} for arm, rows in arms.items()}
+
+
 def compare(normal, mirror):
     a, b = window(normal, False), window(mirror, True)
+    expected_renders = {(pair, arm, "render") for pair in range(1, 31) for arm in ("preset", "manual")}
+    if a.keys() == b.keys() == expected_renders:
+        require(all((a[key]["exposure"], a[key]["recipe"]) == (b[key]["exposure"], b[key]["recipe"])
+                    for key in expected_renders), "the two windows used different recipes")
+        return {"countsTowardAcceptance": False, "matchedExposureCountPerWindow": 30,
+                "warmFramesWithMatchedTrace": len(a) + len(b),
+                "actualRendersByWindow": {"normal": matched_arms(a, "render"), "mirror": matched_arms(b, "render")},
+                "boundary": "submission and publication are observed by the application. GPU completion is unmeasured."}
     require(a.keys().isdisjoint(b), "the opposite run did not reverse cache state for each arm and exposure")
     samples = a | b
-    stages = ["inputToSubmit", "submitToPublish", "publishToDrawBegin", "draw", "inputToDraw"]
-    groups = {}
-    for state in ("render", "bitmapHit"):
-        arms = {arm: [samples[(i, arm, state)] for i in range(1, 31)] for arm in ("preset", "manual")}
-        for p, m in zip(arms["preset"], arms["manual"]):
-            require((p["exposure"], p["recipe"]) == (m["exposure"], m["recipe"]), "uncoupled recipes")
-        groups[state] = {arm: {stage: summarize([r[stage] for r in rows]) for stage in stages} for arm, rows in arms.items()}
     return {"countsTowardAcceptance": False, "matchedExposureCountPerCacheState": 30,
-            "warmFramesWithMatchedTrace": len(samples), "milliseconds": groups,
+            "warmFramesWithMatchedTrace": len(samples),
+            "milliseconds": {state: matched_arms(samples, state) for state in ("render", "bitmapHit")},
             "boundary": "submission and publication are observed by the application. GPU completion is unmeasured."}
 
 

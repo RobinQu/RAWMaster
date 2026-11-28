@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "mode": "Release",
+  "sourceCommit": "9289488d7d4a988abb453140a20507df4d4af830",
+  "build": "20261128.212312",
+  "installedPath": "/Applications/RAWMaster.app",
+  "previousBuild": "20261128.203238",
+  "previousBundlePreservedAndSigned": true,
+  "builtAndInstalledStrictCodeSign": true,
+  "codeCDHash": "7080423d40b6318aa6216c12eac0a146825dc7e0",
+  "builtAndInstalledBinarySHA256": {
+    "Contents/MacOS/RAWMaster": "d901a0090a0001db38c3b589899be382ad03aef5c366a24a9268018244af83a4",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "builtAndInstalledKernelSHA256": {
+    "RawNoiseDomain.metal": "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7",
+    "RawNoiseDomain.metallib": "d33c0c04b03fc61fd16e68f33d520b1696ec7952c741cd71388c4ad174d30a6c",
+    "RawNoiseDomain.json": "9c3ef027badeca22b9d819c0e05cd44bae9b3adf5a6cab47eb3668aab912ac79"
+  },
+  "imagingResourcePath": "Contents/Resources/RAWMaster_RAWMasterImaging.bundle/Contents/Resources",
+  "kernelReceipt": {
+    "schemaVersion": 1,
+    "function": "checkedNoiseInputs",
+    "sourceSHA256": "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7",
+    "librarySHA256": "d33c0c04b03fc61fd16e68f33d520b1696ec7952c741cd71388c4ad174d30a6c",
+    "compiler": "Apple metal version 32023.921 (metalfe-32023.921.6)\nTarget: air64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /private/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.gmuqE2/Metal.xctoolchain/usr/metal/current/bin",
+    "sdkVersion": "27.0",
+    "compileFlags": [
+      "-c",
+      "-std=metal3.1"
+    ],
+    "linkFlags": [
+      "-framework",
+      "CoreImage"
+    ]
+  },
+  "kernelQualification": {
+    "path": "specs/043-image-engine-unification/evidence/m0-precompiled-raw-noise-proof.json",
+    "sha256": "e1cdbd22af064bcf10eb23ef0a8ead785e84c03aff6c443b04ceb50c7465fd5f"
+  },
+  "strictAppResourceProbe": {
+    "testAppUsesInstalledResourceBytes": true,
+    "data": {
+      "valid": {
+        "frames": [
+          "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+          "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+          "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+          "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+          "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+        ],
+        "proof": 4,
+        "libraryLoadStageMs": 0.517209
+      },
+      "missing": {
+        "frames": [
+          "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+          "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+          "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+          "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+          "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+        ],
+        "proof": 0,
+        "libraryLoadStageMs": 0.036958
+      }
+    },
+    "verification": {
+      "path": "output/spec043-noise-compiled.ntqrc0/release-final/app-proof/verification.json",
+      "sha256": "9299fe18e9eb730fe3548b94ff564bd10e017ddf1a2f077e901078091a8c5f25"
+    }
+  },
+  "filterHoverIsolatedHost": "Xcode xctest keeps its event-post authorization and receives foreground focus from a separate temporary app",
+  "toolchainUnavailableLaboratoryCheck": {
+    "path": "output/spec043-noise-compiled.ntqrc0/no-toolchain/verification.log",
+    "sha256": "742125277595aa33bcce735dcea628b73046eca6e94b0c62f464167a3c555b51"
+  },
+  "isolatedWindowPresent": true,
+  "isolatedSQLiteQuickCheck": "ok",
+  "nativeWGPUMetalABI": {
+    "budgetFailure": 6,
+    "unknownGroup": 1,
+    "postSubmitStale": 5,
+    "postSubmitCallbackChecks": 2,
+    "reusableAfterStale": true,
+    "dispatches": 1,
+    "submissions": 1,
+    "hostWaits": 1,
+    "frameCopyBytes": 0,
+    "validationBytes": 4,
+    "signedRGBAndAlphaExactPixels": 1024,
+    "nestedGroupPasses": 4,
+    "layerAddAndRetryExactPixels": 2048,
+    "layerRangeFailure": 7
+  },
+  "ABICompletionChecks": {
+    "staged": {
+      "default": {
+        "count": 20,
+        "report": {
+          "path": "output/spec043-noise-compiled.ntqrc0/release-final/smoke/staged-default.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      },
+      "blocking": {
+        "count": 20,
+        "report": {
+          "path": "output/spec043-noise-compiled.ntqrc0/release-final/smoke/staged-blocking.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      }
+    },
+    "installed": {
+      "default": {
+        "count": 2,
+        "report": {
+          "path": "output/spec043-noise-compiled.ntqrc0/release-final/smoke/installed-default.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      },
+      "blocking": {
+        "count": 2,
+        "report": {
+          "path": "output/spec043-noise-compiled.ntqrc0/release-final/smoke/installed-blocking.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      }
+    }
+  },
+  "selectedReleaseTests": {
+    "nativeSourceAndGuide": {
+      "results": {
+        "passed": 61,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/native-qualified.log",
+        "sha256": "81acb6934b2a15db2ff525d7e9c9844e7c2c08ca044e18a4dda13f4dedd5a74e"
+      },
+      "requestedCaseCount": 61
+    },
+    "explicitDirectTexture": {
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/direct-opt-in.log",
+        "sha256": "61859e136fb041fd9357f429390b8e027ea0d0365a8310a81217a6d34fc3f770"
+      },
+      "requestedCaseCount": 1
+    },
+    "sharpAndFinite": {
+      "results": {
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/sharp-and-finite-tests.log",
+        "sha256": "64fc42973f2f02c7931c1e1d6800848662e9293692d5362987caf9d01b557034"
+      },
+      "requestedCaseCount": 24
+    },
+    "noiseDomainProgram": {
+      "results": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/build-after-retirement-fix.log",
+        "sha256": "ae6d2f650d20678c907abeeb24073b2c07ab96ac14e7ba3c3ca537158abb75fe"
+      },
+      "requestedCaseCount": 4
+    },
+    "originalSpatialGrid": {
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/grid.log",
+        "sha256": "34baf8ecc4fc54f3972d746667dd3b7e08553a60be0eb4a20855303d4059ef2f"
+      },
+      "requestedCaseCount": 1
+    },
+    "filterPanelGroup": {
+      "results": {
+        "passed": 16,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-17-handoff.log",
+        "sha256": "eb0af4d539b8927b2e03d91b75c57dee9aa6f2a6f55272dfac0947383c4f55f4"
+      },
+      "requestedCaseCount": 17
+    },
+    "realRawHoverIsolated": {
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-pointer-handoff-hold.log",
+        "sha256": "b8a2466abcb5384f138f537b1f5bf31ad2145d9369cbd6992f65bad22d33cce3"
+      },
+      "requestedCaseCount": 1
+    },
+    "realFreeZoom": {
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/zoom-case.log",
+        "sha256": "35634651551d6b727ebeddc2953e0abc13c4598c5029ee979badc0c1f2bc87e2"
+      },
+      "requestedCaseCount": 1
+    }
+  },
+  "distinctPassingReleaseCases": 105,
+  "AppKitVisiblePointerFailures": [
+    {
+      "results": {
+        "passed": 16,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-17-first.log",
+        "sha256": "1b7b0cafab3ab1351dc471c68d477870c6414edb8a1c855a07465c543aacb682"
+      },
+      "pointerAndFocusDiagnostic": "Filter review 柔和: pointer (988.96484375, 2249.40234375) expected (186.75, 421.5), key=false, canPost=true, preset=none, frame=false, issue=none, masks=(exactCacheHits: 0, successfulGenerations: 0)"
+    },
+    {
+      "results": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-pointer-retry.log",
+        "sha256": "82d9d768403d8cbe315857168c3dd50a70f4a9fc16193041594c886f0ab7c491"
+      },
+      "pointerAndFocusDiagnostic": "Filter review 柔和: pointer (187.55078125, 2749.5390625) expected (186.75, 421.5), key=false, canPost=true, preset=none, frame=false, issue=none, masks=(exactCacheHits: 0, successfulGenerations: 0)"
+    },
+    {
+      "results": {
+        "passed": 16,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-17-foreground.log",
+        "sha256": "b7288a0d82efdc47cccf5e2388cdee12b25fffcea7d72e235f4310e907057fa8"
+      },
+      "pointerAndFocusDiagnostic": "Filter review 柔和: pointer (1106.8671875, 275.2109375) expected (186.75, 416.5), key=true, canPost=false, preset=none, frame=false, issue=none, masks=(exactCacheHits: 0, successfulGenerations: 0)"
+    },
+    {
+      "results": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-pointer-handoff.log",
+        "sha256": "9afc7f913f290be90121eed543df26820fa4c7f002d12119d3f56b78c526e3dc"
+      },
+      "pointerAndFocusDiagnostic": "Filter review 柔和: pointer (1917.3046875, 1005.15234375) expected (186.75, 416.5), key=false, canPost=true, preset=none, frame=false, issue=none, masks=(exactCacheHits: 0, successfulGenerations: 0)"
+    },
+    {
+      "results": {
+        "passed": 16,
+        "failed": 1,
+        "skipped": 0
+      },
+      "report": {
+        "path": "output/spec043-noise-compiled.ntqrc0/current/filters-17-handoff.log",
+        "sha256": "eb0af4d539b8927b2e03d91b75c57dee9aa6f2a6f55272dfac0947383c4f55f4"
+      },
+      "pointerAndFocusDiagnostic": "Filter review 柔和: pointer (41.4609375, 2751.70703125) expected (186.75, 416.5), key=false, canPost=true, preset=none, frame=false, issue=none, masks=(exactCacheHits: 0, successfulGenerations: 0)"
+    }
+  ],
+  "wholeFilterGroupCleanRun": false,
+  "UnprovisionedForegroundTestHostAttempt": {
+    "path": "output/spec043-noise-compiled.ntqrc0/current/filters-unprovisioned-app-host.log",
+    "sha256": "9bf2269840fae3c1160395ce17d05a8057848bdaff34bd733d75739ca7fd7948"
+  },
+  "AppKitWindowTrials": {
+    "independentVerifier": {
+      "path": "specs/031-preset-browser/verify-integration.py",
+      "sha256": "9a6cae2ef9a3d695a71138c5da1615d91425b61b91dee295ecf7461a72acb259"
+    },
+    "trials": {
+      "classic": [
+        {
+          "xctestExitStatus": 0,
+          "verifiedOutcome": "passed",
+          "warmSamples": {
+            "count": 19,
+            "maxMs": 23.498375,
+            "medianMs": 15.1045,
+            "p95Ms": 23.498375,
+            "samplesMs": [
+              15.242083,
+              20.39925,
+              18.422,
+              15.42225,
+              13.915709,
+              15.1045,
+              12.825667,
+              14.353458,
+              14.000625,
+              10.571375,
+              15.574,
+              10.624917,
+              13.964042,
+              15.210542,
+              14.143708,
+              23.498375,
+              13.441542,
+              22.434834,
+              17.859292
+            ]
+          },
+          "report": {
+            "path": "output/spec043-noise-compiled.ntqrc0/current/panel-classic-1/editing-interaction-performance.json",
+            "sha256": "a832f738cc1ded314dbfceaf2c23a3fb873dc9123f9b702df228ce73a3d10795"
+          }
+        },
+        {
+          "xctestExitStatus": 0,
+          "verifiedOutcome": "passed",
+          "warmSamples": {
+            "count": 19,
+            "maxMs": 24.960583,
+            "medianMs": 15.54475,
+            "p95Ms": 24.960583,
+            "samplesMs": [
+              15.54475,
+              12.289625,
+              18.724458,
+              24.960583,
+              13.601459,
+              16.005583,
+              12.667958,
+              10.585,
+              13.963208,
+              17.529833,
+              20.915916,
+              11.71225,
+              15.742625,
+              14.353083,
+              12.976833,
+              15.557042,
+              18.696459,
+              17.991416,
+              14.006458
+            ]
+          },
+          "report": {
+            "path": "output/spec043-noise-compiled.ntqrc0/current/panel-classic-2/editing-interaction-performance.json",
+            "sha256": "5d4a7774a6760979d234af4d412dd4b9f0d37d5d30896780600f713b5208dbc4"
+          }
+        }
+      ],
+      "preset": [
+        {
+          "xctestExitStatus": 0,
+          "verifiedOutcome": "passed",
+          "warmSamples": {
+            "preset": {
+              "count": 30,
+              "maxMs": 14.382333,
+              "medianMs": 8.670124999999999,
+              "p95Ms": 13.198792,
+              "samplesMs": [
+                11.894917,
+                10.289667,
+                7.829083,
+                9.422041,
+                12.274958,
+                7.112708,
+                10.519875,
+                7.429667,
+                7.563292,
+                9.763,
+                7.984625,
+                8.453875,
+                9.887959,
+                11.479625,
+                8.731459,
+                8.608791,
+                8.399125,
+                7.440208,
+                7.7,
+                12.730875,
+                8.073458,
+                8.880375,
+                6.845417,
+                7.677125,
+                6.878209,
+                13.198792,
+                10.885292,
+                6.963416,
+                8.843084,
+                14.382333
+              ]
+            },
+            "manual": {
+              "count": 30,
+              "maxMs": 17.469583,
+              "medianMs": 7.639625,
+              "p95Ms": 15.021125,
+              "samplesMs": [
+                6.814583,
+                7.486125,
+                10.619125,
+                11.086709,
+                7.227375,
+                9.458625,
+                7.518792,
+                12.213583,
+                6.828791,
+                6.639375,
+                10.375708,
+                7.200084,
+                7.66475,
+                7.919042,
+                7.371959,
+                6.997542,
+                8.454208,
+                15.021125,
+                7.896625,
+                8.638416,
+                7.385667,
+                6.756458,
+                7.488917,
+                9.461,
+                7.6145,
+                7.732458,
+                6.845,
+                17.469583,
+                7.202292,
+                9.306083
+              ]
+            }
+          },
+          "report": {
+            "path": "output/spec043-noise-compiled.ntqrc0/current/panel-preset-1/editing-interaction-performance.json",
+            "sha256": "553d03b076459dc5fd0f1b874cf6886aa861dc2d937ee9ec9d5f4190aaa10a1b"
+          }
+        },
+        {
+          "xctestExitStatus": 1,
+          "verifiedOutcome": "above-latency-gate",
+          "warmSamples": {
+            "preset": {
+              "count": 30,
+              "maxMs": 21.703916,
+              "medianMs": 9.556520500000001,
+              "p95Ms": 20.326916,
+              "samplesMs": [
+                9.542208,
+                14.80175,
+                10.881291,
+                11.274667,
+                10.159167,
+                11.928583,
+                11.043709,
+                9.663208,
+                20.326916,
+                7.964583,
+                7.511458,
+                15.182917,
+                10.497125,
+                7.278792,
+                7.544042,
+                7.057875,
+                9.362458,
+                10.942375,
+                9.263916,
+                9.235084,
+                11.411083,
+                9.570833,
+                8.129084,
+                8.93675,
+                7.218625,
+                9.287167,
+                8.684875,
+                21.703916,
+                7.915417,
+                9.850333
+              ]
+            },
+            "manual": {
+              "count": 30,
+              "maxMs": 18.737708,
+              "medianMs": 8.290375000000001,
+              "p95Ms": 16.935958,
+              "samplesMs": [
+                7.581292,
+                7.269166,
+                7.9195,
+                9.184541,
+                7.376333,
+                7.754334,
+                8.057416,
+                7.054584,
+                7.790792,
+                11.870958,
+                14.48675,
+                10.872166,
+                14.686917,
+                16.935958,
+                8.675041,
+                6.622625,
+                6.827,
+                7.668666,
+                8.523334,
+                9.672375,
+                7.649209,
+                7.275084,
+                13.462375,
+                10.335167,
+                15.561875,
+                12.66075,
+                7.062042,
+                18.737708,
+                7.066166,
+                13.138459
+              ]
+            }
+          },
+          "report": {
+            "path": "output/spec043-noise-compiled.ntqrc0/current/panel-preset-2/editing-interaction-performance.json",
+            "sha256": "204f4173488454ca7a49e60c352792d25a8c935d073e96ac49388e677a232f90"
+          }
+        }
+      ]
+    }
+  }
+}

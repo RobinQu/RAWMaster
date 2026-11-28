@@ -77,6 +77,12 @@ Classic 两轮各有 19 个暖样本，均通过 028 的 20/33 ms 门槛。每�
 
 独立核验器按正常视口回执核对首帧的 FlashRaw 全图和区域解码及 fallback 计数，也继续接受封存的 canonical 纹理回执。四轮窗口结果均从原始计时重新计算并保留各自判定。[逐样本与签收状态](../043-image-engine-unification/evidence/m0-native-spatial-request-release-checkpoint.json) · [独立核验器](verify-integration.py)
 
+同构建又在正序和反序窗口各跟踪 30 对暖样本，四侧共 120 帧均经真实渲染。正序窗口的预设 p95 样本为 14.01 ms，其中发布至开画为 6.13 ms。反序窗口的预设 p95 样本为 12.90 ms，其中提交至发布为 10.30 ms。这两个 p95 样本的等待落在不同阶段。GPU 完成时刻未被这次跟踪观测。终态记录有溢出，参与比较的提交、发布和实际绘制仍逐帧匹配。SC-02 继续用关闭跟踪的 30 对暖样本验收。[输入、原始记录摘要与分段](evidence/camera-raw-integration/current-viewport-preset-traces.json) · [分段复算](compare-window-traces.py)
+
+RAW 降噪预编译接线后的 Release 再跑关闭跟踪的同窗测试。经典滤镜两轮 p50/p95 为 15.10/23.50 和 15.54/24.96 ms，均通过 028。普通预设第一次 p95 为 13.20 ms，同轮手调 15.02 ms。独立复测的预设为 20.33 ms，手调 16.94 ms，SC-02 仍待签收。独立核验器重新计算了每轮样本和对应窗口门槛。[复测与独立核验](../043-image-engine-unification/evidence/m0-precompiled-raw-noise-release-checkpoint.json)
+
+实拍滤镜组有 16 项在同轮通过，悬停测试当时未取得窗口焦点。在保持原 XCTest 进程事件权限并交接前台后，独立测试通过，覆盖柔和、自带滤镜和胶片外观的悬停实绘及离开恢复，并验证胶片采用、撤销和柔和预设的确认采用。保留组跑的焦点失败及单测回执。65% 自由缩放通过均衡和极速两种模式的实绘尺寸核对。[滤镜与预览回执](../043-image-engine-unification/evidence/m0-precompiled-raw-noise-release-checkpoint.json)
+
 ## 接收版本
 
 基础编辑交付于 2026-11-22，提交为 `e2b9c68a6c88aa3ec73a231a863bd0d1df4ea434`。滤镜、预设目录和本地蒙版沿用这次交付的编辑预览、GPU 算子及导出入口。首个集成提交为 `0fd08108`。10 个共享文件逐项合并，保留新版降噪、超分辨率资源与保存时的发布协议。蒙版创建进入候选复核，镜头模糊的主体对焦仍使用原有入口。[独立功能基线](feature-validation.md) · [原引擎的逐项记录](../../docs/research/camera-raw-parity/performance-data.json)
