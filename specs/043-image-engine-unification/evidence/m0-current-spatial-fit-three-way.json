@@ -1,0 +1,982 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "photoPixels": [
+    2368,
+    1579
+  ],
+  "sourceCodeCommit": "9289488d7d4a988abb453140a20507df4d4af830",
+  "rawmasterInstalledBuild": "20261128.212312",
+  "lightflowBuild": "2d41ab1",
+  "cameraRawVersion": "Camera Raw 19.0",
+  "opticalPictureWitness": "Full native window screenshots inspected. The score uses central 60% in physical pixels and each product's own 20% A/B change.",
+  "windowFixtures": {
+    "RAWMaster": {
+      "windowBackingPixels": [
+        3680,
+        1804
+      ],
+      "photoRectPixels": [
+        656,
+        49,
+        2368,
+        1579
+      ],
+      "actualWindowScreenshot": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-window.png",
+        "sha256": "e0ee92b4cedbbeea5adba5125b240f85f9e7bda7161f6715f3f222f292757259"
+      },
+      "screenshotPhotoCropRGBSHA256": "a9bbef0b43c9a60e61c038b629f97fcee00e284e7fc73d138682f25795a797c1",
+      "rawArchive": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-fit-frames.zip",
+        "sha256": "70b56da4a7de0a154646057135c7d114d603a5223cd492ff804bd6d540456672"
+      },
+      "replay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-replayed.json",
+        "sha256": "da08462773a9628537a5467e91e0fe069e72884b504d2c0b67d49910a8f2b68c"
+      }
+    },
+    "LightFlow": {
+      "windowBackingPixels": [
+        3560,
+        2180
+      ],
+      "photoRectPixels": [
+        503,
+        215,
+        2368,
+        1579
+      ],
+      "actualWindowScreenshot": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/lightflow-window.png",
+        "sha256": "195e6f04fb1e2834525c996e7f8bc926df08cf7e17cd40c9d3aff69e70889909"
+      },
+      "screenshotPhotoCropRGBSHA256": "bf38fe59709ad3204e29c7ecdb117ff24c1e96ecd421d21cadbed5320f1308dc",
+      "rawArchive": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/lightflow-fit-frames.zip",
+        "sha256": "53764faf4eb9a188b6ee6c09de3046bd6c635bfd8aaed00e9b7f2fede1bce4eb"
+      },
+      "replay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/lightflow-replayed.json",
+        "sha256": "382a5b1faca9269f807abcdb00163ed02b09118777b0aa024ae279e38b7e2935"
+      }
+    },
+    "Camera Raw": {
+      "windowBackingPixels": [
+        3022,
+        2190
+      ],
+      "photoRectPixels": [
+        16,
+        272,
+        2368,
+        1579
+      ],
+      "actualWindowScreenshot": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/adobe-setup.png",
+        "sha256": "e1463a140f5e2a5c1798598536a3cdec73c40e0028f805c92a6579d56c182eeb"
+      },
+      "screenshotPhotoCropRGBSHA256": "ea232a6112e9af1c4165a50688864c0507132e1a8096498711dc1e46d07022c9",
+      "rawArchive": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/adobe-fit-repeat-frames.zip",
+        "sha256": "7517c77ee6aa87407e01d93d4def05a5199605f0b33eb104217306161a5e80fa"
+      },
+      "replay": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/adobe-fit-repeat-frames-replayed.json",
+        "sha256": "283d9c2f7a388b1bc26718f7332417dd1a809938a7796bfc6ab3a3304614ba31"
+      }
+    }
+  },
+  "commonRecorderSHA256": "43c7ce1602d8baeff205a0a4125544545c7af2d926f859c65744e12a1f941f96",
+  "spatialNumericInputComparison": {
+    "passed": false,
+    "failures": [
+      "effects-texture: RAWMaster p50, p95 exceeds the fastest-original budget",
+      "effects-clarity: RAWMaster p50, p95 exceeds the fastest-original budget",
+      "effects-dehaze: RAWMaster p50, p95 exceeds the fastest-original budget"
+    ],
+    "inputBoundaries": {
+      "RAWMaster": "Submission of the complete numeric intent to the editing controller",
+      "LightFlow": "Return sent after the complete numeric value is entered",
+      "Camera Raw": "First numeric key sent, followed by the remaining characters and Tab"
+    },
+    "operations": {
+      "effects-texture": {
+        "values": [
+          0,
+          30
+        ],
+        "state": "qualified",
+        "passed": false,
+        "products": {
+          "RAWMaster": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 38.369395499999996,
+              "p95Ms": 58.684083,
+              "maxMs": 59.875333
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "LightFlow": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 27.582979,
+              "p95Ms": 38.539166,
+              "maxMs": 40.15775
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "Camera Raw": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 127.45516649999999,
+              "p95Ms": 176.507417,
+              "maxMs": 231.537584
+            },
+            "unscoredWarmupInputs": 5
+          }
+        },
+        "comparison": {
+          "p50": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 27.582979,
+            "limitMs": 30.341276900000004,
+            "rawmasterDeltaMs": 10.786416499999994,
+            "withinBudget": false
+          },
+          "p95": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 38.539166,
+            "limitMs": 46.246999200000005,
+            "rawmasterDeltaMs": 20.144917,
+            "withinBudget": false
+          }
+        },
+        "millisecondSamples": {
+          "RAWMaster": [
+            43.088125,
+            25.289916,
+            56.651833,
+            36.929917,
+            58.317625,
+            19.424,
+            55.054167,
+            15.88425,
+            49.05125,
+            30.692083,
+            54.996167,
+            37.304,
+            39.434791,
+            30.754333,
+            42.345916,
+            25.221375,
+            59.875333,
+            23.420791,
+            53.336458,
+            37.221042,
+            50.784292,
+            31.860917,
+            51.886959,
+            32.948792,
+            53.443791,
+            24.974208,
+            57.300666,
+            33.722417,
+            58.684083,
+            27.910875
+          ],
+          "LightFlow": [
+            24.985333,
+            29.295125,
+            26.955458,
+            27.304208,
+            25.801709,
+            33.205167,
+            31.674292,
+            25.858958,
+            23.711625,
+            38.539166,
+            28.991292,
+            40.15775,
+            25.169958,
+            33.89925,
+            36.955375,
+            25.283291,
+            24.388834,
+            35.544792,
+            24.816417,
+            27.86175,
+            37.566125,
+            24.98375,
+            26.766542,
+            28.105917,
+            29.053709,
+            24.315958,
+            29.359167,
+            32.079583,
+            25.558167,
+            26.140458
+          ],
+          "Camera Raw": [
+            124.397208,
+            151.059708,
+            115.657292,
+            160.139167,
+            91.379042,
+            145.781542,
+            134.714834,
+            176.507417,
+            124.248458,
+            123.007917,
+            87.32475,
+            169.728417,
+            120.562791,
+            126.23625,
+            103.293125,
+            140.731875,
+            108.250167,
+            119.04,
+            128.674083,
+            157.803208,
+            142.750917,
+            157.685208,
+            93.528667,
+            231.537584,
+            85.07775,
+            161.049875,
+            88.9535,
+            143.549708,
+            113.488792,
+            161.441375
+          ]
+        },
+        "calibration": {
+          "RAWMaster": {
+            "separationRGB8": 0.09971788194444445,
+            "referenceDigests": [
+              "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+              "66a42b3a3007680b0453b533741f8326fe7992d6a44e99ea77412e6e84ccf1d6"
+            ],
+            "framesSHA256": "0025a2aece553da3bf3362dd509b91714b40fc79a22e2e72ed57573b0d802e3a"
+          },
+          "LightFlow": {
+            "separationRGB8": 0.7332356770833334,
+            "referenceDigests": [
+              "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+              "c85dcaacab12db053e3c521b691845002da3cff126f8555747b1ead88b166c90"
+            ],
+            "framesSHA256": "6050f74ef47736923c0fd7520b333b71cc48b5b8a8e650959a9691364666c92e"
+          },
+          "Camera Raw": {
+            "separationRGB8": 0.5808919270833334,
+            "referenceDigests": [
+              "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+              "abd0302e0f68a53c10165484a8feedfde318132ba1f0f2bb36ecb34f22a23e2c"
+            ],
+            "framesSHA256": "6797781a52df796cf2dbc2a6ed868564dfd87e531c3b7ae761bdac0581305e08"
+          }
+        }
+      },
+      "effects-clarity": {
+        "values": [
+          0,
+          30
+        ],
+        "state": "qualified",
+        "passed": false,
+        "products": {
+          "RAWMaster": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 36.6592705,
+              "p95Ms": 53.251375,
+              "maxMs": 54.722791
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "LightFlow": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 28.929042000000003,
+              "p95Ms": 38.917416,
+              "maxMs": 42.1005
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "Camera Raw": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 121.856938,
+              "p95Ms": 155.806334,
+              "maxMs": 157.501125
+            },
+            "unscoredWarmupInputs": 5
+          }
+        },
+        "comparison": {
+          "p50": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 28.929042000000003,
+            "limitMs": 31.821946200000003,
+            "rawmasterDeltaMs": 7.7302284999999955,
+            "withinBudget": false
+          },
+          "p95": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 38.917416,
+            "limitMs": 46.7008992,
+            "rawmasterDeltaMs": 14.333959,
+            "withinBudget": false
+          }
+        },
+        "millisecondSamples": {
+          "RAWMaster": [
+            49.873583,
+            20.383625,
+            41.462375,
+            22.010833,
+            47.6135,
+            27.687458,
+            37.273458,
+            33.801083,
+            53.251375,
+            32.013875,
+            37.386958,
+            14.896458,
+            44.958875,
+            21.384583,
+            54.722791,
+            33.086125,
+            43.401292,
+            29.488375,
+            47.807583,
+            35.279083,
+            45.979584,
+            36.045083,
+            48.591375,
+            34.064625,
+            37.60225,
+            24.665625,
+            37.554334,
+            26.226208,
+            44.074583,
+            28.954791
+          ],
+          "LightFlow": [
+            24.77175,
+            28.3585,
+            28.152042,
+            25.05,
+            32.3745,
+            32.042208,
+            27.574375,
+            26.268167,
+            24.952625,
+            26.987125,
+            42.1005,
+            29.013542,
+            21.199083,
+            27.193166,
+            30.606875,
+            31.955666,
+            32.68425,
+            28.844542,
+            29.687625,
+            38.917416,
+            28.321416,
+            33.820667,
+            28.1295,
+            38.194042,
+            29.129959,
+            33.091083,
+            29.945709,
+            26.69225,
+            24.515875,
+            31.076917
+          ],
+          "Camera Raw": [
+            101.518708,
+            153.843625,
+            108.950875,
+            157.501125,
+            85.995834,
+            146.324417,
+            119.681709,
+            148.59575,
+            104.498375,
+            143.347041,
+            96.188917,
+            154.475709,
+            82.522667,
+            155.806334,
+            86.276375,
+            127.314125,
+            124.032167,
+            138.897583,
+            88.824958,
+            153.379459,
+            137.50125,
+            127.913584,
+            87.62,
+            145.705417,
+            105.490416,
+            119.036708,
+            75.376125,
+            111.420708,
+            109.371875,
+            124.188708
+          ]
+        },
+        "calibration": {
+          "RAWMaster": {
+            "separationRGB8": 0.3384874131944444,
+            "referenceDigests": [
+              "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+              "03bf373c06b64012e868b400a41322c077bfe69b0117ade850d4b8d2c7ec97ee"
+            ],
+            "framesSHA256": "d92050e98be86341e21d6c513747d7e8f938d4eca15271fec78207a1584afc5c"
+          },
+          "LightFlow": {
+            "separationRGB8": 0.8541666666666666,
+            "referenceDigests": [
+              "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+              "5ce788c1877a169f42d029c1e9bffcfe852832c779197ca9e58850509d6813e3"
+            ],
+            "framesSHA256": "1010ad4919180d2636a3b3f014284dbd3c61f88aad6ddc5ca2d06dbafb864cf4"
+          },
+          "Camera Raw": {
+            "separationRGB8": 4.263726128472222,
+            "referenceDigests": [
+              "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+              "a694501ac8b323e6fb594841522f7b4c8f25f882172da0b7f18b29f1f9d06015"
+            ],
+            "framesSHA256": "c21a33f59b4abc3cd426f656d0eafb70c805e137d9fcee8fbb34307cc3255752"
+          }
+        }
+      },
+      "effects-dehaze": {
+        "values": [
+          0,
+          30
+        ],
+        "state": "qualified",
+        "passed": false,
+        "products": {
+          "RAWMaster": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 58.7676875,
+              "p95Ms": 94.939208,
+              "maxMs": 103.33125
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "LightFlow": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 28.525958,
+              "p95Ms": 36.978292,
+              "maxMs": 46.82425
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "Camera Raw": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 128.8042085,
+              "p95Ms": 161.100333,
+              "maxMs": 164.280292
+            },
+            "unscoredWarmupInputs": 5
+          }
+        },
+        "comparison": {
+          "p50": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 28.525958,
+            "limitMs": 31.3785538,
+            "rawmasterDeltaMs": 30.2417295,
+            "withinBudget": false
+          },
+          "p95": {
+            "rankedProducts": [
+              "LightFlow",
+              "RAWMaster",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 36.978292,
+            "limitMs": 44.373950400000005,
+            "rawmasterDeltaMs": 57.96091599999999,
+            "withinBudget": false
+          }
+        },
+        "millisecondSamples": {
+          "RAWMaster": [
+            91.594334,
+            36.8995,
+            59.200125,
+            50.625416,
+            94.939208,
+            49.909333,
+            93.948667,
+            34.349125,
+            103.33125,
+            38.471792,
+            88.36775,
+            43.025541,
+            73.801542,
+            50.795917,
+            65.833334,
+            42.93975,
+            82.201875,
+            53.597208,
+            85.60325,
+            58.33525,
+            80.336,
+            44.405167,
+            84.528583,
+            38.956792,
+            70.879458,
+            41.590833,
+            69.119,
+            40.397167,
+            79.2805,
+            53.461208
+          ],
+          "LightFlow": [
+            27.230916,
+            27.634125,
+            32.259833,
+            26.9565,
+            28.582333,
+            26.087625,
+            31.879584,
+            34.0495,
+            23.564708,
+            35.237458,
+            36.551416,
+            27.611458,
+            36.978292,
+            22.491208,
+            25.023333,
+            26.765833,
+            24.831125,
+            36.459375,
+            33.256584,
+            33.571625,
+            27.5405,
+            28.469583,
+            31.175166,
+            30.889333,
+            28.645833,
+            22.083125,
+            46.82425,
+            24.208833,
+            29.748625,
+            25.793959
+          ],
+          "Camera Raw": [
+            122.09125,
+            144.721125,
+            84.3685,
+            153.9225,
+            96.372167,
+            126.170542,
+            114.0345,
+            141.011333,
+            94.858042,
+            122.393875,
+            131.437875,
+            137.933416,
+            105.744292,
+            158.438125,
+            104.95875,
+            142.38325,
+            101.869833,
+            150.990458,
+            95.420875,
+            164.280292,
+            90.381209,
+            143.715875,
+            94.62125,
+            140.678625,
+            161.100333,
+            154.330917,
+            99.464292,
+            159.372667,
+            77.205125,
+            140.002291
+          ]
+        },
+        "calibration": {
+          "RAWMaster": {
+            "separationRGB8": 5.829481336805555,
+            "referenceDigests": [
+              "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+              "c09d1111d765f0d400803edca5fdb9be0f9af29ce9671bb31f8967322696bf9c"
+            ],
+            "framesSHA256": "cb3dfec307a3a5cec7ef8d41ce6d9b31a8291c9086534f3fec8788b5ef2b3a1d"
+          },
+          "LightFlow": {
+            "separationRGB8": 4.661892361111111,
+            "referenceDigests": [
+              "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+              "b5540d08525e73fe19be60a2b813e895ee4e7848417f8bf1526203b57228a8cb"
+            ],
+            "framesSHA256": "3674d798a5b8da1fe7def9012df84aebce6f05d35f955fc4f6e542d7ea7ed5c6"
+          },
+          "Camera Raw": {
+            "separationRGB8": 10.230523003472221,
+            "referenceDigests": [
+              "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+              "4d1932c6d3670c78fd3c82bcb07dc607afc46d101b38dc352fb393482bb0e363"
+            ],
+            "framesSHA256": "8b58c3233b80fb04ccc6889750f9a0ca5154a77660a8008afccdcd058d7049f2"
+          }
+        }
+      }
+    }
+  },
+  "exposureWithCameraRawSliderClick": {
+    "passed": true,
+    "failures": [],
+    "inputBoundaries": {
+      "RAWMaster": "Submission of the complete numeric intent to the editing controller",
+      "LightFlow": "Return sent after the complete numeric value is entered",
+      "Camera Raw": "Mouse-down at a calibrated Exposure slider position"
+    },
+    "operations": {
+      "light-exposure": {
+        "values": [
+          0,
+          0.5
+        ],
+        "state": "qualified",
+        "passed": true,
+        "products": {
+          "RAWMaster": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 27.4042085,
+              "p95Ms": 34.620792,
+              "maxMs": 38.240333
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "LightFlow": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 29.0185,
+              "p95Ms": 42.977833,
+              "maxMs": 50.562917
+            },
+            "unscoredWarmupInputs": 5
+          },
+          "Camera Raw": {
+            "state": "measured",
+            "timing": {
+              "n": 30,
+              "medianMs": 38.183499999999995,
+              "p95Ms": 44.76925,
+              "maxMs": 46.04725
+            },
+            "unscoredWarmupInputs": 5
+          }
+        },
+        "comparison": {
+          "p50": {
+            "rankedProducts": [
+              "RAWMaster",
+              "LightFlow",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 29.0185,
+            "limitMs": 31.92035,
+            "rawmasterDeltaMs": -1.6142915000000002,
+            "withinBudget": true
+          },
+          "p95": {
+            "rankedProducts": [
+              "RAWMaster",
+              "LightFlow",
+              "Camera Raw"
+            ],
+            "fastestOriginals": [
+              "LightFlow"
+            ],
+            "fastestOriginalMs": 42.977833,
+            "limitMs": 51.573399599999995,
+            "rawmasterDeltaMs": -8.357040999999995,
+            "withinBudget": true
+          }
+        },
+        "millisecondSamples": {
+          "RAWMaster": [
+            18.41,
+            29.439208,
+            15.689083,
+            26.637542,
+            18.480167,
+            27.2355,
+            32.973667,
+            33.554041,
+            23.408333,
+            24.153708,
+            33.575334,
+            12.513833,
+            27.572917,
+            38.240333,
+            30.163917,
+            21.081208,
+            31.316666,
+            28.524542,
+            16.8695,
+            34.620792,
+            28.754167,
+            30.162834,
+            22.868584,
+            22.969541,
+            29.852167,
+            33.345083,
+            18.161458,
+            21.998333,
+            30.46,
+            25.988417
+          ],
+          "LightFlow": [
+            22.15425,
+            33.787833,
+            27.103833,
+            29.3735,
+            23.053375,
+            26.96075,
+            42.50175,
+            42.494833,
+            42.977833,
+            28.6635,
+            22.2835,
+            32.5235,
+            32.436791,
+            35.441292,
+            27.758375,
+            30.009333,
+            28.265291,
+            23.550709,
+            30.401292,
+            30.184583,
+            26.964166,
+            24.517083,
+            23.436791,
+            25.616917,
+            39.248958,
+            32.261417,
+            34.550667,
+            50.562917,
+            27.093542,
+            28.561667
+          ],
+          "Camera Raw": [
+            40.476709,
+            42.166375,
+            42.732542,
+            44.76925,
+            41.846958,
+            35.245834,
+            24.349458,
+            35.594792,
+            38.053583,
+            36.747,
+            39.507417,
+            36.512208,
+            40.252667,
+            46.04725,
+            38.939792,
+            41.245958,
+            41.279708,
+            36.385209,
+            29.086167,
+            39.965583,
+            42.1255,
+            36.239167,
+            37.796584,
+            40.482459,
+            33.458583,
+            25.92175,
+            37.016208,
+            38.076333,
+            38.290667,
+            29.62075
+          ]
+        },
+        "calibration": {
+          "RAWMaster": {
+            "separationRGB8": 14.150390625,
+            "referenceDigests": [
+              "e08c8804988de7df8065add736cc5b5b76e431b30e251bf6f86c407f2286cce7",
+              "aa2bae25fdf4187415ce21011955cf08d47e337b4ee520ad01f4c6bb37622632"
+            ],
+            "framesSHA256": "8bb5394bf76cfd96ad33e3054b267dcebf251e880823d896502b723645b4dd69"
+          },
+          "LightFlow": {
+            "separationRGB8": 17.79031032986111,
+            "referenceDigests": [
+              "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+              "30ad331bc19dd180e14a34679b13b112396c87ff6aafc24c226c14930c4b0583"
+            ],
+            "framesSHA256": "eb0551dbb445910697de4ca3b4e835cd92371060959c4325c9a0af9c23c96779"
+          },
+          "Camera Raw": {
+            "separationRGB8": 16.66802300347222,
+            "referenceDigests": [
+              "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+              "3d696dc46ab199dea14e64e4249c8d02681252cc53f620a7875307b58d43377d"
+            ],
+            "framesSHA256": "8d212ba3dfb12af4d6485e3a1e821a21a33a28029678bdec6748762ef3933350"
+          }
+        }
+      }
+    }
+  },
+  "cameraRawSliderSource": {
+    "archive": {
+      "path": "output/spec043-adobe-spatial.GsmwRP/adobe-exposure-click-final-frames.zip",
+      "sha256": "6439d6281852f5058f0a85efd9ee9b9e19b691333548ff4abf0cdb5492b5841b"
+    },
+    "replay": {
+      "path": "output/spec043-adobe-spatial.GsmwRP/adobe-exposure-click-final-frames-replayed.json",
+      "sha256": "443922f6e7d8dbbf044b0e11385b59f3084c81d7e4e65f54e6153ac946630264"
+    },
+    "exposureSliderWindowBackingPixels": [
+      2659,
+      2680,
+      720
+    ],
+    "cameraRawInputMode": "exposure-slider-click",
+    "failedAttemptsWithUnsupportedPriorRecorder": [
+      {
+        "path": "output/spec043-adobe-spatial.GsmwRP/adobe-exposure-click.json",
+        "sha256": "5181501d2154ace11385f5d799cee1b04c4caa28264e933ef3c4c81ccf9f7dae"
+      },
+      {
+        "path": "output/spec043-adobe-spatial.GsmwRP/adobe-exposure-click-retry.json",
+        "sha256": "8f7a255b52b1c0a669237d3b5fdd5c02e79c0236da6654ee0c0af6437c6aa235"
+      }
+    ]
+  },
+  "firstCameraRawNumericSeries": {
+    "archive": {
+      "path": "output/spec043-adobe-spatial.GsmwRP/adobe-frames.zip",
+      "sha256": "398b23e7ed005922680a9454d2cfb6352a3ac1399c8c10cf993bf328fdc28f08"
+    },
+    "replay": {
+      "path": "output/spec043-adobe-spatial.GsmwRP/adobe-frames-replayed.json",
+      "sha256": "cb009368df221d9e721d8cfa66a989ee827d9b5996915abbf2794d57ba9df33a"
+    },
+    "rows": {
+      "effects-texture": {
+        "timing": {
+          "n": 30,
+          "medianMs": 129.5811875,
+          "p95Ms": 172.481417,
+          "maxMs": 176.978208
+        },
+        "referenceDigests": [
+          "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+          "abd0302e0f68a53c10165484a8feedfde318132ba1f0f2bb36ecb34f22a23e2c"
+        ]
+      },
+      "effects-clarity": {
+        "timing": {
+          "n": 30,
+          "medianMs": 129.574417,
+          "p95Ms": 175.525375,
+          "maxMs": 203.006917
+        },
+        "referenceDigests": [
+          "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+          "a694501ac8b323e6fb594841522f7b4c8f25f882172da0b7f18b29f1f9d06015"
+        ]
+      },
+      "effects-dehaze": {
+        "timing": {
+          "n": 30,
+          "medianMs": 133.347854,
+          "p95Ms": 370.8835,
+          "maxMs": 433.562208
+        },
+        "referenceDigests": [
+          "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+          "4d1932c6d3670c78fd3c82bcb07dc607afc46d101b38dc352fb393482bb0e363"
+        ]
+      }
+    }
+  },
+  "historicalSixTypedOperationsRechecked": {
+    "path": "output/spec043-adobe-spatial.GsmwRP/historical-six-rechecked.json",
+    "sha256": "c8ea9e325b987da0a4f067aaa3670377b6210c82cc9c371114e465987ac7f27b"
+  },
+  "comparisonValidation": {
+    "Camera Raw timing mode": {
+      "unknownClock": "unrecognized Camera Raw input clock",
+      "outOfWindowClick": "Exposure slider points exceed the captured window",
+      "mixedOperationClock": "click timing requires one Exposure row and two calibrated slider points"
+    }
+  }
+}

@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "comparison": "Same 1024 grid, same qualified local request caching and actual full RGBA8",
+  "quantifiedSamples": {
+    "processes": 8,
+    "fullRGBA8Frames": 64,
+    "canonicalSettlementsPerArmAndPhotoAndControl": 4
+  },
+  "qualification": "No repeatable gain across the two photos",
+  "shipped": false,
+  "notes": "Spatial mask context reuse explicitly off in both arms, so the clarity comparison holds that option fixed.",
+  "RAWMasterBuild": "20261128.212312",
+  "sourceCommit": "9289488d7d4a988abb453140a20507df4d4af830",
+  "bySource": {
+    "primary": {
+      "independentProcessRuns": [
+        {
+          "arm": "default",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/primary-1.json",
+            "sha256": "69875e0e5602127bff8bd984d46f6645414f277ad5fe65320740b1578357faad"
+          },
+          "peakProcessPhysicalBytes": 3128461352,
+          "inputs": {
+            "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "size": [
+              9504,
+              6336
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "fittedMs": 397.025417,
+                "originalReductionMs": 150.585708,
+                "bitmapWriteMs": 111.400416
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "fittedMs": 294.928042,
+                "originalReductionMs": 154.079167,
+                "bitmapWriteMs": 114.574
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+                "fittedMs": 262.27975,
+                "originalReductionMs": 112.285208,
+                "bitmapWriteMs": 140.189917
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+                "fittedMs": 280.728709,
+                "originalReductionMs": 120.387208,
+                "bitmapWriteMs": 137.657
+              }
+            ]
+          }
+        },
+        {
+          "arm": "owned",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/primary-2.json",
+            "sha256": "9306c31e43f8742ee6885f917e9866ecfef098a1bc445464247b4690529ea411"
+          },
+          "peakProcessPhysicalBytes": 3125561360,
+          "inputs": {
+            "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "size": [
+              9504,
+              6336
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "fittedMs": 385.5685,
+                "originalReductionMs": 147.876625,
+                "bitmapWriteMs": 101.689958
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "fittedMs": 286.613875,
+                "originalReductionMs": 152.684959,
+                "bitmapWriteMs": 112.2025
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+                "fittedMs": 268.519625,
+                "originalReductionMs": 111.812334,
+                "bitmapWriteMs": 145.884166
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+                "fittedMs": 270.77725,
+                "originalReductionMs": 116.217291,
+                "bitmapWriteMs": 139.49925
+              }
+            ]
+          }
+        },
+        {
+          "arm": "owned",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/primary-3.json",
+            "sha256": "81ec7b63d4ed65d43df373d05267d6154cb254f77a16752cd39395427f9ceafb"
+          },
+          "peakProcessPhysicalBytes": 3125970936,
+          "inputs": {
+            "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "size": [
+              9504,
+              6336
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "fittedMs": 400.594958,
+                "originalReductionMs": 161.196083,
+                "bitmapWriteMs": 107.170416
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "fittedMs": 282.278375,
+                "originalReductionMs": 149.271959,
+                "bitmapWriteMs": 111.649375
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+                "fittedMs": 255.724833,
+                "originalReductionMs": 108.045542,
+                "bitmapWriteMs": 139.250667
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+                "fittedMs": 277.5945,
+                "originalReductionMs": 118.965666,
+                "bitmapWriteMs": 143.53525
+              }
+            ]
+          }
+        },
+        {
+          "arm": "default",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/primary-4.json",
+            "sha256": "2bc558102ccea4d0ae61a31a52616dd46305dd1d30e51f9e3388cba408554633"
+          },
+          "peakProcessPhysicalBytes": 3126872056,
+          "inputs": {
+            "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "size": [
+              9504,
+              6336
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "fittedMs": 370.02975,
+                "originalReductionMs": 152.735083,
+                "bitmapWriteMs": 100.170375
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "fittedMs": 277.704625,
+                "originalReductionMs": 149.919333,
+                "bitmapWriteMs": 102.934834
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+                "fittedMs": 243.47475,
+                "originalReductionMs": 108.997125,
+                "bitmapWriteMs": 124.351791
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+                "fittedMs": 272.585167,
+                "originalReductionMs": 116.7235,
+                "bitmapWriteMs": 137.900833
+              }
+            ]
+          }
+        }
+      ],
+      "p50MsPerArm": {
+        "default": {
+          "detail-mask-noise": {
+            "fittedMs": 332.47889599999996,
+            "bitmapWriteMs": 107.167625,
+            "originalReductionMs": 151.6603955
+          },
+          "effects-mask-clarity": {
+            "fittedMs": 267.4324585,
+            "bitmapWriteMs": 137.7789165,
+            "originalReductionMs": 114.504354
+          }
+        },
+        "owned": {
+          "detail-mask-noise": {
+            "fittedMs": 336.0911875,
+            "bitmapWriteMs": 109.4098955,
+            "originalReductionMs": 150.978459
+          },
+          "effects-mask-clarity": {
+            "fittedMs": 269.6484375,
+            "bitmapWriteMs": 141.51725,
+            "originalReductionMs": 114.0148125
+          }
+        }
+      }
+    },
+    "secondary": {
+      "independentProcessRuns": [
+        {
+          "arm": "default",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/secondary-1.json",
+            "sha256": "72c8f186c7e2849e2bc99a2552ada936b9de2b6e1dae77e59d25667136a06cd9"
+          },
+          "peakProcessPhysicalBytes": 2906998632,
+          "inputs": {
+            "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "size": [
+              8640,
+              5760
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "fittedMs": 327.452167,
+                "originalReductionMs": 125.638291,
+                "bitmapWriteMs": 83.740208
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "fittedMs": 234.836291,
+                "originalReductionMs": 120.380375,
+                "bitmapWriteMs": 87.650542
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+                "fittedMs": 235.138625,
+                "originalReductionMs": 107.951792,
+                "bitmapWriteMs": 117.16125
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+                "fittedMs": 246.885458,
+                "originalReductionMs": 111.131833,
+                "bitmapWriteMs": 118.189791
+              }
+            ]
+          }
+        },
+        {
+          "arm": "owned",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/secondary-2.json",
+            "sha256": "7b610be6bf74143f26683405ad3b514c4bb44e6c9a2ac59ae36b1fe60f5b6063"
+          },
+          "peakProcessPhysicalBytes": 2875623200,
+          "inputs": {
+            "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "size": [
+              8640,
+              5760
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "fittedMs": 316.793583,
+                "originalReductionMs": 122.220166,
+                "bitmapWriteMs": 82.611042
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "fittedMs": 240.573333,
+                "originalReductionMs": 121.823542,
+                "bitmapWriteMs": 91.526459
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+                "fittedMs": 238.578625,
+                "originalReductionMs": 111.5585,
+                "bitmapWriteMs": 119.812709
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+                "fittedMs": 244.227625,
+                "originalReductionMs": 111.625417,
+                "bitmapWriteMs": 118.697
+              }
+            ]
+          }
+        },
+        {
+          "arm": "owned",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/secondary-3.json",
+            "sha256": "e7fbff847d6a0d414836bc2457488349492cacbbab01473e3461242a21cf1d90"
+          },
+          "peakProcessPhysicalBytes": 2876065520,
+          "inputs": {
+            "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "size": [
+              8640,
+              5760
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "fittedMs": 300.132083,
+                "originalReductionMs": 122.769375,
+                "bitmapWriteMs": 83.691459
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "fittedMs": 231.9435,
+                "originalReductionMs": 121.321375,
+                "bitmapWriteMs": 86.222459
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+                "fittedMs": 238.445166,
+                "originalReductionMs": 111.752083,
+                "bitmapWriteMs": 116.104917
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+                "fittedMs": 239.623083,
+                "originalReductionMs": 112.006666,
+                "bitmapWriteMs": 114.017833
+              }
+            ]
+          }
+        },
+        {
+          "arm": "default",
+          "report": {
+            "path": "output/spec043-adobe-spatial.GsmwRP/native-terminal/secondary-4.json",
+            "sha256": "5b37c3320868e01f0ef744771072f33121e0a4524bf4cf3033b39b9873166df1"
+          },
+          "peakProcessPhysicalBytes": 2906015544,
+          "inputs": {
+            "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "size": [
+              8640,
+              5760
+            ]
+          },
+          "controls": {
+            "detail-mask-noise": [
+              {
+                "state": 0,
+                "pixelsSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "fittedMs": 319.615125,
+                "originalReductionMs": 124.27225,
+                "bitmapWriteMs": 83.871334
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "fittedMs": 237.343959,
+                "originalReductionMs": 124.550667,
+                "bitmapWriteMs": 86.53225
+              }
+            ],
+            "effects-mask-clarity": [
+              {
+                "state": 0,
+                "pixelsSHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+                "fittedMs": 228.194333,
+                "originalReductionMs": 107.097709,
+                "bitmapWriteMs": 111.421834
+              },
+              {
+                "state": 1,
+                "pixelsSHA256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+                "fittedMs": 242.248375,
+                "originalReductionMs": 113.005917,
+                "bitmapWriteMs": 112.402625
+              }
+            ]
+          }
+        }
+      ],
+      "p50MsPerArm": {
+        "default": {
+          "detail-mask-noise": {
+            "fittedMs": 278.479542,
+            "bitmapWriteMs": 85.20179200000001,
+            "originalReductionMs": 124.41145850000001
+          },
+          "effects-mask-clarity": {
+            "fittedMs": 238.6935,
+            "bitmapWriteMs": 114.7819375,
+            "originalReductionMs": 109.54181249999999
+          }
+        },
+        "owned": {
+          "detail-mask-noise": {
+            "fittedMs": 270.352708,
+            "bitmapWriteMs": 84.956959,
+            "originalReductionMs": 122.021854
+          },
+          "effects-mask-clarity": {
+            "fittedMs": 239.100854,
+            "bitmapWriteMs": 117.4009585,
+            "originalReductionMs": 111.68875
+          }
+        }
+      }
+    }
+  }
+}

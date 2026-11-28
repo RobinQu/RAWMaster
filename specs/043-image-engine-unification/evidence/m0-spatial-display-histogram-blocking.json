@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "scope": "24 real FIT inputs with clock-anchored native AppKit draws and 385 recorded image telemetry events",
+  "countsTowardAcceptance": false,
+  "observedResetCount": 12,
+  "testedFrameCapture": {
+    "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-fit-diagnostics.json",
+    "sha256": "35d89e2a6996eec99bfdeb0b6ab3e67656a35d5abad5607d8112b3875b4c3ca4"
+  },
+  "testBundleSHA256": "966f121be4d5c10952dea525ee287826e45a20e1d53e3fabd7108d33351259d5",
+  "engineTelemetry": {
+    "path": "output/spec043-adobe-spatial.GsmwRP/rawmaster-fit-diagnostics.telemetry.json",
+    "sha256": "90d9d64f48ec63a36f449993d5e83046df9fb95a1a9ce2cdc48ef7362217e417"
+  },
+  "results": {
+    "effects-texture": {
+      "trials": [
+        {
+          "value": 0,
+          "frameID": "8E107E09-36F0-4A39-9AF7-B4E388C3B10C",
+          "screenFirstChangeMs": 44.785584,
+          "inputToPreviewStartMs": 22.355125,
+          "previewAPIMs": 7.964625,
+          "previousHistogram": {
+            "operationID": "20381C15-C75F-4998-9E3D-B30EC6E0DB2F",
+            "histogramReturnDelayMs": 21.9965,
+            "histogramStartToReturnMs": 697.745583,
+            "histogramReturnToPreviewMs": 0.358625
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "800EB235-AEE1-48F3-A1E1-6D220748AAD0",
+          "screenFirstChangeMs": 22.270584,
+          "inputToPreviewStartMs": 2.913792,
+          "previewAPIMs": 5.525625,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "41DC5F94-7F78-410E-BE5D-DF8937BF2806",
+          "screenFirstChangeMs": 46.7415,
+          "inputToPreviewStartMs": 25.934917,
+          "previewAPIMs": 8.184042,
+          "previousHistogram": {
+            "operationID": "5301ADD5-92AB-4400-BD65-5CCF1D8E49A4",
+            "histogramReturnDelayMs": 25.571959,
+            "histogramStartToReturnMs": 685.965917,
+            "histogramReturnToPreviewMs": 0.362958
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "136B32DC-8151-4317-AC12-AD3F0D488BA4",
+          "screenFirstChangeMs": 27.021834,
+          "inputToPreviewStartMs": 3.316125,
+          "previewAPIMs": 5.696416,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "B0C51C65-2703-4E33-AA91-66725D0EEC20",
+          "screenFirstChangeMs": 48.454375,
+          "inputToPreviewStartMs": 20.551084,
+          "previewAPIMs": 11.494083,
+          "previousHistogram": {
+            "operationID": "B549BE14-870E-498E-8854-BE5E64940D39",
+            "histogramReturnDelayMs": 20.1565,
+            "histogramStartToReturnMs": 680.526083,
+            "histogramReturnToPreviewMs": 0.394584
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "33AF5783-C284-40E2-882D-9E342FFA9954",
+          "screenFirstChangeMs": 24.054917,
+          "inputToPreviewStartMs": 2.5575,
+          "previewAPIMs": 4.866042,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "64D3A028-FA34-4167-9366-919062B8B41D",
+          "screenFirstChangeMs": 47.298292,
+          "inputToPreviewStartMs": 26.82925,
+          "previewAPIMs": 9.164292,
+          "previousHistogram": {
+            "operationID": "A5642C4A-24D0-49BD-8753-148D6B4C0EB4",
+            "histogramReturnDelayMs": 26.40375,
+            "histogramStartToReturnMs": 686.864958,
+            "histogramReturnToPreviewMs": 0.4255
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "799A7C43-78AB-47FF-A7F9-811DFF5977F2",
+          "screenFirstChangeMs": 31.844083,
+          "inputToPreviewStartMs": 4.6295,
+          "previewAPIMs": 6.423167,
+          "previousHistogram": null
+        }
+      ],
+      "resetWaitForSupersededHistogram": {
+        "n": 4,
+        "p50Ms": 23.784229500000002,
+        "p95Ms": 26.40375,
+        "minimumMs": 20.1565,
+        "maximumMs": 26.40375
+      },
+      "previousHistogramWasStillRunningAtEveryReset": true
+    },
+    "effects-clarity": {
+      "trials": [
+        {
+          "value": 0,
+          "frameID": "22C05D61-552B-4021-87FE-393FF9728C3C",
+          "screenFirstChangeMs": 46.796792,
+          "inputToPreviewStartMs": 19.298667,
+          "previewAPIMs": 7.6745,
+          "previousHistogram": {
+            "operationID": "CCF5D86C-45C0-4B0C-9438-288700EFD9C0",
+            "histogramReturnDelayMs": 18.946709,
+            "histogramStartToReturnMs": 682.778667,
+            "histogramReturnToPreviewMs": 0.351958
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "B314C3B1-1584-44E7-AFEF-3D3788C01507",
+          "screenFirstChangeMs": 37.676208,
+          "inputToPreviewStartMs": 1.952834,
+          "previewAPIMs": 7.623166,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "5085F36C-D9E6-416E-87B9-A288804B3129",
+          "screenFirstChangeMs": 41.696042,
+          "inputToPreviewStartMs": 23.457625,
+          "previewAPIMs": 8.812708,
+          "previousHistogram": {
+            "operationID": "377A60D5-6D1B-4BCC-8080-588473F3CD52",
+            "histogramReturnDelayMs": 23.096542,
+            "histogramStartToReturnMs": 700.354959,
+            "histogramReturnToPreviewMs": 0.361083
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "28A8421D-C32D-4557-8921-8A34B99F3386",
+          "screenFirstChangeMs": 33.778334,
+          "inputToPreviewStartMs": 4.707667,
+          "previewAPIMs": 8.186041,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "07935374-6532-4C83-A6AA-7C5603FFDE3C",
+          "screenFirstChangeMs": 52.521583,
+          "inputToPreviewStartMs": 23.810625,
+          "previewAPIMs": 8.309875,
+          "previousHistogram": {
+            "operationID": "EF124A81-4A44-43E4-B789-E061B0CBA0EE",
+            "histogramReturnDelayMs": 23.479,
+            "histogramStartToReturnMs": 687.964334,
+            "histogramReturnToPreviewMs": 0.331625
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "9690EFE1-DC30-417F-9650-732AB8062811",
+          "screenFirstChangeMs": 23.566709,
+          "inputToPreviewStartMs": 3.3225,
+          "previewAPIMs": 6.251458,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "D0493E86-0580-46A1-8C1C-AC9796C9DFB0",
+          "screenFirstChangeMs": 68.565875,
+          "inputToPreviewStartMs": 31.341125,
+          "previewAPIMs": 13.81375,
+          "previousHistogram": {
+            "operationID": "87F0EDEB-8256-42DD-A034-ADD7A7733A73",
+            "histogramReturnDelayMs": 30.980125,
+            "histogramStartToReturnMs": 689.7015,
+            "histogramReturnToPreviewMs": 0.361
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "4B084998-A749-4D79-BE44-CA7E277E4440",
+          "screenFirstChangeMs": 24.888125,
+          "inputToPreviewStartMs": 3.1105,
+          "previewAPIMs": 8.158166,
+          "previousHistogram": null
+        }
+      ],
+      "resetWaitForSupersededHistogram": {
+        "n": 4,
+        "p50Ms": 23.287771,
+        "p95Ms": 30.980125,
+        "minimumMs": 18.946709,
+        "maximumMs": 30.980125
+      },
+      "previousHistogramWasStillRunningAtEveryReset": true
+    },
+    "effects-dehaze": {
+      "trials": [
+        {
+          "value": 0,
+          "frameID": "57DD4592-20DB-41B4-B91F-06883C420E75",
+          "screenFirstChangeMs": 96.511708,
+          "inputToPreviewStartMs": 67.497,
+          "previewAPIMs": 7.939583,
+          "previousHistogram": {
+            "operationID": "4873AA56-CDBC-44BA-B422-42FE1575AF7B",
+            "histogramReturnDelayMs": 66.576458,
+            "histogramStartToReturnMs": 745.817417,
+            "histogramReturnToPreviewMs": 0.920542
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "05660D21-8F1E-4174-B7EC-916394B9039F",
+          "screenFirstChangeMs": 41.984125,
+          "inputToPreviewStartMs": 7.061166,
+          "previewAPIMs": 17.650334,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "BFCCCA58-5ADB-454E-8A5E-6FFEBC327092",
+          "screenFirstChangeMs": 97.972416,
+          "inputToPreviewStartMs": 69.9155,
+          "previewAPIMs": 8.071458,
+          "previousHistogram": {
+            "operationID": "CED5BC55-DB33-4C1B-912A-F7EC7E6F84E0",
+            "histogramReturnDelayMs": 68.921833,
+            "histogramStartToReturnMs": 739.032833,
+            "histogramReturnToPreviewMs": 0.993667
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "2424E840-A5B8-4B15-B0EC-FBD1D7C14ED2",
+          "screenFirstChangeMs": 66.631625,
+          "inputToPreviewStartMs": 22.022417,
+          "previewAPIMs": 24.156875,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "20305E03-021B-466D-8C50-CEA01A82090B",
+          "screenFirstChangeMs": 97.833334,
+          "inputToPreviewStartMs": 81.804166,
+          "previewAPIMs": 8.493375,
+          "previousHistogram": {
+            "operationID": "91EBDACD-AC80-4AE4-AD55-A4167E7CF6EF",
+            "histogramReturnDelayMs": 80.815791,
+            "histogramStartToReturnMs": 772.82675,
+            "histogramReturnToPreviewMs": 0.988375
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "5C846C52-A712-4564-93CE-62F326F9B0AA",
+          "screenFirstChangeMs": 47.4285,
+          "inputToPreviewStartMs": 17.291667,
+          "previewAPIMs": 16.741958,
+          "previousHistogram": null
+        },
+        {
+          "value": 0,
+          "frameID": "F4B1C92C-2D1E-4D0F-A58A-89F29A0375C4",
+          "screenFirstChangeMs": 97.092958,
+          "inputToPreviewStartMs": 68.12025,
+          "previewAPIMs": 7.375,
+          "previousHistogram": {
+            "operationID": "943BDFCE-8D06-4A33-B9D2-342AF690A805",
+            "histogramReturnDelayMs": 67.110458,
+            "histogramStartToReturnMs": 727.483791,
+            "histogramReturnToPreviewMs": 1.009792
+          }
+        },
+        {
+          "value": 30,
+          "frameID": "11E4B0C7-B296-462A-A07A-83971728A583",
+          "screenFirstChangeMs": 49.994208,
+          "inputToPreviewStartMs": 19.200208,
+          "previewAPIMs": 21.583959,
+          "previousHistogram": null
+        }
+      ],
+      "resetWaitForSupersededHistogram": {
+        "n": 4,
+        "p50Ms": 68.0161455,
+        "p95Ms": 80.815791,
+        "minimumMs": 66.576458,
+        "maximumMs": 80.815791
+      },
+      "previousHistogramWasStillRunningAtEveryReset": true
+    }
+  }
+}

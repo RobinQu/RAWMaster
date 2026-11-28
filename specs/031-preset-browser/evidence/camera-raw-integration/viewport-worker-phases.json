@@ -1,0 +1,560 @@
+{
+  "schemaVersion": 1,
+  "diagnostic": {
+    "countsTowardAcceptance": false,
+    "matchedExposureCountPerWindow": 30,
+    "warmFramesWithMatchedTrace": 120,
+    "actualRendersByWindow": {
+      "normal": {
+        "preset": {
+          "inputToSubmit": {
+            "medianMs": 0.4905415,
+            "p95Ms": 0.537583
+          },
+          "submitToPublish": {
+            "medianMs": 5.9557085,
+            "p95Ms": 11.820709
+          },
+          "publishToDrawBegin": {
+            "medianMs": 1.3717495,
+            "p95Ms": 10.345249
+          },
+          "draw": {
+            "medianMs": 0.005042,
+            "p95Ms": 0.006917
+          },
+          "inputToDraw": {
+            "medianMs": 8.1865005,
+            "p95Ms": 19.557792
+          },
+          "submitToAdmission": {
+            "medianMs": 0.4261665,
+            "p95Ms": 0.4785
+          },
+          "admissionToWorker": {
+            "medianMs": 0.028208,
+            "p95Ms": 0.030334
+          },
+          "workerToReturn": {
+            "medianMs": 3.481229,
+            "p95Ms": 4.205167
+          },
+          "returnToJoin": {
+            "medianMs": 0.0164585,
+            "p95Ms": 0.021709
+          },
+          "joinToFrame": {
+            "medianMs": 0.137938,
+            "p95Ms": 0.175958
+          },
+          "frameToPublish": {
+            "medianMs": 1.7470625000000002,
+            "p95Ms": 7.200584
+          }
+        },
+        "manual": {
+          "inputToSubmit": {
+            "medianMs": 0.325583,
+            "p95Ms": 0.356625
+          },
+          "submitToPublish": {
+            "medianMs": 5.937875,
+            "p95Ms": 9.492417
+          },
+          "publishToDrawBegin": {
+            "medianMs": 1.3853955,
+            "p95Ms": 6.665958
+          },
+          "draw": {
+            "medianMs": 0.005229,
+            "p95Ms": 0.006417
+          },
+          "inputToDraw": {
+            "medianMs": 8.154583500000001,
+            "p95Ms": 14.313125
+          },
+          "submitToAdmission": {
+            "medianMs": 0.4276045,
+            "p95Ms": 0.451666
+          },
+          "admissionToWorker": {
+            "medianMs": 0.028021,
+            "p95Ms": 0.031583
+          },
+          "workerToReturn": {
+            "medianMs": 3.413375,
+            "p95Ms": 4.2875
+          },
+          "returnToJoin": {
+            "medianMs": 0.0160205,
+            "p95Ms": 0.021292
+          },
+          "joinToFrame": {
+            "medianMs": 0.1359375,
+            "p95Ms": 0.166791
+          },
+          "frameToPublish": {
+            "medianMs": 1.657146,
+            "p95Ms": 5.483125
+          }
+        }
+      },
+      "mirror": {
+        "preset": {
+          "inputToSubmit": {
+            "medianMs": 0.48720850000000004,
+            "p95Ms": 0.52875
+          },
+          "submitToPublish": {
+            "medianMs": 5.400354999999999,
+            "p95Ms": 8.872376
+          },
+          "publishToDrawBegin": {
+            "medianMs": 1.318479,
+            "p95Ms": 8.147416
+          },
+          "draw": {
+            "medianMs": 0.0052499999999999995,
+            "p95Ms": 0.00775
+          },
+          "inputToDraw": {
+            "medianMs": 7.328104,
+            "p95Ms": 15.09025
+          },
+          "submitToAdmission": {
+            "medianMs": 0.428021,
+            "p95Ms": 0.473167
+          },
+          "admissionToWorker": {
+            "medianMs": 0.028479,
+            "p95Ms": 0.0315
+          },
+          "workerToReturn": {
+            "medianMs": 3.3687915,
+            "p95Ms": 3.939917
+          },
+          "returnToJoin": {
+            "medianMs": 0.0157705,
+            "p95Ms": 0.019958
+          },
+          "joinToFrame": {
+            "medianMs": 0.142208,
+            "p95Ms": 0.162083
+          },
+          "frameToPublish": {
+            "medianMs": 1.4376255,
+            "p95Ms": 5.173167
+          }
+        },
+        "manual": {
+          "inputToSubmit": {
+            "medianMs": 0.328562,
+            "p95Ms": 0.389375
+          },
+          "submitToPublish": {
+            "medianMs": 5.4907715,
+            "p95Ms": 9.024292
+          },
+          "publishToDrawBegin": {
+            "medianMs": 1.3454165,
+            "p95Ms": 6.73225
+          },
+          "draw": {
+            "medianMs": 0.005042,
+            "p95Ms": 0.006459
+          },
+          "inputToDraw": {
+            "medianMs": 7.657021,
+            "p95Ms": 13.559875
+          },
+          "submitToAdmission": {
+            "medianMs": 0.4255625,
+            "p95Ms": 0.471292
+          },
+          "admissionToWorker": {
+            "medianMs": 0.028854499999999998,
+            "p95Ms": 0.034417
+          },
+          "workerToReturn": {
+            "medianMs": 3.3691250000000004,
+            "p95Ms": 4.012625
+          },
+          "returnToJoin": {
+            "medianMs": 0.016333,
+            "p95Ms": 0.020625
+          },
+          "joinToFrame": {
+            "medianMs": 0.1473545,
+            "p95Ms": 0.162167
+          },
+          "frameToPublish": {
+            "medianMs": 1.533209,
+            "p95Ms": 4.416459
+          }
+        }
+      }
+    },
+    "boundary": "The native worker phases are CPU wall timestamps linked to the matching AppKit frame. The join represents actor cleanup before frame delivery. GPU completion is unmeasured."
+  },
+  "windows": {
+    "normal": {
+      "receipt": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-normal/editing-interaction-performance.json",
+        "sha256": "027c220471c7700c7a1d5b4f2a6d7ae17562a956cff94b51f7a5e6116acf635e"
+      },
+      "appKitTrace": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-normal/interaction.jsonl",
+        "sha256": "30faafc4f1425dc1c546eeaee350bab89d976bf3554950dffcce5027cd470dc9"
+      },
+      "workerCapture": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-normal/worker-phases.json",
+        "sha256": "dce11e107d998b2c403f87e7ca604c7f72b4aa2ece6a93cead13156f01ac467f"
+      },
+      "recordedWorkerEvents": 625,
+      "histogramWorkerEvents": 0,
+      "sampleAtInputToDrawP95": {
+        "preset": {
+          "pair": 19,
+          "exposure": 0.215,
+          "recipe": "ce8d2c6d589568b452e890f3adc7372a41fdcb0e95eb4eb638261514d63e1535",
+          "frameID": "0CDC7227-804B-420E-8269-708FB1B60905",
+          "inputToSubmit": 0.506125,
+          "submitToPublish": 8.699876,
+          "publishToDrawBegin": 10.345249,
+          "draw": 0.006542,
+          "inputToDraw": 19.557792,
+          "submitToAdmission": 0.437584,
+          "admissionToWorker": 0.028208,
+          "workerToReturn": 3.908333,
+          "returnToJoin": 0.021209,
+          "joinToFrame": 0.184041,
+          "frameToPublish": 4.120501
+        },
+        "manual": {
+          "pair": 6,
+          "exposure": 0.15,
+          "recipe": "f723215d150b7b9afacb82dfd2f0106daec2434c1b36e9ec23d1aa02cdda2589",
+          "frameID": "E456DB60-3C88-486A-8945-87921165A2BF",
+          "inputToSubmit": 0.33,
+          "submitToPublish": 9.376542,
+          "publishToDrawBegin": 4.600792,
+          "draw": 0.005791,
+          "inputToDraw": 14.313125,
+          "submitToAdmission": 0.413167,
+          "admissionToWorker": 0.025167,
+          "workerToReturn": 3.305333,
+          "returnToJoin": 0.014625,
+          "joinToFrame": 0.135125,
+          "frameToPublish": 5.483125
+        }
+      }
+    },
+    "mirror": {
+      "receipt": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-mirror/editing-interaction-performance.json",
+        "sha256": "a15dce21bc64f55e3a87c45b4439f3945509df3293e80d7e74f9e01c75fad609"
+      },
+      "appKitTrace": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-mirror/interaction.jsonl",
+        "sha256": "5b1277145ab4a03ebbb59be85eaaa8e850ab60267bc164c24a2215d1a955be38"
+      },
+      "workerCapture": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/worker-mirror/worker-phases.json",
+        "sha256": "1d728e1ab10d292bf54fe708f39ec6c6fb9f7217648e3b3aeb9ee568d6d2ce65"
+      },
+      "recordedWorkerEvents": 625,
+      "histogramWorkerEvents": 0,
+      "sampleAtInputToDrawP95": {
+        "preset": {
+          "pair": 13,
+          "exposure": 0.185,
+          "recipe": "e99303d4d366c9ea6524c1933af603eea423f0f7ee2031a56f521fe4c29b9ad1",
+          "frameID": "2E07191C-61C1-4392-B27F-4766B29069B5",
+          "inputToSubmit": 0.487167,
+          "submitToPublish": 6.450375,
+          "publishToDrawBegin": 8.147416,
+          "draw": 0.005292,
+          "inputToDraw": 15.09025,
+          "submitToAdmission": 0.407625,
+          "admissionToWorker": 0.02725,
+          "workerToReturn": 4.301208,
+          "returnToJoin": 0.019917,
+          "joinToFrame": 0.132291,
+          "frameToPublish": 1.562084
+        },
+        "manual": {
+          "pair": 5,
+          "exposure": 0.145,
+          "recipe": "340cd1ccaab03d2cefd13c13d2d7cc8b8bd47b7b88d4a3f4f407b6eea85f615b",
+          "frameID": "333FA5A0-7CB7-4EDB-8654-3D38775CC1C9",
+          "inputToSubmit": 0.33075,
+          "submitToPublish": 7.867417,
+          "publishToDrawBegin": 5.356625,
+          "draw": 0.005083,
+          "inputToDraw": 13.559875,
+          "submitToAdmission": 0.424208,
+          "admissionToWorker": 0.028875,
+          "workerToReturn": 3.066542,
+          "returnToJoin": 0.014792,
+          "joinToFrame": 0.130791,
+          "frameToPublish": 4.202209
+        }
+      }
+    }
+  },
+  "olderViewportComparisonReplayedExactly": true,
+  "missingWorkerPhaseRejected": true,
+  "missingBothRequestedWorkerPhasesRejected": true,
+  "traceVerifier": {
+    "path": "specs/031-preset-browser/compare-window-traces.py",
+    "sha256": "f17c772963e72af52fe71e63ef4fddcbe5ae54a9b64ce9879d4f96926394dfa6"
+  },
+  "releaseWindowGateVerifier": {
+    "path": "specs/031-preset-browser/verify-integration.py",
+    "sha256": "9a6cae2ef9a3d695a71138c5da1615d91425b61b91dee295ecf7461a72acb259"
+  },
+  "untracedWindowRuns": {
+    "classic": [
+      {
+        "run": 1,
+        "receipt": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/untraced/panel-classic-1/editing-interaction-performance.json",
+          "sha256": "a07b32136de1a0b0b70d5b92adcc85071523c20780705dd046000c8a9b132e63"
+        },
+        "warmTiming": {
+          "count": 19,
+          "maxMs": 25.798083,
+          "medianMs": 16.310042,
+          "p95Ms": 25.798083,
+          "samplesMs": [
+            14.759958,
+            16.310042,
+            19.555166,
+            25.798083,
+            17.655667,
+            14.360792,
+            23.607625,
+            22.177166,
+            24.879708,
+            10.618792,
+            12.908542,
+            11.832583,
+            10.587875,
+            12.51975,
+            13.644458,
+            24.359,
+            25.40425,
+            12.88175,
+            22.868666
+          ]
+        }
+      },
+      {
+        "run": 2,
+        "receipt": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/untraced/panel-classic-2/editing-interaction-performance.json",
+          "sha256": "6b5af28354d3b27fd36397dd6f5aaed4dfee3575360ddc9d3ea9068b538f8283"
+        },
+        "warmTiming": {
+          "count": 19,
+          "maxMs": 17.305792,
+          "medianMs": 14.469,
+          "p95Ms": 17.305792,
+          "samplesMs": [
+            16.461209,
+            14.469,
+            15.57725,
+            14.352708,
+            12.708875,
+            16.036875,
+            14.734625,
+            13.072208,
+            17.305792,
+            10.401333,
+            14.127333,
+            10.407125,
+            12.936375,
+            13.853333,
+            15.453041,
+            16.022125,
+            15.297375,
+            13.401333,
+            15.296208
+          ]
+        }
+      }
+    ],
+    "preset": [
+      {
+        "run": 1,
+        "receipt": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/untraced/panel-preset-1/editing-interaction-performance.json",
+          "sha256": "a4c862e2f3936ddecdbc4be0a9224c74083f79dfdb62467088ca56b384b28348"
+        },
+        "warmTiming": {
+          "preset": {
+            "count": 30,
+            "maxMs": 16.819042,
+            "medianMs": 10.65475,
+            "p95Ms": 16.406208,
+            "samplesMs": [
+              7.545417,
+              12.582708,
+              7.62975,
+              7.3655,
+              12.066833,
+              11.176291,
+              14.263917,
+              12.106708,
+              6.983375,
+              11.433541,
+              16.101166,
+              6.867333,
+              6.869541,
+              7.491958,
+              13.371209,
+              6.891459,
+              9.973,
+              14.27225,
+              16.819042,
+              11.36675,
+              12.193875,
+              6.9435,
+              11.416833,
+              12.147333,
+              10.133209,
+              16.406208,
+              6.642625,
+              6.510833,
+              6.364417,
+              6.7025
+            ]
+          },
+          "manual": {
+            "count": 30,
+            "maxMs": 16.490625,
+            "medianMs": 8.453791500000001,
+            "p95Ms": 16.442583,
+            "samplesMs": [
+              11.4775,
+              11.492416,
+              7.3825,
+              12.181584,
+              6.97375,
+              7.286458,
+              9.533417,
+              12.5115,
+              8.159041,
+              10.953125,
+              6.962209,
+              12.36575,
+              9.554125,
+              9.6975,
+              7.36775,
+              16.442583,
+              6.687583,
+              14.957875,
+              7.343708,
+              8.573708,
+              13.967209,
+              14.150125,
+              8.333875,
+              7.546584,
+              6.940417,
+              8.195667,
+              16.490625,
+              6.698667,
+              6.706833,
+              6.462708
+            ]
+          }
+        }
+      },
+      {
+        "run": 2,
+        "receipt": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/untraced/panel-preset-2/editing-interaction-performance.json",
+          "sha256": "0eb179d677dad4c9b1b34f447fcff64b7dbeadf3e0011f8212e1d1152c596dc6"
+        },
+        "warmTiming": {
+          "preset": {
+            "count": 30,
+            "maxMs": 12.675375,
+            "medianMs": 7.39925,
+            "p95Ms": 9.806833,
+            "samplesMs": [
+              7.497584,
+              7.300916,
+              7.514375,
+              7.575291,
+              7.885416,
+              6.636416,
+              8.5855,
+              8.653958,
+              8.396541,
+              7.974584,
+              9.315,
+              6.820834,
+              7.235042,
+              6.514667,
+              7.258625,
+              7.101334,
+              6.675083,
+              7.179417,
+              8.06225,
+              7.131,
+              7.738625,
+              9.806833,
+              6.975292,
+              7.698708,
+              6.591875,
+              9.785292,
+              12.675375,
+              6.924292,
+              6.662583,
+              6.840917
+            ]
+          },
+          "manual": {
+            "count": 30,
+            "maxMs": 14.49825,
+            "medianMs": 7.493021000000001,
+            "p95Ms": 12.400292,
+            "samplesMs": [
+              7.073125,
+              7.118208,
+              7.977292,
+              7.21625,
+              6.755792,
+              7.416792,
+              7.56925,
+              11.869375,
+              8.963833,
+              7.733292,
+              9.2955,
+              8.064583,
+              7.654208,
+              9.714458,
+              11.789041,
+              7.338625,
+              6.971375,
+              7.142166,
+              7.596791,
+              8.9255,
+              7.3195,
+              6.919667,
+              6.470625,
+              7.24575,
+              10.565708,
+              6.320167,
+              14.49825,
+              12.400292,
+              6.418041,
+              6.283625
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

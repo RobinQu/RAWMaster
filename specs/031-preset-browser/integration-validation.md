@@ -83,6 +83,10 @@ RAW 降噪预编译接线后的 Release 再跑关闭跟踪的同窗测试。经�
 
 实拍滤镜组有 16 项在同轮通过，悬停测试当时未取得窗口焦点。在保持原 XCTest 进程事件权限并交接前台后，独立测试通过，覆盖柔和、自带滤镜和胶片外观的悬停实绘及离开恢复，并验证胶片采用、撤销和柔和预设的确认采用。保留组跑的焦点失败及单测回执。65% 自由缩放通过均衡和极速两种模式的实绘尺寸核对。[滤镜与预览回执](../043-image-engine-unification/evidence/m0-precompiled-raw-noise-release-checkpoint.json)
 
+关闭跟踪的两轮复测中，经典滤镜 p50/p95 为 16.31/25.80 和 14.47/17.31 ms，均达到 028 门槛。普通预设 p95 为 16.406 和 9.807 ms，对应等价手调为 16.443 和 12.400 ms，两轮通过 SC-02。第一轮差额为 0.036 ms，上一构建仍有独立超线，保留 SC-02 的连续独立复验。[逐轮回执、摘要与签收状态](evidence/camera-raw-integration/viewport-worker-phases.json)
+
+独立跟踪的正序和反序窗口各提交 30 对暖态，所有 120 帧均实际渲染。按提交、来源、配方修订、任务身份和帧 ID 关联后台 worker、主线程发布及 AppKit 绘制。后台开始至返回的两轮 p95，预设/手调分别为 4.21/4.29 和 3.94/4.01 ms。两个预设总延迟 p95 帧各花 10.35 和 8.15 ms 等待从发布到开画。阶段时钟记录 CPU 侧完成与发布，用于定位窗口尾部，SC-02 仍由关闭跟踪的窗口复测验收。[两轮逐帧关联](evidence/camera-raw-integration/viewport-worker-phases.json) · [复算工具](compare-window-traces.py)
+
 ## 接收版本
 
 基础编辑交付于 2026-11-22，提交为 `e2b9c68a6c88aa3ec73a231a863bd0d1df4ea434`。滤镜、预设目录和本地蒙版沿用这次交付的编辑预览、GPU 算子及导出入口。首个集成提交为 `0fd08108`。10 个共享文件逐项合并，保留新版降噪、超分辨率资源与保存时的发布协议。蒙版创建进入候选复核，镜头模糊的主体对焦仍使用原有入口。[独立功能基线](feature-validation.md) · [原引擎的逐项记录](../../docs/research/camera-raw-parity/performance-data.json)

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "mode": "Release",
+  "build": "20261128.220315",
+  "sourceCommit": "6e387b7536fdde052d850926f166b909c863ef30",
+  "installedPath": "/Applications/RAWMaster.app",
+  "previousBuild": "20261128.212312",
+  "previousBundlePreservedAndSigned": true,
+  "builtAndInstalledStrictCodeSign": true,
+  "codeCDHash": "e7f6f135c092388b88ec9520d1ad637c8850cd34",
+  "isolatedSQLiteQuickCheck": "ok",
+  "isolatedWindowPresent": true,
+  "builtAndInstalledBinarySHA256": {
+    "Contents/MacOS/RAWMaster": "af57e9e834186612ee2418b1f4e882ca34cae7dce884f235efa9a2412c6a2067",
+    "Contents/Frameworks/librawmaster_library.dylib": "3de15b7a1e52079d810f995ba5a35cc69736dd01b453563166270dc241dde2b3",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "builtAndInstalledKernelSHA256": {
+    "RawNoiseDomain.metal": "5f167455c59b518976dea6ed63bbab55b8421bdcb8e5cdcb9d8b3d34035854e7",
+    "RawNoiseDomain.metallib": "d33c0c04b03fc61fd16e68f33d520b1696ec7952c741cd71388c4ad174d30a6c",
+    "RawNoiseDomain.json": "9c3ef027badeca22b9d819c0e05cd44bae9b3adf5a6cab47eb3668aab912ac79"
+  },
+  "kernelResourcesAlsoMatchPreviousQualifiedBuild": true,
+  "buildLog": {
+    "path": "output/spec043-adobe-spatial.GsmwRP/release/build.log",
+    "sha256": "57d35a7a89fea726096abb194639dd74069933a8e862567666e3c5aa55197331"
+  },
+  "nativeWGPUMetalABI": {
+    "budgetFailure": 6,
+    "unknownGroup": 1,
+    "postSubmitStale": 5,
+    "postSubmitCallbackChecks": 2,
+    "reusableAfterStale": true,
+    "dispatches": 1,
+    "submissions": 1,
+    "hostWaits": 1,
+    "frameCopyBytes": 0,
+    "validationBytes": 4,
+    "signedRGBAndAlphaExactPixels": 1024,
+    "nestedGroupPasses": 4,
+    "layerAddAndRetryExactPixels": 2048,
+    "layerRangeFailure": 7
+  },
+  "ABICompletionChecks": {
+    "staged": {
+      "default": {
+        "caseCount": 20,
+        "data": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/release/smoke/staged-default.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      },
+      "blocking": {
+        "caseCount": 20,
+        "data": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/release/smoke/staged-blocking.jsonl",
+          "sha256": "bdebe9b9a7a107db0a1974a512ee9922df194976daaecfbe3d17c9b803d1ed74"
+        }
+      }
+    },
+    "installed": {
+      "default": {
+        "caseCount": 2,
+        "data": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/release/smoke/installed-default.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      },
+      "blocking": {
+        "caseCount": 2,
+        "data": {
+          "path": "output/spec043-adobe-spatial.GsmwRP/release/smoke/installed-blocking.jsonl",
+          "sha256": "7c00229adccf6be0c672d146741b80759c50d7cf0060bc8e9d3eddb07d7d488b"
+        }
+      }
+    }
+  },
+  "selectedReleaseTests": {
+    "traceInstrumentation": {
+      "passed": 5,
+      "log": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/build-worker-trace.log",
+        "sha256": "6ae01b6a3b7e7ca5cc5325f1c66718e502bfd6f1988d48db414bef49a0f8a9e3"
+      }
+    },
+    "previewCoordinationAndDiagnostics": {
+      "passed": 45,
+      "log": {
+        "path": "output/spec043-adobe-spatial.GsmwRP/preview-regression.log",
+        "sha256": "b1ecb651ede8ccebf0763989501c11064166260104bea44333c4c2aefb207c9f"
+      }
+    }
+  },
+  "stageTraceAndUntracedWindowQualification": {
+    "path": "specs/031-preset-browser/evidence/camera-raw-integration/viewport-worker-phases.json",
+    "sha256": "7750592b20b3b3ab9255c203181281337f088cad46b2c63c2c9a6a2434d92b0d"
+  },
+  "screenBenchmarkBuildRelation": "Release XCTest hosting the live AppKit editor from the preceding installed renderer source; this packaging change only adds opt-in diagnostics",
+  "externalVisibleFIT": {
+    "path": "specs/043-image-engine-unification/evidence/m0-current-spatial-fit-three-way.json",
+    "sha256": "7f06aaffdc9263648a3ef866e87b3bbf642558bef4155f28185975f08d829af2"
+  },
+  "histogramBlockingDiagnosis": {
+    "path": "specs/043-image-engine-unification/evidence/m0-spatial-display-histogram-blocking.json",
+    "sha256": "7e171769c857b0e27d16f0e1d96eef916ba1383b9ff493d6799a7f46d694ab8c"
+  },
+  "localNoiseTransportAB": {
+    "path": "specs/043-image-engine-unification/evidence/m0-local-noise-terminal-qualification.json",
+    "sha256": "b77a1df4d577a91d27b682b0fd4ad47274e82a1a926b915e5f3c512788dd9644"
+  },
+  "productionRenderingChange": false
+}
