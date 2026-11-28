@@ -62,6 +62,116 @@ final class EditingSceneDarkroomTests: XCTestCase {
         try await verify60MPEditorAndPublishedBatchReceipts(photographic: true, repeats: repeats)
     }
 
+    @MainActor func testOptInExternal60MPJPEGWorkbenchBenchmark() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        guard let path = environment["RAWMASTER_EXTERNAL_JPEG_RAW"],
+              let reportPath = environment["RAWMASTER_EXTERNAL_JPEG_DIR"] else {
+            throw XCTSkip("Supply the authorized external-comparison RAW and a fresh evidence directory")
+        }
+        #if DEBUG
+        throw XCTSkip("External JPEG timings require Release")
+        #endif
+        let repeats = Int(environment["RAWMASTER_EXTERNAL_JPEG_REPEATS"] ?? "36") ?? 0
+        guard (1...64).contains(repeats) else { return XCTFail("Use 1–64 external export trials") }
+        let raw = URL(fileURLWithPath: path)
+        let sourceHash = "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        XCTAssertEqual(try FileSafety.hash(raw), sourceHash)
+        let root = URL(fileURLWithPath: reportPath, isDirectory: true)
+        guard !FileManager.default.fileExists(atPath: root.path) else { return XCTFail("Use a fresh evidence directory") }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let db = root.appendingPathComponent("library.sqlite")
+        let asset = try NativePresentedCanvasTests.register(source: raw, library: db)
+        let suite = "external-jpeg-" + asset.id
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let model = AppModel(libraryURL: db, defaults: defaults)
+        let editing = try XCTUnwrap(model.editing)
+        let exposure = 0.5
+        do {
+            model.selectScope(.project, id: asset.projectID)
+            model.select(asset)
+            model.setMode(.single)
+            model.openNativeEditing()
+            try await wait("external JPEG source") { editing.sourceReady && !editing.loading }
+            XCTAssertEqual(editing.work?.source.contentSHA256, sourceHash)
+            editing.enterSceneDraft(ticket: try XCTUnwrap(editing.sceneTicket))
+            try await wait("external JPEG scene") { editing.sceneFrame?.execution != nil }
+            let node = try XCTUnwrap(editing.recipe.sceneGraph?.graph.nodes.first?.id)
+            editing.setSceneExposure(exposure, node: node, ticket: try XCTUnwrap(editing.sceneTicket))
+            try await wait("external JPEG exposure") {
+                !editing.scenePreviewBusy && (editing.sceneFrame?.execution?.dispatches ?? 0) > 0
+            }
+            let recipe = editing.recipe
+            let recipeHash = try EditingFingerprint.of(recipe)
+            model.activateWorkflow(.export)
+            var files: [(id: String, url: URL, elapsedNS: UInt64)] = []
+            for run in 0..<repeats {
+                let destination = root.appendingPathComponent("run-\(run)", isDirectory: true)
+                try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: false)
+                let start = DispatchTime.now().uptimeNanoseconds
+                model.submitWorkbenchPhotoDelivery(directory: destination, naming: "{name}",
+                    configuration: .init(format: .jpeg8, jpegQuality: 0.95), ids: [asset.id], collision: "rename", pqReview: nil)
+                let id = try XCTUnwrap(model.workbenchPhotoDelivery?.id)
+                let task = try XCTUnwrap(model.workbenchPhotoDeliveryTask)
+                await task.value
+                let elapsed = DispatchTime.now().uptimeNanoseconds - start
+                let completed = try XCTUnwrap(model.workbenchPhotoDelivery)
+                XCTAssertEqual(completed.id, id)
+                let file = try XCTUnwrap(completed.files.first, completed.message ?? "")
+                XCTAssertEqual(completed.files.count, 1)
+                files.append((id.uuidString.lowercased(), file, elapsed))
+            }
+            await model.closeLibraryReads()
+            await editing.shutdown()
+            await model.editingServices?.shutdown()
+            model.releaseLibraryConnections()
+            let queue = WorkbenchDeliveryCatalog(database: db)
+            let encoder = JSONEncoder()
+            var observations: [[String: Any]] = []
+            for entry in files {
+                let receipt = try await queue.receipt(batchID: entry.id)
+                let item = try XCTUnwrap(receipt.items.items.first)
+                let execution = try XCTUnwrap(item.sceneExecution)
+                let frozen = try await queue.input(batchID: entry.id, ordinal: 1)
+                let sha = try FileSafety.hash(entry.url)
+                XCTAssertEqual(receipt.batch.phase, .done)
+                XCTAssertEqual(item.state, .delivered)
+                XCTAssertEqual(sha, item.sha256)
+                XCTAssertEqual(frozen.version.recipe, recipe)
+                XCTAssertTrue(frozen.version.isLiveSceneDelivery)
+                XCTAssertEqual(execution.backend, .rust)
+                XCTAssertNil(execution.fallbackReason)
+                XCTAssertGreaterThan(execution.tiles, 1)
+                XCTAssertGreaterThan(execution.dispatches, 0)
+                let image = try XCTUnwrap(CGImageSourceCreateWithURL(entry.url as CFURL, nil))
+                let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any])
+                let width = try XCTUnwrap(properties[kCGImagePropertyPixelWidth] as? Int)
+                let height = try XCTUnwrap(properties[kCGImagePropertyPixelHeight] as? Int)
+                XCTAssertEqual(width, 9504)
+                XCTAssertEqual(height, 6336)
+                observations.append(["elapsedNS": entry.elapsedNS, "file": entry.url.path,
+                    "sha256": sha, "width": width, "height": height, "batchID": entry.id,
+                    "actualExecution": try JSONSerialization.jsonObject(with: encoder.encode(execution))])
+            }
+            XCTAssertEqual(try FileSafety.hash(raw), sourceHash)
+            XCTAssertEqual(Set(observations.compactMap { $0["sha256"] as? String }).count, 1)
+            let report: [String: Any] = ["schemaVersion": 1, "product": "RAWMaster 032",
+                "protocol": "single-raw-sdr-jpeg-workbench-v1", "sourceSHA256": sourceHash,
+                "recipeSHA256": recipeHash, "exposureEV": exposure,
+                "quality": 95, "progressive": false, "subsampling": "4:2:0", "metadata": "none", "resize": false,
+                "gpu": MTLCreateSystemDefaultDevice()?.name ?? "unknown",
+                "system": ProcessInfo.processInfo.operatingSystemVersionString,
+                "binarySHA256": try FileSafety.hash(XCTUnwrap(Bundle(for: Self.self).executableURL)),
+                "boundary": "AppModel submits one user-facing 032 batch until the delivery task completes publication and receipt acknowledgement. File verification follows timing.",
+                "samples": observations]
+            let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
+            try data.write(to: root.appendingPathComponent("summary.json"), options: .withoutOverwriting)
+        } catch {
+            await editing.shutdown()
+            throw error
+        }
+    }
+
     @MainActor private func verify60MPEditorAndPublishedBatchReceipts(photographic: Bool, repeats: Int = 1) async throws {
         let environment = ProcessInfo.processInfo.environment
         guard let path = environment["RAWMASTER_SCENE_60MP_ARW"] else { throw XCTSkip("Requires the 9504×6336 Bayer fixture") }
