@@ -188,7 +188,7 @@ function inspector(id) {
   return `<div class="inspector-title"><h2>照片信息</h2>${btn('收起照片信息', 'inspector', '', { only: true, icon: 'side', cls: 'icon-btn' })}</div>
     ${histogram(id)}<h3 class="filename">${h(Studio.displayName(id))}</h3><p class="muted">${h(p.scene)} · ${a.online ? '原片在线' : '原片离线'}</p>
     <div class="ins-block"><h4>拍摄参数</h4><div class="four-readouts"><strong>${h(p.exif.aperture)}</strong><strong>${h(p.exif.shutter)}</strong><strong>${h(p.exif.iso)}</strong><strong>${h(p.exif.focal)}</strong></div>
-    <dl>${fact('相机', p.exif.camera)}${fact('拍摄日期', p.date)}${fact('原片尺寸', p.w + ' × ' + p.h)}</dl></div>
+    <dl>${fact('相机', p.exif.camera)}${fact('拍摄时间', Studio.captureTimeLabel(id))}${fact('原片尺寸', p.w + ' × ' + p.h)}</dl></div>
     <div class="ins-block"><h4>${stage ? '初筛处置' : '审阅'}</h4><dl>${fact('决定', { none: '未决定', pending: '待初筛', keep: stage ? '通过' : '保留', reject: '排除', sequence: '仅序列' }[stage ? a.triage : a.decision])}</dl>
     ${
       !stage && !history
@@ -254,7 +254,7 @@ function libraryView() {
   else if (viewing === 'single')
     content = `<div class="loupe ${S.zoom ? 'zoomed' : ''}">${libraryPhoto(focus)}${btn(S.zoom ? '适合窗口' : '100% · Z', 'zoom', '', { cls: 'canvas-zoom' })}</div>${filmstrip(ids, focus)}`;
   else
-    content = `<div class="comparison">${b.selected.map((id) => `<figure>${libraryPhoto(id)}<figcaption><strong>${h(Studio.displayName(id))}</strong><small>${h(Studio.photo(id).exif.shutter)} · ${h(Studio.photo(id).exif.iso)}</small></figcaption></figure>`).join('')}</div>`;
+    content = `<div class="comparison">${b.selected.map((id) => `<figure>${libraryPhoto(id)}<figcaption><strong>${h(Studio.displayName(id))}</strong><small>${h(Studio.photo(id).exif.shutter)} · ${h(Studio.photo(id).exif.iso)}</small><small>${h(Studio.captureTimeLabel(id))}</small></figcaption></figure>`).join('')}</div>`;
   const stage = isTriage(),
     history = isHistory(),
     g = info.group;
@@ -318,13 +318,15 @@ actions['search-toggle'] = () => {
   render();
   $('[name=query]')?.focus();
 };
-actions.sort = () =>
+actions.sort = () => {
   dialog(
     '显示与排序',
-    select('排序方式', 'setSort', ['拍摄顺序', '文件名', '星级优先'], activeBrowser().sort) +
+    select('排序方式', 'setSort', ['拍摄顺序', '文件名', '拍摄时间升序', '拍摄时间降序', '星级优先'], activeBrowser().sort) +
       check('在网格中折叠拍摄组', 'fold', activeBrowser().fold),
     btn('完成', 'close'),
   );
+  $('#sheet').addEventListener('close', () => $('[data-act=sort]')?.focus({ preventScroll: true }), { once: true });
+};
 changes.fold = (el) => {
   activeBrowser().fold = el.checked;
   Studio.save();

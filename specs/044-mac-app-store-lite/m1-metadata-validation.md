@@ -8,4 +8,4 @@
 
 自用 Release `20261129.004656` 已安装到 `/Applications/RAWMaster.app` 并严格验签。隔离库窗口和 SQLite 检查通过，安装前后 Metal ABI、YuNet 和 Intel 0095 回执一致。[Release 回执](evidence/m1-032-capture-clock.json)
 
-TIFF16 的 ImageIO 元数据复制只在 XMP 输出拍摄日期，未在实际 ExifIFD 写入偏移。直接重新编码 TIFF 能写入该字段。TIFF16 采用现有的元数据复制合同，物理 EXIF 写入待另行验收。M1-03 的导入时钟、检查器、同次快门 RAW/JPEG 配对、Sony 序列字段及停止生产 Perl 调用仍待签收。
+TIFF16 的 ImageIO 元数据复制只在 XMP 输出拍摄日期，未在实际 ExifIFD 写入偏移。直接重新编码 TIFF 能写入该字段。TIFF16 采用现有的元数据复制合同，物理 EXIF 写入待另行验收。导入时钟、比较及同次快门 RAW/JPEG 已完成实拍和原生验证。M1-03 的检查器其他字段、Sony 序列字段及停止生产 Perl 调用仍待签收。[导入时钟与配对](m1-import-clock.md)

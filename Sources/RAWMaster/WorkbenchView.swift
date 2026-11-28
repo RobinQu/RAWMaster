@@ -870,7 +870,11 @@ struct InspectorView: View {
                         info("相机", asset.camera ?? "读取中 / 未知")
                         if let width = asset.width, let height = asset.height { info("分辨率", "\(width) × \(height)") }
                         info("大小", ByteCountFormatter.string(fromByteCount: asset.fileSize, countStyle: .file))
-                        if let date = asset.capturedAt { info("拍摄时间", date.formatted(date: .abbreviated, time: .standard)) }
+                        if let clock = asset.captureClock {
+                            info("拍摄时间", clock.displayText ?? "未记录")
+                        } else if let date = asset.capturedAt {
+                            info("拍摄时间", date.formatted(date: .abbreviated, time: .standard))
+                        }
                         info("接入状态", asset.importState.title)
                         info("可用性", asset.availability.title)
                         if model.isSequenceOnly(asset.id) { Label("仅序列用途 · 默认不进入单张精选交付", systemImage: "square.stack").font(.caption).foregroundStyle(.secondary) }

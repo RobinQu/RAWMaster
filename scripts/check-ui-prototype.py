@@ -46,6 +46,7 @@ def main():
     parser.add_argument("--workflow-batch-only", action="store_true", help="Walk the native-template/batch review entry in the workbench.")
     parser.add_argument("--scene-scopes-only", action="store_true", help="Walk through HDR scopes and diagnostics in the native-review prototype.")
     parser.add_argument("--local-library-only", action="store_true", help="Walk through local library packages and task recovery without the Server review.")
+    parser.add_argument("--import-clock-only", action="store_true", help="Walk through capture timestamp sorting, inspection and comparison.")
     parser.add_argument("--library-server-only", action="store_true", help="Walk through library packages, first startup, and client/Server job recovery.")
     args = parser.parse_args()
     editing_only = args.editing_only
@@ -152,6 +153,46 @@ def main():
                     browser("set", "viewport", str(width), str(height))
                     browser("set", "media", scheme)
                     scenario(f"实际像素平移折返 {width}", "await hash('library/project/river');" + check_pan)
+                check_browser_errors()
+                return
+            if args.import_clock_only:
+                url = host + ENTRY + "?captureClockReview=1#library/project/capture-clock"
+                for width, height, scheme in ((1440, 900, "dark"), (390, 844, "light")):
+                    browser(*options, "open", url)
+                    browser("set", "viewport", str(width), str(height))
+                    browser("set", "media", scheme)
+                    scenario(f"拍摄时间排序及离线比较 {width}", """
+                      act('mode','grid');assert(el('.contact-grid'),'project grid');
+                      const order=()=>all('.contact-grid [data-act=photo]').map(card=>card.dataset.val).join(',');
+                      const sort=(name)=>{el('[data-act=sort]').focus();act('sort');set('[name=setSort]',name,modal());act('close',null,el('.dialog-foot',modal()));};
+                      sort('拍摄顺序');assert(order()==='r1,r2,w1,w2,p1','original order');
+                      act('photo','r1');sort('拍摄时间升序');
+                      assert(order()==='p1,r2,r1,w1,w2','UTC order, millisecond order and missing last');
+                      assert(activeBrowser().focus==='r1','sorting preserves selection');
+                      sort('拍摄时间降序');assert(order()==='w1,r1,r2,p1,w2','missing stays last when descending');
+                      if(!el('.inspector').checkVisibility())act('inspector',null,el('.library-tools'));
+                      assert(el('.inspector').textContent.includes('00:00:00.006 +02:00'),'inspection shows the camera time and offset');
+                      act('photo','w2');assert(el('.inspector').textContent.includes('未记录'),'a missing time stays missing');
+                      act('photo','r1');
+                      if(!S.multi)act('multi');
+                      act('photo','w1');
+                      assert(el('.inspector').textContent.includes('原片离线')&&el('.inspector').textContent.includes('21:59:58.090 -00:30'),'offline photo retains its clock');
+                      act('mode','compare');
+                      assert(el('.comparison')?.textContent.includes('00:00:00.006 +02:00')&&el('.comparison')?.textContent.includes('21:59:58.090 -00:30'),'comparison clock is unchanged');
+                      key(el('#workspace'),'g');
+                      assert(activeBrowser().selected.join(',')==='r1,w1'&&order()==='w1,r1,r2,p1,w2','keyboard back keeps both selections and sorting');
+                      el('[data-act=sort]').focus();act('sort');
+                    """)
+                    browser("press", "Escape")
+                    scenario(f"关闭排序与恢复焦点 {width}", """
+                      assert(!modal().open&&document.activeElement.dataset.act==='sort','Escape restores focus');
+                      assert(activeBrowser().sort==='拍摄时间降序'&&activeBrowser().selected.join(',')==='r1,w1','cancel leaves the current browser state');
+                    """)
+                    browser("reload")
+                    scenario(f"重开确认拍摄时间和选片 {width}", """
+                      assert(el('.contact-grid')&&activeBrowser().sort==='拍摄时间降序'&&activeBrowser().selected.join(',')==='r1,w1','saved order and selection survive re-open');
+                      if(S.multi)act('multi');act('photo','r1');
+                    """)
                 check_browser_errors()
                 return
             if args.local_library_only:

@@ -33,7 +33,10 @@ package struct TIFFCaptureTimeTags {
     package static func read(from url: URL) throws -> Self? {
         let source = try FileHandle(forReadingFrom: url)
         defer { try? source.close() }
+        return try read(from: source)
+    }
 
+    static func read(from source: FileHandle) throws -> Self? {
         func read(_ count: Int, at offset: Int) throws -> Data? {
             try source.seek(toOffset: UInt64(offset))
             guard let bytes = try source.read(upToCount: count), bytes.count == count else { return nil }

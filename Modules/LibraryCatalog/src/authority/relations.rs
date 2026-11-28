@@ -1,4 +1,5 @@
 use super::*;
+use pair_evidence::Corroboration;
 use std::collections::{BTreeMap, BTreeSet};
 
 fn auto_match(e: &Value) -> bool {
@@ -23,24 +24,21 @@ fn auto_match(e: &Value) -> bool {
         && (same("subsecond") || same("frameNumber"))
 }
 pub(super) fn pair(db: &Connection, r: &Value) -> Result<Value> {
-    apply_pair(db, r, false)
+    apply_pair(db, r, Corroboration::Insufficient)
 }
 fn bound_pair(db: &Connection, raw: &str, jpeg: &str, e: &Value) -> Result<bool> {
     if !auto_match(e) {
         return Ok(false);
     }
-    for (file, member) in [(raw, &e["raw"]), (jpeg, &e["jpeg"])] {
-        let Some(content) = member["contentID"].as_str() else {
-            return Ok(false);
-        };
-        let valid:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM lc_asset_files f JOIN lc_asset_input a USING(asset_id) WHERE f.file_id=?1 AND a.content_id=?2)",params![file,content],|x|x.get(0))?;
-        if !valid {
-            return Ok(false);
-        }
-    }
-    Ok(true)
+    let Some((raw_content, jpeg_content)) = e["raw"]["contentID"]
+        .as_str()
+        .zip(e["jpeg"]["contentID"].as_str())
+    else {
+        return Ok(false);
+    };
+    pair_evidence::permits_bound_supplement(db, (raw, raw_content), (jpeg, jpeg_content))
 }
-fn apply_pair(db: &Connection, r: &Value, local_corroborated: bool) -> Result<Value> {
+fn apply_pair(db: &Connection, r: &Value, local: Corroboration) -> Result<Value> {
     let raw = field(r, "rawFileID")?;
     let jpeg = field(r, "jpegFileID")?;
     let op = field(r, "commandID")?;
@@ -62,6 +60,11 @@ fn apply_pair(db: &Connection, r: &Value, local_corroborated: bool) -> Result<Va
         return Err("pair requires a RAW and a camera JPEG".into());
     }
     let evidence = &r["evidence"];
+    let qualifies = || match local {
+        Corroboration::Confirmed => Ok(true),
+        Corroboration::Insufficient => bound_pair(db, raw, jpeg, evidence),
+        Corroboration::Contradicted => Ok(false),
+    };
     let mut status = "paired";
     if action == "capture.split" {
         if !manual || rc != jc {
@@ -79,8 +82,7 @@ fn apply_pair(db: &Connection, r: &Value, local_corroborated: bool) -> Result<Va
             [single],
         )?;
         status = "split";
-    } else if !manual && (rl || jl || !local_corroborated && !bound_pair(db, raw, jpeg, evidence)?)
-    {
+    } else if !manual && (rl || jl || !qualifies()?) {
         status = "review";
     } else if rc != jc {
         let occupied:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM lc_files WHERE (capture_id=?1 AND file_id<>?2) OR (capture_id=?3 AND file_id<>?4))",params![rc,raw,jc,jpeg],|x|x.get(0))?;
@@ -440,8 +442,11 @@ pub(super) fn flush(db: &Connection) -> Result<()> {
                 };
                 let op = format!("compat:pair:{seq}:{id}");
                 let manual = removed || p["isManual"].as_bool().unwrap_or(false);
-                let (mut evidence, allow_local) = if manual {
-                    (json!({"source":"v7-explicit-action"}), false)
+                let (mut evidence, local) = if manual {
+                    (
+                        json!({"source":"v7-explicit-action"}),
+                        Corroboration::Insufficient,
+                    )
                 } else {
                     let session = field(&p, "sessionID")?;
                     if !sources.contains_key(session) {
@@ -456,7 +461,7 @@ pub(super) fn flush(db: &Connection) -> Result<()> {
                 apply_pair(
                     db,
                     &json!({"action":action,"commandID":op,"rawFileID":raw,"jpegFileID":jpeg,"manual":manual,"evidence":evidence}),
-                    allow_local,
+                    local,
                 )?;
             }
         } else {

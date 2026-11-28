@@ -8,6 +8,45 @@ struct FileStamp: Equatable {
   var inode: UInt64
   var device: UInt64
 }
+
+private struct RegularFileIdentity: Equatable {
+  let device: dev_t
+  let inode: ino_t
+  let size: Int64
+  let modificationSeconds, modificationNanoseconds: Int
+  let changeSeconds, changeNanoseconds: Int
+
+  private init(_ value: stat) {
+    device = value.st_dev
+    inode = value.st_ino
+    size = value.st_size
+    modificationSeconds = value.st_mtimespec.tv_sec
+    modificationNanoseconds = value.st_mtimespec.tv_nsec
+    changeSeconds = value.st_ctimespec.tv_sec
+    changeNanoseconds = value.st_ctimespec.tv_nsec
+  }
+
+  static func openFile(_ descriptor: Int32, at url: URL) throws -> Self {
+    var value = Darwin.stat()
+    guard fstat(descriptor, &value) == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+    guard value.st_mode & S_IFMT == S_IFREG else { throw LibraryError.invalid("不是普通文件：\(url.path)") }
+    return Self(value)
+  }
+
+  static func namedFile(_ url: URL) -> Self? {
+    var value = Darwin.stat()
+    guard lstat(url.path, &value) == 0, value.st_mode & S_IFMT == S_IFREG else { return nil }
+    return Self(value)
+  }
+
+  func sameFile(as other: Self) -> Bool { device == other.device && inode == other.inode }
+
+  func matchesAfterRename(_ other: Self) -> Bool {
+    sameFile(as: other) && size == other.size && modificationSeconds == other.modificationSeconds
+      && modificationNanoseconds == other.modificationNanoseconds
+  }
+}
+
 package struct LocalDirectoryIdentity: Codable, Sendable {
   private let volume: String?
   private let device: UInt64
@@ -67,13 +106,23 @@ enum FileSafety {
       device: (a[.systemNumber] as? NSNumber)?.uint64Value ?? 0)
   }
   static func hash(_ url: URL, cancel: () throws -> Void = {}) throws -> String {
-    let before = try stat(url)
-    let h = try FileHandle(forReadingFrom: url)
-    defer { try? h.close() }
-    let digest = try hash(h, cancel: cancel)
-    guard before == (try stat(url)) else { throw LibraryError.sourceChanged(url.path) }
-    return digest
+    try withStableRegularFile(at: url) { handle, _ in try hash(handle, cancel: cancel) }
   }
+
+  static func withStableRegularFile<T>(at url: URL, _ read: (FileHandle, Int64) throws -> T) throws -> T {
+    let descriptor = open(url.path, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC)
+    guard descriptor >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+    let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+    defer { try? handle.close() }
+
+    let before = try RegularFileIdentity.openFile(descriptor, at: url)
+    guard RegularFileIdentity.namedFile(url) == before else { throw LibraryError.sourceChanged(url.path) }
+    let result = try read(handle, before.size)
+    guard try RegularFileIdentity.openFile(descriptor, at: url) == before,
+          RegularFileIdentity.namedFile(url) == before else { throw LibraryError.sourceChanged(url.path) }
+    return result
+  }
+
   static func hash(_ handle: FileHandle, cancel: () throws -> Void = {}) throws -> String {
     var digest = SHA256()
     while true {
@@ -101,7 +150,8 @@ enum FileSafety {
   static func verifiedCopy(
     source: URL, target: URL, expectedHash: String?, protectedRoots: [URL],
     allowAlternateTarget: Bool = true,
-    beforePublish: () throws -> Void = {}, cancel: () throws -> Void
+    beforePublish: () throws -> Void = {}, inspectSource: ((FileHandle, Int64) throws -> Void)? = nil,
+    cancel: () throws -> Void
   ) throws -> (URL, String) {
     try checkTarget(target, sources: protectedRoots)
     try cancel()
@@ -117,16 +167,20 @@ enum FileSafety {
       ".rawmaster-\(UUID().uuidString).partial")
     try checkTarget(temporary, sources: protectedRoots)
     try beforePublish()
-    guard FileManager.default.createFile(atPath: temporary.path, contents: nil) else {
+    let descriptor = open(temporary.path, O_CREAT | O_EXCL | O_RDWR | O_CLOEXEC | O_NOFOLLOW, 0o666)
+    guard descriptor >= 0 else {
       throw LibraryError.invalid("无法创建临时文件，请检查磁盘容量和权限")
     }
-    defer { try? FileManager.default.removeItem(at: temporary) }
-    let input = try FileHandle(forReadingFrom: source)
-    defer { try? input.close() }
-    let output = try FileHandle(forWritingTo: temporary)
+    let output = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
     defer { try? output.close() }
-    var digest = SHA256()
-    do {
+    let created = try RegularFileIdentity.openFile(descriptor, at: temporary)
+    defer {
+      if let named = RegularFileIdentity.namedFile(temporary), created.sameFile(as: named) {
+        try? FileManager.default.removeItem(at: temporary)
+      }
+    }
+    let hash = try withStableRegularFile(at: source) { input, size in
+      var digest = SHA256()
       while true {
         try cancel()
         let count = try autoreleasepool {
@@ -138,18 +192,16 @@ enum FileSafety {
         }
         if count == 0 { break }
       }
-      try output.synchronize()
-      try input.close()
-      try output.close()
-    } catch {
-      try? input.close()
-      try? output.close()
-      throw error
+      let hash = digest.finalize().map { String(format: "%02x", $0) }.joined()
+      if let expectedHash, expectedHash != hash { throw LibraryError.sourceChanged(source.path) }
+      try inspectSource?(input, size)
+      return hash
     }
+    try output.synchronize()
     guard before == (try stat(source)) else { throw LibraryError.sourceChanged(source.path) }
-    let hash = digest.finalize().map { String(format: "%02x", $0) }.joined()
-    if let expectedHash, expectedHash != hash { throw LibraryError.sourceChanged(source.path) }
-    guard try self.hash(temporary, cancel: cancel) == hash else {
+    let verified = try RegularFileIdentity.openFile(descriptor, at: temporary)
+    try output.seek(toOffset: 0)
+    guard try self.hash(output, cancel: cancel) == hash else {
       throw LibraryError.invalid("复制校验失败")
     }
     var candidate = target
@@ -158,6 +210,10 @@ enum FileSafety {
       try cancel()
       try beforePublish()
       try checkTarget(candidate, sources: protectedRoots)
+      guard try RegularFileIdentity.openFile(descriptor, at: temporary) == verified,
+            RegularFileIdentity.namedFile(temporary) == verified else {
+        throw LibraryError.invalid("已校验的临时副本发生变化")
+      }
       if FileManager.default.fileExists(atPath: candidate.path) {
         if canonical(candidate).path == canonical(source).path
           || (try? stat(candidate)).map({ $0.inode == before.inode && $0.device == before.device })
@@ -173,19 +229,24 @@ enum FileSafety {
         ).appendingPathExtension(target.pathExtension)
         continue
       }
-      if !allowAlternateTarget {
-        if renamex_np(temporary.path, candidate.path, UInt32(RENAME_EXCL)) == 0 { return (candidate, hash) }
+      if allowAlternateTarget {
+        do {
+          try FileManager.default.moveItem(at: temporary, to: candidate)
+        } catch {
+          if FileManager.default.fileExists(atPath: candidate.path) { continue }
+          throw error
+        }
+      } else if renamex_np(temporary.path, candidate.path, UInt32(RENAME_EXCL)) != 0 {
         let code = errno
         if code == EEXIST, FileManager.default.fileExists(atPath: candidate.path) { continue }
         throw POSIXError(POSIXErrorCode(rawValue: code) ?? .EIO)
       }
-      do {
-        try FileManager.default.moveItem(at: temporary, to: candidate)
-        return (candidate, hash)
-      } catch {
-        if FileManager.default.fileExists(atPath: candidate.path) { continue }
-        throw error
+      // Rename changes ctime. Keep the checked descriptor open so an inode cannot be reused.
+      let published = try RegularFileIdentity.openFile(descriptor, at: candidate)
+      guard verified.matchesAfterRename(published), RegularFileIdentity.namedFile(candidate) == published else {
+        throw LibraryError.invalid("发布路径未指向已校验的副本")
       }
+      return (candidate, hash)
     }
   }
 }

@@ -36,6 +36,8 @@ public struct AssetRecord: Codable, Sendable, Identifiable {
   public var displayName: String { virtualCopyName ?? filename }
   public var fileSize: Int64
   public var capturedAt: Date?
+  package var captureClock: CaptureClock?
+  package var cameraSerialDigest: String?
   public var camera: String?
   public var width: Int?
   public var height: Int?

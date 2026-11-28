@@ -1,6 +1,7 @@
 'use strict';
 
 const serverReview = new URLSearchParams(location.search).get('serverReview') === '1';
+const captureClockReview = new URLSearchParams(location.search).get('captureClockReview') === '1';
 const deliveryStorageKey = serverReview ? 'rawmaster.ui.server-review.delivery' : 'rawmaster.ui.delivery';
 
 const defaultFlux = () => ({
@@ -16,12 +17,20 @@ const defaultFlux = () => ({
 });
 
 const Studio = (() => {
-  const key = serverReview ? 'rawmaster.ui.workbench.server-review.v1' : 'rawmaster.ui.workbench.v1';
+  const key = captureClockReview ? 'rawmaster.ui.workbench.capture-clock.v1'
+    : serverReview ? 'rawmaster.ui.workbench.server-review.v1' : 'rawmaster.ui.workbench.v1';
   const copy = id => data?.catalog?.virtualCopies?.[id];
   const physicalID = id => copy(id)?.source ?? id;
   const fixtureID = id => data?.catalog?.records[physicalID(id)]?.source || physicalID(id);
   const photo = id => RMPhotos.photos[fixtureID(id)];
   const initial = Object.keys(RMPhotos.photos).slice(0, 12);
+  const reviewTimes = {
+    r1: '2026-10-18T00:00:00.006+02:00',
+    r2: '2026-10-17T22:00:00.005+00:00',
+    w1: '2026-10-17T21:59:58.090-00:30',
+    w2: null,
+    p1: '2026-10-17T21:59:59.100+00:00',
+  };
   const freshRecipe = () => ({
     ev: 0,
     contrast: 0,
@@ -39,6 +48,7 @@ const Studio = (() => {
     return {
       id,
       name: f.name,
+      ...(captureClockReview && Object.hasOwn(reviewTimes, id) ? { captureTime: reviewTimes[id] } : {}),
       pair: ['r1', 'm1'].includes(id),
       online: id !== 'w1',
       reviewed: index < 6,
@@ -54,7 +64,8 @@ const Studio = (() => {
     return {
       catalog: {
         records: Object.fromEntries(Object.keys(RMPhotos.photos).map((id, i) => [id, record(id, i)])),
-        projects: [{ id: 'river', name: '河谷拍摄', ids: initial.slice() }],
+        projects: [{ id: 'river', name: '河谷拍摄', ids: initial.slice() },
+          ...(captureClockReview ? [{ id: 'capture-clock', name: '拍摄时间复验', ids: Object.keys(reviewTimes) }] : [])],
         groups: [
           { id: 'dusk', name: '暮色延时', kind: '延时', ids: ['d1', 'd2', 'd3'], protected: false },
           { id: 'birds', name: '岸边连拍', kind: '连拍', ids: ['b1', 'b2'], protected: false },
@@ -113,6 +124,8 @@ const Studio = (() => {
   }
   const catalog = () => data.catalog;
   const asset = id => catalog().records[physicalID(id)];
+  const captureTime = (id) => Object.hasOwn(asset(id), 'captureTime') ? asset(id).captureTime : `${photo(id).date}T${photo(id).clock}`;
+  const captureTimeLabel = (id) => captureTime(id)?.replace('T', ' ').replace(/([+-]\d\d:\d\d)$/, ' $1') ?? '未记录';
   const displayName = id => copy(id) ? asset(id).name + ' · ' + copy(id).name : asset(id)?.name;
   const project = (id) => catalog().projects.find((p) => p.id === id);
   const group = (id) => catalog().groups.find((g) => g.id === id);
@@ -334,6 +347,16 @@ const Studio = (() => {
     });
     if (b.sort === '星级优先') ids.sort((a, b) => asset(b).stars - asset(a).stars);
     if (b.sort === '文件名') ids.sort((a, b) => displayName(a).localeCompare(displayName(b)));
+    if (b.sort === '拍摄时间升序' || b.sort === '拍摄时间降序') {
+      const dates = new Map(ids.map(id => [id, Date.parse(captureTime(id))]));
+      const direction = b.sort === '拍摄时间升序' ? 1 : -1;
+      ids.sort((a, b) => {
+        const first = dates.get(a), second = dates.get(b);
+        return Number.isNaN(first) || Number.isNaN(second)
+          ? Number(Number.isNaN(first)) - Number(Number.isNaN(second))
+          : direction * (first - second);
+      });
+    }
     return ids;
   }
   function reconcile(scope) {
@@ -393,7 +416,7 @@ const Studio = (() => {
     },
     emptyRecords: () => Object.fromEntries(Object.keys(RMPhotos.photos).map(id => [id, record(id, 100)])),
     photo, activeArchive,
-    copy, copiesOf, physicalID, fixtureID, displayName, copyNameIssue, createCopy,
+    copy, copiesOf, physicalID, fixtureID, displayName, captureTimeLabel, copyNameIssue, createCopy,
     asset,
     project,
     group,

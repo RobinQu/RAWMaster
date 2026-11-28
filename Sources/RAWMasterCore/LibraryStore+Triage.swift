@@ -321,24 +321,38 @@ extension LibraryStore {
     }
   }
   public func scanCapturePairs(sessionID: String) throws -> [CapturePair] {
-    try transaction {
+    struct CaptureLocation: Hashable {
+      var root: String
+      var relativeStem: String
+    }
+    return try transaction {
       let phase = try workflow(sessionID)?.phase
-      let admitted = Set(try loadAdmissions().map(\.assetID))
-      let assets = try loadAssets(sessionID: sessionID).filter { phase == .ingesting || phase == .screening || admitted.contains($0.id) }
-      let byKey = Dictionary(grouping: assets) { a -> String in
-        let path = URL(fileURLWithPath: a.relativePath)
-        return path.deletingPathExtension().path.precomposedStringWithCanonicalMapping
+      let isOpen = phase == .ingesting || phase == .screening
+      let admitted = isOpen ? Set<String>() : Set(try loadAdmissions().map(\.assetID))
+      let assets = try loadAssets(sessionID: sessionID)
+      let defaultRoot = "source:" + sessionID
+      let occurrences = catalogInstalled
+        ? try rows("SELECT asset_id,COALESCE(root_id,?) FROM lc_occurrences WHERE session_id=?", [defaultRoot, sessionID])
+        : []
+      let roots = Dictionary(occurrences.map { ($0[0], $0[1]) }, uniquingKeysWith: { first, _ in first })
+      var byKey: [CaptureLocation: [AssetRecord]] = [:]
+      for asset in assets {
+        guard let suffix = asset.relativePath.lastIndex(of: ".") else { continue }
+        let key = CaptureLocation(root: roots[asset.id] ?? defaultRoot,
+          relativeStem: String(asset.relativePath[..<suffix]).precomposedStringWithCanonicalMapping)
+        byKey[key, default: []].append(asset)
       }
       let dismissed = Set(try rows("SELECT id FROM pair_dismissals").map { $0[0] })
       let existing = Set(try rows("SELECT json_extract(data,'$.rawAssetID'),json_extract(data,'$.jpegAssetID') FROM capture_pairs WHERE json_extract(data,'$.sessionID')=?",[sessionID]).map { pairKey($0[0],$0[1]) })
       var paired = Set(try loadCapturePairs(sessionID: sessionID).flatMap(\.assetIDs))
-      for key in byKey.keys.sorted() {
+      for key in byKey.keys.sorted(by: { ($0.relativeStem, $0.root) < ($1.relativeStem, $1.root) }) {
         let candidates = byKey[key]!
         let raw = candidates.filter { CaptureFileFormat.isRAW($0.filename) }, jpeg = candidates.filter { CaptureFileFormat.isJPEG($0.filename) }
         guard raw.count == 1, jpeg.count == 1 else { continue }
         let r = raw[0], j = jpeg[0]
         guard !paired.contains(r.id), !paired.contains(j.id), !dismissed.contains(pairKey(r.id, j.id)), !existing.contains(pairKey(r.id,j.id)), r.importState == .ready, j.importState == .ready,
-          let rt = r.capturedAt, let jt = j.capturedAt, abs(rt.timeIntervalSince(jt)) < 0.001,
+          isOpen || (admitted.contains(r.id) && admitted.contains(j.id)),
+          Self.compatibleCaptureTime(r, j),
           let rc = r.camera?.trimmingCharacters(in: .whitespacesAndNewlines), let jc = j.camera?.trimmingCharacters(in: .whitespacesAndNewlines), !rc.isEmpty, rc == jc,
           r.width != nil, r.height != nil, r.width == j.width, r.height == j.height else { continue }
         // This transaction and its incrementally updated paired set already
@@ -351,6 +365,32 @@ extension LibraryStore {
       if catalogInstalled { _ = try catalogTransaction("flushLegacy", LibraryEmpty()) }
       return try loadCapturePairs(sessionID: sessionID)
     }
+  }
+
+  private static func compatibleCaptureTime(_ raw: AssetRecord, _ jpeg: AssetRecord) -> Bool {
+    switch (raw.captureClock, jpeg.captureClock) {
+    case (nil, nil):
+      guard let first = raw.capturedAt, let second = jpeg.capturedAt else { return false }
+      return abs(first.timeIntervalSince(second)) < 0.001
+    case let (first?, second?):
+      guard verifiedContent(raw), verifiedContent(jpeg),
+            let width = raw.width, width > 0, let height = raw.height, height > 0 else { return false }
+      if let a = raw.cameraSerialDigest, let b = jpeg.cameraSerialDigest, a != b,
+         a == a.lowercased(), b == b.lowercased(), isSHA256(a), isSHA256(b) { return false }
+      return CaptureClock.describesSameInstant(first, second)
+    default:
+      // A legacy date has no record of its original timezone or accuracy.
+      return false
+    }
+  }
+
+  private static func verifiedContent(_ asset: AssetRecord) -> Bool {
+    guard let hash = asset.contentHash else { return false }
+    return asset.fileSize >= 0 && isSHA256(hash)
+  }
+
+  private static func isSHA256(_ value: String) -> Bool {
+    value.utf8.count == 64 && value.utf8.allSatisfy { (48...57).contains($0) || (65...70).contains($0) || (97...102).contains($0) }
   }
   func completionFingerprint(sessionID: String) throws -> String {
     struct Snapshot: Encodable {

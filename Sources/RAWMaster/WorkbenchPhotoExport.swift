@@ -29,7 +29,7 @@ enum PhotoExportFilename {
                 stem += "-" + (suffix.isEmpty ? "副本" : suffix)
             }
             return try PhotoExportKernel.name(template: template, stem: stem,
-                index: ordinal, exportDate: dateText(exportDate), captureDate: asset.capturedAt.map(dateText))
+                index: ordinal, exportDate: dateText(exportDate), captureDate: asset.captureClock?.cameraDay ?? asset.capturedAt.map(dateText))
         } catch PhotoExportKernelError.capturedDateRequired {
             throw LibraryError.invalid("\(asset.filename) 缺少拍摄日期，请更换命名模板。")
         } catch PhotoExportKernelError.invalid {

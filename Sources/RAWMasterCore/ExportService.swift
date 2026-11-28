@@ -227,7 +227,13 @@ public final class ExportService: @unchecked Sendable {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     encoder.dateEncodingStrategy = .iso8601
-    let json = try encoder.encode(manifest)
+    var delivery = manifest
+    for index in delivery.items.indices {
+      // The delivery manifest keeps its established photo fields. Pairing evidence belongs to the catalog.
+      delivery.items[index].asset.captureClock = nil
+      delivery.items[index].asset.cameraSerialDigest = nil
+    }
+    let json = try encoder.encode(delivery)
     let photoColumns = [
       "assetID", "sessionID", "sourcePath", "currentPath", "relativePath", "decision", "rating",
       "copyRequested", "status", "outputPath", "error", "sha256", "groupMembershipJSON", "requestedFormats",

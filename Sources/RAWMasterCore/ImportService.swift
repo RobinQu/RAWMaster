@@ -1,5 +1,4 @@
 import Foundation
-import ImageIO
 
 public enum ImportExecutionStage: Sendable, Equatable { case intake, grouping }
 public typealias ImportStageCallback = @Sendable (String, ImportExecutionStage) -> Void
@@ -97,6 +96,11 @@ public final class ImportService: @unchecked Sendable {
     session.failed = 0
     try store.saveSession(session)
     let root = session.effectiveSourceURL
+    let localDate = DateFormatter()
+    localDate.locale = Locale(identifier: "en_US_POSIX")
+    localDate.calendar = Calendar(identifier: .gregorian)
+    localDate.timeZone = .current
+    localDate.dateFormat = "yyyy:MM:dd HH:mm:ss"
     let protectedRoots = try store.protectedSourceRoots()
     var discoveryConflicts = Set<String>()
     var processed = 0
@@ -268,38 +272,59 @@ public final class ImportService: @unchecked Sendable {
             }
             a.availability = .available
           } else {
-            let before = try FileSafety.stat(a.resolvedSourceURL)
+            let source = a.resolvedSourceURL
+            let previous = a.contentHash
+            let needsMetadata = previous == nil
             a.importState = session.mode == .copy ? .copying : .verifying
             a.error = nil
             try store.saveImportAsset(
               a, expectedSourceFingerprint: sourceFingerprint,
               expectedManagedFingerprint: managedFingerprint)
-            let source = a.resolvedSourceURL
-            if let previous = a.contentHash {
-              let current = try FileSafety.hash(source, cancel: { try self.control.check() })
-              guard previous == current else { throw LibraryError.sourceChanged(source.path) }
+            var capture: ImportedCaptureMetadata?
+            func readMetadata(_ file: FileHandle, _ size: Int64) throws {
+              guard needsMetadata else { return }
+              try control.check()
+              capture = try ImportedCaptureMetadata.read(from: file, size: size,
+                extension: source.pathExtension, localDate: localDate)
+              try control.check()
             }
             if session.mode == .copy {
+              let sourceBefore = try FileSafety.stat(source)
               let work = session.managedContainerURL!.appendingPathComponent(
                 "RAWMaster-" + session.id)
               let target = work.appendingPathComponent(try FileSafety.safeRelative(a.relativePath))
               let result = try FileSafety.verifiedCopy(
-                source: source, target: target, expectedHash: a.contentHash,
+                source: source, target: target, expectedHash: previous,
                 protectedRoots: protectedRoots,
                 beforePublish: { try verifyDirectory(work.deletingLastPathComponent(), expectedManaged, message: "接入期间复制目标已变化。") },
+                inspectSource: readMetadata,
                 cancel: { try self.control.check() })
+              guard sourceBefore == (try FileSafety.stat(source)) else {
+                throw LibraryError.sourceChanged(source.path)
+              }
               a.currentPath = result.0.path
               a.effectiveManagedPath = result.0.path
               a.contentHash = result.1
+              a.fileSize = sourceBefore.size
             } else {
-              a.currentPath = a.resolvedSourceURL.path
-              a.contentHash = try FileSafety.hash(source, cancel: { try self.control.check() })
+              let verified = try FileSafety.withStableRegularFile(at: source) { file, size in
+                let digest = try FileSafety.hash(file, cancel: { try self.control.check() })
+                if let previous, digest != previous { throw LibraryError.sourceChanged(source.path) }
+                try readMetadata(file, size)
+                return (digest, size)
+              }
+              a.currentPath = source.path
+              a.contentHash = verified.0
+              a.fileSize = verified.1
             }
-            guard before == (try FileSafety.stat(source)) else {
-              throw LibraryError.sourceChanged(source.path)
+            if let capture {
+              a.width = capture.width
+              a.height = capture.height
+              a.camera = capture.camera
+              a.capturedAt = capture.capturedAt
+              a.captureClock = capture.clock
+              a.cameraSerialDigest = capture.cameraSerialDigest
             }
-            a.fileSize = before.size
-            Self.metadata(source, into: &a)
             a.importState = .ready
             a.availability = .available
           }
@@ -356,25 +381,5 @@ public final class ImportService: @unchecked Sendable {
     do { return try FileSafety.hash(url, cancel: { try self.control.check() }) } catch LibraryError
       .cancelled
     { throw LibraryError.cancelled } catch { return nil }
-  }
-  private static func metadata(_ url: URL, into a: inout AssetRecord) {
-    guard
-      let image = CGImageSourceCreateWithURL(
-        url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary),
-      let props = CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [CFString: Any]
-    else { return }
-    a.width = (props[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue
-    a.height = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue
-    if let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any] {
-      a.camera = tiff[kCGImagePropertyTIFFModel] as? String
-    }
-    if let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any],
-      let text = exif[kCGImagePropertyExifDateTimeOriginal] as? String
-    {
-      let f = DateFormatter()
-      f.locale = Locale(identifier: "en_US_POSIX")
-      f.dateFormat = "yyyy:MM:dd HH:mm:ss"
-      a.capturedAt = f.date(from: text)
-    }
   }
 }

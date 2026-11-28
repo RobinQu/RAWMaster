@@ -79,6 +79,73 @@ fn item(id: &str, disposition: &str) -> Value {
     json!({"occurrenceID":id,"disposition":disposition})
 }
 
+fn clocked(second: i64, ns: Option<i64>, offset: Option<i64>) -> Value {
+    json!({"captureClock": {
+        "localSecond": second, "nanosecond": ns, "offsetMinutes": offset,
+        "hasInvalidTags": false, "subsecondTruncated": false
+    }})
+}
+
+fn set_capture_facts(db: &Connection, id: &str, facts: &Value) -> Result<()> {
+    let stored: String = db.query_row("SELECT data FROM assets WHERE id=?1", [id], |r| r.get(0))?;
+    let mut data: Value = serde_json::from_str(&stored)?;
+    data["camera"] = json!("Model A");
+    data["width"] = json!(800);
+    data["height"] = json!(600);
+    data["capturedAt"] = json!(0.0);
+    for (key, value) in facts.as_object().unwrap() {
+        data[key.as_str()] = value.clone();
+    }
+    db.execute(
+        "UPDATE assets SET data=?1 WHERE id=?2",
+        params![data.to_string(), id],
+    )?;
+    Ok(())
+}
+
+fn capture_candidates(
+    db: &Connection,
+    session: &str,
+    stem: &str,
+    raw_facts: &Value,
+    jpeg_facts: &Value,
+) -> Result<(String, String)> {
+    let raw = format!("{stem}-raw");
+    let jpeg = format!("{stem}-jpeg");
+    for (id, extension, facts) in [(&raw, "ARW", raw_facts), (&jpeg, "JPG", jpeg_facts)] {
+        asset(
+            db,
+            session,
+            "p1",
+            id,
+            &format!("{stem}.{extension}"),
+            Some(id.as_bytes()),
+        )?;
+        set_capture_facts(db, id, facts)?;
+    }
+    Ok((raw, jpeg))
+}
+
+fn compatible_pair(
+    db: &Connection,
+    session: &str,
+    raw: &str,
+    jpeg: &str,
+    extra: Option<&Value>,
+) -> Result<()> {
+    let id = format!("{raw}:{jpeg}");
+    let mut pair =
+        json!({"id":id,"sessionID":session,"rawAssetID":raw,"jpegAssetID":jpeg,"isManual":false});
+    if let Some(extra) = extra {
+        pair["evidence"] = extra.clone();
+    }
+    db.execute(
+        "INSERT INTO capture_pairs VALUES(?1,?2)",
+        params![id, pair.to_string()],
+    )?;
+    Ok(())
+}
+
 #[test]
 fn seal_exclusions_are_file_specific_and_restoration_is_explicit() -> Result<()> {
     let db = source()?;
@@ -467,6 +534,310 @@ fn compatible_scans_recover_corroboration_and_direct_import_closes_once() -> Res
             "SELECT DISTINCT file_id FROM lc_archive_files ORDER BY file_id"
         )?,
         ["d1", "d2"]
+    );
+    Ok(())
+}
+
+#[test]
+fn direct_and_compatible_pairing_agree_on_the_capture_clock_wire() -> Result<()> {
+    let civil = clocked(100, Some(0), None);
+    let mut invalid = civil.clone();
+    invalid["captureClock"]["hasInvalidTags"] = json!(true);
+    let mut missing_flag = civil.clone();
+    missing_flag["captureClock"]
+        .as_object_mut()
+        .unwrap()
+        .remove("subsecondTruncated");
+    let mut serial_a = civil.clone();
+    serial_a["cameraSerialDigest"] = json!("a".repeat(64));
+    let mut serial_b = civil.clone();
+    serial_b["cameraSerialDigest"] = json!("b".repeat(64));
+    let mut unknown_serial = civil.clone();
+    unknown_serial["cameraSerialDigest"] = json!("B".repeat(64));
+    let mut utc_jpeg = clocked(83_100, Some(12), Some(0));
+    utc_jpeg["capturedAt"] = json!(10.0);
+    let cases = [
+        ("legacy", json!({}), json!({"capturedAt":0.0009}), true),
+        (
+            "legacy-threshold",
+            json!({}),
+            json!({"capturedAt":0.001}),
+            false,
+        ),
+        (
+            "legacy-nonnumeric",
+            json!({"capturedAt":true}),
+            json!({"capturedAt":1}),
+            false,
+        ),
+        (
+            "utc-across-midnight",
+            clocked(86_700, Some(12), Some(60)),
+            utc_jpeg,
+            true,
+        ),
+        (
+            "civil-offset-unknown",
+            clocked(100, Some(0), Some(-840)),
+            civil.clone(),
+            true,
+        ),
+        (
+            "below-1ms",
+            clocked(100, Some(999_900_000), None),
+            clocked(101, Some(899_999), None),
+            true,
+        ),
+        (
+            "exactly-1ms",
+            clocked(100, Some(999_900_000), None),
+            clocked(101, Some(900_000), None),
+            false,
+        ),
+        (
+            "same-whole-second",
+            clocked(100, Some(999_999_999), None),
+            clocked(100, None, None),
+            true,
+        ),
+        (
+            "whole-second-gap",
+            clocked(100, Some(999_999_999), None),
+            clocked(101, None, None),
+            false,
+        ),
+        (
+            "calendar-limits",
+            clocked(-62_135_596_800, Some(0), Some(840)),
+            clocked(253_402_300_799, Some(999_999_999), Some(-840)),
+            false,
+        ),
+        ("mixed", json!({}), civil.clone(), false),
+        (
+            "declared-null",
+            json!({"captureClock":null}),
+            json!({}),
+            false,
+        ),
+        (
+            "declared-array",
+            json!({"captureClock":[100,0,null,false,false]}),
+            civil.clone(),
+            false,
+        ),
+        (
+            "declared-unavailable",
+            json!({"captureClock":{"hasInvalidTags":false,"subsecondTruncated":false}}),
+            civil.clone(),
+            false,
+        ),
+        ("malformed-flag", missing_flag, civil.clone(), false),
+        ("invalid-tags", invalid, civil.clone(), false),
+        (
+            "invalid-second",
+            clocked(-62_135_596_801, Some(0), None),
+            civil.clone(),
+            false,
+        ),
+        (
+            "invalid-nanos",
+            clocked(100, Some(1_000_000_000), None),
+            civil.clone(),
+            false,
+        ),
+        (
+            "invalid-offset",
+            clocked(100, Some(0), Some(841)),
+            civil.clone(),
+            false,
+        ),
+        ("conflicting-serial", serial_a.clone(), serial_b, false),
+        ("unknown-serial", serial_a, unknown_serial, true),
+    ];
+    for direct in [false, true] {
+        let db = source()?;
+        authority::install(&db)?;
+        if direct {
+            let data = json!({"id":"s","projectID":"p1","mode":"reference","sourcePath":"/source",
+                "status":"completed","scanCompleted":true});
+            db.execute("INSERT INTO sessions VALUES('s',?1)", [data.to_string()])?;
+        } else {
+            session(&db, "s", "p1", "screening")?;
+        }
+        for (stem, raw_facts, jpeg_facts, _) in &cases {
+            let (raw, jpeg) = capture_candidates(&db, "s", stem, raw_facts, jpeg_facts)?;
+            if direct {
+                admission(&db, &raw, false)?;
+                admission(&db, &jpeg, false)?;
+            } else {
+                compatible_pair(&db, "s", &raw, &jpeg, None)?;
+            }
+        }
+        if direct {
+            let (raw, jpeg) = capture_candidates(&db, "s", "dismissed", &civil, &civil)?;
+            admission(&db, &raw, false)?;
+            admission(&db, &jpeg, false)?;
+            db.execute(
+                "INSERT INTO pair_dismissals VALUES(?1,'{}')",
+                [format!("{jpeg}:{raw}")],
+            )?;
+            cmd(
+                &db,
+                "finish",
+                "session.finishDirect",
+                json!({"sessionID":"s"}),
+            )?;
+            assert_eq!(
+                db.query_row(
+                    "SELECT count(*) FROM lc_pair_events WHERE raw_file_id=?1",
+                    [&raw],
+                    |r| r.get::<_, i64>(0)
+                )?,
+                0
+            );
+        } else {
+            authority::flush_legacy(&db)?;
+        }
+        for (stem, _, _, expected) in &cases {
+            let (action, merged): (String, bool) = db.query_row(
+                "SELECT p.action,r.capture_id=j.capture_id FROM lc_pair_events p
+                JOIN lc_files r ON r.file_id=p.raw_file_id JOIN lc_files j ON j.file_id=p.jpeg_file_id
+                WHERE p.raw_file_id=?1",
+                [format!("{stem}-raw")],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )?;
+            assert_eq!(merged, *expected, "{stem}, direct={direct}");
+            assert_eq!(
+                action,
+                if *expected { "paired" } else { "review" },
+                "{stem}, direct={direct}"
+            );
+        }
+    }
+    Ok(())
+}
+
+fn supplemental_capture(raw: &str, jpeg: &str) -> Value {
+    let member = |id: &str| {
+        json!({"contentID":format!("sha256:{}:{}",sha(id.as_bytes()),id.len()),
+            "cameraSerial":"opaque-serial","captureTime":"clock","subsecond":"0"})
+    };
+    json!({"raw":member(raw),"jpeg":member(jpeg)})
+}
+
+#[test]
+fn bound_supplement_cannot_override_capture_counterevidence() -> Result<()> {
+    let clock = clocked(100, Some(0), None);
+    let other_time = clocked(100, Some(1_000_000), None);
+    let mut serial_a = clock.clone();
+    serial_a["cameraSerialDigest"] = json!("a".repeat(64));
+    let mut serial_b = clock.clone();
+    serial_b["cameraSerialDigest"] = json!("b".repeat(64));
+    for compatible in [false, true] {
+        let db = source()?;
+        authority::install(&db)?;
+        session(&db, "s", "p1", "screening")?;
+        for (stem, a, b, bound, status) in [
+            (
+                "legacy",
+                &json!({}),
+                &json!({"capturedAt":10}),
+                true,
+                "paired",
+            ),
+            ("mixed", &json!({}), &clock, true, "paired"),
+            ("time", &clock, &other_time, true, "review"),
+            ("serial", &serial_a, &serial_b, true, "review"),
+            ("wrong-content", &clock, &clock, false, "review"),
+            ("supplemental-clock", &clock, &clock, true, "review"),
+        ] {
+            let (raw, jpeg) = capture_candidates(&db, "s", stem, a, b)?;
+            let mut extra = supplemental_capture(&raw, &jpeg);
+            if !bound {
+                extra["jpeg"]["contentID"] = extra["raw"]["contentID"].clone();
+            }
+            if stem == "supplemental-clock" {
+                extra["jpeg"]["captureTime"] = json!("different clock");
+            }
+            let request =
+                json!({"rawFileID":raw,"jpegFileID":jpeg,"manual":false,"evidence":extra});
+            if compatible {
+                compatible_pair(&db, "s", &raw, &jpeg, Some(&extra))?;
+                authority::flush_legacy(&db)?;
+            } else {
+                let result = cmd(&db, stem, "capture.pair", request.clone())?;
+                assert_eq!(result["status"], status, "{stem}");
+                if stem == "legacy" {
+                    // Facts added after a committed pair do not rewrite its receipt or capture.
+                    set_capture_facts(&db, &raw, &clock)?;
+                    set_capture_facts(&db, &jpeg, &other_time)?;
+                    assert_eq!(result, cmd(&db, stem, "capture.pair", request)?);
+                }
+            }
+            let (action, merged): (String, bool) = db.query_row(
+                "SELECT p.action,r.capture_id=j.capture_id FROM lc_pair_events p
+                JOIN lc_files r ON r.file_id=p.raw_file_id JOIN lc_files j ON j.file_id=p.jpeg_file_id
+                WHERE p.raw_file_id=?1",
+                [&raw],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )?;
+            assert_eq!(action, status, "{stem}, compatible={compatible}");
+            assert_eq!(
+                merged,
+                status == "paired",
+                "{stem}, compatible={compatible}"
+            );
+        }
+        let explicit = json!({"rawFileID":"time-raw","jpegFileID":"time-jpeg","manual":true});
+        assert_eq!(
+            cmd(&db, "manual", "capture.pair", explicit.clone())?["status"],
+            "paired"
+        );
+        assert_eq!(
+            cmd(&db, "split", "capture.split", explicit)?["status"],
+            "split"
+        );
+        let locked = json!({"rawFileID":"time-raw","jpegFileID":"time-jpeg","manual":false,
+            "evidence":supplemental_capture("time-raw","time-jpeg")});
+        set_capture_facts(&db, "time-jpeg", &clock)?;
+        assert_eq!(
+            cmd(&db, "rejoin", "capture.pair", locked)?["status"],
+            "review"
+        );
+    }
+    Ok(())
+}
+
+#[test]
+fn bound_supplement_checks_every_occurrence_with_the_claimed_content() -> Result<()> {
+    let db = source()?;
+    authority::install(&db)?;
+    session(&db, "source", "p1", "screening")?;
+    session(&db, "mirror", "p1", "screening")?;
+    let clock = clocked(100, Some(0), None);
+    let (raw, jpeg) = capture_candidates(&db, "source", "sample", &json!({}), &clock)?;
+    asset(
+        &db,
+        "mirror",
+        "p1",
+        "copy",
+        "COPY.ARW",
+        Some(raw.as_bytes()),
+    )?;
+    set_capture_facts(&db, "copy", &clocked(101, Some(0), None))?;
+    let extra = supplemental_capture(&raw, &jpeg);
+    let receipt = cmd(
+        &db,
+        "mirror-raw",
+        "occurrence.put",
+        json!({"sessionID":"mirror","occurrenceID":"copy","assetID":"copy","fileID":raw}),
+    )?;
+    assert_eq!(receipt["contentID"], extra["raw"]["contentID"]);
+
+    let request = json!({"rawFileID":raw,"jpegFileID":jpeg,"manual":false,"evidence":extra});
+    assert_eq!(
+        cmd(&db, "compare-copy", "capture.pair", request)?["status"],
+        "review"
     );
     Ok(())
 }

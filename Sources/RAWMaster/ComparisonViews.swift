@@ -287,7 +287,11 @@ struct ComparisonSnapshot: Sendable {
     }
     static func read(asset: AssetRecord, histogram: Bool) -> ComparisonSnapshot {
         var result = ComparisonSnapshot(values: ["文件名": asset.filename, "格式": asset.resolvedURL.pathExtension.uppercased(), "大小": ByteCountFormatter.string(fromByteCount: asset.fileSize, countStyle: .file), "相机": asset.camera ?? "—", "文件状态": asset.availability.title, "文件位置": asset.resolvedURL.path])
-        if let date = asset.capturedAt { result.values["拍摄时间"] = date.formatted(date: .numeric, time: .standard) }
+        if let clock = asset.captureClock {
+            result.values["拍摄时间"] = clock.displayText ?? "未记录"
+        } else if let date = asset.capturedAt {
+            result.values["拍摄时间"] = date.formatted(date: .numeric, time: .standard)
+        }
         if let w = asset.width, let h = asset.height { result.values["分辨率"] = "\(w) × \(h)" }
         guard asset.availability == .available else { result.error = "文件离线或内容已变化，无法读取当前图像。"; return result }
         guard let source = CGImageSourceCreateWithURL(asset.resolvedURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] else {
@@ -299,7 +303,9 @@ struct ComparisonSnapshot: Sendable {
         if let w = properties[kCGImagePropertyPixelWidth as String], let h = properties[kCGImagePropertyPixelHeight as String] { result.values["分辨率"] = "\(w) × \(h)" }
         result.values["相机"] = value(tiff, kCGImagePropertyTIFFModel) ?? result.values["相机"]
         result.values["镜头"] = value(exif, kCGImagePropertyExifLensModel)
-        result.values["拍摄时间"] = value(exif, kCGImagePropertyExifDateTimeOriginal) ?? result.values["拍摄时间"]
+        if asset.captureClock == nil {
+            result.values["拍摄时间"] = value(exif, kCGImagePropertyExifDateTimeOriginal) ?? result.values["拍摄时间"]
+        }
         if let exposure = exif[kCGImagePropertyExifExposureTime as String] as? NSNumber {
             result.values["快门"] = exposureDescription(seconds: exposure.doubleValue)
         }

@@ -1,9 +1,56 @@
 import AppKit
+import ImageIO
+import UniformTypeIdentifiers
 import XCTest
 import RAWMasterCore
 @testable import RAWMaster
 
 final class ComparisonWorkflowTests: XCTestCase {
+    @MainActor func testImportedCameraClockSortComparisonAndDeliveryStayConsistentOffline() async throws {
+        let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
+        let source = f.root.appendingPathComponent("camera")
+        try FileManager.default.createDirectory(at: source, withIntermediateDirectories: true)
+        let context = try XCTUnwrap(CGContext(data: nil, width: 8, height: 6, bitsPerComponent: 8, bytesPerRow: 32,
+            space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue))
+        context.setFillColor(red: 0.25, green: 0.5, blue: 0.75, alpha: 1)
+        context.fill(CGRect(x: 0, y: 0, width: 8, height: 6))
+        let image = try XCTUnwrap(context.makeImage())
+        func write(_ name: String, _ date: String? = nil, _ fraction: String? = nil, _ offset: String? = nil) throws {
+            let url = source.appendingPathComponent(name)
+            let destination = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil))
+            var exif: [CFString: String] = [:]
+            exif[kCGImagePropertyExifDateTimeOriginal] = date
+            exif[kCGImagePropertyExifSubsecTimeOriginal] = fraction
+            exif[kCGImagePropertyExifOffsetTimeOriginal] = offset
+            CGImageDestinationAddImage(destination, image, [kCGImagePropertyExifDictionary: exif] as CFDictionary)
+            XCTAssertTrue(CGImageDestinationFinalize(destination))
+        }
+        try write("later.jpg", "2026:11:28 22:30:00", "006", "+00:00")
+        try write("earlier.jpg", "2026:11:29 00:30:00", "005", "+02:00")
+        try write("no-time.jpg")
+        let session = try await ImportService(store: f.store).importDirectory(source: source, destination: nil,
+            projectName: "Clock", mode: .reference, progress: { _ in })
+        XCTAssertEqual(session.completed, 3)
+        let model = AppModel(libraryURL: f.library, defaults: f.defaults)
+        model.selectScope(.project, id: session.projectID)
+        model.reviewSort = .capturedAscending
+        XCTAssertEqual(model.browserAssets.map(\.filename), ["earlier.jpg", "later.jpg", "no-time.jpg"])
+        model.reviewSort = .capturedDescending
+        XCTAssertEqual(model.browserAssets.map(\.filename), ["later.jpg", "earlier.jpg", "no-time.jpg"])
+        let original = try XCTUnwrap(model.browserAssets.first(where: { $0.filename == "earlier.jpg" }))
+        let later = try XCTUnwrap(model.browserAssets.first(where: { $0.filename == "later.jpg" }))
+        XCTAssertEqual(try XCTUnwrap(later.capturedAt).timeIntervalSince(XCTUnwrap(original.capturedAt)), 0.001, accuracy: 0.000001)
+        let expected = "2026-11-29 00:30:00.005 +02:00"
+        XCTAssertEqual(ComparisonSnapshot.read(asset: original, histogram: false).values["拍摄时间"], expected)
+        XCTAssertEqual(try PhotoExportFilename.stem(for: original, ordinal: 1, template: "{name}-{captureDate}", exportDate: Date()), "earlier-20261129")
+        try FileManager.default.removeItem(at: original.resolvedURL)
+        try f.store.refreshAvailability(ids: [original.id])
+        let reopened = try LibraryStore(databaseURL: f.library)
+        let offline = try XCTUnwrap(reopened.loadAssets().first(where: { $0.id == original.id }))
+        XCTAssertEqual(offline.availability, .missing)
+        XCTAssertEqual(ComparisonSnapshot.read(asset: offline, histogram: false).values["拍摄时间"], expected)
+    }
+
     @MainActor func testCandidateNavigationPreservesReferencesAndSelectionBounds() async throws {
         let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
         let session = try await f.populate("CompareSelection", filenames: (1...6).map { "\($0).jpg" })

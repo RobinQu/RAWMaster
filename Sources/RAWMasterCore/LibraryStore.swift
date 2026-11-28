@@ -500,6 +500,8 @@ public final class LibraryStore: @unchecked Sendable {
       a.currentPath = imported.currentPath
       a.fileSize = imported.fileSize
       a.capturedAt = imported.capturedAt
+      a.captureClock = imported.captureClock
+      a.cameraSerialDigest = imported.cameraSerialDigest
       a.camera = imported.camera
       a.width = imported.width
       a.height = imported.height
