@@ -1298,7 +1298,7 @@ actions['preset-command'] = () => {
   if (op === '导出原生预设') {
     demoDownload(name + '.rmpreset.json', { schema: 'rawmaster.ui.example', name, values: reusable });
     closeSheet();
-    notifyEditor('已导出「' + name + '」。');
+    notifyEditor('已导出「' + presetDisplayText(name) + '」。');
     return;
   }
   const values = op === '保存当前调整' ? reusable : { ev: 0.3, contrast: 8 };

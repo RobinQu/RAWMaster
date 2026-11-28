@@ -138,11 +138,13 @@ struct PresetExchangeControls: View {
             Picker("批次", selection: $pendingBatch) {
               Text("选择要撤销的批次").tag(String?.none)
               ForEach(Array(history.committed.reversed()), id: \.self) { batch in
-                Text((batch == history.committed.last ? "最近提交 · " : "") + (history.summaries[batch] ?? batch))
+                let summary = DevelopmentPresetDirectory.presentationText(history.summaries[batch] ?? batch)
+                Text((batch == history.committed.last ? "最近提交 · " : "") + summary)
                   .tag(Optional(batch))
               }
               ForEach(history.unsequenced, id: \.self) { batch in
-                Text("旧版批次 · " + (history.summaries[batch] ?? batch)).tag(Optional(batch))
+                let summary = DevelopmentPresetDirectory.presentationText(history.summaries[batch] ?? batch)
+                Text("旧版批次 · " + summary).tag(Optional(batch))
               }
             }
             if !history.unsequenced.isEmpty {

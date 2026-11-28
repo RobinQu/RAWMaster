@@ -1,0 +1,22 @@
+2026-11-28 10:20 CST · macOS Release XCTest
+SwiftPM 使用 -enable-testing 编译，随后以 --skip-build 运行定向用例。
+运行环境使用本机 FlashRaw 动态库、固定的雪景和人物 ARW、兼容 JPEG 及已校验的主体 XMP。
+
+Test Case '-[RAWMasterUITests.DevelopmentFilmCatalogUITests testExpandedFilmSearchAndFavoritesKeepOriginalStableIdentity]' passed (0.001 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentFilmCatalogUITests testFilmDirectoryContainsAllNineStableIdentitiesAndTitlesWithoutRecords]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentFilmCatalogUITests testNewFilmsCanBeAdoptedAndUndoneInNativeSidebarWithoutChangingExposure]' passed (0.660 seconds).
+Test Case '-[RAWMasterUITests.EditingAppearanceRoundTripTests testRealRAWReopensBothLooksAndPreservesTheirDistinctPixelsAndGraphs]' passed (3.563 seconds).
+Test Case '-[RAWMasterUITests.EditingAppearanceRoundTripTests testUnsupportedRAWContentAndCancelledSwitchPreserveTheCompatibilityDraft]' passed (0.257 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverCrossingAndLateFrameCannotOverrideCommittedPresentation]' passed (0.370 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverUsesIndependentConsumerAndNeverCommitsRecipeOrHistory]' passed (0.064 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPhotoFilterFactsSelectionOriginalMemoryAndIntensityShareTypedHistory]' passed (0.246 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testAllScopedAdobeRowsHaveChineseDisplayLabelsAndKeepTheirOriginalNames]' passed (0.003 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testDirectoryKeepsSourceAdaptiveGroupsAheadOfImportedFolders]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testFilterDirectoryUsesNeutralDisplayTextAndKeepsOriginalFields]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testImportedPresetPreviewsMappedFieldsWithoutCommitting]' passed (0.135 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testQuickPromptDockReplacesCanvasControlsInTheNativeWindow]' passed (0.165 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testSceneFilterPanelPreviewsAndAppliesOnRealRAW]' passed (1.874 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testSearchFindsAndAppliesPresetInWindowAlongsideMaskControls]' passed (0.317 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testUnifiedDirectoryCancelsPreparationWhenCollapsedAndRestoresOnReopen]' passed (0.547 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testUnreadablePresetCatalogReportsToItsPhotoAndPreservesExistingNotices]' passed (0.140 seconds).
+Executed 17 tests, with 0 failures (0 unexpected) in 8.341 (8.344) seconds

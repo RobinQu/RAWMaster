@@ -250,7 +250,7 @@ import RAWMasterCore
         }
         let context = try XCTUnwrap(editing.developmentContext)
         let catalog = DevelopmentPresetCatalog(root: fixture.root.appendingPathComponent("hover-presets"))
-        let url = fixture.root.appendingPathComponent("Mapped.xmp")
+        let url = fixture.root.appendingPathComponent("Adobe Spektrafilm Mapped.xmp")
         try Data("""
             <x:xmpmeta xmlns:x="adobe:ns:meta/"><r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
             <r:Description xmlns:c="http://ns.adobe.com/camera-raw-settings/1.0/"
@@ -260,6 +260,11 @@ import RAWMasterCore
         let stage = try DevelopmentPresetExchange.inspectFiles([url], catalog: catalog)
         _ = try stage.commit(to: catalog)
         let row = try XCTUnwrap(catalog.records().first)
+        let history = try catalog.importHistory()
+        let summary = try XCTUnwrap(history.summaries[stage.batchID])
+        XCTAssertEqual(row.name, "Adobe Spektrafilm Mapped")
+        XCTAssertEqual(summary, "1 项 · Adobe Spektrafilm Mapped")
+        XCTAssertEqual(DevelopmentPresetDirectory.presentationText(summary), "1 项 · Mapped")
         XCTAssertFalse(row.blockingReasons.isEmpty)
         let preview = try XCTUnwrap(editing.presetForHover(row, context: context))
         let before = editing.recipe, entries = editing.developmentSession.history.entryCount

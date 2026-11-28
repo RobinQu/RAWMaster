@@ -1558,7 +1558,13 @@ def main():
               imported.dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));assert(el('.developed').style.filter===neutral,'import hover restores');
               set('[name=presetQuery]','无匹配输入');assert(el('.preset-directory').textContent.includes('没有匹配'),'search empty');
               set('[name=presetQuery]','');
-              tap('summary',filterMenu());act('preset-manage','export',filterMenu());assert(value('presetOperation')==='导出原生预设','Export opens its own dialog');act('close',null,modal());
+              tap('summary',filterMenu());act('preset-manage','export',filterMenu());
+              assert(value('presetOperation')==='导出原生预设','Export opens its own dialog');
+              set('[name=presetName]','Adobe Spektrafilm 走查 XMP',modal());
+              act('preset-command',null,modal());
+              const exportNotice=all('.editor-toast').find(row=>row.textContent.includes('已导出'));
+              assert(!modal().open&&exportNotice?.textContent.includes('已导出「走查 XMP」。'),'export notice uses the neutral display name');
+              act('editor-notice-dismiss',null,exportNotice);
               tap('[data-folder="adaptive.主体"] > summary');act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .adaptive-layers img'),'current-photo mask review');act('close',null,modal());
               let film=el('[data-act=film-stock][data-val=cinema]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
               key(film,'Escape');assert(el('.developed').style.filter===neutral&&el('.look-preview').hidden,'Escape restores applied image');
