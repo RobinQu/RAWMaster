@@ -73,7 +73,8 @@ enum DevelopmentDisplayHistogramEngineV1 {
         autoreleasepool {
           context.render(proxy,toBitmap:bytes.baseAddress!.advanced(by:(destinationRow*width+x)*16),rowBytes:width*16,
             bounds:.init(x:x,y:y,width:w,height:h),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
-          context.clearCaches()
+          // Reuse the context's work across a row while keeping every tile a joined cancellation point.
+          if x + w == width { context.clearCaches() }
         }
         // No cancellation may release the native slot before the synchronous tile has joined.
         try Task.checkCancellation();try checkCancellation()
