@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "scope": "Personal Release on the physical macOS host. Native controls use an isolated catalog of four controlled JPEGs. Real camera originals are exercised through the Release import path.",
+  "sourceCommit": "8bfbfa29599f0d94d96219ebab16de21d0273784",
+  "buildVersion": "20261129.013459",
+  "previousBuildVersion": "20261129.004656",
+  "applicationPath": "/Applications/RAWMaster.app",
+  "cdhash": "9c41c9faf490bfc3fe3fd3c272216758dc07d1c4",
+  "strictDeepSignatureVerified": true,
+  "installedBinarySHA256": {
+    "Contents/MacOS/RAWMaster": "8b13f1e8821809ad9d988accaf3a558c630f9505e328b99347544ac080b2cf25",
+    "Contents/Frameworks/librawmaster_image.dylib": "ad3204b59de345f90599cd9a0f78f83acb5d9649e02d5344b21da6f69661a871",
+    "Contents/Frameworks/librawmaster_library.dylib": "2758bfd4386acb301a0b68c4baf085fbf9586880f2bfee2cb5348d4ef558a49d",
+    "Contents/Resources/FlashRaw/libflashraw_capi.dylib": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+    "Contents/Frameworks/librawmaster_core_ai.dylib": "9807d1a22139d7f058b914dd57d1330a5e0d47c85f8007faa3ed2fdd10e742e7"
+  },
+  "nativeMetalABIInvocations": 44,
+  "coreAIABIReceiptSHA256": {
+    "intel": "d588d00fd7a5c19e716340efc368486cdfe67057a4826a7ab4eff522070d857b",
+    "detector": "732d34e5cda7f817dbdf48d3fc53f874a269b8a306277f6d79640b4d0396d46f"
+  },
+  "coreAIModelsComparedFiles": 9,
+  "nativeSmoke": {
+    "ascendingGrid": [
+      "earlier.jpg",
+      "later.jpg",
+      "offline.jpg",
+      "unknown.jpg"
+    ],
+    "descendingGrid": [
+      "offline.jpg",
+      "later.jpg",
+      "earlier.jpg",
+      "unknown.jpg"
+    ],
+    "onlinePhotoClock": "2026-11-29 00:30:00.005 +02:00",
+    "onlineCompareClock": "2026-11-28 22:30:00.006 +00:00",
+    "offlineCompareClock": "2026-11-29 10:00:00 +00:00",
+    "returnedGridRetainsSortAndSelectedPhoto": true,
+    "reopenedGridRetainsSortAndSelectedPhoto": true,
+    "sqliteQuickCheck": "ok",
+    "witnessSHA256": {
+      "project": "4617a4ead4d093d4324ee320e3a99862569091eb2b5b9ae3d25a1dc242471a99",
+      "ascending": "b2f00da7ba70854934168cbb64c0d211157b890baf713ea07be33c64e6e78b47",
+      "descending": "bf2dd862ee10fe72d9a99cb398ad7e76565327db1d82a8ada1fd76b827e6bb74",
+      "compare-metadata": "97d011fa94bbda063e57d496d1e0cad0b494ab575ada79d777d76eff3bf6aa23",
+      "returned": "5e9a3fe7310dacdeaeaff531b32926596609d62556accccbeda4cffbe281a79d",
+      "reopened": "4b0e253f37b6f063188618c0fb7aa14d13ffaf27fd4b85561360592749493e2f"
+    }
+  },
+  "releaseTests": {
+    "passed": 97,
+    "skippedOptIn": 3,
+    "logSHA256": "66721c2f5d294201d7a13d9a709b93e14080c5db564f2453186704ee380789b6"
+  },
+  "rawImport": {
+    "actualDJIIndependentDNGJPEG": {
+      "referenceAndCopy": true,
+      "automaticPairPreservedAfterReopenAndResume": true,
+      "photoHashesMatchVerifiedCatalog": true
+    },
+    "publicSonyARW": {
+      "independentReader": "ExifTool 13.59",
+      "offset": "+01:00",
+      "utcInstant": "2018-03-13T15:38:13Z"
+    }
+  },
+  "localArtifacts": "output/spec044-local-distribution.0C4KOY/personal-import-clock.I891w6"
+}

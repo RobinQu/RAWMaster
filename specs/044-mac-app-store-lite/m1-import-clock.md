@@ -17,3 +17,5 @@
 Release 使用真实的 DJI DNG 和独立机内 JPEG，分别走引用、复制、重开后继续，均保持同一个已确认的自动配对。两份原件及受管副本逐份核对 SHA-256。对照 Sony ARW 的 ExifTool 13.59 读数，首次导入保留 `+01:00`，图库存储对应的 UTC 时刻。控制 JPEG 的原生排序、离线比较及 032 相机日期命名通过，纳秒阈值和替换原件或暂存文件的负例通过。[原件、拷贝及回归](../../Tests/RAWMasterCoreTests/LibraryImportArchiveTests.swift) · [原生图库测试](../../Tests/RAWMasterUITests/ComparisonWorkflowTests.swift)
 
 定向 Release 共通过 97 项，三个原有可选性能测试跳过。Rust 目录全套通过 104 项，五个原有实验夹具保持忽略。相邻浏览器工作台走查 15 项通过。M1-03 继续验收检查器其他字段、实拍 Sony 序列、TIFF16 物理标签及生产 Perl 退出。
+
+自用 Release `20261129.013459` 已安装到 `/Applications/RAWMaster.app`。在隔离图库用原生排序菜单、照片信息和比较控件复验。两种排序均把缺值置后。EXIF 比较显示离线保存的时刻和另一张照片的带偏移亚秒，回网格及退出重开后保留降序和选中照片。安装前后严格验签、SQLite 自检、44 次 Metal ABI 及两个人脸 ABI 回放通过。[安装与窗口回执](evidence/m1-import-clock-release-checkpoint.json)
